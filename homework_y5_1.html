@@ -605,12 +605,28 @@ const questions = [
             : null; 
 
         // Update button text and visibility
-        nextButton.textContent = (currentQuestionIndex === questions.length - 1)
-            ? 'View Results'
-            : 'Next Question';
-        backButton.style.display = (currentQuestionIndex > 0) ? 'inline-block' : 'none';
-        nextButton.style.display = 'inline-block'; 
+        //nextButton.textContent = (currentQuestionIndex === questions.length - 1)
+        //    ? 'View Results'
+        //    : 'Next Question';
+        //backButton.style.display = (currentQuestionIndex > 0) ? 'inline-block' : 'none';
+        //nextButton.style.display = 'inline-block'; 
+nextButton.textContent =
+    (currentQuestionIndex === questions.length - 1) ? 'View Results' : 'Next Question';
 
+// Next 按钮始终显示
+nextButton.style.display = 'inline-block';
+
+// Back 按钮始终占位，只用可见性控制
+backButton.style.display = 'inline-block';
+if (currentQuestionIndex > 0) {
+    backButton.style.visibility = 'visible';
+    backButton.classList.remove('ghost-button');
+} else {
+    backButton.style.visibility = 'hidden';
+    backButton.classList.add('ghost-button');
+}
+
+        
         // 2. Insert question text
         const qText = document.createElement('p');
         qText.className = 'question-text';
