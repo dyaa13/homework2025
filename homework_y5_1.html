@@ -150,412 +150,334 @@
 </div>
 
 <script>
-    // --- 40 Question Data Set ---
-    const IMG_FOLDER = "ICAS2015/";
-    const questions = [
+  // --- 40 Question Data Set ---
+const IMG_FOLDER = "ICAS2015/";
+const questions = [
     // 1–10 Easy
-  {
-    text: `Q1. 
-           <img src="${IMG_FOLDER}q1.png"
-                alt="Number pattern question"
-                style="max-width:100%; margin-top:8px;">`,
-    options: { A: "", B: "", C: "", D: "" },
-    answer: "B"
-  },
-  {
-    text: `Q2. 
-           <img src="${IMG_FOLDER}q2.png"
-                alt="Number pattern question"
-                style="max-width:100%; margin-top:8px;">`,
-    options: { A: "", B: "", C: "", D: "" },
-    answer: "C"
-},
-{ text: 'Q3.' +
-        '<img src="ICAS2015/q3.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "A"
-},
-{ text: 'Q4.' +
-        '<img src="ICAS2015/q4.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "D"
-},       
-{ text: 'Q5.' +
-        '<img src="ICAS2015/q5.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "B"
-},
-{ text: 'Q6.' +
-        '<img src="ICAS2015/q6.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "A"
-},
-{ text: 'Q7.' +
-        '<img src="ICAS2015/q7.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "B"
-},{ text: 'Q8.' +
-        '<img src="ICAS2015/q8.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "D"
-},{ text: 'Q9.' +
-        '<img src="ICAS2015/q9.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "C"
-},{ text: 'Q10.' +
-        '<img src="ICAS2015/q10.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "A"
-},{ text: 'Q11.' +
-        '<img src="ICAS2015/q11.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "D"
-},{ text: 'Q12.' +
-        '<img src="ICAS2015/q12.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "D"
-},{ text: 'Q13.' +
-        '<img src="ICAS2015/q13.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "B"
-},{ text: 'Q14.' +
-        '<img src="ICAS2015/q14.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "C"
-},{ text: 'Q15.' +
-        '<img src="ICAS2015/q15.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "A"
-},{ text: 'Q16.' +
-        '<img src="ICAS2015/q16.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "B,D,E,F"
-},{ text: 'Q17.' +
-        '<img src="ICAS2015/q17.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "A"
-},{ text: 'Q18.' +
-        '<img src="ICAS2015/q18.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "D"
-},{ text: 'Q19.' +
-        '<img src="ICAS2015/q19.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "B"
-},{ text: 'Q20.' +
-        '<img src="ICAS2015/q20.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "A"
-},{ text: 'Q21.' +
-        '<img src="ICAS2015/q21.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "C"
-},{ text: 'Q22.' +
-        '<img src="ICAS2015/q22.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "D"
-},{ text: 'Q23.' +
-        '<img src="ICAS2015/q23.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "B"
-},{ text: 'Q24.' +
-        '<img src="ICAS2015/q24.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "B"
-},{ text: 'Q25.' +
-        '<img src="ICAS2015/q25.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "B"
-},{ text: 'Q26.' +
-        '<img src="ICAS2015/q26.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "C"
-},{ text: 'Q27.' +
-        '<img src="ICAS2015/q27.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "A"
-},{ text: 'Q28.' +
-        '<img src="ICAS2015/q28.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "C"
-},{ text: 'Q29.' +
-        '<img src="ICAS2015/q29.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "A"
-},{ text: 'Q30.' +
-        '<img src="ICAS2015/q30.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "D"
-},{ text: 'Q31.' +
-        '<img src="ICAS2015/q31.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "B"
-},{ text: 'Q32.' +
-        '<img src="ICAS2015/q32.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "A"
-},{ text: 'Q33.' +
-        '<img src="ICAS2015/q33.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "A"
-},{ text: 'Q34.' +
-        '<img src="ICAS2015/q34.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "D"
-},{ text: 'Q35.' +
-        '<img src="ICAS2015/q35.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "C"
-},{ text: 'Q36.' +
-        '<img src="ICAS2015/q36.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "6",
-    B: "7",
-    C: "8",
-    D: "9"
-  },
-  answer: "C"
-},{ text: 'Q37.' +
-        '<img src="ICAS2015/q37.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "21",
-    B: "24",
-    C: "27",
-    D: "30"
-  },
-  answer: "A"
-},{ text: 'Q38.' +
-        '<img src="ICAS2015/q38.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "700",
-    B: "732",
-    C: "764",
-    D: "796"
-  },
-  answer: "B"
-},{ text: 'Q39.' +
-        '<img src="ICAS2015/q39.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "",
-    B: "",
-    C: "",
-    D: ""
-  },
-  answer: "A"
-},{ text: 'Q40.' +
-        '<img src="ICAS2015/q40.png" ' +
-        'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
-  options: {
-    A: "101",
-    B: "110",
-    C: "119",
-    D: "128"
-  },
-  answer: "C"
-}
+    {
+        text: `Q1.
+               <img src="${IMG_FOLDER}q1.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q2.
+               <img src="${IMG_FOLDER}q2.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "C"
+    },
+
+    // --- Fix from Q3 onward ---
+    {
+        text: `Q3.
+               <img src="${IMG_FOLDER}q3.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q4.
+               <img src="${IMG_FOLDER}q4.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "D"
+    },
+    {
+        text: `Q5.
+               <img src="${IMG_FOLDER}q5.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q6.
+               <img src="${IMG_FOLDER}q6.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q7.
+               <img src="${IMG_FOLDER}q7.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q8.
+               <img src="${IMG_FOLDER}q8.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "D"
+    },
+    {
+        text: `Q9.
+               <img src="${IMG_FOLDER}q9.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "C"
+    },
+    {
+        text: `Q10.
+               <img src="${IMG_FOLDER}q10.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q11.
+               <img src="${IMG_FOLDER}q11.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "D"
+    },
+    {
+        text: `Q12.
+               <img src="${IMG_FOLDER}q12.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "D"
+    },
+    {
+        text: `Q13.
+               <img src="${IMG_FOLDER}q13.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q14.
+               <img src="${IMG_FOLDER}q14.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "C"
+    },
+    {
+        text: `Q15.
+               <img src="${IMG_FOLDER}q15.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q16.
+               <img src="${IMG_FOLDER}q16.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B,D,E,F"
+    },
+    {
+        text: `Q17.
+               <img src="${IMG_FOLDER}q17.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q18.
+               <img src="${IMG_FOLDER}q18.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "D"
+    },
+    {
+        text: `Q19.
+               <img src="${IMG_FOLDER}q19.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q20.
+               <img src="${IMG_FOLDER}q20.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q21.
+               <img src="${IMG_FOLDER}q21.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "C"
+    },
+    {
+        text: `Q22.
+               <img src="${IMG_FOLDER}q22.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "D"
+    },
+    {
+        text: `Q23.
+               <img src="${IMG_FOLDER}q23.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q24.
+               <img src="${IMG_FOLDER}q24.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q25.
+               <img src="${IMG_FOLDER}q25.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q26.
+               <img src="${IMG_FOLDER}q26.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "C"
+    },
+    {
+        text: `Q27.
+               <img src="${IMG_FOLDER}q27.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q28.
+               <img src="${IMG_FOLDER}q28.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "C"
+    },
+    {
+        text: `Q29.
+               <img src="${IMG_FOLDER}q29.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q30.
+               <img src="${IMG_FOLDER}q30.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "D"
+    },
+    {
+        text: `Q31.
+               <img src="${IMG_FOLDER}q31.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q32.
+               <img src="${IMG_FOLDER}q32.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q33.
+               <img src="${IMG_FOLDER}q33.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q34.
+               <img src="${IMG_FOLDER}q34.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "D"
+    },
+    {
+        text: `Q35.
+               <img src="${IMG_FOLDER}q35.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "C"
+    },
+    {
+        text: `Q36.
+               <img src="${IMG_FOLDER}q36.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "6", B: "7", C: "8", D: "9" },
+        answer: "C"
+    },
+    {
+        text: `Q37.
+               <img src="${IMG_FOLDER}q37.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "21", B: "24", C: "27", D: "30" },
+        answer: "A"
+    },
+    {
+        text: `Q38.
+               <img src="${IMG_FOLDER}q38.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "700", B: "732", C: "764", D: "796" },
+        answer: "B"
+    },
+    {
+        text: `Q39.
+               <img src="${IMG_FOLDER}q39.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q40.
+               <img src="${IMG_FOLDER}q40.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "101", B: "110", C: "119", D: "128" },
+        answer: "C"
+    }
 ];
+
 
     let currentQuestionIndex = 0;
     let score = 0; 
