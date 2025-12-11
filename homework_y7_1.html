@@ -1,0 +1,790 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .quiz-container {
+            max-width: 850px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        #headerLogo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        .logo-text {
+            line-height: 1.2;
+            margin-left: 10px;
+        }
+        .logo-text span.dy {
+            font-size: 1.8em;
+            font-weight: 800;
+            color: #0d47a1; /* Dark Blue */
+        }
+        .logo-text span.edu {
+            font-size: 0.8em;
+            letter-spacing: 1px;
+            font-weight: 600;
+            color: #ff9800; /* Orange */
+            display: block;
+        }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #0d47a1;
+            border-radius: 4px;
+            position: relative;
+        }
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 5px;
+            width: 30px;
+            height: 10px;
+            background-color: #ff9800;
+            border-radius: 2px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+        
+        #nextButton, #backButton, #startButton, #saveResultsButton {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        #backButton {
+            background-color: #03A9F4;
+        }
+        #saveResultsButton {
+            margin-top: 20px;
+            background-color: #ff9800;
+        }
+        #nextButton:hover, #startButton:hover { background-color: #388E3C; }
+        #backButton:hover { background-color: #0288D1; }
+        #saveResultsButton:hover { background-color: #fb8c00; }
+
+        .question-text {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .options-list {
+            list-style: none;
+            padding: 0;
+            cursor: pointer; /* Ensure pointer shows for UL, confirming clickability */
+        }
+        .options-list li {
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            cursor: pointer; /* Ensure pointer shows for LI */
+        }
+        .options-list li:hover {
+            background-color: #e3f2fd;
+            border-color: #03A9F4;
+        }
+        .options-list li.selected {
+            background-color: #bbdefb;
+            border-color: #0288D1;
+            font-weight: bold;
+        }
+        
+        .review-table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: left; font-size: 0.9em; }
+        .review-table th, .review-table td { border: 1px solid #ddd; padding: 10px; }
+        .review-table th { background-color: #f2f2f2; color: #333; }
+        .correct-answer { background-color: #d4edda; color: #155724; font-weight: bold; }
+        .incorrect-answer { background-color: #f8d7da; color: #721c24; font-weight: bold; }
+        #startScreen input { padding: 10px; width: 80%; margin-right: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        #studentInfo { font-size: 1.1em; margin-bottom: 15px; border-bottom: 1px dashed #ccc; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    
+    <div id="headerLogo">
+        <div class="logo-icon"></div>
+        <div class="logo-text">
+            <span class="edu">EDUCATION</span>
+        </div>
+    </div>
+    
+    <h2 id="quizTitle">Math Assessment</h2>
+    
+    <div id="quizContent">
+    </div>
+
+    <div class="button-container">
+        <button id="backButton" style="display:none;">Previous</button>
+        <button id="nextButton" style="display:none;">Next Question</button>
+    </div>
+    
+</div>
+
+<script>
+  // --- 40 Question Data Set ---
+const IMG_FOLDER = "y7_2019/";
+const questions = [
+    // 1–10 Easy
+    {
+        text: `Q1.
+               <img src="${IMG_FOLDER}q1.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "D"
+    },
+    {
+        text: `Q2.
+               <img src="${IMG_FOLDER}q2.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+
+    // --- Fix from Q3 onward ---
+    {
+        text: `Q3.
+               <img src="${IMG_FOLDER}q3.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "C"
+    },
+    {
+        text: `Q4.
+               <img src="${IMG_FOLDER}q4.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q5.
+               <img src="${IMG_FOLDER}q5.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q6.
+               <img src="${IMG_FOLDER}q6.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q7.
+               <img src="${IMG_FOLDER}q7.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "C"
+    },
+    {
+        text: `Q8.
+               <img src="${IMG_FOLDER}q8.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "D"
+    },
+    {
+        text: `Q9.
+               <img src="${IMG_FOLDER}q9.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "C"
+    },
+    {
+        text: `Q10.
+               <img src="${IMG_FOLDER}q10.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "C"
+    },
+    {
+        text: `Q11.
+               <img src="${IMG_FOLDER}q11.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q12.
+               <img src="${IMG_FOLDER}q12.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "D"
+    },
+    {
+        text: `Q13.
+               <img src="${IMG_FOLDER}q13.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q14.
+               <img src="${IMG_FOLDER}q14.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q15.
+               <img src="${IMG_FOLDER}q15.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A,D"
+    },
+    {
+        text: `Q16.
+               <img src="${IMG_FOLDER}q16.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "C"
+    },
+    {
+        text: `Q17.
+               <img src="${IMG_FOLDER}q17.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q18.
+               <img src="${IMG_FOLDER}q18.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "D"
+    },
+    {
+        text: `Q19.
+               <img src="${IMG_FOLDER}q19.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q20.
+               <img src="${IMG_FOLDER}q20.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q21.
+               <img src="${IMG_FOLDER}q21.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "D"
+    },
+    {
+        text: `Q22.
+               <img src="${IMG_FOLDER}q22.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q23.
+               <img src="${IMG_FOLDER}q23.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "C"
+    },
+    {
+        text: `Q24.
+               <img src="${IMG_FOLDER}q24.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "D"
+    },
+    {
+        text: `Q25.
+               <img src="${IMG_FOLDER}q25.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q26.
+               <img src="${IMG_FOLDER}q26.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q27.
+               <img src="${IMG_FOLDER}q27.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q28.
+               <img src="${IMG_FOLDER}q28.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q29.
+               <img src="${IMG_FOLDER}q29.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q30.
+               <img src="${IMG_FOLDER}q30.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "A"
+    },
+    {
+        text: `Q31.
+               <img src="${IMG_FOLDER}q31.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "D"
+    },
+    {
+        text: `Q32.
+               <img src="${IMG_FOLDER}q32.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B"
+    },
+    {
+        text: `Q33.
+               <img src="${IMG_FOLDER}q33.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "B,D"
+    },
+    {
+        text: `Q34.
+               <img src="${IMG_FOLDER}q34.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "D"
+    },
+    {
+        text: `Q35.
+               <img src="${IMG_FOLDER}q35.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "", B: "", C: "", D: "" },
+        answer: "C"
+    },
+    {
+        text: `Q36.
+               <img src="${IMG_FOLDER}q36.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "26", B: "30", C: "35", D: "40" },
+        answer: "C"
+    },
+    {
+        text: `Q37.
+               <img src="${IMG_FOLDER}q37.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "121", B: "124", C: "127", D: "112" },
+        answer: "D"
+    },
+    {
+        text: `Q38.
+               <img src="${IMG_FOLDER}q38.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "70", B: "62", C: "59", D: "48" },
+        answer: "C"
+    },
+    {
+        text: `Q39.
+               <img src="${IMG_FOLDER}q39.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "30", B: "40", C: "50", D: "60" },
+        answer: "C"
+    },
+    {
+        text: `Q40.
+               <img src="${IMG_FOLDER}q40.png"
+                    alt="Number pattern question"
+                    style="max-width:100%; margin-top:8px;">`,
+        options: { A: "90", B: "110", C: "130", D: "148" },
+        answer: "A"
+    }
+];
+
+
+    let currentQuestionIndex = 0;
+    let score = 0; 
+    let selectedAnswer = null; 
+    let userAnswers = Array(questions.length).fill(null); 
+    let studentName = "Anonymous"; 
+
+    const quizContent = document.getElementById('quizContent');
+    const nextButton = document.getElementById('nextButton');
+    const backButton = document.getElementById('backButton'); 
+    
+    // --- Core Quiz Logic ---
+
+    // EVENT DELEGATION: click listener on main content
+    quizContent.addEventListener('click', function(event) {
+        let clickedElement = event.target;
+        
+        // Traverse up the DOM tree to find the nearest LI element
+        while (clickedElement && clickedElement.tagName !== 'LI') {
+            if (clickedElement === quizContent) {
+                return; // Clicked outside any option
+            }
+            clickedElement = clickedElement.parentElement;
+        }
+
+        // If an option (LI) with an answer key was clicked
+        if (clickedElement && clickedElement.hasAttribute('data-answer')) {
+            const key = clickedElement.getAttribute('data-answer');
+            handleAnswerSelect(clickedElement, key);
+        }
+    });
+
+    // Renders the current question
+    function renderQuestion() {
+        if (currentQuestionIndex >= questions.length) {
+            if (currentQuestionIndex === questions.length) {
+                calculateFinalScore(); 
+                showFinalResult();
+            }
+            return;
+        }
+
+        const q = questions[currentQuestionIndex];
+        
+        quizContent.innerHTML = '';
+        
+        // 1. Get the previously saved answer for this question
+        selectedAnswer = userAnswers[currentQuestionIndex]
+            ? userAnswers[currentQuestionIndex].userChoice
+            : null; 
+
+        // Update button text and visibility
+        //nextButton.textContent = (currentQuestionIndex === questions.length - 1)
+        //    ? 'View Results'
+        //    : 'Next Question';
+        //backButton.style.display = (currentQuestionIndex > 0) ? 'inline-block' : 'none';
+        //nextButton.style.display = 'inline-block'; 
+nextButton.textContent =
+    (currentQuestionIndex === questions.length - 1) ? 'View Results' : 'Next Question';
+
+// Next 按钮始终显示
+nextButton.style.display = 'inline-block';
+
+// Back 按钮始终占位，只用可见性控制
+backButton.style.display = 'inline-block';
+if (currentQuestionIndex > 0) {
+    backButton.style.visibility = 'visible';
+    backButton.classList.remove('ghost-button');
+} else {
+    backButton.style.visibility = 'hidden';
+    backButton.classList.add('ghost-button');
+}
+
+        
+        // 2. Insert question text
+        const qText = document.createElement('p');
+        qText.className = 'question-text';
+        qText.innerHTML = `(Question ${currentQuestionIndex + 1} of ${questions.length}) ` + q.text;
+        quizContent.appendChild(qText);
+
+        // 3. Insert options list
+        const optionsList = document.createElement('ul');
+        optionsList.className = 'options-list';
+        
+        for (const key in q.options) {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${key}. ${q.options[key]}`;
+            listItem.setAttribute('data-answer', key);
+            
+            // Highlight the previously saved answer
+            if (key === selectedAnswer) {
+                listItem.classList.add('selected');
+            }
+            
+            optionsList.appendChild(listItem);
+        }
+        quizContent.appendChild(optionsList);
+    }
+
+    // Handles user selection (called by event delegation)
+    function handleAnswerSelect(selectedElement, key) {
+        // 1. Update the global selectedAnswer variable
+        selectedAnswer = key;
+
+        // 2. Clear highlight from all options in the current question's list
+        const options = selectedElement.parentElement.querySelectorAll('li'); 
+        options.forEach(option => {
+            option.classList.remove('selected');
+        });
+        
+        // 3. Highlight the clicked option
+        selectedElement.classList.add('selected');
+    }
+
+    // Function to save the current answer and move
+    function saveAnswerAndMove(direction) {
+        // 1. Save the current answer
+        const q = questions[currentQuestionIndex];
+        const isCorrect = (selectedAnswer !== null) && (selectedAnswer === q.answer);
+        
+        // Update the existing entry in the userAnswers array for the current question
+        userAnswers[currentQuestionIndex] = {
+            questionIndex: currentQuestionIndex,
+            userChoice: selectedAnswer,
+            correctAnswer: q.answer,
+            isCorrect: isCorrect
+        };
+        
+        // 2. Move
+        if (direction === 'next') {
+            currentQuestionIndex++;
+        } else if (direction === 'back' && currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+        }
+        
+        // 3. Render next (or previous) screen
+        renderQuestion();
+    }
+
+    nextButton.addEventListener('click', function() {
+        saveAnswerAndMove('next');
+    });
+
+    backButton.addEventListener('click', function() {
+        saveAnswerAndMove('back');
+    });
+
+    // Calculate final score
+    function calculateFinalScore() {
+        score = 0;
+        userAnswers.forEach(answer => {
+            if (answer && answer.isCorrect) {
+                score++;
+            }
+        });
+    }
+
+    // ---- New: Save results to a downloadable TXT file ----
+    function saveResultsToFile() {
+        const now = new Date();
+        const timestampForFile = now.toISOString().replace(/[:.]/g, '-');
+        const safeName = studentName.replace(/\s+/g, '_') || 'Student';
+        const filename = `Negative_Numbers_Result_${safeName}_${timestampForFile}.txt`;
+
+        let content = '';
+        content += 'Y5 H1 Assessment Result\n';
+        content += '--------------------------------------\n\n';
+        content += `Student: ${studentName}\n`;
+        content += `Date: ${now.toLocaleString()}\n`;
+        content += `Score: ${score} / ${questions.length}\n\n`;
+        content += 'Detailed Breakdown:\n\n';
+
+        questions.forEach((q, index) => {
+            const result = userAnswers[index];
+            const userChoiceKey = result && result.userChoice ? result.userChoice : null;
+            const userChoiceText = userChoiceKey
+                ? `${userChoiceKey}. ${q.options[userChoiceKey]}`
+                : 'Skipped';
+
+            const correctAnswerText = `${q.answer}. ${q.options[q.answer]}`;
+            const resultText = (result && result.isCorrect) ? 'Correct' : 'Incorrect';
+
+            content += `Q${index + 1}: ${q.text}\n`;
+            content += `Your answer: ${userChoiceText}\n`;
+            content += `Correct answer: ${correctAnswerText}\n`;
+            content += `Result: ${resultText}\n\n`;
+        });
+
+        const blob = new Blob([content], { type: 'text/plain' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    }
+
+    function showFinalResult() {
+        let reviewHTML = `
+            <div id="studentInfo">
+                <strong>Student Name:</strong> ${studentName}
+            </div>
+            <div id="finalResult">
+                <p>You have finished all ${questions.length} questions.</p>
+                <p>Your final score is: <strong>${score} / ${questions.length}</strong></p>
+            </div>
+            <h3>Detailed Review</h3>
+            <table class="review-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        //<th>Question</th>
+                        <th>Your Answer</th>
+                        <th>Correct Answer</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+questions.forEach((q, index) => {
+    const result = userAnswers[index];
+    const userChoiceKey = result.userChoice ? result.userChoice : null;
+    const userChoiceText = userChoiceKey
+        ? `${userChoiceKey}. ${q.options[userChoiceKey]}`
+        : '— Skipped —';
+
+    const resultClass = result.isCorrect ? 'correct-answer' : 'incorrect-answer';
+    const resultText = result.isCorrect ? 'Correct' : 'Incorrect';
+    const correctAnswerText = `${q.answer}. ${q.options[q.answer]}`;
+
+    // Removed original question text
+    // const questionText = q.text.split(':')[0];
+
+    reviewHTML += `
+        <tr>
+            <td>Q${index + 1}</td>
+            <td>${userChoiceText}</td>
+            <td class="${result.isCorrect ? '' : 'correct-answer'}">${correctAnswerText}</td>
+            <td class="${resultClass}">${resultText}</td>
+        </tr>
+    `;
+});
+        
+        reviewHTML += `
+                </tbody>
+            </table>
+            <button id="saveResultsButton">Save Results</button>
+        `;
+        
+        quizContent.innerHTML = reviewHTML;
+        nextButton.style.display = 'none';
+        backButton.style.display = 'none';
+
+        // 绑定保存按钮
+        const saveBtn = document.getElementById('saveResultsButton');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', saveResultsToFile);
+        }
+    }
+
+    // --- Start Screen Logic ---
+
+    function showStartScreen() {
+        nextButton.style.display = 'none';
+        backButton.style.display = 'none';
+
+        quizContent.innerHTML = `
+            <div id="startScreen">
+                <p class="question-text">
+                    Welcome to the Negative Numbers Assessment! This test has ${questions.length} questions,
+                    including 5 multi-step word problems. You can use the 'Previous' button to review and
+                    change your answers. Please enter your name to begin.
+                </p>
+                <label for="nameInput">Name:</label>
+                <input type="text" id="nameInput" placeholder="Enter your name here" required>
+                <button id="startButton">Start Quiz</button>
+            </div>
+        `;
+        
+        document.getElementById('startButton').addEventListener('click', startQuiz);
+    }
+
+    function startQuiz() {
+        const nameInput = document.getElementById('nameInput').value.trim();
+        
+        if (nameInput) {
+            studentName = nameInput;
+        } else {
+            studentName = "Anonymous Student";
+        }
+        
+        // Initialize all answers as null objects for tracking
+        userAnswers = Array(questions.length).fill(null).map((_, index) => ({
+            questionIndex: index,
+            userChoice: null,
+            correctAnswer: questions[index].answer,
+            isCorrect: false
+        }));
+
+        renderQuestion();
+    }
+
+    // Initialize the application by showing the start screen
+    showStartScreen();
+</script>
+
+</body>
+</html>
