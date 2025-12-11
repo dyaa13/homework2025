@@ -640,7 +640,7 @@ if (currentQuestionIndex > 0) {
         const now = new Date();
         const timestampForFile = now.toISOString().replace(/[:.]/g, '-');
         const safeName = studentName.replace(/\s+/g, '_') || 'Student';
-        const filename = `Negative_Numbers_Result_${safeName}_${timestampForFile}.txt`;
+        const filename = `Result_${safeName}_${timestampForFile}.txt`;
 
         let content = '';
         content += 'Y5 H1 Assessment Result\n';
@@ -749,8 +749,7 @@ questions.forEach((q, index) => {
         quizContent.innerHTML = `
             <div id="startScreen">
                 <p class="question-text">
-                    Welcome to the Negative Numbers Assessment! This test has ${questions.length} questions,
-                    including 5 multi-step word problems. You can use the 'Previous' button to review and
+                    Welcome to the Math Assessment! This test has ${questions.length} questions, You can use the 'Previous' button to review and
                     change your answers. Please enter your name to begin.
                 </p>
                 <label for="nameInput">Name:</label>
@@ -787,4 +786,5 @@ questions.forEach((q, index) => {
 </script>
 
 </body>
+
 </html>
