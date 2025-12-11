@@ -133,7 +133,7 @@
     <div id="headerLogo">
         <div class="logo-icon"></div>
         <div class="logo-text">
-            <! <span class="dy">DYAA</span> >
+            //<span class="dy">DYAA</span>
             <span class="edu">EDUCATION</span>
         </div>
     </div>
@@ -156,7 +156,7 @@
     const questions = [
     // 1–10 Easy
         { text: 'Q1.' +
-         '<img src="ICAS2015/q1.png" ' + 'alt="Number pattern question" style="max-width:100%; margin-top:8px;">', 
+         '<img src="${IMG_FOLDER}q1.png" ' + 'alt="Number pattern question" style="max-width:100%; margin-top:8px;">', 
          options: { A: "", B: "", C: "", D: "" }, 
          answer: "B" },
          { text: 'Q2.' + '<img src="ICAS2015/q2.png" ' + 'alt="Number pattern question" style="max-width:100%; margin-top:8px;">',
@@ -719,8 +719,9 @@ if (currentQuestionIndex > 0) {
         const filename = `Negative_Numbers_Result_${safeName}_${timestampForFile}.txt`;
 
         let content = '';
-        
-        <! content += 'DYAA Negative Numbers Assessment Result\n'; >
+        /*
+        content += 'DYAA Negative Numbers Assessment Result\n';
+        */
         content += 'Y5 H1 Assessment Result\n';
         content += '--------------------------------------\n\n';
         content += `Student: ${studentName}\n`;
