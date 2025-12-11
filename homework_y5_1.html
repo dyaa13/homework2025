@@ -719,7 +719,9 @@ if (currentQuestionIndex > 0) {
         const filename = `Negative_Numbers_Result_${safeName}_${timestampForFile}.txt`;
 
         let content = '';
-        //content += 'DYAA Negative Numbers Assessment Result\n';
+        /*
+        content += 'DYAA Negative Numbers Assessment Result\n';
+        */
         content += 'Y5 H1 Assessment Result\n';
         content += '--------------------------------------\n\n';
         content += `Student: ${studentName}\n`;
@@ -776,26 +778,29 @@ if (currentQuestionIndex > 0) {
                 <tbody>
         `;
 
-        questions.forEach((q, index) => {
-            const result = userAnswers[index]; 
-            const userChoiceKey = result.userChoice ? result.userChoice : null;
-            const userChoiceText = userChoiceKey
-                ? `${userChoiceKey}. ${q.options[userChoiceKey]}`
-                : '— Skipped —';
-            const resultClass = result.isCorrect ? 'correct-answer' : 'incorrect-answer';
-            const resultText = result.isCorrect ? 'Correct' : 'Incorrect';
-            const correctAnswerText = q.options[q.answer];
-            
-            reviewHTML += `
-                <tr>
-                    <td>Q${index + 1}</td>
-                    <td>${q.text.split(':')[0]}</td>
-                    <td>${userChoiceText}</td>
-                    <td class="${result.isCorrect ? '' : 'correct-answer'}">${q.answer}. ${correctAnswerText}</td>
-                    <td class="${resultClass}">${resultText}</td>
-                </tr>
-            `;
-        });
+questions.forEach((q, index) => {
+    const result = userAnswers[index];
+    const userChoiceKey = result.userChoice ? result.userChoice : null;
+    const userChoiceText = userChoiceKey
+        ? `${userChoiceKey}. ${q.options[userChoiceKey]}`
+        : '— Skipped —';
+
+    const resultClass = result.isCorrect ? 'correct-answer' : 'incorrect-answer';
+    const resultText = result.isCorrect ? 'Correct' : 'Incorrect';
+    const correctAnswerText = `${q.answer}. ${q.options[q.answer]}`;
+
+    // Removed original question text
+    // const questionText = q.text.split(':')[0];
+
+    reviewHTML += `
+        <tr>
+            <td>Q${index + 1}</td>
+            <td>${userChoiceText}</td>
+            <td class="${result.isCorrect ? '' : 'correct-answer'}">${correctAnswerText}</td>
+            <td class="${resultClass}">${resultText}</td>
+        </tr>
+    `;
+});
         
         reviewHTML += `
                 </tbody>
