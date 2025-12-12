@@ -281,7 +281,7 @@ const questions = [
                <img src="${IMG_FOLDER}q16.png"
                     alt="Number pattern question"
                     style="max-width:100%; margin-top:8px;">`,
-        options: { A: "", B: "", C: "", D: "" },
+        options: { A: "", B: "", C: "", D: "", E: "", F: "" },
         answer: "B,D,E,F"
     },
     {
@@ -483,7 +483,9 @@ const questions = [
     let score = 0; 
     let selectedAnswer = null; 
     let userAnswers = Array(questions.length).fill(null); 
-    let studentName = "Anonymous"; 
+    let studentName = "Smart"; 
+    let quizStartTime = null;
+    let quizEndTime = null;
 
     const quizContent = document.getElementById('quizContent');
     const nextButton = document.getElementById('nextButton');
@@ -634,6 +636,18 @@ if (currentQuestionIndex > 0) {
             }
         });
     }
+    // find the duration
+    
+function formatDuration(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+
+    const minPart = minutes > 0 ? `${minutes} minute${minutes !== 1 ? 's' : ''}` : "";
+    const secPart = `${seconds} second${seconds !== 1 ? 's' : ''}`;
+
+    return minPart ? `${minPart} ${secPart}` : secPart;
+}
 
     // ---- New: Save results to a downloadable TXT file ----
     function saveResultsToFile() {
@@ -677,16 +691,28 @@ if (currentQuestionIndex > 0) {
     }
 
     function showFinalResult() {
-        let reviewHTML = `
-            <div id="studentInfo">
-                <strong>Student Name:</strong> ${studentName}
-            </div>
-            <div id="finalResult">
-                <p>You have finished all ${questions.length} questions.</p>
-                <p>Your final score is: <strong>${score} / ${questions.length}</strong></p>
-            </div>
-            <h3>Detailed Review</h3>
-            <table class="review-table">
+        // record end time
+    quizEndTime = new Date();
+
+    let endTimeStr = quizEndTime.toLocaleTimeString();
+    let durationStr = "";
+    if (quizStartTime) {
+        const diffMs = quizEndTime - quizStartTime;
+        durationStr = formatDuration(diffMs);
+    }
+
+    let reviewHTML = `
+        <div id="studentInfo">
+            <strong>Student Name:</strong> ${studentName}
+        </div>
+        <div id="finalResult">
+            <p>You have finished all ${questions.length} questions.</p>
+            <p>Your final score is: <strong>${score} / ${questions.length}</strong></p>
+            <p>End time: <strong>${endTimeStr}</strong></p>
+            ${quizStartTime ? `<p>Time taken: <strong>${durationStr}</strong></p>` : ""}
+        </div>
+        <h3>Detailed Review</h3>
+        <table class="review-table">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -767,8 +793,11 @@ questions.forEach((q, index) => {
         if (nameInput) {
             studentName = nameInput;
         } else {
-            studentName = "Anonymous Student";
+            studentName = "DYAA";
         }
+            // record start time
+    quizStartTime = new Date();
+    quizEndTime = null;
         
         // Initialize all answers as null objects for tracking
         userAnswers = Array(questions.length).fill(null).map((_, index) => ({
