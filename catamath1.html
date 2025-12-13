@@ -359,9 +359,28 @@ function calculateAndShowResults() {
         if (correct) score++;
     });
 
+    // 计算用时
+    let timeInfoHtml = "";
+    if (quizStartTime && quizEndTime) {
+        const diffMs = quizEndTime - quizStartTime;
+        const totalSec = Math.floor(diffMs / 1000);
+        const minutes = Math.floor(totalSec / 60);
+        const seconds = totalSec % 60;
+
+        const startStr = quizStartTime.toLocaleTimeString();
+        const endStr   = quizEndTime.toLocaleTimeString();
+
+        timeInfoHtml = `
+            <p>Start time: <strong>${startStr}</strong></p>
+            <p>Submit time: <strong>${endStr}</strong></p>
+            <p>Time taken: <strong>${minutes} minute${minutes !== 1 ? "s" : ""} ${seconds} second${seconds !== 1 ? "s" : ""}</strong></p>
+        `;
+    }
+
     let html = `
         <h3>Results for ${studentName}</h3>
         <p>Score: ${score} / ${NUM_QUESTIONS}</p>
+        ${timeInfoHtml}
         <table class="review-table">
             <tr>
                 <th>#</th>
@@ -388,7 +407,7 @@ function calculateAndShowResults() {
 
     quizContent.innerHTML = html;
 
-    sidebarEl.style.display = "none";
+    // 保留左侧 sidebar（仍可点回各题），隐藏上下按钮
     backButton.style.display = "none";
     nextButton.style.display = "none";
 }
