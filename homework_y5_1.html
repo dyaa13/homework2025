@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test</title>
+    <title>Math Assessment</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -66,16 +66,11 @@
             line-height: 1.2;
             margin-left: 10px;
         }
-        .logo-text span.dy {
-            font-size: 1.8em;
-            font-weight: 800;
-            color: #0d47a1; /* Dark Blue */
-        }
         .logo-text span.edu {
             font-size: 0.8em;
             letter-spacing: 1px;
             font-weight: 600;
-            color: #ff9800; /* Orange */
+            color: #ff9800;
             display: block;
         }
         .logo-icon {
@@ -189,337 +184,348 @@
 </div>
 
 <script>
-  // --- 40 Question Data Set ---
   const IMG_FOLDER = "ICAS2015/";
+
+  // 1) 题目：只放题干和选项，不放答案
   const questions = [
-      // 1–10 Easy
       {
           text: `Q1.
                  <img src="${IMG_FOLDER}q1.png"
-                      alt="Number pattern question"
+                      alt="Question 1"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "B"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q2.
                  <img src="${IMG_FOLDER}q2.png"
-                      alt="Number pattern question"
+                      alt="Question 2"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "C"
+          options: { A: "", B: "", C: "", D: "" }
       },
-
-      // --- Fix from Q3 onward ---
       {
           text: `Q3.
                  <img src="${IMG_FOLDER}q3.png"
-                      alt="Number pattern question"
+                      alt="Question 3"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "A"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q4.
                  <img src="${IMG_FOLDER}q4.png"
-                      alt="Number pattern question"
+                      alt="Question 4"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "D"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q5.
                  <img src="${IMG_FOLDER}q5.png"
-                      alt="Number pattern question"
+                      alt="Question 5"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "B"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q6.
                  <img src="${IMG_FOLDER}q6.png"
-                      alt="Number pattern question"
+                      alt="Question 6"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "A"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q7.
                  <img src="${IMG_FOLDER}q7.png"
-                      alt="Number pattern question"
+                      alt="Question 7"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "B"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q8.
                  <img src="${IMG_FOLDER}q8.png"
-                      alt="Number pattern question"
+                      alt="Question 8"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "D"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q9.
                  <img src="${IMG_FOLDER}q9.png"
-                      alt="Number pattern question"
+                      alt="Question 9"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "C"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q10.
                  <img src="${IMG_FOLDER}q10.png"
-                      alt="Number pattern question"
+                      alt="Question 10"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "A"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q11.
                  <img src="${IMG_FOLDER}q11.png"
-                      alt="Number pattern question"
+                      alt="Question 11"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "D"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q12.
                  <img src="${IMG_FOLDER}q12.png"
-                      alt="Number pattern question"
+                      alt="Question 12"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "D"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q13.
                  <img src="${IMG_FOLDER}q13.png"
-                      alt="Number pattern question"
+                      alt="Question 13"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "B"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q14.
                  <img src="${IMG_FOLDER}q14.png"
-                      alt="Number pattern question"
+                      alt="Question 14"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "C"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q15.
                  <img src="${IMG_FOLDER}q15.png"
-                      alt="Number pattern question"
+                      alt="Question 15"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "A"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q16.
                  <img src="${IMG_FOLDER}q16.png"
-                      alt="Number pattern question"
+                      alt="Question 16"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "", E: "", F: "" },
-          answer: "B,D,E,F"
+          options: { A: "", B: "", C: "", D: "", E: "", F: "" }
       },
       {
           text: `Q17.
                  <img src="${IMG_FOLDER}q17.png"
-                      alt="Number pattern question"
+                      alt="Question 17"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "A"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q18.
                  <img src="${IMG_FOLDER}q18.png"
-                      alt="Number pattern question"
+                      alt="Question 18"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "D"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q19.
                  <img src="${IMG_FOLDER}q19.png"
-                      alt="Number pattern question"
+                      alt="Question 19"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "B"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q20.
                  <img src="${IMG_FOLDER}q20.png"
-                      alt="Number pattern question"
+                      alt="Question 20"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "A"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q21.
                  <img src="${IMG_FOLDER}q21.png"
-                      alt="Number pattern question"
+                      alt="Question 21"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "C"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q22.
                  <img src="${IMG_FOLDER}q22.png"
-                      alt="Number pattern question"
+                      alt="Question 22"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "D"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q23.
                  <img src="${IMG_FOLDER}q23.png"
-                      alt="Number pattern question"
+                      alt="Question 23"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "B"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q24.
                  <img src="${IMG_FOLDER}q24.png"
-                      alt="Number pattern question"
+                      alt="Question 24"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "B"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q25.
                  <img src="${IMG_FOLDER}q25.png"
-                      alt="Number pattern question"
+                      alt="Question 25"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "B"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q26.
                  <img src="${IMG_FOLDER}q26.png"
-                      alt="Number pattern question"
+                      alt="Question 26"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "C"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q27.
                  <img src="${IMG_FOLDER}q27.png"
-                      alt="Number pattern question"
+                      alt="Question 27"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "A"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q28.
                  <img src="${IMG_FOLDER}q28.png"
-                      alt="Number pattern question"
+                      alt="Question 28"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "C"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q29.
                  <img src="${IMG_FOLDER}q29.png"
-                      alt="Number pattern question"
+                      alt="Question 29"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "A"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q30.
                  <img src="${IMG_FOLDER}q30.png"
-                      alt="Number pattern question"
+                      alt="Question 30"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "D"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q31.
                  <img src="${IMG_FOLDER}q31.png"
-                      alt="Number pattern question"
+                      alt="Question 31"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "B"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q32.
                  <img src="${IMG_FOLDER}q32.png"
-                      alt="Number pattern question"
+                      alt="Question 32"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "A"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q33.
                  <img src="${IMG_FOLDER}q33.png"
-                      alt="Number pattern question"
+                      alt="Question 33"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "A"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q34.
                  <img src="${IMG_FOLDER}q34.png"
-                      alt="Number pattern question"
+                      alt="Question 34"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "D"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q35.
                  <img src="${IMG_FOLDER}q35.png"
-                      alt="Number pattern question"
+                      alt="Question 35"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "C"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q36.
                  <img src="${IMG_FOLDER}q36.png"
-                      alt="Number pattern question"
+                      alt="Question 36"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "6", B: "7", C: "8", D: "9" },
-          answer: "C"
+          options: { A: "6", B: "7", C: "8", D: "9" }
       },
       {
           text: `Q37.
                  <img src="${IMG_FOLDER}q37.png"
-                      alt="Number pattern question"
+                      alt="Question 37"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "21", B: "24", C: "27", D: "30" },
-          answer: "A"
+          options: { A: "21", B: "24", C: "27", D: "30" }
       },
       {
           text: `Q38.
                  <img src="${IMG_FOLDER}q38.png"
-                      alt="Number pattern question"
+                      alt="Question 38"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "700", B: "732", C: "764", D: "796" },
-          answer: "B"
+          options: { A: "700", B: "732", C: "764", D: "796" }
       },
       {
           text: `Q39.
                  <img src="${IMG_FOLDER}q39.png"
-                      alt="Number pattern question"
+                      alt="Question 39"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "", B: "", C: "", D: "" },
-          answer: "A"
+          options: { A: "", B: "", C: "", D: "" }
       },
       {
           text: `Q40.
                  <img src="${IMG_FOLDER}q40.png"
-                      alt="Number pattern question"
+                      alt="Question 40"
                       style="max-width:100%; margin-top:8px;">`,
-          options: { A: "101", B: "110", C: "119", D: "128" },
-          answer: "C"
+          options: { A: "101", B: "110", C: "119", D: "128" }
       }
   ];
 
+  // 2) 答案：集中在一个数组里，后面只要改这里就行
+  const answers = [
+      "B",        // Q1
+      "C",        // Q2
+      "A",        // Q3
+      "D",        // Q4
+      "B",        // Q5
+      "A",        // Q6
+      "B",        // Q7
+      "D",        // Q8
+      "C",        // Q9
+      "A",        // Q10
+      "D",        // Q11
+      "D",        // Q12
+      "B",        // Q13
+      "C",        // Q14
+      "A",        // Q15
+      "B,D,E,F",  // Q16 (多选)
+      "A",        // Q17
+      "D",        // Q18
+      "B",        // Q19
+      "A",        // Q20
+      "C",        // Q21
+      "D",        // Q22
+      "B",        // Q23
+      "B",        // Q24
+      "B",        // Q25
+      "C",        // Q26
+      "A",        // Q27
+      "C",        // Q28
+      "A",        // Q29
+      "D",        // Q30
+      "B",        // Q31
+      "A",        // Q32
+      "A",        // Q33
+      "D",        // Q34
+      "C",        // Q35
+      "C",        // Q36
+      "A",        // Q37
+      "B",        // Q38
+      "A",        // Q39
+      "C"         // Q40
+  ];
+
+  // 工具函数：把 "B,D,E" -> ["B","D","E"]
+  function parseAnswerString(ansStr) {
+      if (!ansStr) return [];
+      return ansStr
+          .split(',')
+          .map(s => s.trim())
+          .filter(Boolean);
+  }
+
   let currentQuestionIndex = 0;
   let score = 0; 
-  let selectedAnswer = null; 
+  let selectedAnswers = new Set();          // 当前题的多选
   let userAnswers = Array(questions.length).fill(null); 
   let studentName = "Smart"; 
   let quizStartTime = null;
@@ -553,8 +559,18 @@
 
   function goToQuestion(index) {
       if (index < 0 || index >= questions.length) return;
+
+      // 只有在当前索引还在题目范围内时才保存（结果页时不会保存）
+      if (currentQuestionIndex >= 0 && currentQuestionIndex < questions.length) {
+          saveCurrentAnswer();
+      }
+
       currentQuestionIndex = index;
       renderQuestion();
+
+      nextButton.style.display = 'inline-block';
+      backButton.style.display = 'inline-block';
+      backButton.style.visibility = (currentQuestionIndex > 0) ? 'visible' : 'hidden';
   }
 
   // 左侧导航点击事件
@@ -570,9 +586,7 @@
       });
   }
 
-  // --- Core Quiz Logic ---
-
-  // 选项点击事件
+  // 选项点击事件（多选：切换选中/取消）
   quizContent.addEventListener('click', function(event) {
       let clickedElement = event.target;
       
@@ -585,7 +599,7 @@
 
       if (clickedElement && clickedElement.hasAttribute('data-answer')) {
           const key = clickedElement.getAttribute('data-answer');
-          handleAnswerSelect(clickedElement, key);
+          handleAnswerToggle(clickedElement, key);
       }
   });
 
@@ -606,19 +620,19 @@
       // 更新左侧题号高亮
       renderQuestionNav();
       
+      // 恢复当前题已选答案
+      selectedAnswers = new Set();
       const existing = userAnswers[currentQuestionIndex];
-      selectedAnswer = existing && existing.userChoice ? existing.userChoice : null;
+      if (existing && Array.isArray(existing.userChoices)) {
+          existing.userChoices.forEach(a => selectedAnswers.add(a));
+      }
 
       nextButton.textContent =
           (currentQuestionIndex === questions.length - 1) ? 'View Results' : 'Next Question';
 
       nextButton.style.display = 'inline-block';
       backButton.style.display = 'inline-block';
-      if (currentQuestionIndex > 0) {
-          backButton.style.visibility = 'visible';
-      } else {
-          backButton.style.visibility = 'hidden';
-      }
+      backButton.style.visibility = (currentQuestionIndex > 0) ? 'visible' : 'hidden';
       
       const qText = document.createElement('p');
       qText.className = 'question-text';
@@ -633,7 +647,7 @@
           listItem.textContent = `${key}. ${q.options[key]}`;
           listItem.setAttribute('data-answer', key);
           
-          if (key === selectedAnswer) {
+          if (selectedAnswers.has(key)) {
               listItem.classList.add('selected');
           }
           
@@ -642,27 +656,47 @@
       quizContent.appendChild(optionsList);
   }
 
-  function handleAnswerSelect(selectedElement, key) {
-      selectedAnswer = key;
+  // 多选：切换选中状态
+  function handleAnswerToggle(selectedElement, key) {
+      if (selectedElement.classList.contains('selected')) {
+          selectedElement.classList.remove('selected');
+          selectedAnswers.delete(key);
+      } else {
+          selectedElement.classList.add('selected');
+          selectedAnswers.add(key);
+      }
+  }
 
-      const options = selectedElement.parentElement.querySelectorAll('li'); 
-      options.forEach(option => {
-          option.classList.remove('selected');
-      });
-      
-      selectedElement.classList.add('selected');
+  // 保存当前题答案到 userAnswers
+  function saveCurrentAnswer() {
+      // 保护：只有在题目范围内才保存
+      if (currentQuestionIndex < 0 || currentQuestionIndex >= questions.length) return;
+
+      const q = questions[currentQuestionIndex];
+      const correctAnswers = parseAnswerString(answers[currentQuestionIndex]);
+
+      const userChoicesArray = Array.from(selectedAnswers);
+      let isCorrect = false;
+
+      if (userChoicesArray.length > 0) {
+          const sortedUser = [...userChoicesArray].sort();
+          const sortedCorrect = [...correctAnswers].sort();
+
+          if (sortedUser.length === sortedCorrect.length) {
+              isCorrect = sortedUser.every((val, idx) => val === sortedCorrect[idx]);
+          }
+      }
+
+      userAnswers[currentQuestionIndex] = {
+          questionIndex: currentQuestionIndex,
+          userChoices: userChoicesArray,
+          correctAnswers: correctAnswers,
+          isCorrect: isCorrect
+      };
   }
 
   function saveAnswerAndMove(direction) {
-      const q = questions[currentQuestionIndex];
-      const isCorrect = (selectedAnswer !== null) && (selectedAnswer === q.answer);
-      
-      userAnswers[currentQuestionIndex] = {
-          questionIndex: currentQuestionIndex,
-          userChoice: selectedAnswer,
-          correctAnswer: q.answer,
-          isCorrect: isCorrect
-      };
+      saveCurrentAnswer();
       
       if (direction === 'next') {
           currentQuestionIndex++;
@@ -670,11 +704,22 @@
           currentQuestionIndex--;
       }
       
-      renderQuestion();
+      if (currentQuestionIndex >= questions.length) {
+          calculateFinalScore();
+          showFinalResult();
+      } else {
+          renderQuestion();
+      }
   }
 
   nextButton.addEventListener('click', function() {
-      saveAnswerAndMove('next');
+      if (currentQuestionIndex === questions.length - 1) {
+          saveCurrentAnswer();
+          calculateFinalScore();
+          showFinalResult();
+      } else {
+          saveAnswerAndMove('next');
+      }
   });
 
   backButton.addEventListener('click', function() {
@@ -710,29 +755,36 @@
       let content = '';
       content += 'Y5 H1 Assessment Result\n';
       content += '--------------------------------------\n\n';
-      content += `Student: ${studentName}\n`;
-      content += `Date: ${now.toLocaleString()}\n`;
-      content += `Score: ${score} / ${questions.length}\n\n`;
+      content += 'Student: ' + studentName + '\n';
+      content += 'Start Time: ' + (quizStartTime ? quizStartTime.toLocaleString() : 'N/A') + '\n';
+      content += 'Submit Time: ' + (quizEndTime ? quizEndTime.toLocaleString() : now.toLocaleString()) + '\n';
+      content += 'Score: ' + score + ' / ' + questions.length + '\n\n';
       content += 'Detailed Breakdown:\n\n';
 
       questions.forEach((q, index) => {
+          const defaultCorrect = parseAnswerString(answers[index]);
           const result = userAnswers[index] || {
-              userChoice: null,
-              correctAnswer: q.answer,
+              userChoices: [],
+              correctAnswers: defaultCorrect,
               isCorrect: false
           };
-          const userChoiceKey = result.userChoice ? result.userChoice : null;
-          const userChoiceText = userChoiceKey
-              ? `${userChoiceKey}. ${q.options[userChoiceKey]}`
+          const userChoices = result.userChoices || [];
+          const correctAnswers = result.correctAnswers || defaultCorrect;
+
+          const userChoiceText = userChoices.length > 0
+              ? userChoices.map(k => k + '. ' + (q.options[k] || '')).join(' ; ')
               : 'Skipped';
 
-          const correctAnswerText = `${q.answer}. ${q.options[q.answer]}`;
+          const correctAnswerText = correctAnswers.length > 0
+              ? correctAnswers.map(k => k + '. ' + (q.options[k] || '')).join(' ; ')
+              : '(None)';
+
           const resultText = result.isCorrect ? 'Correct' : 'Incorrect';
 
-          content += `Q${index + 1}: ${q.text}\n`;
-          content += `Your answer: ${userChoiceText}\n`;
-          content += `Correct answer: ${correctAnswerText}\n`;
-          content += `Result: ${resultText}\n\n`;
+          content += 'Q' + (index + 1) + ':\n';
+          content += 'Your answer: ' + userChoiceText + '\n';
+          content += 'Correct answer: ' + correctAnswerText + '\n';
+          content += 'Result: ' + resultText + '\n\n';
       });
 
       const blob = new Blob([content], { type: 'text/plain' });
@@ -748,70 +800,74 @@
   function showFinalResult() {
       quizEndTime = new Date();
 
-      let endTimeStr = quizEndTime.toLocaleTimeString();
+      const endTimeStr = quizEndTime.toLocaleTimeString();
+      const startTimeStr = quizStartTime ? quizStartTime.toLocaleTimeString() : 'N/A';
       let durationStr = "";
       if (quizStartTime) {
           const diffMs = quizEndTime - quizStartTime;
           durationStr = formatDuration(diffMs);
       }
 
-      // 结果页也保留左侧导航（不高亮任何题）
-      currentQuestionIndex = questions.length; // 超出 index，renderQuestionNav 不会高亮
+      // 不改 currentQuestionIndex，方便再点左边跳回题目
       renderQuestionNav();
 
-      let reviewHTML = `
-          <div id="studentInfo">
-              <strong>Student Name:</strong> ${studentName}
-          </div>
-          <div id="finalResult">
-              <p>You have finished all ${questions.length} questions.</p>
-              <p>Your final score is: <strong>${score} / ${questions.length}</strong></p>
-              <p>End time: <strong>${endTimeStr}</strong></p>
-              ${quizStartTime ? `<p>Time taken: <strong>${durationStr}</strong></p>` : ""}
-          </div>
-          <h3>Detailed Review</h3>
-          <table class="review-table">
-                  <thead>
-                      <tr>
-                          <th>#</th>
-                          <th>Your Answer</th>
-                          <th>Correct Answer</th>
-                          <th>Result</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-          `;
+      let reviewHTML = ''
+          + '<div id="studentInfo">'
+          + '  <strong>Student Name:</strong> ' + studentName + '<br>'
+          + '  <strong>Start Time:</strong> ' + startTimeStr + '<br>'
+          + '  <strong>Submit Time:</strong> ' + endTimeStr
+          + '</div>'
+          + '<div id="finalResult">'
+          + '  <p>You have finished all ' + questions.length + ' questions.</p>'
+          + '  <p>Your final score is: <strong>' + score + ' / ' + questions.length + '</strong></p>'
+          + (quizStartTime ? ('<p>Time taken: <strong>' + durationStr + '</strong></p>') : '')
+          + '</div>'
+          + '<h3>Detailed Review</h3>'
+          + '<table class="review-table">'
+          + '  <thead>'
+          + '    <tr>'
+          + '      <th>#</th>'
+          + '      <th>Your Answer</th>'
+          + '      <th>Correct Answer</th>'
+          + '      <th>Result</th>'
+          + '    </tr>'
+          + '  </thead>'
+          + '  <tbody>';
 
       questions.forEach((q, index) => {
+          const defaultCorrect = parseAnswerString(answers[index]);
           const result = userAnswers[index] || {
-              userChoice: null,
-              correctAnswer: q.answer,
+              userChoices: [],
+              correctAnswers: defaultCorrect,
               isCorrect: false
           };
-          const userChoiceKey = result.userChoice ? result.userChoice : null;
-          const userChoiceText = userChoiceKey
-              ? `${userChoiceKey}. ${q.options[userChoiceKey]}`
+          const userChoices = result.userChoices || [];
+          const correctAnswers = result.correctAnswers || defaultCorrect;
+
+          const userChoiceText = userChoices.length > 0
+              ? userChoices.map(k => k + '. ' + (q.options[k] || '')).join(' ; ')
               : '— Skipped —';
+
+          const correctAnswerText = correctAnswers.length > 0
+              ? correctAnswers.map(k => k + '. ' + (q.options[k] || '')).join(' ; ')
+              : '(None)';
 
           const resultClass = result.isCorrect ? 'correct-answer' : 'incorrect-answer';
           const resultText = result.isCorrect ? 'Correct' : 'Incorrect';
-          const correctAnswerText = `${q.answer}. ${q.options[q.answer]}`;
 
-          reviewHTML += `
-              <tr>
-                  <td>Q${index + 1}</td>
-                  <td>${userChoiceText}</td>
-                  <td class="${result.isCorrect ? '' : 'correct-answer'}">${correctAnswerText}</td>
-                  <td class="${resultClass}">${resultText}</td>
-              </tr>
-          `;
+          reviewHTML += ''
+              + '<tr>'
+              + '  <td>Q' + (index + 1) + '</td>'
+              + '  <td>' + userChoiceText + '</td>'
+              + '  <td class="' + (result.isCorrect ? '' : 'correct-answer') + '">' + correctAnswerText + '</td>'
+              + '  <td class="' + resultClass + '">' + resultText + '</td>'
+              + '</tr>';
       });
           
-      reviewHTML += `
-                  </tbody>
-              </table>
-              <button id="saveResultsButton">Save Results</button>
-          `;
+      reviewHTML += ''
+          + '  </tbody>'
+          + '</table>'
+          + '<button id="saveResultsButton">Save Results</button>';
       
       quizContent.innerHTML = reviewHTML;
       nextButton.style.display = 'none';
@@ -833,18 +889,18 @@
           questionNav.innerHTML = '';
       }
 
-      quizContent.innerHTML = `
-          <div id="startScreen">
-              <p class="question-text">
-                  Welcome to the Math Assessment! This test has ${questions.length} questions.
-                  You can use the 'Previous' button to review and change your answers.
-                  Please enter your name to begin.
-              </p>
-              <label for="nameInput">Name:</label>
-              <input type="text" id="nameInput" placeholder="Enter your name here" required>
-              <button id="startButton">Start Quiz</button>
-          </div>
-      `;
+      quizContent.innerHTML = ''
+          + '<div id="startScreen">'
+          + '  <p class="question-text">'
+          + '      Welcome to the Math Assessment! This test has ' + questions.length + ' questions.<br>'
+          + '      Each question can have one or more correct answers (multi-select).<br>'
+          + '      You can use the "Previous" button or left question list to review and change your answers.<br>'
+          + '      Please enter your name to begin.'
+          + '  </p>'
+          + '  <label for="nameInput">Name:</label>'
+          + '  <input type="text" id="nameInput" placeholder="Enter your name here" required>'
+          + '  <button id="startButton">Start Quiz</button>'
+          + '</div>';
       
       document.getElementById('startButton').addEventListener('click', startQuiz);
   }
@@ -860,12 +916,8 @@
       quizStartTime = new Date();
       quizEndTime = null;
       
-      userAnswers = Array(questions.length).fill(null).map((_, index) => ({
-          questionIndex: index,
-          userChoice: null,
-          correctAnswer: questions[index].answer,
-          isCorrect: false
-      }));
+      userAnswers = Array(questions.length).fill(null);
+      selectedAnswers = new Set();
 
       currentQuestionIndex = 0;
       renderQuestion();
