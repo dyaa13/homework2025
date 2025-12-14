@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Quiz with Answers Array</title>
+    <title>Image Quiz – All Numeric Answers</title>
 
     <style>
         body {
@@ -52,7 +52,7 @@
         }
 
         .sidebar {
-            width: 120px;
+            width: 140px;
             border-right: 1px solid #ddd;
             padding-right: 10px;
             display: none;
@@ -66,18 +66,29 @@
         }
 
         .sidebar ul { list-style: none; padding: 0; margin: 0; }
+
         .sidebar li {
             padding: 6px;
             cursor: pointer;
             border-radius: 4px;
             font-size: 0.9em;
         }
+
         .sidebar li.active {
             background: #bbdefb;
             font-weight: 600;
         }
+
         .sidebar li.answered {
+            font-style: italic;
+        }
+
+        .sidebar li.correct-li {
             border-left: 4px solid #4caf50;
+        }
+
+        .sidebar li.incorrect-li {
+            border-left: 4px solid #f44336;
         }
 
         #quizContent { flex: 1; }
@@ -88,29 +99,32 @@
         }
 
         .answer-box {
-            width: 200px;
+            width: 220px;
             padding: 10px;
             font-size: 1.05em;
         }
 
-        .button-container {
+        /* 题目下方按钮区域（在题目里面） */
+        .button-row {
+            margin-top: 25px;
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
         }
 
-        button {
-            padding: 10px 20px;
-            border: none;
-            color: white;
+        .btn-prev,
+        .btn-next {
+            padding: 10px 18px;
             border-radius: 6px;
+            border: none;
+            color: #fff;
             cursor: pointer;
             font-size: 1em;
         }
 
-        #nextButton { background:#4caf50; }
-        #backButton { background:#039be5; }
+        .btn-prev { background: #03a9f4; }
+        .btn-next { background: #4caf50; }
 
+        /* 结果表格 */
         table.review-table {
             width: 100%;
             border-collapse: collapse;
@@ -131,6 +145,20 @@
         .correct-answer { background: #d4edda; }
         .incorrect-answer { background: #f8d7da; }
 
+        #saveResultBtn,
+        #redoBtn {
+            margin-top: 15px;
+            padding: 10px 18px;
+            border-radius: 6px;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.95em;
+        }
+
+        #saveResultBtn { background: #607d8b; margin-left: 10px; }
+        #redoBtn { background: #ff9800; }
+
         @media (max-width: 700px) {
             .quiz-main {
                 flex-direction: column;
@@ -149,133 +177,90 @@
 <body>
 
 <div class="quiz-container">
-    <!-- Logo -->
     <div id="headerLogo">
         <div class="logo-icon"></div>
         <div class="logo-text"><span class="edu">EDUCATION</span></div>
     </div>
 
-    <h2>Image Quiz</h2>
+    <h2>Image Quiz – Numeric Answers</h2>
 
     <div class="quiz-main">
         <div id="sidebar" class="sidebar"></div>
         <div id="quizContent"></div>
     </div>
-
-    <div class="button-container">
-        <button id="backButton" style="display:none;">Previous</button>
-        <button id="nextButton" style="display:none;">Next</button>
-    </div>
 </div>
 
 <script>
 /* ----------------------------------------------------------
-   CONFIG: 题目文件夹 / 题目数量 / 每题答案
+   CONFIG
 ---------------------------------------------------------- */
-
-// 图片文件夹名称（相对当前 HTML 所在路径）
 const QUESTION_FOLDER = "cantmath1";
-
-// 题目数量（自动按 q1.png ~ qN.png 读取）
 const NUM_QUESTIONS = 20;
 
-// 每道题的正确答案（index 0 对应 q1.png，index 1 对应 q2.png ...）
-const ANSWERS = [42,183.2,59,22,3600,79,11/20,4000,34731,3,125,50,540,14,1/2,10.5,1800,57.7,109,27];
-// ⚠️ 请确保 ANSWERS.length >= NUM_QUESTIONS
-
+/*
+ * ANSWERS 支持：
+ *  - 整数：42, -5
+ *  - 小数：3.5, -0.25
+ *  - 分数字符串："3/4", "-5/2"
+ * 统一用 parseNumeric 比较数值是否相等
+ */
+const ANSWERS = [42,183.2,59,22,3600,79,11/20,122,34731,3,125,50,540,14,1/2,10.5,1800,57.7,109,27];
 
 /* ----------------------------------------------------------
-   全局变量
+   GLOBAL STATE
 ---------------------------------------------------------- */
-let questions = [];        // { text: html-string, answer: number }
-let userAnswers = [];      // { value: string, isCorrect: bool }
-let currentQuestionIndex = 0;
+let questions = [];            // { text, answerRaw }
+let userAnswers = [];          // [ { value: string } ]
 let studentName = "";
 let quizStartTime = null;
 let quizEndTime = null;
+let finalScore = 0;
 
-// DOM 元素引用
-const quizContent = document.getElementById("quizContent");
-const sidebarEl   = document.getElementById("sidebar");
-const backButton  = document.getElementById("backButton");
-const nextButton  = document.getElementById("nextButton");
-
+let latestResults = null;      // [{index,isCorrect,uaDisplay,caDisplay}]
+let redoMode = false;          // 是否在错题重做模式
+let redoIndices = [];          // 重做的题号（原始索引）
+let currentQuestionIndex = 0;  // 当前题目的索引（0-based）
 
 /* ----------------------------------------------------------
-   构建题目：使用 QUESTION_FOLDER + ANSWERS
+   INIT QUESTIONS
 ---------------------------------------------------------- */
 function generateQuestions() {
     questions = [];
 
     for (let i = 1; i <= NUM_QUESTIONS; i++) {
-        const ans = ANSWERS[i - 1];
-
-        if (typeof ans === "undefined") {
-            console.warn(`WARNING: ANSWERS[${i - 1}] is undefined. Please add more answers.`);
-        }
-
         questions.push({
             text: `<img src="${QUESTION_FOLDER}/q${i}.png" style="max-width:100%;">`,
-            answer: ans
+            answerRaw: ANSWERS[i - 1]
         });
     }
 
-    userAnswers = Array(NUM_QUESTIONS)
-        .fill(null)
-        .map(() => ({ value: "", isCorrect: false }));
+    userAnswers = Array(NUM_QUESTIONS).fill(null).map(() => ({ value: "" }));
 }
 
-
 /* ----------------------------------------------------------
-   解析学生输入：支持整数 / 小数 / 分数 a/b
----------------------------------------------------------- */
-function parseAnswer(str) {
-    const s = str.trim();
-    if (s === "") return NaN;
-
-    // 分数形式 a/b
-    if (s.includes("/")) {
-        const parts = s.split("/");
-        if (parts.length !== 2) return NaN;
-
-        const num = Number(parts[0]);
-        const den = Number(parts[1]);
-        if (!Number.isFinite(num) || !Number.isFinite(den) || den === 0) return NaN;
-
-        return num / den;
-    }
-
-    // 普通数字
-    const n = Number(s);
-    return Number.isFinite(n) ? n : NaN;
-}
-
-
-/* ----------------------------------------------------------
-   Sidebar 渲染 & 更新
+   SIDEBAR
 ---------------------------------------------------------- */
 function renderSidebar() {
-    sidebarEl.style.display = "block";
+    const sidebar = document.getElementById("sidebar");
+    sidebar.style.display = "block";
 
-    sidebarEl.innerHTML = `
+    sidebar.innerHTML = `
         <h4>Questions</h4>
         <ul id="qList"></ul>
     `;
-
-    const qList = document.getElementById("qList");
+    const ul = document.getElementById("qList");
 
     for (let i = 0; i < NUM_QUESTIONS; i++) {
         const li = document.createElement("li");
         li.textContent = `Q${i + 1}`;
         li.dataset.index = i;
-
-        li.addEventListener("click", () => {
+        li.onclick = () => {
             saveCurrentInput();
+            redoMode = false;              // 点题号回到普通模式
             currentQuestionIndex = i;
             renderQuestion();
-        });
-
-        qList.appendChild(li);
+        };
+        ul.appendChild(li);
     }
 
     updateSidebarStatus();
@@ -283,24 +268,41 @@ function renderSidebar() {
 
 function updateSidebarStatus() {
     const items = document.querySelectorAll("#qList li");
-
     items.forEach(li => {
         const idx = Number(li.dataset.index);
+        const ua  = userAnswers[idx];
+
+        const answered = ua.value && ua.value.toString().trim() !== "";
+
         li.classList.toggle("active", idx === currentQuestionIndex);
-        li.classList.toggle("answered", userAnswers[idx].value.trim() !== "");
+        li.classList.toggle("answered", answered);
     });
 }
 
+// 结果出来后，给 sidebar 标记正确 / 错误
+function markSidebarCorrectness(questionResults) {
+    const items = document.querySelectorAll("#qList li");
+    items.forEach(li => {
+        li.classList.remove("correct-li", "incorrect-li");
+        const idx = Number(li.dataset.index);
+        const qr  = questionResults.find(r => r.index === idx);
+        if (!qr) return;
+        li.classList.add(qr.isCorrect ? "correct-li" : "incorrect-li");
+    });
+}
 
 /* ----------------------------------------------------------
-   显示当前题目
+   RENDER QUESTION（普通 + 重做 共用）
 ---------------------------------------------------------- */
 function renderQuestion() {
-    const q = questions[currentQuestionIndex];
+    const q  = questions[currentQuestionIndex];
+    const ua = userAnswers[currentQuestionIndex].value;
 
-    quizContent.innerHTML = `
+    const modeLabel = redoMode ? "[Redo] Question " : "Question ";
+
+    let html = `
         <p class="question-text">
-            Question ${currentQuestionIndex + 1} of ${NUM_QUESTIONS}
+            ${modeLabel}${currentQuestionIndex + 1} of ${NUM_QUESTIONS}
         </p>
         ${q.text}
         <br><br>
@@ -308,28 +310,82 @@ function renderQuestion() {
             id="answerInput"
             class="answer-box"
             type="text"
-            value="${userAnswers[currentQuestionIndex].value}"
+            value="${ua}"
+            placeholder="Enter a number or fraction"
         >
     `;
 
-    backButton.style.display = "inline-block";
-    nextButton.style.display = "inline-block";
+    // 按钮逻辑
+    const isFirstNormal = (!redoMode && currentQuestionIndex === 0);
+    const isLastNormal  = (!redoMode && currentQuestionIndex === NUM_QUESTIONS - 1);
+    const prevIdxRedo   = redoMode ? getRedoPrevIndex(currentQuestionIndex) : null;
+    const hasPrev       = redoMode ? (prevIdxRedo !== null) : !isFirstNormal;
+    const isLastRedo    = redoMode && isLastRedoIndex(currentQuestionIndex);
 
-    if (currentQuestionIndex === 0) {
-        backButton.style.visibility = "hidden";
+    const nextText = redoMode
+        ? (isLastRedo ? "Submit & Update Results" : "Next Redo Question")
+        : (isLastNormal ? "Submit & View Results" : "Next Question");
+
+    html += `<div class="button-row">`;
+    if (hasPrev) {
+        html += `<button class="btn-prev" id="btnPrev">Previous</button>`;
     } else {
-        backButton.style.visibility = "visible";
+        html += `<span></span>`;
     }
+    html += `<button class="btn-next" id="btnNext">${nextText}</button></div>`;
 
-    if (currentQuestionIndex === NUM_QUESTIONS - 1) {
-        nextButton.textContent = "Submit & View Results";
-    } else {
-        nextButton.textContent = "Next";
+    document.getElementById("quizContent").innerHTML = html;
+
+    // 按钮事件
+    const btnNext = document.getElementById("btnNext");
+    btnNext.onclick = () => {
+        saveCurrentInput();
+        if (!redoMode) {
+            if (isLastNormal) {
+                calculateAndShowResults(false);
+            } else {
+                currentQuestionIndex++;
+                renderQuestion();
+            }
+        } else {
+            if (isLastRedo) {
+                redoMode = false;
+                calculateAndShowResults(true); // 重做后更新总成绩
+            } else {
+                const nidx = getRedoNextIndex(currentQuestionIndex);
+                if (nidx !== null) {
+                    currentQuestionIndex = nidx;
+                    renderQuestion();
+                }
+            }
+        }
+    };
+
+    const btnPrev = document.getElementById("btnPrev");
+    if (btnPrev) {
+        btnPrev.onclick = () => {
+            saveCurrentInput();
+            if (!redoMode) {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    renderQuestion();
+                }
+            } else {
+                const pidx = getRedoPrevIndex(currentQuestionIndex);
+                if (pidx !== null) {
+                    currentQuestionIndex = pidx;
+                    renderQuestion();
+                }
+            }
+        };
     }
 
     updateSidebarStatus();
 }
 
+/* ----------------------------------------------------------
+   SAVE CURRENT INPUT
+---------------------------------------------------------- */
 function saveCurrentInput() {
     const input = document.getElementById("answerInput");
     if (input) {
@@ -337,50 +393,82 @@ function saveCurrentInput() {
     }
 }
 
-
 /* ----------------------------------------------------------
-   计算成绩并显示结果页面
+   NUMERIC & DURATION HELPERS
 ---------------------------------------------------------- */
-function calculateAndShowResults() {
-    quizEndTime = new Date();
+function parseNumeric(str) {
+    const s = (str || "").trim();
+    if (s === "") return NaN;
 
-    let score = 0;
-
-    questions.forEach((q, idx) => {
-        const raw = userAnswers[idx].value.trim();
-        const val = parseAnswer(raw);
-
-        let correct = false;
-        if (Number.isFinite(val) && Number.isFinite(q.answer)) {
-            correct = (val === q.answer);
-        }
-
-        userAnswers[idx].isCorrect = correct;
-        if (correct) score++;
-    });
-
-    // 计算用时
-    let timeInfoHtml = "";
-    if (quizStartTime && quizEndTime) {
-        const diffMs = quizEndTime - quizStartTime;
-        const totalSec = Math.floor(diffMs / 1000);
-        const minutes = Math.floor(totalSec / 60);
-        const seconds = totalSec % 60;
-
-        const startStr = quizStartTime.toLocaleTimeString();
-        const endStr   = quizEndTime.toLocaleTimeString();
-
-        timeInfoHtml = `
-            <p>Start time: <strong>${startStr}</strong></p>
-            <p>Submit time: <strong>${endStr}</strong></p>
-            <p>Time taken: <strong>${minutes} minute${minutes !== 1 ? "s" : ""} ${seconds} second${seconds !== 1 ? "s" : ""}</strong></p>
-        `;
+    if (s.includes("/")) {
+        const [a, b] = s.split("/");
+        const num = Number(a);
+        const den = Number(b);
+        if (!Number.isFinite(num) || !Number.isFinite(den) || den === 0) return NaN;
+        return num / den;
     }
 
+    const n = Number(s);
+    return Number.isFinite(n) ? n : NaN;
+}
+
+function numericEqual(a, b) {
+    if (!Number.isFinite(a) || !Number.isFinite(b)) return false;
+    return Math.abs(a - b) < 1e-9;
+}
+
+function formatDuration(ms) {
+    const total = Math.floor(ms / 1000);
+    const m = Math.floor(total / 60);
+    const s = total % 60;
+    return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+}
+
+/* ----------------------------------------------------------
+   CALCULATE & SHOW RESULTS
+---------------------------------------------------------- */
+function calculateAndShowResults(isRedo) {
+    quizEndTime = new Date();
+    const durationMs  = quizEndTime - quizStartTime;
+    const durationStr = formatDuration(durationMs);
+
+    let score = 0;
+    let questionResults = [];
+
+    for (let i = 0; i < NUM_QUESTIONS; i++) {
+        const q  = questions[i];
+        const uaRaw = userAnswers[i].value;
+        const caRaw = q.answerRaw;
+
+        const uaVal = parseNumeric(uaRaw);
+        const caVal = parseNumeric(String(caRaw));
+
+        const isCorrect = numericEqual(uaVal, caVal);
+
+        if (isCorrect) score++;
+
+        questionResults.push({
+            index: i,
+            isCorrect,
+            uaDisplay: uaRaw || "—",
+            caDisplay: String(caRaw)
+        });
+    }
+
+    latestResults = questionResults;
+    finalScore    = score;
+
+    // Sidebar 标记红 / 绿
+    markSidebarCorrectness(questionResults);
+
+    // 结果页 HTML
     let html = `
-        <h3>Results for ${studentName}</h3>
-        <p>Score: ${score} / ${NUM_QUESTIONS}</p>
-        ${timeInfoHtml}
+        <h3>Results for ${studentName}${isRedo ? " (after redo)" : ""}</h3>
+        <p>
+            <strong>Start Time:</strong> ${quizStartTime.toLocaleString()}<br>
+            <strong>End Time:</strong> ${quizEndTime.toLocaleString()}<br>
+            <strong>Duration:</strong> ${durationStr}
+        </p>
         <table class="review-table">
             <tr>
                 <th>#</th>
@@ -390,96 +478,142 @@ function calculateAndShowResults() {
             </tr>
     `;
 
-    for (let i = 0; i < NUM_QUESTIONS; i++) {
+    questionResults.forEach(qr => {
         html += `
-            <tr>
-                <td>Q${i + 1}</td>
-                <td>${userAnswers[i].value || "—"}</td>
-                <td>${questions[i].answer}</td>
-                <td class="${userAnswers[i].isCorrect ? "correct-answer" : "incorrect-answer"}">
-                    ${userAnswers[i].isCorrect ? "Correct" : "Incorrect"}
-                </td>
+            <tr class="${qr.isCorrect ? "correct-answer" : "incorrect-answer"}">
+                <td>Q${qr.index + 1}</td>
+                <td>${qr.uaDisplay}</td>
+                <td>${qr.caDisplay}</td>
+                <td>${qr.isCorrect ? "Correct" : "Incorrect"}</td>
             </tr>
         `;
-    }
+    });
 
-    html += `</table>`;
+    html += `</table>
+        <p><strong>Score: ${finalScore} / ${NUM_QUESTIONS}</strong></p>
+        <button id="redoBtn">Redo Incorrect Questions</button>
+        <button id="saveResultBtn">Save Result as TXT</button>
+    `;
 
-    quizContent.innerHTML = html;
+    document.getElementById("quizContent").innerHTML = html;
+    // Sidebar 保持显示，学生仍然可以点题号回去看题
 
-    // 保留左侧 sidebar（仍可点回各题），隐藏上下按钮
-    backButton.style.display = "none";
-    nextButton.style.display = "none";
+    document.getElementById("redoBtn").onclick = startRedoMode;
+    document.getElementById("saveResultBtn").onclick = saveResultTxt;
 }
 
-
 /* ----------------------------------------------------------
-   上一题 / 下一题 按钮
+   REDO MODE: 只重做错题
 ---------------------------------------------------------- */
-nextButton.addEventListener("click", () => {
-    saveCurrentInput();
+function startRedoMode() {
+    if (!latestResults) return;
 
-    if (currentQuestionIndex === NUM_QUESTIONS - 1) {
-        calculateAndShowResults();
-    } else {
-        currentQuestionIndex++;
-        renderQuestion();
+    redoIndices = latestResults
+        .filter(r => !r.isCorrect)
+        .map(r => r.index)
+        .sort((a, b) => a - b);
+
+    if (redoIndices.length === 0) {
+        alert("No incorrect questions to redo. Well done!");
+        return;
     }
-});
 
-backButton.addEventListener("click", () => {
-    saveCurrentInput();
-    if (currentQuestionIndex > 0) {
-        currentQuestionIndex--;
-        renderQuestion();
+    redoMode = true;
+    currentQuestionIndex = redoIndices[0];
+    renderQuestion();
+}
+
+function getRedoNextIndex(currIdx) {
+    for (let i = 0; i < redoIndices.length; i++) {
+        if (redoIndices[i] > currIdx) return redoIndices[i];
     }
-});
+    return null;
+}
 
+function getRedoPrevIndex(currIdx) {
+    for (let i = redoIndices.length - 1; i >= 0; i--) {
+        if (redoIndices[i] < currIdx) return redoIndices[i];
+    }
+    return null;
+}
+
+function isLastRedoIndex(idx) {
+    if (redoIndices.length === 0) return false;
+    return idx === redoIndices[redoIndices.length - 1];
+}
 
 /* ----------------------------------------------------------
-   起始页面：输入名字
+   SAVE RESULT AS TXT（使用 latestResults）
+---------------------------------------------------------- */
+function saveResultTxt() {
+    if (!latestResults) return;
+
+    const durationMs  = quizEndTime - quizStartTime;
+    const durationStr = formatDuration(durationMs);
+
+    let lines = [];
+    lines.push(`Student: ${studentName}`);
+    lines.push(`Start Time: ${quizStartTime.toLocaleString()}`);
+    lines.push(`End Time: ${quizEndTime.toLocaleString()}`);
+    lines.push(`Duration: ${durationStr}`);
+    lines.push(`Score: ${finalScore} / ${NUM_QUESTIONS}`);
+    lines.push("");
+    lines.push("Details:");
+    lines.push("Q#, Your Answer, Correct Answer, Result");
+
+    latestResults.forEach(qr => {
+        lines.push(`Q${qr.index + 1}, ${qr.uaDisplay}, ${qr.caDisplay}, ${qr.isCorrect ? "Correct" : "Incorrect"}`);
+    });
+
+    const blob = new Blob([lines.join("\n")], { type:"text/plain;charset=utf-8" });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_");
+    a.href = url;
+    a.download = `${safeName}_quiz_result.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+/* ----------------------------------------------------------
+   START SCREEN
 ---------------------------------------------------------- */
 function showStartScreen() {
-    sidebarEl.style.display = "none";
-    nextButton.style.display = "none";
-    backButton.style.display = "none";
+    const sidebar = document.getElementById("sidebar");
+    sidebar.style.display = "none";
 
-    quizContent.innerHTML = `
+    document.getElementById("quizContent").innerHTML = `
         <p>This quiz contains ${NUM_QUESTIONS} questions.</p>
         <p>Please enter your name:</p>
-        <input
-            id="nameInput"
-            type="text"
+        <input id="nameInput" type="text"
             style="padding:10px; width:250px; font-size:1.05em;"
-            placeholder="Your name"
-        >
-        <button id="startButton" style="margin-left:10px; background:#4caf50;">
+            placeholder="Your name">
+        <button id="startButton"
+            style="margin-left:10px; background:#4caf50; color:white; padding:10px 20px; border:none; border-radius:6px;">
             Start
         </button>
     `;
 
-    document.getElementById("startButton")
-        .addEventListener("click", startQuiz);
+    document.getElementById("startButton").onclick = () => {
+        const nameInput = document.getElementById("nameInput");
+        studentName = (nameInput.value || "Student").trim();
+        quizStartTime = new Date();
+
+        generateQuestions();
+        renderSidebar();
+        currentQuestionIndex = 0;
+        redoMode = false;
+        renderQuestion();
+    };
 }
-
-function startQuiz() {
-    const nameInput = document.getElementById("nameInput");
-    studentName = (nameInput.value || "Student").trim();
-
-    quizStartTime = new Date();
-    generateQuestions();
-    renderSidebar();
-    renderQuestion();
-}
-
 
 /* ----------------------------------------------------------
-   初始化
+   INIT
 ---------------------------------------------------------- */
 showStartScreen();
-
 </script>
 
 </body>
 </html>
-
