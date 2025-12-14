@@ -84,12 +84,22 @@
         }
 
         .sidebar li.active {
-            background: #bbdefb;
+            outline: 2px solid #1976d2;
             font-weight: 600;
         }
 
         .sidebar li.answered {
             border-left: 4px solid #4caf50;
+        }
+
+        .sidebar li.correct {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+
+        .sidebar li.incorrect {
+            background: #f8d7da;
+            border-left: 4px solid #f44336;
         }
 
         #quizContent {
@@ -128,6 +138,7 @@
             display: flex;
             justify-content: space-between;
             margin-top: 20px;
+            gap: 10px;
         }
 
         button {
@@ -142,6 +153,8 @@
         #nextButton { background:#4caf50; }
         #backButton { background:#039be5; }
         #generateButton { background:#ff9800; }
+        #submitButton { background:#9c27b0; }
+        #saveButton { background:#607d8b; }
 
         table.review-table {
             width: 100%;
@@ -204,7 +217,9 @@
 
     <div class="button-container">
         <button id="backButton" style="display:none;">Previous</button>
+        <button id="submitButton" style="display:none;">Submit &amp; View Results</button>
         <button id="nextButton" style="display:none;">Next</button>
+        <button id="saveButton" style="display:none;">Save Current Result</button>
     </div>
 </div>
 
@@ -261,19 +276,15 @@ function fractionToValue(fr) {
     return fr.n / fr.d;
 }
 
-// 统一输出「假分数形式」或整数，不再显示带分数
 function fractionToString(fr) {
     fr = simplifyFraction({ n: fr.n, d: fr.d });
 
-    // 如果是整数
     if (fr.d === 1) return String(fr.n);
-
-    // 假分数或真分数都用 n/d 形式
     return `${fr.n}/${fr.d}`;
 }
 
 /* ----------------------------------------------------------
-   解析答案：支持整数 / 小数 / 分数 / 带分数输入
+   解析答案
 ---------------------------------------------------------- */
 
 function parseAnswer(str) {
@@ -289,7 +300,6 @@ function parseAnswer(str) {
     }
     if (s === "") return NaN;
 
-    // 处理带分数 a b/c （学生输入）
     const spaceParts = s.split(/\s+/);
     if (spaceParts.length === 2 && spaceParts[1].includes("/")) {
         const whole = Number(spaceParts[0]);
@@ -310,7 +320,6 @@ function parseAnswer(str) {
         return sign * value;
     }
 
-    // 普通分数 a/b
     if (s.includes("/")) {
         const parts = s.split("/");
         if (parts.length !== 2) return NaN;
@@ -323,24 +332,19 @@ function parseAnswer(str) {
         return sign * (num / den);
     }
 
-    // 普通数字
     const n = Number(s);
     return Number.isFinite(n) ? sign * n : NaN;
 }
 
-// 浮点比较
 function nearlyEqual(a, b, eps = 1e-6) {
     if (!Number.isFinite(a) || !Number.isFinite(b)) return false;
     return Math.abs(a - b) < eps;
 }
 
 /* ----------------------------------------------------------
-   题目生成 A / B / C
+   题目生成
 ---------------------------------------------------------- */
 
-//
-// Part A — 小数 × ÷，含负数
-//
 function generateDecimalQuestion() {
     const opType = choice(["mul", "div"]);
     const signCase = choice(["pos", "negA", "negB"]);
@@ -360,7 +364,6 @@ function generateDecimalQuestion() {
         text = `${a} × ${b}`;
 
     } else {
-        // 设计 dividend ÷ divisor = quotient（确保答案是整数/小数）
         const divisors = [0.2,0.25,0.4,0.5,0.8,1.25,1.5];
         let q = randInt(2, 12);
         if (Math.random() < 0.3) q = -q;
@@ -379,20 +382,14 @@ function generateDecimalQuestion() {
     };
 }
 
-//
-// 随机分数 (假分数或真分数)
-//
 function randomFraction() {
     const dens = [2,3,4,5,6,8,10,12];
     const d = choice(dens);
-    let n = randInt(1, d * 2);  // 允许假分数
+    let n = randInt(1, d * 2);
     if (Math.random() < 0.3) n = -n;
     return simplifyFraction({ n, d });
 }
 
-//
-// Part B — 分数 × ÷，全部用假分数格式输出
-//
 function generateFractionQuestion() {
     const opType = choice(["mul", "div"]);
 
@@ -408,14 +405,12 @@ function generateFractionQuestion() {
             d: f1.d * f2.d
         });
     } else {
-        // f1 ÷ f2 = f1 × (d2/n2)
         result = simplifyFraction({
             n: f1.n * f2.d,
             d: f1.d * f2.n
         });
     }
 
-    // 限制结果不要太大
     if (Math.abs(result.n) > 50 || Math.abs(result.d) > 50) {
         return generateFractionQuestion();
     }
@@ -431,9 +426,6 @@ function generateFractionQuestion() {
     };
 }
 
-//
-// Part C — 小数 / 分数 / 百分数混合
-//
 function generateMixedQuestion() {
     const pattern = choice([1,2,3,4,5]);
 
@@ -441,7 +433,6 @@ function generateMixedQuestion() {
     let value = 0;
 
     if (pattern === 1) {
-        // p% of x
         const percents = [10,20,25,30,40,50,60,75];
         let p = choice(percents);
         let b = choice([0.6,0.8,1.2,1.5,1.8,-0.8,-1.2]);
@@ -449,7 +440,6 @@ function generateMixedQuestion() {
         text = `${p}% of ${b}`;
 
     } else if (pattern === 2) {
-        // fraction of decimal
         const d = choice([2,3,4,5,6,8,10]);
         const n = randInt(1, d - 1);
         const f = simplifyFraction({ n, d });
@@ -461,7 +451,6 @@ function generateMixedQuestion() {
         text = `${fractionToString(f)} of ${dec}`;
 
     } else if (pattern === 3) {
-        // decimal × fraction
         const d = choice([2,3,4,5,6,8,10]);
         const n = randInt(1, d - 1);
         const f = simplifyFraction({ n, d });
@@ -473,7 +462,6 @@ function generateMixedQuestion() {
         text = `${dec} × ${fractionToString(f)}`;
 
     } else if (pattern === 4) {
-        // decimal ÷ percent
         let dec = choice([0.36,0.48,0.72,1.2]);
         const p = choice([20,25,40,60]);
         if (Math.random() < 0.4) dec = -dec;
@@ -482,13 +470,11 @@ function generateMixedQuestion() {
         text = `${dec} ÷ ${p}%`;
 
     } else {
-        // negative decimal × improper fraction (from random mix)
         const d = choice([2,3,4,5,6,8]);
         const whole = randInt(1, 3);
         const n = randInt(1, d - 1);
         const f = simplifyFraction({ n, d });
 
-        // 转成假分数
         const improper = simplifyFraction({
             n: whole * f.d + f.n,
             d: f.d
@@ -513,24 +499,28 @@ function generateMixedQuestion() {
    整套题目的数据结构
 ---------------------------------------------------------- */
 
-let questions = [];          // 所有题：{ partIndex, indexInPart, text, value, display, userValue, isCorrect }
+let questions = [];
 let currentQuestionIndex = 0;
 let studentName = "Student";
 let quizStartTime = null;
 let quizEndTime = null;
+let quizSubmitted = false;
 
 const quizContent   = document.getElementById("quizContent");
 const sidebarEl     = document.getElementById("sidebar");
 const backButton    = document.getElementById("backButton");
 const nextButton    = document.getElementById("nextButton");
+const submitButton  = document.getElementById("submitButton");
+const saveButton    = document.getElementById("saveButton");
 const generateBtn   = document.getElementById("generateButton");
 
 /* ----------------------------------------------------------
-   生成一整套题（固定 18 小题，3 Parts × 6）
+   生成整套题
 ---------------------------------------------------------- */
 
 function generateQuiz() {
     questions = [];
+    quizSubmitted = false;
 
     for (let p = 0; p < NUM_PARTS; p++) {
         for (let i = 0; i < QUESTIONS_PER_PART; i++) {
@@ -553,9 +543,8 @@ function generateQuiz() {
     }
 }
 
-
 /* ----------------------------------------------------------
-   Sidebar (左侧题号列表)
+   Sidebar
 ---------------------------------------------------------- */
 
 function renderSidebar() {
@@ -593,14 +582,27 @@ function updateSidebarStatus() {
         const idx = Number(li.dataset.index);
         const q = questions[idx];
 
-        li.classList.toggle("active", idx === currentQuestionIndex);
-        li.classList.toggle("answered", (q.userValue || "").trim() !== "");
+        li.classList.remove("active", "answered", "correct", "incorrect");
+
+        if (!quizSubmitted) {
+            li.classList.toggle("active", idx === currentQuestionIndex);
+            if ((q.userValue || "").trim() !== "") {
+                li.classList.add("answered");
+            }
+        } else {
+            if ((q.userValue || "").trim() !== "") {
+                if (q.isCorrect) {
+                    li.classList.add("correct");
+                } else {
+                    li.classList.add("incorrect");
+                }
+            }
+        }
     });
 }
 
-
 /* ----------------------------------------------------------
-   显示单题页面
+   显示单题
 ---------------------------------------------------------- */
 
 function renderQuestion() {
@@ -626,14 +628,12 @@ function renderQuestion() {
         </div>
     `;
 
-    // 按钮状态
     backButton.style.display = "inline-block";
     nextButton.style.display = "inline-block";
+    submitButton.style.display = "inline-block";
 
     backButton.style.visibility = currentQuestionIndex === 0 ? "hidden" : "visible";
-    nextButton.textContent = currentQuestionIndex === TOTAL_QUESTIONS - 1
-        ? "Submit & View Results"
-        : "Next";
+    nextButton.textContent = "Next";
 
     updateSidebarStatus();
 }
@@ -645,13 +645,93 @@ function saveCurrentInput() {
     }
 }
 
+/* ----------------------------------------------------------
+   保存当前结果为 txt
+---------------------------------------------------------- */
+
+function formatDateForFilename(date) {
+    if (!date) return "no_time";
+    const pad = n => String(n).padStart(2, "0");
+    return (
+        date.getFullYear() +
+        pad(date.getMonth() + 1) +
+        pad(date.getDate()) + "_" +
+        pad(date.getHours()) +
+        pad(date.getMinutes()) +
+        pad(date.getSeconds())
+    );
+}
+
+function saveCurrentResultAsTxt() {
+    // 确保当前输入保存
+    saveCurrentInput();
+
+    // 如果还没提交过，也做一遍判分（但不改变页面内容）
+    if (!quizSubmitted) {
+        questions.forEach(q => {
+            const val = parseAnswer(q.userValue || "");
+            q.isCorrect = nearlyEqual(val, q.value);
+        });
+    }
+
+    let correctCount = 0;
+    questions.forEach(q => {
+        if (q.isCorrect) correctCount++;
+    });
+
+    let lines = [];
+    lines.push("Random Mixed Calculation Quiz - Current Result");
+    lines.push("Student: " + studentName);
+    if (quizStartTime) {
+        lines.push("Start time: " + quizStartTime.toLocaleString());
+    }
+    if (quizEndTime) {
+        lines.push("Last submit time: " + quizEndTime.toLocaleString());
+    }
+    lines.push("Score: " + correctCount + " / " + TOTAL_QUESTIONS);
+    lines.push("");
+    lines.push("Details:");
+    lines.push("----------");
+
+    questions.forEach((q, i) => {
+        const partLbl = ["A","B","C"][q.partIndex] + (q.indexInPart + 1);
+        const userAns = (q.userValue || "").trim() === "" ? "Not answered" : q.userValue;
+        const resultText = (q.userValue || "").trim() === ""
+            ? "Not answered"
+            : (q.isCorrect ? "Correct" : "Incorrect");
+
+        lines.push(
+            `Q${i + 1} (${partLbl})` +
+            "\nQuestion: " + q.text +
+            "\nYour answer: " + userAns +
+            "\nCorrect answer: " + q.display +
+            "\nResult: " + resultText
+        );
+        lines.push("");
+    });
+
+    const content = lines.join("\n");
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const safeName = studentName.replace(/[^a-z0-9_\-]/gi, "_") || "Student";
+    const ts = formatDateForFilename(new Date());
+    a.href = url;
+    a.download = `MixedQuiz_${safeName}_${ts}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
 
 /* ----------------------------------------------------------
    结果页面
 ---------------------------------------------------------- */
 
 function calculateAndShowResults() {
+    saveCurrentInput();
     quizEndTime = new Date();
+    quizSubmitted = true;
 
     let correctCount = 0;
 
@@ -661,7 +741,8 @@ function calculateAndShowResults() {
         if (q.isCorrect) correctCount++;
     });
 
-    // 计时信息
+    updateSidebarStatus();
+
     let timeInfo = "";
     if (quizStartTime) {
         const diffSec = Math.floor((quizEndTime - quizStartTime) / 1000);
@@ -679,6 +760,8 @@ function calculateAndShowResults() {
         <h3>Results for ${studentName}</h3>
         <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
         ${timeInfo}
+
+        <p>You can click any question number on the left to go back, change your answers, and submit again.</p>
 
         <table class="review-table">
             <tr>
@@ -710,10 +793,13 @@ function calculateAndShowResults() {
 
     quizContent.innerHTML = html;
 
-    backButton.style.display = "none";
-    nextButton.style.display = "none";
-}
+    backButton.style.display = "inline-block";
+    nextButton.style.display = "inline-block";
+    submitButton.style.display = "inline-block";
 
+    // ★ 结果出来后，显示保存按钮
+    saveButton.style.display = "inline-block";
+}
 
 /* ----------------------------------------------------------
    按钮事件
@@ -722,9 +808,7 @@ function calculateAndShowResults() {
 nextButton.addEventListener("click", () => {
     saveCurrentInput();
 
-    if (currentQuestionIndex === TOTAL_QUESTIONS - 1) {
-        calculateAndShowResults();
-    } else {
+    if (currentQuestionIndex < TOTAL_QUESTIONS - 1) {
         currentQuestionIndex++;
         renderQuestion();
     }
@@ -739,9 +823,15 @@ backButton.addEventListener("click", () => {
     }
 });
 
+submitButton.addEventListener("click", () => {
+    calculateAndShowResults();
+});
+
+saveButton.addEventListener("click", saveCurrentResultAsTxt);
+
 // Generate a new random set
 generateBtn.addEventListener("click", () => {
-    if (!confirm("Generate a new random set? All answers will be lost.")) return;
+    if (!quizSubmitted && !confirm("Generate a new random set? All answers will be lost.")) return;
 
     quizStartTime = new Date();
     generateQuiz();
@@ -751,16 +841,17 @@ generateBtn.addEventListener("click", () => {
     renderQuestion();
 });
 
-
 /* ----------------------------------------------------------
-   Start screen (input name)
+   Start screen
 ---------------------------------------------------------- */
 
 function showStartScreen() {
     sidebarEl.style.display = "none";
     backButton.style.display = "none";
     nextButton.style.display = "none";
+    submitButton.style.display = "none";
     generateBtn.style.display = "none";
+    saveButton.style.display = "none";
 
     quizContent.innerHTML = `
         <p>This quiz contains <strong>${TOTAL_QUESTIONS}</strong> questions (A/B/C parts).</p>
@@ -793,16 +884,16 @@ function startQuiz() {
 
     backButton.style.display = "inline-block";
     nextButton.style.display = "inline-block";
+    submitButton.style.display = "inline-block";
     generateBtn.style.display = "inline-block";
+    saveButton.style.display = "none";
 }
-
 
 /* ----------------------------------------------------------
    初始化
 ---------------------------------------------------------- */
 
 showStartScreen();
-
 </script>
 </body>
 </html>
