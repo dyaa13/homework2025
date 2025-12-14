@@ -1,194 +1,270 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Quiz – All Numeric Answers</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Random Mixed Calculation Quiz</title>
 
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
 
-        .quiz-container {
-            max-width: 900px;
-            margin: 40px auto;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-        }
+    .quiz-container {
+      max-width: 950px;
+      margin: 40px auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    }
 
-        #headerLogo {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #e0e0e0;
-            padding-bottom: 10px;
-        }
+    #headerLogo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 10px;
+      gap: 14px;
+    }
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background-color: #0d47a1;
+      border-radius: 4px;
+    }
+    .logo-text span.edu {
+      font-size: 0.9em;
+      color: #ff9800;
+      font-weight: 700;
+    }
 
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background-color: #0d47a1;
-            border-radius: 4px;
-        }
+    h1 {
+      margin: 0 0 18px 0;
+      font-size: 1.9em;
+      font-weight: 700;
+    }
 
-        .logo-text span.edu {
-            font-size: 0.9em;
-            color: #ff9800;
-            font-weight: 700;
-            margin-left: 10px;
-        }
+    .quiz-main {
+      display: flex;
+      gap: 20px;
+      margin-top: 10px;
+    }
 
-        .quiz-main {
-            display: flex;
-            gap: 20px;
-            margin-top: 10px;
-        }
+    .sidebar {
+      width: 170px;
+      border-right: 1px solid #ddd;
+      padding-right: 10px;
+      display: none;
+    }
 
-        .sidebar {
-            width: 140px;
-            border-right: 1px solid #ddd;
-            padding-right: 10px;
-            display: none;
-        }
+    .sidebar h4 {
+      margin: 0 0 8px;
+      font-size: 0.95em;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 4px;
+    }
 
-        .sidebar h4 {
-            margin: 0 0 8px;
-            font-size: 0.95em;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 4px;
-        }
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
 
-        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar li {
+      padding: 6px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 0.9em;
+      user-select: none;
+    }
 
-        .sidebar li {
-            padding: 6px;
-            cursor: pointer;
-            border-radius: 4px;
-            font-size: 0.9em;
-        }
+    .sidebar li.active {
+      background: #bbdefb;
+      font-weight: 600;
+    }
 
-        .sidebar li.active {
-            background: #bbdefb;
-            font-weight: 600;
-        }
+    .sidebar li.correct-li { border-left: 4px solid #4caf50; }
+    .sidebar li.incorrect-li { border-left: 4px solid #f44336; }
 
-        .sidebar li.answered {
-            font-style: italic;
-        }
+    #quizContent { flex: 1; }
 
-        .sidebar li.correct-li {
-            border-left: 4px solid #4caf50;
-        }
+    .question-text {
+      font-size: 1.1em;
+      margin-bottom: 10px;
+    }
 
-        .sidebar li.incorrect-li {
-            border-left: 4px solid #f44336;
-        }
+    .answer-box {
+      width: 260px;
+      padding: 10px;
+      font-size: 1.05em;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+    }
+    .answer-box:focus {
+      border-color: #5ba8ff;
+      box-shadow: 0 0 0 3px rgba(91,168,255,0.2);
+    }
+    .answer-box[disabled] {
+      background: #f6f7f9;
+      color: #666;
+    }
 
-        #quizContent { flex: 1; }
+    /* buttons right under input */
+    .button-row {
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
 
-        .question-text {
-            font-size: 1.1em;
-            margin-bottom: 15px;
-        }
+    .btn-prev, .btn-next, .btn-check {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1em;
+      white-space: nowrap;
+    }
 
-        .answer-box {
-            width: 220px;
-            padding: 10px;
-            font-size: 1.05em;
-        }
+    .btn-prev { background: #03a9f4; }
+    .btn-next { background: #4caf50; }
+    .btn-check { background: #9c27b0; }
 
-        /* 题目下方按钮区域（在题目里面） */
-        .button-row {
-            margin-top: 25px;
-            display: flex;
-            justify-content: space-between;
-        }
+    #checkResult {
+      margin-top: 10px;
+      min-height: 22px;
+      font-weight: 700;
+    }
 
-        .btn-prev,
-        .btn-next {
-            padding: 10px 18px;
-            border-radius: 6px;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            font-size: 1em;
-        }
+    /* results */
+    table.review-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+    }
+    .review-table th, .review-table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      font-size: 0.9em;
+    }
+    .review-table th { background: #f2f2f2; }
+    .correct-answer { background: #d4edda; }
+    .incorrect-answer { background: #f8d7da; }
 
-        .btn-prev { background: #03a9f4; }
-        .btn-next { background: #4caf50; }
+    .action-btns {
+      margin-top: 14px;
+    }
+    .action-btns button {
+      padding: 10px 18px;
+      border-radius: 6px;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.95em;
+      margin-right: 10px;
+    }
+    #redoBtn { background: #ff9800; }
+    #saveResultBtn { background: #607d8b; }
 
-        /* 结果表格 */
-        table.review-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+    /* start screen keep old feel */
+    .start-row {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .start-row input {
+      width: 280px;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1.05em;
+      outline: none;
+    }
+    .start-row input:focus {
+      border-color: #5ba8ff;
+      box-shadow: 0 0 0 3px rgba(91,168,255,0.2);
+    }
+    .start-row button {
+      padding: 12px 22px;
+      border-radius: 8px;
+      border: none;
+      background: #4caf50;
+      color: #fff;
+      font-size: 1.05em;
+      cursor: pointer;
+    }
 
-        .review-table th,
-        .review-table td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            font-size: 0.9em;
-        }
+    .mode-row {
+      margin-top: 10px;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .mode-pill {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      background: #fafafa;
+      cursor: pointer;
+      user-select: none;
+    }
+    .mode-pill input { cursor: pointer; }
 
-        .review-table th {
-            background: #f2f2f2;
-        }
+    /* exam timer & controls */
+    .exam-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .timer {
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: #f2f6ff;
+      border: 1px solid #d6e4ff;
+      white-space: nowrap;
+    }
 
-        .correct-answer { background: #d4edda; }
-        .incorrect-answer { background: #f8d7da; }
-
-        #saveResultBtn,
-        #redoBtn {
-            margin-top: 15px;
-            padding: 10px 18px;
-            border-radius: 6px;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            font-size: 0.95em;
-        }
-
-        #saveResultBtn { background: #607d8b; margin-left: 10px; }
-        #redoBtn { background: #ff9800; }
-
-        @media (max-width: 700px) {
-            .quiz-main {
-                flex-direction: column;
-            }
-            .sidebar {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid #ddd;
-                margin-bottom: 10px;
-                padding-bottom: 10px;
-            }
-        }
-    </style>
+    @media (max-width: 700px) {
+      .quiz-main { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        padding-right: 0;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-
-<div class="quiz-container">
+  <div class="quiz-container">
     <div id="headerLogo">
-        <div class="logo-icon"></div>
-        <div class="logo-text"><span class="edu">EDUCATION</span></div>
+      <div class="logo-icon"></div>
+      <div class="logo-text"><span class="edu">EDUCATION</span></div>
     </div>
 
-    <h2>Image Quiz – Numeric Answers</h2>
+    <h1>Random Mixed Calculation Quiz</h1>
 
     <div class="quiz-main">
-        <div id="sidebar" class="sidebar"></div>
-        <div id="quizContent"></div>
+      <div id="sidebar" class="sidebar"></div>
+      <div id="quizContent"></div>
     </div>
-</div>
+  </div>
 
 <script>
 /* ----------------------------------------------------------
@@ -202,411 +278,746 @@ const NUM_QUESTIONS = 20;
  *  - 整数：42, -5
  *  - 小数：3.5, -0.25
  *  - 分数字符串："3/4", "-5/2"
- * 统一用 parseNumeric 比较数值是否相等
  */
 const ANSWERS = [42,183.2,59,22,3600,79,11/20,122,34731,3,125,50,540,14,1/2,10.5,1800,57.7,109,27];
 
 /* ----------------------------------------------------------
-   GLOBAL STATE
+   STATE
 ---------------------------------------------------------- */
-let questions = [];            // { text, answerRaw }
-let userAnswers = [];          // [ { value: string } ]
+let questions = [];
+let userAnswers = [];
+let currentQuestionIndex = 0;
+
 let studentName = "";
 let quizStartTime = null;
 let quizEndTime = null;
+
+let latestResults = null;
 let finalScore = 0;
 
-let latestResults = null;      // [{index,isCorrect,uaDisplay,caDisplay}]
-let redoMode = false;          // 是否在错题重做模式
-let redoIndices = [];          // 重做的题号（原始索引）
-let currentQuestionIndex = 0;  // 当前题目的索引（0-based）
+// exercise redo
+let redoMode = false;
+let redoIndices = [];
+
+// mode
+let selectedMode = "exercise"; // "exercise" | "exam"
+
+// exam state
+let examUnlocked = 0;                // next question to solve
+let examSolved = [];                 // bool[]
+let examTimerId = null;
+
+// pause/resume
+let examPaused = false;
+let examPauseStart = null;
+let examPausedDuration = 0;
+
+// DOM
+const quizContent = document.getElementById("quizContent");
+const sidebarEl = document.getElementById("sidebar");
 
 /* ----------------------------------------------------------
-   INIT QUESTIONS
+   HELPERS
+---------------------------------------------------------- */
+function parseNumeric(str) {
+  const s = (str || "").trim();
+  if (s === "") return NaN;
+
+  if (s.includes("/")) {
+    const parts = s.split("/");
+    if (parts.length !== 2) return NaN;
+    const num = Number(parts[0]);
+    const den = Number(parts[1]);
+    if (!Number.isFinite(num) || !Number.isFinite(den) || den === 0) return NaN;
+    return num / den;
+  }
+
+  const n = Number(s);
+  return Number.isFinite(n) ? n : NaN;
+}
+function numericEqual(a, b) {
+  return Number.isFinite(a) && Number.isFinite(b) && Math.abs(a - b) < 1e-9;
+}
+function formatDuration(ms) {
+  const total = Math.floor(ms / 1000);
+  const m = Math.floor(total / 60);
+  const s = total % 60;
+  return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+}
+
+function stopExamTimer() {
+  if (examTimerId) {
+    clearInterval(examTimerId);
+    examTimerId = null;
+  }
+}
+
+function startExamTimer() {
+  stopExamTimer();
+  examTimerId = setInterval(() => {
+    const el = document.getElementById("examTimer");
+    if (!el || !quizStartTime) return;
+
+    const now = Date.now();
+    const elapsed = examPaused
+      ? (examPauseStart - quizStartTime.getTime() - examPausedDuration)
+      : (now - quizStartTime.getTime() - examPausedDuration);
+
+    el.textContent = `Time: ${formatDuration(Math.max(0, elapsed))}`;
+  }, 250);
+}
+
+/* ----------------------------------------------------------
+   BUILD QUESTIONS
 ---------------------------------------------------------- */
 function generateQuestions() {
-    questions = [];
-
-    for (let i = 1; i <= NUM_QUESTIONS; i++) {
-        questions.push({
-            text: `<img src="${QUESTION_FOLDER}/q${i}.png" style="max-width:100%;">`,
-            answerRaw: ANSWERS[i - 1]
-        });
-    }
-
-    userAnswers = Array(NUM_QUESTIONS).fill(null).map(() => ({ value: "" }));
+  questions = [];
+  for (let i = 1; i <= NUM_QUESTIONS; i++) {
+    const ans = ANSWERS[i - 1];
+    questions.push({
+      text: `<img src="${QUESTION_FOLDER}/q${i}.png" style="max-width:100%;">`,
+      answerRaw: ans
+    });
+  }
+  userAnswers = Array(NUM_QUESTIONS).fill(null).map(() => ({ value: "" }));
 }
 
 /* ----------------------------------------------------------
    SIDEBAR
 ---------------------------------------------------------- */
-function renderSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    sidebar.style.display = "block";
-
-    sidebar.innerHTML = `
-        <h4>Questions</h4>
-        <ul id="qList"></ul>
-    `;
-    const ul = document.getElementById("qList");
-
-    for (let i = 0; i < NUM_QUESTIONS; i++) {
-        const li = document.createElement("li");
-        li.textContent = `Q${i + 1}`;
-        li.dataset.index = i;
-        li.onclick = () => {
-            saveCurrentInput();
-            redoMode = false;              // 点题号回到普通模式
-            currentQuestionIndex = i;
-            renderQuestion();
-        };
-        ul.appendChild(li);
-    }
-
-    updateSidebarStatus();
+function updateSidebarActive() {
+  const items = document.querySelectorAll("#qList li");
+  items.forEach(li => {
+    const idx = Number(li.dataset.index);
+    li.classList.toggle("active", idx === currentQuestionIndex);
+  });
 }
 
-function updateSidebarStatus() {
-    const items = document.querySelectorAll("#qList li");
-    items.forEach(li => {
-        const idx = Number(li.dataset.index);
-        const ua  = userAnswers[idx];
+function renderSidebarExercise() {
+  sidebarEl.style.display = "block";
+  sidebarEl.innerHTML = `<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul = document.getElementById("qList");
 
-        const answered = ua.value && ua.value.toString().trim() !== "";
+  for (let i = 0; i < NUM_QUESTIONS; i++) {
+    const li = document.createElement("li");
+    li.textContent = `Q${i + 1}`;
+    li.dataset.index = i;
 
-        li.classList.toggle("active", idx === currentQuestionIndex);
-        li.classList.toggle("answered", answered);
-    });
+    li.onclick = () => {
+      saveCurrentInput();
+      currentQuestionIndex = i;
+
+      if (redoMode && redoIndices.includes(i)) {
+        // keep redo
+      } else {
+        redoMode = false;
+      }
+      renderQuestionExercise();
+    };
+    ul.appendChild(li);
+  }
+  updateSidebarActive();
 }
 
-// 结果出来后，给 sidebar 标记正确 / 错误
-function markSidebarCorrectness(questionResults) {
-    const items = document.querySelectorAll("#qList li");
-    items.forEach(li => {
-        li.classList.remove("correct-li", "incorrect-li");
-        const idx = Number(li.dataset.index);
-        const qr  = questionResults.find(r => r.index === idx);
-        if (!qr) return;
-        li.classList.add(qr.isCorrect ? "correct-li" : "incorrect-li");
-    });
-}
+function renderSidebarExam() {
+  sidebarEl.style.display = "block";
+  sidebarEl.innerHTML = `<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul = document.getElementById("qList");
 
-/* ----------------------------------------------------------
-   RENDER QUESTION（普通 + 重做 共用）
----------------------------------------------------------- */
-function renderQuestion() {
-    const q  = questions[currentQuestionIndex];
-    const ua = userAnswers[currentQuestionIndex].value;
+  const shown = new Set();
+  for (let i = 0; i < NUM_QUESTIONS; i++) {
+    if (examSolved[i]) shown.add(i);
+  }
+  if (examUnlocked < NUM_QUESTIONS) shown.add(examUnlocked);
 
-    const modeLabel = redoMode ? "[Redo] Question " : "Question ";
+  const list = Array.from(shown).sort((a,b)=>a-b);
 
-    let html = `
-        <p class="question-text">
-            ${modeLabel}${currentQuestionIndex + 1} of ${NUM_QUESTIONS}
-        </p>
-        ${q.text}
-        <br><br>
-        <input
-            id="answerInput"
-            class="answer-box"
-            type="text"
-            value="${ua}"
-            placeholder="Enter a number or fraction"
-        >
-    `;
+  list.forEach(i => {
+    const li = document.createElement("li");
+    li.textContent = `Q${i + 1}`;
+    li.dataset.index = i;
+    if (examSolved[i]) li.classList.add("correct-li");
 
-    // 按钮逻辑
-    const isFirstNormal = (!redoMode && currentQuestionIndex === 0);
-    const isLastNormal  = (!redoMode && currentQuestionIndex === NUM_QUESTIONS - 1);
-    const prevIdxRedo   = redoMode ? getRedoPrevIndex(currentQuestionIndex) : null;
-    const hasPrev       = redoMode ? (prevIdxRedo !== null) : !isFirstNormal;
-    const isLastRedo    = redoMode && isLastRedoIndex(currentQuestionIndex);
-
-    const nextText = redoMode
-        ? (isLastRedo ? "Submit & Update Results" : "Next Redo Question")
-        : (isLastNormal ? "Submit & View Results" : "Next Question");
-
-    html += `<div class="button-row">`;
-    if (hasPrev) {
-        html += `<button class="btn-prev" id="btnPrev">Previous</button>`;
-    } else {
-        html += `<span></span>`;
-    }
-    html += `<button class="btn-next" id="btnNext">${nextText}</button></div>`;
-
-    document.getElementById("quizContent").innerHTML = html;
-
-    // 按钮事件
-    const btnNext = document.getElementById("btnNext");
-    btnNext.onclick = () => {
-        saveCurrentInput();
-        if (!redoMode) {
-            if (isLastNormal) {
-                calculateAndShowResults(false);
-            } else {
-                currentQuestionIndex++;
-                renderQuestion();
-            }
-        } else {
-            if (isLastRedo) {
-                redoMode = false;
-                calculateAndShowResults(true); // 重做后更新总成绩
-            } else {
-                const nidx = getRedoNextIndex(currentQuestionIndex);
-                if (nidx !== null) {
-                    currentQuestionIndex = nidx;
-                    renderQuestion();
-                }
-            }
-        }
+    li.onclick = () => {
+      saveCurrentInput();
+      currentQuestionIndex = i;
+      renderQuestionExam();
     };
 
-    const btnPrev = document.getElementById("btnPrev");
-    if (btnPrev) {
-        btnPrev.onclick = () => {
-            saveCurrentInput();
-            if (!redoMode) {
-                if (currentQuestionIndex > 0) {
-                    currentQuestionIndex--;
-                    renderQuestion();
-                }
-            } else {
-                const pidx = getRedoPrevIndex(currentQuestionIndex);
-                if (pidx !== null) {
-                    currentQuestionIndex = pidx;
-                    renderQuestion();
-                }
-            }
-        };
-    }
+    ul.appendChild(li);
+  });
 
-    updateSidebarStatus();
+  updateSidebarActive();
+}
+
+// exercise: mark correct/incorrect from results
+function markSidebarFromLatestResults() {
+  const items = document.querySelectorAll("#qList li");
+  items.forEach(li => {
+    li.classList.remove("correct-li","incorrect-li");
+    const idx = Number(li.dataset.index);
+    const r = latestResults ? latestResults.find(x => x.index === idx) : null;
+    if (!r) return;
+    li.classList.add(r.isCorrect ? "correct-li" : "incorrect-li");
+  });
+}
+
+// exercise/redo: immediate green
+function markSidebarGreen(idx) {
+  const li = document.querySelector(`#qList li[data-index="${idx}"]`);
+  if (!li) return;
+  li.classList.remove("incorrect-li");
+  li.classList.add("correct-li");
 }
 
 /* ----------------------------------------------------------
-   SAVE CURRENT INPUT
+   INPUT SAVE
 ---------------------------------------------------------- */
 function saveCurrentInput() {
-    const input = document.getElementById("answerInput");
-    if (input) {
-        userAnswers[currentQuestionIndex].value = input.value;
-    }
+  const input = document.getElementById("answerInput");
+  if (input) userAnswers[currentQuestionIndex].value = input.value;
 }
 
 /* ----------------------------------------------------------
-   NUMERIC & DURATION HELPERS
+   EXERCISE MODE
 ---------------------------------------------------------- */
-function parseNumeric(str) {
-    const s = (str || "").trim();
-    if (s === "") return NaN;
+function renderQuestionExercise() {
+  const qIndex = currentQuestionIndex;
+  const q = questions[qIndex];
+  const ua = userAnswers[qIndex].value || "";
 
-    if (s.includes("/")) {
-        const [a, b] = s.split("/");
-        const num = Number(a);
-        const den = Number(b);
-        if (!Number.isFinite(num) || !Number.isFinite(den) || den === 0) return NaN;
-        return num / den;
+  let displayIndex = qIndex + 1;
+  let totalCount = NUM_QUESTIONS;
+
+  if (redoMode) {
+    const pos = redoIndices.indexOf(qIndex);
+    displayIndex = pos >= 0 ? (pos + 1) : 1;
+    totalCount = redoIndices.length;
+  }
+
+  const isLastNormal = (!redoMode && qIndex === NUM_QUESTIONS - 1);
+  const isLastRedo = (redoMode && redoIndices.length > 0 && redoIndices[redoIndices.length - 1] === qIndex);
+
+  const hasPrev =
+    (!redoMode && qIndex > 0) ||
+    (redoMode && redoIndices.indexOf(qIndex) > 0);
+
+  const nextText = redoMode
+    ? (isLastRedo ? "Submit & Update Results" : "Next Question")
+    : (isLastNormal ? "Submit & View Results" : "Next Question");
+
+  let html = `
+    <p class="question-text">${redoMode ? "[Redo] " : ""}Question ${displayIndex} of ${totalCount}</p>
+    ${q.text}
+    <br><br>
+    <input id="answerInput" class="answer-box" type="text" value="${ua}" placeholder="Enter a number or fraction (e.g. -3/4)">
+  `;
+
+  if (redoMode) html += `<div id="checkResult"></div>`;
+
+  html += `<div class="button-row">`;
+  html += hasPrev ? `<button class="btn-prev" id="btnPrev">Previous</button>` : `<span></span>`;
+  html += redoMode ? `<button class="btn-check" id="btnCheck">Check Answer</button>` : `<span></span>`;
+  html += `<button class="btn-next" id="btnNext">${nextText}</button>`;
+  html += `</div>`;
+
+  quizContent.innerHTML = html;
+
+  document.getElementById("btnNext").onclick = () => {
+    saveCurrentInput();
+
+    if (!redoMode) {
+      if (isLastNormal) {
+        calculateAndShowResults(false);
+      } else {
+        currentQuestionIndex++;
+        renderQuestionExercise();
+      }
+    } else {
+      if (isLastRedo) {
+        redoMode = false;
+        calculateAndShowResults(true);
+      } else {
+        const pos = redoIndices.indexOf(qIndex);
+        currentQuestionIndex = redoIndices[pos + 1];
+        renderQuestionExercise();
+      }
     }
+  };
 
-    const n = Number(s);
-    return Number.isFinite(n) ? n : NaN;
-}
+  const prevBtn = document.getElementById("btnPrev");
+  if (prevBtn) {
+    prevBtn.onclick = () => {
+      saveCurrentInput();
+      if (!redoMode) {
+        currentQuestionIndex--;
+        renderQuestionExercise();
+      } else {
+        const pos = redoIndices.indexOf(qIndex);
+        currentQuestionIndex = redoIndices[pos - 1];
+        renderQuestionExercise();
+      }
+    };
+  }
 
-function numericEqual(a, b) {
-    if (!Number.isFinite(a) || !Number.isFinite(b)) return false;
-    return Math.abs(a - b) < 1e-9;
-}
+  if (redoMode) {
+    const btnCheck = document.getElementById("btnCheck");
+    const checkDiv = document.getElementById("checkResult");
 
-function formatDuration(ms) {
-    const total = Math.floor(ms / 1000);
-    const m = Math.floor(total / 60);
-    const s = total % 60;
-    return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+    btnCheck.onclick = () => {
+      saveCurrentInput();
+
+      const uaRaw = (userAnswers[qIndex].value || "").trim();
+      if (uaRaw === "") {
+        checkDiv.textContent = "Please enter an answer first.";
+        checkDiv.style.color = "#e65100";
+        return;
+      }
+      const uaVal = parseNumeric(uaRaw);
+      if (!Number.isFinite(uaVal)) {
+        checkDiv.textContent = "Invalid input. Use a number or fraction (e.g. -3/4).";
+        checkDiv.style.color = "#c62828";
+        return;
+      }
+
+      const caVal = parseNumeric(String(q.answerRaw));
+      if (numericEqual(uaVal, caVal)) {
+        checkDiv.textContent = "Correct!";
+        checkDiv.style.color = "#2e7d32";
+
+        markSidebarGreen(qIndex);
+
+        redoIndices = redoIndices.filter(idx => idx !== qIndex);
+
+        if (redoIndices.length > 0) {
+          const nextIdx = redoIndices.find(idx => idx > qIndex) ?? redoIndices[0];
+          setTimeout(() => {
+            currentQuestionIndex = nextIdx;
+            renderQuestionExercise();
+          }, 350);
+        } else {
+          setTimeout(() => {
+            redoMode = false;
+            calculateAndShowResults(true);
+          }, 500);
+        }
+      } else {
+        checkDiv.textContent = "Incorrect. Try again.";
+        checkDiv.style.color = "#c62828";
+      }
+    };
+  }
+
+  updateSidebarActive();
 }
 
 /* ----------------------------------------------------------
-   CALCULATE & SHOW RESULTS
+   EXAM MODE
+---------------------------------------------------------- */
+function renderQuestionExam() {
+  const qIndex = currentQuestionIndex;
+  const q = questions[qIndex];
+  const ua = userAnswers[qIndex].value || "";
+
+  const isSolved = !!examSolved[qIndex];
+  const isCurrentToSolve = (qIndex === examUnlocked);
+  const allSolved = (examUnlocked >= NUM_QUESTIONS);
+
+  const header = `
+    <div class="exam-topbar">
+      <p class="question-text">Exam Mode – Question ${qIndex + 1} of ${NUM_QUESTIONS}</p>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <div class="timer" id="examTimer"></div>
+
+        <button id="pauseResumeBtn"
+          style="padding:6px 12px;border-radius:6px;border:none;
+                 background:${examPaused ? "#4caf50" : "#ff9800"};
+                 color:white;cursor:pointer;">
+          ${examPaused ? "Resume" : "Pause"}
+        </button>
+
+        <button id="saveExamBtn"
+          style="padding:6px 12px;border-radius:6px;border:none;
+                 background:#607d8b;color:white;cursor:pointer;">
+          Save Progress
+        </button>
+      </div>
+    </div>
+  `;
+
+  let html = header + `
+    ${q.text}
+    <br><br>
+    <input id="answerInput" class="answer-box" type="text" value="${ua}"
+      placeholder="Enter a number or fraction (e.g. -3/4)"
+      ${isSolved || examPaused ? "disabled" : ""}>
+    <div id="checkResult">${examPaused ? "Paused." : ""}</div>
+  `;
+
+  html += `<div class="button-row">`;
+  html += `<span></span>`;
+  html += `
+    <button class="btn-check" id="btnCheck"
+      ${isSolved || examPaused ? "disabled style='opacity:.6;cursor:not-allowed;'" : ""}>
+      Check Answer
+    </button>
+  `;
+  html += allSolved
+    ? `<button class="btn-next" id="btnSubmit" ${examPaused ? "disabled style='opacity:.6;cursor:not-allowed;'" : ""}>Submit</button>`
+    : `<span></span>`;
+  html += `</div>`;
+
+  quizContent.innerHTML = html;
+
+  // update timer immediately + keep ticking
+  startExamTimer();
+
+  // Pause / Resume
+  const pauseBtn = document.getElementById("pauseResumeBtn");
+  pauseBtn.onclick = () => {
+    if (!examPaused) {
+      examPaused = true;
+      examPauseStart = Date.now();
+    } else {
+      examPaused = false;
+      examPausedDuration += Date.now() - examPauseStart;
+      examPauseStart = null;
+    }
+    renderQuestionExam();
+  };
+
+  // Save progress snapshot (anytime)
+  const saveBtn = document.getElementById("saveExamBtn");
+  saveBtn.onclick = saveExamProgress;
+
+  // Submit
+  const btnSubmit = document.getElementById("btnSubmit");
+  if (btnSubmit) {
+    btnSubmit.onclick = () => {
+      if (examPaused) return;
+      saveCurrentInput();
+      stopExamTimer();
+      calculateAndShowResults(false);
+    };
+  }
+
+  // Check
+  const checkDiv = document.getElementById("checkResult");
+  const btnCheck = document.getElementById("btnCheck");
+  btnCheck.onclick = () => {
+    if (examPaused || isSolved) return;
+
+    saveCurrentInput();
+
+    const uaRaw = (userAnswers[qIndex].value || "").trim();
+    if (uaRaw === "") {
+      checkDiv.textContent = "Please enter an answer first.";
+      checkDiv.style.color = "#e65100";
+      return;
+    }
+    const uaVal = parseNumeric(uaRaw);
+    if (!Number.isFinite(uaVal)) {
+      checkDiv.textContent = "Invalid input. Use a number or fraction.";
+      checkDiv.style.color = "#c62828";
+      return;
+    }
+
+    const caVal = parseNumeric(String(q.answerRaw));
+    if (numericEqual(uaVal, caVal)) {
+      checkDiv.textContent = "Correct!";
+      checkDiv.style.color = "#2e7d32";
+
+      examSolved[qIndex] = true;
+
+      if (isCurrentToSolve) examUnlocked++;
+
+      // After first correct, show sidebar (solved + current)
+      if (examUnlocked >= 1) {
+        renderSidebarExam();
+      }
+
+      if (examUnlocked >= NUM_QUESTIONS) {
+        // All solved -> show Submit
+        setTimeout(() => renderQuestionExam(), 250);
+        return;
+      }
+
+      // Auto jump to next question to solve
+      setTimeout(() => {
+        currentQuestionIndex = examUnlocked;
+        renderSidebarExam();
+        renderQuestionExam();
+      }, 350);
+
+    } else {
+      checkDiv.textContent = "Incorrect. Try again.";
+      checkDiv.style.color = "#c62828";
+    }
+  };
+
+  // sidebar visibility rule: before Q1 solved, hide
+  if (examUnlocked === 0) {
+    sidebarEl.style.display = "none";
+  } else {
+    sidebarEl.style.display = "block";
+  }
+
+  updateSidebarActive();
+}
+
+/* ----------------------------------------------------------
+   EXAM SAVE PROGRESS (snapshot)
+---------------------------------------------------------- */
+function saveExamProgress() {
+  const now = new Date();
+  const elapsed = quizStartTime
+    ? (examPaused
+        ? (examPauseStart - quizStartTime.getTime() - examPausedDuration)
+        : (Date.now() - quizStartTime.getTime() - examPausedDuration))
+    : 0;
+
+  let correctCount = 0;
+  const details = [];
+
+  for (let i = 0; i < NUM_QUESTIONS; i++) {
+    let status = "Not answered";
+    const raw = (userAnswers[i].value || "").trim();
+
+    if (examSolved[i]) {
+      status = "Correct";
+      correctCount++;
+    } else if (raw !== "") {
+      status = "Attempted (not correct yet)";
+    }
+
+    details.push(`Q${i + 1}: ${status} | Answer: ${raw === "" ? "-" : raw}`);
+  }
+
+  const lines = [];
+  lines.push(`Student: ${studentName}`);
+  lines.push(`Mode: EXAM`);
+  lines.push(`Saved At: ${now.toLocaleString()}`);
+  lines.push(`Elapsed Time: ${formatDuration(Math.max(0, elapsed))}`);
+  lines.push(`Progress: ${examUnlocked} / ${NUM_QUESTIONS}`);
+  lines.push(`Correct so far: ${correctCount} / ${NUM_QUESTIONS}`);
+  lines.push(`Paused: ${examPaused ? "Yes" : "No"}`);
+  lines.push("");
+  lines.push("Question Status:");
+  details.forEach(l => lines.push(l));
+
+  const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_");
+  a.href = url;
+  a.download = `${safeName}_exam_progress_${Date.now()}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ----------------------------------------------------------
+   RESULTS
 ---------------------------------------------------------- */
 function calculateAndShowResults(isRedo) {
-    quizEndTime = new Date();
-    const durationMs  = quizEndTime - quizStartTime;
-    const durationStr = formatDuration(durationMs);
+  quizEndTime = new Date();
 
-    let score = 0;
-    let questionResults = [];
+  let score = 0;
+  const results = [];
 
-    for (let i = 0; i < NUM_QUESTIONS; i++) {
-        const q  = questions[i];
-        const uaRaw = userAnswers[i].value;
-        const caRaw = q.answerRaw;
+  for (let i = 0; i < NUM_QUESTIONS; i++) {
+    const uaRaw = userAnswers[i].value || "";
+    const uaVal = parseNumeric(uaRaw);
+    const caVal = parseNumeric(String(questions[i].answerRaw));
+    const ok = numericEqual(uaVal, caVal);
 
-        const uaVal = parseNumeric(uaRaw);
-        const caVal = parseNumeric(String(caRaw));
+    if (ok) score++;
 
-        const isCorrect = numericEqual(uaVal, caVal);
-
-        if (isCorrect) score++;
-
-        questionResults.push({
-            index: i,
-            isCorrect,
-            uaDisplay: uaRaw || "—",
-            caDisplay: String(caRaw)
-        });
-    }
-
-    latestResults = questionResults;
-    finalScore    = score;
-
-    // Sidebar 标记红 / 绿
-    markSidebarCorrectness(questionResults);
-
-    // 结果页 HTML
-    let html = `
-        <h3>Results for ${studentName}${isRedo ? " (after redo)" : ""}</h3>
-        <p>
-            <strong>Start Time:</strong> ${quizStartTime.toLocaleString()}<br>
-            <strong>End Time:</strong> ${quizEndTime.toLocaleString()}<br>
-            <strong>Duration:</strong> ${durationStr}
-        </p>
-        <table class="review-table">
-            <tr>
-                <th>#</th>
-                <th>Your Answer</th>
-                <th>Correct Answer</th>
-                <th>Result</th>
-            </tr>
-    `;
-
-    questionResults.forEach(qr => {
-        html += `
-            <tr class="${qr.isCorrect ? "correct-answer" : "incorrect-answer"}">
-                <td>Q${qr.index + 1}</td>
-                <td>${qr.uaDisplay}</td>
-                <td>${qr.caDisplay}</td>
-                <td>${qr.isCorrect ? "Correct" : "Incorrect"}</td>
-            </tr>
-        `;
+    results.push({
+      index: i,
+      isCorrect: ok,
+      uaDisplay: uaRaw.trim() === "" ? "—" : uaRaw,
+      caDisplay: String(questions[i].answerRaw)
     });
+  }
 
-    html += `</table>
-        <p><strong>Score: ${finalScore} / ${NUM_QUESTIONS}</strong></p>
-        <button id="redoBtn">Redo Incorrect Questions</button>
-        <button id="saveResultBtn">Save Result as TXT</button>
+  latestResults = results;
+  finalScore = score;
+
+  // after results: show full sidebar for review
+  sidebarEl.style.display = "block";
+  renderSidebarExercise();
+  markSidebarFromLatestResults();
+
+  const durationStr = quizStartTime ? formatDuration(quizEndTime - quizStartTime) : "00:00";
+
+  let html = `
+    <h3>Results for ${studentName}${isRedo ? " (after redo)" : ""}</h3>
+    <p>
+      <strong>Mode:</strong> ${selectedMode.toUpperCase()}<br>
+      <strong>Start Time:</strong> ${quizStartTime ? quizStartTime.toLocaleString() : "-"}<br>
+      <strong>End Time:</strong> ${quizEndTime.toLocaleString()}<br>
+      <strong>Duration:</strong> ${durationStr}<br>
+      <strong>Score:</strong> ${finalScore} / ${NUM_QUESTIONS}
+    </p>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th>
+        <th>Your Answer</th>
+        <th>Correct Answer</th>
+        <th>Result</th>
+      </tr>
+  `;
+
+  results.forEach(r => {
+    html += `
+      <tr class="${r.isCorrect ? "correct-answer" : "incorrect-answer"}">
+        <td>Q${r.index + 1}</td>
+        <td>${r.uaDisplay}</td>
+        <td>${r.caDisplay}</td>
+        <td>${r.isCorrect ? "Correct" : "Incorrect"}</td>
+      </tr>
     `;
+  });
 
-    document.getElementById("quizContent").innerHTML = html;
-    // Sidebar 保持显示，学生仍然可以点题号回去看题
+  html += `</table>`;
 
-    document.getElementById("redoBtn").onclick = startRedoMode;
-    document.getElementById("saveResultBtn").onclick = saveResultTxt;
+  html += `<div class="action-btns">`;
+  if (selectedMode === "exercise") {
+    html += `<button id="redoBtn">Redo Incorrect Questions</button>`;
+  }
+  html += `<button id="saveResultBtn">Save Result as TXT</button>`;
+  html += `</div>`;
+
+  quizContent.innerHTML = html;
+
+  document.getElementById("saveResultBtn").onclick = saveResultTxt;
+
+  const redoBtn = document.getElementById("redoBtn");
+  if (redoBtn) redoBtn.onclick = startRedoMode;
 }
 
 /* ----------------------------------------------------------
-   REDO MODE: 只重做错题
+   EXERCISE REDO
 ---------------------------------------------------------- */
 function startRedoMode() {
-    if (!latestResults) return;
+  if (!latestResults) return;
 
-    redoIndices = latestResults
-        .filter(r => !r.isCorrect)
-        .map(r => r.index)
-        .sort((a, b) => a - b);
+  redoIndices = latestResults
+    .filter(r => !r.isCorrect)
+    .map(r => r.index)
+    .sort((a,b) => a - b);
 
-    if (redoIndices.length === 0) {
-        alert("No incorrect questions to redo. Well done!");
-        return;
-    }
+  if (redoIndices.length === 0) {
+    alert("No incorrect questions to redo. Well done!");
+    return;
+  }
 
-    redoMode = true;
-    currentQuestionIndex = redoIndices[0];
-    renderQuestion();
-}
-
-function getRedoNextIndex(currIdx) {
-    for (let i = 0; i < redoIndices.length; i++) {
-        if (redoIndices[i] > currIdx) return redoIndices[i];
-    }
-    return null;
-}
-
-function getRedoPrevIndex(currIdx) {
-    for (let i = redoIndices.length - 1; i >= 0; i--) {
-        if (redoIndices[i] < currIdx) return redoIndices[i];
-    }
-    return null;
-}
-
-function isLastRedoIndex(idx) {
-    if (redoIndices.length === 0) return false;
-    return idx === redoIndices[redoIndices.length - 1];
+  redoMode = true;
+  currentQuestionIndex = redoIndices[0];
+  renderQuestionExercise();
 }
 
 /* ----------------------------------------------------------
-   SAVE RESULT AS TXT（使用 latestResults）
+   SAVE RESULT TXT (final results page)
 ---------------------------------------------------------- */
 function saveResultTxt() {
-    if (!latestResults) return;
+  if (!latestResults) return;
 
-    const durationMs  = quizEndTime - quizStartTime;
-    const durationStr = formatDuration(durationMs);
+  const durationStr = quizStartTime && quizEndTime ? formatDuration(quizEndTime - quizStartTime) : "00:00";
 
-    let lines = [];
-    lines.push(`Student: ${studentName}`);
-    lines.push(`Start Time: ${quizStartTime.toLocaleString()}`);
-    lines.push(`End Time: ${quizEndTime.toLocaleString()}`);
-    lines.push(`Duration: ${durationStr}`);
-    lines.push(`Score: ${finalScore} / ${NUM_QUESTIONS}`);
-    lines.push("");
-    lines.push("Details:");
-    lines.push("Q#, Your Answer, Correct Answer, Result");
+  const lines = [];
+  lines.push(`Student: ${studentName}`);
+  lines.push(`Mode: ${selectedMode.toUpperCase()}`);
+  lines.push(`Start Time: ${quizStartTime ? quizStartTime.toLocaleString() : "-"}`);
+  lines.push(`End Time: ${quizEndTime ? quizEndTime.toLocaleString() : "-"}`);
+  lines.push(`Duration: ${durationStr}`);
+  lines.push(`Score: ${finalScore} / ${NUM_QUESTIONS}`);
+  lines.push("");
+  lines.push("Details:");
+  lines.push("Q#, Your Answer, Correct Answer, Result");
 
-    latestResults.forEach(qr => {
-        lines.push(`Q${qr.index + 1}, ${qr.uaDisplay}, ${qr.caDisplay}, ${qr.isCorrect ? "Correct" : "Incorrect"}`);
-    });
+  latestResults.forEach(r => {
+    lines.push(`Q${r.index + 1}, ${r.uaDisplay}, ${r.caDisplay}, ${r.isCorrect ? "Correct" : "Incorrect"}`);
+  });
 
-    const blob = new Blob([lines.join("\n")], { type:"text/plain;charset=utf-8" });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement("a");
-    const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_");
-    a.href = url;
-    a.download = `${safeName}_quiz_result.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+  const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_");
+  a.href = url;
+  a.download = `${safeName}_${selectedMode}_result.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 /* ----------------------------------------------------------
-   START SCREEN
+   START SCREEN (keep original look + add mode selection)
 ---------------------------------------------------------- */
 function showStartScreen() {
-    const sidebar = document.getElementById("sidebar");
-    sidebar.style.display = "none";
+  stopExamTimer();
+  sidebarEl.style.display = "none";
 
-    document.getElementById("quizContent").innerHTML = `
-        <p>This quiz contains ${NUM_QUESTIONS} questions.</p>
-        <p>Please enter your name:</p>
-        <input id="nameInput" type="text"
-            style="padding:10px; width:250px; font-size:1.05em;"
-            placeholder="Your name">
-        <button id="startButton"
-            style="margin-left:10px; background:#4caf50; color:white; padding:10px 20px; border:none; border-radius:6px;">
-            Start
-        </button>
-    `;
+  quizContent.innerHTML = `
+    <p>This quiz contains ${NUM_QUESTIONS} questions (A/B/C parts).</p>
+    <p>Please enter your name to begin:</p>
 
-    document.getElementById("startButton").onclick = () => {
-        const nameInput = document.getElementById("nameInput");
-        studentName = (nameInput.value || "Student").trim();
-        quizStartTime = new Date();
+    <div class="mode-row">
+      <label class="mode-pill">
+        <input type="radio" name="mode" value="exercise" checked>
+        Exercise Mode
+      </label>
+      <label class="mode-pill">
+        <input type="radio" name="mode" value="exam">
+        Exam Mode
+      </label>
+    </div>
 
-        generateQuestions();
-        renderSidebar();
-        currentQuestionIndex = 0;
-        redoMode = false;
-        renderQuestion();
-    };
+    <div class="start-row">
+      <input id="nameInput" type="text" placeholder="Your name">
+      <button id="startBtn">Start Quiz</button>
+    </div>
+  `;
+
+  document.getElementById("startBtn").onclick = () => {
+    const nameInput = document.getElementById("nameInput");
+    studentName = (nameInput.value || "Student").trim();
+
+    const modeEl = document.querySelector('input[name="mode"]:checked');
+    selectedMode = modeEl ? modeEl.value : "exercise";
+
+    quizStartTime = new Date();
+    quizEndTime = null;
+    latestResults = null;
+    finalScore = 0;
+
+    redoMode = false;
+    redoIndices = [];
+
+    examUnlocked = 0;
+    examSolved = Array(NUM_QUESTIONS).fill(false);
+    examPaused = false;
+    examPauseStart = null;
+    examPausedDuration = 0;
+
+    generateQuestions();
+    currentQuestionIndex = 0;
+
+    if (selectedMode === "exercise") {
+      renderSidebarExercise();
+      renderQuestionExercise();
+    } else {
+      sidebarEl.style.display = "none";
+      startExamTimer();
+      renderQuestionExam();
+    }
+  };
 }
 
 /* ----------------------------------------------------------
@@ -614,6 +1025,5 @@ function showStartScreen() {
 ---------------------------------------------------------- */
 showStartScreen();
 </script>
-
 </body>
 </html>
