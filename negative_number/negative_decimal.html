@@ -212,6 +212,21 @@ const QUESTIONS_PER_PART = [12, 6, 6];
 const TOTAL_QUESTIONS = QUESTIONS_PER_PART.reduce((a,b)=>a+b,0);
 
 /* ----------------------------------------------------------
+   Read student name from URL: ?name=Amber
+---------------------------------------------------------- */
+function getStudentNameFromURL(){
+  try{
+    const params = new URLSearchParams(window.location.search || "");
+    const raw = params.get("name");
+    if (!raw) return "";
+    return decodeURIComponent(raw.replace(/\+/g, "%20")).trim();
+  }catch(e){
+    return "";
+  }
+}
+const URL_STUDENT_NAME = getStudentNameFromURL();
+
+/* ----------------------------------------------------------
    Utilities
 ---------------------------------------------------------- */
 function randInt(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
@@ -268,7 +283,6 @@ function generateExactDecimalDivision(signType){
   const dpDividendPick = (Math.random() < 0.5) ? 1 : 2;
   let scaleA = dpDividendPick === 1 ? 10 : 100;
 
-  // Ensure scaleA >= scaleD (keeps quotient terminating and simple)
   if (scaleA < scaleD) scaleA = scaleD;
   const dpDividend = (scaleA === 10) ? 1 : 2;
 
@@ -277,15 +291,13 @@ function generateExactDecimalDivision(signType){
 
   let divisor  = dInt / scaleD;
   let dividend = (dInt * qInt) / scaleA;
-  let value    = qInt * (scaleD / scaleA); // 1 or 0.1 steps
+  let value    = qInt * (scaleD / scaleA);
   value = roundTo(value, 2);
 
-  // signType: pp, pn, np, nn  (dividend sign, divisor sign)
   if (signType === "pn"){ divisor = -divisor; value = -value; }
   if (signType === "np"){ dividend = -dividend; value = -value; }
   if (signType === "nn"){ dividend = -dividend; divisor = -divisor; }
 
-  // Display dp based on chosen dp
   const text = `${showNumberDec(dividend, dpDividend)} ÷ ${showNumberDec(divisor, dpDivisor)}`;
   const dpV = Number.isInteger(value) ? 0 : (Math.abs(value*10 - Math.round(value*10))<1e-9 ? 1 : 2);
   return { text, value, display: showNumberDec(value, dpV) };
@@ -304,7 +316,6 @@ function generatePart1Questions(){
   const shuffled = shuffle(cases);
 
   return shuffled.map(type => {
-    // Integer mode
     if (MODE === "integer"){
       const m1 = randInt(2, 20);
       const m2 = randInt(2, 20);
@@ -330,7 +341,6 @@ function generatePart1Questions(){
       return { text, value, display: showNumberInt(value), userValue:"", isCorrect:false, partIndex:0, indexInPart:0 };
     }
 
-    // Decimal mode
     if (type.startsWith("div_")){
       const signType = (type === "div_neg_neg") ? "nn" : (type === "div_neg_pos" ? "np" : "pn");
       const out = generateExactDecimalDivision(signType);
@@ -416,131 +426,62 @@ function genPart2(){
    Part 3: UNIQUE scenarios per quiz (NO repeats)
 ---------------------------------------------------------- */
 function buildUniquePart3Questions(count){
-  // Each generator is a unique scenario "type".
   if (MODE === "integer"){
     const gens = [
-      () => { // Temperature
-        const start = randInt(-12, 8), down = randInt(2, 10), up = randInt(2, 12);
-        const val = start - down + up;
-        return { text:`Temperature was ${showNumberInt(start)}°C. It dropped by ${showNumberInt(down)}°C, then rose by ${showNumberInt(up)}°C. What is the final temperature (°C)?`, value:val, display:showNumberInt(val) };
-      },
-      () => { // Bank
-        const start = randInt(-50, 80), spend = randInt(10, 60), dep = randInt(10, 80);
-        const val = start - spend + dep;
-        return { text:`A bank account balance is $${showNumberInt(start)}. You spend $${showNumberInt(spend)}, then deposit $${showNumberInt(dep)}. What is the new balance?`, value:val, display:showNumberInt(val) };
-      },
-      () => { // Elevator floors
-        const start = randInt(-3, 8), up = randInt(2, 10), down = randInt(2, 12);
-        const val = start + up - down;
-        return { text:`An elevator starts at floor ${showNumberInt(start)}. It goes up ${showNumberInt(up)} floors, then down ${showNumberInt(down)} floors. What floor does it end on?`, value:val, display:showNumberInt(val) };
-      },
-      () => { // Sea level
-        const start = randInt(-40, 30), dive = randInt(10, 60), rise = randInt(5, 40);
-        const val = start - dive + rise;
-        return { text:`A diver is at ${showNumberInt(start)} m relative to sea level. They dive ${showNumberInt(dive)} m deeper, then rise ${showNumberInt(rise)} m. What is their final position (m)?`, value:val, display:showNumberInt(val) };
-      },
-      () => { // Stock price change
-        const start = randInt(-10, 50), change1 = randInt(-20, 20) || -7, change2 = randInt(-20, 20) || 9;
-        const val = start + change1 + change2;
-        return { text:`A stock starts at ${showNumberInt(start)} points. It changes by ${showNumberInt(change1)} points, then by ${showNumberInt(change2)} points. What is the final value (points)?`, value:val, display:showNumberInt(val) };
-      },
-      () => { // Game score
-        const start = randInt(-20, 30), gain = randInt(5, 25), loss = randInt(5, 25);
-        const val = start + gain - loss;
-        return { text:`A team's score is ${showNumberInt(start)}. They gain ${showNumberInt(gain)} points, then lose ${showNumberInt(loss)} points. What is the new score?`, value:val, display:showNumberInt(val) };
-      },
-      () => { // Hiking altitude
-        const start = randInt(-200, 800), up = randInt(50, 400), down = randInt(50, 400);
-        const val = start + up - down;
-        return { text:`A hiker starts at ${showNumberInt(start)} m. They climb ${showNumberInt(up)} m, then descend ${showNumberInt(down)} m. What is the final altitude (m)?`, value:val, display:showNumberInt(val) };
-      },
-      () => { // Freezer temp
-        const start = randInt(-30, -5), open = randInt(2, 10), cool = randInt(2, 12);
-        const val = start + open - cool;
-        return { text:`A freezer is at ${showNumberInt(start)}°C. After the door is opened, the temperature rises by ${showNumberInt(open)}°C, then cools down by ${showNumberInt(cool)}°C. What is the final temperature (°C)?`, value:val, display:showNumberInt(val) };
-      }
+      () => { const start = randInt(-12, 8), down = randInt(2, 10), up = randInt(2, 12); const val = start - down + up;
+        return { text:`Temperature was ${showNumberInt(start)}°C. It dropped by ${showNumberInt(down)}°C, then rose by ${showNumberInt(up)}°C. What is the final temperature (°C)?`, value:val, display:showNumberInt(val) }; },
+      () => { const start = randInt(-50, 80), spend = randInt(10, 60), dep = randInt(10, 80); const val = start - spend + dep;
+        return { text:`A bank account balance is $${showNumberInt(start)}. You spend $${showNumberInt(spend)}, then deposit $${showNumberInt(dep)}. What is the new balance?`, value:val, display:showNumberInt(val) }; },
+      () => { const start = randInt(-3, 8), up = randInt(2, 10), down = randInt(2, 12); const val = start + up - down;
+        return { text:`An elevator starts at floor ${showNumberInt(start)}. It goes up ${showNumberInt(up)} floors, then down ${showNumberInt(down)} floors. What floor does it end on?`, value:val, display:showNumberInt(val) }; },
+      () => { const start = randInt(-40, 30), dive = randInt(10, 60), rise = randInt(5, 40); const val = start - dive + rise;
+        return { text:`A diver is at ${showNumberInt(start)} m relative to sea level. They dive ${showNumberInt(dive)} m deeper, then rise ${showNumberInt(rise)} m. What is their final position (m)?`, value:val, display:showNumberInt(val) }; },
+      () => { const start = randInt(-10, 50), change1 = randInt(-20, 20) || -7, change2 = randInt(-20, 20) || 9; const val = start + change1 + change2;
+        return { text:`A stock starts at ${showNumberInt(start)} points. It changes by ${showNumberInt(change1)} points, then by ${showNumberInt(change2)} points. What is the final value (points)?`, value:val, display:showNumberInt(val) }; },
+      () => { const start = randInt(-20, 30), gain = randInt(5, 25), loss = randInt(5, 25); const val = start + gain - loss;
+        return { text:`A team's score is ${showNumberInt(start)}. They gain ${showNumberInt(gain)} points, then lose ${showNumberInt(loss)} points. What is the new score?`, value:val, display:showNumberInt(val) }; },
+      () => { const start = randInt(-200, 800), up = randInt(50, 400), down = randInt(50, 400); const val = start + up - down;
+        return { text:`A hiker starts at ${showNumberInt(start)} m. They climb ${showNumberInt(up)} m, then descend ${showNumberInt(down)} m. What is the final altitude (m)?`, value:val, display:showNumberInt(val) }; },
+      () => { const start = randInt(-30, -5), open = randInt(2, 10), cool = randInt(2, 12); const val = start + open - cool;
+        return { text:`A freezer is at ${showNumberInt(start)}°C. After the door is opened, the temperature rises by ${showNumberInt(open)}°C, then cools down by ${showNumberInt(cool)}°C. What is the final temperature (°C)?`, value:val, display:showNumberInt(val) }; }
     ];
-
-    const picked = shuffle(gens).slice(0, count).map(fn => fn());
-    return picked;
+    return shuffle(gens).slice(0, count).map(fn => fn());
   }
 
-  // Decimal mode unique scenarios
   const gens = [
-    () => { // Temperature
-      const dpS = Math.random()<0.5?1:2, dpX=Math.random()<0.5?1:2, dpY=Math.random()<0.5?1:2;
-      const start = makeDecimalNonZero(dpS, 0.2, 12.0);
-      const down = Math.abs(makeDecimalNonZero(dpX, 0.2, 8.0));
-      const up   = Math.abs(makeDecimalNonZero(dpY, 0.2, 9.0));
-      const val = roundTo(start - down + up, 2);
-      const dpV = Number.isInteger(val)?0:(Math.abs(val*10-Math.round(val*10))<1e-9?1:2);
-      return { text:`Temperature was ${showNumberDec(start,dpS)}°C. It dropped by ${showNumberDec(down,dpX)}°C, then rose by ${showNumberDec(up,dpY)}°C. What is the final temperature (°C)?`, value:val, display:showNumberDec(val,dpV) };
-    },
-    () => { // Bank
-      const dpS = Math.random()<0.5?1:2, dpX=Math.random()<0.5?1:2, dpY=Math.random()<0.5?1:2;
-      const start = makeDecimalNonZero(dpS, 0.2, 120.0);
-      const spend = Math.abs(makeDecimalNonZero(dpX, 0.2, 60.0));
-      const dep   = Math.abs(makeDecimalNonZero(dpY, 0.2, 80.0));
-      const val = roundTo(start - spend + dep, 2);
-      const dpV = Number.isInteger(val)?0:(Math.abs(val*10-Math.round(val*10))<1e-9?1:2);
-      return { text:`A bank account balance is $${showNumberDec(start,dpS)}. You spend $${showNumberDec(spend,dpX)}, then deposit $${showNumberDec(dep,dpY)}. What is the new balance?`, value:val, display:showNumberDec(val,dpV) };
-    },
-    () => { // Elevator
-      const dpS = Math.random()<0.5?1:2, dpX=Math.random()<0.5?1:2, dpY=Math.random()<0.5?1:2;
-      const start = makeDecimalNonZero(dpS, 0.2, 10.0);
-      const up = Math.abs(makeDecimalNonZero(dpX, 0.2, 10.0));
-      const down = Math.abs(makeDecimalNonZero(dpY, 0.2, 12.0));
-      const val = roundTo(start + up - down, 2);
-      const dpV = Number.isInteger(val)?0:(Math.abs(val*10-Math.round(val*10))<1e-9?1:2);
-      return { text:`An elevator starts at floor ${showNumberDec(start,dpS)}. It goes up ${showNumberDec(up,dpX)} floors, then down ${showNumberDec(down,dpY)} floors. What floor does it end on?`, value:val, display:showNumberDec(val,dpV) };
-    },
-    () => { // Sea level
-      const dpS = Math.random()<0.5?1:2, dpX=Math.random()<0.5?1:2, dpY=Math.random()<0.5?1:2;
-      const start = makeDecimalNonZero(dpS, 0.2, 60.0);
-      const dive = Math.abs(makeDecimalNonZero(dpX, 0.2, 50.0));
-      const rise = Math.abs(makeDecimalNonZero(dpY, 0.2, 45.0));
-      const val = roundTo(start - dive + rise, 2);
-      const dpV = Number.isInteger(val)?0:(Math.abs(val*10-Math.round(val*10))<1e-9?1:2);
-      return { text:`A diver is at ${showNumberDec(start,dpS)} m relative to sea level. They dive ${showNumberDec(dive,dpX)} m deeper, then rise ${showNumberDec(rise,dpY)} m. What is their final position (m)?`, value:val, display:showNumberDec(val,dpV) };
-    },
-    () => { // Fuel tank
-      const dpS = Math.random()<0.5?1:2, dpX=Math.random()<0.5?1:2, dpY=Math.random()<0.5?1:2;
-      const start = makeDecimalNonZero(dpS, 0.2, 80.0);
-      const used = Math.abs(makeDecimalNonZero(dpX, 0.2, 40.0));
-      const add  = Math.abs(makeDecimalNonZero(dpY, 0.2, 50.0));
-      const val = roundTo(start - used + add, 2);
-      const dpV = Number.isInteger(val)?0:(Math.abs(val*10-Math.round(val*10))<1e-9?1:2);
-      return { text:`A fuel tank has ${showNumberDec(start,dpS)} L. It uses ${showNumberDec(used,dpX)} L, then adds ${showNumberDec(add,dpY)} L. How much fuel is now in the tank (L)?`, value:val, display:showNumberDec(val,dpV) };
-    },
-    () => { // Profit/loss 3 days
-      const dp = Math.random()<0.5?1:2;
-      const p1 = makeDecimalNonZero(dp, 0.2, 80.0);
-      const p2 = makeDecimalNonZero(dp, 0.2, 80.0);
-      const p3 = makeDecimalNonZero(dp, 0.2, 80.0);
-      const val = roundTo(p1 + p2 + p3, 2);
-      const dpV = Number.isInteger(val)?0:(Math.abs(val*10-Math.round(val*10))<1e-9?1:2);
-      return { text:`A shop's profit/loss over 3 days is: Day 1 = $${showNumberDec(p1,dp)}, Day 2 = $${showNumberDec(p2,dp)}, Day 3 = $${showNumberDec(p3,dp)}. (Negative means a loss.) What is the total profit/loss?`, value:val, display:showNumberDec(val,dpV) };
-    },
-    () => { // Hiking altitude
-      const dpS = Math.random()<0.5?1:2, dpX=Math.random()<0.5?1:2, dpY=Math.random()<0.5?1:2;
-      const start = makeDecimalNonZero(dpS, 0.2, 800.0);
-      const up = Math.abs(makeDecimalNonZero(dpX, 0.2, 400.0));
-      const down = Math.abs(makeDecimalNonZero(dpY, 0.2, 400.0));
-      const val = roundTo(start + up - down, 2);
-      const dpV = Number.isInteger(val)?0:(Math.abs(val*10-Math.round(val*10))<1e-9?1:2);
-      return { text:`A hiker starts at ${showNumberDec(start,dpS)} m. They climb ${showNumberDec(up,dpX)} m, then descend ${showNumberDec(down,dpY)} m. What is the final altitude (m)?`, value:val, display:showNumberDec(val,dpV) };
-    },
-    () => { // Score
-      const dpS = Math.random()<0.5?1:2, dpX=Math.random()<0.5?1:2, dpY=Math.random()<0.5?1:2;
-      const start = makeDecimalNonZero(dpS, 0.2, 30.0);
-      const gain = Math.abs(makeDecimalNonZero(dpX, 0.2, 25.0));
-      const loss = Math.abs(makeDecimalNonZero(dpY, 0.2, 25.0));
-      const val = roundTo(start + gain - loss, 2);
-      const dpV = Number.isInteger(val)?0:(Math.abs(val*10-Math.round(val*10))<1e-9?1:2);
-      return { text:`A team's score is ${showNumberDec(start,dpS)}. They gain ${showNumberDec(gain,dpX)} points, then lose ${showNumberDec(loss,dpY)} points. What is the new score?`, value:val, display:showNumberDec(val,dpV) };
-    }
+    () => { const dpS=Math.random()<0.5?1:2, dpX=Math.random()<0.5?1:2, dpY=Math.random()<0.5?1:2;
+      const start=makeDecimalNonZero(dpS,0.2,12.0), down=Math.abs(makeDecimalNonZero(dpX,0.2,8.0)), up=Math.abs(makeDecimalNonZero(dpY,0.2,9.0));
+      const val=roundTo(start-down+up,2); const dpV=Number.isInteger(val)?0:(Math.abs(val*10-Math.round(val*10))<1e-9?1:2);
+      return { text:`Temperature was ${showNumberDec(start,dpS)}°C. It dropped by ${showNumberDec(down,dpX)}°C, then rose by ${showNumberDec(up,dpY)}°C. What is the final temperature (°C)?`, value:val, display:showNumberDec(val,dpV) }; },
+    () => { const dpS=Math.random()<0.5?1:2, dpX=Math.random()<0.5?1:2, dpY=Math.random()<0.5?1:2;
+      const start=makeDecimalNonZero(dpS,0.2,120.0), spend=Math.abs(makeDecimalNonZero(dpX,0.2,60.0)), dep=Math.abs(makeDecimalNonZero(dpY,0.2,80.0));
+      const val=roundTo(start-spend+dep,2); const dpV=Number.isInteger(val)?0:(Math.abs(val*10-Math.round(val*10))<1e-9?1:2);
+      return { text:`A bank account balance is $${showNumberDec(start,dpS)}. You spend $${showNumberDec(spend,dpX)}, then deposit $${showNumberDec(dep,dpY)}. What is the new balance?`, value:val, display:showNumberDec(val,dpV) }; },
+    () => { const dpS=Math.random()<0.5?1:2, dpX=Math.random()<0.5?1:2, dpY=Math.random()<0.5?1:2;
+      const start=makeDecimalNonZero(dpS,0.2,10.0), up=Math.abs(makeDecimalNonZero(dpX,0.2,10.0)), down=Math.abs(makeDecimalNonZero(dpY,0.2,12.0));
+      const val=roundTo(start+up-down,2); const dpV=Number.isInteger(val)?0:(Math.abs(val*10-Math.round(val*10))<1e-9?1:2);
+      return { text:`An elevator starts at floor ${showNumberDec(start,dpS)}. It goes up ${showNumberDec(up,dpX)} floors, then down ${showNumberDec(down,dpY)} floors. What floor does it end on?`, value:val, display:showNumberDec(val,dpV) }; },
+    () => { const dpS=Math.random()<0.5?1:2, dpX=Math.random()<0.5?1:2, dpY=Math.random()<0.5?1:2;
+      const start=makeDecimalNonZero(dpS,0.2,60.0), dive=Math.abs(makeDecimalNonZero(dpX,0.2,50.0)), rise=Math.abs(makeDecimalNonZero(dpY,0.2,45.0));
+      const val=roundTo(start-dive+rise,2); const dpV=Number.isInteger(val)?0:(Math.abs(val*10-Math.round(val*10))<1e-9?1:2);
+      return { text:`A diver is at ${showNumberDec(start,dpS)} m relative to sea level. They dive ${showNumberDec(dive,dpX)} m deeper, then rise ${showNumberDec(rise,dpY)} m. What is their final position (m)?`, value:val, display:showNumberDec(val,dpV) }; },
+    () => { const dpS=Math.random()<0.5?1:2, dpX=Math.random()<0.5?1:2, dpY=Math.random()<0.5?1:2;
+      const start=makeDecimalNonZero(dpS,0.2,80.0), used=Math.abs(makeDecimalNonZero(dpX,0.2,40.0)), add=Math.abs(makeDecimalNonZero(dpY,0.2,50.0));
+      const val=roundTo(start-used+add,2); const dpV=Number.isInteger(val)?0:(Math.abs(val*10-Math.round(val*10))<1e-9?1:2);
+      return { text:`A fuel tank has ${showNumberDec(start,dpS)} L. It uses ${showNumberDec(used,dpX)} L, then adds ${showNumberDec(add,dpY)} L. How much fuel is now in the tank (L)?`, value:val, display:showNumberDec(val,dpV) }; },
+    () => { const dp=Math.random()<0.5?1:2;
+      const p1=makeDecimalNonZero(dp,0.2,80.0), p2=makeDecimalNonZero(dp,0.2,80.0), p3=makeDecimalNonZero(dp,0.2,80.0);
+      const val=roundTo(p1+p2+p3,2); const dpV=Number.isInteger(val)?0:(Math.abs(val*10-Math.round(val*10))<1e-9?1:2);
+      return { text:`A shop's profit/loss over 3 days is: Day 1 = $${showNumberDec(p1,dp)}, Day 2 = $${showNumberDec(p2,dp)}, Day 3 = $${showNumberDec(p3,dp)}. (Negative means a loss.) What is the total profit/loss?`, value:val, display:showNumberDec(val,dpV) }; },
+    () => { const dpS=Math.random()<0.5?1:2, dpX=Math.random()<0.5?1:2, dpY=Math.random()<0.5?1:2;
+      const start=makeDecimalNonZero(dpS,0.2,800.0), up=Math.abs(makeDecimalNonZero(dpX,0.2,400.0)), down=Math.abs(makeDecimalNonZero(dpY,0.2,400.0));
+      const val=roundTo(start+up-down,2); const dpV=Number.isInteger(val)?0:(Math.abs(val*10-Math.round(val*10))<1e-9?1:2);
+      return { text:`A hiker starts at ${showNumberDec(start,dpS)} m. They climb ${showNumberDec(up,dpX)} m, then descend ${showNumberDec(down,dpY)} m. What is the final altitude (m)?`, value:val, display:showNumberDec(val,dpV) }; },
+    () => { const dpS=Math.random()<0.5?1:2, dpX=Math.random()<0.5?1:2, dpY=Math.random()<0.5?1:2;
+      const start=makeDecimalNonZero(dpS,0.2,30.0), gain=Math.abs(makeDecimalNonZero(dpX,0.2,25.0)), loss=Math.abs(makeDecimalNonZero(dpY,0.2,25.0));
+      const val=roundTo(start+gain-loss,2); const dpV=Number.isInteger(val)?0:(Math.abs(val*10-Math.round(val*10))<1e-9?1:2);
+      return { text:`A team's score is ${showNumberDec(start,dpS)}. They gain ${showNumberDec(gain,dpX)} points, then lose ${showNumberDec(loss,dpY)} points. What is the new score?`, value:val, display:showNumberDec(val,dpV) }; }
   ];
-
   return shuffle(gens).slice(0, count).map(fn => fn());
 }
 
@@ -1064,6 +1005,13 @@ function showStartScreen(){
       <button id="startButton" style="background:#4caf50;">Start Quiz</button>
     </div>
   `;
+
+  // Auto-fill from URL if present
+  const nameInput = document.getElementById("nameInput");
+  if (nameInput && URL_STUDENT_NAME){
+    nameInput.value = URL_STUDENT_NAME;
+  }
+
   document.getElementById("startButton").addEventListener("click", startQuiz);
 }
 
