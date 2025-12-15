@@ -146,6 +146,7 @@
             justify-content: space-between;
             margin-top: 20px;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         button {
@@ -182,13 +183,8 @@
             background: #f2f2f2;
         }
 
-        .correct-answer {
-            background: #d4edda;
-        }
-
-        .incorrect-answer {
-            background: #f8d7da;
-        }
+        .correct-answer { background: #d4edda; }
+        .incorrect-answer { background: #f8d7da; }
 
         /* 分数上下显示 */
         .frac {
@@ -196,13 +192,11 @@
             text-align: center;
             vertical-align: middle;
         }
-
         .frac .top {
             display: block;
             border-bottom: 1px solid #000;
             padding: 0 2px;
         }
-
         .frac .bottom {
             display: block;
             padding: 0 2px;
@@ -210,9 +204,7 @@
         }
 
         @media (max-width: 700px) {
-            .quiz-main {
-                flex-direction: column;
-            }
+            .quiz-main { flex-direction: column; }
             .sidebar {
                 width: 100%;
                 border-right: none;
@@ -240,6 +232,7 @@
     </div>
 
     <h2>Linear Equations Practice Quiz</h2>
+    <h2 id="studentName"></h2>
 
     <div class="quiz-main">
         <div id="sidebar" class="sidebar"></div>
@@ -255,6 +248,16 @@
 </div>
 
 <script>
+/* ----------------------------------------------------------
+   NEW: URL param student name
+---------------------------------------------------------- */
+function getStudentNameFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const n = (params.get("name") || "").trim();
+    return n;
+}
+const urlStudentName = getStudentNameFromURL();
+
 /* ----------------------------------------------------------
    CONFIG & STATE
 ---------------------------------------------------------- */
@@ -277,9 +280,9 @@ let quizEndTime = null;
 let quizSubmitted = false;
 
 let timerInterval = null;
-let elapsedMs = 0;          // 当前这一轮用时累计
+let elapsedMs = 0;
 let isPaused = false;
-let firstAttemptMs = null;  // 首次提交用时
+let firstAttemptMs = null;
 
 const quizContent   = document.getElementById("quizContent");
 const sidebarEl     = document.getElementById("sidebar");
@@ -290,19 +293,20 @@ const saveButton    = document.getElementById("saveButton");
 const pauseButton   = document.getElementById("pauseButton");
 const timerDisplay  = document.getElementById("timerDisplay");
 const generateBtn   = document.getElementById("generateButton");
+const studentNameEl = document.getElementById("studentName");
+
+/* ----------------------------------------------------------
+   helper: update name display
+---------------------------------------------------------- */
+function updateStudentNameDisplay() {
+    studentNameEl.textContent = "Student Name: " + (studentName || "Student");
+}
 
 /* ----------------------------------------------------------
    工具函数
 ---------------------------------------------------------- */
-
-function randInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function choice(arr) {
-    return arr[randInt(0, arr.length - 1)];
-}
-
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function choice(arr) { return arr[randInt(0, arr.length - 1)]; }
 function shuffle(array) {
     const a = array.slice();
     for (let i = a.length - 1; i > 0; i--) {
@@ -311,40 +315,29 @@ function shuffle(array) {
     }
     return a;
 }
-
 function formatDecimal(x, dp = 2) {
     let s = x.toFixed(dp);
     s = s.replace(/\.0+$/,"").replace(/(\.\d*[1-9])0+$/,"$1");
     return s;
 }
-
 function formatLinearExpr(a, variable, b) {
-    // a>0 整数
     let str = (a === 1 ? variable : a + variable);
     if (b > 0) str += " + " + b;
     else if (b < 0) str += " - " + Math.abs(b);
     return str;
 }
-
-// 分数 HTML
 function fracHtml(n, d) {
     return `<span class="frac"><span class="top">${n}</span><span class="bottom">${d}</span></span>`;
 }
-
 function parseAnswer(str) {
     let s = str.trim();
     if (s === "") return NaN;
 
     let sign = 1;
-    if (s[0] === "+") {
-        s = s.slice(1).trim();
-    } else if (s[0] === "-") {
-        sign = -1;
-        s = s.slice(1).trim();
-    }
+    if (s[0] === "+") s = s.slice(1).trim();
+    else if (s[0] === "-") { sign = -1; s = s.slice(1).trim(); }
     if (s === "") return NaN;
 
-    // mixed number: "3 1/2"
     const spaceParts = s.split(/\s+/);
     if (spaceParts.length === 2 && spaceParts[1].includes("/")) {
         const whole = Number(spaceParts[0]);
@@ -361,7 +354,6 @@ function parseAnswer(str) {
         return sign * value;
     }
 
-    // pure fraction "a/b"
     if (s.includes("/")) {
         const parts = s.split("/");
         if (parts.length !== 2) return NaN;
@@ -374,19 +366,16 @@ function parseAnswer(str) {
     const n = Number(s);
     return Number.isFinite(n) ? sign * n : NaN;
 }
-
 function nearlyEqual(a, b, eps = 1e-6) {
     if (!Number.isFinite(a) || !Number.isFinite(b)) return false;
     return Math.abs(a - b) < eps;
 }
-
 function formatMs(ms) {
     const totalSec = Math.floor(ms / 1000);
     const min = Math.floor(totalSec / 60);
     const sec = totalSec % 60;
     return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
 }
-
 function formatDateForFilename(date) {
     if (!date) return "no_time";
     const pad = n => String(n).padStart(2, "0");
@@ -403,24 +392,17 @@ function formatDateForFilename(date) {
 /* ----------------------------------------------------------
    计时器
 ---------------------------------------------------------- */
-
 function updateTimerDisplay() {
     let totalMs = elapsedMs;
-    if (!isPaused && quizStartTime) {
-        totalMs += (new Date() - quizStartTime);
-    }
+    if (!isPaused && quizStartTime) totalMs += (new Date() - quizStartTime);
     let text = `Time: ${formatMs(totalMs)}`;
-    if (firstAttemptMs !== null) {
-        text += ` (First: ${formatMs(firstAttemptMs)})`;
-    }
+    if (firstAttemptMs !== null) text += ` (First: ${formatMs(firstAttemptMs)})`;
     timerDisplay.textContent = text;
 }
-
 function startTimerInterval() {
     if (timerInterval) clearInterval(timerInterval);
     timerInterval = setInterval(updateTimerDisplay, 1000);
 }
-
 function pauseTimer() {
     if (isPaused || !quizStartTime) return;
     const now = new Date();
@@ -429,7 +411,6 @@ function pauseTimer() {
     quizStartTime = null;
     updateTimerDisplay();
 }
-
 function resumeTimer() {
     if (!isPaused) return;
     isPaused = false;
@@ -438,9 +419,8 @@ function resumeTimer() {
 }
 
 /* ----------------------------------------------------------
-   Part 1 生成：整数方程，左右都有未知数，结果为整数
+   Part 1
 ---------------------------------------------------------- */
-
 function generatePart1() {
     const letters = ["a","m","k","p","y","n","x","b"];
     for (let i = 0; i < 6; i++) {
@@ -450,13 +430,11 @@ function generatePart1() {
 
         let a1 = randInt(2, 9);
         let a2;
-        do {
-            a2 = randInt(1, 8);
-        } while (a2 === a1);
+        do { a2 = randInt(1, 8); } while (a2 === a1);
 
         const b1 = randInt(-15, 15);
         const leftAtSol = a1 * solution + b1;
-        const b2 = leftAtSol - a2 * solution; // 保证等式成立
+        const b2 = leftAtSol - a2 * solution;
 
         const leftExpr  = formatLinearExpr(a1, v, b1);
         const rightExpr = formatLinearExpr(a2, v, b2);
@@ -474,9 +452,8 @@ function generatePart1() {
 }
 
 /* ----------------------------------------------------------
-   Part 2 生成：小数 / 分数系数方程 (2题)
+   Part 2
 ---------------------------------------------------------- */
-
 const coeffPool = [
     { val: 0.5,  html: "0.5" },
     { val: 0.6,  html: "0.6" },
@@ -497,9 +474,7 @@ function generatePart2() {
 
         let c1 = choice(coeffPool);
         let c2;
-        do {
-            c2 = choice(coeffPool);
-        } while (c2 === c1);
+        do { c2 = choice(coeffPool); } while (c2 === c1);
 
         let c1Const = randInt(-4, 6) + (Math.random() < 0.4 ? 0.5 : 0);
         c1Const = Number(c1Const.toFixed(1));
@@ -535,9 +510,8 @@ function generatePart2() {
 }
 
 /* ----------------------------------------------------------
-   Part 3 生成：带括号的方程 (3题)，系数整数或一位小数，解为整数
+   Part 3
 ---------------------------------------------------------- */
-
 function generatePart3() {
     const letters = ["x","y","k","z"];
     const coeffs = [2,3,4,1.5,2.5];
@@ -554,11 +528,9 @@ function generatePart3() {
         let rhs;
         let text;
         if (pattern === "plus") {
-            // c1(v - k) + c2 v = rhs
             rhs = c1 * (sol - k) + c2 * sol;
             text = `Solve for ${v}: ${formatDecimal(c1,1)}(${v} - ${k}) + ${formatDecimal(c2,1)}${v} = ${formatDecimal(rhs,1)}`;
         } else {
-            // c1(v + k) - c2 v = rhs
             rhs = c1 * (sol + k) - c2 * sol;
             text = `Solve for ${v}: ${formatDecimal(c1,1)}(${v} + ${k}) - ${formatDecimal(c2,1)}${v} = ${formatDecimal(rhs,1)}`;
         }
@@ -576,13 +548,8 @@ function generatePart3() {
 }
 
 /* ----------------------------------------------------------
-   Part 4 生成：应用题 (4题)
-   难度 A：3 题  难度 B：1 题
+   Part 4 generators (same as your original)
 ---------------------------------------------------------- */
-
-// ---- 难度 A：中等 ----
-
-// 1. 行程问题：两段速度不同
 function genTravelProblem() {
     const tTotal = randInt(3,5);
     const tFast = randInt(1, tTotal - 1);
@@ -595,14 +562,8 @@ function genTravelProblem() {
         + `The total travel time was ${tTotal} hours. `
         + `How long did he travel at ${vFast} km/h? (Answer in hours.)`;
 
-    return {
-        text,
-        value: tFast,
-        display: `${tFast} hours`
-    };
+    return { text, value: tFast, display: `${tFast} hours` };
 }
-
-// 2. 分配问题：总量 = 单价×人数 + 剩余
 function genDistributionProblem() {
     const students = randInt(10, 30);
     const per = randInt(2, 5);
@@ -614,14 +575,8 @@ function genDistributionProblem() {
         + `Each student received ${per} ${item}, and ${leftover} ${item} were left over. `
         + `If there were ${total} ${item} in total, how many students were there?`;
 
-    return {
-        text,
-        value: students,
-        display: `${students} students`
-    };
+    return { text, value: students, display: `${students} students` };
 }
-
-// 3. 盈亏问题：利润 = (售价 - 成本) × 数量
 function genProfitProblem() {
     const n = randInt(8, 30);
     const buy = randInt(2, 6);
@@ -633,16 +588,10 @@ function genProfitProblem() {
     const text = `Profit problem: A shop buys ${item} at $${buy} each and sells them at $${sell} each. `
         + `The total profit was $${profit}. How many ${item} were sold?`;
 
-    return {
-        text,
-        value: n,
-        display: `${n} ${item}`
-    };
+    return { text, value: n, display: `${n} ${item}` };
 }
-
-// 4. 工作问题：单位时间效率
 function genWorkProblem() {
-    const rate = choice([10,12,15,20]); // units/hour
+    const rate = choice([10,12,15,20]);
     const hoursDone = randInt(1, 4);
     const done = rate * hoursDone;
     const extraHours = randInt(2, 5);
@@ -653,14 +602,8 @@ function genWorkProblem() {
         + `It needs to pack ${total} boxes in total. `
         + `How many more hours must it work to finish?`;
 
-    return {
-        text,
-        value: extraHours,
-        display: `${extraHours} hours`
-    };
+    return { text, value: extraHours, display: `${extraHours} hours` };
 }
-
-// 5. 计费问题：固定费 + 单价 × 距离
 function genBillingProblem() {
     const base = choice([3.5,4,5]);
     const rate = choice([1.2,1.5,2]);
@@ -672,14 +615,8 @@ function genBillingProblem() {
         + `A trip cost $${formatDecimal(total,2)} in total. `
         + `How many kilometres was the trip?`;
 
-    return {
-        text,
-        value: distance,
-        display: `${distance} km`
-    };
+    return { text, value: distance, display: `${distance} km` };
 }
-
-// 6. 积分问题：每场分数结构
 function genPointsProblem() {
     const totalGames =  randInt(8, 14);
     const wins = randInt(3, totalGames - 2);
@@ -691,14 +628,8 @@ function genPointsProblem() {
         + `The team played ${totalGames} games and earned ${points} points in total. `
         + `If they won ${wins} of those games, how many games were draws?`;
 
-    return {
-        text,
-        value: draws,
-        display: `${draws} draws`
-    };
+    return { text, value: draws, display: `${draws} draws` };
 }
-
-// 7. 简单数字问题：两步方程
 function genNumberProblem() {
     const n = randInt(-10, 20);
     const add = randInt(2, 10);
@@ -708,38 +639,19 @@ function genNumberProblem() {
     const text = `Number problem: A number was increased by ${add} and then multiplied by ${mul}. `
         + `The result was ${result}. What was the original number?`;
 
-    return {
-        text,
-        value: n,
-        display: `${n}`
-    };
+    return { text, value: n, display: `${n}` };
 }
-
-// ---- 难度 B：中高难（含和倍/差倍/和差/多时间点） ----
-
-// B1 年龄问题：多时间点 + 倍数
 function genAgeProblem() {
-    // 设 Bob 年龄 b
     const b = randInt(6, 15);
-    const a = 2 * b - randInt(3,6); // 使“若干年前/将来”好构造
     const k = randInt(3,6);
-    // 构造关系：k 年前 Alice 年龄是 Bob 那时年龄的 2 倍
-    // (a - k) = 2 (b - k)
-    // 只要满足此式即可；我们直接用该等式算一个新 a
     const newA = 2*(b - k) + k;
 
-    const text = `Age problem (harder): ${"Alice"} is currently ${newA} years old and Bob is younger. `
+    const text = `Age problem (harder): Alice is currently ${newA} years old and Bob is younger. `
         + `${k} years ago, Alice was twice Bob’s age at that time. `
         + `How old is Bob now?`;
 
-    return {
-        text,
-        value: b,
-        display: `${b} years`
-    };
+    return { text, value: b, display: `${b} years` };
 }
-
-// B2 和差关系：两数和差
 function genSumDiffProblem() {
     const big = randInt(20, 60);
     const diff = randInt(4, 18);
@@ -749,37 +661,23 @@ function genSumDiffProblem() {
     const text = `Sum & difference problem: The sum of two numbers is ${sum} and their difference is ${diff}. `
         + `What is the larger number?`;
 
-    return {
-        text,
-        value: big,
-        display: `${big}`
-    };
+    return { text, value: big, display: `${big}` };
 }
-
-// B3 和倍关系：总数 + 倍数关系
 function genSumMultipleProblem() {
-    const b = randInt(3, 12);           // smaller group
-    const k = choice([2,3,4]);          // 甲是乙的 k 倍
+    const b = randInt(3, 12);
+    const k = choice([2,3,4]);
     const a = k * b;
     const total = a + b;
+
     const text = `Sum & multiple problem: In a club, the number of senior members is ${k} times the number `
         + `of junior members. Together, there are ${total} members. `
         + `How many junior members are there?`;
 
-    return {
-        text,
-        value: b,
-        display: `${b} juniors`
-    };
+    return { text, value: b, display: `${b} juniors` };
 }
-
-// B4 方案决策：break-even 点
 function genDecisionProblem() {
-    const fixed = randInt(20, 40);
     const rateA = choice([1.2,1.5,2]);
     const rateB = rateA + choice([0.4,0.5,0.8]);
-    // 设 A: fixed + rateA n, B: rateB n
-    // 令 fixed + rateA n = rateB n => fixed = (rateB - rateA) n
     const diff = rateB - rateA;
     const n = randInt(10, 25);
     const fixedAdj = diff * n;
@@ -789,11 +687,7 @@ function genDecisionProblem() {
         + `Plan B: no fixed fee and $${formatDecimal(rateB,2)} per page. `
         + `For how many pages will the total cost be the same under both plans?`;
 
-    return {
-        text,
-        value: n,
-        display: `${n} pages`
-    };
+    return { text, value: n, display: `${n} pages` };
 }
 
 const wordGeneratorsA = [
@@ -805,7 +699,6 @@ const wordGeneratorsA = [
     genPointsProblem,
     genNumberProblem
 ];
-
 const wordGeneratorsB = [
     genAgeProblem,
     genSumDiffProblem,
@@ -814,9 +707,9 @@ const wordGeneratorsB = [
 ];
 
 function generatePart4() {
-    const easyPicked = shuffle(wordGeneratorsA).slice(0, 3); // 3 题 A
-    const hardPicked = shuffle(wordGeneratorsB).slice(0, 1); // 1 题 B
-    const picked = shuffle(easyPicked.concat(hardPicked));   // 打乱顺序
+    const easyPicked = shuffle(wordGeneratorsA).slice(0, 3);
+    const hardPicked = shuffle(wordGeneratorsB).slice(0, 1);
+    const picked = shuffle(easyPicked.concat(hardPicked));
 
     picked.forEach((genFn, idx) => {
         const w = genFn();
@@ -832,10 +725,6 @@ function generatePart4() {
     });
 }
 
-/* ----------------------------------------------------------
-   整套题生成
----------------------------------------------------------- */
-
 function generateQuiz() {
     questions = [];
     generatePart1();
@@ -847,13 +736,9 @@ function generateQuiz() {
 /* ----------------------------------------------------------
    Sidebar
 ---------------------------------------------------------- */
-
 function renderSidebar() {
     sidebarEl.style.display = "block";
-    sidebarEl.innerHTML = `
-        <h4>Questions</h4>
-        <ul id="qList"></ul>
-    `;
+    sidebarEl.innerHTML = `<h4>Questions</h4><ul id="qList"></ul>`;
     const ul = document.getElementById("qList");
 
     questions.forEach((q, idx) => {
@@ -871,10 +756,8 @@ function renderSidebar() {
 
     updateSidebarStatus();
 }
-
 function updateSidebarStatus() {
     const items = document.querySelectorAll("#qList li");
-
     items.forEach(li => {
         const idx = Number(li.dataset.index);
         const q = questions[idx];
@@ -883,16 +766,10 @@ function updateSidebarStatus() {
 
         if (!quizSubmitted) {
             li.classList.toggle("active", idx === currentQuestionIndex);
-            if ((q.userValue || "").trim() !== "") {
-                li.classList.add("answered");
-            }
+            if ((q.userValue || "").trim() !== "") li.classList.add("answered");
         } else {
             if ((q.userValue || "").trim() !== "") {
-                if (q.isCorrect) {
-                    li.classList.add("correct");
-                } else {
-                    li.classList.add("incorrect");
-                }
+                li.classList.add(q.isCorrect ? "correct" : "incorrect");
             }
         }
     });
@@ -901,16 +778,13 @@ function updateSidebarStatus() {
 /* ----------------------------------------------------------
    显示单题
 ---------------------------------------------------------- */
-
 function renderQuestion() {
     const q = questions[currentQuestionIndex];
     const partLabel = ["A","B","C","D"][q.partIndex];
     const fullLabel = `${partLabel}${q.indexInPart + 1}`;
 
     quizContent.innerHTML = `
-        <p class="question-text">
-            Question ${currentQuestionIndex + 1} of ${TOTAL_QUESTIONS}
-        </p>
+        <p class="question-text">Question ${currentQuestionIndex + 1} of ${TOTAL_QUESTIONS}</p>
 
         <p class="instructions">
             Enter your answer as an integer, decimal, or fraction (e.g., 7, 2.5, 3/4 or -2 1/3).
@@ -934,7 +808,6 @@ function renderQuestion() {
 
     updateSidebarStatus();
 }
-
 function saveCurrentInput() {
     const input = document.getElementById("answerInput");
     if (input && questions[currentQuestionIndex]) {
@@ -945,7 +818,6 @@ function saveCurrentInput() {
 /* ----------------------------------------------------------
    保存结果为 txt
 ---------------------------------------------------------- */
-
 function saveCurrentResultAsTxt() {
     saveCurrentInput();
 
@@ -957,22 +829,14 @@ function saveCurrentResultAsTxt() {
     }
 
     let correctCount = 0;
-    questions.forEach(q => {
-        if (q.isCorrect) correctCount++;
-    });
+    questions.forEach(q => { if (q.isCorrect) correctCount++; });
 
     let lines = [];
     lines.push("Linear Equations Practice Quiz - Current Result");
     lines.push("Student: " + studentName);
-    if (quizStartTime) {
-        lines.push("Last start time: " + quizStartTime.toLocaleString());
-    }
-    if (quizEndTime) {
-        lines.push("Last submit time: " + quizEndTime.toLocaleString());
-    }
-    if (firstAttemptMs !== null) {
-        lines.push("First attempt time: " + formatMs(firstAttemptMs));
-    }
+    if (quizStartTime) lines.push("Last start time: " + quizStartTime.toLocaleString());
+    if (quizEndTime) lines.push("Last submit time: " + quizEndTime.toLocaleString());
+    if (firstAttemptMs !== null) lines.push("First attempt time: " + formatMs(firstAttemptMs));
     lines.push("Score (current marking): " + correctCount + " / " + TOTAL_QUESTIONS);
     lines.push("");
     lines.push("Details:");
@@ -1001,7 +865,7 @@ function saveCurrentResultAsTxt() {
     const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    const safeName = studentName.replace(/[^a-z0-9_\-]/gi, "_") || "Student";
+    const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_") || "Student";
     const ts = formatDateForFilename(new Date());
     a.href = url;
     a.download = `LinearEquations_${safeName}_${ts}.txt`;
@@ -1014,19 +878,14 @@ function saveCurrentResultAsTxt() {
 /* ----------------------------------------------------------
    提交 & 结果页面
 ---------------------------------------------------------- */
-
 function calculateAndShowResults() {
     saveCurrentInput();
 
     const now = new Date();
     let attemptMs = elapsedMs;
-    if (!isPaused && quizStartTime) {
-        attemptMs += now - quizStartTime;
-    }
+    if (!isPaused && quizStartTime) attemptMs += now - quizStartTime;
 
-    if (firstAttemptMs === null) {
-        firstAttemptMs = attemptMs;
-    }
+    if (firstAttemptMs === null) firstAttemptMs = attemptMs;
 
     const attemptStartTime = quizStartTime || now;
     quizEndTime = now;
@@ -1049,16 +908,13 @@ function calculateAndShowResults() {
         <p>Start time (this attempt): <strong>${attemptStartTime.toLocaleTimeString()}</strong></p>
         <p>Submit time: <strong>${quizEndTime.toLocaleTimeString()}</strong></p>
         <p>Time taken (this attempt): <strong>${min}m ${sec}s</strong></p>
+        <p>First attempt time: <strong>${formatMs(firstAttemptMs)}</strong></p>
     `;
-    if (firstAttemptMs !== null) {
-        timeInfo += `<p>First attempt time: <strong>${formatMs(firstAttemptMs)}</strong></p>`;
-    }
 
     let html = `
         <h3>Results for ${studentName}</h3>
         <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
         ${timeInfo}
-
         <p>You can click any question number on the left to go back, change your answers, and submit again.</p>
 
         <table class="review-table">
@@ -1094,7 +950,7 @@ function calculateAndShowResults() {
     submitButton.style.display = "inline-block";
     saveButton.style.display = "inline-block";
 
-    // 提交后重新开始计时，为下一次尝试计时
+    // reset timer for next attempt
     elapsedMs = 0;
     isPaused = false;
     quizStartTime = new Date();
@@ -1106,7 +962,6 @@ function calculateAndShowResults() {
 /* ----------------------------------------------------------
    按钮事件
 ---------------------------------------------------------- */
-
 nextButton.addEventListener("click", () => {
     saveCurrentInput();
     if (currentQuestionIndex < TOTAL_QUESTIONS - 1) {
@@ -1114,7 +969,6 @@ nextButton.addEventListener("click", () => {
         renderQuestion();
     }
 });
-
 backButton.addEventListener("click", () => {
     saveCurrentInput();
     if (currentQuestionIndex > 0) {
@@ -1122,26 +976,15 @@ backButton.addEventListener("click", () => {
         renderQuestion();
     }
 });
-
 submitButton.addEventListener("click", () => {
     calculateAndShowResults();
 });
-
 saveButton.addEventListener("click", saveCurrentResultAsTxt);
-
 pauseButton.addEventListener("click", () => {
     if (!quizStartTime && elapsedMs === 0 && !quizSubmitted) return;
-
-    if (isPaused) {
-        resumeTimer();
-        pauseButton.textContent = "Pause";
-    } else {
-        pauseTimer();
-        pauseButton.textContent = "Resume";
-    }
+    if (isPaused) { resumeTimer(); pauseButton.textContent = "Pause"; }
+    else { pauseTimer(); pauseButton.textContent = "Resume"; }
 });
-
-// Generate New Set：重新随机整套题
 generateBtn.addEventListener("click", () => {
     if (!quizSubmitted && !confirm("Generate a new set? All current answers will be lost.")) return;
 
@@ -1165,9 +1008,8 @@ generateBtn.addEventListener("click", () => {
 });
 
 /* ----------------------------------------------------------
-   Start screen
+   Start screen + auto-start
 ---------------------------------------------------------- */
-
 function showStartScreen() {
     sidebarEl.style.display = "none";
     backButton.style.display = "none";
@@ -1187,6 +1029,18 @@ function showStartScreen() {
     quizStartTime = null;
     quizEndTime = null;
     updateTimerDisplay();
+
+    // ✅ URL name exists -> auto start
+    if (urlStudentName) {
+        studentName = urlStudentName;
+        updateStudentNameDisplay();
+        startQuizAuto();
+        return;
+    }
+
+    // normal start screen
+    studentName = "Student";
+    updateStudentNameDisplay();
 
     quizContent.innerHTML = `
         <p>This quiz contains <strong>${TOTAL_QUESTIONS}</strong> questions in 4 parts:</p>
@@ -1209,13 +1063,10 @@ function showStartScreen() {
         </button>
     `;
 
-    document.getElementById("startButton").addEventListener("click", startQuiz);
+    document.getElementById("startButton").addEventListener("click", startQuizManual);
 }
 
-function startQuiz() {
-    const nameInput = document.getElementById("nameInput");
-    studentName = (nameInput.value || "Student").trim();
-
+function startQuizAuto() {
     generateQuiz();
     currentQuestionIndex = 0;
     quizSubmitted = false;
@@ -1239,10 +1090,17 @@ function startQuiz() {
     generateBtn.style.display = "inline-block";
 }
 
+function startQuizManual() {
+    const nameInput = document.getElementById("nameInput");
+    studentName = ((nameInput && nameInput.value) ? nameInput.value : "Student").trim() || "Student";
+    updateStudentNameDisplay();
+    startQuizAuto();
+}
+
 /* ----------------------------------------------------------
    初始化
 ---------------------------------------------------------- */
-
+updateStudentNameDisplay();
 showStartScreen();
 </script>
 </body>
