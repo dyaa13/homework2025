@@ -128,6 +128,7 @@
     .instructions {
       font-size: 0.9em;
       color: #555;
+      margin-top: 6px;
       margin-bottom: 12px;
     }
 
@@ -150,19 +151,19 @@
 
     .button-container {
       display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
+      justify-content: flex-start;
+      margin-top: 12px;
       gap: 10px;
       flex-wrap: wrap;
     }
 
     button {
-      padding: 10px 20px;
+      padding: 8px 20px;
       border: none;
       color: white;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 1em;
+      font-size: 0.95em;
     }
 
     #nextButton { background:#4caf50; }
@@ -171,6 +172,7 @@
     #submitButton { background:#9c27b0; }
     #saveButton { background:#607d8b; }
     #pauseButton { background:#f57c00; }
+    #checkButton { background:#455a64; }
 
     table.review-table {
       width: 100%;
@@ -212,6 +214,19 @@
       font-size: 0.9em;
     }
 
+    .status-line {
+      font-size: 0.9em;
+      margin-top: 4px;
+    }
+    .status-ok {
+      color:#2e7d32;
+      font-weight:600;
+    }
+    .status-bad {
+      color:#c62828;
+      font-weight:600;
+    }
+
     @media (max-width: 700px) {
       .quiz-main { flex-direction: column; }
       .sidebar {
@@ -250,10 +265,8 @@
     <div id="quizContent"></div>
   </div>
 
+  <!-- 底部只留 Save 按钮（结果页用） -->
   <div class="button-container">
-    <button id="backButton" style="display:none;">Previous</button>
-    <button id="submitButton" style="display:none;">Submit &amp; View Results</button>
-    <button id="nextButton" style="display:none;">Next</button>
     <button id="saveButton" style="display:none;">Save Current Result</button>
   </div>
 </div>
@@ -642,13 +655,39 @@ let firstAttemptMs = null;  // 首次提交的用时（锁定）
 
 const quizContent   = document.getElementById("quizContent");
 const sidebarEl     = document.getElementById("sidebar");
-const backButton    = document.getElementById("backButton");
-const nextButton    = document.getElementById("nextButton");
-const submitButton  = document.getElementById("submitButton");
 const saveButton    = document.getElementById("saveButton");
 const generateBtn   = document.getElementById("generateButton");
 const pauseButton   = document.getElementById("pauseButton");
 const timerDisplay  = document.getElementById("timerDisplay");
+
+// 题目按钮（放在题目下面用）
+const backButton   = document.createElement("button");
+backButton.id = "backButton";
+backButton.textContent = "Previous";
+
+const nextButton   = document.createElement("button");
+nextButton.id = "nextButton";
+nextButton.textContent = "Next";
+
+const submitButton = document.createElement("button");
+submitButton.id = "submitButton";
+submitButton.textContent = "Submit & View Results";
+
+const checkButton  = document.createElement("button");
+checkButton.id = "checkButton";
+checkButton.textContent = "Check Answer";
+
+// 套用和 CSS 一致的颜色
+backButton.style.background = "#039be5";
+nextButton.style.background = "#4caf50";
+submitButton.style.background = "#9c27b0";
+checkButton.style.background = "#455a64";
+backButton.style.color = nextButton.style.color = submitButton.style.color = checkButton.style.color = "white";
+backButton.style.borderRadius = nextButton.style.borderRadius = submitButton.style.borderRadius = checkButton.style.borderRadius = "6px";
+backButton.style.padding = nextButton.style.padding = submitButton.style.padding = checkButton.style.padding = "8px 20px";
+backButton.style.border = nextButton.style.border = submitButton.style.border = checkButton.style.border = "none";
+backButton.style.cursor = nextButton.style.cursor = submitButton.style.cursor = checkButton.style.cursor = "pointer";
+backButton.style.fontSize = nextButton.style.fontSize = submitButton.style.fontSize = checkButton.style.fontSize = "0.95em";
 
 /* ----------------------------------------------------------
    计时器相关
@@ -758,8 +797,9 @@ function updateSidebarStatus() {
 
     li.classList.remove("active", "answered", "correct", "incorrect");
 
+    li.classList.toggle("active", idx === currentQuestionIndex);
+
     if (!quizSubmitted) {
-      li.classList.toggle("active", idx === currentQuestionIndex);
       if ((q.userValue || "").trim() !== "") {
         li.classList.add("answered");
       }
@@ -786,25 +826,49 @@ function renderQuestion() {
       Question ${currentQuestionIndex + 1} of ${TOTAL_QUESTIONS}
     </p>
 
-    <p class="instructions">
-      Enter your answer using integers, decimals, or fractions (e.g., 3/4 or -2 1/3).
-      Answers will always be shown as improper fractions when applicable.
-    </p>
-
     <div class="part-title">${PART_TITLES[q.partIndex]}</div>
 
     <div class="single-question">
       ${fullLabel}. ${q.text}
       <input id="answerInput" class="answer-box" type="text" value="${q.userValue || ""}">
     </div>
+
+    <p id="statusLine" class="status-line">Status: <span>—</span></p>
+
+    <p class="instructions">
+      Enter your answer using integers, decimals, or fractions (e.g., 3/4 or -2 1/3).
+      Answers will always be shown as improper fractions when applicable.
+    </p>
   `;
 
+  // 把按钮条插到题目下面
+  const btnBar = document.createElement("div");
+  btnBar.className = "button-container";
+
+  // Previous
+  btnBar.appendChild(backButton);
+  // Next
+  btnBar.appendChild(nextButton);
+  // Submit 只在最后一题出现
+  if (currentQuestionIndex === TOTAL_QUESTIONS - 1) {
+    btnBar.appendChild(submitButton);
+  }
+  // Check 只在提交之后出现
+  if (quizSubmitted) {
+    btnBar.appendChild(checkButton);
+  }
+
+  quizContent.appendChild(btnBar);
+
+  // 按钮显示/隐藏细节
   backButton.style.display = "inline-block";
   nextButton.style.display = "inline-block";
-  submitButton.style.display = "inline-block";
 
   backButton.style.visibility = currentQuestionIndex === 0 ? "hidden" : "visible";
-  nextButton.textContent = "Next";
+  nextButton.style.visibility = currentQuestionIndex === TOTAL_QUESTIONS - 1 ? "hidden" : "visible";
+
+  submitButton.style.display = currentQuestionIndex === TOTAL_QUESTIONS - 1 ? "inline-block" : "none";
+  checkButton.style.display  = quizSubmitted ? "inline-block" : "none";
 
   updateSidebarStatus();
 }
@@ -944,7 +1008,7 @@ function calculateAndShowResults() {
     <h3>Results for ${studentName}</h3>
     <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
     ${timeInfo}
-    <p>You can click any question number on the left to go back, change your answers, and submit again.</p>
+    <p>You can click any question number on the left to go back, change your answers, and use <strong>Check Answer</strong> to practise again.</p>
 
     <table class="review-table">
       <tr>
@@ -976,9 +1040,7 @@ function calculateAndShowResults() {
 
   quizContent.innerHTML = html;
 
-  backButton.style.display = "inline-block";
-  nextButton.style.display = "inline-block";
-  submitButton.style.display = "inline-block";
+  // 显示保存按钮
   saveButton.style.display = "inline-block";
 
   // ★ 提交后：重新计时，为下一轮计时
@@ -988,6 +1050,41 @@ function calculateAndShowResults() {
   pauseButton.textContent = "Pause";
   startTimerInterval();
   updateTimerDisplay();
+}
+
+/* ----------------------------------------------------------
+   Check 当前题（重做模式）
+---------------------------------------------------------- */
+
+function checkCurrentQuestion() {
+  if (!quizSubmitted) return;
+
+  saveCurrentInput();
+  const q = questions[currentQuestionIndex];
+  const statusLine = document.getElementById("statusLine");
+
+  if (!statusLine) return;
+
+  if ((q.userValue || "").trim() === "") {
+    statusLine.innerHTML = 'Status: <span class="status-bad">No answer</span>';
+    return;
+  }
+
+  const val = parseAnswer(q.userValue || "");
+  if (!Number.isFinite(val)) {
+    statusLine.innerHTML = 'Status: <span class="status-bad">Invalid input</span>';
+    return;
+  }
+
+  if (nearlyEqual(val, q.value)) {
+    q.isCorrect = true;
+    statusLine.innerHTML = 'Status: <span class="status-ok">Correct</span>';
+  } else {
+    q.isCorrect = false;
+    statusLine.innerHTML = 'Status: <span class="status-bad">Incorrect</span>';
+  }
+
+  updateSidebarStatus();
 }
 
 /* ----------------------------------------------------------
@@ -1013,6 +1110,8 @@ backButton.addEventListener("click", () => {
 submitButton.addEventListener("click", () => {
   calculateAndShowResults();
 });
+
+checkButton.addEventListener("click", checkCurrentQuestion);
 
 saveButton.addEventListener("click", saveCurrentResultAsTxt);
 
@@ -1050,9 +1149,6 @@ generateBtn.addEventListener("click", () => {
   renderSidebar();
   renderQuestion();
 
-  backButton.style.display = "inline-block";
-  nextButton.style.display = "inline-block";
-  submitButton.style.display = "inline-block";
   saveButton.style.display = "none";
 });
 
@@ -1062,12 +1158,9 @@ generateBtn.addEventListener("click", () => {
 
 function showStartScreen() {
   sidebarEl.style.display = "none";
-  backButton.style.display = "none";
-  nextButton.style.display = "none";
-  submitButton.style.display = "none";
-  generateBtn.style.display = "none";
   saveButton.style.display = "none";
   pauseButton.style.display = "none";
+  generateBtn.style.display = "none";
 
   if (timerInterval) {
     clearInterval(timerInterval);
@@ -1115,13 +1208,10 @@ function startQuizCommon() {
   renderSidebar();
   renderQuestion();
 
-  backButton.style.display = "inline-block";
-  nextButton.style.display = "inline-block";
-  submitButton.style.display = "inline-block";
   generateBtn.style.display = "inline-block";
-  saveButton.style.display = "none";
   pauseButton.style.display = "inline-block";
   pauseButton.textContent = "Pause";
+  saveButton.style.display = "none";
 }
 
 function startQuizFromInput() {
@@ -1142,10 +1232,9 @@ function startQuizFromUrlName(name) {
 (function init() {
   const urlName = getNameFromUrl();
   if (urlName) {
-    // ✅ 带 ?name=xxx：直接开始，不显示输入页
+    // 带 ?name=xxx：直接开始
     startQuizFromUrlName(urlName);
   } else {
-    // ✅ 不带 name：保持原逻辑
     showStartScreen();
   }
 })();
