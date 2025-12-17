@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mixed Quiz A–E</title>
+
+<style>
+  body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f4f9;margin:0;color:#333;}
+  .page{max-width:980px;margin:0 auto;background:#fff;min-height:100vh;}
+  .header{display:flex;align-items:center;gap:14px;padding:26px 24px 14px 24px;}
+  .logo{width:44px;height:44px;background:#0d47a1;border-radius:6px;position:relative;}
+  .logo:before{content:"";position:absolute;width:22px;height:10px;background:#ff9800;top:-6px;left:22px;border-radius:3px;}
+  .brand{font-weight:900;letter-spacing:1px;color:#ff9800;}
+  .divider{height:2px;background:#e0e0e0;margin:0 24px;}
+
+  /* start screen */
+  .start-screen{padding:24px;}
+  .start-title{font-size:34px;font-weight:900;margin:22px 0 16px 0;}
+  .start-text{font-size:16px;line-height:1.7;margin:0 0 22px 0;color:#333;max-width:900px;}
+  .name-row{display:flex;align-items:center;gap:10px;margin-top:10px;}
+  .name-row label{min-width:56px;font-size:16px;}
+  #nameInput{flex:1;padding:12px 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;}
+  #startBtn{margin-top:12px;background:#2e7d32;color:#fff;border:none;padding:10px 18px;border-radius:4px;font-weight:800;cursor:pointer;}
+
+  /* quiz screen */
+  .quiz-screen{display:none;padding:16px 24px 26px 24px;}
+  .top-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0 14px 0;}
+  #timerDisplay,#studentDisplay{font-size:0.95em;font-weight:800;}
+  .top-actions{display:flex;gap:10px;flex-wrap:wrap;}
+  button{border:none;cursor:pointer;font-weight:900;padding:10px 16px;border-radius:10px;color:#fff;}
+  button:disabled{opacity:0.5;cursor:not-allowed;}
+  #pauseButton{background:#f57c00;}
+  #generateButton{background:#ff9800;}
+  #backButton{background:#039be5;}
+  #nextButton{background:#4caf50;}
+  #submitButton{background:#9c27b0;}
+  #checkButton{background:#455a64;}
+  #saveTxtButton{background:#6d4c41;}
+
+  .quiz-main{display:flex;gap:18px;}
+  .sidebar{width:160px;border-right:1px solid #ddd;padding-right:12px;}
+  .sidebar ul{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+  .sidebar li{
+    padding:8px 6px;text-align:center;border-radius:10px;background:#f6f7fb;
+    cursor:pointer;user-select:none;font-weight:900;
+  }
+  .sidebar li.active{outline:2px solid #1976d2;}
+  .sidebar li.correct{background:#d4edda;}
+  .sidebar li.incorrect{background:#f8d7da;}
+  .sidebar li.neutral{background:#f6f7fb;}
+
+  #quizContent{flex:1;min-width:0;}
+  .part-title{margin:0 0 8px 0;font-size:1.1em;}
+  .q-row{font-size:1.12em;line-height:1.65;margin:10px 0 6px 0;}
+  .answer-box{
+    width:240px;font-size:1em;padding:8px 10px;margin-left:8px;
+    border-radius:12px;border:1px solid #cfd8dc;outline:none;
+  }
+  .small{font-size:0.92em;color:#555;}
+  .hint{font-size:0.9em;color:#666;margin-top:6px;}
+  .q-actions{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;}
+
+  /* mixed number input: whole (left) + vertical fraction (right) */
+  .mixed-input{display:inline-flex;align-items:center;gap:6px;margin-left:8px;}
+  .mixed-whole{width:60px;text-align:center;border-radius:10px;border:1px solid #cfd8dc;padding:6px 6px;font-size:0.95em;height:34px;}
+  .mixed-frac{display:flex;flex-direction:column;align-items:center;line-height:1;}
+  .mixed-frac input{width:60px;text-align:center;border-radius:10px;border:1px solid #cfd8dc;padding:6px 6px;font-size:0.95em;}
+  .mixed-bar{width:60px;height:1px;background:#000;margin:4px 0;}
+
+  .frac{display:inline-block;text-align:center;vertical-align:middle;}
+  .frac .top{display:block;border-bottom:1px solid #000;padding:0 3px;}
+  .frac .bottom{display:block;font-size:0.9em;padding:0 3px;}
+
+  /* result area */
+  .result-box{margin-top:16px;background:#f6f7fb;border:1px solid #e0e0e0;border-radius:14px;padding:14px;}
+  .result-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;}
+  .result-title{font-size:1.1em;font-weight:900;}
+  .result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:12px;}
+  .result-card{background:#fff;border:1px solid #eee;border-radius:14px;padding:12px;}
+  .card-title{font-weight:900;margin-bottom:6px;}
+  .answerkey{max-height:420px;overflow:auto;border-top:1px solid #f0f0f0;margin-top:8px;padding-top:10px;}
+  .ak-row{display:flex;gap:10px;align-items:flex-start;margin:8px 0;}
+  .ak-q{min-width:48px;font-weight:900;}
+  .ak-a{flex:1;}
+</style>
+</head>
+
+<body>
+<div class="page">
+  <div class="header">
+    <div class="logo"></div>
+    <div class="brand">EDUCATION</div>
+  </div>
+  <div class="divider"></div>
+
+  <!-- START SCREEN -->
+  <div id="startScreen" class="start-screen">
+    <div class="start-title">Math Assessment</div>
+    <p class="start-text">
+      This test has <b>20</b> questions (A–E). Each question is on its own page.
+      Submit appears only on the last question. After submitting, you can practise again using Check.
+    </p>
+    <div class="name-row">
+      <label for="nameInput">Name:</label>
+      <input id="nameInput" type="text" placeholder="Enter your name here (can be blank)" />
+    </div>
+    <button id="startBtn">Start Quiz</button>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quizScreen" class="quiz-screen">
+    <div class="top-bar">
+      <div>
+        <span id="timerDisplay">Time: 00:00</span>
+        &nbsp;&nbsp;
+        <span id="studentDisplay"></span>
+      </div>
+      <div class="top-actions">
+        <button id="pauseButton">Pause</button>
+        <button id="generateButton">Generate New Set</button>
+      </div>
+    </div>
+
+    <div class="quiz-main">
+      <div id="sidebar" class="sidebar"></div>
+      <div>
+        <div id="quizContent"></div>
+        <div id="resultArea" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================
+   Helpers
+========================= */
+const rand = (a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const choice = arr => arr[rand(0, arr.length-1)];
+const gcd = (a,b)=> b ? gcd(b, a%b) : Math.abs(a);
+const lcm = (a,b)=> Math.abs(a*b)/gcd(a,b);
+const stripHTML = (s)=>String(s).replace(/<[^>]+>/g,"").replace(/\s+/g," ").trim();
+const normSig = (s)=>stripHTML(s).toLowerCase();
+
+function fmtTime(ms){
+  const s = Math.floor(ms/1000);
+  const mm = String(Math.floor(s/60)).padStart(2,"0");
+  const ss = String(s%60).padStart(2,"0");
+  return `${mm}:${ss}`;
+}
+function roundTo(v,dp){
+  const m = 10**dp;
+  return Math.round(v*m)/m;
+}
+function round2(v){ return roundTo(v,2); }
+
+/* =========================
+   Fractions
+========================= */
+function simplifyFrac(f){
+  if(f.d<0){ f.n=-f.n; f.d=-f.d; }
+  const g = gcd(f.n,f.d);
+  return {n:f.n/g, d:f.d/g};
+}
+function fracHTML(f){
+  f = simplifyFrac(f);
+  if(f.d===1) return `${f.n}`;
+  return `<span class="frac"><span class="top">${f.n}</span><span class="bottom">${f.d}</span></span>`;
+}
+function addFrac(a,b){
+  const d=lcm(a.d,b.d);
+  const n=a.n*(d/a.d)+b.n*(d/b.d);
+  return simplifyFrac({n,d});
+}
+function subFrac(a,b){ return addFrac(a, {n:-b.n, d:b.d}); }
+function mulFrac(a,b){ return simplifyFrac({n:a.n*b.n, d:a.d*b.d}); }
+function divFrac(a,b){ return simplifyFrac({n:a.n*b.d, d:a.d*b.n}); }
+function fracToNumber(f){ return f.n/f.d; }
+
+function parseUserAnswer(str){
+  const s = (str||"").trim();
+  if(!s) return null;
+  if(s.includes("/")){
+    const parts = s.split("/").map(x=>x.trim());
+    if(parts.length!==2) return null;
+    const n = Number(parts[0]);
+    const d = Number(parts[1]);
+    if(!Number.isFinite(n) || !Number.isFinite(d) || d===0) return null;
+    return { type:"frac", value: simplifyFrac({n: Math.trunc(n), d: Math.trunc(d)}) };
+  }
+  const v = Number(s);
+  if(!Number.isFinite(v)) return null;
+  return { type:"num", value:v };
+}
+function isCorrect(userParsed, correct){
+  if(!userParsed) return false;
+  if(correct.type==="num"){
+    const c = correct.value;
+    const u = (userParsed.type==="num") ? userParsed.value : fracToNumber(userParsed.value);
+    return Math.abs(u - c) < 1e-9;
+  }
+  const c = correct.value;
+  if(userParsed.type==="frac"){
+    const u = userParsed.value;
+    return u.n===c.n && u.d===c.d;
+  }
+  return Math.abs(userParsed.value - fracToNumber(c)) < 1e-9;
+}
+function useMixedInput(q){
+  if(!q.correct || q.correct.type!=="frac") return false;
+  const f = simplifyFrac(q.correct.value);
+  // ✅ d=1 表示整数，不用 mixed number 输入
+  return (f.d !== 1) && (Math.abs(f.n) > f.d);
+}
+
+/* =========================
+   Answer key display (avoid long repeating decimals)
+========================= */
+function formatNiceNumber(x, dpMax=4){
+  if(!Number.isFinite(x)) return String(x);
+  const nearInt = Math.abs(x - Math.round(x)) < 1e-10;
+  if(nearInt) return String(Math.round(x));
+  // clamp dp
+  let s = x.toFixed(dpMax);
+  s = s.replace(/0+$/,'').replace(/\.$/,'');
+  return s;
+}
+function answerKeyHTML(q){
+  if(q.correct.type==="frac"){
+    const f = simplifyFrac(q.correct.value);
+    return fracHTML(f);
+  }
+  // numeric formatting by part
+  if(q.part===0 || q.part===3) return q.correct.value.toFixed(2); // Part A + Part D: 2dp
+  return formatNiceNumber(q.correct.value, 4);
+}
+function answerKeyText(q){
+  if(q.correct.type==="frac"){
+    const f = simplifyFrac(q.correct.value);
+    return (f.d===1) ? String(f.n) : `${f.n}/${f.d}`;
+  }
+  if(q.part===0 || q.part===3) return q.correct.value.toFixed(2);
+  return formatNiceNumber(q.correct.value, 6);
+}
+
+/* =========================
+   Parts & counts
+========================= */
+const PARTS = [
+  "A. Decimal Operations ",
+  "B. Fractions × ÷ (6)",
+  "C. Mixed Number Operations (4) — answers may be improper fractions",
+  "D. Two-step Decimal Word Problems (2) ",
+  "E. Two-step Fraction Word Problems (2) "
+];
+const COUNTS = [6,6,4,2,2];
+const TOTAL = COUNTS.reduce((a,b)=>a+b,0);
+
+/* =========================================================
+   PART A STRICT POOL (dp<=3, must be decimal)
+   Allowed patterns:
+     dp=1:  a.b   or b.a
+     dp=2:  0.ab  or 0.ba
+     dp=3:  0.0ab or 0.0ba
+========================================================= */
+let PARTA_POOL = [];
+function buildPartAPool(){
+  PARTA_POOL = [];
+  const seen = new Set();
+  for(let a=1;a<=9;a++){
+    for(let b=1;b<=9;b++){
+      if(b===a) continue;
+      const variants = [
+        `${a}.${b}`, `${b}.${a}`,
+        `0.${a}${b}`, `0.${b}${a}`,
+        `0.0${a}${b}`, `0.0${b}${a}`
+      ];
+      for(const s of variants){
+        if(seen.has(s)) continue;
+        const v = Number(s);
+        if(!Number.isFinite(v)) continue;
+        seen.add(s);
+        PARTA_POOL.push({str:s, value:v});
+      }
+    }
+  }
+}
+buildPartAPool();
+
+function dpOfStr(s){ return s.includes(".") ? s.split(".")[1].length : 0; }
+
+function pickPartADecimal(level=1){
+  const dp1 = PARTA_POOL.filter(x=>dpOfStr(x.str)===1);
+  const dp2 = PARTA_POOL.filter(x=>dpOfStr(x.str)===2);
+  const dp3 = PARTA_POOL.filter(x=>dpOfStr(x.str)===3);
+
+  let bucket;
+  if(level<=2) bucket = [...dp1, ...dp1, ...dp2];
+  else if(level<=4) bucket = [...dp1, ...dp2, ...dp2, ...dp3];
+  else bucket = [...dp2, ...dp3, ...dp3, ...dp1];
+
+  return bucket[rand(0, bucket.length-1)];
+}
+
+/* Part A Q1..Q6 */
+function genPartA(i){
+  const ANSWER_DP = 2;
+
+  if(i===1){
+    const x = pickPartADecimal(1);
+    const y = pickPartADecimal(1);
+    const val = roundTo(x.value + y.value, ANSWER_DP);
+    return { text:`${x.str} + ${y.str}`, correct:{type:"num", value:val} };
+  }
+
+  if(i===2){
+    let x = pickPartADecimal(2);
+    let y = pickPartADecimal(2);
+    if(y.value > x.value){ const t=x; x=y; y=t; }
+    const val = roundTo(x.value - y.value, ANSWER_DP);
+    return { text:`${x.str} − ${y.str}`, correct:{type:"num", value:val} };
+  }
+
+  if(i===3 || i===4){
+    const x = pickPartADecimal(i);
+    const y = pickPartADecimal(i);
+    const val = roundTo(x.value * y.value, ANSWER_DP);
+    return { text:`${x.str} × ${y.str}`, correct:{type:"num", value:val} };
+  }
+
+  // Q5-6 division: ensure quotient terminates
+  let tries=0;
+  while(tries++<30000){
+    const A = pickPartADecimal(i);
+    const B = pickPartADecimal(i);
+    if(B.value <= 0) continue;
+
+    const q = A.value / B.value;
+    if(q < 0 || q > 50) continue;
+    if(A.value < 0.01 && B.value < 0.01) continue;
+
+    let terminates=false;
+    for(let k=0;k<=6;k++){
+      const t = q*(10**k);
+      if(Math.abs(t - Math.round(t)) < 1e-10){ terminates=true; break; }
+    }
+    if(!terminates) continue;
+
+    const val = roundTo(q, ANSWER_DP);
+    return { text:`${A.str} ÷ ${B.str}`, correct:{type:"num", value:val} };
+  }
+
+  const A = pickPartADecimal(i);
+  const B = pickPartADecimal(i);
+  const val = roundTo(A.value/B.value, ANSWER_DP);
+  return { text:`${A.str} ÷ ${B.str}`, correct:{type:"num", value:val} };
+}
+
+/* =========================
+   Part B: Fractions × ÷ (no negatives)
+========================= */
+function genFraction(level){
+  const denPoolEasy = [2,3,4,5,6,8,10,12];
+  const denPoolHard = [6,8,9,10,12,14,15,16,18,20];
+
+  let d1,d2,n1,n2;
+  let attempt = 0;
+  do{
+    d1 = choice(level<=3 ? denPoolEasy : denPoolHard);
+    d2 = choice(level<=3 ? denPoolEasy : denPoolHard);
+    n1 = rand(1, d1-1);
+    n2 = rand(1, d2-1);
+    attempt++;
+  }while(gcd(n1,d1)===1 && gcd(n2,d2)===1 && attempt<120);
+
+  const f1 = simplifyFrac({n:n1,d:d1});
+  const f2 = simplifyFrac({n:n2,d:d2});
+  const op = (level<=2) ? "×" : (Math.random()<0.55 ? "×" : "÷");
+  const r = (op==="×") ? mulFrac(f1,f2) : divFrac(f1,f2);
+
+  return { text:`${fracHTML(f1)} ${op} ${fracHTML(f2)}`, correct:{type:"frac", value:r} };
+}
+
+/* =========================
+   Part C: Mixed number ops (operands shown as improper fractions)
+========================= */
+function genMixedImproper(level){
+  const whole = rand(level<=2 ? 1 : 2, level<=2 ? 4 : 9);
+  const den = choice(level<=2 ? [2,3,4,5,6,8,10] : [3,4,5,6,8,10,12,15,16]);
+  const num = rand(1, den-1);
+  return simplifyFrac({n: whole*den + num, d: den});
+}
+function genPartCMixedOps(){
+  const ops = ["+", "−", "×", "÷"];
+  const qs = [];
+  for(let i=0;i<4;i++){
+    const op = ops[i];
+    const a = genMixedImproper(i+1);
+    const b = genMixedImproper(i+1);
+
+    if(op==="−"){
+      const diff = subFrac(a,b);
+      if(diff.n < 0){
+        const rr = subFrac(b,a);
+        qs.push({ text:`${fracHTML(b)} − ${fracHTML(a)}`, correct:{type:"frac", value:rr} });
+      }else{
+        qs.push({ text:`${fracHTML(a)} − ${fracHTML(b)}`, correct:{type:"frac", value:diff} });
+      }
+      continue;
+    }
+
+    const r = (op==="+") ? addFrac(a,b)
+            : (op==="×") ? mulFrac(a,b)
+            : divFrac(a,b);
+
+    qs.push({ text:`${fracHTML(a)} ${op} ${fracHTML(b)}`, correct:{type:"frac", value:r} });
+  }
+  return qs;
+}
+
+/* =========================
+   Part D: Two-step decimal word problems (random from your categories)
+========================= */
+function genDecimalWordProblems(){
+  const factories = [];
+
+  // Factory 1: measurement/time
+  factories.push(() => {
+    const unit = choice(["m","kg","L","min"]);
+    let total, used1, used2, ans, text;
+
+    if(unit==="m"){
+      total = choice([3.6, 4.2, 5.5, 6.8, 7.2]);
+      used1 = choice([0.8, 1.2, 1.5, 1.7, 2.1]);
+      used2 = choice([0.6, 0.9, 1.1, 1.3, 1.6]);
+      ans = round2(total - used1 - used2);
+      text = `A rope is ${total.toFixed(1)} m long. ${used1.toFixed(1)} m is cut off, then another ${used2.toFixed(1)} m is cut off. How many metres are left?`;
+    } else if(unit==="kg"){
+      total = choice([2.4, 3.2, 4.5, 5.6, 6.0]);
+      used1 = choice([0.5, 0.8, 1.2, 1.5]);
+      used2 = choice([0.3, 0.6, 0.9, 1.1]);
+      ans = round2(total - used1 - used2);
+      text = `A bag has ${total.toFixed(1)} kg of rice. ${used1.toFixed(1)} kg is used on Monday and ${used2.toFixed(1)} kg on Tuesday. How many kilograms are left?`;
+    } else if(unit==="L"){
+      total = choice([1.8, 2.5, 3.2, 4.0, 4.5]);
+      used1 = choice([0.4, 0.6, 0.8, 1.1]);
+      used2 = choice([0.3, 0.5, 0.7, 0.9]);
+      ans = round2(total - used1 - used2);
+      text = `A container holds ${total.toFixed(1)} L of juice. ${used1.toFixed(1)} L is poured out, then ${used2.toFixed(1)} L is poured out. How many litres remain?`;
+    } else { // min
+      total = choice([45.0, 50.0, 62.5, 75.0, 80.0]);
+      used1 = choice([12.5, 15.0, 18.0, 20.5]);
+      used2 = choice([8.5, 10.0, 11.5, 13.0]);
+      ans = round2(total - used1 - used2);
+      text = `A study session lasts ${total.toFixed(1)} minutes. ${used1.toFixed(1)} minutes are spent on reading and ${used2.toFixed(1)} minutes on notes. How many minutes are left?`;
+    }
+
+    return { text, correct:{type:"num", value:ans} };
+  });
+
+  // Factory 2: MONEY
+  factories.push(() => {
+    const names = ["Mia","Leo","Sophie","Ethan","Ava","Noah","Lily","Arjun","Grace","Jack","Aroha","Oliver"];
+    const scenarios = [
+      { place: "a bakery in Riccarton", type: "each", item: { singular: "muffin", plural: "muffins" } },
+      { place: "a stationery shop near school", type: "each", item: { singular: "notebook", plural: "notebooks" } },
+      { place: "a toy store at the mall", type: "each", item: { singular: "toy car", plural: "toy cars" } },
+      { place: "a fruit market in the city", type: "kg", item: { singular: "apples", plural: "apples" } },
+      { place: "a supermarket", type: "kg", item: { singular: "grapes", plural: "grapes" } },
+      { place: "a dairy on the corner", type: "L", item: { singular: "orange juice", plural: "orange juice" } },
+      { place: "a café", type: "L", item: { singular: "milk", plural: "milk" } }
+    ];
+
+    const name = choice(names);
+    const sc = choice(scenarios);
+
+    const unitPrice = choice([0.75, 0.9, 1.2, 1.5, 1.8, 2.25, 2.4, 3.6, 4.5]);
+    const qtyEach = choice([2, 3, 4, 5, 6, 8, 9]);
+    const qtyDec  = choice([0.6, 0.8, 1.2, 1.5, 1.7, 2.3, 2.5]);
+
+    const qty = (sc.type === "each") ? qtyEach : qtyDec;
+    const cost = round2(unitPrice * qty);
+
+    let paid = null;
+    for (const p of [5, 10, 20, 50]) {
+      const ch = round2(p - cost);
+      if (ch >= 0.2 && ch <= 8) { paid = p; break; }
+    }
+    if (paid === null) paid = Math.ceil((cost + 0.2) / 5) * 5;
+
+    const change = round2(paid - cost);
+    const unknown = choice(["price", "qty", "paid", "change"]);
+
+    const isEach = sc.type === "each";
+    const unitWord = isEach ? "" : (sc.type === "kg" ? " kg of " : " L of ");
+    const rateWord = isEach ? "each" : (sc.type === "kg" ? "per kg" : "per L");
+
+    const qtyText = isEach ? `${qty}` : `${qty.toFixed(1)}`;
+    const itemBuyText = isEach ? `${qty} ${sc.item.plural}` : `${qtyText}${unitWord}${sc.item.singular}`;
+
+    let ans, text;
+    if (unknown === "price") {
+      ans = round2((paid - change) / qty);
+      text = `${name} buys ${itemBuyText} at ${sc.place}. ${name} pays $${paid.toFixed(2)} and receives $${change.toFixed(2)} change. What is the price ${rateWord}?`;
+    } else if (unknown === "qty") {
+      ans = round2(qty);
+      text = `${name} buys some ${sc.item.plural} at ${sc.place}. The price is $${unitPrice.toFixed(2)} ${rateWord}. ${name} pays $${paid.toFixed(2)} and receives $${change.toFixed(2)} change. How much did ${name} buy?`;
+    } else if (unknown === "paid") {
+      ans = round2(cost + change);
+      text = `${name} buys ${itemBuyText} at ${sc.place}. The price is $${unitPrice.toFixed(2)} ${rateWord}. ${name} receives $${change.toFixed(2)} change. How much money did ${name} pay?`;
+    } else {
+      ans = round2(paid - cost);
+      text = `${name} buys ${itemBuyText} at ${sc.place}. The price is $${unitPrice.toFixed(2)} ${rateWord}. ${name} pays $${paid.toFixed(2)}. How much change does ${name} receive?`;
+    }
+
+    return { text, correct:{type:"num", value:ans} };
+  });
+
+  // Factory 3: Mean
+  factories.push(() => {
+    const n = choice([4,5,6]);
+    const mean = choice([2.4, 2.6, 2.8, 3.0, 3.2]);
+    const total = round2(n * mean);
+    const knownCount = n - 1;
+
+    let known = [];
+    let sumKnown = 0;
+    for(let i=0;i<knownCount;i++){
+      const v = choice([2.1,2.3,2.5,2.7,2.9,3.1,3.3]);
+      known.push(v);
+      sumKnown += v;
+    }
+    sumKnown = round2(sumKnown);
+    let missing = round2(total - sumKnown);
+
+    let tries=0;
+    while((missing<=0 || missing>5) && tries++<300){
+      known=[]; sumKnown=0;
+      for(let i=0;i<knownCount;i++){
+        const v = choice([2.1,2.3,2.5,2.7,2.9,3.1,3.3]);
+        known.push(v); sumKnown += v;
+      }
+      sumKnown = round2(sumKnown);
+      missing = round2(total - sumKnown);
+    }
+
+    const listStr = known.map(x=>x.toFixed(1)).join(", ");
+    const text =
+      `The mean of ${n} numbers is ${mean.toFixed(1)}. ` +
+      `${knownCount} of the numbers are ${listStr}. What is the missing number?`;
+
+    return { text, correct:{type:"num", value:missing} };
+  });
+
+  // Factory 4: Speed + wait
+  factories.push(() => {
+    const speed = choice([48.0, 52.0, 60.0, 64.0]);
+    const distance = choice([18.0, 24.0, 30.0, 36.0]);
+    const wait = choice([0.25, 0.50, 0.75]);
+    const travel = distance / speed;
+    const totalTime = round2(travel + wait);
+    const text =
+      `A car travels ${distance.toFixed(1)} km at ${speed.toFixed(1)} km/h. ` +
+      `It then waits for ${wait.toFixed(2)} hours. What is the total time (in hours)?`;
+
+    return { text, correct:{type:"num", value:totalTime} };
+  });
+
+  // ---- Pick 2 different factories; MONEY ~30% overall
+  const idxs = [...Array(factories.length).keys()]; // ✅ always valid
+  const weightedPool = [1,1,1, 0,2,3, 0,2,3,2];      // ✅ money=3/10=30%
+
+  let first = choice(weightedPool);
+  let second = choice(idxs.filter(x => x !== first));
+
+  return [factories[first](), factories[second]()];
+}
+
+/* =========================
+   Part E: Two-step fraction word problems (random from your categories)
+========================= */
+function genFractionWordProblems(){
+  const factories = [];
+  const proper = (denChoices)=> {
+    const d = choice(denChoices);
+    const n = rand(1,d-1);
+    return simplifyFrac({n,d});
+  };
+
+  factories.push(() => {
+    const total = choice([ {n:3,d:1}, {n:4,d:1}, {n:5,d:1} ]);
+    const a = proper([2,3,4,5,6,8]);
+    const b = proper([2,3,4,6,8]);
+    const left = subFrac(subFrac(total, a), b);
+    const text =
+      `A ribbon is ${fracHTML(total)} m long. ${fracHTML(a)} m is used for a bow and ${fracHTML(b)} m is used for a tag. ` +
+      `How many metres of ribbon are left?`;
+    return { text, correct:{type:"frac", value:left} };
+  });
+
+  factories.push(() => {
+    for(let tries=0; tries<400; tries++){
+      const total = choice([24, 30, 36, 42, 48]);
+      const a = choice([2,3,4,5]);
+      const b = choice([3,4,5,6]);
+      const sum = a+b;
+      const boys = total * a / sum;
+      const girls = total * b / sum;
+      if(!Number.isInteger(boys) || !Number.isInteger(girls)) continue;
+
+      const diff = Math.abs(boys - girls);
+      const who = (boys>girls) ? "boys" : "girls";
+      const text =
+        `In a class, the ratio of boys to girls is ${a}:${b}. There are ${total} students in total. ` +
+        `How many more ${who} are there?`;
+      return { text, correct:{type:"num", value:diff} };
+    }
+    return factories[0]();
+  });
+
+  factories.push(() => {
+    const total = choice([ {n:6,d:1}, {n:8,d:1}, {n:10,d:1} ]);
+    const fracUsed = proper([3,4,5,6,8,10,12]);
+    const used = mulFrac(total, fracUsed);
+    const left = subFrac(total, used);
+    const text =
+      `A tank holds ${fracHTML(total)} L of water. ${fracHTML(fracUsed)} of the water is used. ` +
+      `How many litres are left in the tank?`;
+    return { text, correct:{type:"frac", value:left} };
+  });
+
+  factories.push(() => {
+    const start = choice([24, 30, 36, 40, 48]);
+    const inc = proper([3,4,5,6,8]);
+    const factor = addFrac({n:1,d:1}, inc);
+    const final = mulFrac({n:start,d:1}, factor);
+    const text =
+      `A plant is ${start} cm tall. It grows by ${fracHTML(inc)} of its height. ` +
+      `What is its new height (in cm)?`;
+    return { text, correct:{type:"frac", value:final} };
+  });
+
+  // ---------------------------
+  // Factory 5 (NEW, FULL, SAFE): 3 variables (Total / Fraction Used / Remaining)
+  // Know any 2 -> Find the 3rd (uses fraction division safely)
+  // - Different names + different life scenarios
+  // - Uses try/retry + fallback to avoid "page no response"
+  // ---------------------------
+  factories.push(() => {
+    // robust fraction division: a / b
+    const divFracSafe = (a, b) => {
+      if (!a || !b) throw new Error("divFracSafe: missing frac");
+      if (a.d === 0 || b.d === 0) throw new Error("divFracSafe: zero denominator");
+      if (b.n === 0) throw new Error("divFracSafe: divide by zero");
+      return simplifyFrac({ n: a.n * b.d, d: a.d * b.n });
+    };
+
+    const names = ["Mia","Leo","Sophie","Ethan","Ava","Noah","Lily","Arjun","Grace","Jack","Aroha","Oliver"];
+
+    const scenarios = [
+      { place: "at a picnic", thing: "lemonade", unit: "L", container: "bottle", action: "drunk" },
+      { place: "in the kitchen", thing: "flour", unit: "kg", container: "bag", action: "used" },
+      { place: "during art class", thing: "paint", unit: "L", container: "jar", action: "used" },
+      { place: "while wrapping gifts", thing: "ribbon", unit: "m", container: "roll", action: "used" },
+      { place: "after watering plants", thing: "water", unit: "L", container: "bucket", action: "used" },
+      { place: "for a school project", thing: "clay", unit: "kg", container: "block", action: "used" },
+      { place: "on a camping trip", thing: "trail mix", unit: "kg", container: "bag", action: "eaten" },
+      { place: "after a party", thing: "soda", unit: "L", container: "bottle", action: "drunk" }
+    ];
+
+    for (let tries = 0; tries < 300; tries++) {
+      try {
+        const name = choice(names);
+        const sc = choice(scenarios);
+
+        // Choose a nice integer total, and a proper fraction used (<1)
+        const total = { n: choice([4,5,6,8,10,12]), d: 1 };
+        const fracUsed = proper([2,3,4,5,6,8,10,12]);
+
+        const used = mulFrac(total, fracUsed);
+        const left = subFrac(total, used);
+
+        // Hide one of the three variables
+        const unknown = choice(["total", "fracUsed", "left"]);
+
+        let ans, text;
+
+        if (unknown === "left") {
+          ans = left;
+          text =
+            `${name} has a ${sc.container} of ${sc.thing} ${sc.place}. The ${sc.container} contains ${fracHTML(total)} ${sc.unit}. ` +
+            `${fracHTML(fracUsed)} of it is ${sc.action}. How much ${sc.thing} is left (in ${sc.unit})?`;
+
+        } else if (unknown === "fracUsed") {
+          // fracUsed = (total - left) / total
+          const usedAmt = subFrac(total, left);
+          ans = divFracSafe(usedAmt, total);
+          text =
+            `${name} has a ${sc.container} of ${sc.thing} ${sc.place}. The ${sc.container} contains ${fracHTML(total)} ${sc.unit}. ` +
+            `After some is ${sc.action}, ${fracHTML(left)} ${sc.unit} is left. What fraction of the ${sc.thing} was ${sc.action}?`;
+
+        } else { // unknown === "total"
+          // total = left / (1 - fracUsed)
+          const oneMinus = subFrac({n:1,d:1}, fracUsed); // safe because fracUsed is proper
+          ans = divFracSafe(left, oneMinus);
+          text =
+            `${name} has a ${sc.container} of ${sc.thing} ${sc.place}. ${fracHTML(fracUsed)} of it is ${sc.action}. ` +
+            `Now ${fracHTML(left)} ${sc.unit} is left. How much ${sc.thing} was there at the start (in ${sc.unit})?`;
+        }
+
+        return { text, correct:{type:"frac", value:simplifyFrac(ans)} };
+
+      } catch (e) {
+        continue; // retry
+      }
+    }
+
+    // Fallback: never let the page freeze
+    return factories[0]();
+  });
+
+  const idxs = [...Array(factories.length).keys()];
+  for(let i=idxs.length-1;i>0;i--){
+    const j=rand(0,i);
+    [idxs[i],idxs[j]]=[idxs[j],idxs[i]];
+  }
+  return [factories[idxs[0]](), factories[idxs[1]]()];
+}
+
+/* =========================
+   Build quiz (dedupe)
+========================= */
+let questions = [];
+function generateQuiz(){
+  questions = [];
+  const used = new Set();
+
+  for(let i=1;i<=COUNTS[0];i++){
+    let q, attempts=0;
+    do{ q = genPartA(i); attempts++; }while(used.has(normSig(q.text)) && attempts<6000);
+    used.add(normSig(q.text));
+    questions.push({ part:0, ...q, user:"", userMixed:null, isCorrect:false });
+  }
+
+  for(let i=1;i<=COUNTS[1];i++){
+    let q, attempts=0;
+    do{ q = genFraction(i); attempts++; }while(used.has(normSig(q.text)) && attempts<2000);
+    used.add(normSig(q.text));
+    questions.push({ part:1, ...q, user:"", userMixed:null, isCorrect:false });
+  }
+
+  for(const q of genPartCMixedOps()){
+    const key = normSig(q.text);
+    if(used.has(key)) return generateQuiz();
+    used.add(key);
+    questions.push({ part:2, ...q, user:"", userMixed:null, isCorrect:false });
+  }
+
+  for(const q of genDecimalWordProblems()){
+    const key = normSig(q.text);
+    if(used.has(key)) return generateQuiz();
+    used.add(key);
+    questions.push({ part:3, ...q, user:"", userMixed:null, isCorrect:false });
+  }
+
+  for(const q of genFractionWordProblems()){
+    const key = normSig(q.text);
+    if(used.has(key)) return generateQuiz();
+    used.add(key);
+    questions.push({ part:4, ...q, user:"", userMixed:null, isCorrect:false });
+  }
+
+  if(questions.length !== TOTAL) return generateQuiz();
+}
+
+/* =========================
+   UI + Timer + Logic
+========================= */
+let cur = 0;
+let paused = false;
+let elapsedMs = 0;
+let startTime = Date.now();
+let submitted = false;
+let studentName = "";
+
+const startScreen = document.getElementById("startScreen");
+const quizScreen  = document.getElementById("quizScreen");
+const qc = document.getElementById("quizContent");
+const sb = document.getElementById("sidebar");
+const timerEl = document.getElementById("timerDisplay");
+const resultArea = document.getElementById("resultArea");
+
+function tick(){
+  if(paused) return;
+  const t = elapsedMs + (Date.now()-startTime);
+  timerEl.textContent = "Time: " + fmtTime(t);
+}
+setInterval(tick, 400);
+
+function resetTimer(){
+  paused=false;
+  elapsedMs=0;
+  startTime=Date.now();
+  document.getElementById("pauseButton").textContent="Pause";
+  timerEl.textContent="Time: 00:00";
+}
+function togglePause(){
+  if(submitted) return;
+  if(!paused){
+    elapsedMs = elapsedMs + (Date.now()-startTime);
+    paused=true;
+    document.getElementById("pauseButton").textContent="Resume";
+  }else{
+    startTime=Date.now();
+    paused=false;
+    document.getElementById("pauseButton").textContent="Pause";
+  }
+}
+
+function evaluateOne(i){
+  const q = questions[i];
+
+  if(q.part===0){
+    const s = (q.user||"").trim();
+    const v = Number(s);
+    if(!s || !Number.isFinite(v)){ q.isCorrect=false; return; }
+    const u = round2(v);
+    q.isCorrect = Math.abs(u - q.correct.value) < 1e-9;
+    return;
+  }
+
+  const parsed = parseUserAnswer(q.user);
+  q.isCorrect = parsed ? isCorrect(parsed, q.correct) : false;
+}
+
+function renderSidebar(){
+  sb.innerHTML = "<ul>" + questions.map((q,i)=>{
+    const attempted = (q.user||"").trim().length>0 ||
+                      (q.userMixed && (q.userMixed.num||q.userMixed.den||q.userMixed.whole));
+    const cls = (i===cur ? "active " : "") + (
+      attempted ? (q.isCorrect ? "correct" : "incorrect") : "neutral"
+    );
+    return `<li class="${cls}" onclick="go(${i})">${i+1}</li>`;
+  }).join("") + "</ul>";
+}
+
+function saveAnswerSingle(v){
+  const q = questions[cur];
+  q.user = v;
+  q.userMixed = null;
+  evaluateOne(cur);
+  renderSidebar();
+}
+
+function saveAnswerMixed(){
+  const q = questions[cur];
+  const numStr   = (document.getElementById("mixNum").value || "").trim();
+  const wholeStr = (document.getElementById("mixWhole").value || "").trim();
+  const denStr   = (document.getElementById("mixDen").value || "").trim();
+
+  q.userMixed = { whole:wholeStr, num:numStr, den:denStr };
+
+  if(!numStr || !denStr){
+    q.user = "";
+    q.isCorrect = false;
+    renderSidebar();
+    return;
+  }
+
+  const n = Number(numStr);
+  const d = Number(denStr);
+  const w = wholeStr ? Number(wholeStr) : 0;
+
+  if(!Number.isFinite(n) || !Number.isFinite(d) || d===0 || !Number.isFinite(w)){
+    q.user = "";
+    q.isCorrect = false;
+    renderSidebar();
+    return;
+  }
+
+  const improperN = w*d + n;
+  q.user = `${Math.trunc(improperN)}/${Math.trunc(d)}`;
+
+  evaluateOne(cur);
+  renderSidebar();
+}
+
+function renderQuestion(){
+  const q = questions[cur];
+  const partName = PARTS[q.part];
+  const isMixed = useMixedInput(q);
+
+  const attempted = (q.user||"").trim().length>0 ||
+                    (q.userMixed && (q.userMixed.num||q.userMixed.den||q.userMixed.whole));
+  const statusText = attempted ? (q.isCorrect ? "✅ Correct" : "❌ Not correct yet") : "—";
+
+  let hint;
+  if(isMixed){
+    hint = `Answer format: use the three boxes (whole number + numerator/denominator).`;
+  }else if(q.part===0){
+    hint = `Answer format: type a number rounded to <b>2 decimal places</b>.`;
+  }else if(q.part===1 || q.part===2 || q.part===4){
+    hint = `Answer format: you can type a fraction like <b>7/12</b>, or a decimal.`;
+  }else{
+    hint = `Answer format: type a number (decimals allowed).`;
+  }
+
+  const isLast = (cur === questions.length - 1);
+
+  let inputHTML="";
+  if(isMixed){
+    const mixed = q.userMixed || {whole:"",num:"",den:""};
+    inputHTML = `
+      <div class="mixed-input">
+        <input id="mixWhole" class="mixed-whole" type="text" value="${mixed.whole || ""}">
+        <div class="mixed-frac">
+          <input id="mixNum" type="text" value="${mixed.num || ""}">
+          <div class="mixed-bar"></div>
+          <input id="mixDen" type="text" value="${mixed.den || ""}">
+        </div>
+      </div>
+    `;
+  }else{
+    inputHTML = `<input class="answer-box" id="ansBox" value="${(q.user||"").replaceAll('"','&quot;')}" placeholder="Your answer">`;
+  }
+
+  qc.innerHTML = `
+    <h3 class="part-title">${partName}</h3>
+    <div class="q-row">
+      <b>Q${cur+1}.</b> ${q.text}
+      ${inputHTML}
+    </div>
+    <div class="small">Status: <b>${statusText}</b></div>
+    <div class="hint">${hint}</div>
+    <div class="q-actions">
+      <button id="backButton" ${cur===0 ? "disabled" : ""}>Previous</button>
+      <button id="nextButton" ${cur===questions.length-1 ? "disabled" : ""}>Next</button>
+      ${(!submitted && isLast) ? `<button id="submitButton">Submit</button>` : ``}
+      ${(submitted) ? `<button id="checkButton">Check</button>` : ``}
+    </div>
+  `;
+
+  document.getElementById("backButton").addEventListener("click", ()=>{ if(cur>0){ cur--; renderQuestion(); } });
+  document.getElementById("nextButton").addEventListener("click", ()=>{ if(cur<questions.length-1){ cur++; renderQuestion(); } });
+
+  if(isMixed){
+    ["mixNum","mixWhole","mixDen"].forEach(id=>{
+      document.getElementById(id).addEventListener("input", saveAnswerMixed);
+    });
+  }else{
+    document.getElementById("ansBox").addEventListener("input", (e)=>saveAnswerSingle(e.target.value));
+  }
+
+  const submitBtn = document.getElementById("submitButton");
+  if(submitBtn) submitBtn.addEventListener("click", submit);
+
+  const checkBtn = document.getElementById("checkButton");
+  if(checkBtn){
+    checkBtn.addEventListener("click", ()=>{
+      if(isMixed) saveAnswerMixed();
+      else saveAnswerSingle(document.getElementById("ansBox").value);
+      renderQuestion();
+    });
+  }
+
+  renderSidebar();
+}
+
+function go(i){
+  if(i<0 || i>=questions.length) return;
+  cur=i;
+  renderQuestion();
+}
+window.go = go;
+
+/* =========================
+   Save TXT (includes correct answers)
+========================= */
+function buildResultText(){
+  const correctCount = questions.filter(q=>q.isCorrect).length;
+  const total = questions.length;
+  const timeStr = timerEl.textContent.replace("Time: ","");
+
+  const header = [
+    "Mixed Quiz Result (A–E)",
+    `Student: ${studentName}`,
+    `Time: ${timeStr}`,
+    `Score: ${correctCount}/${total}`,
+    `Saved at: ${new Date().toISOString()}`,
+    ""
+  ].join("\n");
+
+  const lines = questions.map((q, idx)=>{
+    const qPlain = stripHTML(q.text);
+    let userDisp = (q.user||"").trim();
+
+    if(q.userMixed && (q.userMixed.num||q.userMixed.den||q.userMixed.whole)){
+      const m = q.userMixed;
+      userDisp = `${m.whole || 0} ${m.num || 0}/${m.den || 1}`;
+    }
+
+    const correctAns = answerKeyText(q);
+
+    return [
+      `Q${idx+1} (${PARTS[q.part]}):`,
+      `  Question: ${qPlain}`,
+      `  Your answer: ${userDisp || "[blank]"}`,
+      `  Result: ${q.isCorrect ? "Correct" : "Incorrect"}`,
+      `  Correct answer: ${correctAns}`,
+      ""
+    ].join("\n");
+  }).join("\n");
+
+  return header + lines;
+}
+function downloadTXT(text){
+  const safeName = (studentName || "Student").replace(/[^\w\-]+/g, "_");
+  const fileName = `MixedQuiz_Result_${safeName}_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.txt`;
+  const blob = new Blob([text], {type:"text/plain;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+/* =========================
+   Submit / Result (shows Answer Key like your screenshot)
+========================= */
+function submit(){
+  for(let i=0;i<questions.length;i++) evaluateOne(i);
+  submitted = true;
+
+  if(!paused){
+    elapsedMs = elapsedMs + (Date.now()-startTime);
+    paused = true;
+    document.getElementById("pauseButton").textContent="Resume";
+  }
+  timerEl.textContent = "Time: " + fmtTime(elapsedMs);
+
+  const correctCount = questions.filter(q=>q.isCorrect).length;
+  const total = questions.length;
+
+  const missed = [];
+  questions.forEach((q,idx)=>{
+    const attempted = (q.user||"").trim().length>0 ||
+                      (q.userMixed && (q.userMixed.num||q.userMixed.den||q.userMixed.whole));
+    if(!attempted) missed.push(`Q${idx+1} (blank)`);
+    else if(!q.isCorrect) missed.push(`Q${idx+1}`);
+  });
+
+  // Answer key list (HTML)
+  const keyHTML = questions.map((q,idx)=>{
+    return `
+      <div class="ak-row">
+        <div class="ak-q">Q${idx+1}:</div>
+        <div class="ak-a">${answerKeyHTML(q)}</div>
+      </div>
+    `;
+  }).join("");
+
+  resultArea.style.display="block";
+  resultArea.innerHTML = `
+    <div class="result-box">
+      <div class="result-top">
+        <div class="result-title">Result</div>
+        <button id="saveTxtButton">Save Current Result (TXT)</button>
+      </div>
+      <div class="small" style="margin-top:6px;">
+        Student: <b>${studentName}</b> &nbsp; | &nbsp;
+        Score: <b>${correctCount}</b>/<b>${total}</b> &nbsp; | &nbsp;
+        Time: <b>${fmtTime(elapsedMs)}</b>
+      </div>
+
+      <div class="result-grid">
+        <div class="result-card">
+          <div class="card-title">Incorrect / Unanswered</div>
+          <div class="small">${missed.length ? missed.join(", ") : "None 🎉"}</div>
+          <div class="small" style="margin-top:10px;">
+            After submit, you can edit answers and use <b>Check</b> (under each question) to practise again.
+          </div>
+        </div>
+
+        <div class="result-card">
+          <div class="card-title">Answer Key</div>
+          <div class="small">(Fractions shown as improper fractions)</div>
+          <div class="answerkey">${keyHTML}</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("saveTxtButton").addEventListener("click", ()=>{
+    downloadTXT(buildResultText());
+  });
+
+  renderSidebar();
+  renderQuestion();
+}
+
+/* =========================
+   Start / URL name logic
+========================= */
+function showStartScreen(){
+  startScreen.style.display="block";
+  quizScreen.style.display="none";
+}
+function showQuizScreen(){
+  startScreen.style.display="none";
+  quizScreen.style.display="block";
+}
+
+function startQuiz(name){
+  studentName = (name ?? "").trim(); // can be empty
+  document.getElementById("studentDisplay").textContent = "Student: " + studentName;
+
+  generateQuiz();
+  cur = 0;
+  submitted = false;
+  resultArea.style.display="none";
+  resultArea.innerHTML = "";
+
+  resetTimer();
+  showQuizScreen();
+  renderQuestion();
+}
+
+document.getElementById("pauseButton").addEventListener("click", togglePause);
+document.getElementById("generateButton").addEventListener("click", ()=>{
+  const ok = confirm("Generate a new set? Your current answers will be cleared.");
+  if(!ok) return;
+  startQuiz(studentName);
+});
+document.getElementById("startBtn").addEventListener("click", ()=>{ startQuiz(document.getElementById("nameInput").value); });
+document.getElementById("nameInput").addEventListener("keydown",(e)=>{ if(e.key==="Enter") document.getElementById("startBtn").click(); });
+
+const params = new URLSearchParams(location.search);
+const nameFromURL = params.get("name");
+if(nameFromURL && String(nameFromURL).trim().length>0){
+  startQuiz(String(nameFromURL).trim());
+} else {
+  showStartScreen();
+}
+</script>
+</body>
+</html>
