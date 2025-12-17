@@ -210,18 +210,29 @@ function isCorrect(userParsed, correct){
 function useMixedInput(q){
   if(!q.correct || q.correct.type!=="frac") return false;
   const f = simplifyFrac(q.correct.value);
-  // ✅ d=1 表示整数，不用 mixed number 输入
   return (f.d !== 1) && (Math.abs(f.n) > f.d);
 }
 
 /* =========================
-   Answer key display (avoid long repeating decimals)
+   NEW: Equality helpers to prevent "a ÷ a"
+========================= */
+function sameDecimal(a,b){
+  if(!a || !b) return false;
+  // pool strings are unique; still compare numeric too for safety
+  return (a.str === b.str) || (Math.abs(a.value - b.value) < 1e-12);
+}
+function sameFrac(a,b){
+  a = simplifyFrac(a); b = simplifyFrac(b);
+  return a.n === b.n && a.d === b.d;
+}
+
+/* =========================
+   Answer key display
 ========================= */
 function formatNiceNumber(x, dpMax=4){
   if(!Number.isFinite(x)) return String(x);
   const nearInt = Math.abs(x - Math.round(x)) < 1e-10;
   if(nearInt) return String(Math.round(x));
-  // clamp dp
   let s = x.toFixed(dpMax);
   s = s.replace(/0+$/,'').replace(/\.$/,'');
   return s;
@@ -231,8 +242,7 @@ function answerKeyHTML(q){
     const f = simplifyFrac(q.correct.value);
     return fracHTML(f);
   }
-  // numeric formatting by part
-  if(q.part===0 || q.part===3) return q.correct.value.toFixed(2); // Part A + Part D: 2dp
+  if(q.part===0 || q.part===3) return q.correct.value.toFixed(2);
   return formatNiceNumber(q.correct.value, 4);
 }
 function answerKeyText(q){
@@ -258,11 +268,7 @@ const COUNTS = [6,6,4,2,2];
 const TOTAL = COUNTS.reduce((a,b)=>a+b,0);
 
 /* =========================================================
-   PART A STRICT POOL (dp<=3, must be decimal)
-   Allowed patterns:
-     dp=1:  a.b   or b.a
-     dp=2:  0.ab  or 0.ba
-     dp=3:  0.0ab or 0.0ba
+   PART A STRICT POOL
 ========================================================= */
 let PARTA_POOL = [];
 function buildPartAPool(){
@@ -329,12 +335,15 @@ function genPartA(i){
     return { text:`${x.str} × ${y.str}`, correct:{type:"num", value:val} };
   }
 
-  // Q5-6 division: ensure quotient terminates
+  // Q5-6 division: ensure quotient terminates AND avoid A ÷ A
   let tries=0;
   while(tries++<30000){
     const A = pickPartADecimal(i);
     const B = pickPartADecimal(i);
     if(B.value <= 0) continue;
+
+    // ✅ avoid same number ÷ itself
+    if(sameDecimal(A,B)) continue;
 
     const q = A.value / B.value;
     if(q < 0 || q > 50) continue;
@@ -351,8 +360,13 @@ function genPartA(i){
     return { text:`${A.str} ÷ ${B.str}`, correct:{type:"num", value:val} };
   }
 
-  const A = pickPartADecimal(i);
-  const B = pickPartADecimal(i);
+  // fallback (still avoid A÷A)
+  let A = pickPartADecimal(i);
+  let B = pickPartADecimal(i);
+  let guard=0;
+  while(sameDecimal(A,B) && guard++<200){
+    B = pickPartADecimal(i);
+  }
   const val = roundTo(A.value/B.value, ANSWER_DP);
   return { text:`${A.str} ÷ ${B.str}`, correct:{type:"num", value:val} };
 }
@@ -374,9 +388,21 @@ function genFraction(level){
     attempt++;
   }while(gcd(n1,d1)===1 && gcd(n2,d2)===1 && attempt<120);
 
-  const f1 = simplifyFrac({n:n1,d:d1});
-  const f2 = simplifyFrac({n:n2,d:d2});
+  let f1 = simplifyFrac({n:n1,d:d1});
+  let f2 = simplifyFrac({n:n2,d:d2});
+
   const op = (level<=2) ? "×" : (Math.random()<0.55 ? "×" : "÷");
+
+  // ✅ if division, avoid a ÷ a
+  if(op==="÷"){
+    let guard=0;
+    while(sameFrac(f1,f2) && guard++<300){
+      d2 = choice(level<=3 ? denPoolEasy : denPoolHard);
+      n2 = rand(1, d2-1);
+      f2 = simplifyFrac({n:n2,d:d2});
+    }
+  }
+
   const r = (op==="×") ? mulFrac(f1,f2) : divFrac(f1,f2);
 
   return { text:`${fracHTML(f1)} ${op} ${fracHTML(f2)}`, correct:{type:"frac", value:r} };
@@ -396,8 +422,16 @@ function genPartCMixedOps(){
   const qs = [];
   for(let i=0;i<4;i++){
     const op = ops[i];
-    const a = genMixedImproper(i+1);
-    const b = genMixedImproper(i+1);
+    let a = genMixedImproper(i+1);
+    let b = genMixedImproper(i+1);
+
+    // ✅ if division, avoid a ÷ a
+    if(op==="÷"){
+      let guard=0;
+      while(sameFrac(a,b) && guard++<300){
+        b = genMixedImproper(i+1);
+      }
+    }
 
     if(op==="−"){
       const diff = subFrac(a,b);
@@ -420,12 +454,11 @@ function genPartCMixedOps(){
 }
 
 /* =========================
-   Part D: Two-step decimal word problems (random from your categories)
+   Part D: Two-step decimal word problems
 ========================= */
 function genDecimalWordProblems(){
   const factories = [];
 
-  // Factory 1: measurement/time
   factories.push(() => {
     const unit = choice(["m","kg","L","min"]);
     let total, used1, used2, ans, text;
@@ -448,7 +481,7 @@ function genDecimalWordProblems(){
       used2 = choice([0.3, 0.5, 0.7, 0.9]);
       ans = round2(total - used1 - used2);
       text = `A container holds ${total.toFixed(1)} L of juice. ${used1.toFixed(1)} L is poured out, then ${used2.toFixed(1)} L is poured out. How many litres remain?`;
-    } else { // min
+    } else {
       total = choice([45.0, 50.0, 62.5, 75.0, 80.0]);
       used1 = choice([12.5, 15.0, 18.0, 20.5]);
       used2 = choice([8.5, 10.0, 11.5, 13.0]);
@@ -459,7 +492,6 @@ function genDecimalWordProblems(){
     return { text, correct:{type:"num", value:ans} };
   });
 
-  // Factory 2: MONEY
   factories.push(() => {
     const names = ["Mia","Leo","Sophie","Ethan","Ava","Noah","Lily","Arjun","Grace","Jack","Aroha","Oliver"];
     const scenarios = [
@@ -517,7 +549,6 @@ function genDecimalWordProblems(){
     return { text, correct:{type:"num", value:ans} };
   });
 
-  // Factory 3: Mean
   factories.push(() => {
     const n = choice([4,5,6]);
     const mean = choice([2.4, 2.6, 2.8, 3.0, 3.2]);
@@ -553,7 +584,6 @@ function genDecimalWordProblems(){
     return { text, correct:{type:"num", value:missing} };
   });
 
-  // Factory 4: Speed + wait
   factories.push(() => {
     const speed = choice([48.0, 52.0, 60.0, 64.0]);
     const distance = choice([18.0, 24.0, 30.0, 36.0]);
@@ -567,9 +597,8 @@ function genDecimalWordProblems(){
     return { text, correct:{type:"num", value:totalTime} };
   });
 
-  // ---- Pick 2 different factories; MONEY ~30% overall
-  const idxs = [...Array(factories.length).keys()]; // ✅ always valid
-  const weightedPool = [1,1,1, 0,2,3, 0,2,3,2];      // ✅ money=3/10=30%
+  const idxs = [...Array(factories.length).keys()];
+  const weightedPool = [1,1,1, 0,2,3, 0,2,3,2];
 
   let first = choice(weightedPool);
   let second = choice(idxs.filter(x => x !== first));
@@ -578,7 +607,7 @@ function genDecimalWordProblems(){
 }
 
 /* =========================
-   Part E: Two-step fraction word problems (random from your categories)
+   Part E: Two-step fraction word problems
 ========================= */
 function genFractionWordProblems(){
   const factories = [];
@@ -641,14 +670,7 @@ function genFractionWordProblems(){
     return { text, correct:{type:"frac", value:final} };
   });
 
-  // ---------------------------
-  // Factory 5 (NEW, FULL, SAFE): 3 variables (Total / Fraction Used / Remaining)
-  // Know any 2 -> Find the 3rd (uses fraction division safely)
-  // - Different names + different life scenarios
-  // - Uses try/retry + fallback to avoid "page no response"
-  // ---------------------------
   factories.push(() => {
-    // robust fraction division: a / b
     const divFracSafe = (a, b) => {
       if (!a || !b) throw new Error("divFracSafe: missing frac");
       if (a.d === 0 || b.d === 0) throw new Error("divFracSafe: zero denominator");
@@ -674,14 +696,12 @@ function genFractionWordProblems(){
         const name = choice(names);
         const sc = choice(scenarios);
 
-        // Choose a nice integer total, and a proper fraction used (<1)
         const total = { n: choice([4,5,6,8,10,12]), d: 1 };
         const fracUsed = proper([2,3,4,5,6,8,10,12]);
 
         const used = mulFrac(total, fracUsed);
         const left = subFrac(total, used);
 
-        // Hide one of the three variables
         const unknown = choice(["total", "fracUsed", "left"]);
 
         let ans, text;
@@ -693,16 +713,14 @@ function genFractionWordProblems(){
             `${fracHTML(fracUsed)} of it is ${sc.action}. How much ${sc.thing} is left (in ${sc.unit})?`;
 
         } else if (unknown === "fracUsed") {
-          // fracUsed = (total - left) / total
           const usedAmt = subFrac(total, left);
           ans = divFracSafe(usedAmt, total);
           text =
             `${name} has a ${sc.container} of ${sc.thing} ${sc.place}. The ${sc.container} contains ${fracHTML(total)} ${sc.unit}. ` +
             `After some is ${sc.action}, ${fracHTML(left)} ${sc.unit} is left. What fraction of the ${sc.thing} was ${sc.action}?`;
 
-        } else { // unknown === "total"
-          // total = left / (1 - fracUsed)
-          const oneMinus = subFrac({n:1,d:1}, fracUsed); // safe because fracUsed is proper
+        } else {
+          const oneMinus = subFrac({n:1,d:1}, fracUsed);
           ans = divFracSafe(left, oneMinus);
           text =
             `${name} has a ${sc.container} of ${sc.thing} ${sc.place}. ${fracHTML(fracUsed)} of it is ${sc.action}. ` +
@@ -712,11 +730,10 @@ function genFractionWordProblems(){
         return { text, correct:{type:"frac", value:simplifyFrac(ans)} };
 
       } catch (e) {
-        continue; // retry
+        continue;
       }
     }
 
-    // Fallback: never let the page freeze
     return factories[0]();
   });
 
@@ -1029,7 +1046,7 @@ function downloadTXT(text){
 }
 
 /* =========================
-   Submit / Result (shows Answer Key like your screenshot)
+   Submit / Result
 ========================= */
 function submit(){
   for(let i=0;i<questions.length;i++) evaluateOne(i);
@@ -1053,7 +1070,6 @@ function submit(){
     else if(!q.isCorrect) missed.push(`Q${idx+1}`);
   });
 
-  // Answer key list (HTML)
   const keyHTML = questions.map((q,idx)=>{
     return `
       <div class="ak-row">
@@ -1115,7 +1131,7 @@ function showQuizScreen(){
 }
 
 function startQuiz(name){
-  studentName = (name ?? "").trim(); // can be empty
+  studentName = (name ?? "").trim();
   document.getElementById("studentDisplay").textContent = "Student: " + studentName;
 
   generateQuiz();
