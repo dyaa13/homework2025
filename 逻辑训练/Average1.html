@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Average Problems (Image Quiz)</title>
+
+  <style>
+    body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f4f9;margin:0;padding:20px;color:#333;}
+    .quiz-container{max-width:900px;margin:40px auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 6px 15px rgba(0,0,0,0.1);}
+    #headerLogo{display:flex;align-items:center;gap:12px;margin-bottom:10px;border-bottom:2px solid #e0e0e0;padding-bottom:10px;}
+    .logo-icon{width:40px;height:40px;background:#0d47a1;border-radius:6px;position:relative;}
+    .logo-icon:before{content:"";position:absolute;width:20px;height:9px;background:#ff9800;top:-6px;left:20px;border-radius:3px;}
+    .logo-text{display:flex;flex-direction:column;line-height:1.1;}
+    .logo-text .brand{font-weight:900;letter-spacing:1px;color:#ff9800;}
+    .logo-text .edu{font-size:.9em;color:#0d47a1;font-weight:700;}
+
+    .top-bar{display:flex;justify-content:space-between;align-items:center;margin:10px 0 6px 0;gap:10px;flex-wrap:wrap;}
+    #timerDisplay{font-size:.95em;color:#333;}
+    #studentLine{font-size:.95em;color:#555;}
+
+    .quiz-main{display:flex;gap:20px;margin-top:10px;}
+    .sidebar{width:160px;border-right:1px solid #ddd;padding-right:10px;display:none;}
+    .sidebar h4{margin:0 0 8px;font-size:.95em;border-bottom:1px solid #eee;padding-bottom:4px;}
+    .sidebar ul{list-style:none;padding:0;margin:0;}
+    .sidebar li{padding:6px;cursor:pointer;border-radius:6px;font-size:.9em;margin-bottom:6px;border:1px solid #eee;background:#fafafa;}
+    .sidebar li.active{outline:2px solid #1976d2;font-weight:700;background:#fff;}
+    .sidebar li.answered{border-left:5px solid #4caf50;}
+    .sidebar li.correct{background:#d4edda;border-left:5px solid #28a745;border-color:#cbe7d1;}
+    .sidebar li.incorrect{background:#f8d7da;border-left:5px solid #f44336;border-color:#f1c7cc;}
+
+    #quizContent{flex:1;}
+    .question-text{font-size:1.05em;margin-bottom:8px;}
+    .part-title{font-weight:800;margin:8px 0 10px 0;}
+    .single-question{margin:6px 0;line-height:1.7;}
+    .answer-row{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+    .answer-box{width:320px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
+    .img-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px;box-shadow:0 3px 8px rgba(0,0,0,0.05);max-width:100%;}
+    .q-img{width:100%;height:auto;display:block;border-radius:10px;}
+
+    .hint-row{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    .hint-btn{background:#ff9800;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:0.95em;}
+    .hint-btn:disabled{opacity:.55;cursor:not-allowed;}
+    .hint{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;}
+
+    .button-container{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;}
+    button{padding:10px 18px;border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:1em;}
+    #nextButton{background:#4caf50;}
+    #backButton{background:#039be5;}
+    #generateButton{background:#ff9800;}
+    #submitButton{background:#9c27b0;}
+    #saveButton{background:#607d8b;}
+    #pauseButton{background:#f57c00;}
+    #checkButton{background:#455a64;}
+    button:disabled{opacity:.55;cursor:not-allowed;}
+
+    .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
+
+    table.review-table{width:100%;border-collapse:collapse;margin-top:18px;}
+    .review-table th,.review-table td{border:1px solid #ccc;padding:6px;font-size:.85em;text-align:center;vertical-align:top;}
+    .review-table th{background:#f2f2f2;}
+    .correct-answer{background:#d4edda;}
+    .incorrect-answer{background:#f8d7da;}
+    .thumb{width:160px;max-width:160px;height:auto;border-radius:8px;border:1px solid #ddd;background:#fff;}
+
+    @media (max-width:760px){
+      .quiz-main{flex-direction:column;}
+      .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
+      .thumb{width:120px;max-width:120px;}
+      .answer-box{width:100%;}
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text">
+      <div class="brand">DYAA</div>
+      <div class="edu">EDUCATION</div>
+    </div>
+  </div>
+
+  <div class="top-bar">
+    <div>
+      <div id="timerDisplay">Time: 00:00</div>
+      <div id="studentLine"></div>
+    </div>
+    <div>
+      <button id="pauseButton" style="display:none;">Pause</button>
+      <button id="generateButton" style="display:none;">Generate New Set</button>
+    </div>
+  </div>
+
+  <h2 style="margin:6px 0 0 0;">Lesson Theme: Average Problems (Part 1)</h2>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+
+  <div id="navButtons" class="button-container" style="display:none;">
+    <button id="backButton" style="display:none;">Previous</button>
+    <button id="submitButton" style="display:none;">Submit &amp; View Results</button>
+    <button id="nextButton" style="display:none;">Next</button>
+    <button id="checkButton" style="display:none;">Check</button>
+    <button id="saveButton" style="display:none;">Save Current Result</button>
+  </div>
+</div>
+
+<script>
+/* ---------------- CONFIG ---------------- */
+const PART_TITLES = [
+  "Part 1 (Easy) — Overall average + split averages",
+  "Part 2 (Medium) — Average with one day known",
+  "Part 3 (Hard) — Pairwise averages"
+];
+const NUM_PARTS = 3;
+const QUESTIONS_PER_PART = 2;
+const TOTAL_QUESTIONS = NUM_PARTS * QUESTIONS_PER_PART;
+
+/* ---------------- Utils ---------------- */
+function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function formatMs(ms){
+  const totalSec=Math.floor(ms/1000), min=Math.floor(totalSec/60), sec=totalSec%60;
+  return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+function escapeXml(s){
+  return String(s)
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&apos;");
+}
+function wrapLines(lines, maxChars = 58){
+  const out=[];
+  function pushWrapped(line){
+    const words=String(line).split(/\s+/).filter(Boolean);
+    let cur="";
+    for(const w of words){
+      if(w.length>maxChars){
+        if(cur){ out.push(cur); cur=""; }
+        for(let i=0;i<w.length;i+=maxChars) out.push(w.slice(i,i+maxChars));
+        continue;
+      }
+      if(!cur) cur=w;
+      else if((cur+" "+w).length<=maxChars) cur+=" "+w;
+      else { out.push(cur); cur=w; }
+    }
+    if(cur) out.push(cur);
+  }
+  for(const line of lines) pushWrapped(line);
+  return out;
+}
+function makeSvgQuestionImage(lines, titleText="Average Problems"){
+  const W=980, headerH=72, padX=44, lineH=46, firstLineY=headerH+52, padBottom=54;
+  const wrapped=wrapLines(lines, 58);
+  const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
+
+  const textSpans=wrapped.map((t,i)=>{
+    const y=firstLineY + i*lineH;
+    return `<text x="${padX}" y="${y}" font-size="30" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+  }).join("");
+
+  const svg=`
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f7fbff"/>
+        <stop offset="1" stop-color="#ffffff"/>
+      </linearGradient>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#000" flood-opacity="0.12"/>
+      </filter>
+    </defs>
+
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
+          fill="url(#g)" stroke="#dfe7f2" stroke-width="3" filter="url(#shadow)"/>
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${headerH}"
+          fill="#0d47a1" opacity="0.10"/>
+
+    <text x="${padX}" y="56" font-size="28" fill="#0d47a1" font-weight="700"
+          font-family="Segoe UI, Arial">${escapeXml(titleText)}</text>
+
+    ${textSpans}
+  </svg>`.trim();
+
+  const encoded=encodeURIComponent(svg)
+    .replaceAll("%0A","").replaceAll("%20"," ")
+    .replaceAll("%3D","=").replaceAll("%3A",":")
+    .replaceAll("%2F","/").replaceAll("%2C",",");
+
+  return "data:image/svg+xml;charset=utf-8," + encoded;
+}
+
+/* numeric answer */
+function parseAnswer(str){
+  const s=(str||"").trim();
+  if(s==="") return NaN;
+  const n=Number(s);
+  return Number.isFinite(n) ? n : NaN;
+}
+function nearlyEqual(a,b,eps=1e-9){
+  if(!Number.isFinite(a)||!Number.isFinite(b)) return false;
+  return Math.abs(a-b)<eps;
+}
+
+/* ---------------- Problem Generators ---------------- */
+/* Hints must be WORDS (no equations). */
+
+// Part 1: 7 numbers, overall average, first 4 average, last 4 average => middle number
+function genP1_MiddleOfSeven(){
+  // Choose integer-friendly values.
+  const overallAvg = randInt(20, 60);
+  const first4Avg  = overallAvg - randInt(2, 12);
+  const last4Avg   = overallAvg + randInt(2, 12);
+
+  // Need (7*overall) = (4*first4) + (4*last4) - middle
+  const middle = 4*first4Avg + 4*last4Avg - 7*overallAvg;
+
+  // Keep middle as a reasonable integer (can be negative if unlucky)
+  if(middle<=0 || middle>200) return genP1_MiddleOfSeven();
+
+  const lines=[
+    `The average of 7 numbers is ${overallAvg}.`,
+    `After sorting the 7 numbers from smallest to largest,`,
+    `the average of the first 4 numbers is ${first4Avg},`,
+    `and the average of the last 4 numbers is ${last4Avg}.`,
+    `What is the middle number (the 4th number)?`
+  ];
+
+  return {
+    img: makeSvgQuestionImage(lines, "Average Problems"),
+    value: middle,
+    hint: "Hint: Convert each average into a total. The two groups of 4 overlap at the middle number, so that middle value is counted twice. Use the totals to find it."
+  };
+}
+
+// Part 1: 5 numbers, average, first 4 average (largest to smallest), last 2 average => middle 3 average
+function genP1_MiddleThreeAverage(){
+  const avg5 = randInt(60, 140);
+  const avgFirst4 = avg5 + randInt(2, 15);
+  const avgLast2  = avg5 - randInt(2, 15);
+
+  // middle3 sum = sum5 - (largest) - (smallest)
+  // We can find largest from first4 sum - middle3 sum? Not direct.
+  // Use overlap trick:
+  // Sum first4 + Sum last2 = (n1+n2+n3+n4) + (n4+n5) = Sum5 + n4
+  // => n4 = SumFirst4 + SumLast2 - Sum5
+  const sum5 = 5*avg5;
+  const sumFirst4 = 4*avgFirst4;
+  const sumLast2 = 2*avgLast2;
+  const n4 = sumFirst4 + sumLast2 - sum5; // the 4th number in the sorted list (2nd smallest in first4? but consistent)
+  // Now middle three are n2+n3+n4 = SumFirst4 - n1, but we don't know n1.
+  // Instead, ask for the average of the middle THREE numbers n2,n3,n4 AND provide avg of first 2 numbers.
+  // To match your picture style, keep it like original: "middle 3 average".
+  // We'll generate consistent numbers by constructing actual numbers first.
+
+  // Build a sorted 5-number set with nice integers.
+  const n1 = randInt(40, 90);
+  const n5 = n1 + randInt(40, 120);
+  const n2 = n1 + randInt(5, 25);
+  const n4b = n5 - randInt(5, 25);
+  const n3 = randInt(n2, n4b);
+
+  const nums=[n1,n2,n3,n4b,n5].sort((a,b)=>a-b);
+  const sum=nums.reduce((s,x)=>s+x,0);
+  const overall = sum/5;
+  if(!Number.isInteger(overall)) return genP1_MiddleThreeAverage();
+
+  const first4 = (nums[0]+nums[1]+nums[2]+nums[3])/4;
+  const last2  = (nums[3]+nums[4])/2;
+  if(!Number.isInteger(first4) || !Number.isInteger(last2)) return genP1_MiddleThreeAverage();
+
+  const mid3avg = (nums[1]+nums[2]+nums[3])/3;
+  if(!Number.isInteger(mid3avg)) return genP1_MiddleThreeAverage();
+
+  const lines=[
+    `The average of 5 numbers is ${overall}.`,
+    `After sorting the numbers from largest to smallest,`,
+    `the average of the first 4 numbers is ${first4},`,
+    `and the average of the last 2 numbers is ${last2}.`,
+    `What is the average of the middle 3 numbers?`
+  ];
+
+  return {
+    img: makeSvgQuestionImage(lines, "Average Problems"),
+    value: mid3avg,
+    hint: "Hint: Change averages into totals. Notice that the first 4 numbers and the last 2 numbers overlap in one number. Use that overlap to find the shared number, then use totals to find the middle three."
+  };
+}
+
+// Part 2: 5 days, average of first 3 days and last 3 days, given day 3, find overall average
+function genP2_OverallFromOverlappingAverages(){
+  const avgFirst3 = randInt(50, 120);
+  const avgLast3  = randInt(40, 110);
+  const day3      = randInt(40, 130);
+
+  // Let totals: first3 total = 3*avgFirst3 = d1+d2+d3
+  // last3 total = 3*avgLast3 = d3+d4+d5
+  // total5 = (first3 + last3 - d3)
+  const total5 = 3*avgFirst3 + 3*avgLast3 - day3;
+  if(total5<=0 || total5%5!==0) return genP2_OverallFromOverlappingAverages();
+  const overallAvg = total5/5;
+
+  // Ensure day1+day2 positive
+  const first3Total = 3*avgFirst3;
+  if(first3Total - day3 <= 2) return genP2_OverallFromOverlappingAverages();
+
+  const lines=[
+    `Mia finished a workbook in 5 days.`,
+    `The average number of questions she finished per day in the first 3 days was ${avgFirst3}.`,
+    `The average number per day in the last 3 days was ${avgLast3}.`,
+    `On Day 3 she finished ${day3} questions.`,
+    `What was her average number of questions per day over all 5 days?`
+  ];
+
+  return {
+    img: makeSvgQuestionImage(lines, "Average Problems"),
+    value: overallAvg,
+    hint: "Hint: Turn each 3-day average into a 3-day total. The two 3-day totals overlap on Day 3, so subtract Day 3 once to get the 5-day total. Then divide by 5."
+  };
+}
+
+// Part 2: 6 days, avg first 4, avg last 4, given day 4, find overall avg (6)
+function genP2_SixDaysOverlap(){
+  const avgFirst4 = randInt(40, 120);
+  const avgLast4  = randInt(40, 120);
+  const day4      = randInt(30, 140);
+
+  // first4 total = d1+d2+d3+d4
+  // last4 total  = d3+d4+d5+d6
+  // overlap is days 3 and 4
+  // To keep solvable with one given day, we ask for average of all 6 given day3 too? but we only want one answer field.
+  // We'll instead ask for d3+d4 total, given day4 and day3.
+  const day3 = randInt(30, 140);
+
+  const total6 = 4*avgFirst4 + 4*avgLast4 - (day3+day4);
+  if(total6<=0 || total6%6!==0) return genP2_SixDaysOverlap();
+  const overallAvg = total6/6;
+
+  const lines=[
+    `Liam tracked the number of pages he read each day for 6 days.`,
+    `The average for the first 4 days was ${avgFirst4}.`,
+    `The average for the last 4 days was ${avgLast4}.`,
+    `On Day 3 he read ${day3} pages and on Day 4 he read ${day4} pages.`,
+    `What was his average pages per day over all 6 days?`
+  ];
+
+  return {
+    img: makeSvgQuestionImage(lines, "Average Problems"),
+    value: overallAvg,
+    hint: "Hint: Convert each 4-day average into a total. The two 4-day groups overlap on Days 3 and 4, so subtract those once to get the 6-day total. Then divide by 6."
+  };
+}
+
+// Part 3: Pairwise averages of 3 people -> find each score (return all three as sum?)
+// We keep ONE numeric input, so ask for one of them OR ask for the highest score.
+// We'll ask: "What is Alex's score?" (unique).
+function genP3_ThreePeopleScores(){
+  // Let A,B,C integers.
+  // Given (A+B)/2 = ab, (A+C)/2 = ac, (B+C)/2 = bc
+  // Then A = ab + ac - bc, etc.
+  const ab = randInt(60, 110);
+  const ac = randInt(60, 110);
+  const bc = randInt(60, 110);
+
+  const A = ab + ac - bc;
+  const B = ab + bc - ac;
+  const C = ac + bc - ab;
+
+  if(A<=0 || B<=0 || C<=0) return genP3_ThreePeopleScores();
+  if(A>150 || B>150 || C>150) return genP3_ThreePeopleScores();
+
+  const names = ["Alex","Bella","Chris"];
+  const lines=[
+    `In a math contest, ${names[0]}, ${names[1]}, and ${names[2]} received scores.`,
+    `The average of ${names[0]} and ${names[1]} was ${ab}.`,
+    `The average of ${names[0]} and ${names[2]} was ${ac}.`,
+    `The average of ${names[1]} and ${names[2]} was ${bc}.`,
+    `What was ${names[0]}'s score?`
+  ];
+
+  return {
+    img: makeSvgQuestionImage(lines, "Average Problems"),
+    value: A,
+    hint: "Hint: Each pair average tells you the total of that pair. Combine two pair totals that include the same person, then remove the pair total that does not include that person."
+  };
+}
+
+// Part 3: 4 people, given some pair averages -> find one person's score
+function genP3_FourPeopleChain(){
+  // We'll do: averages of (A,B), (B,C), (C,D), and overall average of 4.
+  const A=randInt(50,120);
+  const B=randInt(50,120);
+  const C=randInt(50,120);
+  const D=randInt(50,120);
+  const avgAB=(A+B)/2, avgBC=(B+C)/2, avgCD=(C+D)/2, avgAll=(A+B+C+D)/4;
+
+  // keep integer averages
+  if(!Number.isInteger(avgAB) || !Number.isInteger(avgBC) || !Number.isInteger(avgCD) || !Number.isInteger(avgAll)) return genP3_FourPeopleChain();
+
+  const lines=[
+    `Four friends have scores: A, B, C, and D.`,
+    `The average of A and B is ${avgAB}.`,
+    `The average of B and C is ${avgBC}.`,
+    `The average of C and D is ${avgCD}.`,
+    `The average of all four scores is ${avgAll}.`,
+    `What is B's score?`
+  ];
+
+  return {
+    img: makeSvgQuestionImage(lines, "Average Problems"),
+    value: B,
+    hint: "Hint: Turn each average into a pair total. Use the overall average to get the total of all four. Then use the chain of pair totals to isolate B."
+  };
+}
+
+/* ---------------- State ---------------- */
+let questions=[];
+let currentQuestionIndex=0;
+let studentName="Student";
+let quizStartTime=null;
+let quizEndTime=null;
+let quizSubmitted=false;
+
+let timerInterval=null;
+let elapsedMs=0;
+let isPaused=false;
+let firstAttemptMs=null;
+
+const quizContent=document.getElementById("quizContent");
+const sidebarEl=document.getElementById("sidebar");
+
+const buttonContainer=document.getElementById("navButtons");
+const backButton=document.getElementById("backButton");
+const nextButton=document.getElementById("nextButton");
+const submitButton=document.getElementById("submitButton");
+const checkButton=document.getElementById("checkButton");
+const saveButton=document.getElementById("saveButton");
+
+const generateBtn=document.getElementById("generateButton");
+const pauseButton=document.getElementById("pauseButton");
+const timerDisplay=document.getElementById("timerDisplay");
+const studentLine=document.getElementById("studentLine");
+
+/* ---------------- Timer ---------------- */
+function updateTimerDisplay(){
+  let totalMs=elapsedMs;
+  if(!isPaused && quizStartTime) totalMs+=(new Date()-quizStartTime);
+  let text=`Time: ${formatMs(totalMs)}`;
+  if(firstAttemptMs!==null) text+=` (First: ${formatMs(firstAttemptMs)})`;
+  timerDisplay.textContent=text;
+}
+function startTimerInterval(){
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval=setInterval(updateTimerDisplay, 1000);
+}
+function pauseTimer(){
+  if(isPaused || !quizStartTime) return;
+  const now=new Date();
+  elapsedMs+=now-quizStartTime;
+  isPaused=true;
+  quizStartTime=null;
+  updateTimerDisplay();
+}
+function resumeTimer(){
+  if(!isPaused) return;
+  isPaused=false;
+  quizStartTime=new Date();
+  updateTimerDisplay();
+}
+
+/* ---------------- Generate Quiz ---------------- */
+function generateQuiz(){
+  questions=[];
+  quizSubmitted=false;
+
+  const built = [
+    genP1_MiddleOfSeven(),
+    genP1_MiddleThreeAverage(),
+    genP2_OverallFromOverlappingAverages(),
+    genP2_SixDaysOverlap(),
+    genP3_ThreePeopleScores(),
+    genP3_FourPeopleChain()
+  ];
+
+  for(let i=0;i<built.length;i++){
+    const partIndex=Math.floor(i/QUESTIONS_PER_PART);
+    const indexInPart=i%QUESTIONS_PER_PART;
+    questions.push({
+      partIndex,
+      indexInPart,
+      img: built[i].img,
+      value: built[i].value,
+      hint: built[i].hint,
+      userValue:"",
+      isCorrect:false
+    });
+  }
+}
+
+/* ---------------- Sidebar ---------------- */
+function renderSidebar(){
+  sidebarEl.style.display="block";
+  sidebarEl.innerHTML=`<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul=document.getElementById("qList");
+  for(let i=0;i<TOTAL_QUESTIONS;i++){
+    const q=questions[i];
+    const li=document.createElement("li");
+    const label=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
+    li.textContent=`Q${i+1} (${label})`;
+    li.dataset.index=i;
+    li.addEventListener("click",()=>{
+      saveCurrentInput();
+      currentQuestionIndex=i;
+      renderQuestion();
+    });
+    ul.appendChild(li);
+  }
+  updateSidebarStatus();
+}
+function updateSidebarStatus(){
+  const items=document.querySelectorAll("#qList li");
+  items.forEach(li=>{
+    const idx=Number(li.dataset.index);
+    const q=questions[idx];
+    li.classList.remove("active","answered","correct","incorrect");
+
+    if(!quizSubmitted){
+      li.classList.toggle("active", idx===currentQuestionIndex);
+      if((q.userValue||"").trim()!=="") li.classList.add("answered");
+    }else{
+      if((q.userValue||"").trim()!==""){
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ---------------- Helpers ---------------- */
+function gradeOneQuestion(i){
+  const q=questions[i];
+  const val=parseAnswer(q.userValue||"");
+  q.isCorrect=nearlyEqual(val, q.value);
+}
+function saveCurrentInput(){
+  const input=document.getElementById("answerInput");
+  if(input){
+    questions[currentQuestionIndex].userValue=input.value.trim();
+    if(quizSubmitted){
+      gradeOneQuestion(currentQuestionIndex);
+      updateSidebarStatus();
+    }
+  }
+}
+function mountNavButtonsInto(slotId){
+  const slot=document.getElementById(slotId);
+  if(!slot) return;
+  slot.appendChild(buttonContainer);
+  buttonContainer.style.display="flex";
+}
+
+/* ---------------- Render Question ---------------- */
+function renderQuestion(){
+  const q=questions[currentQuestionIndex];
+  const levelLabel=["Easy","Medium","Hard"][q.partIndex];
+  const fullLabel=`${levelLabel} — Question ${q.indexInPart+1}`;
+  const hasHint=(q.hint||"").trim()!=="";
+
+  quizContent.innerHTML=`
+    <p class="question-text">Question ${currentQuestionIndex+1} of ${TOTAL_QUESTIONS}</p>
+    <div class="part-title">${PART_TITLES[q.partIndex]}</div>
+
+    <div class="single-question">
+      <div style="font-weight:800;margin-bottom:8px;">${fullLabel}</div>
+
+      <div class="img-wrap">
+        <img class="q-img" src="${q.img}" alt="Question image">
+      </div>
+
+      <div class="answer-row">
+        <div style="font-weight:700;">Answer (number):</div>
+        <input id="answerInput" class="answer-box" type="text" inputmode="numeric"
+               placeholder="Type your answer"
+               value="${q.userValue||""}">
+      </div>
+
+      <div id="checkFeedback" style="display:none;"></div>
+
+      <div class="hint-row">
+        <button id="hintBtn" class="hint-btn" ${hasHint ? "" : "disabled"}>${hasHint ? "Hint" : "No Hint"}</button>
+      </div>
+      <div id="hintBox" class="hint">${hasHint ? q.hint : ""}</div>
+    </div>
+
+    <div id="navSlot"></div>
+  `;
+
+  mountNavButtonsInto("navSlot");
+
+  const hintBtn=document.getElementById("hintBtn");
+  const hintBox=document.getElementById("hintBox");
+  if(hintBtn && hintBox && hasHint){
+    hintBtn.addEventListener("click", ()=>{
+      const shown = hintBox.style.display==="block";
+      hintBox.style.display = shown ? "none" : "block";
+      hintBtn.textContent = shown ? "Hint" : "Hide Hint";
+    });
+  }
+
+  backButton.style.display="inline-block";
+  backButton.style.visibility=(currentQuestionIndex===0)?"hidden":"visible";
+
+  const isLast=(currentQuestionIndex===TOTAL_QUESTIONS-1);
+  nextButton.style.display=isLast?"none":"inline-block";
+  submitButton.style.display=isLast?"inline-block":"none";
+
+  saveButton.style.display=quizSubmitted?"inline-block":"none";
+  checkButton.style.display=(quizSubmitted && !q.isCorrect)?"inline-block":"none";
+
+  updateSidebarStatus();
+}
+
+/* ---------------- Results + Submit ---------------- */
+function calculateAndShowResults(){
+  saveCurrentInput();
+
+  const now=new Date();
+  let attemptMs=elapsedMs;
+  if(!isPaused && quizStartTime) attemptMs+=now-quizStartTime;
+  if(firstAttemptMs===null) firstAttemptMs=attemptMs;
+
+  const attemptStartTime=quizStartTime || now;
+  quizEndTime=now;
+  quizSubmitted=true;
+
+  let correctCount=0;
+  questions.forEach(q=>{
+    const val=parseAnswer(q.userValue||"");
+    q.isCorrect=nearlyEqual(val, q.value);
+    if(q.isCorrect) correctCount++;
+  });
+
+  updateSidebarStatus();
+
+  let html=`
+    <h3>Results for ${studentName}</h3>
+    <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
+    <p>Start time: <strong>${attemptStartTime.toLocaleTimeString()}</strong></p>
+    <p>Submit time: <strong>${quizEndTime.toLocaleTimeString()}</strong></p>
+    <p>Time taken (this attempt): <strong>${formatMs(attemptMs)}</strong></p>
+    <p>First attempt time: <strong>${formatMs(firstAttemptMs)}</strong></p>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th><th>Part</th><th>Image</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q,i)=>{
+    const partLbl=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
+    const ua=(q.userValue||"").trim();
+    html+=`
+      <tr class="${q.isCorrect ? "correct-answer":"incorrect-answer"}">
+        <td>${i+1}</td>
+        <td>${partLbl}</td>
+        <td><img class="thumb" src="${q.img}" alt="Q${i+1}"></td>
+        <td>${ua==="" ? "—" : ua}</td>
+        <td><strong>${q.value}</strong></td>
+        <td>${ua==="" ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
+      </tr>
+    `;
+  });
+
+  html+=`</table><div id="navSlot"></div>`;
+  quizContent.innerHTML=html;
+
+  mountNavButtonsInto("navSlot");
+
+  backButton.style.display="none";
+  nextButton.style.display="none";
+  submitButton.style.display="none";
+  checkButton.style.display="none";
+  saveButton.style.display="inline-block";
+
+  // reset timer for next attempt
+  elapsedMs=0; isPaused=false; quizStartTime=new Date();
+  pauseButton.textContent="Pause";
+  startTimerInterval();
+  updateTimerDisplay();
+}
+
+/* ---------------- Buttons ---------------- */
+nextButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex<TOTAL_QUESTIONS-1){
+    currentQuestionIndex++;
+    renderQuestion();
+  }
+});
+backButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex>0){
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+});
+submitButton.addEventListener("click", ()=>{
+  if(currentQuestionIndex===TOTAL_QUESTIONS-1){
+    calculateAndShowResults();
+  }
+});
+checkButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  const q=questions[currentQuestionIndex];
+  if(!quizSubmitted) return;
+
+  gradeOneQuestion(currentQuestionIndex);
+  updateSidebarStatus();
+
+  const box=document.getElementById("checkFeedback");
+  if(!box) return;
+
+  box.className="check-feedback";
+  box.style.display="block";
+
+  if(q.isCorrect){
+    box.innerHTML=`✅ Correct!`;
+    checkButton.style.display="none";
+  }else{
+    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${q.value}</strong>`;
+    checkButton.style.display="inline-block";
+  }
+});
+
+/* Save TXT */
+function formatDateForFilename(date){
+  if(!date) return "no_time";
+  const pad=n=>String(n).padStart(2,"0");
+  return date.getFullYear()+pad(date.getMonth()+1)+pad(date.getDate())+"_"+
+         pad(date.getHours())+pad(date.getMinutes())+pad(date.getSeconds());
+}
+function saveCurrentResultAsTxt(){
+  saveCurrentInput();
+
+  if(!quizSubmitted){
+    questions.forEach(q=>{
+      const val=parseAnswer(q.userValue||"");
+      q.isCorrect=nearlyEqual(val,q.value);
+    });
+  }
+  let correctCount=0;
+  questions.forEach(q=>{ if(q.isCorrect) correctCount++; });
+
+  const lines=[];
+  lines.push("Average Problems (Image Quiz) - Current Result");
+  lines.push("Student: "+studentName);
+  if(quizStartTime) lines.push("Start time: "+quizStartTime.toLocaleString());
+  if(quizEndTime) lines.push("Last submit time: "+quizEndTime.toLocaleString());
+  lines.push("Score: "+correctCount+" / "+TOTAL_QUESTIONS);
+  if(firstAttemptMs!==null) lines.push("First attempt time: "+formatMs(firstAttemptMs));
+  lines.push("");
+
+  questions.forEach((q,i)=>{
+    const partLbl=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
+    const userAns=(q.userValue||"").trim()==="" ? "Not answered" : q.userValue;
+    const resultText=(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect?"Correct":"Incorrect");
+    lines.push(`Q${i+1} (${partLbl})`);
+    lines.push("Your answer: "+userAns);
+    lines.push("Correct answer: "+q.value);
+    lines.push("Result: "+resultText);
+    lines.push("");
+  });
+
+  const content=lines.join("\n");
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
+  const ts=formatDateForFilename(new Date());
+  a.href=url;
+  a.download=`Average_${safeName}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+saveButton.addEventListener("click", saveCurrentResultAsTxt);
+
+/* Pause/Resume */
+pauseButton.addEventListener("click", ()=>{
+  if(!quizStartTime && elapsedMs===0 && !quizSubmitted) return;
+  if(isPaused){ resumeTimer(); pauseButton.textContent="Pause"; }
+  else { pauseTimer(); pauseButton.textContent="Resume"; }
+});
+
+/* Generate new set */
+generateBtn.addEventListener("click", ()=>{
+  if(!quizSubmitted && !confirm("Generate a new random set? All answers will be lost.")) return;
+
+  if(timerInterval) clearInterval(timerInterval);
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=new Date(); quizEndTime=null;
+  updateTimerDisplay(); startTimerInterval();
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+});
+
+/* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
+function getNameFromUrl(){
+  const url=new URL(window.location.href);
+  const name=url.searchParams.get("name");
+  return name ? name.trim() : "";
+}
+function showStartScreen(){
+  sidebarEl.style.display="none";
+  buttonContainer.style.display="none";
+  generateBtn.style.display="none";
+  saveButton.style.display="none";
+  pauseButton.style.display="none";
+  studentLine.textContent="";
+
+  if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=null; quizEndTime=null;
+  updateTimerDisplay();
+
+  const preset=getNameFromUrl();
+  if(preset){
+    studentName=preset;
+    studentLine.textContent=`Student: ${studentName}`;
+    startQuiz(true);
+    return;
+  }
+
+  quizContent.innerHTML=`
+    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> average problems:</p>
+    <ul style="margin-top:6px;color:#555;line-height:1.7;">
+      <li><strong>Part 1 (Easy):</strong> 2 questions</li>
+      <li><strong>Part 2 (Medium):</strong> 2 questions</li>
+      <li><strong>Part 3 (Hard):</strong> 2 questions</li>
+    </ul>
+    <p style="margin-top:10px;">Please enter your name to begin:</p>
+
+    <input id="nameInput" type="text"
+      style="padding:10px;width:260px;font-size:1.05em;border:1px solid #ccc;border-radius:10px;"
+      placeholder="Your name">
+
+    <button id="startButton"
+      style="margin-left:10px;background:#4caf50;padding:10px 20px;color:white;border:none;border-radius:8px;">
+      Start Quiz
+    </button>
+  `;
+  document.getElementById("startButton").addEventListener("click", ()=>startQuiz(false));
+}
+function startQuiz(skipReadName){
+  if(!skipReadName){
+    const nameInput=document.getElementById("nameInput");
+    studentName=(nameInput.value || "Student").trim();
+  }
+  studentLine.textContent=`Student: ${studentName}`;
+
+  quizStartTime=new Date();
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  updateTimerDisplay(); startTimerInterval();
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+
+  generateBtn.style.display="inline-block";
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+}
+
+/* ---------------- Init ---------------- */
+showStartScreen();
+</script>
+</body>
+</html>
