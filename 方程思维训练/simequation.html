@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simultaneous Equations (Image Quiz)</title>
+
+  <style>
+    body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f4f9;margin:0;padding:20px;color:#333;}
+    .quiz-container{max-width:900px;margin:40px auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 6px 15px rgba(0,0,0,0.1);}
+    #headerLogo{display:flex;align-items:center;gap:12px;margin-bottom:10px;border-bottom:2px solid #e0e0e0;padding-bottom:10px;}
+    .logo-icon{width:40px;height:40px;background:#0d47a1;border-radius:6px;position:relative;}
+    .logo-icon:before{content:"";position:absolute;width:20px;height:9px;background:#ff9800;top:-6px;left:20px;border-radius:3px;}
+    .logo-text{display:flex;flex-direction:column;line-height:1.1;}
+    .logo-text .brand{font-weight:900;letter-spacing:1px;color:#ff9800;}
+    .logo-text .edu{font-size:.9em;color:#0d47a1;font-weight:700;}
+
+    .top-bar{display:flex;justify-content:space-between;align-items:center;margin:10px 0 6px 0;gap:10px;flex-wrap:wrap;}
+    #timerDisplay{font-size:.95em;color:#333;}
+    #studentLine{font-size:.95em;color:#555;}
+
+    .quiz-main{display:flex;gap:20px;margin-top:10px;}
+    .sidebar{width:160px;border-right:1px solid #ddd;padding-right:10px;display:none;}
+    .sidebar h4{margin:0 0 8px;font-size:.95em;border-bottom:1px solid #eee;padding-bottom:4px;}
+    .sidebar ul{list-style:none;padding:0;margin:0;}
+    .sidebar li{padding:6px;cursor:pointer;border-radius:6px;font-size:.9em;margin-bottom:6px;border:1px solid #eee;background:#fafafa;}
+    .sidebar li.active{outline:2px solid #1976d2;font-weight:700;background:#fff;}
+    .sidebar li.answered{border-left:5px solid #4caf50;}
+    .sidebar li.correct{background:#d4edda;border-left:5px solid #28a745;border-color:#cbe7d1;}
+    .sidebar li.incorrect{background:#f8d7da;border-left:5px solid #f44336;border-color:#f1c7cc;}
+
+    #quizContent{flex:1;}
+    .question-text{font-size:1.05em;margin-bottom:8px;}
+    .part-title{font-weight:800;margin:8px 0 10px 0;}
+    .single-question{margin:6px 0;line-height:1.7;}
+    .img-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px;box-shadow:0 3px 8px rgba(0,0,0,0.05);max-width:100%;}
+    .q-img{width:100%;height:auto;display:block;border-radius:10px;}
+
+    .answer-grid{margin-top:12px;display:grid;grid-template-columns:auto 1fr;gap:10px 12px;align-items:center;max-width:520px;}
+    .answer-box{width:260px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
+    .small-note{font-size:.9em;color:#666;margin-top:8px;}
+
+    .hint-row{margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    .hint-btn{background:#ff9800;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:0.95em;}
+    .hint-btn:disabled{opacity:.55;cursor:not-allowed;}
+    .hint{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;}
+
+    .button-container{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;}
+    button{padding:10px 18px;border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:1em;}
+    #nextButton{background:#4caf50;}
+    #backButton{background:#039be5;}
+    #generateButton{background:#ff9800;}
+    #submitButton{background:#9c27b0;}
+    #saveButton{background:#607d8b;}
+    #pauseButton{background:#f57c00;}
+    #checkButton{background:#455a64;}
+    button:disabled{opacity:.55;cursor:not-allowed;}
+
+    .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
+
+    table.review-table{width:100%;border-collapse:collapse;margin-top:18px;}
+    .review-table th,.review-table td{border:1px solid #ccc;padding:6px;font-size:.85em;text-align:center;vertical-align:top;}
+    .review-table th{background:#f2f2f2;}
+    .correct-answer{background:#d4edda;}
+    .incorrect-answer{background:#f8d7da;}
+    .thumb{width:160px;max-width:160px;height:auto;border-radius:8px;border:1px solid #ddd;background:#fff;}
+
+    @media (max-width:760px){
+      .quiz-main{flex-direction:column;}
+      .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
+      .thumb{width:120px;max-width:120px;}
+      .answer-box{width:100%;}
+      .answer-grid{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text">
+      <div class="brand">DYAA</div>
+      <div class="edu">EDUCATION</div>
+    </div>
+  </div>
+
+  <div class="top-bar">
+    <div>
+      <div id="timerDisplay">Time: 00:00</div>
+      <div id="studentLine"></div>
+    </div>
+    <div>
+      <button id="pauseButton" style="display:none;">Pause</button>
+      <button id="generateButton" style="display:none;">Generate New Set</button>
+    </div>
+  </div>
+
+  <h2 style="margin:6px 0 0 0;">Lesson Theme: Simultaneous Equations (2 variables)</h2>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+
+  <div id="navButtons" class="button-container" style="display:none;">
+    <button id="backButton" style="display:none;">Previous</button>
+    <button id="submitButton" style="display:none;">Submit &amp; View Results</button>
+    <button id="nextButton" style="display:none;">Next</button>
+    <button id="checkButton" style="display:none;">Check</button>
+    <button id="saveButton" style="display:none;">Save Current Result</button>
+  </div>
+</div>
+
+<script>
+/* =========================
+   CONFIG
+========================= */
+const PARTS = [
+  { title: "Part 1 — Substitution (1 question)", count: 1 },
+  { title: "Part 2 — Elimination (3 questions: integer / fraction / decimal)", count: 3 },
+  { title: "Part 3 — Word Problems (3 questions, solve using elimination)", count: 3 }
+];
+const TOTAL_QUESTIONS = PARTS.reduce((s,p)=>s+p.count,0);
+
+/* =========================
+   UTILS
+========================= */
+function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+function formatMs(ms){
+  const totalSec=Math.floor(ms/1000), min=Math.floor(totalSec/60), sec=totalSec%60;
+  return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+function escapeXml(s){
+  return String(s)
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&apos;");
+}
+function wrapLines(lines, maxChars = 56){
+  const out=[];
+  function pushWrapped(line){
+    const words=String(line).split(/\s+/).filter(Boolean);
+    let cur="";
+    for(const w of words){
+      if(w.length>maxChars){
+        if(cur){ out.push(cur); cur=""; }
+        for(let i=0;i<w.length;i+=maxChars) out.push(w.slice(i,i+maxChars));
+        continue;
+      }
+      if(!cur) cur=w;
+      else if((cur+" "+w).length<=maxChars) cur+=" "+w;
+      else { out.push(cur); cur=w; }
+    }
+    if(cur) out.push(cur);
+  }
+  for(const line of lines) pushWrapped(line);
+  return out;
+}
+function makeSvgQuestionImage(lines, titleText="Simultaneous Equations"){
+  const W=980, headerH=74, padX=44, lineH=46, firstLineY=headerH+56, padBottom=56;
+  const wrapped=wrapLines(lines, 56);
+  const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
+
+  const textSpans=wrapped.map((t,i)=>{
+    const y=firstLineY + i*lineH;
+    return `<text x="${padX}" y="${y}" font-size="30" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+  }).join("");
+
+  const svg=`
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f7fbff"/>
+        <stop offset="1" stop-color="#ffffff"/>
+      </linearGradient>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#000" flood-opacity="0.12"/>
+      </filter>
+    </defs>
+
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
+          fill="url(#g)" stroke="#dfe7f2" stroke-width="3" filter="url(#shadow)"/>
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${headerH}"
+          fill="#0d47a1" opacity="0.10"/>
+
+    <text x="${padX}" y="56" font-size="28" fill="#0d47a1" font-weight="700"
+          font-family="Segoe UI, Arial">${escapeXml(titleText)}</text>
+
+    ${textSpans}
+  </svg>`.trim();
+
+  const encoded=encodeURIComponent(svg)
+    .replaceAll("%0A","").replaceAll("%20"," ")
+    .replaceAll("%3D","=").replaceAll("%3A",":")
+    .replaceAll("%2F","/").replaceAll("%2C",",");
+
+  return "data:image/svg+xml;charset=utf-8," + encoded;
+}
+
+/* Parse number (supports decimals and simple fractions like -3/4) */
+function parseNumber(str){
+  const s=(str||"").trim();
+  if(s==="") return NaN;
+
+  if(/^[+-]?\d+(\.\d+)?\s*\/\s*[+-]?\d+(\.\d+)?$/.test(s)){
+    const parts=s.split("/");
+    const a=Number(parts[0].trim());
+    const b=Number(parts[1].trim());
+    if(!Number.isFinite(a)||!Number.isFinite(b)||Math.abs(b)<1e-12) return NaN;
+    return a/b;
+  }
+  const n=Number(s);
+  return Number.isFinite(n) ? n : NaN;
+}
+function nearlyEqual(a,b,eps=1e-9){
+  if(!Number.isFinite(a)||!Number.isFinite(b)) return false;
+  return Math.abs(a-b)<eps;
+}
+function fmtNice(n){
+  if(!Number.isFinite(n)) return String(n);
+  const r = Math.round(n*1000)/1000;
+  if(nearlyEqual(r, Math.round(r))) return String(Math.round(r));
+  return String(r).replace(/(\.\d*?[1-9])0+$/,"$1").replace(/\.0+$/,"");
+}
+function fmt1(n){
+  // force 1 dp in display
+  return (Math.round(n*10)/10).toFixed(1);
+}
+function money2(n){
+  return (Math.round(n*100)/100).toFixed(2);
+}
+function fracStr(num, den){
+  if(den===1) return String(num);
+  return `${num}/${den}`;
+}
+function sampleDistinct(arr, k){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=randInt(0,i);
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a.slice(0, Math.min(k,a.length));
+}
+
+/* =========================
+   HINTS
+========================= */
+const PART3_ELIMINATION_HINT =
+  "Hint (Elimination for word problems): Choose two variables for the unknowns. " +
+  "Translate each sentence into one equation. Then multiply one or both equations so that one variable has the same coefficient (same size) " +
+  "with opposite signs. Add or subtract the equations to remove that variable. Solve the remaining one-variable equation, then substitute back to find the other value.";
+
+/* =========================
+   PART 1 — SUBSTITUTION
+========================= */
+function genPart1Substitution(){
+  const x = randInt(2, 9);
+  const a = randInt(2, 5);
+  const b = randInt(-3, 6);
+  const y = a*x + b;
+
+  const c = randInt(2, 6);
+  const d = c*x + y;
+
+  const lines = [
+    "Solve the simultaneous equations.",
+    `Equation 1: y = ${a}x ${b>=0?"+":"-"} ${Math.abs(b)}`,
+    `Equation 2: ${c}x + y = ${d}`,
+    "Find the values of x and y."
+  ];
+
+  return {
+    img: makeSvgQuestionImage(lines, "Substitution"),
+    ansA: x, ansB: y,
+    labelA: "x", labelB: "y",
+    hint:
+      "Hint (Substitution): Use Equation 1 to express y in terms of x. " +
+      "Replace y in Equation 2 using that expression. Solve for x first, then substitute the x value back to find y."
+  };
+}
+
+/* =========================
+   PART 2 — ELIMINATION
+   (Decimal question: ALL numbers shown with 1 dp)
+========================= */
+function genPart2EliminationInteger(){
+  const x = randInt(2, 10);
+  const y = randInt(1, 9);
+
+  const b = randInt(2, 6);
+  const a = randInt(1, 6);
+  const c = randInt(1, 6);
+
+  const e = a*x + b*y;
+  const f = c*x - b*y;
+
+  const lines = [
+    "Solve the simultaneous equations using elimination.",
+    `Equation 1: ${a}x + ${b}y = ${e}`,
+    `Equation 2: ${c}x - ${b}y = ${f}`,
+    "Find the values of x and y."
+  ];
+
+  return {
+    img: makeSvgQuestionImage(lines, "Elimination (Integers)"),
+    ansA: x, ansB: y,
+    labelA: "x", labelB: "y",
+    hint:
+      "Hint (Elimination): Notice the y terms have the same size but opposite signs. " +
+      "Add the two equations to remove y. Solve for x, then substitute x back into one equation to find y."
+  };
+}
+
+function genPart2EliminationFraction(){
+  // Only use denominators that give terminating decimals (1 dp friendly)
+  const choices = [
+    {p:1,q:2},{p:3,q:2},                 // .5 steps
+    {p:1,q:5},{p:2,q:5},{p:3,q:5},{p:4,q:5}, // .2 steps
+    {p:1,q:10},{p:3,q:10},{p:7,q:10},{p:9,q:10} // .1 steps
+  ];
+
+  const x = randInt(2, 20);
+  const y = randInt(1, 12); // integer keeps totals neat
+
+  let A = choices[randInt(0, choices.length-1)];
+  let B = choices[randInt(0, choices.length-1)];
+  // avoid identical fractions
+  let guard=0;
+  while(A.p===B.p && A.q===B.q && guard<30){
+    B = choices[randInt(0, choices.length-1)];
+    guard++;
+  }
+
+  const a = A.p / A.q;
+  const b = B.p / B.q;
+
+  // These will be terminating decimals; display as 1 dp
+  const c1 = a*x + y;
+  const c2 = b*x - y;
+
+  const lines = [
+    "Solve the simultaneous equations using elimination.",
+    `Equation 1: (${fracStr(A.p,A.q)})x + y = ${fmt1(c1)}`,
+    `Equation 2: (${fracStr(B.p,B.q)})x - y = ${fmt1(c2)}`,
+    "Find the values of x and y."
+  ];
+
+  return {
+    img: makeSvgQuestionImage(lines, "Elimination (Fractions)"),
+    ansA: x, ansB: y,
+    labelA: "x", labelB: "y",
+    hint:
+      "Hint (Elimination): The y terms cancel if you add the two equations. " +
+      "Add them to get an equation involving only x. Solve for x, then substitute x back to find y."
+  };
+}
+
+function genPart2EliminationDecimal_1dp(){
+  // Ensure EVERYTHING displayed is 1 dp
+  const x = randInt(2, 10);
+  const y = randInt(10, 90)/10; // 1 dp
+
+  const aChoices=[0.2,0.3,0.4,0.5,0.6,0.8,1.2,1.5];
+  const bChoices=[0.5,0.8,1.1,1.3,1.6,1.8,2.0,2.5];
+  const a = aChoices[randInt(0,aChoices.length-1)];
+  const b = bChoices[randInt(0,bChoices.length-1)];
+
+  const c1 = Math.round((a*x + y)*10)/10;
+  const c2 = Math.round((b*x - y)*10)/10;
+
+  const lines = [
+    "Solve the simultaneous equations using elimination.",
+    `Equation 1: ${fmt1(a)}x + y = ${fmt1(c1)}`,
+    `Equation 2: ${fmt1(b)}x - y = ${fmt1(c2)}`,
+    "Find the values of x and y."
+  ];
+
+  return {
+    img: makeSvgQuestionImage(lines, "Elimination (Decimals, 1 dp)"),
+    ansA: x, ansB: y,
+    labelA: "x", labelB: "y",
+    hint:
+      "Hint (Elimination): Add the equations to remove y. " +
+      "Solve for x first. Then put x back into either equation to find y."
+  };
+}
+
+/* =========================
+   PART 3 — WORD PROBLEM BANK
+   (From your screenshots + similar style)
+   Each returns (ansA, ansB) with realistic meanings.
+========================= */
+function wp_sum_and_difference(){
+  let S=randInt(12, 30);
+  let D=randInt(2, 10);
+  if((S-D)%2!==0) S+=1; // fix parity
+  const big=(S+D)/2;
+  const small=(S-D)/2;
+
+  const lines=[
+    "Find two numbers.",
+    `Their sum is ${S} and their difference is ${D}.`,
+    "Find the two numbers."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: big, ansB: small, labelA:"Larger number", labelB:"Smaller number",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_twice_plus_three_diff(){
+  // pick integers and build statement
+  const big=randInt(6, 15);
+  const small=big-randInt(2, 6);
+  const N = 2*big + 3*small;
+  const D = big-small;
+
+  const lines=[
+    "Find two numbers.",
+    `Twice the larger number plus three times the smaller number is ${N}.`,
+    `The difference between the numbers is ${D}.`,
+    "Find the two numbers."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: big, ansB: small, labelA:"Larger number", labelB:"Smaller number",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_average_and_three_times_diff(){
+  const avg=randInt(5, 15);           // average
+  const diff=randInt(2, 8);           // difference
+  const total = 2*avg;
+  const triple = 3*diff;
+  const big = avg + diff/2;
+  const small = avg - diff/2;
+
+  // ensure integers (diff even)
+  const dEven = (diff%2===0) ? diff : diff+1;
+  const triple2 = 3*dEven;
+  const big2 = avg + dEven/2;
+  const small2 = avg - dEven/2;
+
+  const lines=[
+    "Find two numbers.",
+    `The average of the two numbers is ${avg}.`,
+    `Three times the difference between the numbers is ${triple2}.`,
+    "Find the two numbers."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: big2, ansB: small2, labelA:"Larger number", labelB:"Smaller number",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_gardener_seeds(){
+  // costs in dollars, 2 dp, realistic small amounts
+  const carrot = randInt(2, 8)/10;   // $0.2..$0.8
+  const lettuce = randInt(3, 12)/10; // $0.3..$1.2 (different)
+  const t1 = 50*carrot + 20*lettuce;
+  const t2 = 30*carrot + 40*lettuce;
+
+  const lines=[
+    "A gardener buys carrot seeds and lettuce seeds.",
+    `She buys 50 carrot seeds and 20 lettuce seeds for $${money2(t1)}.`,
+    `Her mother buys 30 carrot seeds and 40 lettuce seeds for $${money2(t2)}.`,
+    "Find the cost of one carrot seed and one lettuce seed."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: carrot, ansB: lettuce, labelA:"Carrot seed ($)", labelB:"Lettuce seed ($)",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_tv_vcr(){
+  const tv = randInt(6, 12)*50;     // 300..600
+  const vcr = randInt(4, 10)*50;    // 200..500
+  const t1 = 2*tv + 3*vcr;
+  const t2 = 4*tv + 1*vcr;
+
+  const lines=[
+    "A shop owner sells TVs and video recorders.",
+    `Two TVs and three video recorders cost $${t1}.`,
+    `Four TVs and one video recorder cost $${t2}.`,
+    "Find the cost of one TV and one video recorder."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: tv, ansB: vcr, labelA:"TV ($)", labelB:"Recorder ($)",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_half_difference(){
+  const halfDiff = randInt(1, 5);       // half difference
+  const diff = 2*halfDiff;              // difference
+  const small = randInt(1, 9);
+  const big = small + diff;
+  const total = big + 2*small;
+
+  const lines=[
+    "Find two numbers.",
+    `Half the difference between the numbers is ${halfDiff}.`,
+    `The sum of the greater number and twice the smaller number is ${total}.`,
+    "Find the numbers."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: big, ansB: small, labelA:"Greater number", labelB:"Smaller number",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_eggs_mass(){
+  const w = randInt(2, 6); // grams
+  const b = randInt(3, 8);
+  const m1 = 3*w + 2*b;
+  const m2 = 5*w + 4*b;
+
+  const lines=[
+    "A bird can lay either white or brown eggs.",
+    `Three white eggs and two brown eggs have a mass of ${m1} grams.`,
+    `Five white eggs and four brown eggs have a mass of ${m2} grams.`,
+    "Find the mass of one white egg and one brown egg."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: w, ansB: b, labelA:"White egg (g)", labelB:"Brown egg (g)",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_tortoise_two_parts(){
+  // Classic: gives clean distances 120 and 240
+  const d1=120, d2=240;
+  const lines=[
+    "A tortoise travels in two parts.",
+    "It can either walk at 4 cm/s or crawl at 3 cm/s.",
+    "If it walks the first part and crawls the second, it takes 110 seconds.",
+    "If it crawls the first part and walks the second, it takes 100 seconds.",
+    "Find the lengths of the two parts of the journey."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: d1, ansB: d2, labelA:"Part 1 (cm)", labelB:"Part 2 (cm)",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_cyclist_split_speeds(){
+  // Classic: d1=150, d2=350
+  const d1=150, d2=350;
+  const lines=[
+    "A cyclist completes a journey of 500 m in 22 seconds.",
+    "Part of the journey is travelled at 10 m/s and the rest at 50 m/s.",
+    "How far does she travel at each speed?"
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: d1, ansB: d2, labelA:"Distance at 10 m/s (m)", labelB:"Distance at 50 m/s (m)",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_coins_2c_5c(){
+  // random but solvable
+  const totalCoins = randInt(30, 60);
+  const num5 = randInt(5, Math.min(35,totalCoins-5));
+  const num2 = totalCoins - num5;
+  const totalCents = 5*num5 + 2*num2;
+
+  const lines=[
+    "A bag contains coins, all of them either 2-cent or 5-cent coins.",
+    `There are ${totalCoins} coins in total, and the value is $${money2(totalCents/100)}.`,
+    "Find the number of 2-cent coins and the number of 5-cent coins."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: num2, ansB: num5, labelA:"2-cent coins", labelB:"5-cent coins",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_slot_machine_10c_50c(){
+  const totalCoins = randInt(16, 30);
+  const num50 = randInt(3, Math.min(12,totalCoins-3));
+  const num10 = totalCoins - num50;
+  const totalCents = 50*num50 + 10*num10;
+
+  const lines=[
+    "A slot machine takes only 10-cent and 50-cent coins.",
+    `It contains ${totalCoins} coins altogether.`,
+    `The total value of the coins is $${money2(totalCents/100)}.`,
+    "Find how many coins of each value are inside."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: num10, ansB: num50, labelA:"10-cent coins", labelB:"50-cent coins",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_concert_tickets_60c_1dollar(){
+  const totalTickets = randInt(20, 60);
+  const cheap = randInt(5, totalTickets-5);
+  const exp = totalTickets - cheap;
+  const totalCents = 60*cheap + 100*exp;
+
+  const lines=[
+    "Thirty tickets are sold for a concert (some are cheaper than others).",
+    `Tickets cost either 60 cents or $1.00.`,
+    `In total, ${totalTickets} tickets were sold and $${money2(totalCents/100)} was raised.`,
+    "How many tickets were sold at each price?"
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: cheap, ansB: exp, labelA:"60-cent tickets", labelB:"$1.00 tickets",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_wages_men_women(){
+  const man = randInt(850, 1200);
+  const woman = randInt(650, 1050);
+
+  const t1 = 5*man + 6*woman;
+  const t2 = 8*man + 3*woman;
+
+  const lines=[
+    "A company hires male and female workers.",
+    `The wage bill for five male and six female workers is $${t1}.`,
+    `The wage bill for eight male and three female workers is $${t2}.`,
+    "Find the wage for one man and the wage for one woman."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: man, ansB: woman, labelA:"Man wage ($)", labelB:"Woman wage ($)",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_chicken_rabbit(){
+  // Chickens (2 legs) + Rabbits (4 legs)
+  const chickens = randInt(8, 28);
+  const rabbits  = randInt(5, 18);
+  const heads = chickens + rabbits;
+  const legs  = 2*chickens + 4*rabbits;
+
+  const lines=[
+    "A farmer has chickens and rabbits in a pen.",
+    `There are ${heads} heads in total and ${legs} legs in total.`,
+    "How many chickens and how many rabbits are there?"
+  ];
+  return {
+    img: makeSvgQuestionImage(lines, "Word Problem (Chicken & Rabbit)"),
+    ansA: chickens, ansB: rabbits,
+    labelA: "Chickens", labelB: "Rabbits",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_adult_child_tickets(){
+  // Adult/Child tickets: totals + revenue
+  const adultPrice = randInt(12, 20);
+  const childPrice = randInt(6, Math.min(12, adultPrice-3));
+  const adults = randInt(12, 40);
+  const children = randInt(10, 45);
+  const total = adults + children;
+  const revenue = adultPrice*adults + childPrice*children;
+
+  const lines=[
+    "Tickets are sold for a school show.",
+    `Adult tickets cost $${adultPrice} and child tickets cost $${childPrice}.`,
+    `A total of ${total} tickets were sold for $${revenue}.`,
+    "How many adult tickets and child tickets were sold?"
+  ];
+  return {
+    img: makeSvgQuestionImage(lines, "Word Problem (Tickets)"),
+    ansA: adults, ansB: children,
+    labelA: "Adult tickets", labelB: "Child tickets",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_mixture_percentage(){
+  // Mix two solutions to get a target concentration.
+  // Use % values that are common and keep integer liters.
+  const c1List=[10, 15, 20, 25];
+  const c2List=[40, 45, 50, 60];
+  const c1 = c1List[randInt(0,c1List.length-1)];
+  const c2 = c2List[randInt(0,c2List.length-1)];
+  const target = [20,25,30,35,40][randInt(0,4)];
+  // Ensure target is between c1 and c2
+  const t = Math.min(Math.max(target, c1+5), c2-5);
+
+  const liters1 = randInt(2, 12);
+  const liters2 = randInt(2, 12);
+  // Build target by choosing final total and solving? Easier: pick liters and compute actual target,
+  // then display that computed target (rounded to 1 dp).
+  const actual = (c1*liters1 + c2*liters2)/(liters1+liters2); // percent
+  const actual1dp = (Math.round(actual*10)/10);
+
+  const lines=[
+    "A chemist mixes two sugar solutions.",
+    `Solution A is ${c1}% sugar and Solution B is ${c2}% sugar.`,
+    `After mixing, the mixture is ${actual1dp.toFixed(1)}% sugar.`,
+    `The total mixture is ${liters1+liters2} litres.`,
+    "How many litres of Solution A and Solution B were used?"
+  ];
+  return {
+    img: makeSvgQuestionImage(lines, "Word Problem (Mixture)"),
+    ansA: liters1, ansB: liters2,
+    labelA: "Solution A (L)", labelB: "Solution B (L)",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_taxi_fare(){
+  // Fare = base + rate * distance
+  const base = randInt(3, 8);
+  const rateChoices=[1.2, 1.5, 1.8, 2.0, 2.2, 2.5];
+  const rate = rateChoices[randInt(0, rateChoices.length-1)];
+
+  const d1 = randInt(4, 12);
+  let d2 = randInt(13, 25);
+  if(d2===d1) d2+=5;
+
+  const cost1 = base + rate*d1;
+  const cost2 = base + rate*d2;
+
+  const lines=[
+    "A taxi fare has a fixed starting fee and a cost per kilometre.",
+    `A trip of ${d1} km costs $${money2(cost1)}.`,
+    `A trip of ${d2} km costs $${money2(cost2)}.`,
+    "Find the starting fee and the cost per kilometre."
+  ];
+  return {
+    img: makeSvgQuestionImage(lines, "Word Problem (Taxi)"),
+    ansA: base, ansB: rate,
+    labelA: "Starting fee ($)", labelB: "Cost per km ($/km)",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_two_phone_plans(){
+  // Plan cost = monthly fee + rate * GB
+  const fee = randInt(10, 25);
+  const rateChoices=[2.0, 2.5, 3.0, 3.5, 4.0];
+  const rate = rateChoices[randInt(0, rateChoices.length-1)];
+
+  const gb1 = randInt(3, 10);
+  let gb2 = randInt(11, 25);
+
+  const cost1 = fee + rate*gb1;
+  const cost2 = fee + rate*gb2;
+
+  const lines=[
+    "A phone plan has a fixed monthly fee plus a charge per GB of data.",
+    `Using ${gb1} GB costs $${money2(cost1)} in a month.`,
+    `Using ${gb2} GB costs $${money2(cost2)} in a month.`,
+    "Find the monthly fee and the cost per GB."
+  ];
+  return {
+    img: makeSvgQuestionImage(lines, "Word Problem (Phone Plan)"),
+    ansA: fee, ansB: rate,
+    labelA: "Monthly fee ($)", labelB: "Cost per GB ($/GB)",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_stationery_bundle(){
+  // Two shopping equations: notebooks + markers
+  const notebook = randInt(2, 6);     // $
+  const marker = randInt(notebook+1, notebook+6);
+  const n1 = randInt(3, 10), m1 = randInt(2, 8);
+  const n2 = randInt(4, 12), m2 = randInt(1, 9);
+
+  const total1 = n1*notebook + m1*marker;
+  const total2 = n2*notebook + m2*marker;
+
+  const lines=[
+    "A shop sells notebooks and markers.",
+    `Buying ${n1} notebooks and ${m1} markers costs $${total1}.`,
+    `Buying ${n2} notebooks and ${m2} markers costs $${total2}.`,
+    "Find the cost of one notebook and one marker."
+  ];
+  return {
+    img: makeSvgQuestionImage(lines, "Word Problem (Shopping)"),
+    ansA: notebook, ansB: marker,
+    labelA: "Notebook ($)", labelB: "Marker ($)",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_fish_current(){
+  const current = randInt(1, 5);
+  const still = randInt(current+6, current+14); // ensure upstream positive
+  const down = still + current;
+  const up = still - current;
+
+  const lines=[
+    "A fish swims in a river with a current.",
+    `It can swim at ${down} m/s with the current and at ${up} m/s against it.`,
+    "Find the speed of the current and the speed of the fish in still water."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: current, ansB: still, labelA:"Current (m/s)", labelB:"Fish in still water (m/s)",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_fraction_original(){
+  // From screenshot-style: denom is 2 more; if both +1 becomes 2/3 -> original = 3/5 always
+  const n=3, d=5;
+  const lines=[
+    "A fraction has a denominator that is 2 more than the numerator.",
+    "If both the numerator and denominator are increased by 1, the fraction becomes 2/3.",
+    "Find the original fraction (give numerator and denominator)."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: n, ansB: d, labelA:"Numerator", labelB:"Denominator",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_line_through_points(){
+  const x1=randInt(-3, 3), y1=randInt(-6, 6);
+  let x2=randInt(-3, 3), y2=randInt(-6, 6);
+  while(x2===x1) x2=randInt(-3,3);
+  while(y2===y1) y2=randInt(-6,6);
+
+  const m = (y2-y1)/(x2-x1);
+  const b = y1 - m*x1;
+
+  const lines=[
+    "A straight line passes through two points.",
+    `The points are (${x1}, ${y1}) and (${x2}, ${y2}).`,
+    "Find the equation of the line in the form y = mx + b.",
+    "Enter m and b."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: m, ansB: b, labelA:"m (slope)", labelB:"b (intercept)",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_spider_walk_run(){
+  // Choose speeds so results look sensible
+  const walk = randInt(2, 6);          // m/s
+  const run  = walk + randInt(2, 6);   // faster
+  const d1 = 10*walk + 9*run;
+  const d2 = 30*walk + 2*run;
+
+  const lines=[
+    "A spider can walk at one speed and run at another speed.",
+    `If it walks for 10 seconds and runs for 9 seconds, it travels ${d1} m.`,
+    `If it walks for 30 seconds and runs for 2 seconds, it travels ${d2} m.`,
+    "Find the speeds of walking and running."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: walk, ansB: run, labelA:"Walking speed (m/s)", labelB:"Running speed (m/s)",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_wallet_notes(){
+  // wallet total $40; $1 notes are 3 times as many as $5 notes (classic)
+  const fives = randInt(3, 10);
+  const ones = 3*fives;
+  const total = 5*fives + 1*ones;
+
+  const lines=[
+    "A wallet contains $1 notes and $5 notes.",
+    `There are three times as many $1 notes as $5 notes.`,
+    `The total value of the wallet is $${total}.`,
+    "Find the number of each kind."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: ones, ansB: fives, labelA:"$1 notes", labelB:"$5 notes",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_father_son_ages(){
+  // classic: son 9, father 36 (still reasonable)
+  const son=9, father=36;
+  const lines=[
+    "A man is four times as old as his son.",
+    "Six years ago he was 10 times as old as his son.",
+    "Find their present ages."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: father, ansB: son, labelA:"Man's age (years)", labelB:"Son's age (years)",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+function wp_submarine_current(){
+  // allow 1dp answers sometimes
+  const current = randInt(2, 6) + 0.5;     // e.g., 2.5, 3.5
+  const still = randInt(18, 28) + 0.5;     // e.g., 20.5
+  const withC = still + current;
+  const against = still - current;
+
+  const lines=[
+    "A submarine travels with a current and against it.",
+    `It can travel at ${fmt1(withC)} knots with the current and at ${fmt1(against)} knots against it.`,
+    "Find the speed of the current and the speed of the submarine in still water."
+  ];
+  return { img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: current, ansB: still, labelA:"Current (knots)", labelB:"Submarine in still water (knots)",
+    hint: PART3_ELIMINATION_HINT
+  };
+}
+
+/* Word bank (expanded) */
+const WORD_PROBLEM_BANK = [
+  wp_sum_and_difference,
+  wp_twice_plus_three_diff,
+  wp_average_and_three_times_diff,
+  wp_gardener_seeds,
+  wp_tv_vcr,
+  wp_half_difference,
+  wp_eggs_mass,
+  wp_tortoise_two_parts,
+  wp_cyclist_split_speeds,
+  wp_coins_2c_5c,
+  wp_slot_machine_10c_50c,
+  wp_concert_tickets_60c_1dollar,
+  wp_wages_men_women,
+  wp_fish_current,
+  wp_chicken_rabbit,
+  wp_adult_child_tickets,
+  wp_mixture_percentage,
+  wp_taxi_fare,
+  wp_two_phone_plans,
+  wp_stationery_bundle,
+  wp_fraction_original,
+  wp_line_through_points,
+  wp_spider_walk_run,
+  wp_wallet_notes,
+  wp_father_son_ages,
+  wp_submarine_current
+];
+
+/* =========================
+   BUILD SET
+   Part 3 random choose 3 different scenarios
+========================= */
+function buildQuestionSet(){
+  const part1 = genPart1Substitution();
+  const p2a = genPart2EliminationInteger();
+  const p2b = genPart2EliminationFraction();
+  const p2c = genPart2EliminationDecimal_1dp();
+
+  const picks = sampleDistinct(WORD_PROBLEM_BANK, 3).map(fn=>fn());
+
+  return [part1, p2a, p2b, p2c, ...picks];
+}
+
+/* =========================
+   STATE
+========================= */
+let questions=[];
+let currentQuestionIndex=0;
+let studentName="Student";
+let quizStartTime=null;
+let quizEndTime=null;
+let quizSubmitted=false;
+
+let timerInterval=null;
+let elapsedMs=0;
+let isPaused=false;
+let firstAttemptMs=null;
+
+const quizContent=document.getElementById("quizContent");
+const sidebarEl=document.getElementById("sidebar");
+
+const buttonContainer=document.getElementById("navButtons");
+const backButton=document.getElementById("backButton");
+const nextButton=document.getElementById("nextButton");
+const submitButton=document.getElementById("submitButton");
+const checkButton=document.getElementById("checkButton");
+const saveButton=document.getElementById("saveButton");
+
+const generateBtn=document.getElementById("generateButton");
+const pauseButton=document.getElementById("pauseButton");
+const timerDisplay=document.getElementById("timerDisplay");
+const studentLine=document.getElementById("studentLine");
+
+/* =========================
+   TIMER
+========================= */
+function updateTimerDisplay(){
+  let totalMs=elapsedMs;
+  if(!isPaused && quizStartTime) totalMs+=(new Date()-quizStartTime);
+  let text=`Time: ${formatMs(totalMs)}`;
+  if(firstAttemptMs!==null) text+=` (First: ${formatMs(firstAttemptMs)})`;
+  timerDisplay.textContent=text;
+}
+function startTimerInterval(){
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval=setInterval(updateTimerDisplay, 1000);
+}
+function pauseTimer(){
+  if(isPaused || !quizStartTime) return;
+  const now=new Date();
+  elapsedMs+=now-quizStartTime;
+  isPaused=true;
+  quizStartTime=null;
+  updateTimerDisplay();
+}
+function resumeTimer(){
+  if(!isPaused) return;
+  isPaused=false;
+  quizStartTime=new Date();
+  updateTimerDisplay();
+}
+
+/* =========================
+   QUIZ GENERATION
+========================= */
+function generateQuiz(){
+  questions=[];
+  quizSubmitted=false;
+
+  const built = buildQuestionSet();
+
+  let partIndex=0;
+  let indexInPart=0;
+
+  for(const item of built){
+    while(partIndex < PARTS.length && indexInPart >= PARTS[partIndex].count){
+      partIndex++;
+      indexInPart=0;
+    }
+    questions.push({
+      partIndex,
+      indexInPart,
+      img: item.img,
+      ansA: item.ansA,
+      ansB: item.ansB,
+      labelA: item.labelA,
+      labelB: item.labelB,
+      hint: item.hint,
+      userA: "",
+      userB: "",
+      isCorrect: false
+    });
+    indexInPart++;
+  }
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+function labelForQuestion(q){
+  const partName = ["Sub", "Elim", "Word"][q.partIndex] || "Q";
+  return `${partName}${q.indexInPart+1}`;
+}
+function renderSidebar(){
+  sidebarEl.style.display="block";
+  sidebarEl.innerHTML=`<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul=document.getElementById("qList");
+  for(let i=0;i<TOTAL_QUESTIONS;i++){
+    const q=questions[i];
+    const li=document.createElement("li");
+    li.textContent=`Q${i+1} (${labelForQuestion(q)})`;
+    li.dataset.index=i;
+    li.addEventListener("click",()=>{
+      saveCurrentInput();
+      currentQuestionIndex=i;
+      renderQuestion();
+    });
+    ul.appendChild(li);
+  }
+  updateSidebarStatus();
+}
+function updateSidebarStatus(){
+  const items=document.querySelectorAll("#qList li");
+  items.forEach(li=>{
+    const idx=Number(li.dataset.index);
+    const q=questions[idx];
+    li.classList.remove("active","answered","correct","incorrect");
+
+    if(!quizSubmitted){
+      li.classList.toggle("active", idx===currentQuestionIndex);
+      if((q.userA||"").trim()!=="" || (q.userB||"").trim()!=="") li.classList.add("answered");
+    }else{
+      if((q.userA||"").trim()!=="" || (q.userB||"").trim()!==""){
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* =========================
+   GRADING + INPUT SAVE
+========================= */
+function gradeOneQuestion(i){
+  const q=questions[i];
+  const a=parseNumber(q.userA||"");
+  const b=parseNumber(q.userB||"");
+  q.isCorrect = nearlyEqual(a, q.ansA) && nearlyEqual(b, q.ansB);
+}
+function saveCurrentInput(){
+  const inA=document.getElementById("answerA");
+  const inB=document.getElementById("answerB");
+  if(inA) questions[currentQuestionIndex].userA=inA.value.trim();
+  if(inB) questions[currentQuestionIndex].userB=inB.value.trim();
+  if(quizSubmitted){
+    gradeOneQuestion(currentQuestionIndex);
+    updateSidebarStatus();
+  }
+}
+function mountNavButtonsInto(slotId){
+  const slot=document.getElementById(slotId);
+  if(!slot) return;
+  slot.appendChild(buttonContainer);
+  buttonContainer.style.display="flex";
+}
+
+/* =========================
+   RENDER QUESTION
+========================= */
+function renderQuestion(){
+  const q=questions[currentQuestionIndex];
+  const partTitle = PARTS[q.partIndex]?.title || "Part";
+  const fullLabel = `Part ${q.partIndex+1} — Question ${q.indexInPart+1}`;
+  const hasHint=(q.hint||"").trim()!=="";
+
+  quizContent.innerHTML=`
+    <p class="question-text">Question ${currentQuestionIndex+1} of ${TOTAL_QUESTIONS}</p>
+    <div class="part-title">${partTitle}</div>
+
+    <div class="single-question">
+      <div style="font-weight:800;margin-bottom:8px;">${fullLabel}</div>
+
+      <div class="img-wrap">
+        <img class="q-img" src="${q.img}" alt="Question image">
+      </div>
+
+      <div class="answer-grid">
+        <div style="font-weight:700;">${q.labelA}:</div>
+        <input id="answerA" class="answer-box" type="text" inputmode="decimal"
+               placeholder="e.g., 6 or 3/2"
+               value="${q.userA||""}">
+        <div style="font-weight:700;">${q.labelB}:</div>
+        <input id="answerB" class="answer-box" type="text" inputmode="decimal"
+               placeholder="e.g., 13 or 2.5"
+               value="${q.userB||""}">
+      </div>
+
+      <div class="small-note">Enter answers in the order shown. Fractions like <b>3/4</b> are accepted.</div>
+
+      <div id="checkFeedback" style="display:none;"></div>
+
+      <div class="hint-row">
+        <button id="hintBtn" class="hint-btn" ${hasHint ? "" : "disabled"}>${hasHint ? "Hint" : "No Hint"}</button>
+      </div>
+      <div id="hintBox" class="hint">${hasHint ? q.hint : ""}</div>
+    </div>
+
+    <div id="navSlot"></div>
+  `;
+
+  mountNavButtonsInto("navSlot");
+
+  const hintBtn=document.getElementById("hintBtn");
+  const hintBox=document.getElementById("hintBox");
+  if(hintBtn && hintBox && hasHint){
+    hintBtn.addEventListener("click", ()=>{
+      const shown = hintBox.style.display==="block";
+      hintBox.style.display = shown ? "none" : "block";
+      hintBtn.textContent = shown ? "Hint" : "Hide Hint";
+    });
+  }
+
+  backButton.style.display="inline-block";
+  backButton.style.visibility=(currentQuestionIndex===0)?"hidden":"visible";
+
+  const isLast=(currentQuestionIndex===TOTAL_QUESTIONS-1);
+  nextButton.style.display=isLast?"none":"inline-block";
+  submitButton.style.display=isLast?"inline-block":"none";
+
+  saveButton.style.display=quizSubmitted?"inline-block":"none";
+  checkButton.style.display=(quizSubmitted && !q.isCorrect)?"inline-block":"none";
+
+  updateSidebarStatus();
+}
+
+/* =========================
+   SUBMIT + RESULTS
+========================= */
+function calculateAndShowResults(){
+  saveCurrentInput();
+
+  const now=new Date();
+  let attemptMs=elapsedMs;
+  if(!isPaused && quizStartTime) attemptMs+=now-quizStartTime;
+  if(firstAttemptMs===null) firstAttemptMs=attemptMs;
+
+  quizEndTime=now;
+  quizSubmitted=true;
+
+  let correctCount=0;
+  questions.forEach(q=>{
+    const a=parseNumber(q.userA||"");
+    const b=parseNumber(q.userB||"");
+    q.isCorrect = nearlyEqual(a,q.ansA) && nearlyEqual(b,q.ansB);
+    if(q.isCorrect) correctCount++;
+  });
+
+  updateSidebarStatus();
+
+  let html=`
+    <h3>Results for ${studentName}</h3>
+    <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
+    <p>Submit time: <strong>${quizEndTime.toLocaleTimeString()}</strong></p>
+    <p>Time taken (this attempt): <strong>${formatMs(attemptMs)}</strong></p>
+    <p>First attempt time: <strong>${formatMs(firstAttemptMs)}</strong></p>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th><th>Part</th><th>Image</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q,i)=>{
+    const partLbl = (q.partIndex===0) ? "Substitution"
+                  : (q.partIndex===1) ? "Elimination"
+                  : "Word Problem";
+    const uaA=(q.userA||"").trim();
+    const uaB=(q.userB||"").trim();
+    const your = (uaA==="" && uaB==="") ? "—" : `${q.labelA}=${uaA||"—"}, ${q.labelB}=${uaB||"—"}`;
+    const corr = `${q.labelA}=${fmtNice(q.ansA)}, ${q.labelB}=${fmtNice(q.ansB)}`;
+
+    html+=`
+      <tr class="${q.isCorrect ? "correct-answer":"incorrect-answer"}">
+        <td>${i+1}</td>
+        <td>${partLbl}</td>
+        <td><img class="thumb" src="${q.img}" alt="Q${i+1}"></td>
+        <td>${your}</td>
+        <td><strong>${corr}</strong></td>
+        <td>${(uaA==="" && uaB==="") ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
+      </tr>
+    `;
+  });
+
+  html+=`</table><div id="navSlot"></div>`;
+  quizContent.innerHTML=html;
+
+  mountNavButtonsInto("navSlot");
+
+  backButton.style.display="none";
+  nextButton.style.display="none";
+  submitButton.style.display="none";
+  checkButton.style.display="none";
+  saveButton.style.display="inline-block";
+
+  // reset timer for next attempt
+  elapsedMs=0; isPaused=false; quizStartTime=new Date();
+  pauseButton.textContent="Pause";
+  startTimerInterval();
+  updateTimerDisplay();
+}
+
+/* =========================
+   BUTTONS
+========================= */
+nextButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex<TOTAL_QUESTIONS-1){
+    currentQuestionIndex++;
+    renderQuestion();
+  }
+});
+backButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex>0){
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+});
+submitButton.addEventListener("click", ()=>{
+  if(currentQuestionIndex===TOTAL_QUESTIONS-1){
+    calculateAndShowResults();
+  }
+});
+checkButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  const q=questions[currentQuestionIndex];
+  if(!quizSubmitted) return;
+
+  gradeOneQuestion(currentQuestionIndex);
+  updateSidebarStatus();
+
+  const box=document.getElementById("checkFeedback");
+  if(!box) return;
+
+  box.className="check-feedback";
+  box.style.display="block";
+
+  if(q.isCorrect){
+    box.innerHTML=`✅ Correct!`;
+    checkButton.style.display="none";
+  }else{
+    box.innerHTML=`❌ Incorrect. Correct answers: <strong>${q.labelA}=${fmtNice(q.ansA)}, ${q.labelB}=${fmtNice(q.ansB)}</strong>`;
+    checkButton.style.display="inline-block";
+  }
+});
+
+/* Save TXT */
+function formatDateForFilename(date){
+  if(!date) return "no_time";
+  const pad=n=>String(n).padStart(2,"0");
+  return date.getFullYear()+pad(date.getMonth()+1)+pad(date.getDate())+"_"+
+         pad(date.getHours())+pad(date.getMinutes())+pad(date.getSeconds());
+}
+function saveCurrentResultAsTxt(){
+  saveCurrentInput();
+
+  if(!quizSubmitted){
+    questions.forEach(q=>{
+      const a=parseNumber(q.userA||"");
+      const b=parseNumber(q.userB||"");
+      q.isCorrect = nearlyEqual(a,q.ansA) && nearlyEqual(b,q.ansB);
+    });
+  }
+
+  let correctCount=0;
+  questions.forEach(q=>{ if(q.isCorrect) correctCount++; });
+
+  const lines=[];
+  lines.push("Simultaneous Equations (Image Quiz) - Current Result");
+  lines.push("Student: "+studentName);
+  if(quizStartTime) lines.push("Start time: "+quizStartTime.toLocaleString());
+  if(quizEndTime) lines.push("Last submit time: "+quizEndTime.toLocaleString());
+  lines.push("Score: "+correctCount+" / "+TOTAL_QUESTIONS);
+  if(firstAttemptMs!==null) lines.push("First attempt time: "+formatMs(firstAttemptMs));
+  lines.push("");
+
+  questions.forEach((q,i)=>{
+    const partLbl = (q.partIndex===0) ? "Substitution"
+                  : (q.partIndex===1) ? "Elimination"
+                  : "Word Problem";
+    const userA=(q.userA||"").trim()==="" ? "Not answered" : q.userA;
+    const userB=(q.userB||"").trim()==="" ? "Not answered" : q.userB;
+    const resultText=((q.userA||"").trim()==="" && (q.userB||"").trim()==="") ? "Not answered" : (q.isCorrect?"Correct":"Incorrect");
+
+    lines.push(`Q${i+1} (${partLbl})`);
+    lines.push(`Your answer: ${q.labelA}=${userA}, ${q.labelB}=${userB}`);
+    lines.push(`Correct answer: ${q.labelA}=${fmtNice(q.ansA)}, ${q.labelB}=${fmtNice(q.ansB)}`);
+    lines.push("Result: "+resultText);
+    lines.push("");
+  });
+
+  const content=lines.join("\n");
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
+  const ts=formatDateForFilename(new Date());
+  a.href=url;
+  a.download=`Simultaneous_${safeName}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+saveButton.addEventListener("click", saveCurrentResultAsTxt);
+
+/* Pause/Resume */
+pauseButton.addEventListener("click", ()=>{
+  if(!quizStartTime && elapsedMs===0 && !quizSubmitted) return;
+  if(isPaused){ resumeTimer(); pauseButton.textContent="Pause"; }
+  else { pauseTimer(); pauseButton.textContent="Resume"; }
+});
+
+/* Generate new set */
+generateBtn.addEventListener("click", ()=>{
+  if(!quizSubmitted && !confirm("Generate a new random set? All answers will be lost.")) return;
+
+  if(timerInterval) clearInterval(timerInterval);
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=new Date(); quizEndTime=null;
+  updateTimerDisplay(); startTimerInterval();
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+});
+
+/* =========================
+   START SCREEN (+ optional ?name=Tiger)
+========================= */
+function getNameFromUrl(){
+  const url=new URL(window.location.href);
+  const name=url.searchParams.get("name");
+  return name ? name.trim() : "";
+}
+function showStartScreen(){
+  sidebarEl.style.display="none";
+  buttonContainer.style.display="none";
+  generateBtn.style.display="none";
+  saveButton.style.display="none";
+  pauseButton.style.display="none";
+  studentLine.textContent="";
+
+  if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=null; quizEndTime=null;
+  updateTimerDisplay();
+
+  const preset=getNameFromUrl();
+  if(preset){
+    studentName=preset;
+    studentLine.textContent=`Student: ${studentName}`;
+    startQuiz(true);
+    return;
+  }
+
+  quizContent.innerHTML=`
+    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> image-based questions on simultaneous equations:</p>
+    <ul style="margin-top:6px;color:#555;line-height:1.7;">
+      <li><strong>Part 1:</strong> Substitution (1)</li>
+      <li><strong>Part 2:</strong> Elimination (3)</li>
+      <li><strong>Part 3:</strong> Word problems (3, random scenarios)</li>
+    </ul>
+    <p style="margin-top:10px;">Please enter your name to begin:</p>
+
+    <input id="nameInput" type="text"
+      style="padding:10px;width:260px;font-size:1.05em;border:1px solid #ccc;border-radius:10px;"
+      placeholder="Your name">
+
+    <button id="startButton"
+      style="margin-left:10px;background:#4caf50;padding:10px 20px;color:white;border:none;border-radius:8px;">
+      Start Quiz
+    </button>
+  `;
+  document.getElementById("startButton").addEventListener("click", ()=>startQuiz(false));
+}
+function startQuiz(skipReadName){
+  if(!skipReadName){
+    const nameInput=document.getElementById("nameInput");
+    studentName=(nameInput.value || "Student").trim();
+  }
+  studentLine.textContent=`Student: ${studentName}`;
+
+  quizStartTime=new Date();
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  updateTimerDisplay(); startTimerInterval();
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+
+  generateBtn.style.display="inline-block";
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+}
+
+/* =========================
+   INIT
+========================= */
+showStartScreen();
+</script>
+</body>
+</html>
