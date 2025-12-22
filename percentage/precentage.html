@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Percentage Quiz (Standard / Extension Mode)</title>
+
+  <style>
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:#f4f4f9;
+      margin:0; padding:20px;
+      color:#333;
+    }
+    .quiz-container{
+      max-width:900px;
+      margin:40px auto;
+      background:#fff;
+      padding:30px;
+      border-radius:12px;
+      box-shadow:0 6px 15px rgba(0,0,0,0.1);
+    }
+    #headerLogo{
+      display:flex; align-items:center;
+      margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:10px;
+      gap:12px;
+    }
+    .logo-icon{
+      width:40px; height:40px;
+      background:#0d47a1; border-radius:6px;
+      position:relative;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:20px;height:9px;
+      background:#ff9800;
+      top:-6px; left:22px;
+      border-radius:3px;
+    }
+    .logo-text span.edu{
+      font-size:0.95em;
+      color:#ff9800;
+      font-weight:800;
+      letter-spacing:0.7px;
+    }
+
+    .top-bar{
+      display:flex;
+      justify-content:flex-end;
+      margin-bottom:10px;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .top-bar button{
+      padding:10px 18px;
+      border:none;
+      color:#fff;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:1em;
+    }
+    #generateButton{ background:#ff9800; display:none; }
+    #exportPdfButton{ background:#455a64; display:none; }
+    #pauseResumeButton{ background:#607d8b; display:none; }
+
+    .timer-pill{
+      display:none;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid #e0e0e0;
+      background:#fafafa;
+      font-weight:700;
+      font-size:0.95em;
+      color:#333;
+    }
+
+    .quiz-main{ display:flex; gap:20px; }
+    .sidebar{
+      width:220px;
+      border-right:1px solid #ddd;
+      padding-right:10px;
+      display:none;
+    }
+    .sidebar h4{
+      margin:0 0 8px;
+      font-size:0.95em;
+      border-bottom:1px solid #eee;
+      padding-bottom:4px;
+    }
+    .sidebar ul{ list-style:none; padding:0; margin:0; }
+    .sidebar li{
+      padding:6px;
+      cursor:pointer;
+      border-radius:4px;
+      font-size:0.9em;
+      user-select:none;
+      margin-bottom:4px;
+    }
+    .sidebar li.active{ outline:2px solid #1976d2; font-weight:600; }
+    .sidebar li.correct{ background:#d4edda; border-left:4px solid #28a745; }
+    .sidebar li.incorrect{ background:#f8d7da; border-left:4px solid #f44336; }
+    .sidebar li.answered{ border-left:4px solid #4caf50; }
+
+    #quizContent{ flex:1; }
+    .question-text{ font-size:1.1em; margin-bottom:8px; }
+    .instructions{ font-size:0.92em; color:#555; margin-bottom:12px; }
+    .part-title{ font-weight:800; margin:10px 0 8px; }
+    .single-question{
+      margin-top:6px; margin-bottom:6px;
+      line-height:1.55;
+    }
+    .answer-box{
+      width:240px;
+      padding:6px 8px;
+      font-size:1em;
+      margin-left:8px;
+    }
+
+    .hint-box{
+      margin-top:10px;
+      padding:10px 12px;
+      background:#f7f7ff;
+      border:1px solid #e6e6ff;
+      border-radius:8px;
+      font-size:0.92em;
+      color:#444;
+    }
+    .hint-box b{ color:#111; }
+
+    .check-feedback{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid #e0e0e0;
+      background:#fafafa;
+      font-size:0.95em;
+      display:none;
+      white-space:pre-wrap;
+    }
+    .check-feedback.neutral{ display:block; background:#f6f7fb; border-color:#e2e6ff; }
+    .check-feedback.correct{ display:block; background:#d4edda; border-color:#28a745; }
+    .check-feedback.incorrect{ display:block; background:#f8d7da; border-color:#f44336; }
+
+    .question-buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+      align-items:center;
+    }
+    .question-buttons button{
+      padding:10px 18px;
+      border:none;
+      color:#fff;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:1em;
+    }
+    #nextButton{ background:#4caf50; }
+    #backButton{ background:#039be5; }
+    #submitButton{ background:#9c27b0; }
+    #saveButton{ background:#607d8b; }
+    #checkButton{ background:#00897b; }
+    #backToPracticeButton{ background:#455a64; opacity:1; }
+
+    table.review-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:20px;
+    }
+    .review-table th, .review-table td{
+      border:1px solid #ccc;
+      padding:6px;
+      font-size:0.85em;
+      text-align:center;
+      vertical-align:top;
+    }
+    .review-table th{ background:#f2f2f2; }
+    .correct-answer{ background:#d4edda; }
+    .incorrect-answer{ background:#f8d7da; }
+
+    .mode-badge{
+      display:inline-block;
+      margin-left:8px;
+      padding:2px 10px;
+      border-radius:999px;
+      font-size:0.85em;
+      background:#eef2ff;
+      border:1px solid #dfe5ff;
+      color:#333;
+    }
+
+    .frac{
+      display:inline-block;
+      vertical-align:middle;
+      text-align:center;
+      line-height:1.05;
+      margin:0 2px;
+    }
+    .frac .top{
+      display:block;
+      padding:0 4px;
+      border-bottom:2px solid #222;
+      font-size:0.98em;
+    }
+    .frac .bottom{
+      display:block;
+      padding:0 4px;
+      font-size:0.98em;
+    }
+
+    @media (max-width:700px){
+      .quiz-main{ flex-direction:column; }
+      .sidebar{
+        width:100%;
+        border-right:none;
+        border-bottom:1px solid #ddd;
+        margin-bottom:10px;
+        padding-bottom:10px;
+      }
+      .answer-box{ width:190px; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text"><span class="edu">EDUCATION</span></div>
+  </div>
+
+  <div class="top-bar">
+    <span id="timerPill" class="timer-pill">⏱ 00:00</span>
+    <button id="pauseResumeButton">Pause</button>
+    <button id="generateButton">Generate New Set</button>
+    <button id="exportPdfButton">Export Questions (PDF)</button>
+  </div>
+
+  <h2>Percentage Quiz <span id="modeBadge" class="mode-badge" style="display:none;"></span></h2>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+</div>
+
+<script>
+/* ==========================================================
+   TIMER + PAUSE/RESUME
+========================================================== */
+let timerIntervalId = null;
+let elapsedSeconds = 0;
+let isPaused = false;
+
+const timerPill = document.getElementById("timerPill");
+const pauseResumeBtn = document.getElementById("pauseResumeButton");
+
+function pad2(n){ return String(n).padStart(2,"0"); }
+function formatMMSS(sec){
+  sec = Math.max(0, Math.floor(sec));
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${pad2(m)}:${pad2(s)}`;
+}
+function renderTimer(){
+  timerPill.textContent = `⏱ ${formatMMSS(elapsedSeconds)}`;
+}
+function startTimer(){
+  stopTimer();
+  isPaused = false;
+  pauseResumeBtn.textContent = "Pause";
+  timerIntervalId = setInterval(() => {
+    if (!isPaused){
+      elapsedSeconds++;
+      renderTimer();
+    }
+  }, 1000);
+}
+function stopTimer(){
+  if (timerIntervalId){
+    clearInterval(timerIntervalId);
+    timerIntervalId = null;
+  }
+}
+function resetTimer(){
+  elapsedSeconds = 0;
+  renderTimer();
+}
+function showTimerUI(show){
+  timerPill.style.display = show ? "inline-block" : "none";
+  pauseResumeBtn.style.display = show ? "inline-block" : "none";
+}
+function togglePauseResume(){
+  isPaused = !isPaused;
+  pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
+}
+pauseResumeBtn.addEventListener("click", togglePauseResume);
+
+/* ==========================================================
+   BEHAVIOR summary
+   ✅ Check Answer ALWAYS exists on question pages
+   ✅ ONLY the LAST question shows "Submit & View Results"
+   ✅ After first submit, practice is automatically "Wrong + Unanswered"
+   ✅ Practice: correct -> wait 2 seconds -> auto next (sidebar turns green immediately)
+   ✅ Export Questions -> print dialog (Save as PDF)
+========================================================== */
+
+let QUIZ_MODE = "standard"; // "standard" | "extension"
+
+/* ----------------------------------------------------------
+   Read student name from URL: ?name=Amber
+---------------------------------------------------------- */
+function getStudentNameFromURL(){
+  try{
+    const params = new URLSearchParams(window.location.search || "");
+    const raw = params.get("name");
+    if (!raw) return "";
+    return decodeURIComponent(raw.replace(/\+/g, "%20")).trim();
+  }catch(e){
+    return "";
+  }
+}
+const URL_STUDENT_NAME = getStudentNameFromURL();
+
+/* ----------------------------------------------------------
+   Utilities
+---------------------------------------------------------- */
+function randInt(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+function choice(arr){ return arr[randInt(0, arr.length - 1)]; }
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i=a.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function gcd(a,b){
+  a = Math.abs(a); b = Math.abs(b);
+  while(b){ const t=a%b; a=b; b=t; }
+  return a || 1;
+}
+function lcm(a,b){ return (a/gcd(a,b))*b; }
+function simplifyFrac(n,d){
+  if (d === 0) return {n:0,d:1};
+  if (d < 0){ n = -n; d = -d; }
+  const g = gcd(n,d);
+  return {n:n/g, d:d/g};
+}
+function fracHTML(n,d){
+  const s = simplifyFrac(n,d);
+  return `<span class="frac"><span class="top">${s.n}</span><span class="bottom">${s.d}</span></span>`;
+}
+function fracText(n,d){
+  const s = simplifyFrac(n,d);
+  return `${s.n}/${s.d}`;
+}
+function roundTo(x, dp){
+  const f = Math.pow(10, dp);
+  return Math.round(x * f) / f;
+}
+function stripHTML(html){
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return (tmp.textContent || tmp.innerText || "").trim();
+}
+
+/* ----------------------------------------------------------
+   Fractions for percentage multipliers
+---------------------------------------------------------- */
+function factorInc(p){ return simplifyFrac(100+p, 100); }
+function factorDec(p){ return simplifyFrac(100-p, 100); }
+function mulFrac(a,b){ return simplifyFrac(a.n*b.n, a.d*b.d); }
+function fracToNumber(f){ return f.n / f.d; }
+
+/* ----------------------------------------------------------
+   Parsing answers by type
+---------------------------------------------------------- */
+function parseFraction(str){
+  let s = (str || "").trim();
+  if (!s) return null;
+  s = s.replace(/−/g,"-");
+  const m = s.match(/^(-?\d+)\s*\/\s*(-?\d+)$/);
+  if (!m) return null;
+  const n = Number(m[1]), d = Number(m[2]);
+  if (!Number.isInteger(n) || !Number.isInteger(d) || d === 0) return null;
+  return simplifyFrac(n,d);
+}
+function parsePercent(str){
+  let s = (str || "").trim();
+  if (!s) return NaN;
+  s = s.replace(/−/g,"-").replace(/\s/g,"");
+  if (s.endsWith("%")) s = s.slice(0,-1);
+  const v = Number(s);
+  return Number.isFinite(v) ? v : NaN;
+}
+function parseNumber(str){
+  let s = (str || "").trim();
+  if (!s) return NaN;
+  s = s.replace(/−/g,"-");
+  const v = Number(s);
+  return Number.isFinite(v) ? v : NaN;
+}
+function compareByType(userStr, correct){
+  const eps = 1e-6;
+  const ans = (userStr || "").trim();
+  if (ans === "") return { ok:false, empty:true };
+
+  if (correct.type === "fraction"){
+    const u = parseFraction(ans);
+    if (!u) return { ok:false, empty:false };
+    const c = simplifyFrac(correct.n, correct.d);
+    return { ok: (u.n === c.n && u.d === c.d), empty:false };
+  }
+
+  if (correct.type === "percent"){
+    const u = parsePercent(ans);
+    if (!Number.isFinite(u)) return { ok:false, empty:false };
+    return { ok: Math.abs(u - correct.value) < eps, empty:false };
+  }
+
+  if (correct.type === "integer"){
+    const u = parseNumber(ans);
+    if (!Number.isFinite(u) || Math.abs(u - Math.round(u)) > eps) return { ok:false, empty:false };
+    return { ok: Math.abs(u - correct.value) < eps, empty:false };
+  }
+
+  const u = parseNumber(ans);
+  if (!Number.isFinite(u)) return { ok:false, empty:false };
+  return { ok: Math.abs(u - correct.value) < eps, empty:false };
+}
+
+/* ----------------------------------------------------------
+   Question model
+---------------------------------------------------------- */
+function makeQ(partIndex, indexInPart, html, correct, displayCorrect, answerHint){
+  return {
+    partIndex, indexInPart,
+    html,
+    plain: stripHTML(html),
+    correct,
+    displayCorrect,
+    answerHint,
+    userValue:"",
+    isCorrect:false,
+    checked:false
+  };
+}
+
+/* ==========================================================
+   STANDARD MODE
+========================================================== */
+function pctToFrac(p){
+  const s = String(p);
+  if (s.includes(".")){
+    const dp = s.split(".")[1].length;
+    const scale = Math.pow(10, dp);
+    const num = Math.round(p * scale);
+    const den = 100 * scale;
+    return simplifyFrac(num, den);
+  }
+  return simplifyFrac(p, 100);
+}
+function fracToPct(n,d){
+  const val = (n/d) * 100;
+  const r1 = roundTo(val,1);
+  if (Math.abs(r1 - Math.round(r1)) < 1e-9) return Math.round(r1);
+  return roundTo(val,2);
+}
+
+function buildConversionPart(count, partIndex){
+  const templates = [];
+  templates.push(() => {
+    const p = choice([12.5,25,37.5,50,75,20,10]);
+    const f = pctToFrac(p);
+    const html = `Convert <b>${p}%</b> to a <b>fraction in simplest form</b>.`;
+    return makeQ(partIndex, 0, html, {type:"fraction", n:f.n, d:f.d}, fracText(f.n,f.d), "Answer as a/b (simplest form). Example: 3/8");
+  });
+  templates.push(() => {
+    const den = choice([2,4,5,8,10,20]);
+    const num = randInt(1, den-1);
+    const f = simplifyFrac(num, den);
+    const pct = fracToPct(f.n,f.d);
+    const html = `Convert ${fracHTML(f.n,f.d)} to a <b>percentage</b>.`;
+    return makeQ(partIndex, 0, html, {type:"percent", value:pct}, `${pct}%`, "Answer as a percentage (with or without %).");
+  });
+  templates.push(() => {
+    const decList = [0.125,0.2,0.25,0.375,0.4,0.5,0.75,1.2,1.25,1.5];
+    const v = choice(decList);
+    const pct = roundTo(v*100, 2);
+    const dp = String(v).includes(".") ? (String(v).split(".")[1].length) : 0;
+    const html = `Convert <b>${v.toFixed(dp)}</b> to a <b>percentage</b>.`;
+    return makeQ(partIndex, 0, html, {type:"percent", value:pct}, `${pct}%`, "Answer as a percentage.");
+  });
+  templates.push(() => {
+    const p = choice([5,10,12.5,15,20,25,30,37.5,40,50,60,75,120]);
+    const dec = roundTo(p/100, 3);
+    const html = `Convert <b>${p}%</b> to a <b>decimal</b>.`;
+    return makeQ(partIndex, 0, html, {type:"decimal", value:dec}, String(dec), "Answer as a decimal (e.g., 0.25).");
+  });
+  templates.push(() => {
+    const decList = [0.2,0.25,0.125,0.375,0.4,0.05,0.75,1.25];
+    const v = choice(decList);
+    const s = String(v);
+    const dp = s.includes(".") ? s.split(".")[1].length : 0;
+    const scale = Math.pow(10, dp);
+    const f = simplifyFrac(Math.round(v*scale), scale);
+    const html = `Convert <b>${v}</b> to a <b>fraction in simplest form</b>.`;
+    return makeQ(partIndex, 0, html, {type:"fraction", n:f.n, d:f.d}, fracText(f.n,f.d), "Answer as a/b (simplest form).");
+  });
+
+  return shuffle(templates).slice(0, count).map((fn, i) => {
+    const q = fn(); q.indexInPart = i; return q;
+  });
+}
+
+function buildOpsPart(count, partIndex){
+  const templates = [];
+  templates.push(() => {
+    const f1 = simplifyFrac(choice([1,3,5,7]), 8);
+    const p = choice([12.5,25,37.5,50]);
+    const f2 = pctToFrac(p);
+    const sum = simplifyFrac(f1.n*f2.d + f2.n*f1.d, f1.d*f2.d);
+    const html = `Calculate: ${fracHTML(f1.n,f1.d)} + <b>${p}%</b>. Give your answer as a <b>fraction in simplest form</b>.`;
+    return makeQ(partIndex, 0, html, {type:"fraction", n:sum.n, d:sum.d}, fracText(sum.n,sum.d), "Answer as a/b (simplest form).");
+  });
+  templates.push(() => {
+    const dec = choice([1.2,2.5,3.75,4.0,0.8,1.25]);
+    const p = choice([10,12.5,20,25,50]);
+    const val = roundTo(dec - p/100, 3);
+    const html = `Calculate: <b>${dec}</b> − <b>${p}%</b>.`;
+    return makeQ(partIndex, 0, html, {type:"decimal", value:val}, String(val), "Answer as a decimal.");
+  });
+  templates.push(() => {
+    const p = choice([10,20,25,50,75,12.5,37.5]);
+    let base;
+    if (p === 12.5) base = randInt(8, 40) * 8;
+    else if (p === 37.5) base = randInt(8, 40) * 8;
+    else if (p === 25) base = randInt(8, 40) * 4;
+    else if (p === 75) base = randInt(8, 40) * 4;
+    else if (p === 20) base = randInt(5, 40) * 5;
+    else if (p === 50) base = randInt(10, 80) * 2;
+    else base = randInt(10, 120);
+    const val = roundTo(base * (p/100), 6);
+    const html = `Calculate: <b>${p}%</b> of <b>${base}</b>.`;
+    return makeQ(partIndex, 0, html, {type:"number", value:val}, String(val), "Answer as a number.");
+  });
+  templates.push(() => {
+    const f = simplifyFrac(choice([1,3,5,7]), choice([8,4,5,10]));
+    const dec = choice([0.5,0.25,0.2,0.125]);
+    const s = String(dec);
+    const dp = s.includes(".") ? s.split(".")[1].length : 0;
+    const scale = Math.pow(10, dp);
+    const decF = simplifyFrac(Math.round(dec*scale), scale);
+    const out = simplifyFrac(f.n*decF.d, f.d*decF.n);
+    const html = `Calculate: ${fracHTML(f.n,f.d)} ÷ <b>${dec}</b>. Give your answer as a <b>fraction in simplest form</b>.`;
+    return makeQ(partIndex, 0, html, {type:"fraction", n:out.n, d:out.d}, fracText(out.n,out.d), "Answer as a/b (simplest form).");
+  });
+
+  return shuffle(templates).slice(0, count).map((fn, i) => {
+    const q = fn(); q.indexInPart = i; return q;
+  });
+}
+
+function buildFindPctOfNumberPart(count, partIndex){
+  const out = [];
+  for (let i=0;i<count;i++){
+    const p = choice([10,12.5,20,25,30,37.5,40,50,75]);
+    let base;
+    if (p === 12.5) base = randInt(6, 40) * 8;
+    else if (p === 37.5) base = randInt(6, 40) * 8;
+    else if (p === 25) base = randInt(6, 50) * 4;
+    else if (p === 75) base = randInt(6, 50) * 4;
+    else if (p === 20) base = randInt(6, 50) * 5;
+    else base = randInt(20, 240);
+    const val = roundTo(base * (p/100), 6);
+    out.push(makeQ(partIndex, i, `Find <b>${p}%</b> of <b>${base}</b>.`, {type:"number", value:val}, String(val), "Answer as a number."));
+  }
+  return out;
+}
+
+function buildGivenPctFindNumberPart(count, partIndex){
+  const out = [];
+  for (let i=0;i<count;i++){
+    const p = choice([10,20,25,50,12.5,37.5,75]);
+    let N;
+    if (p === 12.5 || p === 37.5) N = randInt(6, 40) * 8;
+    else if (p === 25 || p === 75) N = randInt(6, 50) * 4;
+    else if (p === 20) N = randInt(6, 50) * 5;
+    else N = randInt(20, 240);
+    const part = roundTo(N * (p/100), 6);
+    out.push(makeQ(partIndex, i, `<b>${p}%</b> of a number is <b>${part}</b>. Find the number.`, {type:"number", value:N}, String(N), "Answer as a number."));
+  }
+  return out;
+}
+
+function buildFindThePercentagePart(count, partIndex){
+  const out = [];
+  for (let i=0;i<count;i++){
+    const p = choice([5,10,12.5,20,25,30,37.5,40,50,75]);
+    let whole;
+    if (p === 12.5 || p === 37.5) whole = randInt(8, 50) * 8;
+    else if (p === 25 || p === 75) whole = randInt(8, 60) * 4;
+    else if (p === 20) whole = randInt(8, 60) * 5;
+    else whole = randInt(40, 300);
+    const part = roundTo(whole * (p/100), 6);
+    out.push(makeQ(partIndex, i, `What percentage is <b>${part}</b> of <b>${whole}</b>?`, {type:"percent", value:p}, `${p}%`, "Answer as a percentage."));
+  }
+  return out;
+}
+
+function buildOneStepIncDecPart(count, partIndex){
+  const out = [];
+  const templates = [
+    () => {
+      const p = choice([10,20,25,50,12.5,37.5]);
+      let base;
+      if (p === 12.5 || p === 37.5) base = randInt(8, 60) * 8;
+      else if (p === 25) base = randInt(8, 80) * 4;
+      else if (p === 20) base = randInt(8, 80) * 5;
+      else base = randInt(40, 300);
+      const ans = roundTo(base * (1 + p/100), 6);
+      return makeQ(partIndex, 0, `Increase <b>${base}</b> by <b>${p}%</b>.`, {type:"number", value:ans}, String(ans), "Answer as a number.");
+    },
+    () => {
+      const p = choice([10,20,25,50,12.5]);
+      let base;
+      if (p === 12.5) base = randInt(8, 60) * 8;
+      else if (p === 25) base = randInt(8, 80) * 4;
+      else if (p === 20) base = randInt(8, 80) * 5;
+      else base = randInt(60, 360);
+      const ans = roundTo(base * (1 - p/100), 6);
+      return makeQ(partIndex, 0, `Decrease <b>${base}</b> by <b>${p}%</b>.`, {type:"number", value:ans}, String(ans), "Answer as a number.");
+    }
+  ];
+  for (let i=0;i<count;i++){
+    const q = templates[i % templates.length]();
+    q.indexInPart = i;
+    out.push(q);
+  }
+  return out;
+}
+
+function buildMixedProblems(count, partIndex){
+  const gens = [
+    () => {
+      const disc = choice([10,20,25,50]);
+      const orig = randInt(20, 150) * 2;
+      const sale = roundTo(orig*(1-disc/100), 2);
+      const html = `A jacket costs <b>$${orig}</b>. It is discounted by <b>${disc}%</b>. What is the sale price?`;
+      return makeQ(partIndex, 0, html, {type:"number", value:sale}, String(sale), "Answer as a number (dollars).");
+    },
+    () => {
+      const inc = choice([10,20,25,50]);
+      const cost = randInt(10, 120) * 5;
+      const price = roundTo(cost*(1+inc/100), 2);
+      const html = `A shop buys an item for <b>$${cost}</b> and increases the price by <b>${inc}%</b>. What is the new price?`;
+      return makeQ(partIndex, 0, html, {type:"number", value:price}, String(price), "Answer as a number (dollars).");
+    },
+    () => {
+      const disc = choice([10,20,25]);
+      const extra = choice([5,10,15]);
+      const orig = randInt(40, 200);
+      const afterDisc = roundTo(orig*(1-disc/100), 2);
+      const final = roundTo(afterDisc - extra, 2);
+      const html = `A book costs <b>$${orig}</b>. It is reduced by <b>${disc}%</b>, then you use a <b>$${extra}</b> voucher. What is the final price?`;
+      return makeQ(partIndex, 0, html, {type:"number", value:final}, String(final), "Answer as a number (dollars).");
+    }
+  ];
+  return shuffle(gens).slice(0, count).map((fn, i) => {
+    const q = fn(); q.indexInPart = i; return q;
+  });
+}
+
+/* ==========================================================
+   EXTENSION MODE (randomized)
+========================================================== */
+function genExtP1(){
+  const gens = [];
+  gens.push(() => {
+    const p = choice([60,70,75,80,50,40]);
+    const denom = 100 / gcd(p,100);
+    const total = randInt(12, 30) * denom * 5;
+    const juniors = (total * p) / 100;
+    const html = `<b>${p}%</b> of nurses in a hospital are junior nurses. If there are <b>${juniors}</b> junior nurses, how many nurses are there in the hospital?`;
+    return makeQ(0, 0, html, {type:"integer", value:total}, String(total), "Enter an integer.");
+  });
+  gens.push(() => {
+    const p = choice([25,30,35,40,20,45]);
+    const denom = 100 / gcd(p,100);
+    const total = randInt(8, 20) * denom * 10;
+    const nuts = (total * p) / 100;
+    const html = `<b>${p}%</b> of the content in a box of cereal are nuts. If there is <b>${nuts} g</b> of nuts, what is the total weight of the box of cereal (g)?`;
+    return makeQ(0, 0, html, {type:"integer", value:total}, String(total), "Enter an integer (grams).");
+  });
+  gens.push(() => {
+    const p = choice([120,130,150,80,90]);
+    const denom = 100 / gcd(100+p, 100);
+    const original = randInt(40, 120) * denom * 500;
+    const final = original * (100+p) / 100;
+    const html = `The profit made by a company has increased by <b>${p}%</b> to become <b>$${final}</b>. Find the company’s original profit.`;
+    return makeQ(0, 0, html, {type:"integer", value:original}, String(original), "Enter an integer (dollars).");
+  });
+  return shuffle(gens).slice(0,3).map((fn,i)=>{ const q=fn(); q.indexInPart=i; return q; });
+}
+
+function genExtP2(){
+  const gens = [];
+  gens.push(() => {
+    const inc = choice([25,50,75,125]);
+    const dec = choice([10,20,25,30]);
+    const f = mulFrac(factorInc(inc), factorDec(dec));
+    const base = randInt(20, 80) * f.d * 1000;
+    const final = base * f.n / f.d;
+    const html = `The price of a bungalow was <b>$${base}</b>. It increased by <b>${inc}%</b>, followed by a <b>${dec}%</b> decrease. What was the price after both changes?`;
+    return makeQ(1, 0, html, {type:"integer", value:final}, String(final), "Enter an integer (dollars).");
+  });
+  gens.push(() => {
+    const d1 = choice([10,12,15,20]);
+    const d2 = choice([10,20,25]);
+    const f = mulFrac(factorDec(d1), factorDec(d2));
+    const base = randInt(10, 30) * f.d * 5;
+    const final = base * f.n / f.d;
+    const html = `A sumo wrestler weighs <b>${base} kg</b>. There is a <b>${d1}%</b> decrease, followed by a further <b>${d2}%</b> decrease. What is his final weight (kg)?`;
+    return makeQ(1, 0, html, {type:"integer", value:final}, String(final), "Enter an integer (kg).");
+  });
+  gens.push(() => {
+    const inc = choice([10,15,20,25]);
+    const dec = choice([5,10,15]);
+    const f = mulFrac(factorInc(inc), factorDec(dec));
+    const base = randInt(20, 60) * f.d * 10;
+    const final = base * f.n / f.d;
+    const html = `A club has <b>${base}</b> members. Membership increases by <b>${inc}%</b>, then later decreases by <b>${dec}%</b>. How many members are there after both changes?`;
+    return makeQ(1, 0, html, {type:"integer", value:final}, String(final), "Enter an integer.");
+  });
+  return shuffle(gens).slice(0,3).map((fn,i)=>{ const q=fn(); q.indexInPart=i; return q; });
+}
+
+function genExtP3(){
+  const gens = [];
+  gens.push(() => {
+    const a = choice([2,3,4,5,6]);
+    const b = a + choice([2,3,4,5]);
+    const html = `An interest rate rises from <b>${a}%</b> to <b>${b}%</b>. What is the increase in <b>percentage points</b>?`;
+    return makeQ(2, 0, html, {type:"integer", value:(b-a)}, String(b-a), "Enter an integer (percentage points).");
+  });
+  gens.push(() => {
+    const change = choice([5,10,12.5,15,20,25]);
+    const denom = 100 / gcd(change,100);
+    const oldPct = randInt(6, 16) * denom * 5;
+    const newPct = oldPct * (1 - change/100);
+    const html = `A pass rate drops from <b>${oldPct}%</b> to <b>${newPct}%</b>. By what <b>percentage</b> did it decrease (relative to the original)?`;
+    return makeQ(2, 0, html, {type:"percent", value:change}, `${change}%`, "Enter a percentage (with or without %).");
+  });
+  gens.push(() => {
+    const change = choice([20,25,50,60,80,100]);
+    const denom = 100 / gcd(change,100);
+    const oldPct = randInt(4, 12) * denom;
+    const newPct = oldPct * (1 + change/100);
+    const html = `A market share rises from <b>${oldPct}%</b> to <b>${newPct}%</b>. By what <b>percentage</b> did it increase (relative to the original)?`;
+    return makeQ(2, 0, html, {type:"percent", value:change}, `${change}%`, "Enter a percentage (with or without %).");
+  });
+  return shuffle(gens).slice(0,3).map((fn,i)=>{ const q=fn(); q.indexInPart=i; return q; });
+}
+
+function genExtP4(){
+  const gens = [];
+  gens.push(() => {
+    const disc = choice([10,15,20,25,30]);
+    const fee = choice([10,20,30,40,50]);
+    const f = factorDec(disc);
+    const marked = randInt(20, 70) * f.d * 2;
+    const discounted = marked * f.n / f.d;
+    const paid = discounted + fee;
+    const html = `The selling price of a handbag is <b>$${paid}</b>. This includes a <b>${disc}%</b> discount, then a <b>$${fee}</b> shipping fee is added. Find the marked price.`;
+    return makeQ(3, 0, html, {type:"integer", value:marked}, String(marked), "Enter an integer (dollars).");
+  });
+  gens.push(() => {
+    const disc = choice([10,15,20,25]);
+    const fee = choice([5,10,15]);
+    const f = factorDec(disc);
+    const marked = randInt(30, 90) * f.d;
+    const afterDisc = marked * f.n / f.d;
+    const paid = afterDisc + fee;
+    const html = `Tickets were given a <b>${disc}%</b> discount. After the discount, a <b>$${fee}</b> booking fee is added. If the total paid is <b>$${paid}</b>, find the marked price.`;
+    return makeQ(3, 0, html, {type:"integer", value:marked}, String(marked), "Enter an integer (dollars).");
+  });
+  gens.push(() => {
+    const d1 = choice([10,15,20,25]);
+    const d2 = choice([5,10,15]);
+    const f = mulFrac(factorDec(d1), factorDec(d2));
+    const marked = randInt(40, 110) * f.d;
+    const final = marked * f.n / f.d;
+    const html = `A laptop has a marked price of <b>$${marked}</b>. It is discounted by <b>${d1}%</b>, then a further <b>${d2}%</b> discount is applied. What is the final price?`;
+    return makeQ(3, 0, html, {type:"integer", value:final}, String(final), "Enter an integer (dollars).");
+  });
+  return shuffle(gens).slice(0,3).map((fn,i)=>{ const q=fn(); q.indexInPart=i; return q; });
+}
+
+function genExtP5(){
+  const gens = [];
+  gens.push(() => {
+    const gst = randInt(5, 30) * 3;
+    const pre = gst * 20 / 3;
+    const inc = pre + gst;
+    const html = `In New Zealand, GST is <b>15%</b>. The GST paid for a service is <b>$${gst}</b>. What is the price <b>inclusive of GST</b>?`;
+    return makeQ(4, 0, html, {type:"integer", value:inc}, String(inc), "Enter an integer (dollars).");
+  });
+  gens.push(() => {
+    const inc = randInt(8, 40) * 23;
+    const gst = inc * 3 / 23;
+    const html = `In New Zealand, GST is <b>15%</b>. A washing machine costs <b>$${inc}</b> inclusive of GST. What is the <b>GST amount</b>?`;
+    return makeQ(4, 0, html, {type:"integer", value:gst}, String(gst), "Enter an integer (dollars).");
+  });
+  gens.push(() => {
+    const pre = randInt(6, 30) * 20;
+    const rebate = choice([5,10,15,20]);
+    const inc = pre * 23 / 20;
+    const final = inc - rebate;
+    const html = `In New Zealand, GST is <b>15%</b>. A repair costs <b>$${pre}</b> before GST. GST is added, then a <b>$${rebate}</b> rebate is applied. What is the final amount paid?`;
+    return makeQ(4, 0, html, {type:"integer", value:final}, String(final), "Enter an integer (dollars).");
+  });
+  return shuffle(gens).slice(0,3).map((fn,i)=>{ const q=fn(); q.indexInPart=i; return q; });
+}
+
+function genExtP6(){
+  const gens = [];
+  gens.push(() => {
+    const a = choice([30,40,25]);
+    const b = choice([20,25,10]);
+    const startC = Math.max(a,b);
+    const finalC = Math.min(a,b);
+    const g = gcd(startC-finalC, finalC);
+    const need = finalC / g;
+    const V = randInt(2, 8) * need;
+    const x = V * (startC-finalC) / finalC;
+    const html = `You have <b>${V} L</b> of a <b>${startC}%</b> salt solution. How many litres of <b>water</b> must be added to make it a <b>${finalC}%</b> solution?`;
+    return makeQ(5, 0, html, {type:"integer", value:x}, String(x), "Enter an integer (litres).");
+  });
+  gens.push(() => {
+    const A = choice([10,15,20]);
+    const B = choice([35,40,45]);
+    const T = choice([20,25,30]);
+    const num = (T-A);
+    const den = (B-T);
+    const g = gcd(num, den);
+    const denNeed = den / g;
+    const V1 = randInt(2, 6) * denNeed;
+    const x = V1 * num / den;
+    const html = `You have <b>${V1} L</b> of a <b>${A}%</b> solution. How many litres of a <b>${B}%</b> solution must be added to make a <b>${T}%</b> solution?`;
+    return makeQ(5, 0, html, {type:"integer", value:x}, String(x), "Enter an integer (litres).");
+  });
+  gens.push(() => {
+    const c = choice([20,25,30]);
+    const strong = choice([40,50,60]);
+    const W = randInt(2, 8);
+    const den = (strong - c);
+    const g = gcd(W*c, den);
+    const W2 = (den / g) * randInt(1, 4);
+    const x = (W2*c)/(strong-c);
+    const V = randInt(2, 8);
+    const html = `You have <b>${V} L</b> of a <b>${c}%</b> syrup solution. First, you add <b>${W2} L</b> of water. Then you add some <b>${strong}%</b> syrup solution to make the final concentration <b>${c}%</b> again. How many litres of the <b>${strong}%</b> solution did you add?`;
+    return makeQ(5, 0, html, {type:"integer", value:x}, String(x), "Enter an integer (litres).");
+  });
+  return shuffle(gens).slice(0,3).map((fn,i)=>{ const q=fn(); q.indexInPart=i; return q; });
+}
+
+function genExtP7(){
+  const gens = [];
+  gens.push(() => {
+    const ratioB = 3, ratioG = 2;
+    const pb = choice([20,10,30]);
+    const pg = choice([10,5,20]);
+    const k = randInt(3, 10) * 10;
+    const boys = ratioB*k, girls = ratioG*k;
+    const present = boys*(1-pb/100) + girls*(1-pg/100);
+    const total = boys + girls;
+    const html = `In a class, the ratio of boys to girls is <b>3 : 2</b>. <b>${pb}%</b> of the boys and <b>${pg}%</b> of the girls are absent today. If there are <b>${present}</b> students present, how many students are in the class in total?`;
+    return makeQ(6, 0, html, {type:"integer", value:total}, String(total), "Enter an integer.");
+  });
+  gens.push(() => {
+    const wh = choice([70,60,80]);
+    const wa = choice([45,50,40]);
+    const denom1 = 100 / gcd(wh,100);
+    const denom2 = 100 / gcd(wa,100);
+    const K = randInt(2, 6) * lcm(denom1, denom2) * 5;
+    const home = 3*K, away = 2*K;
+    const wins = home*wh/100 + away*wa/100;
+    const totalGames = home + away;
+    const html = `A sports club played home and away games in the ratio <b>3 : 2</b>. They won <b>${wh}%</b> of home games and <b>${wa}%</b> of away games. If they won <b>${wins}</b> games in total, how many games did they play altogether?`;
+    return makeQ(6, 0, html, {type:"integer", value:totalGames}, String(totalGames), "Enter an integer.");
+  });
+  return shuffle(gens).slice(0,2).map((fn,i)=>{ const q=fn(); q.indexInPart=i; return q; });
+}
+
+/* ----------------------------------------------------------
+   Blueprints
+---------------------------------------------------------- */
+function getBlueprint(){
+  const standard = {
+    modeLabel: "Standard Mode",
+    partTitles: [
+      "Part 1. Convert between Percentage, Fraction, and Decimal (4)",
+      "Part 2. Operations with Percentages / Fractions / Decimals (4)",
+      "Part 3. Find a Percentage of a Number (2)",
+      "Part 4. Given a Percentage, Find the Number (2)",
+      "Part 5. Find the Percentage (2)",
+      "Part 6. One-step Increase and Decrease (2)",
+      "Part 7. Mixed Percentage Problems (2)"
+    ],
+    counts: [4,4,2,2,2,2,2]
+  };
+
+  const extension = {
+    modeLabel: "Extension Mode",
+    partTitles: [
+      "Part 1. Reverse Percentage (3)",
+      "Part 2. Percentage Increase and Decrease (2+ steps) (3)",
+      "Part 3. Percentage Points and Percentage Change (3)",
+      "Part 4. Discounts and Percentage Discounts (2+ steps) (3)",
+      "Part 5. GST (2+ steps) (3)",
+      "Part 6. Concentration Problems (2+ steps) (3)",
+      "Part 7. Other Percentage Applications (incl. ratio) (2+ steps) (2)"
+    ],
+    counts: [3,3,3,3,3,3,2]
+  };
+
+  return (QUIZ_MODE === "extension") ? extension : standard;
+}
+
+/* ----------------------------------------------------------
+   State
+---------------------------------------------------------- */
+let questions = [];
+let currentQuestionIndex = 0;
+
+let studentName = "Student";
+let quizStartTime = null;
+let quizEndTime = null;
+let quizSubmitted = false;
+
+let practiceActive = false;
+let practiceIndices = [];
+let practicePos = 0;
+
+const quizContent = document.getElementById("quizContent");
+const sidebarEl   = document.getElementById("sidebar");
+const generateBtn = document.getElementById("generateButton");
+const exportBtn   = document.getElementById("exportPdfButton");
+const modeBadge   = document.getElementById("modeBadge");
+
+let PART_TITLES = [];
+let QUESTIONS_PER_PART = [];
+let TOTAL_QUESTIONS = 0;
+
+function rebuildBlueprintVars(){
+  const bp = getBlueprint();
+  PART_TITLES = bp.partTitles.slice();
+  QUESTIONS_PER_PART = bp.counts.slice();
+  modeBadge.style.display = "inline-block";
+  modeBadge.textContent = bp.modeLabel;
+}
+
+function generateQuiz(){
+  rebuildBlueprintVars();
+
+  questions = [];
+  quizSubmitted = false;
+
+  practiceActive = false;
+  practiceIndices = [];
+  practicePos = 0;
+
+  quizEndTime = null;
+
+  if (QUIZ_MODE === "standard"){
+    buildConversionPart(QUESTIONS_PER_PART[0], 0).forEach(q => questions.push(q));
+    buildOpsPart(QUESTIONS_PER_PART[1], 1).forEach(q => questions.push(q));
+    buildFindPctOfNumberPart(QUESTIONS_PER_PART[2], 2).forEach(q => questions.push(q));
+    buildGivenPctFindNumberPart(QUESTIONS_PER_PART[3], 3).forEach(q => questions.push(q));
+    buildFindThePercentagePart(QUESTIONS_PER_PART[4], 4).forEach(q => questions.push(q));
+    buildOneStepIncDecPart(QUESTIONS_PER_PART[5], 5).forEach(q => questions.push(q));
+    buildMixedProblems(QUESTIONS_PER_PART[6], 6).forEach(q => questions.push(q));
+  } else {
+    genExtP1().forEach(q => questions.push(q));
+    genExtP2().forEach(q => questions.push(q));
+    genExtP3().forEach(q => questions.push(q));
+    genExtP4().forEach(q => questions.push(q));
+    genExtP5().forEach(q => questions.push(q));
+    genExtP6().forEach(q => questions.push(q));
+    genExtP7().forEach(q => questions.push(q));
+  }
+
+  TOTAL_QUESTIONS = questions.length;
+}
+
+/* ----------------------------------------------------------
+   Save input
+---------------------------------------------------------- */
+function saveCurrentInput(){
+  const input = document.getElementById("answerInput");
+  if (input) questions[currentQuestionIndex].userValue = input.value.trim();
+}
+
+/* ----------------------------------------------------------
+   Grade
+---------------------------------------------------------- */
+function gradeAll(){
+  let correctCount = 0;
+  questions.forEach(q => {
+    const res = compareByType(q.userValue || "", q.correct);
+    q.isCorrect = (!!res.ok);
+    if (q.isCorrect) correctCount++;
+  });
+  return correctCount;
+}
+
+function buildPracticeList(){
+  gradeAll();
+  practiceIndices = questions
+    .map((q, i) => ({q,i}))
+    .filter(o => ((o.q.userValue || "").trim() === "") || !o.q.isCorrect)
+    .map(o => o.i);
+  practicePos = 0;
+}
+
+/* ----------------------------------------------------------
+   Sidebar
+---------------------------------------------------------- */
+function renderSidebar(){
+  sidebarEl.style.display = "block";
+
+  const showingPractice = (quizSubmitted && practiceActive);
+  const listTitle = showingPractice
+    ? `Practice (Remaining: ${practiceIndices.length})`
+    : "Questions";
+
+  sidebarEl.innerHTML = `<h4>${listTitle}</h4><ul id="qList"></ul>`;
+  const ul = document.getElementById("qList");
+
+  if (showingPractice){
+    practiceIndices.forEach((realIdx, k) => {
+      const q = questions[realIdx];
+      const li = document.createElement("li");
+      const partShort = `P${q.partIndex+1}`;
+      li.textContent = `Q${realIdx + 1} (${partShort}-${q.indexInPart + 1})`;
+      li.dataset.real = String(realIdx);
+      li.dataset.k = String(k);
+      li.addEventListener("click", () => {
+        saveCurrentInput();
+        practicePos = k;
+        currentQuestionIndex = practiceIndices[practicePos];
+        renderQuestion();
+      });
+      ul.appendChild(li);
+    });
+  } else {
+    for (let i = 0; i < TOTAL_QUESTIONS; i++){
+      const q = questions[i];
+      const li = document.createElement("li");
+      const partShort = `P${q.partIndex+1}`;
+      li.textContent = `Q${i + 1} (${partShort}-${q.indexInPart + 1})`;
+      li.dataset.index = String(i);
+      li.addEventListener("click", () => {
+        saveCurrentInput();
+        currentQuestionIndex = i;
+        renderQuestion();
+      });
+      ul.appendChild(li);
+    }
+  }
+
+  updateSidebarStatus();
+}
+
+function updateSidebarStatus(){
+  const showingPractice = (quizSubmitted && practiceActive);
+  const items = document.querySelectorAll("#qList li");
+
+  items.forEach(li => {
+    li.classList.remove("active","answered","correct","incorrect");
+
+    if (showingPractice){
+      const k = Number(li.dataset.k);
+      const realIdx = Number(li.dataset.real);
+      const q = questions[realIdx];
+
+      li.classList.toggle("active", k === practicePos);
+
+      const ans = (q.userValue || "").trim();
+      if (ans !== ""){
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+      return;
+    }
+
+    const idx = Number(li.dataset.index);
+    const q = questions[idx];
+
+    li.classList.toggle("active", idx === currentQuestionIndex);
+
+    const ans = (q.userValue || "").trim();
+    if (ans !== ""){
+      if (!quizSubmitted){
+        if (q.checked){
+          li.classList.add(q.isCorrect ? "correct" : "incorrect");
+        } else {
+          li.classList.add("answered");
+        }
+      } else {
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ----------------------------------------------------------
+   Check Answer (Practice correct -> auto next after 2s)
+---------------------------------------------------------- */
+let autoNextTimer = null;
+
+function checkCurrentAnswer(){
+  if (isPaused){
+    alert("Quiz is paused. Click Resume to continue.");
+    return;
+  }
+
+  saveCurrentInput();
+  const q = questions[currentQuestionIndex];
+  const fb = document.getElementById("checkFeedback");
+  if (!fb) return;
+
+  if (autoNextTimer){
+    clearTimeout(autoNextTimer);
+    autoNextTimer = null;
+  }
+
+  const ans = (q.userValue || "").trim();
+  if (ans === ""){
+    fb.textContent = "Please enter an answer first.";
+    fb.className = "check-feedback neutral";
+    return;
+  }
+
+  const res = compareByType(ans, q.correct);
+  q.isCorrect = !!res.ok;
+  q.checked = true;
+
+  if (!q.isCorrect){
+    fb.textContent = "❌ Incorrect. Try again.";
+    fb.className = "check-feedback incorrect";
+    updateSidebarStatus();
+    return;
+  }
+
+  fb.textContent = (quizSubmitted && practiceActive)
+    ? "✅ Correct! Moving to the next remaining question in 2 seconds..."
+    : "✅ Correct!";
+  fb.className = "check-feedback correct";
+  updateSidebarStatus();
+
+  if (quizSubmitted && practiceActive){
+    const expectedRealIdx = currentQuestionIndex;
+    const expectedPracticePos = practicePos;
+
+    const btn = document.getElementById("checkButton");
+    if (btn) btn.disabled = true;
+
+    autoNextTimer = setTimeout(() => {
+      autoNextTimer = null;
+
+      if (!(quizSubmitted && practiceActive)) return;
+      if (isPaused) return;
+      if (currentQuestionIndex !== expectedRealIdx || practicePos !== expectedPracticePos) return;
+
+      const currentReal = practiceIndices[practicePos];
+      if (currentReal === expectedRealIdx){
+        practiceIndices.splice(practicePos, 1);
+      } else {
+        const idx = practiceIndices.indexOf(expectedRealIdx);
+        if (idx >= 0) practiceIndices.splice(idx, 1);
+        if (practicePos >= practiceIndices.length) practicePos = Math.max(0, practiceIndices.length - 1);
+      }
+
+      if (practiceIndices.length === 0){
+        practiceActive = false;
+        renderSidebar();
+        renderResults(true);
+        return;
+      }
+
+      if (practicePos >= practiceIndices.length) practicePos = practiceIndices.length - 1;
+      currentQuestionIndex = practiceIndices[practicePos];
+
+      renderSidebar();
+      renderQuestion();
+    }, 2000);
+  }
+}
+
+/* ----------------------------------------------------------
+   Hints
+---------------------------------------------------------- */
+function hintForPart(partIndex){
+  const t = PART_TITLES[partIndex] || "";
+
+  if (t.includes("Reverse Percentage")){
+    return `
+      <div class="hint-box">
+        <b>Reverse percentage:</b><br>
+        If <i>p%</i> of the total is <i>A</i>, then total = A ÷ (p/100).
+      </div>
+    `;
+  }
+  if (t.includes("Increase and Decrease")){
+    return `
+      <div class="hint-box">
+        <b>Two-step changes:</b><br>
+        Increase by p% → multiply by (1 + p/100).<br>
+        Decrease by p% → multiply by (1 − p/100).<br>
+        Do each step in order.
+      </div>
+    `;
+  }
+  if (t.includes("Percentage Points")){
+    return `
+      <div class="hint-box">
+        <b>Percentage points vs percentage change:</b><br>
+        • Percentage points = new% − old%<br>
+        • Percentage change = (difference ÷ old%) × 100%
+      </div>
+    `;
+  }
+  if (t.includes("Discounts")){
+    return `
+      <div class="hint-box">
+        <b>Discounts:</b><br>
+        After a discount of p%, price = marked price × (1 − p/100).<br>
+        Handle extra fees step-by-step.
+      </div>
+    `;
+  }
+  if (t.includes("GST")){
+    return `
+      <div class="hint-box">
+        <b>GST (NZ 15%):</b><br>
+        Inclusive = pre-GST × 1.15<br>
+        Pre-GST = inclusive ÷ 1.15<br>
+        If GST amount given: pre-GST = GST ÷ 0.15
+      </div>
+    `;
+  }
+  if (t.includes("Concentration")){
+    return `
+      <div class="hint-box">
+        <b>Concentration:</b><br>
+        Solute amount stays the same when adding water.<br>
+        Use: (solute ÷ total volume) = concentration.
+      </div>
+    `;
+  }
+  if (t.includes("ratio")){
+    return `
+      <div class="hint-box">
+        <b>Percent + ratio:</b><br>
+        Turn 3:2 into 3k and 2k, apply % changes to each group, then total.
+      </div>
+    `;
+  }
+
+  if (t.includes("Convert")){
+    return `
+      <div class="hint-box">
+        <b>Conversion tips:</b><br>
+        Percent → decimal: ÷100<br>
+        Decimal → percent: ×100<br>
+        Percent → fraction: p/100 simplify
+      </div>
+    `;
+  }
+  if (t.includes("Operations")){
+    return `
+      <div class="hint-box">
+        <b>Operations tips:</b><br>
+        Convert to the same form first (often decimals), then calculate.
+      </div>
+    `;
+  }
+
+  return `
+    <div class="hint-box">
+      <b>Tip:</b> Work step-by-step and keep units ($, g, kg, L, %).
+    </div>
+  `;
+}
+
+/* ----------------------------------------------------------
+   Render Question
+---------------------------------------------------------- */
+function renderQuestion(){
+  const q = questions[currentQuestionIndex];
+  const fullLabel = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+
+  const showingPractice = (quizSubmitted && practiceActive);
+
+  const topLine = showingPractice
+    ? `Practice: ${practiceIndices.length} remaining`
+    : `Question ${currentQuestionIndex + 1} of ${TOTAL_QUESTIONS}`;
+
+  const showPrev = showingPractice ? (practicePos > 0) : (currentQuestionIndex > 0);
+  const showNext = showingPractice ? (practicePos < practiceIndices.length - 1) : (currentQuestionIndex < TOTAL_QUESTIONS - 1);
+
+  const answerHelp = q.answerHint || "Enter your answer.";
+
+  const isLastQuestion = (!showingPractice && currentQuestionIndex === TOTAL_QUESTIONS - 1);
+  const showSubmit = (!quizSubmitted && isLastQuestion);
+
+  quizContent.innerHTML = `
+    <p class="question-text">${topLine}</p>
+    <p class="instructions">${answerHelp}</p>
+
+    <div class="part-title">${PART_TITLES[q.partIndex] || ("Part " + (q.partIndex+1))}</div>
+
+    <div class="single-question">
+      <span><b>${fullLabel}.</b></span>
+      <span style="margin-left:6px;">${q.html}</span>
+      <input id="answerInput" class="answer-box" type="text" value="${(q.userValue || "").replace(/"/g,'&quot;')}">
+    </div>
+
+    ${hintForPart(q.partIndex)}
+
+    <div id="checkFeedback" class="check-feedback"></div>
+
+    <div class="question-buttons">
+      <button id="backButton" style="${showPrev ? "" : "display:none;"}">Previous</button>
+      <button id="checkButton">Check Answer</button>
+      <button id="submitButton" style="${showSubmit ? "" : "display:none;"}">Submit &amp; View Results</button>
+      <button id="nextButton" style="${showNext ? "" : "display:none;"}">Next</button>
+      ${quizSubmitted ? `<button id="saveButton">Save Current Result</button>` : ``}
+    </div>
+  `;
+
+  document.getElementById("nextButton")?.addEventListener("click", onNext);
+  document.getElementById("backButton")?.addEventListener("click", onPrev);
+  document.getElementById("submitButton")?.addEventListener("click", onSubmit);
+  document.getElementById("saveButton")?.addEventListener("click", saveCurrentResultAsTxt);
+  document.getElementById("checkButton")?.addEventListener("click", checkCurrentAnswer);
+
+  updateSidebarStatus();
+}
+
+/* ----------------------------------------------------------
+   Results
+---------------------------------------------------------- */
+function renderResults(allCorrectBanner = false){
+  const correctCount = gradeAll();
+
+  buildPracticeList();
+  const remaining = practiceIndices.length;
+
+  let banner = "";
+  if (allCorrectBanner){
+    banner = `<div class="hint-box" style="background:#e8fff0;border-color:#b7f0c8;">
+      <b>✅ Practice complete!</b> All questions are correct.
+    </div>`;
+  } else {
+    banner = `<div class="hint-box">
+      <b>Next step:</b> Practise only the questions you got wrong or did not answer.<br>
+      Remaining to practise: <b>${remaining}</b>
+    </div>`;
+  }
+
+  quizContent.innerHTML = `
+    <h3>Results for ${studentName}</h3>
+    <p>Mode: <strong>${QUIZ_MODE === "standard" ? "Standard Mode" : "Extension Mode"}</strong></p>
+    <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
+    <p>Time taken: <strong>${formatMMSS(elapsedSeconds)}</strong></p>
+    ${banner}
+
+    <div class="question-buttons">
+      ${remaining > 0 ? `<button id="backToPracticeButton">Practice Remaining (${remaining})</button>` : ``}
+      <button id="saveButton">Save Current Result</button>
+      <button id="exportInlineButton" style="background:#455a64;">Export Questions (PDF)</button>
+    </div>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th><th>Part</th><th>Question</th><th>Your Answer</th><th>Correct</th><th>Result</th>
+      </tr>
+      ${questions.map((q, i) => {
+        const partLbl = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+        const yourAns = (q.userValue || "").trim() === "" ? "—" : q.userValue;
+        return `
+          <tr class="${q.isCorrect ? "correct-answer" : "incorrect-answer"}">
+            <td>${i + 1}</td>
+            <td>${partLbl}</td>
+            <td style="text-align:left;">${q.html}</td>
+            <td>${yourAns}</td>
+            <td>${q.displayCorrect}</td>
+            <td>${q.isCorrect ? "Correct" : "Incorrect"}</td>
+          </tr>
+        `;
+      }).join("")}
+    </table>
+  `;
+
+  document.getElementById("backToPracticeButton")?.addEventListener("click", startPractice);
+  document.getElementById("saveButton")?.addEventListener("click", saveCurrentResultAsTxt);
+  document.getElementById("exportInlineButton")?.addEventListener("click", exportQuestionsToPDF);
+
+  updateSidebarStatus();
+}
+
+/* ----------------------------------------------------------
+   Submit (only appears on last question)
+---------------------------------------------------------- */
+function onSubmit(){
+  saveCurrentInput();
+  if (!quizSubmitted){
+    quizEndTime = new Date();
+    quizSubmitted = true;
+
+    practiceActive = false;
+    buildPracticeList();
+
+    renderSidebar();
+    renderResults(false);
+
+    generateBtn.style.display = "inline-block";
+    exportBtn.style.display = "inline-block";
+    showTimerUI(true);
+    return;
+  }
+}
+
+/* ----------------------------------------------------------
+   Practice Remaining
+---------------------------------------------------------- */
+function startPractice(){
+  buildPracticeList();
+
+  if (practiceIndices.length === 0){
+    practiceActive = false;
+    renderSidebar();
+    renderResults(true);
+    return;
+  }
+
+  practiceActive = true;
+  practicePos = 0;
+  currentQuestionIndex = practiceIndices[practicePos];
+
+  renderSidebar();
+  renderQuestion();
+}
+
+/* ----------------------------------------------------------
+   Navigation
+---------------------------------------------------------- */
+function onNext(){
+  if (isPaused){
+    alert("Quiz is paused. Click Resume to continue.");
+    return;
+  }
+  saveCurrentInput();
+
+  const showingPractice = (quizSubmitted && practiceActive);
+
+  if (showingPractice){
+    if (practicePos < practiceIndices.length - 1){
+      practicePos++;
+      currentQuestionIndex = practiceIndices[practicePos];
+      renderQuestion();
+    }
+    return;
+  }
+
+  if (currentQuestionIndex < TOTAL_QUESTIONS - 1){
+    currentQuestionIndex++;
+    renderQuestion();
+  }
+}
+
+function onPrev(){
+  if (isPaused){
+    alert("Quiz is paused. Click Resume to continue.");
+    return;
+  }
+  saveCurrentInput();
+
+  const showingPractice = (quizSubmitted && practiceActive);
+
+  if (showingPractice){
+    if (practicePos > 0){
+      practicePos--;
+      currentQuestionIndex = practiceIndices[practicePos];
+      renderQuestion();
+    }
+    return;
+  }
+
+  if (currentQuestionIndex > 0){
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+}
+
+/* ----------------------------------------------------------
+   Save TXT
+---------------------------------------------------------- */
+function formatDateForFilename(date){
+  if (!date) return "no_time";
+  const pad = n => String(n).padStart(2,"0");
+  return (
+    date.getFullYear() +
+    pad(date.getMonth() + 1) +
+    pad(date.getDate()) + "_" +
+    pad(date.getHours()) +
+    pad(date.getMinutes()) +
+    pad(date.getSeconds())
+  );
+}
+
+function saveCurrentResultAsTxt(){
+  saveCurrentInput();
+  gradeAll();
+
+  let correctCount = 0;
+  questions.forEach(q => { if (q.isCorrect) correctCount++; });
+
+  const lines = [];
+  lines.push("Percentage Quiz - Current Result");
+  lines.push("Student: " + studentName);
+  lines.push("Mode: " + (QUIZ_MODE === "standard" ? "Standard Mode" : "Extension Mode"));
+  lines.push("Elapsed time: " + formatMMSS(elapsedSeconds));
+  lines.push("Score: " + correctCount + " / " + TOTAL_QUESTIONS);
+  lines.push("");
+  lines.push("Details:");
+  lines.push("----------");
+
+  questions.forEach((q, i) => {
+    const partLbl = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+    const userAns = (q.userValue || "").trim() === "" ? "Not answered" : q.userValue;
+    const resultText = (q.userValue || "").trim() === ""
+      ? "Not answered"
+      : (q.isCorrect ? "Correct" : "Incorrect");
+
+    lines.push(
+      `Q${i + 1} (${partLbl})` +
+      "\nQuestion: " + q.plain +
+      "\nYour answer: " + userAns +
+      "\nCorrect answer: " + q.displayCorrect +
+      "\nResult: " + resultText
+    );
+    lines.push("");
+  });
+
+  const content = lines.join("\n");
+  const blob = new Blob([content], { type:"text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const safeName = studentName.replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  a.href = url;
+  a.download = `PercentQuiz_${safeName}_${QUIZ_MODE}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ----------------------------------------------------------
+   Export Questions to PDF (Print -> Save as PDF)
+---------------------------------------------------------- */
+function exportQuestionsToPDF(){
+  if (!questions || questions.length === 0){
+    alert("No questions to export yet.");
+    return;
+  }
+
+  const parts = {};
+  questions.forEach(q => {
+    if (!parts[q.partIndex]) parts[q.partIndex] = [];
+    parts[q.partIndex].push(q);
+  });
+
+  const win = window.open("", "_blank");
+  if (!win){
+    alert("Pop-up blocked. Please allow pop-ups to export PDF.");
+    return;
+  }
+
+  const title = `Percentage Quiz - ${QUIZ_MODE === "standard" ? "Standard" : "Extension"} - Questions`;
+  const today = new Date().toLocaleString();
+
+  const styles = `
+    <style>
+      body{ font-family: Arial, sans-serif; padding:24px; color:#111; }
+      h1{ font-size:20px; margin:0 0 8px; }
+      .meta{ font-size:12px; color:#333; margin-bottom:16px; }
+      h2{ font-size:15px; margin:18px 0 8px; border-bottom:1px solid #ddd; padding-bottom:6px; }
+      .q{ margin:10px 0; line-height:1.35; }
+      .label{ font-weight:700; margin-right:6px; }
+      .ans{ margin-top:6px; border-bottom:1px solid #333; height:18px; width:360px; }
+      .frac{ display:inline-block; vertical-align:middle; text-align:center; line-height:1.05; margin:0 2px; }
+      .frac .top{ display:block; padding:0 4px; border-bottom:2px solid #222; font-size:0.98em; }
+      .frac .bottom{ display:block; padding:0 4px; font-size:0.98em; }
+      @media print{ .pagebreak{ page-break-before: always; } }
+    </style>
+  `;
+
+  let bodyHTML = `
+    <h1>${title}</h1>
+    <div class="meta">
+      Student: <b>${studentName}</b><br>
+      Generated: ${today}<br>
+      Note: Use your browser print dialog and choose <b>Save as PDF</b>.
+    </div>
+  `;
+
+  const sortedPartIndexes = Object.keys(parts).map(Number).sort((a,b)=>a-b);
+  sortedPartIndexes.forEach((pIdx, pi) => {
+    const partTitle = PART_TITLES[pIdx] || `Part ${pIdx+1}`;
+    bodyHTML += `${pi === 0 ? "" : `<div class="pagebreak"></div>`}`;
+    bodyHTML += `<h2>${partTitle}</h2>`;
+
+    parts[pIdx].forEach((q) => {
+      const label = `P${q.partIndex+1}-${q.indexInPart+1}`;
+      bodyHTML += `
+        <div class="q">
+          <div><span class="label">${label}.</span> ${q.html}</div>
+          <div class="ans"></div>
+        </div>
+      `;
+    });
+  });
+
+  win.document.open();
+  win.document.write(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="UTF-8" />
+        <title>${title}</title>
+        ${styles}
+      </head>
+      <body>
+        ${bodyHTML}
+        <script>
+          setTimeout(() => { window.print(); }, 300);
+        <\/script>
+      </body>
+    </html>
+  `);
+  win.document.close();
+}
+
+/* ----------------------------------------------------------
+   Start screen
+---------------------------------------------------------- */
+function showStartScreen(){
+  sidebarEl.style.display = "none";
+  generateBtn.style.display = "none";
+  exportBtn.style.display = "none";
+  modeBadge.style.display = "none";
+  showTimerUI(false);
+  stopTimer();
+  resetTimer();
+  isPaused = false;
+  pauseResumeBtn.textContent = "Pause";
+
+  quizContent.innerHTML = `
+    <p>This quiz contains <strong>Standard</strong> and <strong>Extension</strong> modes.</p>
+    <p><b>Step 1:</b> Enter your name</p>
+    <input id="nameInput" type="text"
+      style="padding:10px; width:260px; font-size:1.05em;"
+      placeholder="Your name">
+
+    <p style="margin-top:16px;"><b>Step 2:</b> Choose a mode</p>
+    <label style="display:block; margin:6px 0;">
+      <input type="radio" name="modeChoice" value="standard" checked>
+      Standard Mode
+    </label>
+    <label style="display:block; margin:6px 0;">
+      <input type="radio" name="modeChoice" value="extension">
+      Extension Mode
+    </label>
+
+    <div class="question-buttons" style="margin-top:18px;">
+      <button id="startButton" style="background:#4caf50;">Start Quiz</button>
+    </div>
+  `;
+
+  const nameInput = document.getElementById("nameInput");
+  if (nameInput && URL_STUDENT_NAME){
+    nameInput.value = URL_STUDENT_NAME;
+  }
+
+  document.getElementById("startButton").addEventListener("click", startQuiz);
+}
+
+function startQuiz(){
+  const nameInput = document.getElementById("nameInput");
+  studentName = (nameInput.value || "Student").trim();
+
+  const picked = document.querySelector('input[name="modeChoice"]:checked');
+  QUIZ_MODE = picked ? picked.value : "standard";
+
+  quizStartTime = new Date();
+  generateQuiz();
+  currentQuestionIndex = 0;
+
+  // timer start
+  resetTimer();
+  showTimerUI(true);
+  startTimer();
+
+  sidebarEl.style.display = "block";
+  generateBtn.style.display = "inline-block";
+  exportBtn.style.display = "inline-block";
+
+  generateBtn.onclick = () => {
+    const warn = quizSubmitted
+      ? "Generate a new random set? (This will reset your results and timer.)"
+      : "Generate a new random set? All answers will be lost and timer will reset.";
+    if (!confirm(warn)) return;
+
+    quizStartTime = new Date();
+    generateQuiz();
+    currentQuestionIndex = 0;
+
+    // reset timer too
+    resetTimer();
+    startTimer();
+
+    renderSidebar();
+    renderQuestion();
+  };
+
+  exportBtn.onclick = exportQuestionsToPDF;
+
+  renderSidebar();
+  renderQuestion();
+}
+
+/* Init */
+showStartScreen();
+</script>
+</body>
+</html>
