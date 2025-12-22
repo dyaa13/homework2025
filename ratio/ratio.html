@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ratio Quiz (Standard / Extension Mode)</title>
+
+  <style>
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:#f4f4f9;
+      margin:0; padding:20px;
+      color:#333;
+    }
+    .quiz-container{
+      max-width:900px;
+      margin:40px auto;
+      background:#fff;
+      padding:30px;
+      border-radius:12px;
+      box-shadow:0 6px 15px rgba(0,0,0,0.1);
+      position:relative;
+    }
+    #headerLogo{
+      display:flex; align-items:center;
+      margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:10px;
+      gap:12px;
+    }
+    .logo-icon{
+      width:40px; height:40px;
+      background:#0d47a1; border-radius:6px;
+      position:relative;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:20px;height:9px;
+      background:#ff9800;
+      top:-6px; left:22px;
+      border-radius:3px;
+    }
+    .logo-text span.edu{
+      font-size:0.95em;
+      color:#ff9800;
+      font-weight:800;
+      letter-spacing:0.7px;
+    }
+
+    .top-bar{
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
+      margin-bottom:10px;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .top-bar button{
+      padding:10px 18px;
+      border:none;
+      color:#fff;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:1em;
+    }
+    #generateButton{ background:#ff9800; display:none; }
+    #exportPdfButton{ background:#455a64; display:none; }
+    #pauseResumeButton{ background:#607d8b; display:none; }
+
+    .timer-box{
+      padding:10px 14px;
+      border:1px solid #e0e0e0;
+      border-radius:10px;
+      background:#fafafa;
+      font-weight:700;
+      display:none;
+    }
+
+    .quiz-main{ display:flex; gap:20px; }
+    .sidebar{
+      width:220px;
+      border-right:1px solid #ddd;
+      padding-right:10px;
+      display:none;
+    }
+    .sidebar h4{
+      margin:0 0 8px;
+      font-size:0.95em;
+      border-bottom:1px solid #eee;
+      padding-bottom:4px;
+    }
+    .sidebar ul{ list-style:none; padding:0; margin:0; }
+    .sidebar li{
+      padding:6px;
+      cursor:pointer;
+      border-radius:4px;
+      font-size:0.9em;
+      user-select:none;
+      margin-bottom:4px;
+    }
+    .sidebar li.active{ outline:2px solid #1976d2; font-weight:600; }
+    .sidebar li.correct{ background:#d4edda; border-left:4px solid #28a745; }
+    .sidebar li.incorrect{ background:#f8d7da; border-left:4px solid #f44336; }
+    .sidebar li.answered{ border-left:4px solid #4caf50; }
+
+    #quizContent{ flex:1; }
+    .question-text{ font-size:1.1em; margin-bottom:8px; }
+    .instructions{ font-size:0.92em; color:#555; margin-bottom:12px; }
+    .part-title{ font-weight:800; margin:10px 0 8px; }
+    .single-question{
+      margin-top:6px; margin-bottom:6px;
+      line-height:1.55;
+    }
+    .answer-box{
+      width:260px;
+      padding:6px 8px;
+      font-size:1em;
+      margin-left:8px;
+    }
+
+    .hint-box{
+      margin-top:10px;
+      padding:10px 12px;
+      background:#f7f7ff;
+      border:1px solid #e6e6ff;
+      border-radius:8px;
+      font-size:0.92em;
+      color:#444;
+    }
+    .hint-box b{ color:#111; }
+
+    .check-feedback{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid #e0e0e0;
+      background:#fafafa;
+      font-size:0.95em;
+      display:none;
+      white-space:pre-wrap;
+    }
+    .check-feedback.neutral{ display:block; background:#f6f7fb; border-color:#e2e6ff; }
+    .check-feedback.correct{ display:block; background:#d4edda; border-color:#28a745; }
+    .check-feedback.incorrect{ display:block; background:#f8d7da; border-color:#f44336; }
+
+    .question-buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+      align-items:center;
+    }
+    .question-buttons button{
+      padding:10px 18px;
+      border:none;
+      color:#fff;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:1em;
+    }
+    #nextButton{ background:#4caf50; }
+    #backButton{ background:#039be5; }
+    #submitButton{ background:#9c27b0; }
+    #saveButton{ background:#607d8b; }
+    #checkButton{ background:#00897b; }
+    #backToPracticeButton{ background:#455a64; opacity:1; }
+
+    table.review-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:20px;
+    }
+    .review-table th, .review-table td{
+      border:1px solid #ccc;
+      padding:6px;
+      font-size:0.85em;
+      text-align:center;
+      vertical-align:top;
+    }
+    .review-table th{ background:#f2f2f2; }
+    .correct-answer{ background:#d4edda; }
+    .incorrect-answer{ background:#f8d7da; }
+
+    .mode-badge{
+      display:inline-block;
+      margin-left:8px;
+      padding:2px 10px;
+      border-radius:999px;
+      font-size:0.85em;
+      background:#eef2ff;
+      border:1px solid #dfe5ff;
+      color:#333;
+    }
+
+    @media (max-width:700px){
+      .quiz-main{ flex-direction:column; }
+      .sidebar{
+        width:100%;
+        border-right:none;
+        border-bottom:1px solid #ddd;
+        margin-bottom:10px;
+        padding-bottom:10px;
+      }
+      .answer-box{ width:200px; }
+    }
+
+    /* Pause overlay */
+    .pause-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+    }
+    .pause-card{
+      width:min(420px, 90vw);
+      background:#fff;
+      border-radius:14px;
+      padding:18px 18px 16px 18px;
+      box-shadow:0 10px 25px rgba(0,0,0,0.2);
+      text-align:center;
+    }
+    .pause-title{
+      font-size:1.35em;
+      font-weight:900;
+      margin-bottom:8px;
+    }
+    .pause-sub{
+      font-size:0.95em;
+      color:#444;
+      margin-bottom:14px;
+    }
+    .pause-resume-btn{
+      padding:10px 18px;
+      border:none;
+      color:#fff;
+      background:#4caf50;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:1em;
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text"><span class="edu">EDUCATION</span></div>
+  </div>
+
+  <div class="top-bar">
+    <div id="timerBox" class="timer-box">
+      <span id="timerLabel">Time: 00:00</span>
+    </div>
+    <button id="pauseResumeButton">Pause</button>
+    <button id="generateButton">Generate New Set</button>
+    <button id="exportPdfButton">Export Questions (PDF)</button>
+  </div>
+
+  <h2>Ratio Quiz <span id="modeBadge" class="mode-badge" style="display:none;"></span></h2>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+</div>
+
+<div id="pauseOverlay" class="pause-overlay" style="display:none;">
+  <div class="pause-card">
+    <div class="pause-title">Paused</div>
+    <div class="pause-sub">Timer is stopped. Click Resume to continue.</div>
+    <button id="resumeFromOverlay" class="pause-resume-btn">Resume</button>
+  </div>
+</div>
+
+<script>
+/* ==========================================================
+   Behavior summary
+   ✅ Check Answer ALWAYS exists on question pages
+   ✅ ONLY the LAST question shows "Submit & View Results"
+   ✅ Before submit, sidebar can become green/red after Check Answer
+   ✅ After submit, practice is "Wrong + Unanswered"
+   ✅ Practice: correct -> wait 2 seconds -> auto next
+   ✅ Export Questions -> print dialog (Save as PDF)
+   ✅ Timer with Pause/Resume (stops on Submit; Practice not timed)
+========================================================== */
+
+let QUIZ_MODE = "standard"; // "standard" | "extension"
+
+/* ----------------------------------------------------------
+   Read student name from URL: ?name=Amber
+---------------------------------------------------------- */
+function getStudentNameFromURL(){
+  try{
+    const params = new URLSearchParams(window.location.search || "");
+    const raw = params.get("name");
+    if (!raw) return "";
+    return decodeURIComponent(raw.replace(/\+/g, "%20")).trim();
+  }catch(e){
+    return "";
+  }
+}
+const URL_STUDENT_NAME = getStudentNameFromURL();
+
+/* ----------------------------------------------------------
+   Utilities
+---------------------------------------------------------- */
+function randInt(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+function choice(arr){ return arr[randInt(0, arr.length - 1)]; }
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i=a.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function gcd(a,b){
+  a = Math.abs(a); b = Math.abs(b);
+  while(b){ const t=a%b; a=b; b=t; }
+  return a || 1;
+}
+function simplifyRatio(a,b){
+  const g = gcd(a,b);
+  return {a: a/g, b: b/g};
+}
+function stripHTML(html){
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return (tmp.textContent || tmp.innerText || "").trim();
+}
+function roundTo(x, dp){
+  const f = Math.pow(10, dp);
+  return Math.round(x * f) / f;
+}
+function countDp(str){
+  const s = String(str);
+  if (!s.includes(".")) return 0;
+  return s.split(".")[1].length;
+}
+function pickTpl(tpls, data){
+  const tpl = choice(tpls);
+  return tpl.replace(/\{(\w+)\}/g, (_,k)=> (data && (k in data)) ? String(data[k]) : "");
+}
+function lcm(a,b){ return (a/gcd(a,b))*b; }
+
+/* ----------------------------------------------------------
+   Parsing answers
+---------------------------------------------------------- */
+function parseNumber(str){
+  let s = (str || "").trim();
+  if (!s) return NaN;
+  s = s.replace(/−/g,"-").replace(/,/g,""); // allow commas
+  const v = Number(s);
+  return Number.isFinite(v) ? v : NaN;
+}
+function parsePercent(str){
+  let s = (str || "").trim();
+  if (!s) return NaN;
+  s = s.replace(/−/g,"-").replace(/\s/g,"");
+  if (s.endsWith("%")) s = s.slice(0,-1);
+  const v = Number(s);
+  return Number.isFinite(v) ? v : NaN;
+}
+function parseFraction(str){
+  let s = (str || "").trim();
+  if (!s) return null;
+  s = s.replace(/−/g,"-");
+  const m = s.match(/^(-?\d+)\s*\/\s*(-?\d+)$/);
+  if (!m) return null;
+  const n = Number(m[1]), d = Number(m[2]);
+  if (!Number.isInteger(n) || !Number.isInteger(d) || d === 0) return null;
+  // simplify
+  const g = gcd(n,d);
+  let nn = n/g, dd = d/g;
+  if (dd < 0){ nn = -nn; dd = -dd; }
+  return {n:nn, d:dd};
+}
+function parseRatio(str){
+  let s = (str || "").trim();
+  if (!s) return null;
+  s = s.replace(/\s/g,"");
+  const m = s.match(/^(-?\d+)\s*:\s*(-?\d+)$/);
+  if (!m) return null;
+  const a = Number(m[1]), b = Number(m[2]);
+  if (!Number.isInteger(a) || !Number.isInteger(b) || b === 0 || a === 0) return null;
+  // keep positive ratios for this quiz
+  if (a < 0 || b < 0) return null;
+  const r = simplifyRatio(a,b);
+  return {a:r.a, b:r.b};
+}
+function parseListIntegers(str){
+  // Accept: "12, 34" or "12 34" or "12 and 34"
+  const s = (str || "").trim();
+  if (!s) return null;
+  const nums = s.match(/-?\d+/g);
+  if (!nums || nums.length < 2) return null;
+  const a = Number(nums[0]), b = Number(nums[1]);
+  if (!Number.isInteger(a) || !Number.isInteger(b)) return null;
+  return [a,b];
+}
+function compareByType(userStr, correct){
+  const eps = 1e-6;
+  const ans = (userStr || "").trim();
+  if (ans === "") return { ok:false, empty:true };
+
+  if (correct.type === "integer"){
+    const u = parseNumber(ans);
+    if (!Number.isFinite(u) || Math.abs(u - Math.round(u)) > eps) return { ok:false, empty:false };
+    return { ok: Math.abs(u - correct.value) < eps, empty:false };
+  }
+
+  if (correct.type === "number"){
+    const u = parseNumber(ans);
+    if (!Number.isFinite(u)) return { ok:false, empty:false };
+    return { ok: Math.abs(u - correct.value) < eps, empty:false };
+  }
+
+  if (correct.type === "percent"){
+    const u = parsePercent(ans);
+    if (!Number.isFinite(u)) return { ok:false, empty:false };
+    return { ok: Math.abs(u - correct.value) < eps, empty:false };
+  }
+
+  if (correct.type === "fraction"){
+    const u = parseFraction(ans);
+    if (!u) return { ok:false, empty:false };
+    const c = parseFraction(`${correct.n}/${correct.d}`);
+    return { ok: (u.n === c.n && u.d === c.d), empty:false };
+  }
+
+  if (correct.type === "ratio"){
+    const u = parseRatio(ans);
+    if (!u) return { ok:false, empty:false };
+    const c = simplifyRatio(correct.a, correct.b);
+    return { ok: (u.a === c.a && u.b === c.b), empty:false };
+  }
+
+  if (correct.type === "listInteger"){
+    const u = parseListIntegers(ans);
+    if (!u) return { ok:false, empty:false };
+    const c = correct.values;
+    return { ok: (u[0] === c[0] && u[1] === c[1]), empty:false };
+  }
+
+  return { ok:false, empty:false };
+}
+
+/* ----------------------------------------------------------
+   Question model
+---------------------------------------------------------- */
+function makeQ(partIndex, indexInPart, html, correct, displayCorrect, answerHint){
+  return {
+    partIndex, indexInPart,
+    html,
+    plain: stripHTML(html),
+    correct,
+    displayCorrect,
+    answerHint,
+    userValue:"",
+    isCorrect:false,
+    checked:false
+  };
+}
+
+/* ==========================================================
+   Standard Mode Generators (6 parts)
+========================================================== */
+
+// Part 1: Basic Ratio (6)
+function buildBasicRatioPart(partIndex){
+  const out = [];
+
+  // 1) Simplify ratio a:b
+  {
+    const g = choice([2,3,4,5,6]);
+    const a0 = randInt(6,18)*g;
+    const b0 = randInt(6,18)*g;
+    const r = simplifyRatio(a0,b0);
+    out.push(makeQ(
+      partIndex, out.length,
+      `Simplify the ratio <b>${a0}:${b0}</b>.`,
+      {type:"ratio", a:r.a, b:r.b},
+      `${r.a}:${r.b}`,
+      `Answer as a ratio in simplest form (e.g., 3:4).`
+    ));
+  }
+
+  // 2) ratio in fraction form
+  {
+    const a = randInt(2,14);
+    const b = randInt(2,14);
+    const r = simplifyRatio(a,b);
+    out.push(makeQ(
+      partIndex, out.length,
+      `Express the ratio <b>${a}:${b}</b> in <b>fraction form</b>.`,
+      {type:"fraction", n:r.a, d:r.b},
+      `${r.a}/${r.b}`,
+      `Answer as a/b in simplest form.`
+    ));
+  }
+
+  // 3) ratio in percentage (a:b means a/b)
+  {
+    const den = choice([4,5,8,10,20,25]);
+    const num = choice([1,2,3,4,5,6,7,8,9]).filter ? null : null; // noop
+    let n = randInt(1, den-1);
+    // choose n so percentage is nice integer
+    const good = [];
+    for (let x=1;x<den;x++){
+      const pct = (x/den)*100;
+      if (Math.abs(pct - Math.round(pct)) < 1e-9) good.push(x);
+    }
+    n = choice(good.length?good:[n]);
+    const pct = (n/den)*100;
+    out.push(makeQ(
+      partIndex, out.length,
+      `Express the ratio <b>${n}:${den}</b> as a <b>percentage</b>.`,
+      {type:"percent", value:Math.round(pct)},
+      `${Math.round(pct)}%`,
+      `Answer as a percentage (with or without %).`
+    ));
+  }
+
+  // 4) ratio in decimal (a:b means a/b)
+  {
+    const den = choice([2,4,5,8,10,20,25,40]);
+    const good = [];
+    for (let x=1;x<den;x++){
+      const dec = x/den;
+      if (countDp(dec) <= 2) good.push(x);
+    }
+    const n = choice(good.length?good:[1]);
+    const dec = roundTo(n/den, 2);
+    out.push(makeQ(
+      partIndex, out.length,
+      `Express the ratio <b>${n}:${den}</b> as a <b>decimal</b>.`,
+      {type:"number", value:dec},
+      `${dec}`,
+      `Answer as a decimal (up to 2 decimal places).`
+    ));
+  }
+
+  // 5) different measurement: cm vs m
+  {
+    const totalCm = choice([150,200,250,300,350,400,450,500]);
+    const meters = totalCm / 100;
+    const cm = totalCm;
+    const r = simplifyRatio(cm, cm); // cm : (meters in cm)
+    out.push(makeQ(
+      partIndex, out.length,
+      `Find the ratio in the same unit: <b>${cm} cm : ${meters} m</b>. Give your answer in simplest form.`,
+      {type:"ratio", a:r.a, b:r.b},
+      `${r.a}:${r.b}`,
+      `Convert to the same unit first, then simplify (answer like 1:1).`
+    ));
+  }
+
+  // 6) different measurement: g vs kg
+  {
+    const gVal = choice([1200,1500,1800,2000,2500,3000,3600]);
+    const kgVal = choice([2,3,4,5]);
+    const g2 = kgVal * 1000;
+    const r = simplifyRatio(gVal, g2);
+    out.push(makeQ(
+      partIndex, out.length,
+      `Find the ratio in the same unit: <b>${gVal} g : ${kgVal} kg</b>. Give your answer in simplest form.`,
+      {type:"ratio", a:r.a, b:r.b},
+      `${r.a}:${r.b}`,
+      `Convert kg to g first, then simplify.`
+    ));
+  }
+
+  return out.slice(0,6);
+}
+
+// Part 2: Ratio to Quantity (3)
+function buildRatioToQuantityPart(partIndex){
+  const out = [];
+
+  // 1) Divide total in ratio
+  {
+    const a = choice([2,3,4,5,6,7]);
+    const b = choice([2,3,4,5,6,7]);
+    const total = (a+b) * choice([10,12,15,18,20,25,30]);
+    const p1 = total * a/(a+b);
+    const p2 = total * b/(a+b);
+    out.push(makeQ(
+      partIndex, out.length,
+      `Divide <b>${total}</b> in the ratio <b>${a}:${b}</b>. (Give the two parts in order.)`,
+      {type:"listInteger", values:[p1,p2]},
+      `${p1}, ${p2}`,
+      `Enter two integers separated by commas: first part, second part.`
+    ));
+  }
+
+  // 2) Money shared
+  {
+    const a = choice([3,4,5,6,7,8,9]);
+    const b = choice([2,3,4,5]);
+    const names = choice([["Tom","Lucy"],["Ava","Mia"],["Ben","Ella"],["Jack","Sophie"]]);
+    const total = (a+b) * choice([10,15,20,25,30,40]);
+    const p1 = total * a/(a+b);
+    const p2 = total * b/(a+b);
+    out.push(makeQ(
+      partIndex, out.length,
+      `<b>$${total}</b> is shared between <b>${names[0]}</b> and <b>${names[1]}</b> in the ratio <b>${a}:${b}</b>. How much does each get?`,
+      {type:"listInteger", values:[p1,p2]},
+      `$${p1}, $${p2}`,
+      `Enter two integers separated by commas (${names[0]}, ${names[1]}).`
+    ));
+  }
+
+  // 3) Recipe milk:sugar = 3:1
+  {
+    const milk = choice([300,450,600,750,900]);
+    const a = 3, b = 1;
+    const sugar = milk * b/a;
+    out.push(makeQ(
+      partIndex, out.length,
+      `A recipe uses milk:sugar = <b>${a}:${b}</b>. If milk is <b>${milk} ml</b>, how much sugar is needed (ml)?`,
+      {type:"integer", value:sugar},
+      `${sugar} ml`,
+      `Use the ratio parts. Answer as an integer (ml).`
+    ));
+  }
+
+  return out;
+}
+
+// Part 3: Equivalent Ratios (4)
+function buildEquivalentRatiosPart(partIndex){
+  const out = [];
+
+  // Q1: a:b = __ : X
+  {
+    const a = choice([2,3,4,5,6,7]);
+    const b = choice([3,4,5,6,7,8,9]);
+    const k = choice([5,6,8,10]);
+    const right = b*k;
+    const leftBlank = a*k;
+    out.push(makeQ(
+      partIndex, out.length,
+      `<b>${a}:${b}</b> = <b>__ : ${right}</b>. Find the missing number.`,
+      {type:"integer", value:leftBlank},
+      `${leftBlank}`,
+      `Use equivalent ratios (multiply both parts by the same number).`
+    ));
+  }
+
+  // Q2: a:b = c:__
+  {
+    const a = choice([2,3,4,6,8,10,12]);
+    const b = choice([3,5,6,9,12,15,18]);
+    const g = gcd(a,b);
+    const aa = a/g, bb = b/g;
+    const c = aa * choice([2,3,4]);
+    const d = bb * (c/aa);
+    out.push(makeQ(
+      partIndex, out.length,
+      `<b>${a}:${b}</b> = <b>${c} : __</b>. Find the missing number.`,
+      {type:"integer", value:d},
+      `${d}`,
+      `Simplify first, then scale.`
+    ));
+  }
+
+  // Q3: percent ratio to __:N (ensure integer)
+  {
+    const p = choice([10,15,20,25,30,35,40,45,50,60]);
+    const q = choice([15,20,25,30,35,40,45,50,60,75]);
+    const r = simplifyRatio(p,q);
+    // choose right side multiple of r.b so blank integer
+    const right = r.b * choice([6,7,8,9,10,12,15]);
+    const left = r.a * (right / r.b);
+    out.push(makeQ(
+      partIndex, out.length,
+      `<b>${p}% : ${q}%</b> = <b>__ : ${right}</b>. Find the missing number.`,
+      {type:"integer", value:left},
+      `${left}`,
+      `Convert %:% to a number ratio, simplify, then scale.`
+    ));
+  }
+
+  // Q4: fraction ratio to __:N (ensure integer)
+  {
+    const pairs = [
+      {n1:1,d1:2,n2:3,d2:4}, // 1/2 : 3/4 = 2:3
+      {n1:2,d1:3,n2:1,d2:2}, // 4:3
+      {n1:3,d1:5,n2:3,d2:10},// 2:1
+      {n1:1,d1:4,n2:3,d2:8}  // 2:3
+    ];
+    const t = choice(pairs);
+    const leftVal = t.n1/t.d1;
+    const rightVal = t.n2/t.d2;
+    // ratio = leftVal:rightVal -> multiply by lcm denominators to get integer ratio
+    // Use simplified integer ratio:
+    const A = t.n1*t.d2;
+    const B = t.n2*t.d1;
+    const rr = simplifyRatio(A,B);
+    const right = rr.b * choice([7,8,9,10,12,15]);
+    const left = rr.a * (right / rr.b);
+
+    out.push(makeQ(
+      partIndex, out.length,
+      `(${t.n1}/${t.d1}) : (${t.n2}/${t.d2}) = <b>__ : ${right}</b>. Find the missing number.`,
+      {type:"integer", value:left},
+      `${left}`,
+      `Turn fractions into an integer ratio, simplify, then scale.`
+    ));
+  }
+
+  return out.slice(0,4);
+}
+
+// Part 4: Word Problems with Ratios (3)
+function buildWordProblemsPart(partIndex){
+  const out = [];
+
+  // cats:dogs
+  {
+    const cats = choice([2,3,4,5]);
+    const dogs = choice([3,4,5,6,7]);
+    const total = (cats+dogs) * choice([10,12,14,15,16,18,20]);
+    const numDogs = total * dogs/(cats+dogs);
+    out.push(makeQ(
+      partIndex, out.length,
+      `The ratio of cats to dogs is <b>${cats}:${dogs}</b>. If there are <b>${total}</b> animals, how many are dogs?`,
+      {type:"integer", value:numDogs},
+      `${numDogs}`,
+      `Find 1 part, then multiply by the dogs’ parts.`
+    ));
+  }
+
+  // orange juice : water
+  {
+    const oj = choice([2,3,4,5]);
+    const water = choice([3,4,5,6,7]);
+    const totalL = (oj+water) * choice([1,2,3,4,5]); // liters integer
+    const ojL = totalL * oj/(oj+water);
+    out.push(makeQ(
+      partIndex, out.length,
+      `Orange juice and water are mixed in the ratio <b>${oj}:${water}</b>. If the mixture is <b>${totalL} L</b>, how much orange juice is there (L)?`,
+      {type:"number", value:ojL},
+      `${ojL} L`,
+      `Use total parts. Answer may be a whole number or decimal (≤2 dp).`
+    ));
+  }
+
+  // boys:girls
+  {
+    const b = choice([3,4,5,6,7]);
+    const g = choice([2,3,4,5,6]);
+    const total = (b+g) * choice([10,12,14,15,16,18,20,21]);
+    const boys = total * b/(b+g);
+    out.push(makeQ(
+      partIndex, out.length,
+      `A class has boys:girls = <b>${b}:${g}</b>. If there are <b>${total}</b> students, how many are boys?`,
+      {type:"integer", value:boys},
+      `${boys}`,
+      `Use parts: boys = total × b/(b+g).`
+    ));
+  }
+
+  return out;
+}
+
+// Part 5: Ratio and Proportion (2)
+function buildRatioProportionPart(partIndex){
+  const out = [];
+
+  // apples cost
+  {
+    const a1 = choice([4,5,6,8,10,12]);
+    const cost = choice([4,5,6,8,9,10,12,15]);
+    const a2 = choice([9,12,15,18,20,24,30]);
+    const unit = cost / a1;
+    const ans = unit * a2;
+    // make integer dollars
+    if (Math.abs(ans - Math.round(ans)) > 1e-9){
+      // fallback to clean unit
+      const aa1 = 6, cc = 3, aa2 = 15;
+      out.push(makeQ(
+        partIndex, out.length,
+        `If <b>${aa1}</b> apples cost <b>$${cc}</b>, how much will <b>${aa2}</b> apples cost?`,
+        {type:"integer", value: (cc/aa1)*aa2},
+        `$${(cc/aa1)*aa2}`,
+        `Use unit rate (cost per apple).`
+      ));
+    } else {
+      out.push(makeQ(
+        partIndex, out.length,
+        `If <b>${a1}</b> apples cost <b>$${cost}</b>, how much will <b>${a2}</b> apples cost?`,
+        {type:"integer", value: Math.round(ans)},
+        `$${Math.round(ans)}`,
+        `Use unit rate (cost per apple).`
+      ));
+    }
+  }
+
+  // car travel
+  {
+    const dist = choice([90,100,120,150,180,200]);
+    const t1 = choice([2,3,4]);
+    const t2 = choice([5,6,7,8]);
+    const speed = dist / t1;
+    const ans = speed * t2;
+    out.push(makeQ(
+      partIndex, out.length,
+      `A car travels <b>${dist} km</b> in <b>${t1}</b> hours. How far will it travel in <b>${t2}</b> hours at the same speed?`,
+      {type:"integer", value: ans},
+      `${ans} km`,
+      `Find speed = distance ÷ time, then multiply by the new time.`
+    ));
+  }
+
+  return out;
+}
+
+/* ==========================================================
+   Extension Mode: 12 Multi-step Ratio Problems (with random wording)
+========================================================== */
+function buildExtension12(partIndex){
+  const Q = [];
+
+  const NAME_PAIRS = [
+    ["Daniel","Grace"],["Emma","Liam"],["Oliver","Priya"],["Jenny","Melissa"],
+    ["Liam","Noah"],["Emily","Liam"],["Ryan","Maya"],["Ava","Zoe"],
+    ["Sofia","Ethan"],["Noah","Zara"]
+  ];
+
+  const GROUP_CONTEXTS = [
+    {A:"boys", B:"girls", place:"a party"},
+    {A:"students in Year 7", B:"students in Year 8", place:"a school event"},
+    {A:"red balls", B:"blue balls", place:"a box"},
+    {A:"small bottles", B:"large bottles", place:"a warehouse"},
+    {A:"apples", B:"oranges", place:"a store display"},
+    {A:"tickets for adults", B:"tickets for children", place:"a concert"},
+    {A:"members", B:"guests", place:"a club meeting"},
+    {A:"runners", B:"walkers", place:"a fun run"}
+  ];
+
+  const ITEMS = [
+    {item:"stickers", unit:"stickers"},
+    {item:"trading cards", unit:"cards"},
+    {item:"coins", unit:"coins"},
+    {item:"marbles", unit:"marbles"},
+    {item:"chocolates", unit:"chocolates"}
+  ];
+
+  const MONEY = [
+    {item:"money", unit:"$"},
+    {item:"points", unit:"points"}
+  ];
+
+  function addQ(html, correct, displayCorrect, answerHint){
+    Q.push(makeQ(partIndex, Q.length, html, correct, displayCorrect, answerHint));
+  }
+
+  // NEW TYPE: Rectangular metal block mass (round to nearest kg)
+  function genMetalBlockMass(){
+    const dims = choice([
+      [24,18,15],
+      [25,20,16],
+      [30,20,12],
+      [28,16,15],
+      [32,18,10],
+      [26,22,14],
+      [27,18,16],
+      [36,15,12]
+    ]);
+    const L = dims[0], W = dims[1], H = dims[2];
+
+    const ratio = choice([
+      [5,3],
+      [3,2],
+      [4,1],
+      [7,3],
+      [2,1],
+      [5,2]
+    ]);
+    const a = ratio[0], b = ratio[1];
+
+    const ironDen = 7.8;
+    const aluDen  = 2.7;
+
+    const V = L*W*H;               // cm^3
+    const ironV = V * a/(a+b);
+    const aluV  = V * b/(a+b);
+    const massG = ironV*ironDen + aluV*aluDen;
+    const massKg = massG/1000;
+    const roundedKg = Math.round(massKg);
+
+    const tpls = [
+      `A rectangular metal block measures <b>${L} cm × ${W} cm × ${H} cm</b>. It is made of <b>iron</b> and <b>aluminium</b> in the ratio <b>${a}:${b}</b> by volume. If <b>1 cm³</b> of iron has mass <b>${ironDen} g</b> and <b>1 cm³</b> of aluminium has mass <b>${aluDen} g</b>, find the mass of the block. Round your answer to the nearest <b>kg</b>.`,
+      `A rectangular prism has dimensions <b>${L} cm</b>, <b>${W} cm</b>, and <b>${H} cm</b>. Its volume is shared between iron and aluminium in the ratio <b>${a}:${b}</b>. Given iron is <b>${ironDen} g/cm³</b> and aluminium is <b>${aluDen} g/cm³</b>, calculate the mass of the prism, rounded to the nearest <b>kg</b>.`,
+      `A metal block is <b>${L} cm</b> long, <b>${W} cm</b> wide and <b>${H} cm</b> high. It is made from iron and aluminium with iron:aluminium = <b>${a}:${b}</b> by volume. If iron is <b>${ironDen} g/cm³</b> and aluminium is <b>${aluDen} g/cm³</b>, find the mass of the block (nearest <b>kg</b>).`
+    ];
+
+    addQ(
+      choice(tpls),
+      {type:"integer", value: roundedKg},
+      `${roundedKg} kg`,
+      "Answer as an integer (kg)."
+    );
+  }
+
+  // 1) Transfer -> new ratio (two unknowns)
+  function genTransferNewRatio(){
+    const [n1,n2] = choice(NAME_PAIRS);
+    const ctx = choice(ITEMS);
+
+    const candidates = [
+      {a:5,b:7,r:3,s:9},
+      {a:4,b:9,r:1,s:4},
+      {a:7,b:8,r:2,s:5},
+      {a:6,b:11,r:1,s:3},
+      {a:8,b:9,r:3,s:7},
+      {a:9,b:10,r:2,s:5}
+    ];
+    const c = choice(candidates);
+    const a=c.a, b=c.b, r=c.r, s=c.s;
+
+    // Solve for transfer t from n1 to n2:
+    // (aK - t) : (bK + t) = r : s  => t = (s*a - r*b)K/(r+s)
+    const num = (s*a - r*b);
+    const den = (r+s);
+
+    let K = choice([2,3,4,5,6,8,10,12,15]);
+    let tries=0;
+    while(tries<60 && ((num*K) % den !== 0 || (num*K)/den <= 0)){
+      K++;
+      tries++;
+    }
+    const t = (num*K)/den;
+    const A0 = a*K;
+    const B0 = b*K;
+
+    if (!Number.isInteger(t) || t<=0 || t>=A0) return;
+
+    const html = pickTpl([
+      `{n1} and {n2} have {item}s in the ratio <b>{a}:{b}</b>. {n1} gives <b>{t}</b> {unit}s to {n2}, and the ratio becomes <b>{r}:{s}</b>. How many {item}s did each have at first?`,
+      `The numbers of {item}s held by {n1} and {n2} are in the ratio <b>{a}:{b}</b>. After {n1} gives {n2} <b>{t}</b> {unit}s, the ratio becomes <b>{r}:{s}</b>. Find the original numbers.`,
+      `Initially, {n1}:{n2} = <b>{a}:{b}</b> for {item}s. Then {n1} gives {n2} <b>{t}</b> {unit}s and the new ratio is <b>{r}:{s}</b>. Work out the original numbers.`
+    ], {n1,n2,item:ctx.item,unit:ctx.unit,a,b,t,r,s});
+
+    addQ(html, {type:"listInteger", values:[A0,B0]}, `${A0}, ${B0}`,
+      `Enter two integers separated by commas (${n1}, ${n2}).`
+    );
+  }
+
+  // 2) External change -> new ratio (two unknowns)
+  function genExternalChangeNewRatio(){
+    const [n1,n2] = choice(NAME_PAIRS);
+    const ctx = choice(MONEY);
+    const action = choice(["gains","loses"]);
+
+    const candidates = [
+      {a:3,b:5,r:4,s:5},
+      {a:2,b:7,r:3,s:7},
+      {a:7,b:9,r:2,s:3},
+      {a:4,b:11,r:5,s:11}
+    ];
+    const c = choice(candidates);
+    const a=c.a,b=c.b,r=c.r,s=c.s;
+
+    let K = choice([6,8,10,12,14,15,18,20,24,30]);
+    const unitText = (ctx.unit === "$") ? "" : (" " + ctx.unit);
+
+    // If n1 gains x: (aK + x) : (bK) = r : s => x = (r*b - s*a)K/s
+    // If n1 loses x: (aK - x) : (bK) = r : s => x = (s*a - r*b)K/s
+    let xNum = 0;
+    if (action === "gains"){
+      xNum = (r*b - s*a) * K;
+      if (xNum <= 0) return;
+      if (xNum % s !== 0) return;
+      const x = xNum / s;
+      const A0 = a*K, B0 = b*K;
+
+      const html = pickTpl([
+        `{n1} and {n2} have {item} in the ratio <b>{a}:{b}</b>. Then {n1} receives <b>{x}</b>${unitText} from outside, and the ratio becomes <b>{r}:{s}</b>. How much did each have at first?`,
+        `Initially, {n1}:{n2} = <b>{a}:{b}</b> for {item}. After {n1} receives <b>{x}</b>${unitText}, the ratio becomes <b>{r}:{s}</b>. Find the original amounts.`,
+        `{n1} and {n2} start with {item} in ratio <b>{a}:{b}</b>. After {n1} gets an extra <b>{x}</b>${unitText}, the new ratio is <b>{r}:{s}</b>. Work out the original amounts.`
+      ], {n1,n2,item:ctx.item,a,b,x,r,s});
+
+      addQ(html, {type:"listInteger", values:[A0,B0]}, `${A0}, ${B0}`,
+        `Enter two integers separated by commas (${n1}, ${n2}).`
+      );
+      return;
+    } else {
+      xNum = (s*a - r*b) * K;
+      if (xNum <= 0) return;
+      if (xNum % s !== 0) return;
+      const x = xNum / s;
+      const A0 = a*K, B0 = b*K;
+      if (x >= A0) return;
+
+      const html = pickTpl([
+        `{n1} and {n2} have {item} in the ratio <b>{a}:{b}</b>. Then <b>{x}</b>${unitText} is taken away from {n1}, and the ratio becomes <b>{r}:{s}</b>. How much did each have at first?`,
+        `Initially, {n1}:{n2} = <b>{a}:{b}</b> for {item}. After {n1} loses <b>{x}</b>${unitText}, the ratio becomes <b>{r}:{s}</b>. Find the original amounts.`,
+        `{n1} and {n2} start with {item} in ratio <b>{a}:{b}</b>. After <b>{x}</b>${unitText} is removed from {n1}, the new ratio is <b>{r}:{s}</b>. Work out the original amounts.`
+      ], {n1,n2,item:ctx.item,a,b,x,r,s});
+
+      addQ(html, {type:"listInteger", values:[A0,B0]}, `${A0}, ${B0}`,
+        `Enter two integers separated by commas (${n1}, ${n2}).`
+      );
+    }
+  }
+
+  // 3) Known total + change -> new ratio, ask original A only
+  function genTotalKnownChangeRatioAOnly(){
+    const ctx = choice(GROUP_CONTEXTS);
+    const baseT = choice([80,84,90,96,100,108,110,120,126,132,140,144,150,160]);
+
+    const r = choice([1,2,3,4]);
+    const s = choice([2,3,4,5,6]);
+
+    const dA = choice([-20,-18,-16,-15,-14,-12,-10,-9,-8,-6, +6,+8,+9,+10,+12,+14,+15,+16,+18,+20]);
+    const dB = choice([-22,-20,-18,-16,-15,-14,-12,-10,-8,-6, +6,+8,+10,+12,+14,+15,+16,+18,+20,+22]);
+
+    const den = (r+s);
+    let T = baseT;
+    let A0 = null;
+    let tries=0;
+
+    while(tries < 90){
+      const num2 = r*T + r*dB - s*dA;
+      if (num2 % den === 0){
+        const A = num2/den;
+        const B = T - A;
+        const Aafter = A + dA;
+        const Bafter = B + dB;
+        if (A>0 && B>0 && Aafter>0 && Bafter>0){
+          A0 = A;
+          break;
+        }
+      }
+      T += choice([-2,-1,1,2,3]);
+      tries++;
+    }
+    if (A0 === null) return;
+
+    const verbA = dA > 0 ? "joined" : "left";
+    const verbB = dB > 0 ? "joined" : "left";
+    const absA = Math.abs(dA);
+    const absB = Math.abs(dB);
+
+    const html = pickTpl([
+      `At {place}, there were <b>{T}</b> {A} and {B} altogether. Then <b>{absA}</b> {A} {verbA} and <b>{absB}</b> {B} {verbB}. The ratio of {A} to {B} became <b>{r}:{s}</b>. How many {A} were there at first?`,
+      `There were <b>{T}</b> in total at {place}, made up of {A} and {B}. After <b>{absA}</b> {A} {verbA} and <b>{absB}</b> {B} {verbB}, the ratio {A}:{B} became <b>{r}:{s}</b>. Find the original number of {A}.`,
+      `A total of <b>{T}</b> were counted at {place} (only {A} and {B}). After the numbers changed, the ratio became <b>{r}:{s}</b>. Specifically, <b>{absA}</b> {A} {verbA} and <b>{absB}</b> {B} {verbB}. How many {A} were there at the start?`
+    ], {T, A:ctx.A, B:ctx.B, place:ctx.place, absA, absB, verbA, verbB, r, s});
+
+    addQ(html, {type:"integer", value:A0}, `${A0}`, "Answer as an integer.");
+  }
+
+  // 4) Known total + change -> new ratio, ask original A and B
+  function genTotalKnownChangeRatioBoth(){
+    const ctx = choice(GROUP_CONTEXTS);
+    const baseT = choice([84,90,96,100,108,120,126,132,140,144,150,160]);
+
+    const r = choice([1,2,3,4]);
+    const s = choice([2,3,4,5,6]);
+
+    const dA = choice([-18,-16,-15,-14,-12,-10,-9,-8, +8,+9,+10,+12,+14,+15,+16,+18]);
+    const dB = choice([-20,-18,-16,-15,-14,-12,-10,-8, +8,+10,+12,+14,+15,+16,+18,+20]);
+
+    const den = (r+s);
+    let T = baseT;
+    let A0 = null;
+    let tries=0;
+
+    while(tries < 90){
+      const num2 = r*T + r*dB - s*dA;
+      if (num2 % den === 0){
+        const A = num2/den;
+        const B = T - A;
+        const Aafter = A + dA;
+        const Bafter = B + dB;
+        if (A>0 && B>0 && Aafter>0 && Bafter>0){
+          A0 = A;
+          break;
+        }
+      }
+      T += choice([-2,-1,1,2,3]);
+      tries++;
+    }
+    if (A0 === null) return;
+
+    const B0 = T - A0;
+
+    const verbA = dA > 0 ? "joined" : "left";
+    const verbB = dB > 0 ? "joined" : "left";
+    const absA = Math.abs(dA);
+    const absB = Math.abs(dB);
+
+    const html = pickTpl([
+      `At {place}, there were <b>{T}</b> {A} and {B} altogether. Then <b>{absA}</b> {A} {verbA} and <b>{absB}</b> {B} {verbB}. The ratio of {A} to {B} became <b>{r}:{s}</b>. How many {A} and {B} were there at first?`,
+      `There were <b>{T}</b> in total at {place}, made up of {A} and {B}. After <b>{absA}</b> {A} {verbA} and <b>{absB}</b> {B} {verbB}, the ratio {A}:{B} became <b>{r}:{s}</b>. Find the original numbers of {A} and {B}.`,
+      `A total of <b>{T}</b> were counted at {place} (only {A} and {B}). After the numbers changed, the ratio became <b>{r}:{s}</b>. Specifically, <b>{absA}</b> {A} {verbA} and <b>{absB}</b> {B} {verbB}. Find the original numbers.`
+    ], {T, A:ctx.A, B:ctx.B, place:ctx.place, absA, absB, verbA, verbB, r, s});
+
+    addQ(html, {type:"listInteger", values:[A0,B0]}, `${A0}, ${B0}`,
+      `Enter two integers separated by commas (${ctx.A}, ${ctx.B}).`
+    );
+  }
+
+  // 5) Chain ratios (3 items)
+  function genChainedRatios(){
+    const ctx = choice([
+      {x:"notebooks", y:"erasers", z:"markers"},
+      {x:"blue pens", y:"red pens", z:"highlighters"},
+      {x:"stamps", y:"stickers", z:"badges"}
+    ]);
+    const a = choice([4,5,6,7]);
+    const b = choice([2,3,4,5]);
+    const c = choice([2,3,4,5]);
+    const d = choice([4,5,6,8,10]);
+
+    const L = lcm(b,c);
+    const k = choice([2,3,4,5,6,8,10]);
+    const yCount = L*k;
+    const xCount = (a*yCount)/b;
+    const zCount = (d*yCount)/c;
+    const totalXY = xCount + yCount;
+
+    if (!Number.isInteger(xCount) || !Number.isInteger(zCount)) return;
+
+    const html = pickTpl([
+      `The ratio of the number of <b>{x}</b> to <b>{y}</b> is <b>{a}:{b}</b>. The ratio of the number of <b>{y}</b> to <b>{z}</b> is <b>{c}:{d}</b>. If there are <b>{total}</b> {x} and {y} altogether, how many {z} are there?`,
+      `<b>{x}:{y} = {a}:{b}</b> and <b>{y}:{z} = {c}:{d}</b>. If {x} + {y} = <b>{total}</b>, find the number of {z}.`,
+      `Given <b>{x}:{y} = {a}:{b}</b> and <b>{y}:{z} = {c}:{d}</b>. If {x} and {y} total <b>{total}</b>, work out how many {z} there are.`
+    ], {x:ctx.x,y:ctx.y,z:ctx.z,a,b,c,d,total:totalXY});
+
+    addQ(html, {type:"integer", value:zCount}, `${zCount}`, "Answer as an integer.");
+  }
+
+  // 6) 3-group ratio with difference -> total
+  function genThreeGroupDifferenceTotal(){
+    const labels = choice([
+      ["teachers","parents","students"],
+      ["staff","visitors","volunteers"],
+      ["adults","children","seniors"]
+    ]);
+    const a = choice([3,4,5,6]);
+    let b = choice([7,8,9,10]);
+    let c = choice([2,3,4,5]);
+    if (b <= c) b = c + 3;
+
+    const diffParts = b - c;
+    const k = choice([10,12,15,18,20,25,30]);
+    const diff = diffParts * k;
+    const total = (a+b+c)*k;
+
+    const html = pickTpl([
+      `The ratio of the number of <b>{t}</b> to <b>{p}</b> to <b>{s}</b> is <b>{a}:{b}:{c}</b>. If there were <b>{diff}</b> more {p} than {s}, how many people were there altogether?`,
+      `The numbers of <b>{t}</b>, <b>{p}</b> and <b>{s}</b> are in the ratio <b>{a}:{b}:{c}</b>. If {p} exceed {s} by <b>{diff}</b>, find the total number of people.`,
+      `At a school fair, <b>{t}</b> : <b>{p}</b> : <b>{s}</b> = <b>{a}:{b}:{c}</b>. Given that {p} are <b>{diff}</b> more than {s}, work out the total attendance.`
+    ], {t:labels[0],p:labels[1],s:labels[2],a,b,c,diff});
+
+    addQ(html, {type:"integer", value:total}, `${total}`, "Answer as an integer.");
+  }
+
+  // 7) Triangle ratio + difference -> perimeter
+  function genTrianglePerimeterFromDifference(){
+    const ratios = choice([[5,6,7],[3,4,5],[4,7,9],[2,3,5]]);
+    const [a,b,c] = ratios;
+    const diffParts = c-a;
+    const k = choice([2,3,4,5,6,8,10,12]);
+    const diff = diffParts*k;
+    const perim = (a+b+c)*k;
+
+    const html = pickTpl([
+      `The sides of a triangle are in the ratio <b>{a}:{b}:{c}</b>. If the difference between the longest and shortest sides is <b>{diff} cm</b>, find the perimeter of the triangle.`,
+      `A triangle has side lengths in the ratio <b>{a}:{b}:{c}</b>. The longest side is <b>{diff} cm</b> longer than the shortest side. Work out the perimeter.`,
+      `The side lengths are in the ratio <b>{a}:{b}:{c}</b>. If (longest − shortest) equals <b>{diff} cm</b>, calculate the perimeter.`
+    ], {a,b,c,diff});
+
+    addQ(html, {type:"integer", value:perim}, `${perim} cm`, "Answer as an integer (cm).");
+  }
+
+  // Build exactly 12 questions:
+  // Always include 1 metal block question, then fill others with variety
+  genMetalBlockMass();
+
+  const pool = shuffle([
+    genTransferNewRatio,
+    genTransferNewRatio,
+    genExternalChangeNewRatio,
+    genExternalChangeNewRatio,
+    genTotalKnownChangeRatioAOnly,
+    genTotalKnownChangeRatioAOnly,
+    genTotalKnownChangeRatioBoth,
+    genTotalKnownChangeRatioBoth,
+    genChainedRatios,
+    genThreeGroupDifferenceTotal,
+    genTrianglePerimeterFromDifference,
+    genChainedRatios,
+    genThreeGroupDifferenceTotal,
+    genTrianglePerimeterFromDifference
+  ]);
+
+  for (let i=0; Q.length < 12 && i < pool.length; i++){
+    const before = Q.length;
+    pool[i]();
+    // if generator failed (no push), try next
+    if (Q.length === before) continue;
+  }
+
+  // If still not enough (rare), retry random generators
+  const retry = [genTransferNewRatio, genExternalChangeNewRatio, genTotalKnownChangeRatioAOnly, genTotalKnownChangeRatioBoth, genChainedRatios, genThreeGroupDifferenceTotal, genTrianglePerimeterFromDifference];
+  let guard = 0;
+  while(Q.length < 12 && guard < 100){
+    const before = Q.length;
+    choice(retry)();
+    if (Q.length > before) guard++;
+    else guard++;
+  }
+
+  Q.forEach((q,i)=> q.indexInPart = i);
+  return Q.slice(0,12);
+}
+
+/* ==========================================================
+   Blueprint
+========================================================== */
+function getBlueprint(){
+  const standard = {
+    modeLabel: "Standard Mode",
+    partTitles: [
+      "Part 1: Basic Ratio (6)",
+      "Part 2: Ratio to Quantity (3)",
+      "Part 3: Equivalent Ratios (4)",
+      "Part 4: Word Problems with Ratios (3)",
+      "Part 5: Ratio and Proportion (2)",
+      "Part 6: More Challenging / Multi-step Ratio Problems (4)"
+    ],
+    counts: [6,3,4,3,2,4]
+  };
+
+  const extension = {
+    modeLabel: "Extension Mode",
+    partTitles: [
+      "12 Multi-step Ratio Problems (12)"
+    ],
+    counts: [12]
+  };
+
+  return (QUIZ_MODE === "extension") ? extension : standard;
+}
+
+/* ----------------------------------------------------------
+   State
+---------------------------------------------------------- */
+let questions = [];
+let currentQuestionIndex = 0;
+
+let studentName = "Student";
+let quizStartTime = null;
+let quizEndTime = null;
+let quizSubmitted = false;
+
+let practiceActive = false;
+let practiceIndices = [];
+let practicePos = 0;
+
+const quizContent = document.getElementById("quizContent");
+const sidebarEl   = document.getElementById("sidebar");
+const generateBtn = document.getElementById("generateButton");
+const exportBtn   = document.getElementById("exportPdfButton");
+const modeBadge   = document.getElementById("modeBadge");
+
+let PART_TITLES = [];
+let QUESTIONS_PER_PART = [];
+let TOTAL_QUESTIONS = 0;
+
+/* ---------------- Timer (Pause / Resume) ---------------- */
+let timerInterval = null;
+let elapsedMs = 0;
+let lastTickMs = 0;
+let timerPaused = false;
+let timerRunning = false;
+
+const timerBox = document.getElementById("timerBox");
+const timerLabel = document.getElementById("timerLabel");
+const pauseResumeBtn = document.getElementById("pauseResumeButton");
+const pauseOverlay = document.getElementById("pauseOverlay");
+const resumeFromOverlayBtn = document.getElementById("resumeFromOverlay");
+
+function pad2(n){ return String(n).padStart(2,"0"); }
+function formatElapsed(ms){
+  const totalSec = Math.floor(ms / 1000);
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${pad2(m)}:${pad2(s)}`;
+}
+function updateTimerUI(){
+  if (!timerLabel) return;
+  timerLabel.textContent = `Time: ${formatElapsed(elapsedMs)}`;
+}
+function setPauseUI(isPaused){
+  if (pauseResumeBtn){
+    pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
+  }
+  if (pauseOverlay){
+    pauseOverlay.style.display = isPaused ? "flex" : "none";
+  }
+
+  const lock = !!isPaused;
+  const input = document.getElementById("answerInput");
+  if (input) input.disabled = lock;
+
+  const btnIds = ["nextButton","backButton","submitButton","checkButton","saveButton","backToPracticeButton","exportInlineButton"];
+  btnIds.forEach(id => {
+    const b = document.getElementById(id);
+    if (b) b.disabled = lock;
+  });
+
+  if (sidebarEl){
+    sidebarEl.style.pointerEvents = lock ? "none" : "auto";
+    sidebarEl.style.opacity = lock ? "0.6" : "1";
+  }
+}
+function ensurePausedStateAfterRender(){
+  if (timerPaused) setPauseUI(true);
+}
+
+function startTimer(){
+  stopTimer();
+  elapsedMs = 0;
+  timerPaused = false;
+  timerRunning = true;
+  lastTickMs = Date.now();
+
+  if (timerBox) timerBox.style.display = "inline-flex";
+  if (pauseResumeBtn) pauseResumeBtn.style.display = "inline-block";
+
+  updateTimerUI();
+
+  timerInterval = setInterval(() => {
+    if (!timerRunning || timerPaused) return;
+    const now = Date.now();
+    elapsedMs += (now - lastTickMs);
+    lastTickMs = now;
+    updateTimerUI();
+  }, 250);
+
+  setPauseUI(false);
+}
+
+function pauseTimer(){
+  if (!timerRunning) return;
+  timerPaused = true;
+  lastTickMs = Date.now();
+  setPauseUI(true);
+}
+function resumeTimer(){
+  if (!timerRunning) return;
+  timerPaused = false;
+  lastTickMs = Date.now();
+  setPauseUI(false);
+}
+function stopTimer(){
+  timerRunning = false;
+  timerPaused = false;
+  if (timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  setPauseUI(false);
+}
+function hidePauseControls(){
+  if (pauseResumeBtn) pauseResumeBtn.style.display = "none";
+}
+function showPauseControls(){
+  if (pauseResumeBtn) pauseResumeBtn.style.display = "inline-block";
+}
+
+/* ----------------------------------------------------------
+   Blueprint vars
+---------------------------------------------------------- */
+function rebuildBlueprintVars(){
+  const bp = getBlueprint();
+  PART_TITLES = bp.partTitles.slice();
+  QUESTIONS_PER_PART = bp.counts.slice();
+  modeBadge.style.display = "inline-block";
+  modeBadge.textContent = bp.modeLabel;
+}
+
+/* ----------------------------------------------------------
+   Generate quiz
+---------------------------------------------------------- */
+function generateQuiz(){
+  rebuildBlueprintVars();
+
+  questions = [];
+  quizSubmitted = false;
+
+  practiceActive = false;
+  practiceIndices = [];
+  practicePos = 0;
+
+  quizEndTime = null;
+
+  if (QUIZ_MODE === "standard"){
+    buildBasicRatioPart(0).forEach(q => questions.push(q));
+    buildRatioToQuantityPart(1).forEach(q => questions.push(q));
+    buildEquivalentRatiosPart(2).forEach(q => questions.push(q));
+    buildWordProblemsPart(3).forEach(q => questions.push(q));
+    buildRatioProportionPart(4).forEach(q => questions.push(q));
+
+    // Part 6: Multi-step (4) — diverse scenes
+    // We reuse 4 extension-style generators but keep answers sane and mostly integer.
+    const multi = buildExtension12(5).slice(0,4);
+    multi.forEach(q => { q.partIndex = 5; }); // ensure partIndex is 6th part in standard
+    multi.forEach(q => questions.push(q));
+  } else {
+    // Extension: one part only, 12 questions
+    buildExtension12(0).forEach(q => questions.push(q));
+  }
+
+  TOTAL_QUESTIONS = questions.length;
+}
+
+/* ----------------------------------------------------------
+   Save input
+---------------------------------------------------------- */
+function saveCurrentInput(){
+  const input = document.getElementById("answerInput");
+  if (input) questions[currentQuestionIndex].userValue = input.value.trim();
+}
+
+/* ----------------------------------------------------------
+   Grade
+---------------------------------------------------------- */
+function gradeAll(){
+  let correctCount = 0;
+  questions.forEach(q => {
+    const res = compareByType(q.userValue || "", q.correct);
+    q.isCorrect = (!!res.ok);
+    if (q.isCorrect) correctCount++;
+  });
+  return correctCount;
+}
+
+function buildPracticeList(){
+  gradeAll();
+  practiceIndices = questions
+    .map((q, i) => ({q,i}))
+    .filter(o => ((o.q.userValue || "").trim() === "") || !o.q.isCorrect)
+    .map(o => o.i);
+  practicePos = 0;
+}
+
+/* ----------------------------------------------------------
+   Sidebar
+---------------------------------------------------------- */
+function renderSidebar(){
+  sidebarEl.style.display = "block";
+
+  const showingPractice = (quizSubmitted && practiceActive);
+  const listTitle = showingPractice
+    ? `Practice (Remaining: ${practiceIndices.length})`
+    : "Questions";
+
+  sidebarEl.innerHTML = `<h4>${listTitle}</h4><ul id="qList"></ul>`;
+  const ul = document.getElementById("qList");
+
+  if (showingPractice){
+    practiceIndices.forEach((realIdx, k) => {
+      const q = questions[realIdx];
+      const li = document.createElement("li");
+      const partShort = `P${q.partIndex+1}`;
+      li.textContent = `Q${realIdx + 1} (${partShort}-${q.indexInPart + 1})`;
+      li.dataset.real = String(realIdx);
+      li.dataset.k = String(k);
+      li.addEventListener("click", () => {
+        if (timerPaused) return;
+        saveCurrentInput();
+        practicePos = k;
+        currentQuestionIndex = practiceIndices[practicePos];
+        renderQuestion();
+      });
+      ul.appendChild(li);
+    });
+  } else {
+    for (let i = 0; i < TOTAL_QUESTIONS; i++){
+      const q = questions[i];
+      const li = document.createElement("li");
+      const partShort = `P${q.partIndex+1}`;
+      li.textContent = `Q${i + 1} (${partShort}-${q.indexInPart + 1})`;
+      li.dataset.index = String(i);
+      li.addEventListener("click", () => {
+        if (timerPaused) return;
+        saveCurrentInput();
+        currentQuestionIndex = i;
+        renderQuestion();
+      });
+      ul.appendChild(li);
+    }
+  }
+
+  updateSidebarStatus();
+}
+
+function updateSidebarStatus(){
+  const showingPractice = (quizSubmitted && practiceActive);
+  const items = document.querySelectorAll("#qList li");
+
+  items.forEach(li => {
+    li.classList.remove("active","answered","correct","incorrect");
+
+    if (showingPractice){
+      const k = Number(li.dataset.k);
+      const realIdx = Number(li.dataset.real);
+      const q = questions[realIdx];
+
+      li.classList.toggle("active", k === practicePos);
+
+      const ans = (q.userValue || "").trim();
+      if (ans !== ""){
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+      return;
+    }
+
+    const idx = Number(li.dataset.index);
+    const q = questions[idx];
+
+    li.classList.toggle("active", idx === currentQuestionIndex);
+
+    const ans = (q.userValue || "").trim();
+    if (ans !== ""){
+      if (!quizSubmitted){
+        if (q.checked){
+          li.classList.add(q.isCorrect ? "correct" : "incorrect");
+        } else {
+          li.classList.add("answered");
+        }
+      } else {
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ----------------------------------------------------------
+   Check Answer (Practice correct -> auto next after 2s)
+---------------------------------------------------------- */
+let autoNextTimer = null;
+
+function checkCurrentAnswer(){
+  if (timerPaused) return;
+
+  saveCurrentInput();
+  const q = questions[currentQuestionIndex];
+  const fb = document.getElementById("checkFeedback");
+  if (!fb) return;
+
+  if (autoNextTimer){
+    clearTimeout(autoNextTimer);
+    autoNextTimer = null;
+  }
+
+  const ans = (q.userValue || "").trim();
+  if (ans === ""){
+    fb.textContent = "Please enter an answer first.";
+    fb.className = "check-feedback neutral";
+    return;
+  }
+
+  const res = compareByType(ans, q.correct);
+  q.isCorrect = !!res.ok;
+  q.checked = true;
+
+  if (!q.isCorrect){
+    fb.textContent = "❌ Incorrect. Try again.";
+    fb.className = "check-feedback incorrect";
+    updateSidebarStatus();
+    return;
+  }
+
+  fb.textContent = (quizSubmitted && practiceActive)
+    ? "✅ Correct! Moving to the next remaining question in 2 seconds..."
+    : "✅ Correct!";
+  fb.className = "check-feedback correct";
+  updateSidebarStatus();
+
+  if (quizSubmitted && practiceActive){
+    const expectedRealIdx = currentQuestionIndex;
+    const expectedPracticePos = practicePos;
+
+    const btn = document.getElementById("checkButton");
+    if (btn) btn.disabled = true;
+
+    autoNextTimer = setTimeout(() => {
+      autoNextTimer = null;
+
+      if (!(quizSubmitted && practiceActive)) return;
+      if (currentQuestionIndex !== expectedRealIdx || practicePos !== expectedPracticePos) return;
+
+      const currentReal = practiceIndices[practicePos];
+      if (currentReal === expectedRealIdx){
+        practiceIndices.splice(practicePos, 1);
+      } else {
+        const idx = practiceIndices.indexOf(expectedRealIdx);
+        if (idx >= 0) practiceIndices.splice(idx, 1);
+        if (practicePos >= practiceIndices.length) practicePos = Math.max(0, practiceIndices.length - 1);
+      }
+
+      if (practiceIndices.length === 0){
+        practiceActive = false;
+        renderSidebar();
+        renderResults(true);
+        return;
+      }
+
+      if (practicePos >= practiceIndices.length) practicePos = practiceIndices.length - 1;
+      currentQuestionIndex = practiceIndices[practicePos];
+
+      renderSidebar();
+      renderQuestion();
+    }, 2000);
+  }
+}
+
+/* ----------------------------------------------------------
+   Hints
+---------------------------------------------------------- */
+function hintForPart(partIndex){
+  const t = PART_TITLES[partIndex] || "";
+
+  if (t.includes("Basic Ratio")){
+    return `
+      <div class="hint-box">
+        <b>Basic ratio tips:</b><br>
+        • Simplify by dividing both parts by the GCD.<br>
+        • For a:b as a fraction → a/b.<br>
+        • For a:b as a decimal → a ÷ b.
+      </div>
+    `;
+  }
+  if (t.includes("Ratio to Quantity")){
+    return `
+      <div class="hint-box">
+        <b>Ratio to quantity:</b><br>
+        Total parts = a + b. One part = total ÷ (a+b).<br>
+        Then multiply by each part.
+      </div>
+    `;
+  }
+  if (t.includes("Equivalent Ratios")){
+    return `
+      <div class="hint-box">
+        <b>Equivalent ratios:</b><br>
+        Multiply or divide both parts by the same number to keep the ratio the same.
+      </div>
+    `;
+  }
+  if (t.includes("Word Problems")){
+    return `
+      <div class="hint-box">
+        <b>Word problems:</b><br>
+        Translate the ratio into parts (e.g., 2:5 means 7 parts total), then use the total.
+      </div>
+    `;
+  }
+  if (t.includes("Ratio and Proportion")){
+    return `
+      <div class="hint-box">
+        <b>Proportion:</b><br>
+        Find the unit rate first, then scale up or down.
+      </div>
+    `;
+  }
+  if (t.includes("Multi-step") || t.includes("12 Multi-step")){
+    return `
+      <div class="hint-box">
+        <b>Multi-step ratio:</b><br>
+        Use variables like 3k and 5k for ratios.<br>
+        Apply changes (transfer/join/leave) carefully, then use the new ratio or total to solve.
+      </div>
+    `;
+  }
+
+  return `
+    <div class="hint-box">
+      <b>Tip:</b> Work step-by-step and keep units.
+    </div>
+  `;
+}
+
+/* ----------------------------------------------------------
+   Render Question
+---------------------------------------------------------- */
+function renderQuestion(){
+  const q = questions[currentQuestionIndex];
+  const fullLabel = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+
+  const showingPractice = (quizSubmitted && practiceActive);
+
+  const topLine = showingPractice
+    ? `Practice: ${practiceIndices.length} remaining`
+    : `Question ${currentQuestionIndex + 1} of ${TOTAL_QUESTIONS}`;
+
+  const showPrev = showingPractice ? (practicePos > 0) : (currentQuestionIndex > 0);
+  const showNext = showingPractice ? (practicePos < practiceIndices.length - 1) : (currentQuestionIndex < TOTAL_QUESTIONS - 1);
+
+  const answerHelp = q.answerHint || "Enter your answer.";
+
+  const isLastQuestion = (!showingPractice && currentQuestionIndex === TOTAL_QUESTIONS - 1);
+  const showSubmit = (!quizSubmitted && isLastQuestion);
+
+  quizContent.innerHTML = `
+    <p class="question-text">${topLine}</p>
+    <p class="instructions">${answerHelp}</p>
+
+    <div class="part-title">${PART_TITLES[q.partIndex] || ("Part " + (q.partIndex+1))}</div>
+
+    <div class="single-question">
+      <span><b>${fullLabel}.</b></span>
+      <span style="margin-left:6px;">${q.html}</span>
+      <input id="answerInput" class="answer-box" type="text" value="${(q.userValue || "").replace(/"/g,'&quot;')}">
+    </div>
+
+    ${hintForPart(q.partIndex)}
+
+    <div id="checkFeedback" class="check-feedback"></div>
+
+    <div class="question-buttons">
+      <button id="backButton" style="${showPrev ? "" : "display:none;"}">Previous</button>
+      <button id="checkButton">Check Answer</button>
+      <button id="submitButton" style="${showSubmit ? "" : "display:none;"}">Submit &amp; View Results</button>
+      <button id="nextButton" style="${showNext ? "" : "display:none;"}">Next</button>
+      ${quizSubmitted ? `<button id="saveButton">Save Current Result</button>` : ``}
+    </div>
+  `;
+
+  document.getElementById("nextButton")?.addEventListener("click", onNext);
+  document.getElementById("backButton")?.addEventListener("click", onPrev);
+  document.getElementById("submitButton")?.addEventListener("click", onSubmit);
+  document.getElementById("saveButton")?.addEventListener("click", saveCurrentResultAsTxt);
+  document.getElementById("checkButton")?.addEventListener("click", checkCurrentAnswer);
+
+  updateSidebarStatus();
+  ensurePausedStateAfterRender();
+}
+
+/* ----------------------------------------------------------
+   Results
+---------------------------------------------------------- */
+function renderResults(allCorrectBanner = false){
+  const correctCount = gradeAll();
+
+  let timeInfo = "";
+  if (quizStartTime){
+    const diffSec = Math.floor(elapsedMs / 1000);
+    const min = Math.floor(diffSec / 60);
+    const sec = diffSec % 60;
+    timeInfo = `
+      <p>Time taken: <strong>${min}m ${sec}s</strong></p>
+    `;
+  }
+
+  buildPracticeList();
+  const remaining = practiceIndices.length;
+
+  let banner = "";
+  if (allCorrectBanner){
+    banner = `<div class="hint-box" style="background:#e8fff0;border-color:#b7f0c8;">
+      <b>✅ Practice complete!</b> All questions are correct.
+    </div>`;
+  } else {
+    banner = `<div class="hint-box">
+      <b>Next step:</b> Practise only the questions you got wrong or did not answer.<br>
+      Remaining to practise: <b>${remaining}</b>
+    </div>`;
+  }
+
+  let html = `
+    <h3>Results for ${studentName}</h3>
+    <p>Mode: <strong>${QUIZ_MODE === "standard" ? "Standard Mode" : "Extension Mode"}</strong></p>
+    <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
+    ${timeInfo}
+    ${banner}
+
+    <div class="question-buttons">
+      ${remaining > 0 ? `<button id="backToPracticeButton">Practice Remaining (${remaining})</button>` : ``}
+      <button id="saveButton">Save Current Result</button>
+      <button id="exportInlineButton" style="background:#455a64;">Export Questions (PDF)</button>
+    </div>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th>
+        <th>Part</th>
+        <th>Question</th>
+        <th>Your Answer</th>
+        <th>Correct</th>
+        <th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q, i) => {
+    const partLbl = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+    const yourAns = (q.userValue || "").trim() === "" ? "—" : q.userValue;
+    html += `
+      <tr class="${q.isCorrect ? "correct-answer" : "incorrect-answer"}">
+        <td>${i + 1}</td>
+        <td>${partLbl}</td>
+        <td style="text-align:left;">${q.html}</td>
+        <td>${yourAns}</td>
+        <td>${q.displayCorrect}</td>
+        <td>${q.isCorrect ? "Correct" : "Incorrect"}</td>
+      </tr>
+    `;
+  });
+  html += `</table>`;
+
+  quizContent.innerHTML = html;
+
+  document.getElementById("backToPracticeButton")?.addEventListener("click", startPractice);
+  document.getElementById("saveButton")?.addEventListener("click", saveCurrentResultAsTxt);
+  document.getElementById("exportInlineButton")?.addEventListener("click", exportQuestionsToPDF);
+
+  updateSidebarStatus();
+}
+
+/* ----------------------------------------------------------
+   Submit (only appears on last question)
+---------------------------------------------------------- */
+function onSubmit(){
+  if (timerPaused) return;
+
+  saveCurrentInput();
+  if (!quizSubmitted){
+    // stop timer and freeze time
+    stopTimer();
+    hidePauseControls();
+
+    quizSubmitted = true;
+
+    practiceActive = false;
+    buildPracticeList();
+
+    renderSidebar();
+    renderResults(false);
+
+    generateBtn.style.display = "inline-block";
+    exportBtn.style.display = "inline-block";
+    return;
+  }
+}
+
+/* ----------------------------------------------------------
+   Practice Remaining (not timed)
+---------------------------------------------------------- */
+function startPractice(){
+  buildPracticeList();
+
+  if (practiceIndices.length === 0){
+    practiceActive = false;
+    renderSidebar();
+    renderResults(true);
+    return;
+  }
+
+  practiceActive = true;
+  practicePos = 0;
+  currentQuestionIndex = practiceIndices[practicePos];
+
+  renderSidebar();
+  renderQuestion();
+}
+
+/* ----------------------------------------------------------
+   Navigation
+---------------------------------------------------------- */
+function onNext(){
+  if (timerPaused) return;
+  saveCurrentInput();
+
+  const showingPractice = (quizSubmitted && practiceActive);
+
+  if (showingPractice){
+    if (practicePos < practiceIndices.length - 1){
+      practicePos++;
+      currentQuestionIndex = practiceIndices[practicePos];
+      renderQuestion();
+    }
+    return;
+  }
+
+  if (currentQuestionIndex < TOTAL_QUESTIONS - 1){
+    currentQuestionIndex++;
+    renderQuestion();
+  }
+}
+
+function onPrev(){
+  if (timerPaused) return;
+  saveCurrentInput();
+
+  const showingPractice = (quizSubmitted && practiceActive);
+
+  if (showingPractice){
+    if (practicePos > 0){
+      practicePos--;
+      currentQuestionIndex = practiceIndices[practicePos];
+      renderQuestion();
+    }
+    return;
+  }
+
+  if (currentQuestionIndex > 0){
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+}
+
+/* ----------------------------------------------------------
+   Save TXT
+---------------------------------------------------------- */
+function formatDateForFilename(date){
+  if (!date) return "no_time";
+  const pad = n => String(n).padStart(2,"0");
+  return (
+    date.getFullYear() +
+    pad(date.getMonth() + 1) +
+    pad(date.getDate()) + "_" +
+    pad(date.getHours()) +
+    pad(date.getMinutes()) +
+    pad(date.getSeconds())
+  );
+}
+
+function saveCurrentResultAsTxt(){
+  saveCurrentInput();
+  gradeAll();
+
+  let correctCount = 0;
+  questions.forEach(q => { if (q.isCorrect) correctCount++; });
+
+  const lines = [];
+  lines.push("Ratio Quiz - Current Result");
+  lines.push("Student: " + studentName);
+  lines.push("Mode: " + (QUIZ_MODE === "standard" ? "Standard Mode" : "Extension Mode"));
+  lines.push("Time taken: " + formatElapsed(elapsedMs));
+  lines.push("Score: " + correctCount + " / " + TOTAL_QUESTIONS);
+  lines.push("");
+  lines.push("Details:");
+  lines.push("----------");
+
+  questions.forEach((q, i) => {
+    const partLbl = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+    const userAns = (q.userValue || "").trim() === "" ? "Not answered" : q.userValue;
+    const resultText = (q.userValue || "").trim() === ""
+      ? "Not answered"
+      : (q.isCorrect ? "Correct" : "Incorrect");
+
+    lines.push(
+      `Q${i + 1} (${partLbl})` +
+      "\nQuestion: " + q.plain +
+      "\nYour answer: " + userAns +
+      "\nCorrect answer: " + q.displayCorrect +
+      "\nResult: " + resultText
+    );
+    lines.push("");
+  });
+
+  const content = lines.join("\n");
+  const blob = new Blob([content], { type:"text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const safeName = studentName.replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  a.href = url;
+  a.download = `RatioQuiz_${safeName}_${QUIZ_MODE}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ----------------------------------------------------------
+   Export Questions to PDF (Print -> Save as PDF)
+---------------------------------------------------------- */
+function exportQuestionsToPDF(){
+  if (!questions || questions.length === 0){
+    alert("No questions to export yet.");
+    return;
+  }
+
+  const parts = {};
+  questions.forEach(q => {
+    if (!parts[q.partIndex]) parts[q.partIndex] = [];
+    parts[q.partIndex].push(q);
+  });
+
+  const win = window.open("", "_blank");
+  if (!win){
+    alert("Pop-up blocked. Please allow pop-ups to export PDF.");
+    return;
+  }
+
+  const title = `Ratio Quiz - ${QUIZ_MODE === "standard" ? "Standard" : "Extension"} - Questions`;
+  const today = new Date().toLocaleString();
+
+  const styles = `
+    <style>
+      body{ font-family: Arial, sans-serif; padding:24px; color:#111; }
+      h1{ font-size:20px; margin:0 0 8px; }
+      .meta{ font-size:12px; color:#333; margin-bottom:16px; }
+      h2{ font-size:15px; margin:18px 0 8px; border-bottom:1px solid #ddd; padding-bottom:6px; }
+      .q{ margin:10px 0; line-height:1.35; }
+      .label{ font-weight:700; margin-right:6px; }
+      .ans{ margin-top:6px; border-bottom:1px solid #333; height:18px; width:360px; }
+      @media print{ .pagebreak{ page-break-before: always; } }
+    </style>
+  `;
+
+  let bodyHTML = `
+    <h1>${title}</h1>
+    <div class="meta">
+      Student: <b>${studentName}</b><br>
+      Generated: ${today}<br>
+      Note: Use your browser print dialog and choose <b>Save as PDF</b>.
+    </div>
+  `;
+
+  const sortedPartIndexes = Object.keys(parts).map(Number).sort((a,b)=>a-b);
+  sortedPartIndexes.forEach((pIdx, pi) => {
+    const partTitle = PART_TITLES[pIdx] || `Part ${pIdx+1}`;
+    bodyHTML += `${pi === 0 ? "" : `<div class="pagebreak"></div>`}`;
+    bodyHTML += `<h2>${partTitle}</h2>`;
+
+    parts[pIdx].forEach((q) => {
+      const label = `P${q.partIndex+1}-${q.indexInPart+1}`;
+      bodyHTML += `
+        <div class="q">
+          <div><span class="label">${label}.</span> ${q.html}</div>
+          <div class="ans"></div>
+        </div>
+      `;
+    });
+  });
+
+  win.document.open();
+  win.document.write(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="UTF-8" />
+        <title>${title}</title>
+        ${styles}
+      </head>
+      <body>
+        ${bodyHTML}
+        <script>
+          setTimeout(() => { window.print(); }, 300);
+        <\/script>
+      </body>
+    </html>
+  `);
+  win.document.close();
+}
+
+/* ----------------------------------------------------------
+   Start screen
+---------------------------------------------------------- */
+function showStartScreen(){
+  sidebarEl.style.display = "none";
+  generateBtn.style.display = "none";
+  exportBtn.style.display = "none";
+  if (timerBox) timerBox.style.display = "none";
+  hidePauseControls();
+  modeBadge.style.display = "none";
+
+  quizContent.innerHTML = `
+    <p>This quiz contains <strong>Standard</strong> and <strong>Extension</strong> modes.</p>
+    <p><b>Step 1:</b> Enter your name</p>
+    <input id="nameInput" type="text"
+      style="padding:10px; width:260px; font-size:1.05em;"
+      placeholder="Your name">
+
+    <p style="margin-top:16px;"><b>Step 2:</b> Choose a mode</p>
+    <label style="display:block; margin:6px 0;">
+      <input type="radio" name="modeChoice" value="standard" checked>
+      Standard Mode
+    </label>
+    <label style="display:block; margin:6px 0;">
+      <input type="radio" name="modeChoice" value="extension">
+      Extension Mode (12 Multi-step)
+    </label>
+
+    <div class="question-buttons" style="margin-top:18px;">
+      <button id="startButton" style="background:#4caf50;">Start Quiz</button>
+    </div>
+  `;
+
+  const nameInput = document.getElementById("nameInput");
+  if (nameInput && URL_STUDENT_NAME){
+    nameInput.value = URL_STUDENT_NAME;
+  }
+
+  document.getElementById("startButton").addEventListener("click", startQuiz);
+}
+
+function startQuiz(){
+  const nameInput = document.getElementById("nameInput");
+  studentName = (nameInput.value || "Student").trim();
+
+  const picked = document.querySelector('input[name="modeChoice"]:checked');
+  QUIZ_MODE = picked ? picked.value : "standard";
+
+  quizStartTime = new Date();
+  generateQuiz();
+  currentQuestionIndex = 0;
+
+  // Timer starts for main quiz
+  startTimer();
+  showPauseControls();
+
+  sidebarEl.style.display = "block";
+  generateBtn.style.display = "inline-block";
+  exportBtn.style.display = "inline-block";
+
+  generateBtn.onclick = () => {
+    if (timerPaused) return;
+    const warn = quizSubmitted ? "Generate a new random set? (This will reset your results.)" : "Generate a new random set? All answers will be lost.";
+    if (!confirm(warn)) return;
+
+    // reset + restart timer
+    quizStartTime = new Date();
+    generateQuiz();
+    currentQuestionIndex = 0;
+    quizSubmitted = false;
+    practiceActive = false;
+    practiceIndices = [];
+    practicePos = 0;
+
+    startTimer();
+    showPauseControls();
+
+    renderSidebar();
+    renderQuestion();
+  };
+
+  exportBtn.onclick = exportQuestionsToPDF;
+
+  renderSidebar();
+  renderQuestion();
+}
+
+/* ----------------------------------------------------------
+   Timer buttons
+---------------------------------------------------------- */
+pauseResumeBtn?.addEventListener("click", () => {
+  if (!timerRunning) return;
+  if (timerPaused) resumeTimer();
+  else pauseTimer();
+});
+resumeFromOverlayBtn?.addEventListener("click", () => {
+  if (!timerRunning) return;
+  resumeTimer();
+});
+
+/* Init */
+showStartScreen();
+</script>
+</body>
+</html>
