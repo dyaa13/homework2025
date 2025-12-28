@@ -53,6 +53,7 @@
     #saveButton{background:#607d8b;}
     #pauseButton{background:#f57c00;}
     #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
     button:disabled{opacity:.55;cursor:not-allowed;}
 
     .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
@@ -91,6 +92,7 @@
     <div>
       <button id="pauseButton" style="display:none;">Pause</button>
       <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
     </div>
   </div>
 
@@ -109,6 +111,10 @@
     <button id="saveButton" style="display:none;">Save Current Result</button>
   </div>
 </div>
+
+<!-- Export-to-PDF libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
@@ -206,9 +212,8 @@ function isCorrectInt(userInt, correctInt){
 }
 
 /* ---------------- Overlap Problem Generators (ALL answers are logical INTEGERS) ----------------
-   Key idea:
-   If n pieces are joined in a line with equal overlap x each joint, there are (n-1) joints.
-   Total length = (sum of piece lengths) - (n-1)*x
+   Total length = (sum of piece lengths) - (number of joints)*overlap
+   For n pieces in a line => joints = n-1
 */
 
 /* Easy 1: 3 pieces, given final total -> ask overlap x */
@@ -260,8 +265,8 @@ function genEasy_Ribbons_AskTotal(){
 
 /* Medium 1: 3 equal ropes, given final total & overlap -> ask original rope length */
 function genMedium_ThreeEqualRopes_AskOne(){
-  const x = randInt(2, 8);        // overlap per joint
-  const rope = randInt(18, 45);   // each rope length
+  const x = randInt(2, 8);
+  const rope = randInt(18, 45);
   const total = 3*rope - 2*x;
   if(total <= 0) return genMedium_ThreeEqualRopes_AskOne();
 
@@ -280,8 +285,8 @@ function genMedium_ThreeEqualRopes_AskOne(){
 
 /* Medium 2: n equal sticks, given overlap and final total -> ask stick length */
 function genMedium_NEqualSticks_AskStick(){
-  const n = randInt(4, 6);     // 4–6 sticks
-  const x = randInt(1, 3);     // small overlap
+  const n = randInt(4, 6);
+  const x = randInt(1, 3);
   const stick = randInt(10, 30);
   const total = n*stick - (n-1)*x;
 
@@ -302,7 +307,7 @@ function genMedium_NEqualSticks_AskStick(){
 function genHard_MissingPiece_AskLength(){
   const a = randInt(25, 60);
   const c = randInt(25, 60);
-  const b = randInt(25, 70);     // missing
+  const b = randInt(25, 70);
   const x = randInt(2, 10);
   const total = a + b + c - 2*x;
 
@@ -322,9 +327,9 @@ function genHard_MissingPiece_AskLength(){
 
 /* Hard 2: n equal bars, given final total -> ask overlap x */
 function genHard_NEqualBars_AskOverlap(){
-  const n = randInt(4, 7);      // more pieces
-  const bar = randInt(20, 55);  // each bar length
-  const x = randInt(2, 10);     // overlap
+  const n = randInt(4, 7);
+  const bar = randInt(20, 55);
+  const x = randInt(2, 10);
   const total = n*bar - (n-1)*x;
   if(total <= 0) return genHard_NEqualBars_AskOverlap();
 
@@ -367,6 +372,7 @@ const saveButton=document.getElementById("saveButton");
 
 const generateBtn=document.getElementById("generateButton");
 const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
 const timerDisplay=document.getElementById("timerDisplay");
 const studentLine=document.getElementById("studentLine");
 
@@ -402,7 +408,6 @@ function generateQuiz(){
   questions=[];
   quizSubmitted=false;
 
-  // Build exactly 6 questions: Easy(2), Medium(2), Hard(2)
   const built = [
     genEasy_ThreePieces_AskOverlap(),
     genEasy_Ribbons_AskTotal(),
@@ -419,7 +424,7 @@ function generateQuiz(){
       partIndex,
       indexInPart,
       img: built[i].img,
-      value: built[i].value,     // ✅ always integer
+      value: built[i].value,
       hint: built[i].hint,
       userValue:"",
       isCorrect:false
@@ -740,6 +745,87 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
+/* ---------------- Export Questions PDF (DYAA header, 2 questions per page) ---------------- */
+exportQuestionsBtn.addEventListener("click", async () => {
+  if (!questions || questions.length === 0) {
+    alert("Please start a quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "fixed";
+  wrapper.style.left = "-9999px";
+  wrapper.style.top = "0";
+  wrapper.style.width = "800px";
+  wrapper.style.background = "#ffffff";
+  document.body.appendChild(wrapper);
+
+  try {
+    let groupDiv = null;
+
+    questions.forEach((q, idx) => {
+      if (idx % 2 === 0) {
+        groupDiv = document.createElement("div");
+        groupDiv.style.padding = "20px";
+        groupDiv.style.marginBottom = "20px";
+        groupDiv.style.boxSizing = "border-box";
+
+        // DYAA header on each PDF page
+        const header = document.createElement("div");
+        header.innerHTML = `
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+              <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;line-height:1.1;">
+              <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+              <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+            </div>
+          </div>
+          <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+          <div style="font-weight:800;color:#1f2a44;margin:0 0 8px 0;">Overlap Problems (Diagram Method)</div>
+        `;
+        groupDiv.appendChild(header);
+        wrapper.appendChild(groupDiv);
+      }
+
+      const qDiv = document.createElement("div");
+      qDiv.style.marginBottom = "18px";
+      qDiv.innerHTML = `
+        <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx + 1}</div>
+        <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+          <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+        </div>
+      `;
+      groupDiv.appendChild(qDiv);
+    });
+
+    const groups = Array.from(wrapper.children);
+
+    for (let i = 0; i < groups.length; i++) {
+      const canvas = await html2canvas(groups[i], { scale: 2, useCORS: true });
+      const imgData = canvas.toDataURL("image/png");
+
+      const imgWidth = pageWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      if (i > 0) pdf.addPage();
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, Math.min(imgHeight, pageHeight - 20));
+    }
+
+    const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_") || "Student";
+    const ts = formatDateForFilename(new Date());
+    pdf.save(`OverlapProblems_Questions_${safeName}_${ts}.pdf`);
+  } finally {
+    document.body.removeChild(wrapper);
+  }
+});
+
 /* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
 function getNameFromUrl(){
   const url=new URL(window.location.href);
@@ -752,6 +838,7 @@ function showStartScreen(){
   generateBtn.style.display="none";
   saveButton.style.display="none";
   pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
   studentLine.textContent="";
 
   if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
@@ -806,6 +893,7 @@ function startQuiz(skipReadName){
   generateBtn.style.display="inline-block";
   pauseButton.style.display="inline-block";
   pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
 }
 
 /* ---------------- Init ---------------- */

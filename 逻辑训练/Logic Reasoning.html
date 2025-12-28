@@ -52,6 +52,7 @@
     #saveButton{background:#607d8b;}
     #pauseButton{background:#f57c00;}
     #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
     button:disabled{opacity:.55;cursor:not-allowed;}
 
     .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
@@ -90,6 +91,8 @@
     <div>
       <button id="pauseButton" style="display:none;">Pause</button>
       <button id="generateButton" style="display:none;">Generate New Set</button>
+      <!-- ✅ Export to PDF button -->
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
     </div>
   </div>
 
@@ -108,6 +111,10 @@
     <button id="saveButton" style="display:none;">Save Current Result</button>
   </div>
 </div>
+
+<!-- jsPDF & html2canvas CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
@@ -224,20 +231,17 @@ function nearlyEqual(a,b,eps=1e-9){
 function normalizeToken(t){
   let s = String(t||"").trim().toLowerCase();
   s = s.replace(/^(the|a|an)\s+/,"");
-  s = s.replace(/[^a-z0-9]+/g,""); // remove spaces & punctuation
+  s = s.replace(/[^a-z0-9]+/g,"");
   return s;
 }
 function parsePairTokens(str){
   let s = String(str||"").trim();
   if(!s) return [];
-  // split by comma/semicolon first
   let parts = s.split(/[;,]+/).map(x=>x.trim()).filter(Boolean);
   if(parts.length < 2){
-    // try split by multiple spaces
     parts = s.split(/\s{2,}|\s*-\s*|\s*\|\s*/).map(x=>x.trim()).filter(Boolean);
   }
   if(parts.length < 2){
-    // final fallback: split by single spaces
     const ws = s.split(/\s+/).filter(Boolean);
     if(ws.length >= 2) parts = [ws[0], ws.slice(1).join(" ")];
   }
@@ -251,7 +255,6 @@ function isCorrectAnswer(q, userStr){
   if(q.answerType === "text"){
     return normalizeToken(userStr) === normalizeToken(q.value);
   }
-  // pair: "First, Second"
   const toks = parsePairTokens(userStr);
   return toks.length===2 &&
          toks[0] === normalizeToken(q.value[0]) &&
@@ -268,9 +271,7 @@ const VEG = ["Tomato","Potato","Eggplant","Carrot","Cucumber","Pumpkin"];
 const KIDS = ["Lily","Ben","Mia","Noah","Emma","Jack","Ava","Leo","Sophie","Tom","Ryan","Chloe","Nina"];
 
 function genEasyWeights3(){
-  // pick 3 distinct
   const items = [...VEG].sort(()=>Math.random()-0.5).slice(0,3);
-  // set true order: H > M > L
   const H = items[0], M = items[1], L = items[2];
 
   const lines = [
@@ -305,7 +306,6 @@ function genEasyPencils3(){
     `Write your answer as: Most, Least`
   ];
 
-  // Most is B, least is C (always)
   return {
     img: makeSvgQuestionImage(lines, "Logic Reasoning"),
     plain: lines.join(" "),
@@ -317,7 +317,6 @@ function genEasyPencils3(){
 }
 
 function genMediumHeights4(){
-  // Create consistent ordering: A > B > C > D
   const names = [...KIDS].sort(()=>Math.random()-0.5).slice(0,4);
   const A=names[0], B=names[1], C=names[2], D=names[3];
 
@@ -329,10 +328,9 @@ function genMediumHeights4(){
     `Who is the shortest?`
   ];
 
-  // With these statements, shortest is either C or D. Make it unique by adding one more relation.
   const extra = choice([
-    `${D} is shorter than ${C}.`,  // then D shortest
-    `${C} is shorter than ${D}.`   // then C shortest
+    `${D} is shorter than ${C}.`,
+    `${C} is shorter than ${D}.`
   ]);
   lines.splice(4,0, extra);
 
@@ -349,10 +347,6 @@ function genMediumHeights4(){
 }
 
 function genMediumLineDistance4(){
-  // Model:
-  // Let C at 0. B is d3 meters to the right of C.
-  // A is d1 meters to the left of B.
-  // C is d2 meters to the left of D.  (so D is to the right of C)
   const names = [...KIDS].sort(()=>Math.random()-0.5).slice(0,4);
   const A=names[0], B=names[1], C=names[2], D=names[3];
 
@@ -391,7 +385,6 @@ function genMediumLineDistance4(){
 function genHardSecondHeaviest(){
   const items = ["Rock","Book","Apple","Toy","Bottle","Brick","Laptop","Shoebox"];
   const chosen = [...items].sort(()=>Math.random()-0.5).slice(0,4);
-  // True order: W1 > W2 > W3 > W4
   const W1=chosen[0], W2=chosen[1], W3=chosen[2], W4=chosen[3];
 
   const lines = [
@@ -415,7 +408,6 @@ function genHardSecondHeaviest(){
 
 function genHardSecondShortest(){
   const names = [...KIDS].sort(()=>Math.random()-0.5).slice(0,4);
-  // True order: T (tallest) > M1 > M2 > S (shortest)
   const T=names[0], M1=names[1], M2=names[2], S=names[3];
 
   const lines = [
@@ -427,10 +419,8 @@ function genHardSecondShortest(){
     `Who is the second shortest?`
   ];
 
-  // Ensure M2 is placed between M1 and S by adding one more clue sometimes
   if(Math.random()<0.6){
     lines.splice(5,0, `${M1} is taller than ${M2}.`);
-    // then order: T > M1 > M2 > S, second shortest is M2
     return {
       img: makeSvgQuestionImage(lines, "Logic Reasoning"),
       plain: lines.join(" "),
@@ -441,7 +431,6 @@ function genHardSecondShortest(){
     };
   }else{
     lines.splice(5,0, `${M2} is taller than ${M1}.`);
-    // then order: T > M2 > M1 > S, second shortest is M1
     return {
       img: makeSvgQuestionImage(lines, "Logic Reasoning"),
       plain: lines.join(" "),
@@ -478,6 +467,7 @@ const saveButton=document.getElementById("saveButton");
 
 const generateBtn=document.getElementById("generateButton");
 const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
 const timerDisplay=document.getElementById("timerDisplay");
 const studentLine=document.getElementById("studentLine");
 
@@ -532,9 +522,9 @@ function generateQuiz(){
       indexInPart,
       img: q.img,
       plain: q.plain,
-      answerType: q.answerType,      // "number" | "text" | "pair"
-      value: q.value,                // number | string | [string,string]
-      display: q.display,            // number | string | [string,string]
+      answerType: q.answerType,
+      value: q.value,
+      display: q.display,
       hint: q.hint,
       userValue:"",
       isCorrect:false
@@ -731,7 +721,6 @@ function calculateAndShowResults(){
   checkButton.style.display="none";
   saveButton.style.display="inline-block";
 
-  // reset timer for next attempt
   elapsedMs=0; isPaused=false; quizStartTime=new Date();
   pauseButton.textContent="Pause";
   startTimerInterval();
@@ -861,6 +850,93 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
+/* ---------------- Export QUESTIONS to PDF (2 questions per page, DYAA header) ---------------- */
+exportQuestionsBtn.addEventListener("click", async () => {
+  if (!questions || questions.length === 0) {
+    alert("Please start a quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "fixed";
+  wrapper.style.left = "-9999px";
+  wrapper.style.top = "0";
+  wrapper.style.width = "800px";
+  wrapper.style.background = "#ffffff";
+  document.body.appendChild(wrapper);
+
+  let groupDiv = null;
+
+  questions.forEach((q, idx) => {
+    if (idx % 2 === 0) {
+      groupDiv = document.createElement("div");
+      groupDiv.style.padding = "20px";
+      groupDiv.style.marginBottom = "20px";
+      groupDiv.style.boxSizing = "border-box";
+
+      const header = document.createElement("div");
+      header.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <div style="width:40px;height:40px;background:#0d47a1;border-radius:6px;position:relative;">
+            <div style="position:absolute;width:20px;height:9px;background:#ff9800;top:-6px;left:20px;border-radius:3px;"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;line-height:1.1;">
+            <div style="font-weight:900;letter-spacing:1px;color:#ff9800;">DYAA</div>
+            <div style="font-size:0.85em;color:#0d47a1;font-weight:700;">EDUCATION</div>
+          </div>
+        </div>
+        <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+      `;
+      groupDiv.appendChild(header);
+
+      wrapper.appendChild(groupDiv);
+    }
+
+    const qDiv = document.createElement("div");
+    qDiv.style.marginBottom = "18px";
+    qDiv.innerHTML = `
+      <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx + 1}</div>
+      <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+        <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+      </div>
+    `;
+    groupDiv.appendChild(qDiv);
+  });
+
+  const groups = Array.from(wrapper.children);
+
+  for (let i = 0; i < groups.length; i++) {
+    const canvas = await html2canvas(groups[i], { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+    const imgWidth = pageWidth - 20;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const x = 10;
+    const y = 10;
+
+    if (i > 0) pdf.addPage();
+    pdf.addImage(
+      imgData,
+      "PNG",
+      x,
+      y,
+      imgWidth,
+      Math.min(imgHeight, pageHeight - 20)
+    );
+  }
+
+  const safeName = (studentName || "Student")
+    .replace(/[^a-z0-9_\-]/gi, "_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  pdf.save(`LogicReasoning_${safeName}_${ts}.pdf`);
+
+  document.body.removeChild(wrapper);
+});
+
 /* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
 function getNameFromUrl(){
   const url = new URL(window.location.href);
@@ -873,6 +949,7 @@ function showStartScreen(){
   generateBtn.style.display="none";
   saveButton.style.display="none";
   pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
   studentLine.textContent="";
 
   if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
@@ -927,6 +1004,7 @@ function startQuiz(skipReadName){
   generateBtn.style.display="inline-block";
   pauseButton.style.display="inline-block";
   pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
 }
 
 /* ---------------- Init ---------------- */

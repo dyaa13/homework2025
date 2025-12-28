@@ -52,6 +52,7 @@
     #saveButton{background:#607d8b;}
     #pauseButton{background:#f57c00;}
     #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
     button:disabled{opacity:.55;cursor:not-allowed;}
 
     .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
@@ -90,6 +91,7 @@
     <div>
       <button id="pauseButton" style="display:none;">Pause</button>
       <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
     </div>
   </div>
 
@@ -108,6 +110,10 @@
     <button id="saveButton" style="display:none;">Save Current Result</button>
   </div>
 </div>
+
+<!-- PDF Export dependencies -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
@@ -208,42 +214,24 @@ function nearlyEqual(a,b,eps=1e-9){
 function factorial(n){
   let r=1; for(let i=2;i<=n;i++) r*=i; return r;
 }
-function nPr(n,r){ // permutations
-  if(r>n) return 0;
-  let prod=1;
-  for(let i=0;i<r;i++) prod*= (n-i);
-  return prod;
-}
 function count4DigitNoRepeat(digits, allowLeadingZero){
-  // count 4-digit numbers using all digits once (digits length = 4)
-  // if allowLeadingZero=false and digits include 0, exclude those starting with 0.
   if(digits.length!==4) return 0;
-  if(allowLeadingZero) return factorial(4); // 4!
-  // exclude leading zero if present
+  if(allowLeadingZero) return factorial(4);
   if(!digits.includes(0)) return factorial(4);
-  // numbers starting with 0: fix 0 first, permute remaining 3
   return factorial(4) - factorial(3);
 }
 function countEven4DigitNoRepeat(digits, allowLeadingZero){
-  // digits length 4, no repetition, count even 4-digit numbers
-  // handle leading zero rule
   const ds=[...digits];
   const evens=ds.filter(d=>d%2===0);
   let count=0;
 
-  // choose last digit (must be even)
   for(const last of evens){
     const remaining=ds.filter(d=>d!==last);
-    // count ways to arrange first 3 digits with leading constraint
     if(allowLeadingZero){
       count += factorial(3);
     }else{
-      // first digit cannot be 0
       if(!remaining.includes(0)) count += factorial(3);
-      else{
-        // total perms of 3 minus perms starting with 0 (fix 0 then permute other 2)
-        count += factorial(3) - factorial(2);
-      }
+      else count += factorial(3) - factorial(2);
     }
   }
   return count;
@@ -264,14 +252,11 @@ function countOdd4DigitNoRepeat(digits, allowLeadingZero){
   }
   return count;
 }
-
-/* pick 4 distinct digits, optionally including 0 */
 function pick4Distinct(includeZero){
   const pool=[];
   for(let d=0; d<=9; d++){
     if(includeZero || d!==0) pool.push(d);
   }
-  // shuffle pick 4
   for(let i=pool.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
     [pool[i],pool[j]]=[pool[j],pool[i]];
@@ -280,12 +265,10 @@ function pick4Distinct(includeZero){
 }
 
 /* ---------------- Question Generators ---------------- */
-/* Part 1 (Easy): digits are 4 non-zero digits, use all once, count how many different 4-digit numbers */
 function genEasyCount(){
-  const digits=pick4Distinct(false); // non-zero
-  // ensure no 0
+  const digits=pick4Distinct(false);
   const dstr=digits.join(", ");
-  const ans=count4DigitNoRepeat(digits, true); // leading zero not relevant, but treat as allowed
+  const ans=count4DigitNoRepeat(digits, true);
   const lines=[
     `Using the digits ${dstr},`,
     `how many different 4-digit numbers can you make`,
@@ -297,8 +280,6 @@ function genEasyCount(){
     hint: "Hint: Use a tree diagram or the multiplication rule: 4 choices for the first place, then 3, then 2, then 1."
   };
 }
-
-/* Part 1 (Easy) #2: same but ask "How many are even?" (no 0) */
 function genEasyEven(){
   const digits=pick4Distinct(false);
   const dstr=digits.join(", ");
@@ -314,12 +295,9 @@ function genEasyEven(){
     hint: "Hint: An even number must end in an even digit. Choose the last digit first, then arrange the remaining 3 digits."
   };
 }
-
-/* Part 2 (Medium): include 0 but 4-digit number cannot start with 0 */
 function genMediumIncludeZero(){
   const digits=pick4Distinct(true);
-  if(!digits.includes(0)) digits[0]=0; // force include 0
-  // ensure all distinct
+  if(!digits.includes(0)) digits[0]=0;
   const set=new Set(digits);
   if(set.size!==4) return genMediumIncludeZero();
 
@@ -336,8 +314,6 @@ function genMediumIncludeZero(){
     hint: "Hint: Count all arrangements of 4 digits, then subtract the ones that start with 0."
   };
 }
-
-/* Part 2 (Medium) #2: choose 4 digits including 0, how many are odd (no leading zero) */
 function genMediumOddNoLeadingZero(){
   const digits=pick4Distinct(true);
   if(!digits.includes(0)) digits[1]=0;
@@ -354,33 +330,25 @@ function genMediumOddNoLeadingZero(){
   return {
     img: makeSvgQuestionImage(lines, "Counting & Arrangements"),
     value: ans,
-    hint: "Hint: For an odd number, the last digit must be odd. After choosing the last digit, arrange the first three digits but the first one cannot be 0."
+    hint: "Hint: For an odd number, the last digit must be odd. After choosing the last digit, arrange the first three digits but the first digit cannot be 0."
   };
 }
-
-/* Part 3 (Hard): two conditions (e.g., even + greater than something), still countable */
 function genHardEvenAndGreater(){
-  // digits include 0 to make leading constraint meaningful
   const digits=pick4Distinct(true);
   if(!digits.includes(0)) digits[2]=0;
   const set=new Set(digits);
   if(set.size!==4) return genHardEvenAndGreater();
 
-  // Condition: number is even AND thousands digit is the largest digit (forces fixed choice)
   const max=Math.max(...digits);
   const evens=digits.filter(d=>d%2===0);
-  // if max is 0 (rare) or max not workable, regenerate
   if(max===0) return genHardEvenAndGreater();
 
-  // thousands digit fixed to max (cannot be 0 anyway)
-  // last digit must be even and cannot be max if already used
   let count=0;
   for(const last of evens){
-    if(last===max) continue; // already used
-    // remaining two digits can be permuted freely (2!)
+    if(last===max) continue;
     const remaining=digits.filter(d=>d!==max && d!==last);
     if(remaining.length!==2) continue;
-    count += 2; // 2!
+    count += 2;
   }
 
   const dstr=digits.join(", ");
@@ -396,8 +364,6 @@ function genHardEvenAndGreater(){
     hint: "Hint: Fix the first digit as the largest. Then choose an even last digit (not already used). The two middle digits can swap."
   };
 }
-
-/* Part 3 (Hard) #2: count even numbers when digits include 0, no leading zero */
 function genHardEvenNoLeadingZero(){
   const digits=pick4Distinct(true);
   if(!digits.includes(0)) digits[3]=0;
@@ -444,6 +410,7 @@ const saveButton=document.getElementById("saveButton");
 
 const generateBtn=document.getElementById("generateButton");
 const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
 const timerDisplay=document.getElementById("timerDisplay");
 const studentLine=document.getElementById("studentLine");
 
@@ -687,7 +654,6 @@ function calculateAndShowResults(){
   checkButton.style.display="none";
   saveButton.style.display="inline-block";
 
-  // reset timer for next attempt
   elapsedMs=0; isPaused=false; quizStartTime=new Date();
   pauseButton.textContent="Pause";
   startTimerInterval();
@@ -815,6 +781,91 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
+/* ---- Export Questions PDF (2 questions per page) ---- */
+exportQuestionsBtn.addEventListener("click", async () => {
+  if (!questions || questions.length === 0) {
+    alert("Please start a quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "fixed";
+  wrapper.style.left = "-9999px";
+  wrapper.style.top = "0";
+  wrapper.style.width = "800px";
+  wrapper.style.background = "#ffffff";
+  document.body.appendChild(wrapper);
+
+  let groupDiv = null;
+
+  questions.forEach((q, idx) => {
+    if (idx % 2 === 0) {
+      groupDiv = document.createElement("div");
+      groupDiv.style.padding = "20px";
+      groupDiv.style.marginBottom = "20px";
+      groupDiv.style.boxSizing = "border-box";
+
+      const header = document.createElement("div");
+      header.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+            <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;line-height:1.1;">
+            <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+            <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+          </div>
+        </div>
+        <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+      `;
+      groupDiv.appendChild(header);
+      wrapper.appendChild(groupDiv);
+    }
+
+    const qDiv = document.createElement("div");
+    qDiv.style.marginBottom = "18px";
+    qDiv.innerHTML = `
+      <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx + 1}</div>
+      <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+        <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+      </div>
+    `;
+    groupDiv.appendChild(qDiv);
+  });
+
+  const groups = Array.from(wrapper.children);
+
+  for (let i = 0; i < groups.length; i++) {
+    const canvas = await html2canvas(groups[i], { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL("image/png");
+    const imgWidth = pageWidth - 20;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const x = 10;
+    const y = 10;
+
+    if (i > 0) pdf.addPage();
+    pdf.addImage(
+      imgData,
+      "PNG",
+      x,
+      y,
+      imgWidth,
+      Math.min(imgHeight, pageHeight - 20)
+    );
+  }
+
+  const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  pdf.save(`CountingQuestions_${safeName}_${ts}.pdf`);
+
+  document.body.removeChild(wrapper);
+});
+
 /* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
 function getNameFromUrl(){
   const url=new URL(window.location.href);
@@ -827,6 +878,7 @@ function showStartScreen(){
   generateBtn.style.display="none";
   saveButton.style.display="none";
   pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
   studentLine.textContent="";
 
   if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
@@ -881,6 +933,7 @@ function startQuiz(skipReadName){
   generateBtn.style.display="inline-block";
   pauseButton.style.display="inline-block";
   pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
 }
 
 /* ---------------- Init ---------------- */

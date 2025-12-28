@@ -52,6 +52,7 @@
     #saveButton{background:#607d8b;}
     #pauseButton{background:#f57c00;}
     #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
     button:disabled{opacity:.55;cursor:not-allowed;}
 
     .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
@@ -90,6 +91,7 @@
     <div>
       <button id="pauseButton" style="display:none;">Pause</button>
       <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
     </div>
   </div>
 
@@ -108,6 +110,10 @@
     <button id="saveButton" style="display:none;">Save Current Result</button>
   </div>
 </div>
+
+<!-- jsPDF & html2canvas for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
@@ -209,15 +215,11 @@ function nearlyEqual(a,b,eps=1e-9){
 
 // Part 1: 7 numbers, overall average, first 4 average, last 4 average => middle number
 function genP1_MiddleOfSeven(){
-  // Choose integer-friendly values.
   const overallAvg = randInt(20, 60);
   const first4Avg  = overallAvg - randInt(2, 12);
   const last4Avg   = overallAvg + randInt(2, 12);
 
-  // Need (7*overall) = (4*first4) + (4*last4) - middle
   const middle = 4*first4Avg + 4*last4Avg - 7*overallAvg;
-
-  // Keep middle as a reasonable integer (can be negative if unlucky)
   if(middle<=0 || middle>200) return genP1_MiddleOfSeven();
 
   const lines=[
@@ -237,25 +239,6 @@ function genP1_MiddleOfSeven(){
 
 // Part 1: 5 numbers, average, first 4 average (largest to smallest), last 2 average => middle 3 average
 function genP1_MiddleThreeAverage(){
-  const avg5 = randInt(60, 140);
-  const avgFirst4 = avg5 + randInt(2, 15);
-  const avgLast2  = avg5 - randInt(2, 15);
-
-  // middle3 sum = sum5 - (largest) - (smallest)
-  // We can find largest from first4 sum - middle3 sum? Not direct.
-  // Use overlap trick:
-  // Sum first4 + Sum last2 = (n1+n2+n3+n4) + (n4+n5) = Sum5 + n4
-  // => n4 = SumFirst4 + SumLast2 - Sum5
-  const sum5 = 5*avg5;
-  const sumFirst4 = 4*avgFirst4;
-  const sumLast2 = 2*avgLast2;
-  const n4 = sumFirst4 + sumLast2 - sum5; // the 4th number in the sorted list (2nd smallest in first4? but consistent)
-  // Now middle three are n2+n3+n4 = SumFirst4 - n1, but we don't know n1.
-  // Instead, ask for the average of the middle THREE numbers n2,n3,n4 AND provide avg of first 2 numbers.
-  // To match your picture style, keep it like original: "middle 3 average".
-  // We'll generate consistent numbers by constructing actual numbers first.
-
-  // Build a sorted 5-number set with nice integers.
   const n1 = randInt(40, 90);
   const n5 = n1 + randInt(40, 120);
   const n2 = n1 + randInt(5, 25);
@@ -295,14 +278,10 @@ function genP2_OverallFromOverlappingAverages(){
   const avgLast3  = randInt(40, 110);
   const day3      = randInt(40, 130);
 
-  // Let totals: first3 total = 3*avgFirst3 = d1+d2+d3
-  // last3 total = 3*avgLast3 = d3+d4+d5
-  // total5 = (first3 + last3 - d3)
   const total5 = 3*avgFirst3 + 3*avgLast3 - day3;
   if(total5<=0 || total5%5!==0) return genP2_OverallFromOverlappingAverages();
   const overallAvg = total5/5;
 
-  // Ensure day1+day2 positive
   const first3Total = 3*avgFirst3;
   if(first3Total - day3 <= 2) return genP2_OverallFromOverlappingAverages();
 
@@ -321,18 +300,12 @@ function genP2_OverallFromOverlappingAverages(){
   };
 }
 
-// Part 2: 6 days, avg first 4, avg last 4, given day 4, find overall avg (6)
+// Part 2: 6 days, avg first 4, avg last 4, given day 3 and day 4, find overall avg
 function genP2_SixDaysOverlap(){
   const avgFirst4 = randInt(40, 120);
   const avgLast4  = randInt(40, 120);
   const day4      = randInt(30, 140);
-
-  // first4 total = d1+d2+d3+d4
-  // last4 total  = d3+d4+d5+d6
-  // overlap is days 3 and 4
-  // To keep solvable with one given day, we ask for average of all 6 given day3 too? but we only want one answer field.
-  // We'll instead ask for d3+d4 total, given day4 and day3.
-  const day3 = randInt(30, 140);
+  const day3      = randInt(30, 140);
 
   const total6 = 4*avgFirst4 + 4*avgLast4 - (day3+day4);
   if(total6<=0 || total6%6!==0) return genP2_SixDaysOverlap();
@@ -353,13 +326,8 @@ function genP2_SixDaysOverlap(){
   };
 }
 
-// Part 3: Pairwise averages of 3 people -> find each score (return all three as sum?)
-// We keep ONE numeric input, so ask for one of them OR ask for the highest score.
-// We'll ask: "What is Alex's score?" (unique).
+// Part 3: Pairwise averages of 3 people -> find Alex's score
 function genP3_ThreePeopleScores(){
-  // Let A,B,C integers.
-  // Given (A+B)/2 = ab, (A+C)/2 = ac, (B+C)/2 = bc
-  // Then A = ab + ac - bc, etc.
   const ab = randInt(60, 110);
   const ac = randInt(60, 110);
   const bc = randInt(60, 110);
@@ -387,16 +355,14 @@ function genP3_ThreePeopleScores(){
   };
 }
 
-// Part 3: 4 people, given some pair averages -> find one person's score
+// Part 3: 4 people, chain + overall average -> find B
 function genP3_FourPeopleChain(){
-  // We'll do: averages of (A,B), (B,C), (C,D), and overall average of 4.
   const A=randInt(50,120);
   const B=randInt(50,120);
   const C=randInt(50,120);
   const D=randInt(50,120);
   const avgAB=(A+B)/2, avgBC=(B+C)/2, avgCD=(C+D)/2, avgAll=(A+B+C+D)/4;
 
-  // keep integer averages
   if(!Number.isInteger(avgAB) || !Number.isInteger(avgBC) || !Number.isInteger(avgCD) || !Number.isInteger(avgAll)) return genP3_FourPeopleChain();
 
   const lines=[
@@ -440,6 +406,7 @@ const saveButton=document.getElementById("saveButton");
 
 const generateBtn=document.getElementById("generateButton");
 const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
 const timerDisplay=document.getElementById("timerDisplay");
 const studentLine=document.getElementById("studentLine");
 
@@ -811,6 +778,91 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
+/* ---- Export questions PDF: 2 questions per page, DYAA header ---- */
+exportQuestionsBtn.addEventListener("click", async () => {
+  if (!questions || questions.length === 0) {
+    alert("Please start a quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "fixed";
+  wrapper.style.left = "-9999px";
+  wrapper.style.top = "0";
+  wrapper.style.width = "800px";
+  wrapper.style.background = "#ffffff";
+  document.body.appendChild(wrapper);
+
+  let groupDiv = null;
+
+  questions.forEach((q, idx) => {
+    if (idx % 2 === 0) {
+      groupDiv = document.createElement("div");
+      groupDiv.style.padding = "20px";
+      groupDiv.style.marginBottom = "20px";
+      groupDiv.style.boxSizing = "border-box";
+
+      const header = document.createElement("div");
+      header.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+            <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;line-height:1.1;">
+            <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+            <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+          </div>
+        </div>
+        <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+      `;
+      groupDiv.appendChild(header);
+      wrapper.appendChild(groupDiv);
+    }
+
+    const qDiv = document.createElement("div");
+    qDiv.style.marginBottom = "18px";
+    qDiv.innerHTML = `
+      <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx + 1}</div>
+      <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+        <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+      </div>
+    `;
+    groupDiv.appendChild(qDiv);
+  });
+
+  const groups = Array.from(wrapper.children);
+
+  for (let i = 0; i < groups.length; i++) {
+    const canvas = await html2canvas(groups[i], { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL("image/png");
+    const imgWidth = pageWidth - 20;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const x = 10;
+    const y = 10;
+
+    if (i > 0) pdf.addPage();
+    pdf.addImage(
+      imgData,
+      "PNG",
+      x,
+      y,
+      imgWidth,
+      Math.min(imgHeight, pageHeight - 20)
+    );
+  }
+
+  const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  pdf.save(`AverageQuestions_${safeName}_${ts}.pdf`);
+
+  document.body.removeChild(wrapper);
+});
+
 /* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
 function getNameFromUrl(){
   const url=new URL(window.location.href);
@@ -823,6 +875,7 @@ function showStartScreen(){
   generateBtn.style.display="none";
   saveButton.style.display="none";
   pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
   studentLine.textContent="";
 
   if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
@@ -877,6 +930,7 @@ function startQuiz(skipReadName){
   generateBtn.style.display="inline-block";
   pauseButton.style.display="inline-block";
   pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
 }
 
 /* ---------------- Init ---------------- */

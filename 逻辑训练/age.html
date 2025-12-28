@@ -53,6 +53,7 @@
     #saveButton{background:#607d8b;}
     #pauseButton{background:#f57c00;}
     #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
     button:disabled{opacity:.55;cursor:not-allowed;}
 
     .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
@@ -91,6 +92,7 @@
     <div>
       <button id="pauseButton" style="display:none;">Pause</button>
       <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
     </div>
   </div>
 
@@ -109,6 +111,10 @@
     <button id="saveButton" style="display:none;">Save Current Result</button>
   </div>
 </div>
+
+<!-- Export-to-PDF libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
@@ -206,17 +212,11 @@ function isCorrectInt(userInt, correctInt){
 }
 
 /* ---------------- Question Generators (ALL answers are logical INTEGERS) ---------------- */
-
-/* Easy 1:
-   Child is c. In x years, Mom will be k times Child.
-   Choose c,k,x => compute mom = k(c+x)-x so x is integer and realistic.
-   Ask x (years later).
-*/
 function genEasy_MomMultipleFuture_AskYears(){
   const c = randInt(8, 15);
   const k = randInt(2, 4);
   const x = randInt(1, 20);
-  const mom = k*(c + x) - x; // ensures condition holds
+  const mom = k*(c + x) - x;
   if(mom < 24 || mom > 60) return genEasy_MomMultipleFuture_AskYears();
 
   const lines=[
@@ -227,16 +227,10 @@ function genEasy_MomMultipleFuture_AskYears(){
   return {
     img: makeSvgQuestionImage(lines),
     value: x,
-    hint: "Hint: Ages increase by the same number of years. Compare the ages in the future: (mother then) and (child then). Think: what number of years makes the ratio true?"
+    hint: "Hint: Ages increase by the same number of years. Compare the ages in the future: (mother then) and (child then)."
   };
 }
 
-/* Easy 2:
-   Aunt is k times child NOW. After t years, aunt will be r times child.
-   Choose child age c so integer: (k*c + t) = r*(c + t) => (k-r)c = (r-1)t
-   We choose k>r.
-   Ask child's current age.
-*/
 function genEasy_AuntMultipleNowFuture_AskChild(){
   const k = randInt(3, 6);
   const r = randInt(2, k-1);
@@ -247,7 +241,6 @@ function genEasy_AuntMultipleNowFuture_AskChild(){
   if(num % den !== 0) return genEasy_AuntMultipleNowFuture_AskChild();
   const c = num / den;
 
-  // keep child realistic, and aunt age reasonable
   const aunt = k * c;
   if(c < 4 || c > 16) return genEasy_AuntMultipleNowFuture_AskChild();
   if(aunt < 18 || aunt > 70) return genEasy_AuntMultipleNowFuture_AskChild();
@@ -261,14 +254,10 @@ function genEasy_AuntMultipleNowFuture_AskChild(){
   return {
     img: makeSvgQuestionImage(lines),
     value: c,
-    hint: "Hint: The age difference between the aunt and Ava stays the same. Think about the situation now and after the same number of years, then compare the two multiples."
+    hint: "Hint: The age difference stays the same. Compare the two situations (now and after the same number of years)."
   };
 }
 
-/* Medium 1:
-   Two sisters sum S. (Extra sentence about 5 years ago difference) -> still same difference.
-   Ask older sister's current age.
-*/
 function genMedium_SistersSumDiff_AskOlder(){
   const diff = randInt(2, 10);
   let older = randInt(12, 22);
@@ -285,14 +274,10 @@ function genMedium_SistersSumDiff_AskOlder(){
   return {
     img: makeSvgQuestionImage(lines),
     value: older,
-    hint: "Hint: The age difference between two people never changes. Use (sum) and (difference) to split into two ages."
+    hint: "Hint: The age difference never changes. Use total and difference to split into two ages."
   };
 }
 
-/* Medium 2:
-   t years ago sum was S. Now father is k times son's age. Ask son's current age.
-   Choose son's age s, then compute S = (s-t) + (k*s - t) = (k+1)s - 2t.
-*/
 function genMedium_FatherSonPastSumNowMultiple_AskSon(){
   const k = randInt(2, 4);
   const t = randInt(2, 6);
@@ -312,14 +297,10 @@ function genMedium_FatherSonPastSumNowMultiple_AskSon(){
   return {
     img: makeSvgQuestionImage(lines),
     value: s,
-    hint: "Hint: Start from 'this year' ages. Then go back the same number of years for both people and match the given total."
+    hint: "Hint: Write the ages this year first. Then subtract the same number of years from both to match the past total."
   };
 }
 
-/* Hard 1:
-   Child is c. After t years, father will be r times child's age. Ask father's current age.
-   Choose c,r,t then father now = r(c+t) - t (always integer).
-*/
 function genHard_FatherFutureMultiple_AskFather(){
   const c = randInt(6, 16);
   const r = randInt(2, 5);
@@ -335,16 +316,10 @@ function genHard_FatherFutureMultiple_AskFather(){
   return {
     img: makeSvgQuestionImage(lines),
     value: father,
-    hint: "Hint: Move to the future first: add the same number of years to both ages. If you can find the father's future age, subtract the same years to get the current age."
+    hint: "Hint: Find the father's age in the future, then subtract the same number of years to get the current age."
   };
 }
 
-/* Hard 2:
-   Two people: older is d years older than younger.
-   In t years, older will be r times younger.
-   Ask younger's current age.
-   Choose younger y, r, t then d=(r-1)(y+t). Keep d <= 15 for siblings/cousins.
-*/
 function genHard_SiblingsFutureRatio_AskYounger(){
   const r = randInt(2, 4);
   const t = randInt(2, 8);
@@ -363,7 +338,7 @@ function genHard_SiblingsFutureRatio_AskYounger(){
   return {
     img: makeSvgQuestionImage(lines),
     value: y,
-    hint: "Hint: Jump to the future first. In the future, the older age is a multiple of the younger age. The difference stays the same, so compare the future multiple with the fixed difference."
+    hint: "Hint: Jump to the future first. Use the multiple relationship, and remember the age difference stays the same."
   };
 }
 
@@ -392,6 +367,7 @@ const saveButton=document.getElementById("saveButton");
 
 const generateBtn=document.getElementById("generateButton");
 const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
 const timerDisplay=document.getElementById("timerDisplay");
 const studentLine=document.getElementById("studentLine");
 
@@ -427,7 +403,6 @@ function generateQuiz(){
   questions=[];
   quizSubmitted=false;
 
-  // Build exactly 6 questions: Easy(2), Medium(2), Hard(2)
   const built = [
     genEasy_MomMultipleFuture_AskYears(),
     genEasy_AuntMultipleNowFuture_AskChild(),
@@ -444,7 +419,7 @@ function generateQuiz(){
       partIndex,
       indexInPart,
       img: built[i].img,
-      value: built[i].value,     // ✅ always integer
+      value: built[i].value,
       hint: built[i].hint,
       userValue:"",
       isCorrect:false
@@ -765,6 +740,88 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
+/* ---------------- Export Questions PDF (same as before) ---------------- */
+exportQuestionsBtn.addEventListener("click", async () => {
+  if (!questions || questions.length === 0) {
+    alert("Please start a quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  // offscreen render container
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "fixed";
+  wrapper.style.left = "-9999px";
+  wrapper.style.top = "0";
+  wrapper.style.width = "800px";
+  wrapper.style.background = "#ffffff";
+  document.body.appendChild(wrapper);
+
+  try {
+    let groupDiv = null;
+
+    // 2 questions per page
+    questions.forEach((q, idx) => {
+      if (idx % 2 === 0) {
+        groupDiv = document.createElement("div");
+        groupDiv.style.padding = "20px";
+        groupDiv.style.marginBottom = "20px";
+        groupDiv.style.boxSizing = "border-box";
+
+        // DYAA header on each PDF page
+        const header = document.createElement("div");
+        header.innerHTML = `
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+              <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;line-height:1.1;">
+              <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+              <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+            </div>
+          </div>
+          <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+        `;
+        groupDiv.appendChild(header);
+        wrapper.appendChild(groupDiv);
+      }
+
+      const qDiv = document.createElement("div");
+      qDiv.style.marginBottom = "18px";
+      qDiv.innerHTML = `
+        <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx + 1}</div>
+        <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+          <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+        </div>
+      `;
+      groupDiv.appendChild(qDiv);
+    });
+
+    const groups = Array.from(wrapper.children);
+
+    for (let i = 0; i < groups.length; i++) {
+      const canvas = await html2canvas(groups[i], { scale: 2, useCORS: true });
+      const imgData = canvas.toDataURL("image/png");
+
+      const imgWidth = pageWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      if (i > 0) pdf.addPage();
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, Math.min(imgHeight, pageHeight - 20));
+    }
+
+    const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_") || "Student";
+    const ts = formatDateForFilename(new Date());
+    pdf.save(`AgeProblems_Questions_${safeName}_${ts}.pdf`);
+  } finally {
+    document.body.removeChild(wrapper);
+  }
+});
+
 /* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
 function getNameFromUrl(){
   const url=new URL(window.location.href);
@@ -777,6 +834,7 @@ function showStartScreen(){
   generateBtn.style.display="none";
   saveButton.style.display="none";
   pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
   studentLine.textContent="";
 
   if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
@@ -831,6 +889,7 @@ function startQuiz(skipReadName){
   generateBtn.style.display="inline-block";
   pauseButton.style.display="inline-block";
   pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
 }
 
 /* ---------------- Init ---------------- */

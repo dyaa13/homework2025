@@ -44,8 +44,24 @@
     .hint-btn{background:#ff9800;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:0.95em;}
     .hint-btn:disabled{opacity:.55;cursor:not-allowed;}
     .hint{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;}
-    .hint-diagram-wrap{margin-top:10px;border:1px solid #ffe0b2;background:#ffffff;border-radius:10px;padding:10px;}
-    .hint-diagram-wrap img{width:100%;height:auto;display:block;border-radius:8px;}
+
+    .hint-diagram-wrap{
+      margin-top:10px;
+      border:1px solid #ffe0b2;
+      background:#ffffff;
+      border-radius:10px;
+      padding:10px;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+    .hint-diagram-wrap img{
+      display:block;
+      height:auto;
+      border-radius:8px;
+      width:auto;
+      max-width:none;
+      min-width:920px;
+    }
 
     .button-container{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;}
     button{padding:10px 18px;border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:1em;}
@@ -56,6 +72,7 @@
     #saveButton{background:#607d8b;}
     #pauseButton{background:#f57c00;}
     #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
     button:disabled{opacity:.55;cursor:not-allowed;}
 
     .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
@@ -72,6 +89,7 @@
       .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
       .thumb{width:120px;max-width:120px;}
       .answer-box{width:100%;}
+      .hint-diagram-wrap img{min-width:860px;}
     }
   </style>
 </head>
@@ -95,6 +113,7 @@
     <div>
       <button id="pauseButton" style="display:none;">Pause</button>
       <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
     </div>
   </div>
 
@@ -113,6 +132,10 @@
     <button id="saveButton" style="display:none;">Save Current Result</button>
   </div>
 </div>
+
+<!-- ✅ Export-to-PDF libs (same as your other page) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
@@ -189,7 +212,7 @@ function makeSvgTextCard(lines, titleText=SVG_TITLE){
   const wrapped=wrapLines(lines, 58);
   const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
 
-  const nonce = Math.random().toString(36).slice(2); // helps cache-busting
+  const nonce = Math.random().toString(36).slice(2);
 
   const textSpans=wrapped.map((t,i)=>{
     const y=firstLineY + i*lineH;
@@ -227,28 +250,27 @@ function makeSvgTextCard(lines, titleText=SVG_TITLE){
   return "data:image/svg+xml;charset=utf-8," + encoded;
 }
 
-/* ---------------- SVG: HINT DIAGRAM (ONLY inside Hint box) ----------------
-   Simple insertion-method bar:
-   - Passing a point: distance = Train length
-   - Passing a bridge/tunnel: distance = Train length + Bridge length
-*/
+/* ---------------- SVG: HINT DIAGRAM (ONLY inside Hint box) ---------------- */
 function hintDiagramSvg(cfg){
-  const W=980, H=320;
+  const W=980, H=380;
   const nonce = Math.random().toString(36).slice(2);
 
   const top = cfg.topLabel || "Passing a pole (a single point)";
-  const bottom = cfg.bottomLabel || "Passing a bridge/tunnel (from front enters to back leaves)";
+  const bottom = cfg.bottomLabel || "Passing a bridge/tunnel (front in to back out)";
   const a = cfg.aLabel || "Train length";
   const b = cfg.bLabel || "Bridge length";
-  const sum = cfg.sumLabel || "Train + Bridge";
+  const sum = cfg.sumLabel || "Distance = speed × time";
 
-  // geometry
   const x0=110, totalW=760, barH=34;
   const y1=120, y2=220;
 
-  // visual ratio (not to scale, just clear)
   const aW=Math.floor(totalW*0.38);
   const bW=totalW-aW;
+
+  const sumLines = wrapLines([sum], 46);
+  const sumTspans = sumLines.map((t,i)=>
+    `<tspan x="${x0}" dy="${i===0?0:22}">${escapeXml(t)}</tspan>`
+  ).join("");
 
   const svg=`
   <svg xmlns="http://www.w3.org/2000/svg" data-nonce="${nonce}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
@@ -275,8 +297,8 @@ function hintDiagramSvg(cfg){
     <text x="${x0 + aW/2}" y="${y2+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(a)}</text>
     <text x="${x0 + aW + bW/2}" y="${y2+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(b)}</text>
 
-    <text x="${x0 + totalW}" y="${y2+24}" text-anchor="end" font-size="18" fill="#455a64" font-family="Segoe UI, Arial" font-weight="700">
-      ${escapeXml(sum)}
+    <text x="${x0}" y="${y2 + barH + 48}" font-size="18" fill="#455a64" font-family="Segoe UI, Arial" font-weight="700">
+      ${sumTspans}
     </text>
   </svg>`.trim();
 
@@ -289,19 +311,14 @@ function hintDiagramSvg(cfg){
 }
 
 /* ---------------- Question Generators (ALL answers are INTEGERS) ---------------- */
-
-/* Easy 1: Train length L passes a pole in tPole seconds. Same speed passes a tunnel of length B. Find time. */
 function genEasy_TimeThroughTunnel(){
-  const name = pickName();
+  const L = pick([180,200,240,270,300,360,400,450,500,600,720,900]);
+  const tPole = pick([6,8,9,10,12,15]);
 
-  const L = pick([180,200,240,270,300,360,400,450,500,600,720,900]); // meters
-  const tPole = pick([6,8,9,10,12,15]); // seconds
-
-  // Choose tunnel length B so tTunnel = tPole*(L+B)/L is integer.
   const g = gcd(L, tPole);
-  const step = L / g;         // B must be multiple of step
-  const k = pick([6,8,10,12,14,16,18,20,24,28,30]); // scale
-  const B = step * k * 10;    // make it look like a "real" tunnel length
+  const step = L / g;
+  const k = pick([6,8,10,12,14,16,18,20,24,28,30]);
+  const B = step * k * 10;
   const tTunnel = (tPole * (L + B)) / L;
 
   const lines = [
@@ -325,14 +342,11 @@ function genEasy_TimeThroughTunnel(){
   };
 }
 
-/* Easy 2: Train length L. Passing a tree takes tTree seconds. Passing a bridge takes T seconds. Find bridge length. */
 function genEasy_FindBridgeLength(){
-  const name = pickName();
-
-  const v = pick([12,15,18,20,24,25,30,36]); // m/s
-  const tTree = pick([30,40,45,50,60,75]);   // seconds
-  const L = v * tTree;                        // ensures integer speed
-  const T = tTree + pick([60,90,120,150,180,240,300]); // seconds, longer than tTree
+  const v = pick([12,15,18,20,24,25,30,36]);
+  const tTree = pick([30,40,45,50,60,75]);
+  const L = v * tTree;
+  const T = tTree + pick([60,90,120,150,180,240,300]);
   const bridge = v * T - L;
 
   const lines = [
@@ -356,13 +370,11 @@ function genEasy_FindBridgeLength(){
   };
 }
 
-/* Medium 1: Given speed v (m/s), bridge length B, time T to fully pass. Find train length. */
 function genMedium_FindTrainLength_Ms(){
-  const v = pick([12,15,18,20,24,25,30,36,40]); // m/s
-  const T = pick([80,90,100,120,140,150,160,180,200]); // seconds
+  const v = pick([12,15,18,20,24,25,30,36,40]);
+  const T = pick([80,90,100,120,140,150,160,180,200]);
   const totalDist = v * T;
 
-  // Choose train length L so that bridge B is positive and reasonable
   const L = pick([300,360,400,450,500,600,720,800,900,1000,1200]);
   const B = totalDist - L;
   if(B <= 150 || B > 9000) return genMedium_FindTrainLength_Ms();
@@ -381,17 +393,16 @@ function genMedium_FindTrainLength_Ms(){
       bottomLabel: "Passing a bridge: distance = train length + bridge length",
       aLabel: `Train: ? m`,
       bLabel: `Bridge: ${B} m`,
-      sumLabel: `Total = ${totalDist} m`
+      sumLabel: `Total distance = ${totalDist} m`
     }),
     value: L,
     hint: "Hint: Total distance while passing the bridge = speed × time = train length + bridge length."
   };
 }
 
-/* Medium 2: Given speed (m/min), time (min), bridge length -> find train length */
 function genMedium_FindTrainLength_Mmin(){
-  const v = pick([1800,2000,2100,2400,2700,3000]); // m/min
-  const T = pick([2,3,4,5]); // minutes
+  const v = pick([1800,2000,2100,2400,2700,3000]);
+  const T = pick([2,3,4,5]);
   const totalDist = v * T;
 
   const L = pick([600,700,800,900,1000,1100,1200,1300,1400,1500]);
@@ -412,22 +423,20 @@ function genMedium_FindTrainLength_Mmin(){
       bottomLabel: "Passing a bridge: distance = train length + bridge length",
       aLabel: `Train: ? m`,
       bLabel: `Bridge: ${B} m`,
-      sumLabel: `Total = ${totalDist} m`
+      sumLabel: `Total distance = ${totalDist} m`
     }),
     value: L,
     hint: "Hint: Use (speed × time) = train length + bridge length. Keep units consistent."
   };
 }
 
-/* Hard 1: Two bridges, same train speed. Given B1,t1 and B2,t2 -> find train length. */
 function genHard_TwoBridgesFindTrain(){
-  const v = pick([24,30,36,40,45,48]); // m/s
-  const L = pick([120,150,180,200,240,300,360,400,450]); // m
+  const v = pick([24,30,36,40,45,48]);
+  const L = pick([120,150,180,200,240,300,360,400,450]);
 
-  // Choose bridge lengths so (L+B) divisible by v -> integer seconds
   const base = v;
   const k1 = pick([6,7,8,9,10,11,12,14,15,16]);
-  const k2 = k1 + pick([2,3,4,5,6]); // different
+  const k2 = k1 + pick([2,3,4,5,6]);
   const total1 = base * k1;
   const total2 = base * k2;
   const B1 = total1 - L;
@@ -447,35 +456,30 @@ function genHard_TwoBridgesFindTrain(){
   return {
     img: makeSvgTextCard(lines, SVG_TITLE),
     diagram: hintDiagramSvg({
-      topLabel: "Each bridge pass uses distance = train + bridge",
-      bottomLabel: "Set up: (train + bridge) ÷ time is the same speed",
+      topLabel: "Each bridge pass uses: distance = train + bridge",
+      bottomLabel: "Same speed in both cases",
       aLabel: "Train: ? m",
       bLabel: "Bridge: given",
-      sumLabel: "Same speed in both cases"
+      sumLabel: "Set up: (L + B1) ÷ t1 = (L + B2) ÷ t2"
     }),
     value: L,
     hint: "Hint: Let train length be L. Then (L + B1)/t1 = (L + B2)/t2. Solve for L."
   };
 }
 
-/* Hard 2: Given pole time, tunnel length, tunnel time -> find train length. */
 function genHard_FindTrainFromTwoTimes(){
-  const tPole = pick([6,8,9,10,12,15]); // seconds
+  const tPole = pick([6,8,9,10,12,15]);
   const multiplierNum = pick([11,12,13,14,15,16,17,18,19,20,22,24,25]);
-  const multiplierDen = pick([2,3,4,5]); // create tTunnel not necessarily multiple of tPole
+  const multiplierDen = pick([2,3,4,5]);
   const ratioG = gcd(multiplierNum, multiplierDen);
   const mN = multiplierNum / ratioG;
   const mD = multiplierDen / ratioG;
 
-  // Make tTunnel integer: tPole * mN / mD must be integer
-  // So choose tPole multiple of mD
-  const tPole2 = tPole * mD; // still reasonable
+  const tPole2 = tPole * mD;
   const tTunnel = tPole2 * mN;
 
-  // Construct tunnel length B so train length L is integer:
-  // L = B * tPole2 / (tTunnel - tPole2) => choose L first, compute B
   const L = pick([180,200,240,270,300,360,400,450,500,600,720,900]);
-  const B = (L * (tTunnel - tPole2)) / tPole2; // integer because tTunnel/tPole2 is integer mN
+  const B = (L * (tTunnel - tPole2)) / tPole2;
   if(!Number.isInteger(B) || B <= 200) return genHard_FindTrainFromTwoTimes();
 
   const lines = [
@@ -491,7 +495,7 @@ function genHard_FindTrainFromTwoTimes(){
       bottomLabel: `Tunnel time = ${tTunnel} s (distance = train + tunnel)`,
       aLabel: "Train: ? m",
       bLabel: `Tunnel: ${B} m`,
-      sumLabel: "Use equal speed"
+      sumLabel: "Use equal speed: L/tPole = (L + tunnel)/tTunnel"
     }),
     value: L,
     hint: "Hint: Speed is the same. Use L/tPole = (L + tunnel)/tTunnel and solve for L."
@@ -527,6 +531,8 @@ const saveButton=document.getElementById("saveButton");
 
 const generateBtn=document.getElementById("generateButton");
 const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
+
 const timerDisplay=document.getElementById("timerDisplay");
 const studentLine=document.getElementById("studentLine");
 const setLine=document.getElementById("setLine");
@@ -673,7 +679,6 @@ function renderQuestion(){
   const fullLabel=`${levelLabel} — Question ${q.indexInPart+1}`;
   const hasHint=(q.hint||"").trim()!=="";
 
-  // ✅ diagram appears ONLY inside Hint box (not shown before clicking Hint)
   const hintDiagramHtml = (hasHint && q.diagram)
     ? `<div class="hint-diagram-wrap"><img src="${q.diagram}" alt="Hint diagram"></div>`
     : "";
@@ -799,7 +804,6 @@ function calculateAndShowResults(){
   checkButton.style.display="none";
   saveButton.style.display="inline-block";
 
-  // reset timer for next attempt
   elapsedMs=0; isPaused=false; quizStartTime=new Date();
   pauseButton.textContent="Pause";
   startTimerInterval();
@@ -929,6 +933,105 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
+/* ---------------- Export Questions PDF (same behavior as your other quiz) ---------------- */
+function waitForImages(container){
+  const imgs = Array.from(container.querySelectorAll("img"));
+  return Promise.all(imgs.map(img => {
+    if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve => {
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+    });
+  }));
+}
+exportQuestionsBtn.addEventListener("click", async ()=>{
+  if(!questions || questions.length===0){
+    alert("Please start a quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p","mm","a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const wrapper=document.createElement("div");
+  wrapper.style.position="fixed";
+  wrapper.style.left="-9999px";
+  wrapper.style.top="0";
+  wrapper.style.width="800px";
+  wrapper.style.background="#ffffff";
+  document.body.appendChild(wrapper);
+
+  try{
+    let groupDiv=null;
+
+    // 2 questions per PDF page
+    questions.forEach((q, idx)=>{
+      if(idx%2===0){
+        groupDiv=document.createElement("div");
+        groupDiv.style.padding="20px";
+        groupDiv.style.marginBottom="20px";
+        groupDiv.style.boxSizing="border-box";
+
+        // DYAA header
+        const header=document.createElement("div");
+        header.innerHTML=`
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+              <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;line-height:1.1;">
+              <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+              <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+            </div>
+          </div>
+          <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Train & Bridge Problems</div>
+          <div style="color:#546e7a;font-weight:800;margin:0 0 10px 0;">Questions (Set ${setCounter})</div>
+        `;
+        groupDiv.appendChild(header);
+        wrapper.appendChild(groupDiv);
+      }
+
+      const qDiv=document.createElement("div");
+      qDiv.style.marginBottom="18px";
+      qDiv.innerHTML=`
+        <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx+1}</div>
+        <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+          <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+        </div>
+      `;
+      groupDiv.appendChild(qDiv);
+    });
+
+    const groups=Array.from(wrapper.children);
+
+    for(let i=0;i<groups.length;i++){
+      await waitForImages(groups[i]);
+
+      const canvas = await html2canvas(groups[i], {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff"
+      });
+      const imgData = canvas.toDataURL("image/png");
+
+      const imgWidth = pageWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      if(i>0) pdf.addPage();
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, Math.min(imgHeight, pageHeight - 20));
+    }
+
+    const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+    const ts=formatDateForFilename(new Date());
+    pdf.save(`TrainBridge_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
+  } finally {
+    document.body.removeChild(wrapper);
+  }
+});
+
 /* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
 function getNameFromUrl(){
   const url=new URL(window.location.href);
@@ -941,6 +1044,8 @@ function showStartScreen(){
   generateBtn.style.display="none";
   saveButton.style.display="none";
   pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
+
   studentLine.textContent="";
   setLine.textContent="";
 
@@ -996,6 +1101,7 @@ function startQuiz(skipReadName){
   generateBtn.style.display="inline-block";
   pauseButton.style.display="inline-block";
   pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
 }
 
 /* ---------------- Init ---------------- */

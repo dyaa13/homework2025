@@ -52,6 +52,7 @@
     #saveButton{background:#607d8b;}
     #pauseButton{background:#f57c00;}
     #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
     button:disabled{opacity:.55;cursor:not-allowed;}
 
     .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
@@ -90,6 +91,7 @@
     <div>
       <button id="pauseButton" style="display:none;">Pause</button>
       <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
     </div>
   </div>
 
@@ -108,6 +110,10 @@
     <button id="saveButton" style="display:none;">Save Current Result</button>
   </div>
 </div>
+
+<!-- PDF Export dependencies -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
@@ -206,33 +212,21 @@ function nearlyEqual(a,b,eps=1e-9){
 }
 
 /* ---------------- Problem Generators ---------------- */
-/*
-  Theme: "someone read/wrote something wrong, got wrong result; find correct result"
-  Hints must be words, not equations.
-*/
-
 /* Part 1 (Easy) - subtraction with swapped digits */
 function genEasySubWrongDigit(){
-  // True: A - B = trueAns
-  // Mistake: in A tens digit x was read as y; in B ones digit u read as v
   const tensFrom=randInt(2,9), tensTo=randInt(0,9);
   if(tensTo===tensFrom) return genEasySubWrongDigit();
   const onesFrom=randInt(0,9), onesTo=randInt(0,9);
   if(onesTo===onesFrom) return genEasySubWrongDigit();
 
-  // Build A and B as 3-digit numbers to match style
   const A = randInt(200, 899);
   const B = randInt(100, 499);
-  // enforce A > B + 50
   if(A<=B+50) return genEasySubWrongDigit();
 
-  // change tens digit of A
-  const A_wrong = A - Math.floor((A%100)/10)*10 + tensTo*10; // replace tens
+  const A_wrong = A - Math.floor((A%100)/10)*10 + tensTo*10;
   const B_wrong = B - (B%10) + onesTo;
 
   const wrongResult = A_wrong - B_wrong;
-
-  // ensure wrongResult is positive and not too huge
   if(wrongResult<=0 || wrongResult>999) return genEasySubWrongDigit();
 
   const correctResult = A - B;
@@ -254,12 +248,10 @@ function genEasySubWrongDigit(){
 
 /* Part 1 (Easy) - addition with two digit misreads */
 function genEasyAddWrongDigit(){
-  // Choose two 3-digit numbers X, Y; wrong digits cause wrong sum given; ask correct sum.
   const X = randInt(120, 899);
   const Y = randInt(120, 899);
 
-  // pick a digit position to change in X and Y
-  const posX = [1,10,100][randInt(0,2)]; // ones/tens/hundreds
+  const posX = [1,10,100][randInt(0,2)];
   const posY = [1,10,100][randInt(0,2)];
 
   const digitX = Math.floor((X/posX)%10);
@@ -275,7 +267,6 @@ function genEasyAddWrongDigit(){
   const wrongSum = X_wrong + Y_wrong;
   const correctSum = X + Y;
 
-  // keep sums in reasonable range
   if(wrongSum<200 || wrongSum>1999) return genEasyAddWrongDigit();
 
   const posName = p => p===1?"ones":(p===10?"tens":"hundreds");
@@ -297,8 +288,6 @@ function genEasyAddWrongDigit(){
 
 /* Part 2 (Medium) - wrong bracket / order */
 function genMediumWrongBracket(){
-  // Correct: a*(b - c)
-  // Wrong: a*b - c  OR a*(b) - c
   const a=randInt(3,9);
   const b=randInt(12,30);
   const c=randInt(2,11);
@@ -329,12 +318,9 @@ function genMediumWrongOperation(){
   const b=randInt(2,9);
   const c=randInt(2,9);
 
-  // intended: (a ÷ b) × c  (make divisible)
   if(a % b !== 0) return genMediumWrongOperation();
 
   const correct = (a/b)*c;
-  const wrong = (a*b)*c; // used multiply instead of divide
-  const diff = Math.abs(correct - wrong);
 
   const lines=[
     `A student should calculate: (${a} ÷ ${b}) × ${c}.`,
@@ -349,7 +335,7 @@ function genMediumWrongOperation(){
   };
 }
 
-/* Part 3 (Hard) - division with remainder: wrong dividend read, quotient changes by +k, remainder same */
+/* Part 3 (Hard) - division with remainder */
 function genHardDivisionRemainder(){
   const divisor = randInt(7, 19);
   const quotient = randInt(10, 40);
@@ -357,10 +343,8 @@ function genHardDivisionRemainder(){
 
   const trueDividend = divisor*quotient + remainder;
 
-  // student read dividend wrong by adding delta = k*divisor (keeps remainder same)
   const k = randInt(2, 9);
   const wrongDividend = trueDividend + k*divisor;
-  const wrongQuotient = quotient + k;
 
   const lines=[
     `In a division with remainder, the correct divisor is ${divisor}.`,
@@ -377,13 +361,12 @@ function genHardDivisionRemainder(){
   };
 }
 
-/* Part 3 (Hard) - subtraction: reversed thinking with two misreads, find correct result */
+/* Part 3 (Hard) - subtraction: two tens misreads */
 function genHardTwoMisreadsSub(){
   const A = randInt(300, 999);
   const B = randInt(120, 699);
   if(A<=B+30) return genHardTwoMisreadsSub();
 
-  // choose two digits to swap in A (tens) and B (tens), create wrong result
   const aT=Math.floor((A%100)/10);
   const bT=Math.floor((B%100)/10);
   let aTwrong=randInt(0,9), bTwrong=randInt(0,9);
@@ -437,6 +420,7 @@ const saveButton=document.getElementById("saveButton");
 
 const generateBtn=document.getElementById("generateButton");
 const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
 const timerDisplay=document.getElementById("timerDisplay");
 const studentLine=document.getElementById("studentLine");
 
@@ -808,6 +792,95 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
+/* ---- Export Questions PDF (2 questions per page) ---- */
+exportQuestionsBtn.addEventListener("click", async () => {
+  if (!questions || questions.length === 0) {
+    alert("Please start a quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "fixed";
+  wrapper.style.left = "-9999px";
+  wrapper.style.top = "0";
+  wrapper.style.width = "800px";
+  wrapper.style.background = "#ffffff";
+  document.body.appendChild(wrapper);
+
+  let groupDiv = null;
+
+  questions.forEach((q, idx) => {
+    if (idx % 2 === 0) {
+      groupDiv = document.createElement("div");
+      groupDiv.style.padding = "20px";
+      groupDiv.style.marginBottom = "20px";
+      groupDiv.style.boxSizing = "border-box";
+
+      const header = document.createElement("div");
+      header.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+            <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;line-height:1.1;">
+            <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+            <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+          </div>
+          <div style="margin-left:auto;font-size:11px;color:#333;text-align:right;line-height:1.3;">
+            <div><strong>Error Correction Problems</strong></div>
+            <div>Student: ${String(studentName||"Student")}</div>
+          </div>
+        </div>
+        <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+      `;
+      groupDiv.appendChild(header);
+      wrapper.appendChild(groupDiv);
+    }
+
+    const qDiv = document.createElement("div");
+    qDiv.style.marginBottom = "18px";
+    qDiv.innerHTML = `
+      <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx + 1}</div>
+      <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+        <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+      </div>
+    `;
+    groupDiv.appendChild(qDiv);
+  });
+
+  const groups = Array.from(wrapper.children);
+
+  for (let i = 0; i < groups.length; i++) {
+    const canvas = await html2canvas(groups[i], { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL("image/png");
+    const imgWidth = pageWidth - 20;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const x = 10;
+    const y = 10;
+
+    if (i > 0) pdf.addPage();
+    pdf.addImage(
+      imgData,
+      "PNG",
+      x,
+      y,
+      imgWidth,
+      Math.min(imgHeight, pageHeight - 20)
+    );
+  }
+
+  const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  pdf.save(`ErrorCorrectionQuestions_${safeName}_${ts}.pdf`);
+
+  document.body.removeChild(wrapper);
+});
+
 /* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
 function getNameFromUrl(){
   const url=new URL(window.location.href);
@@ -820,6 +893,7 @@ function showStartScreen(){
   generateBtn.style.display="none";
   saveButton.style.display="none";
   pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
   studentLine.textContent="";
 
   if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
@@ -874,6 +948,7 @@ function startQuiz(skipReadName){
   generateBtn.style.display="inline-block";
   pauseButton.style.display="inline-block";
   pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
 }
 
 /* ---------------- Init ---------------- */

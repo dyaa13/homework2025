@@ -52,6 +52,7 @@
     #saveButton{background:#607d8b;}
     #pauseButton{background:#f57c00;}
     #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
     button:disabled{opacity:.55;cursor:not-allowed;}
 
     .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
@@ -90,6 +91,7 @@
     <div>
       <button id="pauseButton" style="display:none;">Pause</button>
       <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
     </div>
   </div>
 
@@ -108,6 +110,10 @@
     <button id="saveButton" style="display:none;">Save Current Result</button>
   </div>
 </div>
+
+<!-- jsPDF & html2canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
@@ -206,16 +212,12 @@ function nearlyEqual(a,b,eps=1e-9){
   return Math.abs(a-b)<eps;
 }
 
-/* ---------------- Generators (Theme like picture: climb well / fill tank / steps) ---------------- */
+/* ---------------- Generators ---------------- */
 function genEasyMonkeyBamboo(){
-  // ensure solvable with classic "last day no slide" logic
   const up = randInt(3,6);
   const down = randInt(1, up-1);
   const height = randInt(12, 22);
 
-  // compute minimal days:
-  // after each full day (up then down), net = up-down
-  // on last day, climb up and reach or exceed height (no slide needed)
   let days=1;
   let pos=0;
   while(true){
@@ -241,14 +243,8 @@ function genEasyMonkeyBamboo(){
 function genEasySnailWellDays(){
   const up = randInt(2,4);
   const down = randInt(1, up-1);
-  const depth = randInt(8, 18);
-
-  // choose a day count first so it's clean
   const days = randInt(5,10);
-  // depth that makes it escape on day 'days'
-  // Before last day: (days-1)*(up-down) is the morning position on day 'days'
-  // It escapes if +up >= depth, but before that it didn't.
-  // pick depth in ( (days-1)*(up-down) + 1 .. (days-1)*(up-down) + up )
+
   const base = (days-1)*(up-down);
   const depthPick = randInt(base+1, base+up);
 
@@ -267,21 +263,12 @@ function genEasySnailWellDays(){
 }
 
 function genMediumTankFill(){
-  // Similar to picture: total buckets needed, daily add, nightly use, last day pours all and exactly full.
   const total = randInt(16, 26);
   const daily = randInt(3, 6);
   const days = randInt(6, 10);
 
-  // Let x be nightly used each night for days-1 nights.
-  // Total after day k (before using) for k<days: k*daily - (k-1)*x
-  // After day (days-1) night: (days-1)*daily - (days-1)*x
-  // On day days: add daily then exactly full:
-  // (days-1)*daily - (days-1)*x + daily = total
-  // => days*daily - (days-1)*x = total
-  // => x = (days*daily - total)/(days-1)
   const numerator = days*daily - total;
   if(numerator<=0) return genMediumTankFill();
-
   if(numerator % (days-1) !== 0) return genMediumTankFill();
   const x = numerator/(days-1);
   if(x<=0 || x>=daily) return genMediumTankFill();
@@ -302,12 +289,10 @@ function genMediumTankFill(){
 }
 
 function genMediumStepsGame(){
-  // one person: forward f, back b, start at 1, target T, count moves
   const f = randInt(4,7);
   const b = randInt(1,3);
   const target = randInt(14,22);
 
-  // simulate until reaching target or beyond
   let pos=1, moves=0;
   while(pos < target && moves < 200){
     pos += f; moves++;
@@ -331,7 +316,6 @@ function genMediumStepsGame(){
 }
 
 function genHardTwoPlayersSameTime(){
-  // Two players different forward/back/targets; ask who uses fewer moves (or how many moves)
   const f1 = randInt(4,6), b1 = randInt(1,3), t1 = randInt(14,20);
   const f2 = randInt(3,5), b2 = randInt(1,2), t2 = randInt(10,16);
 
@@ -348,7 +332,6 @@ function genHardTwoPlayersSameTime(){
   const m2 = movesToReach(f2,b2,t2);
   if(m1===null || m2===null) return genHardTwoPlayersSameTime();
 
-  // ask for smaller move count (number)
   const smaller = Math.min(m1,m2);
 
   const lines = [
@@ -361,19 +344,17 @@ function genHardTwoPlayersSameTime(){
   return {
     img: makeSvgQuestionImage(lines, "Climb-the-Well"),
     value: smaller,
-    hint: "Hint: Work out the number of moves for each player separately. Remember: once a player reaches their goal, they stop immediately."
+    hint: "Hint: Work out the number of moves for each player separately. Once a player reaches their goal, they stop immediately."
   };
 }
 
 function genHardWellDepthFromTotalTime(){
-  // Given up/down and total days, find possible depth? Make it exact by constructing depth.
   const up = randInt(2,5);
   const down = randInt(1, up-1);
   const days = randInt(6,10);
   const base = (days-1)*(up-down);
-  const depth = randInt(base+1, base+up); // escapes on day days
+  const depth = randInt(base+1, base+up);
 
-  // Add "it does not escape in (days-1) days" implied
   const lines = [
     `A snail climbs out of a well using a repeated pattern.`,
     `In the daytime it climbs up ${up} meter(s), and at night it slips down ${down} meter(s).`,
@@ -384,7 +365,7 @@ function genHardWellDepthFromTotalTime(){
   return {
     img: makeSvgQuestionImage(lines, "Climb-the-Well"),
     value: depth,
-    hint: "Hint: After (days−1) full day-night cycles, find the height reached. On day days, it climbs up and escapes, so the depth is within one daytime climb above that height."
+    hint: "Hint: After (days−1) full day-night cycles, find the height reached. On day ${days}, it climbs up and escapes, so the depth is within one daytime climb above that height."
   };
 }
 
@@ -413,6 +394,7 @@ const saveButton=document.getElementById("saveButton");
 
 const generateBtn=document.getElementById("generateButton");
 const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
 const timerDisplay=document.getElementById("timerDisplay");
 const studentLine=document.getElementById("studentLine");
 
@@ -541,7 +523,7 @@ function renderQuestion(){
   const fullLabel=`${levelLabel} — Question ${q.indexInPart+1}`;
   const hasHint=(q.hint||"").trim()!=="";
 
-  quizContent.innerHTML=`
+  quizContent.innerHTML = `
     <p class="question-text">Question ${currentQuestionIndex+1} of ${TOTAL_QUESTIONS}</p>
     <div class="part-title">${PART_TITLES[q.partIndex]}</div>
 
@@ -657,7 +639,6 @@ function calculateAndShowResults(){
   checkButton.style.display="none";
   saveButton.style.display="inline-block";
 
-  // reset timer for next attempt
   elapsedMs=0; isPaused=false; quizStartTime=new Date();
   pauseButton.textContent="Pause";
   startTimerInterval();
@@ -787,6 +768,91 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
+/* -------- Export QUESTIONS to PDF (2 per page, DYAA header) -------- */
+exportQuestionsBtn.addEventListener("click", async () => {
+  if (!questions || questions.length === 0) {
+    alert("Please start a quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "fixed";
+  wrapper.style.left = "-9999px";
+  wrapper.style.top = "0";
+  wrapper.style.width = "800px";
+  wrapper.style.background = "#ffffff";
+  document.body.appendChild(wrapper);
+
+  let groupDiv = null;
+
+  questions.forEach((q, idx) => {
+    if (idx % 2 === 0) {
+      groupDiv = document.createElement("div");
+      groupDiv.style.padding = "20px";
+      groupDiv.style.marginBottom = "20px";
+      groupDiv.style.boxSizing = "border-box";
+
+      const header = document.createElement("div");
+      header.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+            <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;line-height:1.1;">
+            <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+            <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+          </div>
+        </div>
+        <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+      `;
+      groupDiv.appendChild(header);
+      wrapper.appendChild(groupDiv);
+    }
+
+    const qDiv = document.createElement("div");
+    qDiv.style.marginBottom = "18px";
+    qDiv.innerHTML = `
+      <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx + 1}</div>
+      <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+        <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+      </div>
+    `;
+    groupDiv.appendChild(qDiv);
+  });
+
+  const groups = Array.from(wrapper.children);
+
+  for (let i = 0; i < groups.length; i++) {
+    const canvas = await html2canvas(groups[i], { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL("image/png");
+    const imgWidth = pageWidth - 20;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const x = 10;
+    const y = 10;
+
+    if (i > 0) pdf.addPage();
+    pdf.addImage(
+      imgData,
+      "PNG",
+      x,
+      y,
+      imgWidth,
+      Math.min(imgHeight, pageHeight - 20)
+    );
+  }
+
+  const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  pdf.save(`ClimbWell_${safeName}_${ts}.pdf`);
+
+  document.body.removeChild(wrapper);
+});
+
 /* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
 function getNameFromUrl(){
   const url=new URL(window.location.href);
@@ -799,6 +865,7 @@ function showStartScreen(){
   generateBtn.style.display="none";
   saveButton.style.display="none";
   pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
   studentLine.textContent="";
 
   if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
@@ -853,6 +920,7 @@ function startQuiz(skipReadName){
   generateBtn.style.display="inline-block";
   pauseButton.style.display="inline-block";
   pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
 }
 
 /* ---------------- Init ---------------- */

@@ -56,6 +56,7 @@
     #saveButton{background:#607d8b;}
     #pauseButton{background:#f57c00;}
     #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
     button:disabled{opacity:.55;cursor:not-allowed;}
 
     .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
@@ -95,6 +96,7 @@
     <div>
       <button id="pauseButton" style="display:none;">Pause</button>
       <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
     </div>
   </div>
 
@@ -113,6 +115,10 @@
     <button id="saveButton" style="display:none;">Save Current Result</button>
   </div>
 </div>
+
+<!-- ✅ Export-to-PDF libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
@@ -317,7 +323,7 @@ function genEasy_WalkMeetDistance(){
 
   return {
     img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: meetingDiagramSvg(meet), // ✅ only shown when Hint is opened
+    diagram: meetingDiagramSvg(meet),
     value: d,
     hint: "Hint: When two people move towards each other, the closing speed is (speed1 + speed2). Distance = (speed1 + speed2) × time."
   };
@@ -535,6 +541,8 @@ const saveButton=document.getElementById("saveButton");
 
 const generateBtn=document.getElementById("generateButton");
 const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
+
 const timerDisplay=document.getElementById("timerDisplay");
 const studentLine=document.getElementById("studentLine");
 const setLine=document.getElementById("setLine");
@@ -568,7 +576,6 @@ function resumeTimer(){
 
 /* ---------------- Generate Quiz (ensure different) ---------------- */
 function makeSignature(built){
-  // include answers + diagram nonce (different) + first line text length
   return built.map(x=>`${x.value}|${x.img.slice(0,80)}|${(x.diagram||"").slice(0,80)}`).join("||");
 }
 function generateQuiz(){
@@ -604,7 +611,7 @@ function generateQuiz(){
       partIndex,
       indexInPart,
       img: built[i].img,
-      diagram: built[i].diagram || "",   // ✅ only show in Hint
+      diagram: built[i].diagram || "",
       value: built[i].value,
       hint: built[i].hint,
       userValue:"",
@@ -681,7 +688,6 @@ function renderQuestion(){
   const fullLabel=`${levelLabel} — Question ${q.indexInPart+1}`;
   const hasHint=(q.hint||"").trim()!=="";
 
-  // ✅ diagram is NOT shown initially; it appears inside the Hint box only
   const hintDiagramHtml = (hasHint && q.diagram)
     ? `<div class="hint-diagram-wrap"><img src="${q.diagram}" alt="Hint diagram"></div>`
     : "";
@@ -862,8 +868,7 @@ checkButton.addEventListener("click", ()=>{
 function formatDateForFilename(date){
   if(!date) return "no_time";
   const pad=n=>String(n).padStart(2,"0");
-  return date.getFullYear()+pad(date.getMonth()+1)+pad(date.getDate())+"_"+
-         pad(date.getHours())+pad(date.getMinutes())+pad(date.getSeconds());
+  return date.getFullYear()+pad(date.getMonth()+1)+pad(date.getDate())+"_"+pad(date.getHours())+pad(date.getMinutes())+pad(date.getSeconds());
 }
 function saveCurrentResultAsTxt(){
   saveCurrentInput();
@@ -937,6 +942,106 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
+/* ---------------- Export Questions PDF (2 questions per page, DYAA header each page) ---------------- */
+function waitForImages(container){
+  const imgs = Array.from(container.querySelectorAll("img"));
+  return Promise.all(imgs.map(img => {
+    if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve => {
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+    });
+  }));
+}
+
+exportQuestionsBtn.addEventListener("click", async ()=>{
+  if(!questions || questions.length===0){
+    alert("Please start a quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p","mm","a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  // offscreen render container
+  const wrapper=document.createElement("div");
+  wrapper.style.position="fixed";
+  wrapper.style.left="-9999px";
+  wrapper.style.top="0";
+  wrapper.style.width="800px";
+  wrapper.style.background="#ffffff";
+  document.body.appendChild(wrapper);
+
+  try{
+    let groupDiv=null;
+
+    questions.forEach((q, idx)=>{
+      if(idx%2===0){
+        groupDiv=document.createElement("div");
+        groupDiv.style.padding="20px";
+        groupDiv.style.marginBottom="20px";
+        groupDiv.style.boxSizing="border-box";
+
+        // DYAA header on each PDF page
+        const header=document.createElement("div");
+        header.innerHTML=`
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+              <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;line-height:1.1;">
+              <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+              <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+            </div>
+          </div>
+          <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Meeting Problems (Relative Motion)</div>
+          <div style="color:#546e7a;font-weight:800;margin:0 0 10px 0;">Questions (Set ${setCounter})</div>
+        `;
+        groupDiv.appendChild(header);
+        wrapper.appendChild(groupDiv);
+      }
+
+      const qDiv=document.createElement("div");
+      qDiv.style.marginBottom="18px";
+      qDiv.innerHTML=`
+        <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx+1}</div>
+        <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+          <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+        </div>
+      `;
+      groupDiv.appendChild(qDiv);
+    });
+
+    const groups=Array.from(wrapper.children);
+
+    for(let i=0;i<groups.length;i++){
+      await waitForImages(groups[i]);
+
+      const canvas = await html2canvas(groups[i], {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff"
+      });
+      const imgData = canvas.toDataURL("image/png");
+
+      const imgWidth = pageWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      if(i>0) pdf.addPage();
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, Math.min(imgHeight, pageHeight - 20));
+    }
+
+    const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+    const ts=formatDateForFilename(new Date());
+    pdf.save(`MeetingProblems_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
+  } finally {
+    document.body.removeChild(wrapper);
+  }
+});
+
 /* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
 function getNameFromUrl(){
   const url=new URL(window.location.href);
@@ -949,6 +1054,8 @@ function showStartScreen(){
   generateBtn.style.display="none";
   saveButton.style.display="none";
   pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
+
   studentLine.textContent="";
   setLine.textContent="";
 
@@ -1004,6 +1111,7 @@ function startQuiz(skipReadName){
   generateBtn.style.display="inline-block";
   pauseButton.style.display="inline-block";
   pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
 }
 
 /* ---------------- Init ---------------- */

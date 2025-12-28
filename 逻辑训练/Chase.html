@@ -56,6 +56,7 @@
     #saveButton{background:#607d8b;}
     #pauseButton{background:#f57c00;}
     #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
     button:disabled{opacity:.55;cursor:not-allowed;}
 
     .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
@@ -95,6 +96,7 @@
     <div>
       <button id="pauseButton" style="display:none;">Pause</button>
       <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
     </div>
   </div>
 
@@ -113,6 +115,10 @@
     <button id="saveButton" style="display:none;">Save Current Result</button>
   </div>
 </div>
+
+<!-- ✅ Export-to-PDF libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
@@ -191,7 +197,6 @@ function makeSvgTextCard(lines, titleText=SVG_TITLE){
   const wrapped=wrapLines(lines, 58);
   const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
 
-  // Put nonce EARLY in the SVG so data URI changes noticeably
   const nonce = Math.random().toString(36).slice(2);
 
   const textSpans=wrapped.map((t,i)=>{
@@ -248,7 +253,6 @@ function chaseDiagramSvg(cfg){
 
   const nonce = Math.random().toString(36).slice(2);
 
-  // leader ahead (right), chaser behind (left), both arrows to the right
   const leaderX = x0 + (x1-x0)*0.78;
   const chaserX = x0 + (x1-x0)*0.30;
 
@@ -269,27 +273,22 @@ function chaseDiagramSvg(cfg){
 
     ${topNote ? `<text x="${W/2}" y="70" text-anchor="middle" font-size="24" fill="#455a64" font-family="Segoe UI, Arial">${escapeXml(topNote)}</text>` : ""}
 
-    <!-- road -->
     <line x1="${x0}" y1="${y}" x2="${x1}" y2="${y}" stroke="#90caf9" stroke-width="8" stroke-linecap="round"/>
 
-    <!-- chaser -->
     <circle cx="${chaserX}" cy="${y}" r="10" fill="#1976d2"/>
     <text x="${chaserX}" y="${y+42}" text-anchor="middle" font-size="22" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(chaser)}</text>
     ${chaserNote ? `<text x="${chaserX}" y="${y-22}" text-anchor="middle" font-size="20" fill="#1976d2" font-family="Segoe UI, Arial">${escapeXml(chaserNote)}</text>` : ""}
 
-    <!-- leader -->
     <circle cx="${leaderX}" cy="${y}" r="10" fill="#d32f2f"/>
     <text x="${leaderX}" y="${y+42}" text-anchor="middle" font-size="22" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(leader)}</text>
     ${leaderNote ? `<text x="${leaderX}" y="${y-22}" text-anchor="middle" font-size="20" fill="#d32f2f" font-family="Segoe UI, Arial">${escapeXml(leaderNote)}</text>` : ""}
 
-    <!-- arrows to the right -->
     <line x1="${chaserX+18}" y1="${y-6}" x2="${chaserX+180}" y2="${y-6}" stroke="#1976d2" stroke-width="3"/>
     <polygon points="${chaserX+180},${y-6} ${chaserX+168},${y-13} ${chaserX+168},${y+1}" fill="#1976d2"/>
 
     <line x1="${leaderX+18}" y1="${y-6}" x2="${leaderX+140}" y2="${y-6}" stroke="#d32f2f" stroke-width="3"/>
     <polygon points="${leaderX+140},${y-6} ${leaderX+128},${y-13} ${leaderX+128},${y+1}" fill="#d32f2f"/>
 
-    <!-- gap bracket -->
     <line x1="${chaserX}" y1="${y+18}" x2="${leaderX}" y2="${y+18}" stroke="#455a64" stroke-width="2"/>
     <line x1="${chaserX}" y1="${y+10}" x2="${chaserX}" y2="${y+26}" stroke="#455a64" stroke-width="2"/>
     <line x1="${leaderX}" y1="${y+10}" x2="${leaderX}" y2="${y+26}" stroke="#455a64" stroke-width="2"/>
@@ -306,16 +305,13 @@ function chaseDiagramSvg(cfg){
 }
 
 /* ---------------- Question Generators (ALL answers are INTEGERS) ---------------- */
-
-/* Easy 1: initial gap + two speeds -> catch-up time */
 function genEasy_CatchUpTime(){
   const [leader, chaser] = pickTwoNames();
-
   const vLeader = pick([45,50,55,60,65,70]); // m/min
-  const diff = pick([5,6,7,8,9,10,12,15]);   // m/min
+  const diff = pick([5,6,7,8,9,10,12,15]);
   const vChaser = vLeader + diff;
-  const t = randInt(6, 20); // minutes
-  const gap = diff * t; // meters
+  const t = randInt(6, 20);
+  const gap = diff * t;
 
   const lines = [
     `${leader} is walking, and ${chaser} is walking behind in the same direction.`,
@@ -340,7 +336,6 @@ function genEasy_CatchUpTime(){
   };
 }
 
-/* Easy 2: delayed start chase */
 function genEasy_DelayedStart(){
   const [child, parent] = pickTwoNames();
 
@@ -349,7 +344,6 @@ function genEasy_DelayedStart(){
   let vp = vc + diff;
   let delay = pick([6,8,9,10,12,14,15,16,18,20]);       // minutes
 
-  // need time = (vc*delay)/diff integer
   let tries=0;
   while(tries<40 && (vc*delay) % diff !== 0){
     vc = pick([36,40,42,45,48,50,54,56,60,63,64,70]);
@@ -384,15 +378,13 @@ function genEasy_DelayedStart(){
   };
 }
 
-/* Medium 1: circular track, first overtake */
 function genMedium_TrackFindSlowSpeed(){
-  // (vFast - vSlow) * t = L  => vSlow = vFast - L/t
   const L = pick([300,360,400,480,500,600,720,800]); // meters
   const t = pick([10,12,15,16,18,20,24]); // minutes
   if(L % t !== 0) return genMedium_TrackFindSlowSpeed();
 
   const gapPerMin = L / t;
-  const vFast = pick([90,96,100,105,108,110,120,125,130,135,140]); // m/min
+  const vFast = pick([90,96,100,105,108,110,120,125,130,135,140]);
   const vSlow = vFast - gapPerMin;
   if(vSlow <= 40) return genMedium_TrackFindSlowSpeed();
 
@@ -419,20 +411,19 @@ function genMedium_TrackFindSlowSpeed(){
     img: makeSvgTextCard(lines, SVG_TITLE),
     diagram,
     value: vSlow,
-    hint: "Hint: On a track, the faster runner gains exactly one full lap (L meters) at the first overtake: (vFast − vSlow) × t = L."
+    hint: "Hint: At the first overtake, the faster runner gains exactly one full lap: (vFast − vSlow) × t = L."
   };
 }
 
-/* Medium 2: remaining distance after t minutes -> find initial gap */
 function genMedium_FindInitialGap(){
   const [leader, chaser] = pickTwoNames();
 
-  const vLeader = pick([40,45,48,50,54,56,60,63,64,70]); // m/min
-  const diff = pick([6,7,8,9,10,12,14,15]);              // m/min
+  const vLeader = pick([40,45,48,50,54,56,60,63,64,70]);
+  const diff = pick([6,7,8,9,10,12,14,15]);
   const vChaser = vLeader + diff;
 
-  const t = pick([6,8,9,10,12,14,15,16,18,20]); // minutes
-  const remaining = pick([40,50,60,70,80,90,100,120,140,150,160,180,200]); // meters
+  const t = pick([6,8,9,10,12,14,15,16,18,20]);
+  const remaining = pick([40,50,60,70,80,90,100,120,140,150,160,180,200]);
   const D = remaining + diff * t;
 
   const lines = [
@@ -458,16 +449,14 @@ function genMedium_FindInitialGap(){
   };
 }
 
-/* Hard 1: turn back meet -> find distance AB */
 function genHard_TurnBackFindDistance(){
-  // D = (vF + vS)*m/(vF - vS). Choose vS = diff*k so integer always.
-  const diff = pick([5,6,8,10,12,15]);   // m/min
+  const diff = pick([5,6,8,10,12,15]);
   const k = randInt(4, 10);
   const vS = diff * k;
   const vF = vS + diff;
 
-  const m = pick([40,50,60,70,80,90,100,120]); // meters from B when meet on return
-  const D = ((vF + vS) * m) / (vF - vS);       // guaranteed integer
+  const m = pick([40,50,60,70,80,90,100,120]);
+  const D = ((vF + vS) * m) / (vF - vS);
 
   const [fastName, slowName] = pickTwoNames();
 
@@ -492,18 +481,16 @@ function genHard_TurnBackFindDistance(){
     img: makeSvgTextCard(lines, SVG_TITLE),
     diagram,
     value: D,
-    hint: "Hint: Let AB = D. Meeting point is (D − m) from A. Time for slow = (D − m)/vS. Time for fast = D/vF + m/vF = (D + m)/vF. Set times equal and solve."
+    hint: "Hint: Let AB = D. Slow time = (D − m)/vS. Fast time = (D + m)/vF. Set them equal and solve."
   };
 }
 
-/* Hard 2: second overtake on a track -> find slower speed */
 function genHard_SecondOvertake(){
-  // Second overtake: (vFast - vSlow) * T = 2L
-  const L = pick([300,360,400,480,500,600,720,800]); // meters
-  const T = pick([12,15,16,18,20,24,25,30]); // minutes
+  const L = pick([300,360,400,480,500,600,720,800]);
+  const T = pick([12,15,16,18,20,24,25,30]);
   if((2*L) % T !== 0) return genHard_SecondOvertake();
 
-  const gapPerMin = (2*L) / T; // vFast - vSlow
+  const gapPerMin = (2*L) / T;
   const vFast = pick([100,105,108,110,120,125,130,135,140,150,160]);
   const vSlow = vFast - gapPerMin;
   if(vSlow <= 40) return genHard_SecondOvertake();
@@ -531,7 +518,7 @@ function genHard_SecondOvertake(){
     img: makeSvgTextCard(lines, SVG_TITLE),
     diagram,
     value: vSlow,
-    hint: "Hint: At the second overtake, the faster runner has gained 2 full laps: (vFast − vSlow) × T = 2L."
+    hint: "Hint: Second overtake means gaining 2 full laps: (vFast − vSlow) × T = 2L."
   };
 }
 
@@ -564,6 +551,8 @@ const saveButton=document.getElementById("saveButton");
 
 const generateBtn=document.getElementById("generateButton");
 const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
+
 const timerDisplay=document.getElementById("timerDisplay");
 const studentLine=document.getElementById("studentLine");
 const setLine=document.getElementById("setLine");
@@ -710,7 +699,6 @@ function renderQuestion(){
   const fullLabel=`${levelLabel} — Question ${q.indexInPart+1}`;
   const hasHint=(q.hint||"").trim()!=="";
 
-  // ✅ diagram appears ONLY inside Hint box, not before
   const hintDiagramHtml = (hasHint && q.diagram)
     ? `<div class="hint-diagram-wrap"><img src="${q.diagram}" alt="Hint diagram"></div>`
     : "";
@@ -836,7 +824,6 @@ function calculateAndShowResults(){
   checkButton.style.display="none";
   saveButton.style.display="inline-block";
 
-  // reset timer for next attempt
   elapsedMs=0; isPaused=false; quizStartTime=new Date();
   pauseButton.textContent="Pause";
   startTimerInterval();
@@ -966,6 +953,103 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
+/* ---------------- Export Questions PDF (2 questions per page, DYAA header) ---------------- */
+function waitForImages(container){
+  const imgs = Array.from(container.querySelectorAll("img"));
+  return Promise.all(imgs.map(img => {
+    if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve => {
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+    });
+  }));
+}
+exportQuestionsBtn.addEventListener("click", async ()=>{
+  if(!questions || questions.length===0){
+    alert("Please start a quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p","mm","a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const wrapper=document.createElement("div");
+  wrapper.style.position="fixed";
+  wrapper.style.left="-9999px";
+  wrapper.style.top="0";
+  wrapper.style.width="800px";
+  wrapper.style.background="#ffffff";
+  document.body.appendChild(wrapper);
+
+  try{
+    let groupDiv=null;
+
+    questions.forEach((q, idx)=>{
+      if(idx%2===0){
+        groupDiv=document.createElement("div");
+        groupDiv.style.padding="20px";
+        groupDiv.style.marginBottom="20px";
+        groupDiv.style.boxSizing="border-box";
+
+        const header=document.createElement("div");
+        header.innerHTML=`
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+              <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;line-height:1.1;">
+              <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+              <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+            </div>
+          </div>
+          <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Chasing Problems (Pursuit)</div>
+          <div style="color:#546e7a;font-weight:800;margin:0 0 10px 0;">Questions (Set ${setCounter})</div>
+        `;
+        groupDiv.appendChild(header);
+        wrapper.appendChild(groupDiv);
+      }
+
+      const qDiv=document.createElement("div");
+      qDiv.style.marginBottom="18px";
+      qDiv.innerHTML=`
+        <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx+1}</div>
+        <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+          <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+        </div>
+      `;
+      groupDiv.appendChild(qDiv);
+    });
+
+    const groups=Array.from(wrapper.children);
+
+    for(let i=0;i<groups.length;i++){
+      await waitForImages(groups[i]);
+
+      const canvas = await html2canvas(groups[i], {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff"
+      });
+      const imgData = canvas.toDataURL("image/png");
+
+      const imgWidth = pageWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      if(i>0) pdf.addPage();
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, Math.min(imgHeight, pageHeight - 20));
+    }
+
+    const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+    const ts=formatDateForFilename(new Date());
+    pdf.save(`ChasingProblems_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
+  } finally {
+    document.body.removeChild(wrapper);
+  }
+});
+
 /* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
 function getNameFromUrl(){
   const url=new URL(window.location.href);
@@ -978,6 +1062,8 @@ function showStartScreen(){
   generateBtn.style.display="none";
   saveButton.style.display="none";
   pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
+
   studentLine.textContent="";
   setLine.textContent="";
 
@@ -1033,6 +1119,7 @@ function startQuiz(skipReadName){
   generateBtn.style.display="inline-block";
   pauseButton.style.display="inline-block";
   pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
 }
 
 /* ---------------- Init ---------------- */

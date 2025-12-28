@@ -54,6 +54,7 @@
     #saveButton{background:#607d8b;}
     #pauseButton{background:#f57c00;}
     #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
     button:disabled{opacity:.55;cursor:not-allowed;}
 
     .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
@@ -93,6 +94,7 @@
     <div>
       <button id="pauseButton" style="display:none;">Pause</button>
       <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
     </div>
   </div>
 
@@ -111,6 +113,10 @@
     <button id="saveButton" style="display:none;">Save Current Result</button>
   </div>
 </div>
+
+<!-- Export-to-PDF libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
@@ -269,7 +275,7 @@ function makeSvgQuestionImage(lines, titleText=SVG_TITLE, steps=null){
   const flowBlockH = hasFlow ? 120 : 0;
   const H = textEndY + padBottom + (hasFlow ? flowBlockH : 0);
 
-  const nonce = Math.random().toString(36).slice(2); // ensures a fresh image every set
+  const nonce = Math.random().toString(36).slice(2);
 
   const textSpans=wrapped.map((t,i)=>{
     const y=firstLineY + i*lineH;
@@ -328,7 +334,7 @@ function genEasy_TwoHalves_Left(){
   let eater2 = pick(NAMES);
   while(eater2===eater1) eater2 = pick(NAMES);
 
-  const left = pick([4,5,6,7,8,9,10,12,15,18,20]); // realistic
+  const left = pick([4,5,6,7,8,9,10,12,15,18,20]);
   const start = 4*left;
 
   const item = pick(["strawberries","cookies","marbles","stickers","cherries"]);
@@ -351,17 +357,15 @@ function genEasy_TwoHalves_Left(){
   return {
     img: makeSvgQuestionImage(lines, SVG_TITLE, steps),
     value: start,
-    hint: "Hint: Work backwards. If half was taken and then half again, the final amount is 1/4 of the start. So before the last half there were 2× left, and at the start there were 4× left."
+    hint: "Hint: Work backwards. Half then half means the final amount is 1/4 of the start. So the start is 4 × (final left)."
   };
 }
 
-/* Easy 2: three quarters remain after giving away 1/4; then half -> left L
-   Forward: start N -> ÷2 -> keep 3/4 => left = 3N/8, so choose N = 8k and left = 3k
-*/
+/* Easy 2: half then give away 1/4 of remainder => keep 3/4 */
 function genEasy_HalfThenQuarter_Left(){
   const name = pick(NAMES);
   const item = pick(["balloons","marbles","candies","tokens"]);
-  const k = pick([6,7,8,9,10,12,14,15,16,18]); // so left=3k
+  const k = pick([6,7,8,9,10,12,14,15,16,18]); // left=3k
   const start = 8*k;
   const left = 3*k;
 
@@ -383,23 +387,17 @@ function genEasy_HalfThenQuarter_Left(){
   return {
     img: makeSvgQuestionImage(lines, SVG_TITLE, steps),
     value: start,
-    hint: "Hint: Reverse the steps: first undo ×3/4 by dividing by 3/4, then undo ×1/2 by dividing by 1/2."
+    hint: "Hint: Reverse the steps: undo ×3/4 (divide by 3/4), then undo ×1/2 (divide by 1/2)."
   };
 }
 
-/* Medium 1: travel
-   Total D. First rides a.
-   Then rides half of remaining + b. Left c.
-   remaining1 = D-a.
-   remaining1 - (remaining1/2 + b) = c => remaining1/2 = b+c => remaining1 = 2(b+c)
-   D = a + 2(b+c)
-*/
+/* Medium 1: total = a + 2(b+c) */
 function genMedium_TravelHalfPlus(){
   const name = pick(NAMES);
-  const a = pick([1,2,3,4,5]);           // first distance
-  const b = pick([1,2,3,4,5]);           // extra distance
-  const c = pick([1,2,3,4,5]);           // left
-  const total = a + 2*(b+c);             // always integer
+  const a = pick([1,2,3,4,5]);
+  const b = pick([1,2,3,4,5]);
+  const c = pick([1,2,3,4,5]);
+  const total = a + 2*(b+c);
 
   const lines = [
     `${name} cycled along a route.`,
@@ -420,22 +418,17 @@ function genMedium_TravelHalfPlus(){
   return {
     img: makeSvgQuestionImage(lines, SVG_TITLE, steps),
     value: total,
-    hint: "Hint: Work backwards from the last ‘left’ distance. Undo “- b”, then undo “half of the remaining” by multiplying by 2, then undo “- a”."
+    hint: "Hint: Work backwards from the final distance left. Undo “- b”, then undo “half” by ×2, then undo “- a”."
   };
 }
 
-/* Medium 2: reading
-   Total T. Day1 read T/2 - a (a even). Remaining1 = T/2 + a.
-   Day2 read half of remaining1, so left L = remaining1/2 = T/4 + a/2.
-   T = 4L - 2a. Choose L and even a so T is integer.
-*/
+/* Medium 2: T = 4L - 2a (a even) */
 function genMedium_ReadingHalfMinus(){
   const name = pick(NAMES);
-  const a = pick([6,8,10,12,14,16,18,20]); // even
+  const a = pick([6,8,10,12,14,16,18,20]);
   const L = randInt(28, 70);
   const T = 4*L - 2*a;
 
-  // sanity checks
   if(T < 80 || T > 260) return genMedium_ReadingHalfMinus();
   if(T/2 - a <= 0) return genMedium_ReadingHalfMinus();
 
@@ -458,21 +451,14 @@ function genMedium_ReadingHalfMinus(){
   return {
     img: makeSvgQuestionImage(lines, SVG_TITLE, steps),
     value: T,
-    hint: "Hint: Start from the final pages left. Before Day 2, the remaining was double that. Then undo Day 1: add the number back, and double again."
+    hint: "Hint: Double the final leftover to get the amount before Day 2. Then reverse Day 1: add a, then double again."
   };
 }
 
-/* Hard 1: road repair (3 days)
-   Day1 repaired T/2 - a
-   Remaining1 = T/2 + a
-   Day2 repaired (Remaining1/2 + a)
-   Remaining2 = T/4 - a/2
-   Day3 repaired b, left c => Remaining2 = b + c
-   T/4 - a/2 = b + c => T = 4(b+c) + 2a
-*/
+/* Hard 1: road length T = 4(b+c) + 2a */
 function genHard_RoadRepair(){
   const name = pick(NAMES);
-  const a = pick([10,12,14,16]); // even preferred, but formula works anyway; keep even
+  const a = pick([10,12,14,16]);
   const b = pick([24,30,36,40,42,48]);
   const c = pick([12,15,18,20,24]);
 
@@ -502,15 +488,11 @@ function genHard_RoadRepair(){
   return {
     img: makeSvgQuestionImage(lines, SVG_TITLE, steps),
     value: T,
-    hint: "Hint: Work backwards from the final leftover. Undo Day 3, then undo Day 2 (reverse +a and half), then undo Day 1 (reverse -a and half)."
+    hint: "Hint: Start from the final leftover. Undo Day 3, then undo Day 2 (reverse +a and half), then undo Day 1 (reverse -a and half)."
   };
 }
 
-/* Hard 2: half, then -b, then give away 1/4 of remainder (so keep 3/4), left L
-   Forward: start N -> ÷2 -> -b -> ×3/4 = L
-   So before ×3/4: R = L ÷(3/4)=4L/3. Need L multiple of 3.
-   Before -b: R+b. Before ÷2: start = 2(R+b)
-*/
+/* Hard 2: start N -> ÷2 -> -b -> ×3/4 = L (L multiple of 3) */
 function genHard_HalfMinusQuarter(){
   const name = pick(NAMES);
   const item = pick(["marbles","stickers","coins","buttons"]);
@@ -541,7 +523,7 @@ function genHard_HalfMinusQuarter(){
   return {
     img: makeSvgQuestionImage(lines, SVG_TITLE, steps),
     value: start,
-    hint: "Hint: Reverse the steps: undo ×3/4 (divide by 3/4), then add b, then undo ×1/2 (divide by 1/2)."
+    hint: "Hint: Reverse the steps: undo ×3/4 (divide by 3/4), then add b, then undo ÷2 by ×2."
   };
 }
 
@@ -574,6 +556,8 @@ const saveButton=document.getElementById("saveButton");
 
 const generateBtn=document.getElementById("generateButton");
 const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
+
 const timerDisplay=document.getElementById("timerDisplay");
 const studentLine=document.getElementById("studentLine");
 const setLine=document.getElementById("setLine");
@@ -607,15 +591,12 @@ function resumeTimer(){
 
 /* ---------------- Generate Quiz ---------------- */
 function makeSignature(built){
-  // signature from answers + a slice of SVG data (unique enough)
   return built.map(x=>`${x.value}|${x.hint.length}|${x.img.slice(0,60)}`).join("||");
 }
-
 function generateQuiz(){
   questions=[];
   quizSubmitted=false;
 
-  // ensure different set from last time
   let tries = 0;
   let built = null;
   while(tries < 8){
@@ -893,8 +874,7 @@ checkButton.addEventListener("click", ()=>{
 function formatDateForFilename(date){
   if(!date) return "no_time";
   const pad=n=>String(n).padStart(2,"0");
-  return date.getFullYear()+pad(date.getMonth()+1)+pad(date.getDate())+"_"+
-         pad(date.getHours())+pad(date.getMinutes())+pad(date.getSeconds());
+  return date.getFullYear()+pad(date.getMonth()+1)+pad(date.getDate())+"_"+pad(date.getHours())+pad(date.getMinutes())+pad(date.getSeconds());
 }
 function saveCurrentResultAsTxt(){
   saveCurrentInput();
@@ -968,6 +948,105 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
+/* ---------------- Export Questions PDF (2 questions per page, DYAA header each page) ---------------- */
+function waitForImages(container){
+  const imgs = Array.from(container.querySelectorAll("img"));
+  return Promise.all(imgs.map(img => {
+    if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve => {
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+    });
+  }));
+}
+
+exportQuestionsBtn.addEventListener("click", async ()=>{
+  if(!questions || questions.length===0){
+    alert("Please start a quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p","mm","a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const wrapper=document.createElement("div");
+  wrapper.style.position="fixed";
+  wrapper.style.left="-9999px";
+  wrapper.style.top="0";
+  wrapper.style.width="800px";
+  wrapper.style.background="#ffffff";
+  document.body.appendChild(wrapper);
+
+  try{
+    let groupDiv=null;
+
+    questions.forEach((q, idx)=>{
+      if(idx%2===0){
+        groupDiv=document.createElement("div");
+        groupDiv.style.padding="20px";
+        groupDiv.style.marginBottom="20px";
+        groupDiv.style.boxSizing="border-box";
+
+        // DYAA header on each PDF page
+        const header=document.createElement("div");
+        header.innerHTML=`
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+              <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;line-height:1.1;">
+              <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+              <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+            </div>
+          </div>
+          <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Working Backwards (Reverse Operations II)</div>
+          <div style="color:#546e7a;font-weight:800;margin:0 0 10px 0;">Questions (Set ${setCounter})</div>
+        `;
+        groupDiv.appendChild(header);
+        wrapper.appendChild(groupDiv);
+      }
+
+      const qDiv=document.createElement("div");
+      qDiv.style.marginBottom="18px";
+      qDiv.innerHTML=`
+        <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx+1}</div>
+        <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+          <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+        </div>
+      `;
+      groupDiv.appendChild(qDiv);
+    });
+
+    const groups=Array.from(wrapper.children);
+
+    for(let i=0;i<groups.length;i++){
+      await waitForImages(groups[i]);
+
+      const canvas = await html2canvas(groups[i], {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff"
+      });
+      const imgData = canvas.toDataURL("image/png");
+
+      const imgWidth = pageWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      if(i>0) pdf.addPage();
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, Math.min(imgHeight, pageHeight - 20));
+    }
+
+    const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+    const ts=formatDateForFilename(new Date());
+    pdf.save(`WorkingBackwards2_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
+  } finally {
+    document.body.removeChild(wrapper);
+  }
+});
+
 /* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
 function getNameFromUrl(){
   const url=new URL(window.location.href);
@@ -980,6 +1059,8 @@ function showStartScreen(){
   generateBtn.style.display="none";
   saveButton.style.display="none";
   pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
+
   studentLine.textContent="";
   setLine.textContent="";
 
@@ -1035,6 +1116,7 @@ function startQuiz(skipReadName){
   generateBtn.style.display="inline-block";
   pauseButton.style.display="inline-block";
   pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
 }
 
 /* ---------------- Init ---------------- */

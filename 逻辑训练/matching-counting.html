@@ -52,6 +52,7 @@
     #saveButton{background:#607d8b;}
     #pauseButton{background:#f57c00;}
     #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
     button:disabled{opacity:.55;cursor:not-allowed;}
 
     .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
@@ -90,6 +91,7 @@
     <div>
       <button id="pauseButton" style="display:none;">Pause</button>
       <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
     </div>
   </div>
 
@@ -108,6 +110,10 @@
     <button id="saveButton" style="display:none;">Save Current Result</button>
   </div>
 </div>
+
+<!-- jsPDF & html2canvas for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
@@ -252,8 +258,8 @@ function genEasyOutfitMatch(){
 }
 
 function genEasyPhoneCalls(){
-  const n = randInt(4,7);          // number of kids
-  const calls = nCr(n,2);          // each pair calls once
+  const n = randInt(4,7);
+  const calls = nCr(n,2);
 
   const lines = [
     `There are ${n} kids sending New Year greetings by phone.`,
@@ -291,7 +297,6 @@ function genMediumChooseTwoNumbersSum(){
   const arr = [...pool].sort(()=>Math.random()-0.5).slice(0,4).sort((a,b)=>a-b);
   const totalPairs = nCr(4,2);
 
-  // sometimes repeats sums; ask total number of pairs (not unique)
   const lines = [
     `There are four numbers: ${arr.join(", ")}.`,
     `You choose any two different numbers and add them.`,
@@ -307,7 +312,7 @@ function genMediumChooseTwoNumbersSum(){
 
 function genHardUniqueSums(){
   const base = [2,3,6,7];
-  const arr = [...base].sort(()=>Math.random()-0.5); // same set as picture theme
+  const arr = [...base].sort(()=>Math.random()-0.5);
   const unique = countUniquePairSums(arr);
 
   const lines = [
@@ -328,7 +333,6 @@ function genHardOutfitWithRestriction(){
   const tops = randInt(3,5);
   const skirts = randInt(3,5);
 
-  // restriction: one special hat cannot be worn with one special top
   const total = hats * tops * skirts;
   const forbidden = 1 * 1 * skirts;
   const ways = total - forbidden;
@@ -372,6 +376,7 @@ const saveButton=document.getElementById("saveButton");
 
 const generateBtn=document.getElementById("generateButton");
 const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
 const timerDisplay=document.getElementById("timerDisplay");
 const studentLine=document.getElementById("studentLine");
 
@@ -407,7 +412,6 @@ function generateQuiz(){
   questions=[];
   quizSubmitted=false;
 
-  // Build 6 questions: Easy(2), Medium(2), Hard(2)
   const built = [
     genEasyOutfitMatch(),
     genEasyPhoneCalls(),
@@ -617,7 +621,6 @@ function calculateAndShowResults(){
   checkButton.style.display="none";
   saveButton.style.display="inline-block";
 
-  // reset timer for next attempt
   elapsedMs=0; isPaused=false; quizStartTime=new Date();
   pauseButton.textContent="Pause";
   startTimerInterval();
@@ -749,6 +752,91 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
+/* -------- Export QUESTIONS to PDF (2 per page, DYAA header) -------- */
+exportQuestionsBtn.addEventListener("click", async () => {
+  if (!questions || questions.length === 0) {
+    alert("Please start a quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "fixed";
+  wrapper.style.left = "-9999px";
+  wrapper.style.top = "0";
+  wrapper.style.width = "800px";
+  wrapper.style.background = "#ffffff";
+  document.body.appendChild(wrapper);
+
+  let groupDiv = null;
+
+  questions.forEach((q, idx) => {
+    if (idx % 2 === 0) {
+      groupDiv = document.createElement("div");
+      groupDiv.style.padding = "20px";
+      groupDiv.style.marginBottom = "20px";
+      groupDiv.style.boxSizing = "border-box";
+
+      const header = document.createElement("div");
+      header.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+            <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;line-height:1.1;">
+            <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+            <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+          </div>
+        </div>
+        <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+      `;
+      groupDiv.appendChild(header);
+      wrapper.appendChild(groupDiv);
+    }
+
+    const qDiv = document.createElement("div");
+    qDiv.style.marginBottom = "18px";
+    qDiv.innerHTML = `
+      <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx + 1}</div>
+      <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+        <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+      </div>
+    `;
+    groupDiv.appendChild(qDiv);
+  });
+
+  const groups = Array.from(wrapper.children);
+
+  for (let i = 0; i < groups.length; i++) {
+    const canvas = await html2canvas(groups[i], { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL("image/png");
+    const imgWidth = pageWidth - 20;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const x = 10;
+    const y = 10;
+
+    if (i > 0) pdf.addPage();
+    pdf.addImage(
+      imgData,
+      "PNG",
+      x,
+      y,
+      imgWidth,
+      Math.min(imgHeight, pageHeight - 20)
+    );
+  }
+
+  const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  pdf.save(`MatchingCounting_${safeName}_${ts}.pdf`);
+
+  document.body.removeChild(wrapper);
+});
+
 /* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
 function getNameFromUrl(){
   const url = new URL(window.location.href);
@@ -761,6 +849,7 @@ function showStartScreen(){
   generateBtn.style.display="none";
   saveButton.style.display="none";
   pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
   studentLine.textContent="";
 
   if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
@@ -786,7 +875,7 @@ function showStartScreen(){
     <p style="margin-top:10px;">Please enter your name to begin:</p>
 
     <input id="nameInput" type="text"
-      style="padding:10px;width:260px;font-size:1.05em;border:1px solid #ccc;border-radius:10px;"
+      style="padding:10px;width:260px;font-size:1.05em;border:1px solid:#ccc;border-radius:10px;"
       placeholder="Your name">
 
     <button id="startButton"
@@ -815,6 +904,7 @@ function startQuiz(skipReadName){
   generateBtn.style.display="inline-block";
   pauseButton.style.display="inline-block";
   pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
 }
 
 /* ---------------- Init ---------------- */

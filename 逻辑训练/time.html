@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Money Word Problems (Image Quiz)</title>
+  <title>Time Problems (Image Quiz)</title>
 
   <style>
     body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f4f9;margin:0;padding:20px;color:#333;}
@@ -34,7 +34,7 @@
     .part-title{font-weight:800;margin:8px 0 10px 0;}
     .single-question{margin:6px 0;line-height:1.7;}
     .answer-row{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-    .answer-box{width:180px;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
+    .answer-box{width:260px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
     .img-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px;box-shadow:0 3px 8px rgba(0,0,0,0.05);max-width:100%;}
     .q-img{width:100%;height:auto;display:block;border-radius:10px;}
 
@@ -68,6 +68,7 @@
       .quiz-main{flex-direction:column;}
       .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
       .thumb{width:120px;max-width:120px;}
+      .answer-box{width:100%;}
     }
   </style>
 </head>
@@ -94,7 +95,7 @@
     </div>
   </div>
 
-  <h2 style="margin:6px 0 0 0;">Lesson Theme: Money (Exact Payment)</h2>
+  <h2 style="margin:6px 0 0 0;">Lesson Theme: Time Problems (Vertical Method)</h2>
 
   <div class="quiz-main">
     <div id="sidebar" class="sidebar"></div>
@@ -110,16 +111,16 @@
   </div>
 </div>
 
-<!-- jsPDF & html2canvas for PDF export -->
+<!-- PDF Export dependencies -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
 const PART_TITLES = [
-  "Part 1 (Easy) — Count different ways to pay (whole dollars)",
-  "Part 2 (Medium) — Count ways with dollars and cents",
-  "Part 3 (Hard) — Constraints (limits or fixed number of bills)"
+  "Part 1 (Easy) — Find elapsed minutes",
+  "Part 2 (Medium) — Find the start time (backward)",
+  "Part 3 (Hard) — Across hours / across days"
 ];
 const NUM_PARTS = 3;
 const QUESTIONS_PER_PART = 2;
@@ -127,65 +128,47 @@ const TOTAL_QUESTIONS = NUM_PARTS * QUESTIONS_PER_PART;
 
 /* ---------------- Utils ---------------- */
 function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
-function choice(arr){ return arr[randInt(0, arr.length-1)]; }
 function formatMs(ms){
   const totalSec=Math.floor(ms/1000), min=Math.floor(totalSec/60), sec=totalSec%60;
   return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
 }
+function pad2(n){ return String(n).padStart(2,"0"); }
 function escapeXml(s){
   return String(s)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&apos;");
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&apos;");
 }
-function moneyDollars(n){ return "$" + n; }
-function moneyCents(c){
-  const dollars = Math.floor(c/100);
-  const cents = c % 100;
-  return "$" + dollars + "." + String(cents).padStart(2,"0");
-}
-
-/* ---------------- SVG Image Builder ---------------- */
 function wrapLines(lines, maxChars = 58){
-  const out = [];
+  const out=[];
   function pushWrapped(line){
-    const words = String(line).split(/\s+/).filter(Boolean);
-    let cur = "";
+    const words=String(line).split(/\s+/).filter(Boolean);
+    let cur="";
     for(const w of words){
-      if(w.length > maxChars){
+      if(w.length>maxChars){
         if(cur){ out.push(cur); cur=""; }
-        for(let i=0;i<w.length;i+=maxChars) out.push(w.slice(i, i+maxChars));
+        for(let i=0;i<w.length;i+=maxChars) out.push(w.slice(i,i+maxChars));
         continue;
       }
-      if(!cur) cur = w;
-      else if((cur + " " + w).length <= maxChars) cur += " " + w;
-      else{ out.push(cur); cur = w; }
+      if(!cur) cur=w;
+      else if((cur+" "+w).length<=maxChars) cur+=" "+w;
+      else { out.push(cur); cur=w; }
     }
     if(cur) out.push(cur);
   }
   for(const line of lines) pushWrapped(line);
   return out;
 }
+function makeSvgQuestionImage(lines, titleText="Time Problems"){
+  const W=980, headerH=72, padX=44, lineH=46, firstLineY=headerH+52, padBottom=54;
+  const wrapped=wrapLines(lines, 58);
+  const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
 
-function makeSvgQuestionImage(lines, titleText="Money Problems"){
-  const W = 980;
-  const headerH = 72;
-  const padX = 44;
-  const lineH = 46;
-  const firstLineY = headerH + 52;
-  const padBottom = 54;
-
-  const wrapped = wrapLines(lines, 58);
-  const H = firstLineY + (wrapped.length - 1) * lineH + padBottom;
-
-  const textSpans = wrapped.map((t,i)=>{
-    const y = firstLineY + i * lineH;
+  const textSpans=wrapped.map((t,i)=>{
+    const y=firstLineY + i*lineH;
     return `<text x="${padX}" y="${y}" font-size="30" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
   }).join("");
 
-  const svg = `
+  const svg=`
   <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
     <defs>
       <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
@@ -209,190 +192,163 @@ function makeSvgQuestionImage(lines, titleText="Money Problems"){
     ${textSpans}
   </svg>`.trim();
 
-  const encoded = encodeURIComponent(svg)
-    .replaceAll("%0A","")
-    .replaceAll("%20"," ")
-    .replaceAll("%3D","=")
-    .replaceAll("%3A",":")
-    .replaceAll("%2F","/")
-    .replaceAll("%2C",",");
+  const encoded=encodeURIComponent(svg)
+    .replaceAll("%0A","").replaceAll("%20"," ")
+    .replaceAll("%3D","=").replaceAll("%3A",":")
+    .replaceAll("%2F","/").replaceAll("%2C",",");
 
   return "data:image/svg+xml;charset=utf-8," + encoded;
 }
 
-/* ---------------- Answer Parsing ---------------- */
+/* time parsing for answer: number (minutes/seconds) OR "HH:MM" */
 function parseAnswer(str){
   const s=(str||"").trim();
   if(s==="") return NaN;
-  const n=Number(s);
-  return Number.isFinite(n) ? n : NaN;
-}
-function nearlyEqual(a,b,eps=1e-9){
-  if(!Number.isFinite(a)||!Number.isFinite(b)) return false;
-  return Math.abs(a-b)<eps;
-}
 
-/* ---------------- Counting Helper ---------------- */
-function countWaysLimited(denoms, limits, target){
-  let count = 0;
-  function dfs(i, remaining){
-    if(i === denoms.length){
-      if(remaining === 0) count++;
-      return;
-    }
-    const d = denoms[i];
-    const maxUse = Math.min(limits[i], Math.floor(remaining / d));
-    for(let k=0;k<=maxUse;k++){
-      dfs(i+1, remaining - k*d);
-    }
+  const m=s.match(/^(\d{1,2})\s*:\s*(\d{2})$/);
+  if(m){
+    const hh=Number(m[1]), mm=Number(m[2]);
+    if(hh<0||hh>23||mm<0||mm>59) return NaN;
+    return {type:"time", hh, mm};
   }
-  dfs(0, target);
-  return count;
+
+  const n=Number(s);
+  return Number.isFinite(n) ? {type:"num", n} : NaN;
+}
+function ansEquals(user, expected){
+  if(!user || !expected || typeof user!=="object" || typeof expected!=="object") return false;
+  if(user.type!==expected.type) return false;
+  if(user.type==="num") return user.n===expected.n;
+  return user.hh===expected.hh && user.mm===expected.mm;
 }
 
-/* ---------------- Question Generators ---------------- */
-function genEasyWaysDollars_10_5_1(){
-  const who = choice(["Mia","Noah","Emma","Jack","Ava","Leo","Sophie","Tom"]);
-  const price = randInt(12, 28);
+/* ---------------- Generators ---------------- */
+function genElapsedMinutes(){
+  let h1=randInt(1, 11);
+  let m1=randInt(0, 59);
+  let add=randInt(12, 55);
+  let total=m1+add;
+  let h2=h1 + Math.floor(total/60);
+  let m2=total%60;
 
-  const l10 = randInt(1, 3);
-  const l5  = randInt(2, 6);
-  const l1  = randInt(6, 12);
+  if(h2>11) { h1=randInt(1, 10); m1=randInt(0, 50); add=randInt(10, 40); total=m1+add; h2=h1+Math.floor(total/60); m2=total%60; }
 
-  const ways = countWaysLimited([10,5,1],[l10,l5,l1], price);
-  if(ways < 2 || ways > 40) return genEasyWaysDollars_10_5_1();
-
-  const lines = [
-    `${who} wants to buy an item that costs ${moneyDollars(price)}.`,
-    `${who} has ${l10} ten-dollar bills, ${l5} five-dollar bills, and ${l1} one-dollar bills.`,
-    `Without getting any change, how many different ways can ${who} pay exactly?`
+  const lines=[
+    `A student starts homework at ${h1}:${pad2(m1)} pm.`,
+    `They finish at ${h2}:${pad2(m2)} pm.`,
+    `How many minutes did they spend?`
   ];
-
   return {
-    img: makeSvgQuestionImage(lines, "Money Problems"),
-    value: ways,
-    hint: "Hint: Try choosing how many ten-dollar bills to use first. For each choice, try the possible number of five-dollar bills, and then see whether the one-dollar bills can finish the exact amount."
+    img: makeSvgQuestionImage(lines, "Time Problems"),
+    value: {type:"num", n:add},
+    hint: "Hint: Count minutes forward. If you pass the next hour, add (60 − start minutes) first, then the remaining minutes."
   };
 }
 
-function genEasyWaysDollars_5_2_1(){
-  const who = choice(["Lily","Ben","Chloe","Nina","Ryan","Ethan","Sam","Chris"]);
-  const price = randInt(6, 18);
+function genElapsedSeconds(){
+  const h=randInt(8, 11);
+  const m1=randInt(10, 54);
+  const s1=randInt(10, 50);
+  const addSec=randInt(40, 280);
+  let t1 = h*3600 + m1*60 + s1;
+  let t2 = t1 + addSec;
+  const h2=Math.floor(t2/3600);
+  const m2=Math.floor((t2%3600)/60);
+  const s2=t2%60;
 
-  const l5 = randInt(1, 5);
-  const l2 = randInt(2, 8);
-  const l1 = randInt(3, 10);
-
-  const ways = countWaysLimited([5,2,1],[l5,l2,l1], price);
-  if(ways < 2 || ways > 60) return genEasyWaysDollars_5_2_1();
-
-  const lines = [
-    `${who} wants to buy a snack that costs ${moneyDollars(price)}.`,
-    `${who} has ${l5} five-dollar bills, ${l2} two-dollar coins, and ${l1} one-dollar coins.`,
-    `Without getting any change, how many different ways can ${who} pay exactly?`
+  const lines=[
+    `A computer log shows the start time is ${h}:${pad2(m1)}:${pad2(s1)} am.`,
+    `The shutdown time is ${h2}:${pad2(m2)}:${pad2(s2)} am.`,
+    `How many seconds passed from start to shutdown?`
   ];
-
   return {
-    img: makeSvgQuestionImage(lines, "Money Problems"),
-    value: ways,
-    hint: "Hint: Start with the largest value money. List the possible choices for that, then test the next value, and keep going until you check all possibilities."
+    img: makeSvgQuestionImage(lines, "Time Problems"),
+    value: {type:"num", n:addSec},
+    hint: "Hint: Work in seconds. Convert both times to seconds from 00:00, then subtract."
   };
 }
 
-function genMediumWaysCents_50_20_10_5(){
-  const who = choice(["Mia","Noah","Emma","Jack","Ava","Leo"]);
-  const priceC = choice([85, 95, 105, 115, 125, 135, 145, 155, 165]);
+function genFindStartTime(){
+  const hh=randInt(13, 18);
+  const mm=randInt(5, 55);
+  const travel=randInt(12, 45);
 
-  const l50 = randInt(0, 3);
-  const l20 = randInt(2, 8);
-  const l10 = randInt(2, 10);
-  const l5  = randInt(4, 16);
+  let endMins=hh*60+mm;
+  let startMins=endMins - travel;
+  const sh=Math.floor(startMins/60);
+  const sm=startMins%60;
 
-  const ways = countWaysLimited([50,20,10,5],[l50,l20,l10,l5], priceC);
-  if(ways < 1 || ways > 80) return genMediumWaysCents_50_20_10_5();
-
-  const lines = [
-    `${who} wants to buy a drink that costs ${moneyCents(priceC)}.`,
-    `${who} has ${l50} fifty-cent coins, ${l20} twenty-cent coins, ${l10} ten-cent coins, and ${l5} five-cent coins.`,
-    `Without getting any change, how many different ways can ${who} pay exactly?`
+  const lines=[
+    `A child arrives at a friend's house at ${hh}:${pad2(mm)}.`,
+    `The trip takes ${travel} minutes.`,
+    `What time did the child leave home? (Write as HH:MM)`
   ];
-
   return {
-    img: makeSvgQuestionImage(lines, "Money Problems"),
-    value: ways,
-    hint: "Hint: Work in cents so you only deal with whole numbers. Choose how many larger coins to use, then check whether smaller coins can complete the exact total."
+    img: makeSvgQuestionImage(lines, "Time Problems"),
+    value: {type:"time", hh:sh, mm:sm},
+    hint: "Hint: Count backward. Subtract minutes first. If you need to borrow 1 hour, add 60 minutes and subtract."
   };
 }
 
-function genMediumWaysDollarsAndCents(){
-  const who = choice(["Sophie","Tom","Lily","Ben","Chloe","Nina"]);
-  const priceC = choice([205, 215, 225, 235, 245, 255, 265, 275]);
+function genFindEndTime(){
+  const hh=randInt(6, 11);
+  const mm=randInt(0, 55);
+  const dur=randInt(25, 95);
+  const start=hh*60+mm;
+  const end=start+dur;
+  const eh=Math.floor(end/60);
+  const em=end%60;
 
-  const l200 = randInt(0, 2);
-  const l100 = randInt(1, 5);
-  const l50  = randInt(0, 4);
-  const l20  = randInt(2, 10);
-  const l10  = randInt(2, 10);
-  const l5   = randInt(4, 18);
-
-  const denoms = [200,100,50,20,10,5];
-  const limits = [l200,l100,l50,l20,l10,l5];
-
-  const ways = countWaysLimited(denoms, limits, priceC);
-  if(ways < 1 || ways > 120) return genMediumWaysDollarsAndCents();
-
-  const lines = [
-    `${who} wants to buy a small toy that costs ${moneyCents(priceC)}.`,
-    `${who} has ${l200} two-dollar coins, ${l100} one-dollar coins, ${l50} fifty-cent coins,`,
-    `${l20} twenty-cent coins, ${l10} ten-cent coins, and ${l5} five-cent coins.`,
-    `Without getting any change, how many different ways can ${who} pay exactly?`
+  const lines=[
+    `A lesson starts at ${hh}:${pad2(mm)} am.`,
+    `It lasts ${dur} minutes.`,
+    `What time does it end? (Write as HH:MM)`
   ];
-
   return {
-    img: makeSvgQuestionImage(lines, "Money Problems"),
-    value: ways,
-    hint: "Hint: Use a clear order: try the two-dollar coins first, then one-dollar coins, then the cent coins. Make a simple list for each choice so you do not miss any possibilities."
+    img: makeSvgQuestionImage(lines, "Time Problems"),
+    value: {type:"time", hh:eh, mm:em},
+    hint: "Hint: Add minutes. If minutes reach 60 or more, convert 60 minutes into 1 hour."
   };
 }
 
-function genHardWaysBills_20_10_5(){
-  const who = choice(["Mia","Noah","Emma","Jack","Ava","Leo","Sophie","Tom"]);
-  const price = choice([35, 40, 45, 50, 55]);
+function genAcrossDaysMinutes(){
+  const depH=randInt(18, 23);
+  const depM=randInt(0, 59);
+  const arrH=randInt(5, 11);
+  const arrM=randInt(0, 59);
 
-  const l20 = randInt(1, 3);
-  const l10 = randInt(2, 6);
-  const l5  = randInt(3, 10);
+  const dep=depH*60+depM;
+  const arr=(24*60) + (arrH*60+arrM);
+  const diff=arr-dep;
 
-  const ways = countWaysLimited([20,10,5],[l20,l10,l5], price);
-  if(ways < 1 || ways > 30) return genHardWaysBills_20_10_5();
-
-  const lines = [
-    `${who} wants to buy a backpack that costs ${moneyDollars(price)}.`,
-    `${who} has ${l20} twenty-dollar bills, ${l10} ten-dollar bills, and ${l5} five-dollar bills.`,
-    `Without getting any change, how many different ways can ${who} pay exactly?`
+  const lines=[
+    `A train leaves at ${depH}:${pad2(depM)}.`,
+    `It arrives the next day at ${arrH}:${pad2(arrM)}.`,
+    `How many minutes does the trip take?`
   ];
-
   return {
-    img: makeSvgQuestionImage(lines, "Money Problems"),
-    value: ways,
-    hint: "Hint: Because each bill has a fixed value, you can list possible numbers of twenty-dollar bills first, then see what totals are left for ten-dollar bills and five-dollar bills."
+    img: makeSvgQuestionImage(lines, "Time Problems"),
+    value: {type:"num", n:diff},
+    hint: "Hint: Split into two parts: from departure to midnight, then from midnight to arrival. Add the minutes."
   };
 }
 
-function genHardFixedNumberOfBillsAskOnes(){
-  const who = choice(["Alex","Nina","Ryan","Chloe","Sam","Ben","Lily","Emma"]);
+function genLongDurationMinutes(){
+  const startH=randInt(15, 19);
+  const startM=randInt(0, 59);
+  const hours=randInt(2, 6);
+  const mins=randInt(10, 55);
+  const total=hours*60+mins;
 
-  const lines = [
-    `A toy costs ${moneyDollars(20)}.`,
-    `${who} pays exactly using only ten-dollar bills, five-dollar bills, and one-dollar bills.`,
-    `${who} uses a total of 7 bills.`,
-    `How many one-dollar bills does ${who} use?`
+  const lines=[
+    `A project starts at ${startH}:${pad2(startM)}.`,
+    `It lasts ${hours} hour(s) and ${mins} minute(s).`,
+    `How many minutes is that in total?`
   ];
-
   return {
-    img: makeSvgQuestionImage(lines, "Money Problems"),
-    value: 5,
-    hint: "Hint: Think about what total the ten-dollar and five-dollar bills can make first. Then the remaining amount must be paid with one-dollar bills, and the total number of bills must be seven."
+    img: makeSvgQuestionImage(lines, "Time Problems"),
+    value: {type:"num", n:total},
+    hint: "Hint: Convert hours to minutes (hours × 60), then add the extra minutes."
   };
 }
 
@@ -458,22 +414,22 @@ function generateQuiz(){
   quizSubmitted=false;
 
   const built = [
-    genEasyWaysDollars_10_5_1(),
-    genEasyWaysDollars_5_2_1(),
-    genMediumWaysCents_50_20_10_5(),
-    genMediumWaysDollarsAndCents(),
-    genHardWaysBills_20_10_5(),
-    genHardFixedNumberOfBillsAskOnes()
+    genElapsedMinutes(),
+    genElapsedSeconds(),
+    genFindStartTime(),
+    genFindEndTime(),
+    genAcrossDaysMinutes(),
+    genLongDurationMinutes()
   ];
 
   for(let i=0;i<built.length;i++){
-    const partIndex = Math.floor(i / QUESTIONS_PER_PART);
-    const indexInPart = i % QUESTIONS_PER_PART;
+    const partIndex=Math.floor(i/QUESTIONS_PER_PART);
+    const indexInPart=i%QUESTIONS_PER_PART;
     questions.push({
       partIndex,
       indexInPart,
       img: built[i].img,
-      value: built[i].value,
+      expected: built[i].value,
       hint: built[i].hint,
       userValue:"",
       isCorrect:false
@@ -489,7 +445,7 @@ function renderSidebar(){
   for(let i=0;i<TOTAL_QUESTIONS;i++){
     const q=questions[i];
     const li=document.createElement("li");
-    const label=["Easy","Medium","Hard"][q.partIndex] + (q.indexInPart+1);
+    const label=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
     li.textContent=`Q${i+1} (${label})`;
     li.dataset.index=i;
     li.addEventListener("click",()=>{
@@ -521,14 +477,14 @@ function updateSidebarStatus(){
 
 /* ---------------- Helpers ---------------- */
 function gradeOneQuestion(i){
-  const q = questions[i];
-  const val = parseAnswer(q.userValue || "");
-  q.isCorrect = nearlyEqual(val, q.value);
+  const q=questions[i];
+  const user=parseAnswer(q.userValue||"");
+  q.isCorrect=ansEquals(user, q.expected);
 }
 function saveCurrentInput(){
   const input=document.getElementById("answerInput");
   if(input){
-    questions[currentQuestionIndex].userValue = input.value.trim();
+    questions[currentQuestionIndex].userValue=input.value.trim();
     if(quizSubmitted){
       gradeOneQuestion(currentQuestionIndex);
       updateSidebarStatus();
@@ -547,7 +503,7 @@ function renderQuestion(){
   const q=questions[currentQuestionIndex];
   const levelLabel=["Easy","Medium","Hard"][q.partIndex];
   const fullLabel=`${levelLabel} — Question ${q.indexInPart+1}`;
-  const hasHint = (q.hint||"").trim() !== "";
+  const hasHint=(q.hint||"").trim()!=="";
 
   quizContent.innerHTML=`
     <p class="question-text">Question ${currentQuestionIndex+1} of ${TOTAL_QUESTIONS}</p>
@@ -561,8 +517,10 @@ function renderQuestion(){
       </div>
 
       <div class="answer-row">
-        <div style="font-weight:700;">Answer (number):</div>
-        <input id="answerInput" class="answer-box" type="text" inputmode="numeric" placeholder="e.g., 3" value="${q.userValue||""}">
+        <div style="font-weight:700;">Answer:</div>
+        <input id="answerInput" class="answer-box" type="text"
+               placeholder="Minutes: 39   OR   Time: 15:48"
+               value="${q.userValue||""}">
       </div>
 
       <div id="checkFeedback" style="display:none;"></div>
@@ -589,19 +547,24 @@ function renderQuestion(){
   }
 
   backButton.style.display="inline-block";
-  backButton.style.visibility = (currentQuestionIndex===0) ? "hidden" : "visible";
+  backButton.style.visibility=(currentQuestionIndex===0)?"hidden":"visible";
 
-  const isLast = (currentQuestionIndex===TOTAL_QUESTIONS-1);
-  nextButton.style.display = isLast ? "none" : "inline-block";
-  submitButton.style.display = isLast ? "inline-block" : "none";
+  const isLast=(currentQuestionIndex===TOTAL_QUESTIONS-1);
+  nextButton.style.display=isLast?"none":"inline-block";
+  submitButton.style.display=isLast?"inline-block":"none";
 
-  saveButton.style.display = quizSubmitted ? "inline-block" : "none";
-  checkButton.style.display = (quizSubmitted && !q.isCorrect) ? "inline-block" : "none";
+  saveButton.style.display=quizSubmitted?"inline-block":"none";
+  checkButton.style.display=(quizSubmitted && !q.isCorrect)?"inline-block":"none";
 
   updateSidebarStatus();
 }
 
 /* ---------------- Results + Submit ---------------- */
+function expectedToText(exp){
+  if(!exp || typeof exp!=="object") return "—";
+  if(exp.type==="num") return String(exp.n);
+  return `${exp.hh}:${pad2(exp.mm)}`;
+}
 function calculateAndShowResults(){
   saveCurrentInput();
 
@@ -616,8 +579,8 @@ function calculateAndShowResults(){
 
   let correctCount=0;
   questions.forEach(q=>{
-    const val=parseAnswer(q.userValue||"");
-    q.isCorrect=nearlyEqual(val, q.value);
+    const user=parseAnswer(q.userValue||"");
+    q.isCorrect=ansEquals(user,q.expected);
     if(q.isCorrect) correctCount++;
   });
 
@@ -630,7 +593,6 @@ function calculateAndShowResults(){
     <p>Submit time: <strong>${quizEndTime.toLocaleTimeString()}</strong></p>
     <p>Time taken (this attempt): <strong>${formatMs(attemptMs)}</strong></p>
     <p>First attempt time: <strong>${formatMs(firstAttemptMs)}</strong></p>
-    <p>Click question numbers on the left to review. Incorrect questions will have a <strong>Check</strong> button.</p>
 
     <table class="review-table">
       <tr>
@@ -639,7 +601,7 @@ function calculateAndShowResults(){
   `;
 
   questions.forEach((q,i)=>{
-    const partLbl=["Easy","Medium","Hard"][q.partIndex] + (q.indexInPart+1);
+    const partLbl=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
     const ua=(q.userValue||"").trim();
     html+=`
       <tr class="${q.isCorrect ? "correct-answer":"incorrect-answer"}">
@@ -647,7 +609,7 @@ function calculateAndShowResults(){
         <td>${partLbl}</td>
         <td><img class="thumb" src="${q.img}" alt="Q${i+1}"></td>
         <td>${ua==="" ? "—" : ua}</td>
-        <td><strong>${q.value}</strong></td>
+        <td><strong>${expectedToText(q.expected)}</strong></td>
         <td>${ua==="" ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
       </tr>
     `;
@@ -690,11 +652,9 @@ submitButton.addEventListener("click", ()=>{
     calculateAndShowResults();
   }
 });
-
-/* Check (after submit) */
 checkButton.addEventListener("click", ()=>{
   saveCurrentInput();
-  const q = questions[currentQuestionIndex];
+  const q=questions[currentQuestionIndex];
   if(!quizSubmitted) return;
 
   gradeOneQuestion(currentQuestionIndex);
@@ -707,11 +667,11 @@ checkButton.addEventListener("click", ()=>{
   box.style.display="block";
 
   if(q.isCorrect){
-    box.innerHTML = `✅ Correct!`;
-    checkButton.style.display = "none";
+    box.innerHTML=`✅ Correct!`;
+    checkButton.style.display="none";
   }else{
-    box.innerHTML = `❌ Incorrect. Correct answer: <strong>${q.value}</strong>`;
-    checkButton.style.display = "inline-block";
+    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${expectedToText(q.expected)}</strong>`;
+    checkButton.style.display="inline-block";
   }
 });
 
@@ -727,23 +687,21 @@ function saveCurrentResultAsTxt(){
 
   if(!quizSubmitted){
     questions.forEach(q=>{
-      const val=parseAnswer(q.userValue||"");
-      q.isCorrect=nearlyEqual(val,q.value);
+      const user=parseAnswer(q.userValue||"");
+      q.isCorrect=ansEquals(user,q.expected);
     });
   }
   let correctCount=0;
   questions.forEach(q=>{ if(q.isCorrect) correctCount++; });
 
   const lines=[];
-  lines.push("Money Problems (Image Quiz) - Current Result");
+  lines.push("Time Problems (Image Quiz) - Current Result");
   lines.push("Student: "+studentName);
   if(quizStartTime) lines.push("Start time: "+quizStartTime.toLocaleString());
   if(quizEndTime) lines.push("Last submit time: "+quizEndTime.toLocaleString());
   lines.push("Score: "+correctCount+" / "+TOTAL_QUESTIONS);
   if(firstAttemptMs!==null) lines.push("First attempt time: "+formatMs(firstAttemptMs));
   lines.push("");
-  lines.push("Details:");
-  lines.push("----------");
 
   questions.forEach((q,i)=>{
     const partLbl=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
@@ -751,7 +709,7 @@ function saveCurrentResultAsTxt(){
     const resultText=(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect?"Correct":"Incorrect");
     lines.push(`Q${i+1} (${partLbl})`);
     lines.push("Your answer: "+userAns);
-    lines.push("Correct answer: "+q.value);
+    lines.push("Correct answer: "+expectedToText(q.expected));
     lines.push("Result: "+resultText);
     lines.push("");
   });
@@ -763,7 +721,7 @@ function saveCurrentResultAsTxt(){
   const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
   const ts=formatDateForFilename(new Date());
   a.href=url;
-  a.download=`MoneyQuiz_${safeName}_${ts}.txt`;
+  a.download=`TimeProblems_${safeName}_${ts}.txt`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -795,7 +753,7 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
-/* ---- Export questions PDF: 2 questions per page, DYAA header ---- */
+/* ---- Export Questions PDF (2 questions per page) ---- */
 exportQuestionsBtn.addEventListener("click", async () => {
   if (!questions || questions.length === 0) {
     alert("Please start a quiz first.");
@@ -875,15 +833,15 @@ exportQuestionsBtn.addEventListener("click", async () => {
 
   const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_") || "Student";
   const ts = formatDateForFilename(new Date());
-  pdf.save(`MoneyQuestions_${safeName}_${ts}.pdf`);
+  pdf.save(`TimeQuestions_${safeName}_${ts}.pdf`);
 
   document.body.removeChild(wrapper);
 });
 
 /* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
 function getNameFromUrl(){
-  const url = new URL(window.location.href);
-  const name = url.searchParams.get("name");
+  const url=new URL(window.location.href);
+  const name=url.searchParams.get("name");
   return name ? name.trim() : "";
 }
 function showStartScreen(){
@@ -900,20 +858,25 @@ function showStartScreen(){
   quizStartTime=null; quizEndTime=null;
   updateTimerDisplay();
 
-  const preset = getNameFromUrl();
+  const preset=getNameFromUrl();
   if(preset){
-    studentName = preset;
-    studentLine.textContent = `Student: ${studentName}`;
+    studentName=preset;
+    studentLine.textContent=`Student: ${studentName}`;
     startQuiz(true);
     return;
   }
 
   quizContent.innerHTML=`
-    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> money word problems:</p>
+    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> time problems:</p>
     <ul style="margin-top:6px;color:#555;line-height:1.7;">
       <li><strong>Part 1 (Easy):</strong> 2 questions</li>
       <li><strong>Part 2 (Medium):</strong> 2 questions</li>
       <li><strong>Part 3 (Hard):</strong> 2 questions</li>
+    </ul>
+    <p style="margin-top:10px;">Answer format:</p>
+    <ul style="margin-top:6px;color:#555;line-height:1.7;">
+      <li>If the question asks for <strong>minutes/seconds</strong>, type a <strong>number</strong>.</li>
+      <li>If the question asks for a <strong>time</strong>, type <strong>HH:MM</strong> (e.g., 15:48).</li>
     </ul>
     <p style="margin-top:10px;">Please enter your name to begin:</p>
 
@@ -933,7 +896,7 @@ function startQuiz(skipReadName){
     const nameInput=document.getElementById("nameInput");
     studentName=(nameInput.value || "Student").trim();
   }
-  studentLine.textContent = `Student: ${studentName}`;
+  studentLine.textContent=`Student: ${studentName}`;
 
   quizStartTime=new Date();
   elapsedMs=0; isPaused=false; firstAttemptMs=null;
