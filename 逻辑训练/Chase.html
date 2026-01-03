@@ -1154,67 +1154,7 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
 
   const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
   const ts=formatDateForFilename(new Date());
-async function downloadPdfIOSFriendly(pdf, filename){
-  // Make a Blob from jsPDF
-  const blob = pdf.output("blob"); // application/pdf
-  const file = new File([blob], filename, { type: "application/pdf" });
-
-  // 1) iOS best path: Share sheet (Save to Files / AirDrop / etc.)
-  // Works in Safari iOS 13+ (depends on context), very reliable for "not opening preview"
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-  if (isIOS && navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
-    try {
-      await navigator.share({
-        files: [file],
-        title: filename,
-        text: "PDF Export"
-      });
-      return; // Done (user chooses Save to Files etc.)
-    } catch (e) {
-      // user cancelled or share failed -> fallback to download
-    }
-  }
-
-  // 2) Standard download via ObjectURL + <a download>
-  const url = URL.createObjectURL(blob);
-
-  // Some iOS versions ignore download attribute and open preview.
-  // Still better than pdf.save() in many cases.
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.rel = "noopener";
-  a.style.display = "none";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
-  // 3) iOS fallback: open in a new tab so user can use Share/Save
-  // If Safari ignored download and didn't start downloading, opening helps.
-  if (isIOS) {
-    setTimeout(() => {
-      try { window.open(url, "_blank"); } catch(_) {}
-    }, 200);
-  }
-
-  setTimeout(() => URL.revokeObjectURL(url), 4000);
-}
-
-/* --- your export click handler end part --- */
-exportQuestionsBtn.addEventListener("click", async ()=>{
-  // ... your existing code ...
-
-  const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
-  const ts=formatDateForFilename(new Date());
-  const filename = `ChasingProblems_Questions_${safeName}_Set${setCounter}_${ts}.pdf`;
-
-  // ✅ replace pdf.save(...)
-  await downloadPdfIOSFriendly(pdf, filename);
-
-  // ... your finally cleanup ...
-});
-
+  pdf.save(`ChasingProblems_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
 });
 
 /* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
@@ -1292,5 +1232,6 @@ function startQuiz(skipReadName){
 /* ---------------- Init ---------------- */
 showStartScreen();
 </script>
+<script src="./patch-jspdf-save.js"></script>
 </body>
 </html>
