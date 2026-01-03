@@ -1015,6 +1015,59 @@ function addCanvasAutoPagedToPdf(pdf, canvas, marginMm = 10){
   }
 }
 
+function loadImage(src){
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+}
+
+// Convert (svg/png) dataURL to a smaller JPEG dataURL (mobile-friendly)
+async function toJpegDataUrl(src, targetWidthPx = 1400, quality = 0.88){
+  const img = await loadImage(src);
+  if(!img || !img.naturalWidth) return null;
+
+  const scale = Math.min(1, targetWidthPx / img.naturalWidth);
+  const w = Math.max(1, Math.round(img.naturalWidth * scale));
+  const h = Math.max(1, Math.round(img.naturalHeight * scale));
+
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+
+  // white background (important for JPEG)
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, w, h);
+  ctx.drawImage(img, 0, 0, w, h);
+
+  return canvas.toDataURL("image/jpeg", quality);
+}
+
+function addHeader(pdf, title, setCounter, x, y, w){
+  // DYAA mini logo + title
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(12);
+  pdf.text("DYAA EDUCATION", x, y);
+
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(14);
+  pdf.text(title, x, y + 7);
+
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(11);
+  pdf.text(`Questions (Set ${setCounter})`, x, y + 13);
+
+  // line
+  pdf.setDrawColor(220);
+  pdf.line(x, y + 16, x + w, y + 16);
+
+  return y + 22; // next baseline
+}
+
 exportQuestionsBtn.addEventListener("click", async ()=>{
   if(!questions || questions.length===0){
     alert("Please start a quiz first.");
@@ -1023,90 +1076,85 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
 
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF("p","mm","a4");
+  const pageW = pdf.internal.pageSize.getWidth();
+  const pageH = pdf.internal.pageSize.getHeight();
 
-  // offscreen wrapper
-  const wrapper = document.createElement("div");
-  wrapper.style.position = "fixed";
-  wrapper.style.left = "0";
-  wrapper.style.top = "0";
-  wrapper.style.opacity = "0";
-  wrapper.style.pointerEvents = "none";
-  wrapper.style.zIndex = "-1";
+  const margin = 10;
+  const contentW = pageW - margin * 2;
 
-  // ✅ Force a stable “desktop-like” layout width for export
-  wrapper.style.width = "820px";
-  wrapper.style.background = "#ffffff";
+  const title = "Chasing Problems (Pursuit)";
 
-  document.body.appendChild(wrapper);
+  let y = margin;
 
-  try{
-    let groupDiv = null;
+  // header on first page
+  y = addHeader(pdf, title, setCounter, margin, y, contentW);
 
-    questions.forEach((q, idx)=>{
-      if(idx % 2 === 0){
-        groupDiv = document.createElement("div");
-        groupDiv.style.padding = "18px";
-        groupDiv.style.marginBottom = "18px";
-        groupDiv.style.boxSizing = "border-box";
+  for(let i=0;i<questions.length;i++){
+    const q = questions[i];
 
-        const header = document.createElement("div");
-        header.innerHTML = `
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-            <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
-              <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
-            </div>
-            <div style="display:flex;flex-direction:column;line-height:1.1;">
-              <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
-              <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
-            </div>
-          </div>
-          <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
-          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Chasing Problems (Pursuit)</div>
-          <div style="color:#546e7a;font-weight:800;margin:0 0 10px 0;">Questions (Set ${setCounter})</div>
-        `;
-        groupDiv.appendChild(header);
-        wrapper.appendChild(groupDiv);
+    // Q label
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(12);
+    const qLabel = `Q${i+1}`;
+    const qLabelH = 6;
+
+    // Convert question image to JPEG (smaller & mobile-safe)
+    const jpeg = await toJpegDataUrl(q.img, 1400, 0.88);
+    if(!jpeg){
+      // fallback text if image failed
+      if(y + qLabelH + 10 > pageH - margin){
+        pdf.addPage();
+        y = margin;
+        y = addHeader(pdf, title, setCounter, margin, y, contentW);
       }
-
-      const qDiv = document.createElement("div");
-      qDiv.style.marginBottom = "16px";
-      qDiv.innerHTML = `
-        <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx+1}</div>
-        <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;box-sizing:border-box;">
-          <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;display:block;" />
-        </div>
-      `;
-      groupDiv.appendChild(qDiv);
-    });
-
-    const groups = Array.from(wrapper.children);
-
-    for(let i=0;i<groups.length;i++){
-      await waitForImages(groups[i]);
-
-      // ✅ Important: force desktop viewport in html2canvas clone to avoid mobile media-query layout
-      const canvas = await html2canvas(groups[i], {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: "#ffffff",
-        windowWidth: 980,
-        windowHeight: 1600,
-        scrollX: 0,
-        scrollY: 0
-      });
-
-      if(i > 0) pdf.addPage();
-
-      // ✅ No cropping: auto paginate if the canvas is taller than one PDF page
-      addCanvasAutoPagedToPdf(pdf, canvas, 10);
+      pdf.text(qLabel + " (image failed to load)", margin, y);
+      y += 10;
+      continue;
     }
 
-    const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
-    const ts=formatDateForFilename(new Date());
-    pdf.save(`ChasingProblems_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
-  } finally {
-    document.body.removeChild(wrapper);
+    // Need image dimensions to keep aspect ratio
+    const imgObj = await loadImage(jpeg);
+    const ratio = imgObj.naturalHeight / imgObj.naturalWidth;
+    const imgWmm = contentW;
+    const imgHmm = imgWmm * ratio;
+
+    // Card paddings
+    const cardPad = 3;
+    const cardTopGap = 2;
+    const cardBottomGap = 6;
+
+    // If not fit, new page + header
+    const neededH = qLabelH + cardTopGap + imgHmm + cardPad*2 + cardBottomGap;
+    if(y + neededH > pageH - margin){
+      pdf.addPage();
+      y = margin;
+      y = addHeader(pdf, title, setCounter, margin, y, contentW);
+    }
+
+    // draw Q label
+    pdf.text(qLabel, margin, y);
+    y += qLabelH;
+
+    // draw card border
+    const cardX = margin;
+    const cardY = y + cardTopGap;
+    const cardW = contentW;
+    const cardH = imgHmm + cardPad*2;
+
+    pdf.setDrawColor(229);
+    pdf.setFillColor(255,255,255);
+    pdf.roundedRect(cardX, cardY, cardW, cardH, 2.5, 2.5, "S");
+
+    // add image in card
+    pdf.addImage(jpeg, "JPEG", cardX + cardPad, cardY + cardPad, cardW - cardPad*2, imgHmm);
+
+    // move cursor
+    y = cardY + cardH + cardBottomGap;
   }
+
+  const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+  const ts=formatDateForFilename(new Date());
+  pdf.save(`ChasingProblems_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
 });
 
 /* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
