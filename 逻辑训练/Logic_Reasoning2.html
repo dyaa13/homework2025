@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Logic Reasoning Problems (List Method) – Image Quiz</title>
+
+  <style>
+    body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f4f9;margin:0;padding:20px;color:#333;}
+    .quiz-container{max-width:900px;margin:40px auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 6px 15px rgba(0,0,0,0.1);}
+    #headerLogo{display:flex;align-items:center;gap:12px;margin-bottom:10px;border-bottom:2px solid #e0e0e0;padding-bottom:10px;}
+    .logo-icon{width:40px;height:40px;background:#0d47a1;border-radius:6px;position:relative;}
+    .logo-icon:before{content:"";position:absolute;width:20px;height:9px;background:#ff9800;top:-6px;left:20px;border-radius:3px;}
+    .logo-text{display:flex;flex-direction:column;line-height:1.1;}
+    .logo-text .brand{font-weight:900;letter-spacing:1px;color:#ff9800;}
+    .logo-text .edu{font-size:.9em;color:#0d47a1;font-weight:700;}
+
+    .top-bar{display:flex;justify-content:space-between;align-items:center;margin:10px 0 6px 0;gap:10px;flex-wrap:wrap;}
+    #timerDisplay{font-size:.95em;color:#333;}
+    #studentLine{font-size:.95em;color:#555;}
+    #setLine{font-size:.9em;color:#777;margin-top:2px;}
+
+    .quiz-main{display:flex;gap:20px;margin-top:10px;}
+    .sidebar{width:160px;border-right:1px solid #ddd;padding-right:10px;display:none;}
+    .sidebar h4{margin:0 0 8px;font-size:.95em;border-bottom:1px solid #eee;padding-bottom:4px;}
+    .sidebar ul{list-style:none;padding:0;margin:0;}
+    .sidebar li{padding:6px;cursor:pointer;border-radius:6px;font-size:.9em;margin-bottom:6px;border:1px solid #eee;background:#fafafa;}
+    .sidebar li.active{outline:2px solid #1976d2;font-weight:700;background:#fff;}
+    .sidebar li.answered{border-left:5px solid #4caf50;}
+    .sidebar li.correct{background:#d4edda;border-left:5px solid #28a745;border-color:#cbe7d1;}
+    .sidebar li.incorrect{background:#f8d7da;border-left:5px solid #f44336;border-color:#f1c7cc;}
+
+    #quizContent{flex:1;}
+    .question-text{font-size:1.05em;margin-bottom:8px;}
+    .part-title{font-weight:800;margin:8px 0 10px 0;}
+    .single-question{margin:6px 0;line-height:1.7;}
+    .answer-row{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+    .answer-box{width:520px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
+    .answer-help{font-size:.92em;color:#666;margin-top:6px;line-height:1.45;}
+
+    .img-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px;box-shadow:0 3px 8px rgba(0,0,0,0.05);max-width:100%;}
+    .q-img{width:100%;height:auto;display:block;border-radius:10px;}
+
+    .hint-row{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    .hint-btn{background:#ff9800;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:0.95em;}
+    .hint-btn:disabled{opacity:.55;cursor:not-allowed;}
+    .hint{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;white-space:pre-line;}
+    .hint-diagram-wrap{margin-top:10px;border:1px solid #ffe0b2;background:#ffffff;border-radius:10px;padding:10px;}
+    .hint-diagram-wrap img{width:100%;height:auto;display:block;border-radius:8px;}
+
+    .button-container{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;}
+    button{padding:10px 18px;border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:1em;}
+    #nextButton{background:#4caf50;}
+    #backButton{background:#039be5;}
+    #generateButton{background:#ff9800;}
+    #submitButton{background:#9c27b0;}
+    #saveButton{background:#607d8b;}
+    #pauseButton{background:#f57c00;}
+    #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
+    button:disabled{opacity:.55;cursor:not-allowed;}
+
+    .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
+
+    table.review-table{width:100%;border-collapse:collapse;margin-top:18px;}
+    .review-table th,.review-table td{border:1px solid #ccc;padding:6px;font-size:.85em;text-align:center;vertical-align:top;}
+    .review-table th{background:#f2f2f2;}
+    .correct-answer{background:#d4edda;}
+    .incorrect-answer{background:#f8d7da;}
+    .thumb{width:160px;max-width:160px;height:auto;border-radius:8px;border:1px solid #ddd;background:#fff;}
+
+    @media (max-width:760px){
+      .quiz-main{flex-direction:column;}
+      .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
+      .thumb{width:120px;max-width:120px;}
+      .answer-box{width:100%;}
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text">
+      <div class="brand">DYAA</div>
+      <div class="edu">EDUCATION</div>
+    </div>
+  </div>
+
+  <div class="top-bar">
+    <div>
+      <div id="timerDisplay">Time: 00:00</div>
+      <div id="studentLine"></div>
+      <div id="setLine"></div>
+    </div>
+    <div>
+      <button id="pauseButton" style="display:none;">Pause</button>
+      <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
+    </div>
+  </div>
+
+  <h2 style="margin:6px 0 0 0;">Lesson 37: Logic Reasoning Problems (2) — List Method</h2>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+
+  <div id="navButtons" class="button-container" style="display:none;">
+    <button id="backButton" style="display:none;">Previous</button>
+    <button id="submitButton" style="display:none;">Submit &amp; View Results</button>
+    <button id="nextButton" style="display:none;">Next</button>
+    <button id="checkButton" style="display:none;">Check</button>
+    <button id="saveButton" style="display:none;">Save Current Result</button>
+  </div>
+</div>
+
+<!-- Export-to-PDF libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+/* ---------------- CONFIG ---------------- */
+const SVG_TITLE = "Logic Reasoning (List Method)";
+const PART_TITLES = [
+  "Part 1 (Easy) — 3×3 list problems (one-to-one matching)",
+  "Part 2 (Medium) — 4×4 list problems (more clues)",
+  "Part 3 (Hard) — 4×4 list problems (richer wording)"
+];
+const NUM_PARTS = 3;
+const QUESTIONS_PER_PART = 2;
+const TOTAL_QUESTIONS = NUM_PARTS * QUESTIONS_PER_PART;
+
+/* ---------------- Names ---------------- */
+const NAMES = [
+  "Thomas","Catherine","Henry","Sarah","William","Elizabeth",
+  "John","Mary","Edward","Anne","George","Margaret",
+  "Charles","Alice","Joseph","Jane","Robert","Emily",
+  "Oliver","Sophia","James","Arthur","Charlotte","Victoria"
+];
+
+/* ---------------- Utils ---------------- */
+function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function pick(arr){ return arr[randInt(0, arr.length-1)]; }
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function sampleUnique(arr, n){
+  return shuffle(arr).slice(0,n);
+}
+function formatMs(ms){
+  const totalSec=Math.floor(ms/1000), min=Math.floor(totalSec/60), sec=totalSec%60;
+  return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+function escapeXml(s){
+  return String(s)
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&apos;");
+}
+function wrapLines(lines, maxChars = 62){
+  const out=[];
+  for(const line of lines){
+    const words=String(line).split(/\s+/).filter(Boolean);
+    let cur="";
+    for(const w of words){
+      if(!cur) cur=w;
+      else if((cur+" "+w).length<=maxChars) cur+=" "+w;
+      else { out.push(cur); cur=w; }
+    }
+    if(cur) out.push(cur);
+  }
+  return out;
+}
+
+/* ---------------- SVG: TEXT CARD ---------------- */
+function makeSvgTextCard(lines, titleText=SVG_TITLE){
+  const W=980, headerH=72, padX=44, lineH=46, firstLineY=headerH+52, padBottom=54;
+  const wrapped=wrapLines(lines, 62);
+  const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
+  const nonce = Math.random().toString(36).slice(2);
+
+  const textSpans=wrapped.map((t,i)=>{
+    const y=firstLineY + i*lineH;
+    return `<text x="${padX}" y="${y}" font-size="30" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+  }).join("");
+
+  const svg=`
+  <svg xmlns="http://www.w3.org/2000/svg" data-nonce="${nonce}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f7fbff"/>
+        <stop offset="1" stop-color="#ffffff"/>
+      </linearGradient>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#000" flood-opacity="0.12"/>
+      </filter>
+    </defs>
+
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
+          fill="url(#g)" stroke="#dfe7f2" stroke-width="3" filter="url(#shadow)"/>
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${headerH}"
+          fill="#0d47a1" opacity="0.10"/>
+
+    <text x="${padX}" y="56" font-size="28" fill="#0d47a1" font-weight="700"
+          font-family="Segoe UI, Arial">${escapeXml(titleText)}</text>
+
+    ${textSpans}
+  </svg>`.trim();
+
+  const encoded=encodeURIComponent(svg)
+    .replaceAll("%0A","").replaceAll("%20"," ")
+    .replaceAll("%3D","=").replaceAll("%3A",":")
+    .replaceAll("%2F","/").replaceAll("%2C",",");
+
+  return "data:image/svg+xml;charset=utf-8," + encoded;
+}
+
+/* ---------------- SVG: Blank list/grid diagram for Hint ---------------- */
+function gridDiagramSvg(names, options, title){
+  const W = 980, H = 360;
+
+  // table geometry
+  const cols = options.length + 1;     // +1 for row header
+  const rows = names.length + 1;       // +1 for col header
+
+  const topY = 95;                     // where table starts
+  const bottomPad = 60;                // space for footer text
+  const sidePad = 40;                  // left/right padding inside SVG
+
+  const availW = W - sidePad * 2;
+  const availH = H - topY - bottomPad;
+
+  // Fit table fully inside SVG
+  const cellW = Math.floor(availW / cols);
+  const cellH = Math.max(42, Math.floor(availH / rows)); // keep readable
+
+  const tableW = cellW * cols;
+  const tableH = cellH * rows;
+
+  // Center the table
+  const x0 = Math.floor((W - tableW) / 2);
+  const y0 = topY;
+
+  const nonce = Math.random().toString(36).slice(2);
+
+  const short = (s, max=14) => {
+    s = String(s);
+    return s.length <= max ? s : s.slice(0, max-1) + "…";
+  };
+
+  let svg = `
+  <svg xmlns="http://www.w3.org/2000/svg" data-nonce="${nonce}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="2" stdDeviation="5" flood-color="#000" flood-opacity="0.10"/>
+      </filter>
+    </defs>
+
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
+          fill="#ffffff" stroke="#ffe0b2" stroke-width="3" filter="url(#shadow)"/>
+
+    <text x="${W/2}" y="60" text-anchor="middle" font-size="24" fill="#455a64"
+          font-family="Segoe UI, Arial">${escapeXml(title)}</text>
+
+    <rect x="${x0}" y="${y0}" width="${tableW}" height="${tableH}" fill="#ffffff" stroke="#cfd8dc" stroke-width="2"/>
+
+    <!-- header row bg -->
+    <rect x="${x0}" y="${y0}" width="${tableW}" height="${cellH}" fill="#f2f2f2" stroke="none"/>
+    <!-- header col bg -->
+    <rect x="${x0}" y="${y0}" width="${cellW}" height="${tableH}" fill="#f2f2f2" stroke="none"/>
+  `;
+
+  // grid lines
+  for(let r=0; r<=rows; r++){
+    const y = y0 + r*cellH;
+    svg += `<line x1="${x0}" y1="${y}" x2="${x0+tableW}" y2="${y}" stroke="#cfd8dc" stroke-width="2"/>`;
+  }
+  for(let c=0; c<=cols; c++){
+    const x = x0 + c*cellW;
+    svg += `<line x1="${x}" y1="${y0}" x2="${x}" y2="${y0+tableH}" stroke="#cfd8dc" stroke-width="2"/>`;
+  }
+
+  // column headers (options)
+  for(let i=0;i<options.length;i++){
+    const x = x0 + (i+1)*cellW + cellW/2;
+    const y = y0 + cellH/2 + 8;
+    svg += `<text x="${x}" y="${y}" text-anchor="middle" font-size="18" fill="#1f2a44"
+                font-family="Segoe UI, Arial">${escapeXml(short(options[i], 14))}</text>`;
+  }
+
+  // row headers (names)
+  for(let i=0;i<names.length;i++){
+    const x = x0 + cellW/2;
+    const y = y0 + (i+1)*cellH + cellH/2 + 8;
+    svg += `<text x="${x}" y="${y}" text-anchor="middle" font-size="18" fill="#1f2a44"
+                font-family="Segoe UI, Arial">${escapeXml(short(names[i], 14))}</text>`;
+  }
+
+  // footer instruction
+  svg += `
+    <text x="${W/2}" y="${H-28}" text-anchor="middle" font-size="18" fill="#607d8b"
+          font-family="Segoe UI, Arial">Use ✓ for possible and ✗ for impossible.</text>
+  </svg>`.trim();
+
+  const encoded = encodeURIComponent(svg)
+    .replaceAll("%0A","").replaceAll("%20"," ")
+    .replaceAll("%3D","=").replaceAll("%3A",":")
+    .replaceAll("%2F","/").replaceAll("%2C",",");
+
+  return "data:image/svg+xml;charset=utf-8," + encoded;
+}
+
+/* ---------------- Permutations + solver (for uniqueness) ---------------- */
+function permutations(arr){
+  const res=[];
+  function backtrack(path, used){
+    if(path.length===arr.length){ res.push([...path]); return; }
+    for(let i=0;i<arr.length;i++){
+      if(used[i]) continue;
+      used[i]=true;
+      path.push(arr[i]);
+      backtrack(path, used);
+      path.pop();
+      used[i]=false;
+    }
+  }
+  backtrack([], Array(arr.length).fill(false));
+  return res;
+}
+function countSolutions(n, cluePreds){
+  const items=[...Array(n).keys()];
+  const perms = permutations(items);
+  let count=0;
+  let first=null;
+  for(const p of perms){
+    // p[i] = item assigned to person i
+    let ok=true;
+    for(const pred of cluePreds){
+      if(!pred(p)){ ok=false; break; }
+    }
+    if(ok){
+      count++;
+      if(!first) first=p;
+      if(count>1) break;
+    }
+  }
+  return {count, first};
+}
+
+/* ---------------- Clue builders ---------------- */
+function makeNotEqualClue(personIdx, itemIdx, names, items){
+  return {
+    text: `${names[personIdx]} is not ${items[itemIdx]}.`,
+    pred: (p)=>p[personIdx]!==itemIdx
+  };
+}
+function makePairSetClue(a, b, itemX, itemY, names, items){
+  // "A and B are {itemX, itemY} in some order."
+  const setText = `${names[a]} and ${names[b]} are ${items[itemX]} and ${items[itemY]} (in some order).`;
+  const pred = (p)=>{
+    const va=p[a], vb=p[b];
+    return (va===itemX && vb===itemY) || (va===itemY && vb===itemX);
+  };
+  return {text:setText, pred};
+}
+function makeExactlyOneClue(personIdx, itemA, itemB, names, items){
+  // "Exactly one of these is true: person is itemA; person is itemB" doesn't make sense.
+  // Use: "Either person is itemA or itemB, but not both." (exclusive OR)
+  const text = `${names[personIdx]} is either ${items[itemA]} or ${items[itemB]} (but not both).`;
+  const pred = (p)=> (p[personIdx]===itemA) || (p[personIdx]===itemB);
+  return {text, pred};
+}
+
+/* ---------------- Build a unique list puzzle ---------------- */
+function buildUniqueAssignmentPuzzle(names, items, difficulty){
+  const n=names.length;
+
+  // Create a random true mapping (a permutation of item indices).
+  const truePerm = shuffle([...Array(n).keys()]); // p[i] = item index
+  // Build a clue pool (all clues must be TRUE under truePerm).
+  const pool=[];
+  const usedKey=new Set();
+
+  // Not-equal clues that hold in the true mapping.
+  for(let i=0;i<n;i++){
+    for(let j=0;j<n;j++){
+      if(truePerm[i]!==j){
+        const key=`NE:${i}:${j}`;
+        pool.push({key, ...makeNotEqualClue(i,j,names,items)});
+      }
+    }
+  }
+
+  // Pair-set clues (two people have the two true items, order unknown).
+  for(let a=0;a<n;a++){
+    for(let b=a+1;b<n;b++){
+      const x=truePerm[a], y=truePerm[b];
+      if(x===y) continue;
+      const key=`PS:${a}:${b}:${Math.min(x,y)}:${Math.max(x,y)}`;
+      pool.push({key, ...makePairSetClue(a,b,x,y,names,items)});
+    }
+  }
+
+  // Some "either-or" clues for medium/hard (true by construction)
+  if(n>=4){
+    for(let i=0;i<n;i++){
+      const trueItem=truePerm[i];
+      const other = pick([...Array(n).keys()].filter(k=>k!==trueItem));
+      const key=`EO:${i}:${Math.min(trueItem,other)}:${Math.max(trueItem,other)}`;
+      pool.push({key, ...makeExactlyOneClue(i,trueItem,other,names,items)});
+    }
+  }
+
+  // Shuffle the pool to add variety.
+  const shuffledPool = shuffle(pool);
+
+  // Target clue counts by difficulty
+  const targets = {
+    easy: {min:3, max:4},
+    medium:{min:5, max:7},
+    hard: {min:7, max:9}
+  }[difficulty];
+
+  // Build clues until unique solution
+  let clues=[];
+  let preds=[];
+  let tries=0;
+
+  function addClue(c){
+    if(usedKey.has(c.key)) return false;
+    usedKey.add(c.key);
+    clues.push(c.text);
+    preds.push(c.pred);
+    return true;
+  }
+
+  // Prefer one pair-set clue to start (good list-method flavour)
+  const pairFirst = shuffledPool.find(c=>c.key.startsWith("PS:"));
+  if(pairFirst) addClue(pairFirst);
+
+  while(tries<200){
+    const {count} = countSolutions(n, preds);
+    const enough = clues.length>=targets.min;
+    if(count===1 && enough) break;
+
+    // Add another clue
+    const next = shuffledPool[randInt(0, shuffledPool.length-1)];
+    addClue(next);
+
+    // Avoid too many clues
+    if(clues.length>targets.max){
+      // Restart with a different seed
+      clues=[]; preds=[]; usedKey.clear();
+      const pf = shuffledPool.find(c=>c.key.startsWith("PS:"));
+      if(pf) addClue(pf);
+    }
+    tries++;
+  }
+
+  // Get final unique solution (should be unique)
+  const solved = countSolutions(n, preds).first || truePerm;
+
+  // Build mapping object for checking
+  const mapping = {};
+  for(let i=0;i<n;i++){
+    mapping[names[i]] = items[solved[i]];
+  }
+
+  const correctText = names.map(nm=>`${nm}=${mapping[nm]}`).join("; ");
+  return {clues, mapping, correctText, solvedPerm:solved};
+}
+
+/* ---------------- Answer parsing: mapping (order-free) ---------------- */
+function normalizeToken(s){
+  return String(s||"")
+    .trim()
+    .toLowerCase()
+    .replace(/[\.\,\;\(\)\[\]\{\}]/g,"")
+    .replace(/\s+/g," ");
+}
+function parseMappingAnswer(str){
+  const raw=(str||"").trim();
+  if(!raw) return null;
+
+  // split by ; or newline
+  const parts = raw.split(/[\n;]+/).map(x=>x.trim()).filter(Boolean);
+  const map={};
+
+  for(const part of parts){
+    // allow comma-separated inside a line
+    const chunks = part.split(/,(?![^()]*\))/).map(x=>x.trim()).filter(Boolean);
+    for(const ch of chunks){
+      let m = ch.match(/^(.+?)\s*(=|:|-)\s*(.+)$/);
+      if(!m){
+        // allow "Name Value" (two tokens) only if clearly separable
+        const bits = ch.split(/\s+/).filter(Boolean);
+        if(bits.length>=2){
+          const key = bits[0];
+          const val = bits.slice(1).join(" ");
+          map[normalizeToken(key)] = normalizeToken(val);
+        }
+        continue;
+      }
+      const key = normalizeToken(m[1]);
+      const val = normalizeToken(m[3]);
+      map[key]=val;
+    }
+  }
+  return map;
+}
+function isCorrectMapping(userMap, expectedMapping){
+  if(!userMap) return false;
+  for(const [k,v] of Object.entries(expectedMapping)){
+    const kk = normalizeToken(k);
+    const vv = normalizeToken(v);
+    if(!(kk in userMap)) return false;
+    if(userMap[kk] !== vv) return false;
+  }
+  return true;
+}
+
+/* ---------------- Question generators (6 total) ---------------- */
+const COLOR_SETS = [
+  ["White","Pink","Purple"],
+  ["Red","Blue","Green"],
+  ["Black","Orange","Yellow"]
+];
+const JOB_SETS = [
+  ["Doctor","Accountant","Teacher"],
+  ["Chef","Nurse","Pilot"],
+  ["Artist","Engineer","Lawyer"]
+];
+const ANIMAL_SETS = [
+  ["Cat","Dog","Rabbit","Hamster"],
+  ["Parrot","Turtle","Goldfish","Guinea pig"]
+];
+const SPORT_SETS = [
+  ["Basketball","Tennis","Swimming","Running"],
+  ["Cricket","Hockey","Netball","Rugby"]
+];
+const TOOL_SETS = [
+  ["Carpenter","Mechanic","Electrician","Welder"],
+  ["Baker","Photographer","Gardener","Programmer"]
+];
+
+function genEasy_Colors(){
+  const names = sampleUnique(NAMES, 3);
+  const colors = pick(COLOR_SETS);
+  const storyNames = shuffle(names);
+  const items = colors;
+
+  const puzzle = buildUniqueAssignmentPuzzle(storyNames, items, "easy");
+
+  const lines = [
+    `(Easy) ${storyNames[0]}, ${storyNames[1]}, and ${storyNames[2]} each wore a different color.`,
+    `Colors: ${items.join(", ")}.`,
+    `Clues:`,
+    `1) ${puzzle.clues[0]}`,
+    `2) ${puzzle.clues[1]}`,
+    `3) ${puzzle.clues[2]}` + (puzzle.clues[3] ? `\n4) ${puzzle.clues[3]}` : ""),
+    `What color did each person wear?`,
+    `Answer format: ${storyNames[0]}=${items[0]}, ${storyNames[1]}=${items[1]}, ${storyNames[2]}=${items[2]}`
+  ];
+
+  const hint =
+`Hint (List Method):
+1) Draw a 3×3 table (people × colors).
+2) Use ✗ to eliminate impossible matches from each clue.
+3) Each color can be used only once.
+4) When a person has only one possible color left, fix it and eliminate it from the others.`;
+
+  const diagram = gridDiagramSvg(storyNames, items, "3×3 List Table");
+
+  return {
+    img: makeSvgTextCard(lines, SVG_TITLE),
+    diagram,
+    expected: puzzle.mapping,
+    correctText: puzzle.correctText,
+    hint
+  };
+}
+
+function genEasy_Jobs(){
+  const names = sampleUnique(NAMES, 3);
+  const jobs = pick(JOB_SETS);
+  const storyNames = shuffle(names);
+  const items = jobs;
+
+  const puzzle = buildUniqueAssignmentPuzzle(storyNames, items, "easy");
+
+  const lines = [
+    `(Easy) ${storyNames[0]}, ${storyNames[1]}, and ${storyNames[2]} have different jobs.`,
+    `Jobs: ${items.join(", ")}.`,
+    `Clues:`,
+    `1) ${puzzle.clues[0]}`,
+    `2) ${puzzle.clues[1]}`,
+    `3) ${puzzle.clues[2]}` + (puzzle.clues[3] ? `\n4) ${puzzle.clues[3]}` : ""),
+    `What job does each person have?`,
+    `Answer format: ${storyNames[0]}=${items[0]}, ${storyNames[1]}=${items[1]}, ${storyNames[2]}=${items[2]}`
+  ];
+
+  const hint =
+`Hint (List Method):
+Mark each clue on a 3×3 table.
+After you confirm one person's job, cross it out for the other two.`;
+
+  const diagram = gridDiagramSvg(storyNames, items, "3×3 List Table");
+
+  return {
+    img: makeSvgTextCard(lines, SVG_TITLE),
+    diagram,
+    expected: puzzle.mapping,
+    correctText: puzzle.correctText,
+    hint
+  };
+}
+
+function genMedium_Pets(){
+  const names = sampleUnique(NAMES, 4);
+  const pets = pick(ANIMAL_SETS);
+  const storyNames = shuffle(names);
+  const items = pets;
+
+  const puzzle = buildUniqueAssignmentPuzzle(storyNames, items, "medium");
+
+  const lines = [
+    `(Medium) Four friends each own a different pet.`,
+    `People: ${storyNames.join(", ")}.`,
+    `Pets: ${items.join(", ")}.`,
+    `Clues:`,
+    ...puzzle.clues.slice(0,7).map((c,i)=>`${i+1}) ${c}`),
+    `Which pet does each person own?`,
+    `Answer format: ${storyNames[0]}=${items[0]}, ... (4 pairs total)`
+  ];
+
+  const hint =
+`Hint (List Method):
+Use a 4×4 table.
+Start with the strongest clue (a clue that limits two people to two options, or eliminates many).
+Keep eliminating until each row and each column has exactly one remaining ✓.`;
+
+  const diagram = gridDiagramSvg(storyNames, items, "4×4 List Table");
+
+  return {
+    img: makeSvgTextCard(lines, SVG_TITLE),
+    diagram,
+    expected: puzzle.mapping,
+    correctText: puzzle.correctText,
+    hint
+  };
+}
+
+function genMedium_Sports(){
+  const names = sampleUnique(NAMES, 4);
+  const sports = pick(SPORT_SETS);
+  const storyNames = shuffle(names);
+  const items = sports;
+
+  const puzzle = buildUniqueAssignmentPuzzle(storyNames, items, "medium");
+
+  const lines = [
+    `(Medium) Four students each chose a different sport for their club activity.`,
+    `Sports: ${items.join(", ")}.`,
+    `Clues:`,
+    ...puzzle.clues.slice(0,7).map((c,i)=>`${i+1}) ${c}`),
+    `Which sport did each student choose?`,
+    `Answer format: ${storyNames[0]}=${items[0]}, ... (4 pairs total)`
+  ];
+
+  const hint =
+`Hint:
+Write the options in a table, then eliminate with ✗.
+If a clue says two people are two specific options "in some order", mark ✓ for those two cells and ✗ for the rest in those rows.`;
+
+  const diagram = gridDiagramSvg(storyNames, items, "4×4 List Table");
+
+  return {
+    img: makeSvgTextCard(lines, SVG_TITLE),
+    diagram,
+    expected: puzzle.mapping,
+    correctText: puzzle.correctText,
+    hint
+  };
+}
+
+function genHard_WorkRoles(){
+  const names = sampleUnique(NAMES, 4);
+  const roles = pick(TOOL_SETS);
+  const storyNames = shuffle(names);
+  const items = roles;
+
+  const puzzle = buildUniqueAssignmentPuzzle(storyNames, items, "hard");
+
+  const lines = [
+    `(Hard) Four workers at a workshop have different roles.`,
+    `Roles: ${items.join(", ")}.`,
+    `They also play chess during breaks, but each person has only one role.`,
+    `Clues:`,
+    ...puzzle.clues.slice(0,9).map((c,i)=>`${i+1}) ${c}`),
+    `Determine each person's role.`,
+    `Answer format: ${storyNames[0]}=${items[0]}, ... (4 pairs total)`
+  ];
+
+  const hint =
+`Hint:
+Even if the story mentions chess, this is still a one-to-one matching problem.
+Ignore extra wording and focus on what each clue eliminates in the list table.`;
+
+  const diagram = gridDiagramSvg(storyNames, items, "4×4 List Table");
+
+  return {
+    img: makeSvgTextCard(lines, SVG_TITLE),
+    diagram,
+    expected: puzzle.mapping,
+    correctText: puzzle.correctText,
+    hint
+  };
+}
+
+function genHard_Trips(){
+  const names = sampleUnique(NAMES, 4);
+  const places = shuffle(["Auckland","Wellington","Christchurch","Queenstown"]).slice(0,4);
+  const storyNames = shuffle(names);
+  const items = places;
+
+  const puzzle = buildUniqueAssignmentPuzzle(storyNames, items, "hard");
+
+  const lines = [
+    `(Hard) Four friends are planning weekend trips to different cities.`,
+    `Cities: ${items.join(", ")}.`,
+    `Clues:`,
+    ...puzzle.clues.slice(0,9).map((c,i)=>`${i+1}) ${c}`),
+    `Which city is each friend visiting?`,
+    `Answer format: ${storyNames[0]}=${items[0]}, ... (4 pairs total)`
+  ];
+
+  const hint =
+`Hint:
+Make the 4×4 table.
+After each elimination, quickly scan for:
+- a row with only 1 option left, or
+- a column with only 1 option left.`;
+
+  const diagram = gridDiagramSvg(storyNames, items, "4×4 List Table");
+
+  return {
+    img: makeSvgTextCard(lines, SVG_TITLE),
+    diagram,
+    expected: puzzle.mapping,
+    correctText: puzzle.correctText,
+    hint
+  };
+}
+
+/* ---------------- State ---------------- */
+let questions=[];
+let currentQuestionIndex=0;
+let studentName="Student";
+let quizStartTime=null;
+let quizEndTime=null;
+let quizSubmitted=false;
+
+let timerInterval=null;
+let elapsedMs=0;
+let isPaused=false;
+let firstAttemptMs=null;
+
+let setCounter=0;
+let lastAnswerSignature="";
+
+/* DOM */
+const quizContent=document.getElementById("quizContent");
+const sidebarEl=document.getElementById("sidebar");
+
+const buttonContainer=document.getElementById("navButtons");
+const backButton=document.getElementById("backButton");
+const nextButton=document.getElementById("nextButton");
+const submitButton=document.getElementById("submitButton");
+const checkButton=document.getElementById("checkButton");
+const saveButton=document.getElementById("saveButton");
+
+const generateBtn=document.getElementById("generateButton");
+const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
+
+const timerDisplay=document.getElementById("timerDisplay");
+const studentLine=document.getElementById("studentLine");
+const setLine=document.getElementById("setLine");
+
+/* ---------------- Timer ---------------- */
+function updateTimerDisplay(){
+  let totalMs=elapsedMs;
+  if(!isPaused && quizStartTime) totalMs+=(new Date()-quizStartTime);
+  let text=`Time: ${formatMs(totalMs)}`;
+  if(firstAttemptMs!==null) text+=` (First: ${formatMs(firstAttemptMs)})`;
+  timerDisplay.textContent=text;
+}
+function startTimerInterval(){
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval=setInterval(updateTimerDisplay, 1000);
+}
+function pauseTimer(){
+  if(isPaused || !quizStartTime) return;
+  const now=new Date();
+  elapsedMs+=now-quizStartTime;
+  isPaused=true;
+  quizStartTime=null;
+  updateTimerDisplay();
+}
+function resumeTimer(){
+  if(!isPaused) return;
+  isPaused=false;
+  quizStartTime=new Date();
+  updateTimerDisplay();
+}
+
+/* ---------------- Generate Quiz (ensure NEW set) ---------------- */
+function answersSignature(built){
+  return built.map(q=>q.correctText).join("|");
+}
+function generateQuiz(){
+  questions=[];
+  quizSubmitted=false;
+
+  let tries=0;
+  let built=null;
+
+  while(tries<25){
+    built = [
+      genEasy_Colors(),
+      genEasy_Jobs(),
+      genMedium_Pets(),
+      genMedium_Sports(),
+      genHard_WorkRoles(),
+      genHard_Trips()
+    ];
+    const sig = answersSignature(built);
+    if(sig !== lastAnswerSignature){
+      lastAnswerSignature = sig;
+      break;
+    }
+    tries++;
+  }
+
+  setCounter++;
+  setLine.textContent = `Set: ${setCounter}`;
+
+  for(let i=0;i<built.length;i++){
+    const partIndex=Math.floor(i/QUESTIONS_PER_PART);
+    const indexInPart=i%QUESTIONS_PER_PART;
+    questions.push({
+      partIndex,
+      indexInPart,
+      img: built[i].img,
+      diagram: built[i].diagram || "",
+      expected: built[i].expected,          // mapping object
+      correctText: built[i].correctText,
+      hint: built[i].hint,
+      userValue:"",
+      isCorrect:false
+    });
+  }
+}
+
+/* ---------------- Sidebar ---------------- */
+function renderSidebar(){
+  sidebarEl.style.display="block";
+  sidebarEl.innerHTML=`<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul=document.getElementById("qList");
+  for(let i=0;i<TOTAL_QUESTIONS;i++){
+    const q=questions[i];
+    const li=document.createElement("li");
+    const label=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
+    li.textContent=`Q${i+1} (${label})`;
+    li.dataset.index=i;
+    li.addEventListener("click", ()=>{
+      saveCurrentInput();
+      currentQuestionIndex=i;
+      renderQuestion();
+    });
+    ul.appendChild(li);
+  }
+  updateSidebarStatus();
+}
+function updateSidebarStatus(){
+  const items=document.querySelectorAll("#qList li");
+  items.forEach(li=>{
+    const idx=Number(li.dataset.index);
+    const q=questions[idx];
+    li.classList.remove("active","answered","correct","incorrect");
+
+    if(!quizSubmitted){
+      li.classList.toggle("active", idx===currentQuestionIndex);
+      if((q.userValue||"").trim()!=="") li.classList.add("answered");
+    }else{
+      if((q.userValue||"").trim()!==""){
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ---------------- Helpers ---------------- */
+function gradeOneQuestion(i){
+  const q=questions[i];
+  const userMap=parseMappingAnswer(q.userValue||"");
+  q.isCorrect=isCorrectMapping(userMap, q.expected);
+}
+function saveCurrentInput(){
+  const input=document.getElementById("answerInput");
+  if(input){
+    questions[currentQuestionIndex].userValue=(input.value||"").trim();
+    if(quizSubmitted){
+      gradeOneQuestion(currentQuestionIndex);
+      updateSidebarStatus();
+    }
+  }
+}
+function mountNavButtonsInto(slotId){
+  const slot=document.getElementById(slotId);
+  if(!slot) return;
+  slot.appendChild(buttonContainer);
+  buttonContainer.style.display="flex";
+}
+
+/* ---------------- Render Question ---------------- */
+function renderQuestion(){
+  const q=questions[currentQuestionIndex];
+  const levelLabel=["Easy","Medium","Hard"][q.partIndex];
+  const fullLabel=`${levelLabel} — Question ${q.indexInPart+1}`;
+  const hasHint=(q.hint||"").trim()!=="";
+
+  const hintDiagramHtml = (hasHint && q.diagram)
+    ? `<div class="hint-diagram-wrap"><img src="${q.diagram}" alt="Hint diagram"></div>`
+    : "";
+
+  // Build required keys for help line
+  const requiredKeys = Object.keys(q.expected);
+  const examplePairs = requiredKeys.slice(0,2).map(k=>`${k}=...`).join("; ");
+
+  quizContent.innerHTML=`
+    <p class="question-text">Question ${currentQuestionIndex+1} of ${TOTAL_QUESTIONS}</p>
+    <div class="part-title">${PART_TITLES[q.partIndex]}</div>
+
+    <div class="single-question">
+      <div style="font-weight:800;margin-bottom:8px;">${fullLabel}</div>
+
+      <div class="img-wrap">
+        <img class="q-img" src="${q.img}" alt="Question image">
+      </div>
+
+      <div class="answer-row">
+        <div style="font-weight:700;">Answer (mapping):</div>
+        <input id="answerInput" class="answer-box" type="text"
+               placeholder="e.g., Thomas=White; Sarah=Pink; Henry=Purple"
+               value="${escapeXml(q.userValue||"")}">
+      </div>
+      <div class="answer-help">
+        Use <strong>Name=Value</strong> pairs separated by semicolons or commas.<br>
+        Required names: <strong>${requiredKeys.join(", ")}</strong><br>
+        Example format: <strong>${examplePairs}; ...</strong>
+      </div>
+
+      <div id="checkFeedback" style="display:none;"></div>
+
+      <div class="hint-row">
+        <button id="hintBtn" class="hint-btn" ${hasHint ? "" : "disabled"}>${hasHint ? "Hint" : "No Hint"}</button>
+      </div>
+
+      <div id="hintBox" class="hint">
+        <div>${hasHint ? escapeXml(q.hint) : ""}</div>
+        ${hintDiagramHtml}
+      </div>
+    </div>
+
+    <div id="navSlot"></div>
+  `;
+
+  mountNavButtonsInto("navSlot");
+
+  const hintBtn=document.getElementById("hintBtn");
+  const hintBox=document.getElementById("hintBox");
+  if(hintBtn && hintBox && hasHint){
+    hintBtn.addEventListener("click", ()=>{
+      const shown = hintBox.style.display==="block";
+      hintBox.style.display = shown ? "none" : "block";
+      hintBtn.textContent = shown ? "Hint" : "Hide Hint";
+    });
+  }
+
+  backButton.style.display="inline-block";
+  backButton.style.visibility=(currentQuestionIndex===0)?"hidden":"visible";
+
+  const isLast=(currentQuestionIndex===TOTAL_QUESTIONS-1);
+  nextButton.style.display=isLast?"none":"inline-block";
+  submitButton.style.display=isLast?"inline-block":"none";
+
+  saveButton.style.display=quizSubmitted?"inline-block":"none";
+  checkButton.style.display=(quizSubmitted && !q.isCorrect)?"inline-block":"none";
+
+  updateSidebarStatus();
+}
+
+/* ---------------- Results + Submit ---------------- */
+function calculateAndShowResults(){
+  saveCurrentInput();
+
+  const now=new Date();
+  let attemptMs=elapsedMs;
+  if(!isPaused && quizStartTime) attemptMs+=now-quizStartTime;
+  if(firstAttemptMs===null) firstAttemptMs=attemptMs;
+
+  const attemptStartTime=quizStartTime || now;
+  quizEndTime=now;
+  quizSubmitted=true;
+
+  let correctCount=0;
+  questions.forEach((q,i)=>{
+    gradeOneQuestion(i);
+    if(q.isCorrect) correctCount++;
+  });
+
+  updateSidebarStatus();
+
+  let html=`
+    <h3>Results for ${escapeXml(studentName)}</h3>
+    <p>Set: <strong>${setCounter}</strong></p>
+    <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
+    <p>Start time: <strong>${attemptStartTime.toLocaleTimeString()}</strong></p>
+    <p>Submit time: <strong>${quizEndTime.toLocaleTimeString()}</strong></p>
+    <p>Time taken (this attempt): <strong>${formatMs(attemptMs)}</strong></p>
+    <p>First attempt time: <strong>${formatMs(firstAttemptMs)}</strong></p>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th><th>Part</th><th>Image</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q,i)=>{
+    const partLbl=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
+    const ua=(q.userValue||"").trim();
+    html+=`
+      <tr class="${q.isCorrect ? "correct-answer":"incorrect-answer"}">
+        <td>${i+1}</td>
+        <td>${escapeXml(partLbl)}</td>
+        <td><img class="thumb" src="${q.img}" alt="Q${i+1}"></td>
+        <td>${ua==="" ? "—" : escapeXml(ua)}</td>
+        <td><strong>${escapeXml(q.correctText)}</strong></td>
+        <td>${ua==="" ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
+      </tr>
+    `;
+  });
+
+  html+=`</table><div id="navSlot"></div>`;
+  quizContent.innerHTML=html;
+
+  mountNavButtonsInto("navSlot");
+
+  backButton.style.display="none";
+  nextButton.style.display="none";
+  submitButton.style.display="none";
+  checkButton.style.display="none";
+  saveButton.style.display="inline-block";
+
+  // restart timer display (same behaviour as your previous pages)
+  elapsedMs=0; isPaused=false; quizStartTime=new Date();
+  pauseButton.textContent="Pause";
+  startTimerInterval();
+  updateTimerDisplay();
+}
+
+/* ---------------- Buttons ---------------- */
+nextButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex<TOTAL_QUESTIONS-1){
+    currentQuestionIndex++;
+    renderQuestion();
+  }
+});
+backButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex>0){
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+});
+submitButton.addEventListener("click", ()=>{
+  if(currentQuestionIndex===TOTAL_QUESTIONS-1){
+    calculateAndShowResults();
+  }
+});
+checkButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  const q=questions[currentQuestionIndex];
+  if(!quizSubmitted) return;
+
+  gradeOneQuestion(currentQuestionIndex);
+  updateSidebarStatus();
+
+  const box=document.getElementById("checkFeedback");
+  if(!box) return;
+
+  box.className="check-feedback";
+  box.style.display="block";
+
+  const userMap=parseMappingAnswer(q.userValue||"");
+  if(isCorrectMapping(userMap, q.expected)){
+    box.innerHTML=`✅ Correct!`;
+    checkButton.style.display="none";
+  }else{
+    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${escapeXml(q.correctText)}</strong>`;
+    checkButton.style.display="inline-block";
+  }
+});
+
+/* Save TXT */
+function formatDateForFilename(date){
+  if(!date) return "no_time";
+  const pad=n=>String(n).padStart(2,"0");
+  return date.getFullYear()+pad(date.getMonth()+1)+pad(date.getDate())+"_"+
+         pad(date.getHours())+pad(date.getMinutes())+pad(date.getSeconds());
+}
+function saveCurrentResultAsTxt(){
+  saveCurrentInput();
+  questions.forEach((q,i)=>gradeOneQuestion(i));
+
+  let correctCount=0;
+  questions.forEach(q=>{ if(q.isCorrect) correctCount++; });
+
+  const lines=[];
+  lines.push("Logic Reasoning (List Method) - Current Result");
+  lines.push("Student: "+studentName);
+  lines.push("Set: "+setCounter);
+  if(quizStartTime) lines.push("Start time: "+quizStartTime.toLocaleString());
+  if(quizEndTime) lines.push("Last submit time: "+quizEndTime.toLocaleString());
+  lines.push("Score: "+correctCount+" / "+TOTAL_QUESTIONS);
+  if(firstAttemptMs!==null) lines.push("First attempt time: "+formatMs(firstAttemptMs));
+  lines.push("");
+  lines.push("Details:");
+  lines.push("----------");
+
+  questions.forEach((q,i)=>{
+    const partLbl=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
+    const userAns=(q.userValue||"").trim()==="" ? "Not answered" : q.userValue.trim();
+    const resultText=(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect?"Correct":"Incorrect");
+    lines.push(`Q${i+1} (${partLbl})`);
+    lines.push(`Your answer: ${userAns}`);
+    lines.push(`Correct answer: ${q.correctText}`);
+    lines.push("Result: "+resultText);
+    lines.push("");
+  });
+
+  const content=lines.join("\n");
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
+  const ts=formatDateForFilename(new Date());
+  a.href=url;
+  a.download=`LogicList_${safeName}_Set${setCounter}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+saveButton.addEventListener("click", saveCurrentResultAsTxt);
+
+/* Pause/Resume (no popup) */
+pauseButton.addEventListener("click", ()=>{
+  if(!quizStartTime && elapsedMs===0 && !quizSubmitted) return;
+  if(isPaused){ resumeTimer(); pauseButton.textContent="Pause"; }
+  else { pauseTimer(); pauseButton.textContent="Resume"; }
+});
+
+/* Generate new set */
+generateBtn.addEventListener("click", ()=>{
+  if(!quizSubmitted && !confirm("Generate a new random set? All answers will be lost.")) return;
+
+  if(timerInterval) clearInterval(timerInterval);
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=new Date(); quizEndTime=null;
+  updateTimerDisplay(); startTimerInterval();
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+});
+
+/* ---------------- Export Questions PDF (2 per page, DYAA header) ---------------- */
+function waitForImages(container){
+  const imgs = Array.from(container.querySelectorAll("img"));
+  return Promise.all(imgs.map(img => {
+    if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve => {
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+    });
+  }));
+}
+exportQuestionsBtn.addEventListener("click", async ()=>{
+  if(!questions || questions.length===0){
+    alert("Please start a quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p","mm","a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const wrapper=document.createElement("div");
+  wrapper.style.position="fixed";
+  wrapper.style.left="-9999px";
+  wrapper.style.top="0";
+  wrapper.style.width="800px";
+  wrapper.style.background="#ffffff";
+  document.body.appendChild(wrapper);
+
+  try{
+    let groupDiv=null;
+
+    questions.forEach((q, idx)=>{
+      if(idx%2===0){
+        groupDiv=document.createElement("div");
+        groupDiv.style.padding="20px";
+        groupDiv.style.marginBottom="20px";
+        groupDiv.style.boxSizing="border-box";
+
+        const header=document.createElement("div");
+        header.innerHTML=`
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+              <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;line-height:1.1;">
+              <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+              <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+            </div>
+          </div>
+          <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Logic Reasoning (List Method)</div>
+          <div style="color:#546e7a;font-weight:800;margin:0 0 10px 0;">Questions (Set ${setCounter})</div>
+        `;
+        groupDiv.appendChild(header);
+        wrapper.appendChild(groupDiv);
+      }
+
+      const qDiv=document.createElement("div");
+      qDiv.style.marginBottom="18px";
+      qDiv.innerHTML=`
+        <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx+1}</div>
+        <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+          <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+        </div>
+      `;
+      groupDiv.appendChild(qDiv);
+    });
+
+    const groups=Array.from(wrapper.children);
+
+    for(let i=0;i<groups.length;i++){
+      await waitForImages(groups[i]);
+
+      const canvas = await html2canvas(groups[i], {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff"
+      });
+      const imgData = canvas.toDataURL("image/png");
+
+      const imgWidth = pageWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      if(i>0) pdf.addPage();
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, Math.min(imgHeight, pageHeight - 20));
+    }
+
+    const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+    const ts=formatDateForFilename(new Date());
+    pdf.save(`LogicList_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
+  } finally {
+    document.body.removeChild(wrapper);
+  }
+});
+
+/* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
+function getNameFromUrl(){
+  const url=new URL(window.location.href);
+  const name=url.searchParams.get("name");
+  return name ? name.trim() : "";
+}
+function showStartScreen(){
+  sidebarEl.style.display="none";
+  buttonContainer.style.display="none";
+  generateBtn.style.display="none";
+  saveButton.style.display="none";
+  pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
+
+  studentLine.textContent="";
+  setLine.textContent="";
+
+  if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=null; quizEndTime=null;
+  updateTimerDisplay();
+
+  const preset=getNameFromUrl();
+  if(preset){
+    studentName=preset;
+    studentLine.textContent=`Student: ${studentName}`;
+    startQuiz(true);
+    return;
+  }
+
+  quizContent.innerHTML=`
+    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> logic list-method problems.</p>
+    <ul style="margin-top:6px;color:#555;line-height:1.7;">
+      <li><strong>Easy:</strong> 2 questions (3×3)</li>
+      <li><strong>Medium:</strong> 2 questions (4×4)</li>
+      <li><strong>Hard:</strong> 2 questions (4×4, richer wording)</li>
+    </ul>
+    <p style="margin-top:10px;">
+      Enter answers as <strong>Name=Value</strong> pairs, e.g.,
+      <strong>Thomas=White; Sarah=Pink; Henry=Purple</strong>.
+    </p>
+    <p style="margin-top:10px;">Please enter your name to begin:</p>
+
+    <input id="nameInput" type="text"
+      style="padding:10px;width:260px;font-size:1.05em;border:1px solid #ccc;border-radius:10px;"
+      placeholder="Your name">
+
+    <button id="startButton"
+      style="margin-left:10px;background:#4caf50;padding:10px 20px;color:white;border:none;border-radius:8px;">
+      Start Quiz
+    </button>
+  `;
+  document.getElementById("startButton").addEventListener("click", ()=>startQuiz(false));
+}
+function startQuiz(skipReadName){
+  if(!skipReadName){
+    const nameInput=document.getElementById("nameInput");
+    studentName=(nameInput.value || "Student").trim();
+  }
+  studentLine.textContent=`Student: ${studentName}`;
+
+  quizStartTime=new Date();
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  updateTimerDisplay(); startTimerInterval();
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+
+  generateBtn.style.display="inline-block";
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
+}
+
+/* ---------------- Init ---------------- */
+showStartScreen();
+</script>
+</body>
+</html>

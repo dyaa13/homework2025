@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tax Problems — Line Segment Method (Image Quiz)</title>
+
+  <style>
+    body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f4f9;margin:0;padding:20px;color:#333;}
+    .quiz-container{max-width:900px;margin:40px auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 6px 15px rgba(0,0,0,0.1);}
+    #headerLogo{display:flex;align-items:center;gap:12px;margin-bottom:10px;border-bottom:2px solid #e0e0e0;padding-bottom:10px;}
+    .logo-icon{width:40px;height:40px;background:#0d47a1;border-radius:6px;position:relative;}
+    .logo-icon:before{content:"";position:absolute;width:20px;height:9px;background:#ff9800;top:-6px;left:20px;border-radius:3px;}
+    .logo-text{display:flex;flex-direction:column;line-height:1.1;}
+    .logo-text .brand{font-weight:900;letter-spacing:1px;color:#ff9800;}
+    .logo-text .edu{font-size:.9em;color:#0d47a1;font-weight:700;}
+
+    .top-bar{display:flex;justify-content:space-between;align-items:center;margin:10px 0 6px 0;gap:10px;flex-wrap:wrap;}
+    #timerDisplay{font-size:.95em;color:#333;}
+    #studentLine{font-size:.95em;color:#555;}
+    #setLine{font-size:.9em;color:#777;margin-top:2px;}
+
+    .quiz-main{display:flex;gap:20px;margin-top:10px;}
+    .sidebar{width:160px;border-right:1px solid #ddd;padding-right:10px;display:none;}
+    .sidebar h4{margin:0 0 8px;font-size:.95em;border-bottom:1px solid #eee;padding-bottom:4px;}
+    .sidebar ul{list-style:none;padding:0;margin:0;}
+    .sidebar li{padding:6px;cursor:pointer;border-radius:6px;font-size:.9em;margin-bottom:6px;border:1px solid #eee;background:#fafafa;}
+    .sidebar li.active{outline:2px solid #1976d2;font-weight:700;background:#fff;}
+    .sidebar li.answered{border-left:5px solid #4caf50;}
+    .sidebar li.correct{background:#d4edda;border-left:5px solid #28a745;border-color:#cbe7d1;}
+    .sidebar li.incorrect{background:#f8d7da;border-left:5px solid #f44336;border-color:#f1c7cc;}
+
+    #quizContent{flex:1;}
+    .question-text{font-size:1.05em;margin-bottom:8px;}
+    .part-title{font-weight:800;margin:8px 0 10px 0;}
+    .single-question{margin:6px 0;line-height:1.7;}
+    .answer-row{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+    .answer-box{width:420px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
+
+    .img-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px;box-shadow:0 3px 8px rgba(0,0,0,0.05);max-width:100%;}
+    .q-img{width:100%;height:auto;display:block;border-radius:10px;}
+
+    .hint-row{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    .hint-btn{background:#ff9800;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:0.95em;}
+    .hint-btn:disabled{opacity:.55;cursor:not-allowed;}
+
+    /* ✅ Fix: hint window overflow (Windows-safe) */
+    .hint{
+      display:none;margin-top:10px;padding:10px 12px;border-radius:10px;
+      background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;
+      max-width:100%;overflow:auto;
+    }
+    .hint *{max-width:100%;}
+    .hint img{max-width:100%;height:auto;display:block;}
+    .hint table{width:100%;max-width:100%;border-collapse:collapse;table-layout:fixed;}
+    .hint td,.hint th{border:1px solid #ffe0b2;padding:6px;word-wrap:break-word;}
+
+    .hint-diagram-wrap{margin-top:10px;border:1px solid #ffe0b2;background:#ffffff;border-radius:10px;padding:10px;}
+    .hint-diagram-wrap img{width:100%;height:auto;display:block;border-radius:8px;}
+
+    .button-container{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;}
+    button{padding:10px 18px;border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:1em;}
+    #nextButton{background:#4caf50;}
+    #backButton{background:#039be5;}
+    #generateButton{background:#ff9800;}
+    #submitButton{background:#9c27b0;}
+    #saveButton{background:#607d8b;}
+    #pauseButton{background:#f57c00;}
+    #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
+    button:disabled{opacity:.55;cursor:not-allowed;}
+
+    .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
+
+    table.review-table{width:100%;border-collapse:collapse;margin-top:18px;}
+    .review-table th,.review-table td{border:1px solid #ccc;padding:6px;font-size:.85em;text-align:center;vertical-align:top;}
+    .review-table th{background:#f2f2f2;}
+    .correct-answer{background:#d4edda;}
+    .incorrect-answer{background:#f8d7da;}
+    .thumb{width:160px;max-width:160px;height:auto;border-radius:8px;border:1px solid #ddd;background:#fff;}
+
+    @media (max-width:760px){
+      .quiz-main{flex-direction:column;}
+      .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
+      .thumb{width:120px;max-width:120px;}
+      .answer-box{width:100%;}
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text">
+      <div class="brand">DYAA</div>
+      <div class="edu">EDUCATION</div>
+    </div>
+  </div>
+
+  <div class="top-bar">
+    <div>
+      <div id="timerDisplay">Time: 00:00</div>
+      <div id="studentLine"></div>
+      <div id="setLine"></div>
+    </div>
+    <div>
+      <button id="pauseButton" style="display:none;">Pause</button>
+      <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
+    </div>
+  </div>
+
+  <h2 style="margin:6px 0 0 0;">Lesson Theme: Tax Problems — Line Segment Method</h2>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+
+  <div id="navButtons" class="button-container" style="display:none;">
+    <button id="backButton" style="display:none;">Previous</button>
+    <button id="submitButton" style="display:none;">Submit &amp; View Results</button>
+    <button id="nextButton" style="display:none;">Next</button>
+    <button id="checkButton" style="display:none;">Check</button>
+    <button id="saveButton" style="display:none;">Save Current Result</button>
+  </div>
+</div>
+
+<!-- Export-to-PDF libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+/* ---------------- CONFIG ---------------- */
+const SVG_TITLE = "Tax Problems (Line Segment Method)";
+const PART_TITLES = [
+  "Part 1 (Easy) — Basic tax / VAT (2 questions)",
+  "Part 2 (Medium) — Brackets & reverse VAT (2 questions)",
+  "Part 3 (Hard) — Reverse tax & discount+VAT (2 questions)"
+];
+const NUM_PARTS = 3;
+const QUESTIONS_PER_PART = 2;
+const TOTAL_QUESTIONS = NUM_PARTS * QUESTIONS_PER_PART;
+
+/* ---------------- Context Pools ---------------- */
+const PEOPLE = ["Alex","Ben","Chloe","Daniel","Emily","Felix","Grace","Henry","Ivy","Jack","Kelly","Liam","Mia","Noah","Olivia","Peter","Quinn","Ruby","Samuel","Tina"];
+const ITEMS = ["a laptop","a bicycle","a smartphone","a camera","a scooter","a washing machine","a tablet","a TV"];
+const SHOPS = ["Sunshine Motors","River City Store","GreenLeaf Mart","Harbour Retail","Maple Trading","Central Auto"];
+
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ [a,b]=[b,a%b]; } return a||1; }
+
+function formatMs(ms){
+  const totalSec=Math.floor(ms/1000), min=Math.floor(totalSec/60), sec=totalSec%60;
+  return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+function escapeXml(s){
+  return String(s)
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&apos;");
+}
+function wrapLines(lines, maxChars=62){
+  const out=[];
+  function pushWrapped(line){
+    const words=String(line).split(/\s+/).filter(Boolean);
+    let cur="";
+    for(const w of words){
+      if(w.length>maxChars){
+        if(cur){ out.push(cur); cur=""; }
+        for(let i=0;i<w.length;i+=maxChars) out.push(w.slice(i,i+maxChars));
+        continue;
+      }
+      if(!cur) cur=w;
+      else if((cur+" "+w).length<=maxChars) cur+=" "+w;
+      else { out.push(cur); cur=w; }
+    }
+    if(cur) out.push(cur);
+  }
+  for(const line of lines) pushWrapped(line);
+  return out;
+}
+function parseIntegerAnswer(str){
+  const s=(str||"").trim();
+  if(s==="") return NaN;
+  if(!/^[+-]?\d+$/.test(s)) return NaN;
+  const n=Number(s);
+  return Number.isInteger(n) ? n : NaN;
+}
+function isCorrectInt(userInt, correctInt){
+  return Number.isInteger(userInt) && userInt===correctInt;
+}
+function money(n){ return `$${n}`; }
+function pct(p){ return `${p}%`; }
+
+/* ---------------- SVG Cards ---------------- */
+function makeSvgTextCard(lines, titleText=SVG_TITLE){
+  const W=980, headerH=72, padX=44, lineH=46, firstLineY=headerH+52, padBottom=54;
+  const wrapped=wrapLines(lines, 62);
+  const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
+
+  const textSpans=wrapped.map((t,i)=>{
+    const y=firstLineY + i*lineH;
+    return `<text x="${padX}" y="${y}" font-size="30" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+  }).join("");
+
+  const svg=`
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f7fbff"/>
+        <stop offset="1" stop-color="#ffffff"/>
+      </linearGradient>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#000" flood-opacity="0.12"/>
+      </filter>
+    </defs>
+
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
+          fill="url(#g)" stroke="#dfe7f2" stroke-width="3" filter="url(#shadow)"/>
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${headerH}"
+          fill="#0d47a1" opacity="0.10"/>
+
+    <text x="${padX}" y="56" font-size="28" fill="#0d47a1" font-weight="700"
+          font-family="Segoe UI, Arial">${escapeXml(titleText)}</text>
+
+    ${textSpans}
+  </svg>`.trim();
+
+  const encoded=encodeURIComponent(svg)
+    .replaceAll("%0A","").replaceAll("%20"," ")
+    .replaceAll("%3D","=").replaceAll("%3A",":")
+    .replaceAll("%2F","/").replaceAll("%2C",",");
+
+  return "data:image/svg+xml;charset=utf-8," + encoded;
+}
+
+function hintCardSvg(lines, title="Hint"){
+  const W=980, headerH=60, padX=44, lineH=36, firstLineY=headerH+44, padBottom=44;
+  const wrapped=wrapLines(lines, 70);
+  const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
+
+  const textSpans=wrapped.map((t,i)=>{
+    const y=firstLineY + i*lineH;
+    return `<text x="${padX}" y="${y}" font-size="24" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+  }).join("");
+
+  const svg=`
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff"/>
+        <stop offset="1" stop-color="#fff7e6"/>
+      </linearGradient>
+      <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="2" stdDeviation="5" flood-color="#000" flood-opacity="0.10"/>
+      </filter>
+    </defs>
+
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
+          fill="url(#bg)" stroke="#ffe0b2" stroke-width="3" filter="url(#shadow2)"/>
+
+    <text x="${padX}" y="52" font-size="26" fill="#8d6e63" font-weight="800"
+          font-family="Segoe UI, Arial">${escapeXml(title)}</text>
+
+    ${textSpans}
+  </svg>`.trim();
+
+  const encoded=encodeURIComponent(svg)
+    .replaceAll("%0A","").replaceAll("%20"," ")
+    .replaceAll("%3D","=").replaceAll("%3A",":")
+    .replaceAll("%2F","/").replaceAll("%2C",",");
+
+  return "data:image/svg+xml;charset=utf-8," + encoded;
+}
+
+/* ---------------- Question Generators (6 total) ---------------- */
+
+/* Easy 1: tax only on portion above a threshold */
+function genEasy_FlatAboveThreshold(){
+  const who = pick(PEOPLE);
+  const threshold = pick([4000, 5000, 6000]);
+  const rate = pick([3, 5, 8, 10, 12]); // percent
+
+  // ensure integer tax: diff must be multiple of 100 / gcd(rate,100)
+  const need = 100 / gcd(rate, 100);
+  const diff = need * randInt(10, 45); // nice
+  const income = threshold + diff;
+  const tax = diff * rate / 100;
+
+  const lines = [
+    `${who}'s monthly salary is ${money(income)}.`,
+    `By the rule, only the part ABOVE ${money(threshold)} is taxed, at a rate of ${pct(rate)}.`,
+    `How much tax should ${who} pay for this month (in dollars)?`
+  ];
+
+  const diagram = hintCardSvg([
+    "Use a line segment:",
+    `Total salary = ${money(threshold)} (not taxed) + (salary − ${money(threshold)}) (taxed).`,
+    `Tax = (salary − ${money(threshold)}) × ${rate}%.`
+  ], "Hint (Split into Parts)");
+
+  return { img: makeSvgTextCard(lines), diagram, value: tax, hint: "Split: tax-free part + taxable part above the threshold." };
+}
+
+/* Easy 2: total price includes VAT, find net price */
+function genEasy_ReverseVAT(){
+  const who = pick(PEOPLE);
+  const item = pick(ITEMS);
+  const shop = pick(SHOPS);
+
+  const vat = pick([12.5, 15, 20, 25]); // %
+  // Choose net so total is integer
+  let denom = 1;
+  if(vat === 12.5) denom = 8;        // factor 9/8
+  else if(vat === 15) denom = 20;    // factor 23/20
+  else if(vat === 20) denom = 5;     // factor 6/5
+  else if(vat === 25) denom = 4;     // factor 5/4
+
+  const net = denom * randInt(40, 140);
+  const total = Math.round(net * (1 + vat/100)); // integer by construction
+
+  const lines = [
+    `${who} buys ${item} from ${shop}.`,
+    `The total paid is ${money(total)} (this INCLUDES VAT).`,
+    `VAT is ${pct(vat)} of the net (before-tax) price.`,
+    `What is the net price (in dollars)?`
+  ];
+
+  const diagram = hintCardSvg([
+    "Line segment idea:",
+    "Total = Net + VAT.",
+    `VAT = ${vat}% of Net, so Total = (1 + ${vat}%) × Net.`,
+    "Net = Total ÷ (1 + VAT rate)."
+  ], "Hint (Total = Net + VAT)");
+
+  return { img: makeSvgTextCard(lines), diagram, value: net, hint: "Total = Net × (1 + VAT rate). So Net = Total ÷ (1 + VAT rate)." };
+}
+
+/* Medium 1: progressive monthly tax, compute tax */
+function genMedium_ProgressiveCompute(){
+  const who = pick(PEOPLE);
+
+  // Brackets: first A tax-free; next B at r1%; remaining at r2%
+  const A = pick([3000, 4000, 5000]);
+  const B = pick([2000, 3000, 4000]);
+  const r1 = pick([8, 10, 12]);
+  const r2 = pick([18, 20, 22]);
+
+  // ensure integer tax: choose income so (income-A-B) is multiple of 10 and also taxable parts meet integer
+  const extra = 10 * randInt(50, 180);
+  const income = A + B + extra;
+
+  const tax = (B * r1 / 100) + (extra * r2 / 100);
+
+  const lines = [
+    `${who}'s monthly income is ${money(income)}.`,
+    `Tax rule: first ${money(A)} is tax-free;`,
+    `the next ${money(B)} is taxed at ${pct(r1)}; anything above that is taxed at ${pct(r2)}.`,
+    `How much tax does ${who} pay (in dollars)?`
+  ];
+
+  const diagram = hintCardSvg([
+    "Draw one line segment for the income and split into 3 parts:",
+    `Part 1: ${money(A)} at 0% (tax-free).`,
+    `Part 2: ${money(B)} at ${r1}%.`,
+    `Part 3: Remaining (income − ${money(A)} − ${money(B)}) at ${r2}%.`,
+    "Total tax = tax(part 2) + tax(part 3)."
+  ], "Hint (Brackets)");
+
+  return { img: makeSvgTextCard(lines), diagram, value: tax, hint: "Split income into bracket parts and add the tax from each taxed part." };
+}
+
+/* Medium 2: yearly tax table above threshold; given tax, find total income */
+function genMedium_FindIncomeFromTaxTable(){
+  const who = pick(PEOPLE);
+  const base = 60000;
+
+  // Table on the amount (Income - 60000):
+  // 0–36000 at 3%
+  // 36000–144000 at 10% (for the part above 36000)
+  // above 144000 at 20% (not used here)
+  const chooseSecond = Math.random() < 0.55;
+
+  let remainder, tax;
+  if(!chooseSecond){
+    // first bracket: remainder <= 36000, choose multiple of 100 for integer tax at 3%
+    remainder = 100 * randInt(50, 360); // 5000..36000
+    tax = remainder * 3 / 100;
+  }else{
+    // second bracket: remainder in (36000, 144000], choose (remainder-36000) multiple of 10 for integer
+    const extra = 10 * randInt(200, 900); // 2000..9000
+    remainder = 36000 + extra;
+    tax = 36000 * 3 / 100 + extra * 10 / 100; // 1080 + extra/10
+  }
+
+  const income = base + remainder;
+
+  const lines = [
+    `${who}'s annual income is above ${money(base)}. Only the part ABOVE ${money(base)} is taxable.`,
+    `Tax table for (income − ${money(base)}):`,
+    `• Up to ${money(36000)}: ${pct(3)}`,
+    `• The part from ${money(36000)} to ${money(144000)}: ${pct(10)}`,
+    `• Above ${money(144000)}: ${pct(20)}`,
+    `${who} paid ${money(tax)} tax in total. What is ${who}'s annual income (in dollars)?`
+  ];
+
+  const diagram = hintCardSvg([
+    "Let R = income − 60000.",
+    "If tax is small, it may be in the 3% bracket: tax = 3% of R.",
+    "If R > 36000: tax = 3% of 36000 + 10% of (R − 36000).",
+    "Solve for R, then income = 60000 + R."
+  ], "Hint (Work Backwards)");
+
+  return { img: makeSvgTextCard(lines), diagram, value: income, hint: "Work backwards: find R = income − 60000 from the bracket formula, then add 60000." };
+}
+
+/* Hard 1: after-tax income given under threshold+flat rate, find gross */
+function genHard_FindGrossFromNet(){
+  const who = pick(PEOPLE);
+  const threshold = pick([4500, 5000, 5500, 6000]);
+  const rate = pick([10, 12, 15, 20]); // %
+
+  // net = threshold + (gross-threshold)*(1-rate)
+  // choose gross so net integer and also nice: take gross = threshold + need*k
+  // need ensures (gross-threshold)*rate/100 integer (for clean net); pick multiple of 100/gcd(rate,100)
+  const need = 100 / gcd(rate, 100);
+  const taxable = need * randInt(40, 160);
+  const gross = threshold + taxable;
+  const tax = taxable * rate / 100;
+  const net = gross - tax;
+
+  const lines = [
+    `${who} has a monthly salary that is taxed like this:`,
+    `• The first ${money(threshold)} is tax-free.`,
+    `• The part above ${money(threshold)} is taxed at ${pct(rate)}.`,
+    `After tax, ${who} receives ${money(net)} (net pay).`,
+    `What was ${who}'s gross salary before tax (in dollars)?`
+  ];
+
+  const diagram = hintCardSvg([
+    "Use the line segment method:",
+    "Gross = tax-free part + taxable part.",
+    "Net = tax-free part + (taxable part after tax).",
+    `Taxable part after tax = (1 − ${rate}%) × taxable part.`,
+    "Work backwards to find taxable part, then add the threshold."
+  ], "Hint (Net to Gross)");
+
+  return { img: makeSvgTextCard(lines), diagram, value: gross, hint: "Net = threshold + (gross−threshold)×(1−rate). Solve for gross." };
+}
+
+/* Hard 2: discount then VAT, given final price, find original net (before discount & VAT) */
+function genHard_DiscountThenVATReverse(){
+  const who = pick(PEOPLE);
+  const item = pick(ITEMS);
+  const shop = pick(SHOPS);
+
+  // final = P * (1-discount) * (1+vat)
+  // Choose combos so P is integer from final.
+  const combos = [
+    {disc:10, vat:20, factorNum:27, factorDen:25}, // final = P*(27/25) => P = final*25/27 (need final multiple 27)
+    {disc:25, vat:15, factorNum:69, factorDen:80}, // final = P*(69/80) => P = final*80/69 (need final multiple 69)
+    {disc:20, vat:15, factorNum:92, factorDen:100}, // final = P*(92/100)=P*23/25 => P = final*25/23 (need final multiple 23)
+    {disc:15, vat:25, factorNum:425, factorDen:400} // final = P*(425/400)=P*17/16 => P = final*16/17 (need final multiple 17)
+  ];
+  const c = pick(combos);
+
+  let P, finalPaid;
+
+  if(c.factorNum===27 && c.factorDen===25){
+    finalPaid = 27 * randInt(60, 180);
+    P = finalPaid * 25 / 27;
+  }else if(c.factorNum===69 && c.factorDen===80){
+    finalPaid = 69 * randInt(40, 120);
+    P = finalPaid * 80 / 69;
+  }else if(c.factorNum===92 && c.factorDen===100){
+    finalPaid = 23 * randInt(80, 260);   // multiple 23
+    P = finalPaid * 25 / 23;
+  }else{
+    finalPaid = 17 * randInt(80, 240);   // multiple 17
+    P = finalPaid * 16 / 17;
+  }
+
+  P = Math.round(P);
+
+  const lines = [
+    `${who} buys ${item} from ${shop}.`,
+    `The shop gives a ${pct(c.disc)} discount on the net price (before VAT).`,
+    `Then VAT of ${pct(c.vat)} is added to the discounted price.`,
+    `The final amount paid is ${money(finalPaid)}.`,
+    `What was the original net price BEFORE the discount and VAT (in dollars)?`
+  ];
+
+  const diagram = hintCardSvg([
+    "Think as a line segment scaling:",
+    `After discount: price becomes (1 − ${c.disc}%) × P.`,
+    `After VAT: price becomes (1 + ${c.vat}%) × (discounted price).`,
+    "Final = P × (1 − discount) × (1 + VAT).",
+    "So P = Final ÷ [(1 − discount) × (1 + VAT)]."
+  ], "Hint (Reverse the Multipliers)");
+
+  return { img: makeSvgTextCard(lines), diagram, value: P, hint: "Original P = Final ÷ [(1−discount)×(1+VAT)]." };
+}
+
+/* ---------------- Build exactly 6 (Easy2, Medium2, Hard2) ---------------- */
+function buildSixQuestions(){
+  return [
+    genEasy_FlatAboveThreshold(),
+    genEasy_ReverseVAT(),
+    genMedium_ProgressiveCompute(),
+    genMedium_FindIncomeFromTaxTable(),
+    genHard_FindGrossFromNet(),
+    genHard_DiscountThenVATReverse()
+  ];
+}
+
+/* ---------------- State ---------------- */
+let questions=[];
+let currentQuestionIndex=0;
+let studentName="Student";
+let quizStartTime=null;
+let quizEndTime=null;
+let quizSubmitted=false;
+
+let timerInterval=null;
+let elapsedMs=0;
+let isPaused=false;
+let firstAttemptMs=null;
+
+let setCounter=0;
+let lastAnswerSignature="";
+
+/* DOM */
+const quizContent=document.getElementById("quizContent");
+const sidebarEl=document.getElementById("sidebar");
+
+const buttonContainer=document.getElementById("navButtons");
+const backButton=document.getElementById("backButton");
+const nextButton=document.getElementById("nextButton");
+const submitButton=document.getElementById("submitButton");
+const checkButton=document.getElementById("checkButton");
+const saveButton=document.getElementById("saveButton");
+
+const generateBtn=document.getElementById("generateButton");
+const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
+
+const timerDisplay=document.getElementById("timerDisplay");
+const studentLine=document.getElementById("studentLine");
+const setLine=document.getElementById("setLine");
+
+/* ---------------- Timer ---------------- */
+function updateTimerDisplay(){
+  let totalMs=elapsedMs;
+  if(!isPaused && quizStartTime) totalMs+=(new Date()-quizStartTime);
+  let text=`Time: ${formatMs(totalMs)}`;
+  if(firstAttemptMs!==null) text+=` (First: ${formatMs(firstAttemptMs)})`;
+  timerDisplay.textContent=text;
+}
+function startTimerInterval(){
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval=setInterval(updateTimerDisplay, 1000);
+}
+function pauseTimer(){
+  if(isPaused || !quizStartTime) return;
+  const now=new Date();
+  elapsedMs+=now-quizStartTime;
+  isPaused=true;
+  quizStartTime=null;
+  updateTimerDisplay();
+}
+function resumeTimer(){
+  if(!isPaused) return;
+  isPaused=false;
+  quizStartTime=new Date();
+  updateTimerDisplay();
+}
+
+/* ---------------- Generate Quiz (ensure NEW answers) ---------------- */
+function answersSignature(built){
+  return built.map(x=>String(x.value)).join("|");
+}
+function generateQuiz(){
+  questions=[];
+  quizSubmitted=false;
+
+  let tries=0;
+  let built=null;
+
+  while(tries<30){
+    built = buildSixQuestions();
+    const sig = answersSignature(built);
+    if(sig !== lastAnswerSignature){
+      lastAnswerSignature = sig;
+      break;
+    }
+    tries++;
+  }
+
+  setCounter++;
+  setLine.textContent = `Set: ${setCounter}`;
+
+  for(let i=0;i<built.length;i++){
+    const partIndex=Math.floor(i/QUESTIONS_PER_PART);
+    const indexInPart=i%QUESTIONS_PER_PART;
+    questions.push({
+      partIndex,
+      indexInPart,
+      img: built[i].img,
+      diagram: built[i].diagram || "",
+      value: built[i].value,
+      hint: built[i].hint || "",
+      userValue:"",
+      isCorrect:false
+    });
+  }
+}
+
+/* ---------------- Sidebar ---------------- */
+function renderSidebar(){
+  sidebarEl.style.display="block";
+  sidebarEl.innerHTML=`<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul=document.getElementById("qList");
+  for(let i=0;i<TOTAL_QUESTIONS;i++){
+    const q=questions[i];
+    const li=document.createElement("li");
+    const label=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
+    li.textContent=`Q${i+1} (${label})`;
+    li.dataset.index=i;
+    li.addEventListener("click",()=>{
+      saveCurrentInput();
+      currentQuestionIndex=i;
+      renderQuestion();
+    });
+    ul.appendChild(li);
+  }
+  updateSidebarStatus();
+}
+function updateSidebarStatus(){
+  const items=document.querySelectorAll("#qList li");
+  items.forEach(li=>{
+    const idx=Number(li.dataset.index);
+    const q=questions[idx];
+    li.classList.remove("active","answered","correct","incorrect");
+
+    if(!quizSubmitted){
+      li.classList.toggle("active", idx===currentQuestionIndex);
+      if((q.userValue||"").trim()!=="") li.classList.add("answered");
+    }else{
+      if((q.userValue||"").trim()!==""){
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ---------------- Helpers ---------------- */
+function gradeOneQuestion(i){
+  const q=questions[i];
+  const val=parseIntegerAnswer(q.userValue||"");
+  q.isCorrect=isCorrectInt(val, q.value);
+}
+function saveCurrentInput(){
+  const input=document.getElementById("answerInput");
+  if(input){
+    questions[currentQuestionIndex].userValue=input.value.trim();
+    if(quizSubmitted){
+      gradeOneQuestion(currentQuestionIndex);
+      updateSidebarStatus();
+    }
+  }
+}
+function mountNavButtonsInto(slotId){
+  const slot=document.getElementById(slotId);
+  if(!slot) return;
+  slot.appendChild(buttonContainer);
+  buttonContainer.style.display="flex";
+}
+
+/* ---------------- Render Question ---------------- */
+function renderQuestion(){
+  const q=questions[currentQuestionIndex];
+  const levelLabel=["Easy","Medium","Hard"][q.partIndex];
+  const fullLabel=`${levelLabel} — Question ${q.indexInPart+1}`;
+  const hasHint=(q.hint||"").trim()!=="";
+
+  const hintDiagramHtml = (hasHint && q.diagram)
+    ? `<div class="hint-diagram-wrap"><img src="${q.diagram}" alt="Hint diagram"></div>`
+    : "";
+
+  quizContent.innerHTML=`
+    <p class="question-text">Question ${currentQuestionIndex+1} of ${TOTAL_QUESTIONS}</p>
+    <div class="part-title">${escapeXml(PART_TITLES[q.partIndex])}</div>
+
+    <div class="single-question">
+      <div style="font-weight:800;margin-bottom:8px;">${escapeXml(fullLabel)}</div>
+
+      <div class="img-wrap">
+        <img class="q-img" src="${q.img}" alt="Question image">
+      </div>
+
+      <div class="answer-row">
+        <div style="font-weight:700;">Answer (whole number):</div>
+        <input id="answerInput" class="answer-box" type="text" inputmode="numeric"
+               placeholder="Type a whole number (e.g., 780)"
+               value="${escapeXml(q.userValue||"")}">
+      </div>
+
+      <div id="checkFeedback" style="display:none;"></div>
+
+      <div class="hint-row">
+        <button id="hintBtn" class="hint-btn" ${hasHint ? "" : "disabled"}>${hasHint ? "Hint" : "No Hint"}</button>
+      </div>
+
+      <div id="hintBox" class="hint">
+        <div>${hasHint ? escapeXml(q.hint) : ""}</div>
+        ${hintDiagramHtml}
+      </div>
+    </div>
+
+    <div id="navSlot"></div>
+  `;
+
+  mountNavButtonsInto("navSlot");
+
+  const hintBtn=document.getElementById("hintBtn");
+  const hintBox=document.getElementById("hintBox");
+  if(hintBtn && hintBox && hasHint){
+    hintBtn.addEventListener("click", ()=>{
+      const shown=hintBox.style.display==="block";
+      hintBox.style.display = shown ? "none" : "block";
+      hintBtn.textContent = shown ? "Hint" : "Hide Hint";
+    });
+  }
+
+  backButton.style.display="inline-block";
+  backButton.style.visibility=(currentQuestionIndex===0)?"hidden":"visible";
+
+  const isLast=(currentQuestionIndex===TOTAL_QUESTIONS-1);
+  nextButton.style.display=isLast?"none":"inline-block";
+  submitButton.style.display=isLast?"inline-block":"none";
+
+  saveButton.style.display=quizSubmitted?"inline-block":"none";
+  checkButton.style.display=(quizSubmitted && !q.isCorrect)?"inline-block":"none";
+
+  updateSidebarStatus();
+}
+
+/* ---------------- Results + Submit ---------------- */
+function calculateAndShowResults(){
+  saveCurrentInput();
+
+  const now=new Date();
+  let attemptMs=elapsedMs;
+  if(!isPaused && quizStartTime) attemptMs+=now-quizStartTime;
+  if(firstAttemptMs===null) firstAttemptMs=attemptMs;
+
+  const attemptStartTime=quizStartTime || now;
+  quizEndTime=now;
+  quizSubmitted=true;
+
+  let correctCount=0;
+  questions.forEach((q,i)=>{
+    gradeOneQuestion(i);
+    if(q.isCorrect) correctCount++;
+  });
+
+  updateSidebarStatus();
+
+  let html=`
+    <h3>Results for ${escapeXml(studentName)}</h3>
+    <p>Set: <strong>${setCounter}</strong></p>
+    <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
+    <p>Start time: <strong>${attemptStartTime.toLocaleTimeString()}</strong></p>
+    <p>Submit time: <strong>${quizEndTime.toLocaleTimeString()}</strong></p>
+    <p>Time taken (this attempt): <strong>${formatMs(attemptMs)}</strong></p>
+    <p>First attempt time: <strong>${formatMs(firstAttemptMs)}</strong></p>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th><th>Part</th><th>Image</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q,i)=>{
+    const partLbl=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
+    const ua=(q.userValue||"").trim();
+    html+=`
+      <tr class="${q.isCorrect ? "correct-answer":"incorrect-answer"}">
+        <td>${i+1}</td>
+        <td>${escapeXml(partLbl)}</td>
+        <td><img class="thumb" src="${q.img}" alt="Q${i+1}"></td>
+        <td>${ua==="" ? "—" : escapeXml(ua)}</td>
+        <td><strong>${q.value}</strong></td>
+        <td>${ua==="" ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
+      </tr>
+    `;
+  });
+
+  html+=`</table><div id="navSlot"></div>`;
+  quizContent.innerHTML=html;
+
+  mountNavButtonsInto("navSlot");
+
+  backButton.style.display="none";
+  nextButton.style.display="none";
+  submitButton.style.display="none";
+  checkButton.style.display="none";
+  saveButton.style.display="inline-block";
+
+  // reset timer for review attempt
+  elapsedMs=0; isPaused=false; quizStartTime=new Date();
+  pauseButton.textContent="Pause";
+  startTimerInterval();
+  updateTimerDisplay();
+}
+
+/* ---------------- Buttons ---------------- */
+nextButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex<TOTAL_QUESTIONS-1){
+    currentQuestionIndex++;
+    renderQuestion();
+  }
+});
+backButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex>0){
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+});
+submitButton.addEventListener("click", ()=>{
+  if(currentQuestionIndex===TOTAL_QUESTIONS-1){
+    calculateAndShowResults();
+  }
+});
+checkButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  const q=questions[currentQuestionIndex];
+  if(!quizSubmitted) return;
+
+  gradeOneQuestion(currentQuestionIndex);
+  updateSidebarStatus();
+
+  const box=document.getElementById("checkFeedback");
+  if(!box) return;
+
+  box.className="check-feedback";
+  box.style.display="block";
+
+  const userInt=parseIntegerAnswer(q.userValue||"");
+  if(isCorrectInt(userInt, q.value)){
+    box.innerHTML=`✅ Correct!`;
+    checkButton.style.display="none";
+  }else{
+    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${q.value}</strong>`;
+    checkButton.style.display="inline-block";
+  }
+});
+
+/* Save TXT */
+function formatDateForFilename(date){
+  if(!date) return "no_time";
+  const pad=n=>String(n).padStart(2,"0");
+  return date.getFullYear()+pad(date.getMonth()+1)+pad(date.getDate())+"_"+
+         pad(date.getHours())+pad(date.getMinutes())+pad(date.getSeconds());
+}
+function saveCurrentResultAsTxt(){
+  saveCurrentInput();
+  if(!quizSubmitted){
+    questions.forEach((q,i)=>gradeOneQuestion(i));
+  }
+  let correctCount=0;
+  questions.forEach(q=>{ if(q.isCorrect) correctCount++; });
+
+  const lines=[];
+  lines.push("Tax Problems - Line Segment Method - Current Result");
+  lines.push("Student: "+studentName);
+  lines.push("Set: "+setCounter);
+  if(quizStartTime) lines.push("Start time: "+quizStartTime.toLocaleString());
+  if(quizEndTime) lines.push("Last submit time: "+quizEndTime.toLocaleString());
+  lines.push("Score: "+correctCount+" / "+TOTAL_QUESTIONS);
+  if(firstAttemptMs!==null) lines.push("First attempt time: "+formatMs(firstAttemptMs));
+  lines.push("");
+
+  questions.forEach((q,i)=>{
+    const partLbl=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
+    const userAns=(q.userValue||"").trim()==="" ? "Not answered" : q.userValue;
+    const resultText=(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect?"Correct":"Incorrect");
+    lines.push(`Q${i+1} (${partLbl})`);
+    lines.push("Your answer: "+userAns);
+    lines.push("Correct answer: "+q.value);
+    lines.push("Result: "+resultText);
+    lines.push("");
+  });
+
+  const content=lines.join("\n");
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
+  const ts=formatDateForFilename(new Date());
+  a.href=url;
+  a.download=`TaxProblems_${safeName}_Set${setCounter}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+saveButton.addEventListener("click", saveCurrentResultAsTxt);
+
+/* Pause/Resume (no pop-up) */
+pauseButton.addEventListener("click", ()=>{
+  if(!quizStartTime && elapsedMs===0 && !quizSubmitted) return;
+  if(isPaused){ resumeTimer(); pauseButton.textContent="Pause"; }
+  else { pauseTimer(); pauseButton.textContent="Resume"; }
+});
+
+/* Generate new set */
+generateBtn.addEventListener("click", ()=>{
+  if(!quizSubmitted && !confirm("Generate a new random set? All answers will be lost.")) return;
+
+  if(timerInterval) clearInterval(timerInterval);
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=new Date(); quizEndTime=null;
+  updateTimerDisplay(); startTimerInterval();
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+});
+
+/* ---------------- Export Questions PDF (2 per page, DYAA header) ---------------- */
+function waitForImages(container){
+  const imgs = Array.from(container.querySelectorAll("img"));
+  return Promise.all(imgs.map(img => {
+    if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve => {
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+    });
+  }));
+}
+exportQuestionsBtn.addEventListener("click", async ()=>{
+  if(!questions || questions.length===0){
+    alert("Please start a quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p","mm","a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const wrapper=document.createElement("div");
+  wrapper.style.position="fixed";
+  wrapper.style.left="-9999px";
+  wrapper.style.top="0";
+  wrapper.style.width="800px";
+  wrapper.style.background="#ffffff";
+  document.body.appendChild(wrapper);
+
+  try{
+    let groupDiv=null;
+
+    questions.forEach((q, idx)=>{
+      if(idx%2===0){
+        groupDiv=document.createElement("div");
+        groupDiv.style.padding="20px";
+        groupDiv.style.marginBottom="20px";
+        groupDiv.style.boxSizing="border-box";
+
+        const header=document.createElement("div");
+        header.innerHTML=`
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+              <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;line-height:1.1;">
+              <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+              <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+            </div>
+          </div>
+          <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Tax Problems — Line Segment Method</div>
+          <div style="color:#546e7a;font-weight:800;margin:0 0 10px 0;">Questions (Set ${setCounter})</div>
+        `;
+        groupDiv.appendChild(header);
+        wrapper.appendChild(groupDiv);
+      }
+
+      const qDiv=document.createElement("div");
+      qDiv.style.marginBottom="18px";
+      qDiv.innerHTML=`
+        <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx+1}</div>
+        <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+          <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+        </div>
+      `;
+      groupDiv.appendChild(qDiv);
+    });
+
+    const groups=Array.from(wrapper.children);
+
+    for(let i=0;i<groups.length;i++){
+      await waitForImages(groups[i]);
+
+      const canvas = await html2canvas(groups[i], {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff"
+      });
+      const imgData = canvas.toDataURL("image/png");
+
+      const imgWidth = pageWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      if(i>0) pdf.addPage();
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, Math.min(imgHeight, pageHeight - 20));
+    }
+
+    const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+    const ts=formatDateForFilename(new Date());
+    pdf.save(`TaxProblems_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
+  } finally {
+    document.body.removeChild(wrapper);
+  }
+});
+
+/* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
+function getNameFromUrl(){
+  const url=new URL(window.location.href);
+  const name=url.searchParams.get("name");
+  return name ? name.trim() : "";
+}
+function showStartScreen(){
+  sidebarEl.style.display="none";
+  buttonContainer.style.display="none";
+  generateBtn.style.display="none";
+  saveButton.style.display="none";
+  pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
+
+  studentLine.textContent="";
+  setLine.textContent="";
+
+  if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=null; quizEndTime=null;
+  updateTimerDisplay();
+
+  const preset=getNameFromUrl();
+  if(preset){
+    studentName=preset;
+    studentLine.textContent=`Student: ${studentName}`;
+    startQuiz(true);
+    return;
+  }
+
+  quizContent.innerHTML=`
+    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> tax word problems using the <strong>line segment method</strong>.</p>
+    <ul style="margin-top:6px;color:#555;line-height:1.7;">
+      <li><strong>Easy:</strong> 2 questions</li>
+      <li><strong>Medium:</strong> 2 questions</li>
+      <li><strong>Hard:</strong> 2 questions</li>
+    </ul>
+    <p style="margin-top:10px;">Please enter your name to begin:</p>
+
+    <input id="nameInput" type="text"
+      style="padding:10px;width:260px;font-size:1.05em;border:1px solid #ccc;border-radius:10px;"
+      placeholder="Your name">
+
+    <button id="startButton"
+      style="margin-left:10px;background:#4caf50;padding:10px 20px;color:white;border:none;border-radius:8px;">
+      Start Quiz
+    </button>
+  `;
+  document.getElementById("startButton").addEventListener("click", ()=>startQuiz(false));
+}
+function startQuiz(skipReadName){
+  if(!skipReadName){
+    const nameInput=document.getElementById("nameInput");
+    studentName=(nameInput.value || "Student").trim();
+  }
+  studentLine.textContent=`Student: ${studentName}`;
+
+  quizStartTime=new Date();
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  updateTimerDisplay(); startTimerInterval();
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+
+  generateBtn.style.display="inline-block";
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
+}
+
+/* ---------------- Init ---------------- */
+showStartScreen();
+</script>
+</body>
+</html>

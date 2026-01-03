@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 57 — Engineering Problems (2) (Image Quiz)</title>
+
+  <style>
+    body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f4f9;margin:0;padding:20px;color:#333;}
+    .quiz-container{max-width:900px;margin:40px auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 6px 15px rgba(0,0,0,0.1);}
+    #headerLogo{display:flex;align-items:center;gap:12px;margin-bottom:10px;border-bottom:2px solid #e0e0e0;padding-bottom:10px;}
+    .logo-icon{width:40px;height:40px;background:#0d47a1;border-radius:6px;position:relative;}
+    .logo-icon:before{content:"";position:absolute;width:20px;height:9px;background:#ff9800;top:-6px;left:20px;border-radius:3px;}
+    .logo-text{display:flex;flex-direction:column;line-height:1.1;}
+    .logo-text .brand{font-weight:900;letter-spacing:1px;color:#ff9800;}
+    .logo-text .edu{font-size:.9em;color:#0d47a1;font-weight:700;}
+
+    .top-bar{display:flex;justify-content:space-between;align-items:center;margin:10px 0 6px 0;gap:10px;flex-wrap:wrap;}
+    #timerDisplay{font-size:.95em;color:#333;}
+    #studentLine{font-size:.95em;color:#555;}
+    #setLine{font-size:.9em;color:#777;margin-top:2px;}
+
+    .quiz-main{display:flex;gap:20px;margin-top:10px;}
+    .sidebar{width:170px;border-right:1px solid #ddd;padding-right:10px;display:none;}
+    .sidebar h4{margin:0 0 8px;font-size:.95em;border-bottom:1px solid #eee;padding-bottom:4px;}
+    .sidebar ul{list-style:none;padding:0;margin:0;}
+    .sidebar li{padding:6px;cursor:pointer;border-radius:6px;font-size:.9em;margin-bottom:6px;border:1px solid #eee;background:#fafafa;}
+    .sidebar li.active{outline:2px solid #1976d2;font-weight:700;background:#fff;}
+    .sidebar li.answered{border-left:5px solid #4caf50;}
+    .sidebar li.correct{background:#d4edda;border-left:5px solid #28a745;border-color:#cbe7d1;}
+    .sidebar li.incorrect{background:#f8d7da;border-left:5px solid #f44336;border-color:#f1c7cc;}
+
+    #quizContent{flex:1;}
+    .question-text{font-size:1.05em;margin-bottom:8px;}
+    .part-title{font-weight:800;margin:8px 0 10px 0;}
+    .single-question{margin:6px 0;line-height:1.7;}
+    .answer-row{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+    .answer-box{width:520px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
+
+    .img-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px;box-shadow:0 3px 8px rgba(0,0,0,0.05);max-width:100%;}
+    .q-img{width:100%;height:auto;display:block;border-radius:10px;}
+
+    .hint-row{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    .hint-btn{background:#ff9800;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:0.95em;}
+    .hint-btn:disabled{opacity:.55;cursor:not-allowed;}
+
+    /* Fix: hint window overflow (Windows / wide items) */
+    .hint{
+      display:none;margin-top:10px;padding:10px 12px;border-radius:10px;
+      background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;
+      max-width:100%;overflow:auto;
+    }
+    .hint *{max-width:100%;}
+    .hint img{max-width:100%;height:auto;display:block;}
+    .hint table{width:100%;max-width:100%;border-collapse:collapse;table-layout:fixed;}
+    .hint td,.hint th{border:1px solid #ffe0b2;padding:6px;word-wrap:break-word;}
+
+    .hint-diagram-wrap{margin-top:10px;border:1px solid #ffe0b2;background:#ffffff;border-radius:10px;padding:10px;}
+    .hint-diagram-wrap img{width:100%;height:auto;display:block;border-radius:8px;}
+
+    .button-container{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;}
+    button{padding:10px 18px;border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:1em;}
+    #nextButton{background:#4caf50;}
+    #backButton{background:#039be5;}
+    #generateButton{background:#ff9800;}
+    #submitButton{background:#9c27b0;}
+    #saveButton{background:#607d8b;}
+    #pauseButton{background:#f57c00;}
+    #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
+    button:disabled{opacity:.55;cursor:not-allowed;}
+
+    .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
+
+    table.review-table{width:100%;border-collapse:collapse;margin-top:18px;}
+    .review-table th,.review-table td{border:1px solid #ccc;padding:6px;font-size:.85em;text-align:center;vertical-align:top;}
+    .review-table th{background:#f2f2f2;}
+    .correct-answer{background:#d4edda;}
+    .incorrect-answer{background:#f8d7da;}
+    .thumb{width:160px;max-width:160px;height:auto;border-radius:8px;border:1px solid #ddd;background:#fff;}
+
+    @media (max-width:760px){
+      .quiz-main{flex-direction:column;}
+      .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
+      .thumb{width:120px;max-width:120px;}
+      .answer-box{width:100%;}
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text">
+      <div class="brand">DYAA</div>
+      <div class="edu">EDUCATION</div>
+    </div>
+  </div>
+
+  <div class="top-bar">
+    <div>
+      <div id="timerDisplay">Time: 00:00</div>
+      <div id="studentLine"></div>
+      <div id="setLine"></div>
+    </div>
+    <div>
+      <button id="pauseButton" style="display:none;">Pause</button>
+      <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
+    </div>
+  </div>
+
+  <h2 style="margin:6px 0 0 0;">Lesson 57: Engineering Problems (2) — Line Segment Diagram Method</h2>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+
+  <div id="navButtons" class="button-container" style="display:none;">
+    <button id="backButton" style="display:none;">Previous</button>
+    <button id="submitButton" style="display:none;">Submit &amp; View Results</button>
+    <button id="nextButton" style="display:none;">Next</button>
+    <button id="checkButton" style="display:none;">Check</button>
+    <button id="saveButton" style="display:none;">Save Current Result</button>
+  </div>
+</div>
+
+<!-- Export-to-PDF libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+/* ===================== CONFIG ===================== */
+const SVG_TITLE = "Lesson 57 — Engineering Problems (2) — Line Segment Diagram";
+const LESSON_TITLE = "Engineering Problems (2) — Line Segment Diagram Method";
+const PART_TITLES = [
+  "Part 1 (Easy) — Piecewise work / simple alternation (2 questions)",
+  "Part 2 (Medium) — Multi-stage schedules / efficiency (2 questions)",
+  "Part 3 (Hard) — Tricky piecewise & alternation (2 questions)"
+];
+const NUM_PARTS = 3;
+const QUESTIONS_PER_PART = 2;
+const TOTAL_QUESTIONS = NUM_PARTS * QUESTIONS_PER_PART;
+
+/* ===================== Utils ===================== */
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ const t=a%b; a=b; b=t; } return a; }
+function lcm(a,b){ return Math.abs(a/gcd(a,b)*b); }
+
+function formatMs(ms){
+  const totalSec=Math.floor(ms/1000), min=Math.floor(totalSec/60), sec=totalSec%60;
+  return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+function escapeXml(s){
+  return String(s)
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&apos;");
+}
+function wrapLines(lines, maxChars=64){
+  const out=[];
+  function pushWrapped(line){
+    const words=String(line).split(/\s+/).filter(Boolean);
+    let cur="";
+    for(const w of words){
+      if(w.length>maxChars){
+        if(cur){ out.push(cur); cur=""; }
+        for(let i=0;i<w.length;i+=maxChars) out.push(w.slice(i,i+maxChars));
+        continue;
+      }
+      if(!cur) cur=w;
+      else if((cur+" "+w).length<=maxChars) cur+=" "+w;
+      else { out.push(cur); cur=w; }
+    }
+    if(cur) out.push(cur);
+  }
+  for(const line of lines) pushWrapped(line);
+  return out;
+}
+
+function parseNumbersFromInput(str){
+  const s=(str||"").trim();
+  if(!s) return [];
+  const out=[];
+  const re=/([+-]?\d+\s*\/\s*[+-]?\d+)|([+-]?\d+(?:\.\d+)?)/g;
+  let m;
+  while((m=re.exec(s))!==null){
+    const token=(m[1]||m[2]||"").replace(/\s+/g,"");
+    if(token.includes("/")){
+      const [a,b]=token.split("/");
+      const n=Number(a), d=Number(b);
+      if(Number.isFinite(n)&&Number.isFinite(d)&&d!==0) out.push(n/d);
+    }else{
+      const v=Number(token);
+      if(Number.isFinite(v)) out.push(v);
+    }
+  }
+  return out;
+}
+function approxEqual(a,b,tol=1e-2){ return Math.abs(a-b)<=tol; }
+
+/* ===================== Exact Fractions ===================== */
+function F(n,d=1){
+  if(d===0) throw new Error("Zero denominator");
+  if(d<0){ n=-n; d=-d; }
+  const g=gcd(n,d);
+  return { n:n/g, d:d/g };
+}
+function fAdd(a,b){ return F(a.n*b.d + b.n*a.d, a.d*b.d); }
+function fSub(a,b){ return F(a.n*b.d - b.n*a.d, a.d*b.d); }
+function fMul(a,b){ return F(a.n*b.n, a.d*b.d); }
+function fDiv(a,b){ return F(a.n*b.d, a.d*b.n); }
+function fCmp(a,b){ return (a.n*b.d) - (b.n*a.d); }
+function fToNum(a){ return a.n/a.d; }
+function fToStr(a){
+  if(a.d===1) return String(a.n);
+  return `${a.n}/${a.d}`;
+}
+
+/* ===================== SVG builders ===================== */
+function makeSvgTextCard(lines, titleText=SVG_TITLE){
+  const W=980, headerH=72, padX=44, lineH=46, firstLineY=headerH+52, padBottom=54;
+  const wrapped=wrapLines(lines, 64);
+  const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
+
+  const textSpans=wrapped.map((t,i)=>{
+    const y=firstLineY + i*lineH;
+    return `<text x="${padX}" y="${y}" font-size="30" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+  }).join("");
+
+  const svg=`
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f7fbff"/>
+        <stop offset="1" stop-color="#ffffff"/>
+      </linearGradient>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#000" flood-opacity="0.12"/>
+      </filter>
+    </defs>
+
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
+          fill="url(#g)" stroke="#dfe7f2" stroke-width="3" filter="url(#shadow)"/>
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${headerH}"
+          fill="#0d47a1" opacity="0.10"/>
+
+    <text x="${padX}" y="56" font-size="28" fill="#0d47a1" font-weight="700"
+          font-family="Segoe UI, Arial">${escapeXml(titleText)}</text>
+
+    ${textSpans}
+  </svg>`.trim();
+
+  const encoded=encodeURIComponent(svg)
+    .replaceAll("%0A","").replaceAll("%20"," ")
+    .replaceAll("%3D","=").replaceAll("%3A",":")
+    .replaceAll("%2F","/").replaceAll("%2C",",");
+
+  return "data:image/svg+xml;charset=utf-8," + encoded;
+}
+
+function hintCardSvg(lines, title="Hint (Line Segment Diagram)"){
+  const W=980, headerH=60, padX=44, lineH=34, firstLineY=headerH+44, padBottom=44;
+  const wrapped=wrapLines(lines, 78);
+  const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
+
+  const textSpans=wrapped.map((t,i)=>{
+    const y=firstLineY + i*lineH;
+    return `<text x="${padX}" y="${y}" font-size="24" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+  }).join("");
+
+  const svg=`
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff"/>
+        <stop offset="1" stop-color="#fff7e6"/>
+      </linearGradient>
+      <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="2" stdDeviation="5" flood-color="#000" flood-opacity="0.10"/>
+      </filter>
+    </defs>
+
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
+          fill="url(#bg)" stroke="#ffe0b2" stroke-width="3" filter="url(#shadow2)"/>
+
+    <text x="${padX}" y="52" font-size="26" fill="#8d6e63" font-weight="800"
+          font-family="Segoe UI, Arial">${escapeXml(title)}</text>
+
+    ${textSpans}
+  </svg>`.trim();
+
+  const encoded=encodeURIComponent(svg)
+    .replaceAll("%0A","").replaceAll("%20"," ")
+    .replaceAll("%3D","=").replaceAll("%3A",":")
+    .replaceAll("%2F","/").replaceAll("%2C",",");
+
+  return "data:image/svg+xml;charset=utf-8," + encoded;
+}
+
+/* ===================== Context pools ===================== */
+const PEOPLE = ["Xiaoli","Xiaoqiang","Ming","Qihao","Yuanyuan","Alex","Ben","Chloe","Daniel","Emily","Felix","Grace","Henry","Ivy","Jack","Kelly","Liam","Mia"];
+const PROJECTS = [
+  "renovating a classroom", "painting a fence", "packing donation boxes", "assembling toy kits",
+  "tiling a small floor", "sorting library books", "cleaning a hall", "installing shelves",
+  "labeling parcels", "repairing a garden gate"
+];
+const PLACES = ["a community center", "a school hall", "a warehouse", "a small factory", "a library", "a sports club"];
+
+/* ===================== Alternating fill simulator ===================== */
+function alternateFillTime(aHours, bHours, stepHours=1, startWithA=true){
+  // rates: 1/a, 1/b. Work target = 1.
+  const rA = F(1, aHours);
+  const rB = F(1, bHours);
+  let work = F(0,1);
+  let time = F(0,1);
+  let isA = startWithA;
+
+  // cap to avoid infinite loops
+  for(let k=0;k<400;k++){
+    const rate = isA ? rA : rB;
+    const step = F(stepHours,1);
+    const addWork = fMul(rate, step);
+
+    // if work + addWork >= 1 -> finish within this step
+    if(fCmp(fAdd(work, addWork), F(1,1)) >= 0){
+      const remain = fSub(F(1,1), work);       // fraction left
+      const extraTime = fDiv(remain, rate);    // remain / rate
+      time = fAdd(time, extraTime);
+      return time; // fraction hours
+    }else{
+      work = fAdd(work, addWork);
+      time = fAdd(time, step);
+      isA = !isA;
+    }
+  }
+  // fallback huge
+  return F(999,1);
+}
+
+/* ===================== Question Generators (exactly 6) ===================== */
+/* Answer format:
+   - type: "single" => values [x]  (x numeric)
+   - type: "pair"   => values [a,b]  (numeric), swapped order accepted
+*/
+
+/* Easy 1: Three workers start together, one leaves; find leaving worker's actual working days (integer) */
+function genEasyThreeWorkersLeave(){
+  const timesPool = [24,30,36,40,45,48,54,60];
+  for(let tries=0; tries<3000; tries++){
+    const a = pick(timesPool);
+    const b = pick(timesPool);
+    const c = pick(timesPool);
+    if(new Set([a,b,c]).size<2) continue;
+
+    const tAll = randInt(2,8); // days all three worked
+    const rAB = fAdd(F(1,a), F(1,b));
+    const rABC = fAdd(rAB, F(1,c));
+    const workAll = fMul(F(tAll,1), rABC);
+    if(fCmp(workAll, F(1,1)) >= 0) continue;
+
+    const remain = fSub(F(1,1), workAll);
+    const tAB = fDiv(remain, rAB);
+
+    if(tAB.d !== 1) continue;      // force integer days for easy
+    const tABi = tAB.n;
+
+    const total = tAll + tABi;
+    if(total < 8 || total > 24) continue;
+
+    const nameA = pick(PEOPLE);
+    const nameB = pick(PEOPLE.filter(x=>x!==nameA));
+    const nameC = pick(PEOPLE.filter(x=>x!==nameA && x!==nameB));
+    const project = pick(PROJECTS);
+    const place = pick(PLACES);
+
+    const lines = [
+      "(Easy) Three workers — someone leaves",
+      `${nameA} alone would finish the job in ${a} days.`,
+      `${nameB} alone would finish the job in ${b} days.`,
+      `${nameC} alone would finish the job in ${c} days.`,
+      `At ${place}, they start ${project} together.`,
+      `After ${tAll} days, ${nameC} leaves. ${nameA} and ${nameB} continue and finish.`,
+      `It takes ${total} days in total. How many days did ${nameC} actually work?`
+    ];
+
+    const hint = hintCardSvg([
+      "Let the whole job be 1.",
+      "Work done in first t days (all three): t(1/a + 1/b + 1/c).",
+      "Remaining work is finished by A and B: (Total − t)(1/a + 1/b).",
+      "Equation: t(1/a+1/b+1/c) + (Total−t)(1/a+1/b) = 1.",
+      "Notice it simplifies to: t*(1/c) + Total*(1/a+1/b) = 1."
+    ]);
+
+    return {
+      img: makeSvgTextCard(lines),
+      diagram: hint,
+      hintText: "Draw a bar for total work: first part (all 3) + second part (A+B) = 1.",
+      answer: { type:"single", values:[tAll], label:`${tAll} days` }
+    };
+  }
+  // fallback (same as the photo style; answer = 4)
+  return {
+    img: makeSvgTextCard([
+      "(Easy) Three workers — someone leaves",
+      "A alone: 36 days, B alone: 30 days, C alone: 48 days.",
+      "They start together. Later C leaves.",
+      "Total time is 15 days. How many days did C work?"
+    ]),
+    diagram: hintCardSvg(["t*(1/48) + 15*(1/36+1/30) = 1  →  t = 4."]),
+    hintText: "Use the simplified equation.",
+    answer: { type:"single", values:[4], label:"4 days" }
+  };
+}
+
+/* Easy 2: Two pipes alternate every 1 hour; find total time (as fraction) */
+function genEasyAlternatingPipes1h(){
+  const aPool = [6,8,9,10,12,15];
+  const bPool = [8,10,12,14,16,18,20];
+  for(let tries=0; tries<2000; tries++){
+    const a = pick(aPool);
+    const b = pick(bPool);
+    if(a===b) continue;
+
+    const startWithA = Math.random() < 0.5;
+    const t = alternateFillTime(a,b,1,startWithA);
+    if(t.n > 240) continue; // too long
+
+    // make "easy": denominator not too big
+    if(t.d > 12) continue;
+
+    const pipeA = pick(["Pipe A","Tap A","Inlet A"]);
+    const pipeB = pick(["Pipe B","Tap B","Inlet B"]);
+    const tank = pick(["a storage tank","a pool","a water container"]);
+
+    const starter = startWithA ? pipeA : pipeB;
+
+    const lines = [
+      "(Easy) Alternating pipes (1 hour each)",
+      `${pipeA} can fill ${tank} in ${a} hours if used alone.`,
+      `${pipeB} can fill ${tank} in ${b} hours if used alone.`,
+      `They are used alternately: each runs for 1 hour, then switches.`,
+      `The first one turned on is ${starter}.`,
+      "How many hours are needed to fill the tank completely?",
+      "Answer in hours (fraction is OK)."
+    ];
+
+    const hint = hintCardSvg([
+      "Treat the full tank as 1.",
+      `Rate of ${pipeA} = 1/${a} per hour, rate of ${pipeB} = 1/${b} per hour.`,
+      "Add the completed fractions hour by hour (a line segment diagram helps).",
+      "When the last hour would overflow, compute the remaining fraction / current rate."
+    ]);
+
+    return {
+      img: makeSvgTextCard(lines),
+      diagram: hint,
+      hintText: "Add work in 1-hour blocks. Final answer can be a fraction.",
+      answer: { type:"single", values:[fToNum(t)], label:`${fToStr(t)} hours` }
+    };
+  }
+  // fallback (classic: a=10, b=12, start A → 65/6)
+  const t = F(65,6);
+  return {
+    img: makeSvgTextCard([
+      "(Easy) Alternating pipes (1 hour each)",
+      "Pipe A alone: 10 hours. Pipe B alone: 12 hours.",
+      "They alternate every 1 hour, starting with A.",
+      "How many hours to fill the tank? (fraction OK)"
+    ]),
+    diagram: hintCardSvg(["Each 2-hour cycle fills 1/10 + 1/12 = 11/60. Then finish the remainder with A."]),
+    hintText: "Use cycles + remainder.",
+    answer: { type:"single", values:[fToNum(t)], label:"65/6 hours" }
+  };
+}
+
+/* Medium 1: Efficiency increases when together; two-day schedule; find B alone time (integer hours) */
+function genMediumEfficiencyTwoDay(){
+  const incPairs = [
+    {pa:F(1,4), pb:F(2,5)}, // +1/4, +2/5
+    {pa:F(1,3), pb:F(1,2)}, // +1/3, +1/2
+    {pa:F(1,5), pb:F(1,3)}, // +1/5, +1/3
+    {pa:F(1,4), pb:F(1,3)}  // +1/4, +1/3
+  ];
+  const fracPool = [F(3,8),F(2,5),F(5,12),F(3,10),F(4,9)];
+  for(let tries=0; tries<6000; tries++){
+    const inc = pick(incPairs);
+    const h1 = randInt(1,3);  // together hours
+    const h2 = randInt(1,4);  // A alone hours (day 2)
+    const Fdone = pick(fracPool);
+
+    // rA = (1 - Fdone)/h2
+    const rA = fDiv(fSub(F(1,1), Fdone), F(h2,1));
+
+    // from day1:
+    // h1*( rA*(1+pa) + rB*(1+pb) ) = Fdone
+    const onePlusPa = fAdd(F(1,1), inc.pa);
+    const onePlusPb = fAdd(F(1,1), inc.pb);
+
+    const leftNeeded = fDiv(Fdone, F(h1,1));                 // per-hour combined effective rate
+    const rAeff = fMul(rA, onePlusPa);
+    const rBeff = fSub(leftNeeded, rAeff);
+    if(fCmp(rBeff, F(0,1)) <= 0) continue;
+
+    const rB = fDiv(rBeff, onePlusPb);
+    if(fCmp(rB, F(0,1)) <= 0) continue;
+
+    const bTime = fDiv(F(1,1), rB); // hours
+    if(bTime.d !== 1) continue;     // make it medium: integer
+    const bHours = bTime.n;
+    if(bHours < 4 || bHours > 40) continue;
+
+    const nameA = pick(PEOPLE);
+    const nameB = pick(PEOPLE.filter(x=>x!==nameA));
+    const project = pick(["a mini-bridge model","a stage backdrop","a batch of kits","a set of shelves"]);
+    const place = pick(PLACES);
+
+    const lines = [
+      "(Medium) Efficiency increases when working together",
+      `${nameA} and ${nameB} are doing ${project} at ${place}.`,
+      `When they work together, ${nameA}'s efficiency increases by ${fToStr(inc.pa)} of their solo rate,`,
+      `and ${nameB}'s efficiency increases by ${fToStr(inc.pb)} of their solo rate.`,
+      `Day 1: They work together for ${h1} hour(s) and complete ${fToStr(Fdone)} of the job.`,
+      `Day 2: ${nameA} works alone for ${h2} hour(s) and finishes the job.`,
+      `If ${nameB} works alone, how many hours are needed to finish the whole job?`
+    ];
+
+    const hint = hintCardSvg([
+      "Let solo rates be rA and rB (job/hour).",
+      "Day 2 gives rA exactly: rA = (1 − F) / h2.",
+      "When together, effective rates are: rA(1+pa) and rB(1+pb).",
+      "Day 1 equation: h1[ rA(1+pa) + rB(1+pb) ] = F.",
+      "Solve rB, then B solo time = 1/rB."
+    ]);
+
+    return {
+      img: makeSvgTextCard(lines),
+      diagram: hint,
+      hintText: "Use Day 2 to find rA first, then use Day 1 to solve rB.",
+      answer: { type:"single", values:[bHours], label:`${bHours} hours` }
+    };
+  }
+  // fallback
+  return {
+    img: makeSvgTextCard([
+      "(Medium) Efficiency increases when working together",
+      "When together: A is 25% faster, B is 40% faster.",
+      "Day 1: together 1 hour completes 3/8 of the job.",
+      "Day 2: A alone 2 hours finishes the job.",
+      "How many hours for B alone?"
+    ]),
+    diagram: hintCardSvg(["rA=(1-3/8)/2=5/16. Then 1*(rA*5/4 + rB*7/5)=3/8. Solve rB."]),
+    hintText: "Compute rA from Day 2, then solve rB.",
+    answer: { type:"single", values:[16], label:"16 hours" }
+  };
+}
+
+/* Medium 2: Two workers with a schedule; find B alone time (integer) */
+function genMediumTwoWorkerSchedule(){
+  // build from a,b by constructing "together time" T that is integer using coprime trick
+  const coprimePairs = [
+    [1,2],[1,3],[1,4],[1,5],[2,3],[2,5],[3,4],[3,5],[4,5]
+  ];
+  for(let tries=0; tries<4000; tries++){
+    const [m,n] = pick(coprimePairs);
+    const k = randInt(2,6);
+    const a = k*(m+n)*m; // A alone days
+    const b = k*(m+n)*n; // B alone days
+    const T = k*m*n;     // together days (integer)
+
+    if(T<6 || T>24 || a>140 || b>160) continue;
+
+    // choose dTogether and yTogether at end; A works alone in between
+    const d = randInt(1, Math.min(8, T-2));
+    const y = randInt(1, Math.min(8, T-1-d));
+    const sumTY = d + y;
+
+    const rT = F(1,T);
+    const workTY = fMul(F(sumTY,1), rT);
+    if(fCmp(workTY, F(1,1)) >= 0) continue;
+
+    const remain = fSub(F(1,1), workTY);
+    const x = fMul(remain, F(a,1));  // A alone time needed
+    if(x.d !== 1) continue;
+    const xDays = x.n;
+    if(xDays<1 || xDays>30) continue;
+
+    const nameA = pick(PEOPLE);
+    const nameB = pick(PEOPLE.filter(x=>x!==nameA));
+    const project = pick(PROJECTS);
+    const place = pick(PLACES);
+
+    const lines = [
+      "(Medium) Two-worker multi-stage schedule",
+      `${nameA} and ${nameB} are working on ${project} at ${place}.`,
+      `If they work together from start to finish, the job takes ${T} days.`,
+      `They work together for ${d} days, then ${nameA} works alone for ${xDays} days,`,
+      `then they work together again for ${y} days and finish the job.`,
+      `How many days would ${nameB} take to finish the whole job alone?`
+    ];
+
+    const hint = hintCardSvg([
+      "Let A alone time = a, B alone time = b. Together time = T means: 1/a + 1/b = 1/T.",
+      "From the schedule: (d+y)/T + x/a = 1.",
+      "Solve a from the second equation if needed, then use 1/b = 1/T − 1/a."
+    ]);
+
+    return {
+      img: makeSvgTextCard(lines),
+      diagram: hint,
+      hintText: "Use 2 equations: together rate, and total work = 1.",
+      answer: { type:"single", values:[b], label:`${b} days` }
+    };
+  }
+  // fallback
+  return {
+    img: makeSvgTextCard([
+      "(Medium) Two-worker multi-stage schedule",
+      "Together they finish in 12 days.",
+      "Together 3 days, then A alone 6 days, then together 3 days to finish.",
+      "Find B alone time."
+    ]),
+    diagram: hintCardSvg(["(3+3)/12 + 6/a = 1 → a=12. Then 1/b=1/12-1/12=?? (choose numbers carefully)."]),
+    hintText: "Set up the equations.",
+    answer: { type:"single", values:[24], label:"24 days" }
+  };
+}
+
+/* Hard 1: Three workers; B leaves; total time known; find how long B worked (integer) */
+function genHardThreeWorkersBLeaves(){
+  const pool = [20,24,30,36,40,45,48,54,60,72];
+  for(let tries=0; tries<8000; tries++){
+    const a = pick(pool);
+    const b = pick(pool);
+    const c = pick(pool);
+    if(new Set([a,b,c]).size<2) continue;
+
+    const tB = randInt(1,10); // days all three worked before B left
+    const rAC = fAdd(F(1,a), F(1,c));
+    const rABC = fAdd(rAC, F(1,b));
+
+    const workAll = fMul(F(tB,1), rABC);
+    if(fCmp(workAll, F(1,1)) >= 0) continue;
+
+    const remain = fSub(F(1,1), workAll);
+    const tAC = fDiv(remain, rAC);
+    if(tAC.d !== 1) continue; // hard but still integer output
+    const tACi = tAC.n;
+
+    const total = tB + tACi;
+    if(total < 8 || total > 28) continue;
+
+    const nameA = pick(PEOPLE);
+    const nameB = pick(PEOPLE.filter(x=>x!==nameA));
+    const nameC = pick(PEOPLE.filter(x=>x!==nameA && x!==nameB));
+    const project = pick(PROJECTS);
+    const place = pick(PLACES);
+
+    const lines = [
+      "(Hard) Three workers — middle person leaves",
+      `${nameA} alone: ${a} days. ${nameB} alone: ${b} days. ${nameC} alone: ${c} days.`,
+      `They start ${project} at ${place} together.`,
+      `After ${tB} days, ${nameB} leaves.`,
+      `${nameA} and ${nameC} continue and finish the job.`,
+      `The total time is ${total} days.`,
+      `How many days did ${nameB} work?`
+    ];
+
+    const hint = hintCardSvg([
+      "Let total work be 1.",
+      "Equation: t(1/a+1/b+1/c) + (Total−t)(1/a+1/c) = 1.",
+      "It simplifies to: t*(1/b) + Total*(1/a+1/c) = 1.",
+      "Solve t."
+    ]);
+
+    return {
+      img: makeSvgTextCard(lines),
+      diagram: hint,
+      hintText: "Use the simplified equation t*(1/b) + Total*(1/a+1/c) = 1.",
+      answer: { type:"single", values:[tB], label:`${tB} days` }
+    };
+  }
+  // fallback (use the photo numbers: answer 4)
+  return {
+    img: makeSvgTextCard([
+      "(Hard) Three workers — middle person leaves",
+      "A alone: 36 days, B alone: 30 days, C alone: 48 days.",
+      "They start together, then B leaves early.",
+      "Total time is 15 days. How many days did B work?"
+    ]),
+    diagram: hintCardSvg(["t*(1/30) + 15*(1/36+1/48) = 1 → t = 4."]),
+    hintText: "Use the simplified equation.",
+    answer: { type:"single", values:[4], label:"4 days" }
+  };
+}
+
+/* Hard 2: Alternating pipes with 2-hour blocks; start randomly; answer fraction */
+function genHardAlternatingPipes2h(){
+  const aPool = [7,8,9,10,12,14,15,16];
+  const bPool = [9,10,12,15,18,20,24];
+  for(let tries=0; tries<4000; tries++){
+    const a = pick(aPool);
+    const b = pick(bPool);
+    if(a===b) continue;
+
+    const startWithA = Math.random() < 0.5;
+    const t = alternateFillTime(a,b,2,startWithA);
+    if(t.n > 300) continue;
+    if(t.d > 24) continue;
+
+    const pipeA = pick(["Valve A","Pump A","Pipe A"]);
+    const pipeB = pick(["Valve B","Pump B","Pipe B"]);
+    const tank = pick(["a reservoir","a storage tank","a water pool"]);
+    const starter = startWithA ? pipeA : pipeB;
+
+    const lines = [
+      "(Hard) Alternating pipes (2 hours each)",
+      `${pipeA} alone fills ${tank} in ${a} hours.`,
+      `${pipeB} alone fills ${tank} in ${b} hours.`,
+      `They alternate in 2-hour blocks (A for 2 hours, then B for 2 hours, ...).`,
+      `The first one turned on is ${starter}.`,
+      "How many hours are needed to fill the tank completely?",
+      "Answer in hours (fraction is OK)."
+    ];
+
+    const hint = hintCardSvg([
+      "Use a bar model: each 2-hour block adds a fixed fraction.",
+      `In 2 hours, ${pipeA} adds 2/${a}; ${pipeB} adds 2/${b}.`,
+      "Accumulate block by block until the last partial block.",
+      "Last partial time = remaining fraction / current rate."
+    ]);
+
+    return {
+      img: makeSvgTextCard(lines),
+      diagram: hint,
+      hintText: "Work in 2-hour blocks and compute the final partial block.",
+      answer: { type:"single", values:[fToNum(t)], label:`${fToStr(t)} hours` }
+    };
+  }
+  // fallback
+  const t = alternateFillTime(10,15,2,true);
+  return {
+    img: makeSvgTextCard([
+      "(Hard) Alternating pipes (2 hours each)",
+      "Pipe A: 10 hours, Pipe B: 15 hours.",
+      "Alternate in 2-hour blocks, starting with A.",
+      "How many hours to fill the tank? (fraction OK)"
+    ]),
+    diagram: hintCardSvg(["Compute by 2-hour blocks: A adds 1/5, B adds 2/15 each block."]),
+    hintText: "Accumulate by blocks + final partial.",
+    answer: { type:"single", values:[fToNum(t)], label:`${fToStr(t)} hours` }
+  };
+}
+
+/* ===================== Build exactly 6 questions ===================== */
+function buildSixQuestions(){
+  return [
+    genEasyThreeWorkersLeave(),        // Easy 1
+    genEasyAlternatingPipes1h(),       // Easy 2
+    genMediumEfficiencyTwoDay(),       // Medium 1
+    genMediumTwoWorkerSchedule(),      // Medium 2
+    genHardThreeWorkersBLeaves(),      // Hard 1
+    genHardAlternatingPipes2h()        // Hard 2
+  ];
+}
+
+/* ===================== State ===================== */
+let questions=[];
+let currentQuestionIndex=0;
+let studentName="Student";
+let quizStartTime=null;
+let quizEndTime=null;
+let quizSubmitted=false;
+
+let timerInterval=null;
+let elapsedMs=0;
+let isPaused=false;
+let firstAttemptMs=null;
+
+let setCounter=0;
+let lastSignature="";
+
+/* DOM */
+const quizContent=document.getElementById("quizContent");
+const sidebarEl=document.getElementById("sidebar");
+
+const buttonContainer=document.getElementById("navButtons");
+const backButton=document.getElementById("backButton");
+const nextButton=document.getElementById("nextButton");
+const submitButton=document.getElementById("submitButton");
+const checkButton=document.getElementById("checkButton");
+const saveButton=document.getElementById("saveButton");
+
+const generateBtn=document.getElementById("generateButton");
+const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
+
+const timerDisplay=document.getElementById("timerDisplay");
+const studentLine=document.getElementById("studentLine");
+const setLine=document.getElementById("setLine");
+
+/* ===================== Timer ===================== */
+function updateTimerDisplay(){
+  let totalMs=elapsedMs;
+  if(!isPaused && quizStartTime) totalMs+=(new Date()-quizStartTime);
+  let text=`Time: ${formatMs(totalMs)}`;
+  if(firstAttemptMs!==null) text+=` (First: ${formatMs(firstAttemptMs)})`;
+  timerDisplay.textContent=text;
+}
+function startTimerInterval(){
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval=setInterval(updateTimerDisplay, 1000);
+}
+function pauseTimer(){
+  if(isPaused || !quizStartTime) return;
+  const now=new Date();
+  elapsedMs+=now-quizStartTime;
+  isPaused=true;
+  quizStartTime=null;
+  updateTimerDisplay();
+}
+function resumeTimer(){
+  if(!isPaused) return;
+  isPaused=false;
+  quizStartTime=new Date();
+  updateTimerDisplay();
+}
+
+/* ===================== Grading ===================== */
+function gradeAnswer(userText, answer){
+  const nums = parseNumbersFromInput(userText);
+  if(answer.type==="single"){
+    if(nums.length<1) return false;
+    return approxEqual(nums[0], answer.values[0]);
+  }
+  if(answer.type==="pair"){
+    if(nums.length<2) return false;
+    const a=answer.values[0], b=answer.values[1];
+    const x=nums[0], y=nums[1];
+    return (approxEqual(x,a)&&approxEqual(y,b)) || (approxEqual(x,b)&&approxEqual(y,a));
+  }
+  return false;
+}
+
+/* ===================== Generate Quiz ===================== */
+function signatureOf(built){
+  return built.map(q=>q.answer.label).join("|");
+}
+function generateQuiz(){
+  questions=[];
+  quizSubmitted=false;
+
+  let tries=0;
+  let built=null;
+
+  while(tries<30){
+    built = buildSixQuestions();
+    const sig = signatureOf(built);
+    if(sig !== lastSignature){
+      lastSignature = sig;
+      break;
+    }
+    tries++;
+  }
+
+  setCounter++;
+  setLine.textContent = `Set: ${setCounter}`;
+
+  for(let i=0;i<built.length;i++){
+    const partIndex=Math.floor(i/QUESTIONS_PER_PART);
+    const indexInPart=i%QUESTIONS_PER_PART;
+    questions.push({
+      partIndex,
+      indexInPart,
+      img: built[i].img,
+      diagram: built[i].diagram || "",
+      hint: built[i].hintText || "Draw a line segment diagram and use rates.",
+      answer: built[i].answer,
+      userValue:"",
+      isCorrect:false
+    });
+  }
+}
+
+/* ===================== Sidebar ===================== */
+function renderSidebar(){
+  sidebarEl.style.display="block";
+  sidebarEl.innerHTML=`<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul=document.getElementById("qList");
+  for(let i=0;i<TOTAL_QUESTIONS;i++){
+    const q=questions[i];
+    const li=document.createElement("li");
+    const label=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
+    li.textContent=`Q${i+1} (${label})`;
+    li.dataset.index=i;
+    li.addEventListener("click",()=>{
+      saveCurrentInput();
+      currentQuestionIndex=i;
+      renderQuestion();
+    });
+    ul.appendChild(li);
+  }
+  updateSidebarStatus();
+}
+function updateSidebarStatus(){
+  const items=document.querySelectorAll("#qList li");
+  items.forEach(li=>{
+    const idx=Number(li.dataset.index);
+    const q=questions[idx];
+    li.classList.remove("active","answered","correct","incorrect");
+
+    if(!quizSubmitted){
+      li.classList.toggle("active", idx===currentQuestionIndex);
+      if((q.userValue||"").trim()!=="") li.classList.add("answered");
+    }else{
+      if((q.userValue||"").trim()!==""){
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ===================== Helpers ===================== */
+function saveCurrentInput(){
+  const input=document.getElementById("answerInput");
+  if(input){
+    questions[currentQuestionIndex].userValue=input.value.trim();
+    if(quizSubmitted){
+      const q=questions[currentQuestionIndex];
+      q.isCorrect = gradeAnswer(q.userValue, q.answer);
+      updateSidebarStatus();
+    }
+  }
+}
+function mountNavButtonsInto(slotId){
+  const slot=document.getElementById(slotId);
+  if(!slot) return;
+  slot.appendChild(buttonContainer);
+  buttonContainer.style.display="flex";
+}
+
+/* ===================== Render Question ===================== */
+function renderQuestion(){
+  const q=questions[currentQuestionIndex];
+  const levelLabel=["Easy","Medium","Hard"][q.partIndex];
+  const fullLabel=`${levelLabel} — Question ${q.indexInPart+1}`;
+
+  const hintDiagramHtml = q.diagram
+    ? `<div class="hint-diagram-wrap"><img src="${q.diagram}" alt="Hint diagram"></div>`
+    : "";
+
+  const placeholder = "e.g., 4   or   65/6";
+
+  quizContent.innerHTML=`
+    <p class="question-text">Question ${currentQuestionIndex+1} of ${TOTAL_QUESTIONS}</p>
+    <div class="part-title">${escapeXml(PART_TITLES[q.partIndex])}</div>
+
+    <div class="single-question">
+      <div style="font-weight:800;margin-bottom:8px;">${escapeXml(fullLabel)}</div>
+
+      <div class="img-wrap">
+        <img class="q-img" src="${q.img}" alt="Question image">
+      </div>
+
+      <div class="answer-row">
+        <div style="font-weight:700;">Answer:</div>
+        <input id="answerInput" class="answer-box" type="text"
+               placeholder="${escapeXml(placeholder)}"
+               value="${escapeXml(q.userValue||"")}">
+      </div>
+
+      <div id="checkFeedback" style="display:none;"></div>
+
+      <div class="hint-row">
+        <button id="hintBtn" class="hint-btn">Hint</button>
+      </div>
+
+      <div id="hintBox" class="hint">
+        <div>${escapeXml(q.hint)}</div>
+        ${hintDiagramHtml}
+      </div>
+    </div>
+
+    <div id="navSlot"></div>
+  `;
+
+  mountNavButtonsInto("navSlot");
+
+  const hintBtn=document.getElementById("hintBtn");
+  const hintBox=document.getElementById("hintBox");
+  hintBtn.addEventListener("click", ()=>{
+    const shown=hintBox.style.display==="block";
+    hintBox.style.display = shown ? "none" : "block";
+    hintBtn.textContent = shown ? "Hint" : "Hide Hint";
+  });
+
+  backButton.style.display="inline-block";
+  backButton.style.visibility=(currentQuestionIndex===0)?"hidden":"visible";
+
+  const isLast=(currentQuestionIndex===TOTAL_QUESTIONS-1);
+  nextButton.style.display=isLast?"none":"inline-block";
+  submitButton.style.display=isLast?"inline-block":"none";
+
+  saveButton.style.display=quizSubmitted?"inline-block":"none";
+  checkButton.style.display=(quizSubmitted && !q.isCorrect)?"inline-block":"none";
+
+  updateSidebarStatus();
+}
+
+/* ===================== Results + Submit ===================== */
+function calculateAndShowResults(){
+  saveCurrentInput();
+
+  const now=new Date();
+  let attemptMs=elapsedMs;
+  if(!isPaused && quizStartTime) attemptMs+=now-quizStartTime;
+  if(firstAttemptMs===null) firstAttemptMs=attemptMs;
+
+  const attemptStartTime=quizStartTime || now;
+  quizEndTime=now;
+  quizSubmitted=true;
+
+  let correctCount=0;
+  questions.forEach((q)=>{
+    q.isCorrect = gradeAnswer(q.userValue, q.answer);
+    if(q.isCorrect) correctCount++;
+  });
+
+  updateSidebarStatus();
+
+  let html=`
+    <h3>Results for ${escapeXml(studentName)}</h3>
+    <p>Set: <strong>${setCounter}</strong></p>
+    <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
+    <p>Start time: <strong>${attemptStartTime.toLocaleTimeString()}</strong></p>
+    <p>Submit time: <strong>${quizEndTime.toLocaleTimeString()}</strong></p>
+    <p>Time taken (this attempt): <strong>${formatMs(attemptMs)}</strong></p>
+    <p>First attempt time: <strong>${formatMs(firstAttemptMs)}</strong></p>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th><th>Part</th><th>Image</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q,i)=>{
+    const partLbl=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
+    const ua=(q.userValue||"").trim();
+    const correctText = q.answer.label;
+
+    html+=`
+      <tr class="${q.isCorrect ? "correct-answer":"incorrect-answer"}">
+        <td>${i+1}</td>
+        <td>${escapeXml(partLbl)}</td>
+        <td><img class="thumb" src="${q.img}" alt="Q${i+1}"></td>
+        <td>${ua==="" ? "—" : escapeXml(ua)}</td>
+        <td><strong>${escapeXml(correctText)}</strong></td>
+        <td>${ua==="" ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
+      </tr>
+    `;
+  });
+
+  html+=`</table><div id="navSlot"></div>`;
+  quizContent.innerHTML=html;
+
+  mountNavButtonsInto("navSlot");
+
+  backButton.style.display="none";
+  nextButton.style.display="none";
+  submitButton.style.display="none";
+  checkButton.style.display="none";
+  saveButton.style.display="inline-block";
+
+  // reset timer for review attempt
+  elapsedMs=0; isPaused=false; quizStartTime=new Date();
+  pauseButton.textContent="Pause";
+  startTimerInterval();
+  updateTimerDisplay();
+}
+
+/* ===================== Buttons ===================== */
+nextButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex<TOTAL_QUESTIONS-1){
+    currentQuestionIndex++;
+    renderQuestion();
+  }
+});
+backButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex>0){
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+});
+submitButton.addEventListener("click", ()=>{
+  if(currentQuestionIndex===TOTAL_QUESTIONS-1){
+    calculateAndShowResults();
+  }
+});
+checkButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  const q=questions[currentQuestionIndex];
+  if(!quizSubmitted) return;
+
+  q.isCorrect = gradeAnswer(q.userValue, q.answer);
+  updateSidebarStatus();
+
+  const box=document.getElementById("checkFeedback");
+  if(!box) return;
+
+  box.className="check-feedback";
+  box.style.display="block";
+
+  if(q.isCorrect){
+    box.innerHTML=`✅ Correct!`;
+    checkButton.style.display="none";
+  }else{
+    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${escapeXml(q.answer.label)}</strong>`;
+    checkButton.style.display="inline-block";
+  }
+});
+
+/* Save TXT */
+function formatDateForFilename(date){
+  if(!date) return "no_time";
+  const pad=n=>String(n).padStart(2,"0");
+  return date.getFullYear()+pad(date.getMonth()+1)+pad(date.getDate())+"_"+
+         pad(date.getHours())+pad(date.getMinutes())+pad(date.getSeconds());
+}
+function saveCurrentResultAsTxt(){
+  saveCurrentInput();
+
+  let correctCount=0;
+  questions.forEach(q=>{ if(q.isCorrect) correctCount++; });
+
+  const lines=[];
+  lines.push("Lesson 57 - Engineering Problems (2) - Current Result");
+  lines.push("Student: "+studentName);
+  lines.push("Set: "+setCounter);
+  if(quizStartTime) lines.push("Start time: "+quizStartTime.toLocaleString());
+  if(quizEndTime) lines.push("Last submit time: "+quizEndTime.toLocaleString());
+  lines.push("Score: "+correctCount+" / "+TOTAL_QUESTIONS);
+  if(firstAttemptMs!==null) lines.push("First attempt time: "+formatMs(firstAttemptMs));
+  lines.push("");
+
+  questions.forEach((q,i)=>{
+    const partLbl=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
+    const userAns=(q.userValue||"").trim()==="" ? "Not answered" : q.userValue;
+    const resultText=(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect?"Correct":"Incorrect");
+    lines.push(`Q${i+1} (${partLbl})`);
+    lines.push("Your answer: "+userAns);
+    lines.push("Correct answer: "+q.answer.label);
+    lines.push("Result: "+resultText);
+    lines.push("");
+  });
+
+  const content=lines.join("\n");
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
+  const ts=formatDateForFilename(new Date());
+  a.href=url;
+  a.download=`Lesson57_${safeName}_Set${setCounter}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+saveButton.addEventListener("click", saveCurrentResultAsTxt);
+
+/* Pause/Resume (no pop-up) */
+pauseButton.addEventListener("click", ()=>{
+  if(!quizStartTime && elapsedMs===0 && !quizSubmitted) return;
+  if(isPaused){ resumeTimer(); pauseButton.textContent="Pause"; }
+  else { pauseTimer(); pauseButton.textContent="Resume"; }
+});
+
+/* Generate new set */
+generateBtn.addEventListener("click", ()=>{
+  if(!quizSubmitted && !confirm("Generate a new random set? All answers will be lost.")) return;
+
+  if(timerInterval) clearInterval(timerInterval);
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=new Date(); quizEndTime=null;
+  updateTimerDisplay(); startTimerInterval();
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+});
+
+/* ===================== Export Questions PDF (2 per page, DYAA header) ===================== */
+function waitForImages(container){
+  const imgs = Array.from(container.querySelectorAll("img"));
+  return Promise.all(imgs.map(img => {
+    if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve => {
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+    });
+  }));
+}
+exportQuestionsBtn.addEventListener("click", async ()=>{
+  if(!questions || questions.length===0){
+    alert("Please start a quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p","mm","a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const wrapper=document.createElement("div");
+  wrapper.style.position="fixed";
+  wrapper.style.left="-9999px";
+  wrapper.style.top="0";
+  wrapper.style.width="800px";
+  wrapper.style.background="#ffffff";
+  document.body.appendChild(wrapper);
+
+  try{
+    let groupDiv=null;
+
+    questions.forEach((q, idx)=>{
+      if(idx%2===0){
+        groupDiv=document.createElement("div");
+        groupDiv.style.padding="20px";
+        groupDiv.style.marginBottom="20px";
+        groupDiv.style.boxSizing="border-box";
+
+        const header=document.createElement("div");
+        header.innerHTML=`
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+              <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;line-height:1.1;">
+              <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+              <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+            </div>
+          </div>
+          <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Lesson 57: ${LESSON_TITLE}</div>
+          <div style="color:#546e7a;font-weight:800;margin:0 0 10px 0;">Questions (Set ${setCounter})</div>
+        `;
+        groupDiv.appendChild(header);
+        wrapper.appendChild(groupDiv);
+      }
+
+      const qDiv=document.createElement("div");
+      qDiv.style.marginBottom="18px";
+      qDiv.innerHTML=`
+        <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx+1}</div>
+        <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+          <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+        </div>
+      `;
+      groupDiv.appendChild(qDiv);
+    });
+
+    const groups=Array.from(wrapper.children);
+
+    for(let i=0;i<groups.length;i++){
+      await waitForImages(groups[i]);
+
+      const canvas = await html2canvas(groups[i], {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff"
+      });
+      const imgData = canvas.toDataURL("image/png");
+
+      const imgWidth = pageWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      if(i>0) pdf.addPage();
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, Math.min(imgHeight, pageHeight - 20));
+    }
+
+    const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+    const ts=formatDateForFilename(new Date());
+    pdf.save(`Lesson57_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
+  } finally {
+    document.body.removeChild(wrapper);
+  }
+});
+
+/* ===================== Start Screen (+ optional ?name=Tiger) ===================== */
+function getNameFromUrl(){
+  const url=new URL(window.location.href);
+  const name=url.searchParams.get("name");
+  return name ? name.trim() : "";
+}
+function showStartScreen(){
+  sidebarEl.style.display="none";
+  buttonContainer.style.display="none";
+  generateBtn.style.display="none";
+  saveButton.style.display="none";
+  pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
+
+  studentLine.textContent="";
+  setLine.textContent="";
+
+  if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=null; quizEndTime=null;
+  updateTimerDisplay();
+
+  const preset=getNameFromUrl();
+  if(preset){
+    studentName=preset;
+    studentLine.textContent=`Student: ${studentName}`;
+    startQuiz(true);
+    return;
+  }
+
+  quizContent.innerHTML=`
+    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> questions.</p>
+    <ul style="margin-top:6px;color:#555;line-height:1.7;">
+      <li><strong>Easy:</strong> 2 questions</li>
+      <li><strong>Medium:</strong> 2 questions</li>
+      <li><strong>Hard:</strong> 2 questions</li>
+    </ul>
+    <p style="margin-top:10px;">Enter your name to begin:</p>
+
+    <input id="nameInput" type="text"
+      style="padding:10px;width:260px;font-size:1.05em;border:1px solid #ccc;border-radius:10px;"
+      placeholder="Your name">
+
+    <button id="startButton"
+      style="margin-left:10px;background:#4caf50;padding:10px 20px;color:white;border:none;border-radius:8px;">
+      Start Quiz
+    </button>
+  `;
+  document.getElementById("startButton").addEventListener("click", ()=>startQuiz(false));
+}
+function startQuiz(skipReadName){
+  if(!skipReadName){
+    const nameInput=document.getElementById("nameInput");
+    studentName=(nameInput.value || "Student").trim();
+  }
+  studentLine.textContent=`Student: ${studentName}`;
+
+  quizStartTime=new Date();
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  updateTimerDisplay(); startTimerInterval();
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+
+  generateBtn.style.display="inline-block";
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
+}
+
+/* ===================== Init ===================== */
+showStartScreen();
+</script>
+</body>
+</html>

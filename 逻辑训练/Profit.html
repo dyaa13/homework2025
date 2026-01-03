@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profit Problems — Line Segment Method (Image Quiz)</title>
+
+  <style>
+    body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f4f9;margin:0;padding:20px;color:#333;}
+    .quiz-container{max-width:900px;margin:40px auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 6px 15px rgba(0,0,0,0.1);}
+    #headerLogo{display:flex;align-items:center;gap:12px;margin-bottom:10px;border-bottom:2px solid #e0e0e0;padding-bottom:10px;}
+    .logo-icon{width:40px;height:40px;background:#0d47a1;border-radius:6px;position:relative;}
+    .logo-icon:before{content:"";position:absolute;width:20px;height:9px;background:#ff9800;top:-6px;left:20px;border-radius:3px;}
+    .logo-text{display:flex;flex-direction:column;line-height:1.1;}
+    .logo-text .brand{font-weight:900;letter-spacing:1px;color:#ff9800;}
+    .logo-text .edu{font-size:.9em;color:#0d47a1;font-weight:700;}
+
+    .top-bar{display:flex;justify-content:space-between;align-items:center;margin:10px 0 6px 0;gap:10px;flex-wrap:wrap;}
+    #timerDisplay{font-size:.95em;color:#333;}
+    #studentLine{font-size:.95em;color:#555;}
+    #setLine{font-size:.9em;color:#777;margin-top:2px;}
+
+    .quiz-main{display:flex;gap:20px;margin-top:10px;}
+    .sidebar{width:160px;border-right:1px solid #ddd;padding-right:10px;display:none;}
+    .sidebar h4{margin:0 0 8px;font-size:.95em;border-bottom:1px solid #eee;padding-bottom:4px;}
+    .sidebar ul{list-style:none;padding:0;margin:0;}
+    .sidebar li{padding:6px;cursor:pointer;border-radius:6px;font-size:.9em;margin-bottom:6px;border:1px solid #eee;background:#fafafa;}
+    .sidebar li.active{outline:2px solid #1976d2;font-weight:700;background:#fff;}
+    .sidebar li.answered{border-left:5px solid #4caf50;}
+    .sidebar li.correct{background:#d4edda;border-left:5px solid #28a745;border-color:#cbe7d1;}
+    .sidebar li.incorrect{background:#f8d7da;border-left:5px solid #f44336;border-color:#f1c7cc;}
+
+    #quizContent{flex:1;}
+    .question-text{font-size:1.05em;margin-bottom:8px;}
+    .part-title{font-weight:800;margin:8px 0 10px 0;}
+    .single-question{margin:6px 0;line-height:1.7;}
+    .answer-row{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+    .answer-box{width:420px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
+
+    .img-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px;box-shadow:0 3px 8px rgba(0,0,0,0.05);max-width:100%;}
+    .q-img{width:100%;height:auto;display:block;border-radius:10px;}
+
+    .hint-row{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    .hint-btn{background:#ff9800;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:0.95em;}
+    .hint-btn:disabled{opacity:.55;cursor:not-allowed;}
+
+    /* ✅ Windows-safe: prevent hint diagrams/tables overflow */
+    .hint{
+      display:none;margin-top:10px;padding:10px 12px;border-radius:10px;
+      background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;
+      max-width:100%;overflow:auto;
+    }
+    .hint *{max-width:100%;}
+    .hint img{max-width:100%;height:auto;display:block;}
+    .hint table{width:100%;max-width:100%;border-collapse:collapse;table-layout:fixed;}
+    .hint td,.hint th{border:1px solid #ffe0b2;padding:6px;word-wrap:break-word;}
+
+    .hint-diagram-wrap{margin-top:10px;border:1px solid #ffe0b2;background:#ffffff;border-radius:10px;padding:10px;}
+    .hint-diagram-wrap img{width:100%;height:auto;display:block;border-radius:8px;}
+
+    .button-container{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;}
+    button{padding:10px 18px;border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:1em;}
+    #nextButton{background:#4caf50;}
+    #backButton{background:#039be5;}
+    #generateButton{background:#ff9800;}
+    #submitButton{background:#9c27b0;}
+    #saveButton{background:#607d8b;}
+    #pauseButton{background:#f57c00;}
+    #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
+    button:disabled{opacity:.55;cursor:not-allowed;}
+
+    .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
+
+    table.review-table{width:100%;border-collapse:collapse;margin-top:18px;}
+    .review-table th,.review-table td{border:1px solid #ccc;padding:6px;font-size:.85em;text-align:center;vertical-align:top;}
+    .review-table th{background:#f2f2f2;}
+    .correct-answer{background:#d4edda;}
+    .incorrect-answer{background:#f8d7da;}
+    .thumb{width:160px;max-width:160px;height:auto;border-radius:8px;border:1px solid #ddd;background:#fff;}
+
+    @media (max-width:760px){
+      .quiz-main{flex-direction:column;}
+      .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
+      .thumb{width:120px;max-width:120px;}
+      .answer-box{width:100%;}
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text">
+      <div class="brand">DYAA</div>
+      <div class="edu">EDUCATION</div>
+    </div>
+  </div>
+
+  <div class="top-bar">
+    <div>
+      <div id="timerDisplay">Time: 00:00</div>
+      <div id="studentLine"></div>
+      <div id="setLine"></div>
+    </div>
+    <div>
+      <button id="pauseButton" style="display:none;">Pause</button>
+      <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
+    </div>
+  </div>
+
+  <h2 style="margin:6px 0 0 0;">Lesson Theme: Profit Problems — Line Segment Method</h2>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+
+  <div id="navButtons" class="button-container" style="display:none;">
+    <button id="backButton" style="display:none;">Previous</button>
+    <button id="submitButton" style="display:none;">Submit &amp; View Results</button>
+    <button id="nextButton" style="display:none;">Next</button>
+    <button id="checkButton" style="display:none;">Check</button>
+    <button id="saveButton" style="display:none;">Save Current Result</button>
+  </div>
+</div>
+
+<!-- Export-to-PDF libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+/* ---------------- CONFIG ---------------- */
+const SVG_TITLE = "Profit Problems (Line Segment Method)";
+const PART_TITLES = [
+  "Part 1 (Easy) — Basic profit rate & selling price (2 questions)",
+  "Part 2 (Medium) — Discount / transport loss / cost price (2 questions)",
+  "Part 3 (Hard) — Compare shops & overall profit/loss (2 questions)"
+];
+const NUM_PARTS = 3;
+const QUESTIONS_PER_PART = 2;
+const TOTAL_QUESTIONS = NUM_PARTS * QUESTIONS_PER_PART;
+
+/* ---------------- Context Pools ---------------- */
+const SHOPS = ["Sunshine Store","River Market","GreenLeaf Shop","City Mart","Harbour Grocery","Maple Trading"];
+const ITEMS = ["backpacks","water bottles","toy cars","notebooks","rice bags","fruit boxes","sports shoes","headphones"];
+const PEOPLE = ["Alex","Ben","Chloe","Daniel","Emily","Felix","Grace","Henry","Ivy","Jack","Kelly","Liam","Mia","Noah","Olivia","Peter","Quinn","Ruby","Samuel","Tina"];
+
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ [a,b]=[b,a%b]; } return a||1; }
+
+/* ---------------- Utils ---------------- */
+function formatMs(ms){
+  const totalSec=Math.floor(ms/1000), min=Math.floor(totalSec/60), sec=totalSec%60;
+  return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+function escapeXml(s){
+  return String(s)
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&apos;");
+}
+function wrapLines(lines, maxChars=60){
+  const out=[];
+  function pushWrapped(line){
+    const words=String(line).split(/\s+/).filter(Boolean);
+    let cur="";
+    for(const w of words){
+      if(w.length>maxChars){
+        if(cur){ out.push(cur); cur=""; }
+        for(let i=0;i<w.length;i+=maxChars) out.push(w.slice(i,i+maxChars));
+        continue;
+      }
+      if(!cur) cur=w;
+      else if((cur+" "+w).length<=maxChars) cur+=" "+w;
+      else { out.push(cur); cur=w; }
+    }
+    if(cur) out.push(cur);
+  }
+  for(const line of lines) pushWrapped(line);
+  return out;
+}
+function parseIntegerAnswer(str){
+  const s=(str||"").trim();
+  if(s==="") return NaN;
+  if(!/^[+-]?\d+$/.test(s)) return NaN;
+  const n=Number(s);
+  return Number.isInteger(n) ? n : NaN;
+}
+function isCorrectInt(userInt, correctInt){
+  return Number.isInteger(userInt) && userInt===correctInt;
+}
+
+/* ---------------- SVG: TEXT CARD ---------------- */
+function makeSvgTextCard(lines, titleText=SVG_TITLE){
+  const W=980, headerH=72, padX=44, lineH=46, firstLineY=headerH+52, padBottom=54;
+  const wrapped=wrapLines(lines, 60);
+  const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
+
+  const textSpans=wrapped.map((t,i)=>{
+    const y=firstLineY + i*lineH;
+    return `<text x="${padX}" y="${y}" font-size="30" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+  }).join("");
+
+  const svg=`
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f7fbff"/>
+        <stop offset="1" stop-color="#ffffff"/>
+      </linearGradient>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#000" flood-opacity="0.12"/>
+      </filter>
+    </defs>
+
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
+          fill="url(#g)" stroke="#dfe7f2" stroke-width="3" filter="url(#shadow)"/>
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${headerH}"
+          fill="#0d47a1" opacity="0.10"/>
+
+    <text x="${padX}" y="56" font-size="28" fill="#0d47a1" font-weight="700"
+          font-family="Segoe UI, Arial">${escapeXml(titleText)}</text>
+
+    ${textSpans}
+  </svg>`.trim();
+
+  const encoded=encodeURIComponent(svg)
+    .replaceAll("%0A","").replaceAll("%20"," ")
+    .replaceAll("%3D","=").replaceAll("%3A",":")
+    .replaceAll("%2F","/").replaceAll("%2C",",");
+
+  return "data:image/svg+xml;charset=utf-8," + encoded;
+}
+
+/* ---------------- SVG: Hint Card ---------------- */
+function hintCardSvg(lines, title="Hint"){
+  const W=980, headerH=60, padX=44, lineH=36, firstLineY=headerH+44, padBottom=44;
+  const wrapped=wrapLines(lines, 68);
+  const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
+
+  const textSpans=wrapped.map((t,i)=>{
+    const y=firstLineY + i*lineH;
+    return `<text x="${padX}" y="${y}" font-size="24" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+  }).join("");
+
+  const svg=`
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff"/>
+        <stop offset="1" stop-color="#fff7e6"/>
+      </linearGradient>
+      <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="2" stdDeviation="5" flood-color="#000" flood-opacity="0.10"/>
+      </filter>
+    </defs>
+
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
+          fill="url(#bg)" stroke="#ffe0b2" stroke-width="3" filter="url(#shadow2)"/>
+
+    <text x="${padX}" y="52" font-size="26" fill="#8d6e63" font-weight="800"
+          font-family="Segoe UI, Arial">${escapeXml(title)}</text>
+
+    ${textSpans}
+  </svg>`.trim();
+
+  const encoded=encodeURIComponent(svg)
+    .replaceAll("%0A","").replaceAll("%20"," ")
+    .replaceAll("%3D","=").replaceAll("%3A",":")
+    .replaceAll("%2F","/").replaceAll("%2C",",");
+
+  return "data:image/svg+xml;charset=utf-8," + encoded;
+}
+
+/* ---------------- Helpers for % display ---------------- */
+function pctStr(p){
+  // p may be 12.5 etc
+  return (Number.isInteger(p) ? String(p) : String(p)) + "%";
+}
+function money(n){ return `$${n}`; }
+
+/* ---------------- Question Generators (6 total: Easy2, Medium2, Hard2) ---------------- */
+
+/* Easy 1: Selling price from cost and profit rate (ensure integer) */
+function genEasy_SellingPrice(){
+  const shop = pick(SHOPS);
+  const item = pick(ITEMS);
+  const p = pick([
+    {pr:25, denom:4},
+    {pr:20, denom:5},
+    {pr:12.5, denom:8},
+    {pr:37.5, denom:8},
+    {pr:50, denom:2},
+    {pr:30, denom:10},
+    {pr:40, denom:5}
+  ]);
+
+  const unitCost = p.denom * randInt(12, 60); // keeps numbers reasonable
+  const selling = Math.round(unitCost * (1 + p.pr/100)); // guaranteed integer by construction
+
+  const who = pick(PEOPLE);
+
+  const lines = [
+    `${shop} buys a batch of ${item}.`,
+    `The cost price is ${money(unitCost)} per item.`,
+    `${who} sets the selling price to make a profit rate of ${pctStr(p.pr)} on cost.`,
+    `What is the selling price per item (in dollars)?`
+  ];
+
+  const diagram = hintCardSvg([
+    "Use the line-segment idea: Cost → add Profit → Selling price.",
+    "Profit rate is based on cost.",
+    "Selling price = Cost × (1 + profit rate)."
+  ], "Hint (Profit Rate)");
+
+  return {
+    img: makeSvgTextCard(lines),
+    diagram,
+    value: selling,
+    hint: "Selling price = cost × (1 + profit rate)."
+  };
+}
+
+/* Easy 2: Markup then partial discount, find total profit (integer) */
+function genEasy_TwoStageDiscountTotalProfit(){
+  const shop = pick(SHOPS);
+  const item = pick(ITEMS);
+
+  // templates chosen to guarantee integer marked & discounted prices and integer profits
+  const templates = [
+    // markup 37.5% (×11/8), discount 20% (×4/5) => discounted = cost×11/10 (needs cost multiple 40)
+    {profitRate:37.5, discountRate:20, costLCM:40, tag:"37.5% then 20% off"},
+    // markup 25% (×5/4), discount 10% (×9/10) => discounted = cost×9/8 (needs cost multiple 8)
+    {profitRate:25, discountRate:10, costLCM:8, tag:"25% then 10% off"},
+    // markup 50% (×3/2), discount 25% (×3/4) => discounted = cost×9/8 (needs cost multiple 8)
+    {profitRate:50, discountRate:25, costLCM:8, tag:"50% then 25% off"}
+  ];
+  const t = pick(templates);
+
+  const unitCost = t.costLCM * randInt(10, 45);
+  const marked = Math.round(unitCost * (1 + t.profitRate/100));
+  const discounted = Math.round(marked * (1 - t.discountRate/100));
+
+  const totalQty = pick([240, 300, 360, 420, 480, 500, 600]);
+  const fullQty = randInt(60, Math.min(200, totalQty-40));
+  const discQty = totalQty - fullQty;
+
+  const profitFull = (marked - unitCost) * fullQty;
+  const profitDisc = (discounted - unitCost) * discQty;
+  const totalProfit = profitFull + profitDisc;
+
+  const lines = [
+    `${shop} has ${totalQty} ${item}. The cost is ${money(unitCost)} each.`,
+    `They mark the price to make a profit rate of ${pctStr(t.profitRate)} (marked price).`,
+    `First, ${fullQty} items are sold at the marked price.`,
+    `Then the remaining ${discQty} items are sold at ${t.discountRate}% off the marked price.`,
+    `If all items are sold, what is the total profit (in dollars)?`
+  ];
+
+  const diagram = hintCardSvg([
+    "Step 1: Find marked price from cost and profit rate.",
+    "Step 2: Find discounted price from marked price.",
+    "Step 3: Profit = (selling − cost) × quantity for each stage, then add."
+  ], "Hint (Two Stages)");
+
+  return {
+    img: makeSvgTextCard(lines),
+    diagram,
+    value: totalProfit,
+    hint: "Compute marked price → discounted price → profit for each stage, then add."
+  };
+}
+
+/* Medium 1: Transport + loss + target profit, find retail price per kg (integer) */
+function genMedium_TransportLossTargetProfit(){
+  const shop = pick(SHOPS);
+  const item = pick(["watermelons","oranges","potatoes","apples","rice"]);
+  const distance = 100; // km (keeps shipping rate neat)
+
+  // combos guarantee integer final price
+  const combos = [
+    // price = (buy+ship)/(0.8) * 1.3 = (buy+ship) * 13/8 => need total multiple of 8
+    {loss:20, profit:30, base:8, num:13, den:8},
+    // price = (buy+ship)/(0.75) * 1.2 = (buy+ship) * 8/5 => need total multiple of 5
+    {loss:25, profit:20, base:5, num:8, den:5},
+    // price = (buy+ship)/(0.9) * 1.25 = (buy+ship) * 25/18 => need total multiple of 18
+    {loss:10, profit:25, base:18, num:25, den:18}
+  ];
+  const c = pick(combos);
+
+  const k = randInt(2, 10);
+  const totalCostPerKg = c.base * k; // buy + ship
+  const shipPerKg = randInt(2, Math.min(8, totalCostPerKg-2)); // dollars
+  const buyPerKg = totalCostPerKg - shipPerKg;
+  const shipRate = (shipPerKg / distance).toFixed(2);
+
+  const retail = (totalCostPerKg * c.num) / c.den; // integer by construction
+
+  const lines = [
+    `${shop} buys ${item} from a farm at ${money(buyPerKg)} per kg.`,
+    `The farm is ${distance} km away. Transport cost is $${shipRate} per km per kg.`,
+    `During transport and selling, ${c.loss}% of the goods are lost/damaged.`,
+    `To achieve a profit rate of ${c.profit}% (based on total cost), what should the retail price be (in dollars per kg)?`
+  ];
+
+  const diagram = hintCardSvg([
+    "Line-segment method for 1 kg SOLD:",
+    "Cost per kg bought = buy + shipping.",
+    "If loss is L%, you must buy 1/(1−L%) kg to sell 1 kg.",
+    "Effective cost for 1 kg sold = (buy+ship) ÷ (1−L%).",
+    "Retail = effective cost × (1 + profit rate)."
+  ], "Hint (Loss + Profit)");
+
+  return {
+    img: makeSvgTextCard(lines),
+    diagram,
+    value: retail,
+    hint: "Retail = (buy+ship) ÷ (1−loss%) × (1+profit%)."
+  };
+}
+
+/* Medium 2: Find cost price from two discount outcomes (profit and loss), integer */
+function genMedium_FindCostFromTwoDiscounts(){
+  const item = pick(["winter jacket","bicycle","tablet","sofa","camera"]);
+  const shop = pick(SHOPS);
+
+  const d1 = pick([5, 10, 12, 15]);        // smaller discount
+  const d2 = pick([30, 35, 40, 45, 50]);   // bigger discount
+  const listPrice = pick([180, 200, 240, 260, 300, 320, 360, 400]);
+
+  const s1 = Math.round(listPrice * (1 - d1/100)); // integer
+  const s2 = Math.round(listPrice * (1 - d2/100)); // integer
+
+  // choose a cost C between s2+1 and s1-1 so both profit and loss are positive
+  const minC = s2 + randInt(2, 20);
+  const maxC = s1 - randInt(2, 25);
+  let cost = randInt(minC, Math.max(minC, maxC));
+
+  // if accidentally invalid due to narrow gap, fix deterministically
+  if(!(cost < s1 && cost > s2)){
+    cost = Math.floor((s1+s2)/2);
+    if(cost >= s1) cost = s1-1;
+    if(cost <= s2) cost = s2+1;
+  }
+
+  const profit = s1 - cost;
+  const loss = cost - s2;
+
+  const lines = [
+    `${shop} has a ${item} with a marked (list) price of ${money(listPrice)}.`,
+    `If it is sold at ${d1}% off the marked price, the shop makes a profit of ${money(profit)}.`,
+    `If it is sold at ${d2}% off the marked price, the shop makes a loss of ${money(loss)}.`,
+    `What is the cost price of the ${item} (in dollars)?`
+  ];
+
+  const diagram = hintCardSvg([
+    "Let L = marked price, C = cost price.",
+    `Selling at ${d1}% off: S1 = (1−${d1}%)·L, and S1 − C = profit.`,
+    `Selling at ${d2}% off: S2 = (1−${d2}%)·L, and C − S2 = loss.`,
+    "So C = S1 − profit, or C = S2 + loss."
+  ], "Hint (Two Conditions)");
+
+  return {
+    img: makeSvgTextCard(lines),
+    diagram,
+    value: cost,
+    hint: "Compute the two selling prices from the marked price, then use profit/loss to find the cost."
+  };
+}
+
+/* Hard 1: Compare two shops (one cheaper cost, different profit rates), find cost */
+function genHard_CompareTwoShops(){
+  const item = pick(["folding bicycle","smartwatch","electric kettle","desk lamp","scooter"]);
+  const shopA = pick(SHOPS);
+  let shopB = pick(SHOPS);
+  if(shopB === shopA) shopB = pick(SHOPS);
+
+  // chosen to give nice integer: difference 0.01x = 3 -> x=300
+  const cheaperPct = 5;   // A cost is 5% cheaper
+  const pA = 20;          // A profit rate
+  const pB = 15;          // B profit rate
+  const diff = 3;         // B price - A price
+
+  const costB = 300;
+  const costA = Math.round(costB * (1 - cheaperPct/100)); // 285
+  const sellA = Math.round(costA * (1 + pA/100));         // 342
+  const sellB = Math.round(costB * (1 + pB/100));         // 345
+
+  const lines = [
+    `Two shops sell the same ${item}.`,
+    `${shopA}'s cost price is ${cheaperPct}% cheaper than ${shopB}'s cost price.`,
+    `${shopA} sets the selling price with a profit rate of ${pA}%, while ${shopB} uses a profit rate of ${pB}%.`,
+    `It turns out that ${shopA}'s selling price is ${money(diff)} cheaper than ${shopB}'s selling price.`,
+    `What is ${shopA}'s cost price (in dollars)?`
+  ];
+
+  const diagram = hintCardSvg([
+    "Line-segment method:",
+    "Let shop B cost be x.",
+    "Then shop A cost = 0.95x.",
+    "Selling prices: A = 1.20×0.95x, B = 1.15x.",
+    "Use the price difference to solve for x, then get A cost."
+  ], "Hint (Build Two Expressions)");
+
+  return {
+    img: makeSvgTextCard(lines),
+    diagram,
+    value: costA,
+    hint: "Let shop B cost = x. Write both selling prices in terms of x and use the difference."
+  };
+}
+
+/* Hard 2: Mixed profit & loss on two portions, overall profit given, find total cost */
+function genHard_OverallProfitFromMixedSales(){
+  const shop = pick(SHOPS);
+  const item = pick(["batch of goods","shipment","stock of items","delivery"]);
+
+  const a = pick([50, 60, 70]);          // % sold at profit
+  const p = pick([20, 25, 30]);          // profit rate
+  const l = pick([5, 10, 15]);           // loss rate on the rest
+
+  // net profit fraction = (a*p - (100-a)*l) / 10000
+  const numerator = a*p - (100-a)*l;
+  if(numerator <= 0){
+    // if unlucky (rare), force a good set
+    return genHard_OverallProfitFromMixedSales_Fallback();
+  }
+
+  const denom = 10000;
+  const baseT = denom / gcd(numerator, denom);     // smallest T making profit integer
+  const k = randInt(80, 220);
+  const totalCost = baseT * k;                     // integer dollars
+  const profitAmount = (totalCost * numerator) / denom; // integer
+
+  const lines = [
+    `${shop} sells a ${item}.`,
+    `${a}% of the goods are sold at a profit rate of ${p}% (based on cost),`,
+    `and the remaining ${100-a}% are sold at a loss rate of ${l}% (based on cost).`,
+    `In total, the shop makes an overall profit of ${money(profitAmount)}.`,
+    `What is the total cost of all the goods (in dollars)?`
+  ];
+
+  const diagram = hintCardSvg([
+    "Let total cost be T.",
+    "Cost of first part = a% of T → profit = (a% × p%)·T.",
+    "Cost of second part = (100−a)% of T → loss = ((100−a)% × l%)·T.",
+    "Overall profit = profit − loss = given amount.",
+    "Solve for T."
+  ], "Hint (Weighted Profit/Loss)");
+
+  return {
+    img: makeSvgTextCard(lines),
+    diagram,
+    value: totalCost,
+    hint: "Overall profit = (a%×p% − (100−a)%×l%) × total cost."
+  };
+}
+function genHard_OverallProfitFromMixedSales_Fallback(){
+  // stable fallback: 60% at 20% profit, 40% at 10% loss -> net 8%
+  const shop = pick(SHOPS);
+  const numerator = 800; // 0.08 * 10000
+  const denom = 10000;
+  const baseT = denom / gcd(numerator, denom); // 25
+  const totalCost = baseT * randInt(160, 360); // 4000..9000
+  const profitAmount = (totalCost * numerator) / denom;
+
+  const lines = [
+    `${shop} sells a batch of goods.`,
+    `60% are sold at a profit rate of 20%, and 40% are sold at a loss rate of 10%.`,
+    `Overall profit is ${money(profitAmount)}.`,
+    `What is the total cost (in dollars)?`
+  ];
+
+  const diagram = hintCardSvg([
+    "Net profit fraction = 60%×20% − 40%×10% = 12% − 4% = 8%.",
+    "So overall profit = 8% of total cost."
+  ], "Hint (Net %)");
+
+  return {
+    img: makeSvgTextCard(lines),
+    diagram,
+    value: totalCost,
+    hint: "Net profit = 8% of total cost. So total cost = profit ÷ 0.08."
+  };
+}
+
+/* ---------------- Build exactly 6 ---------------- */
+function buildSixQuestions(){
+  return [
+    genEasy_SellingPrice(),
+    genEasy_TwoStageDiscountTotalProfit(),
+    genMedium_TransportLossTargetProfit(),
+    genMedium_FindCostFromTwoDiscounts(),
+    genHard_CompareTwoShops(),
+    genHard_OverallProfitFromMixedSales()
+  ];
+}
+
+/* ---------------- State ---------------- */
+let questions=[];
+let currentQuestionIndex=0;
+let studentName="Student";
+let quizStartTime=null;
+let quizEndTime=null;
+let quizSubmitted=false;
+
+let timerInterval=null;
+let elapsedMs=0;
+let isPaused=false;
+let firstAttemptMs=null;
+
+let setCounter=0;
+let lastAnswerSignature="";
+
+/* DOM */
+const quizContent=document.getElementById("quizContent");
+const sidebarEl=document.getElementById("sidebar");
+
+const buttonContainer=document.getElementById("navButtons");
+const backButton=document.getElementById("backButton");
+const nextButton=document.getElementById("nextButton");
+const submitButton=document.getElementById("submitButton");
+const checkButton=document.getElementById("checkButton");
+const saveButton=document.getElementById("saveButton");
+
+const generateBtn=document.getElementById("generateButton");
+const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
+
+const timerDisplay=document.getElementById("timerDisplay");
+const studentLine=document.getElementById("studentLine");
+const setLine=document.getElementById("setLine");
+
+/* ---------------- Timer ---------------- */
+function updateTimerDisplay(){
+  let totalMs=elapsedMs;
+  if(!isPaused && quizStartTime) totalMs+=(new Date()-quizStartTime);
+  let text=`Time: ${formatMs(totalMs)}`;
+  if(firstAttemptMs!==null) text+=` (First: ${formatMs(firstAttemptMs)})`;
+  timerDisplay.textContent=text;
+}
+function startTimerInterval(){
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval=setInterval(updateTimerDisplay, 1000);
+}
+function pauseTimer(){
+  if(isPaused || !quizStartTime) return;
+  const now=new Date();
+  elapsedMs+=now-quizStartTime;
+  isPaused=true;
+  quizStartTime=null;
+  updateTimerDisplay();
+}
+function resumeTimer(){
+  if(!isPaused) return;
+  isPaused=false;
+  quizStartTime=new Date();
+  updateTimerDisplay();
+}
+
+/* ---------------- Generate Quiz (ensure NEW answers) ---------------- */
+function answersSignature(built){
+  return built.map(x=>String(x.value)).join("|");
+}
+function generateQuiz(){
+  questions=[];
+  quizSubmitted=false;
+
+  let tries=0;
+  let built=null;
+
+  while(tries<30){
+    built = buildSixQuestions();
+    const sig = answersSignature(built);
+    if(sig !== lastAnswerSignature){
+      lastAnswerSignature = sig;
+      break;
+    }
+    tries++;
+  }
+
+  setCounter++;
+  setLine.textContent = `Set: ${setCounter}`;
+
+  for(let i=0;i<built.length;i++){
+    const partIndex=Math.floor(i/QUESTIONS_PER_PART);
+    const indexInPart=i%QUESTIONS_PER_PART;
+    questions.push({
+      partIndex,
+      indexInPart,
+      img: built[i].img,
+      diagram: built[i].diagram || "",
+      value: built[i].value,
+      hint: built[i].hint || "",
+      userValue:"",
+      isCorrect:false
+    });
+  }
+}
+
+/* ---------------- Sidebar ---------------- */
+function renderSidebar(){
+  sidebarEl.style.display="block";
+  sidebarEl.innerHTML=`<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul=document.getElementById("qList");
+  for(let i=0;i<TOTAL_QUESTIONS;i++){
+    const q=questions[i];
+    const li=document.createElement("li");
+    const label=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
+    li.textContent=`Q${i+1} (${label})`;
+    li.dataset.index=i;
+    li.addEventListener("click",()=>{
+      saveCurrentInput();
+      currentQuestionIndex=i;
+      renderQuestion();
+    });
+    ul.appendChild(li);
+  }
+  updateSidebarStatus();
+}
+function updateSidebarStatus(){
+  const items=document.querySelectorAll("#qList li");
+  items.forEach(li=>{
+    const idx=Number(li.dataset.index);
+    const q=questions[idx];
+    li.classList.remove("active","answered","correct","incorrect");
+
+    if(!quizSubmitted){
+      li.classList.toggle("active", idx===currentQuestionIndex);
+      if((q.userValue||"").trim()!=="") li.classList.add("answered");
+    }else{
+      if((q.userValue||"").trim()!==""){
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ---------------- Helpers ---------------- */
+function gradeOneQuestion(i){
+  const q=questions[i];
+  const val=parseIntegerAnswer(q.userValue||"");
+  q.isCorrect=isCorrectInt(val, q.value);
+}
+function saveCurrentInput(){
+  const input=document.getElementById("answerInput");
+  if(input){
+    questions[currentQuestionIndex].userValue=input.value.trim();
+    if(quizSubmitted){
+      gradeOneQuestion(currentQuestionIndex);
+      updateSidebarStatus();
+    }
+  }
+}
+function mountNavButtonsInto(slotId){
+  const slot=document.getElementById(slotId);
+  if(!slot) return;
+  slot.appendChild(buttonContainer);
+  buttonContainer.style.display="flex";
+}
+
+/* ---------------- Render Question ---------------- */
+function renderQuestion(){
+  const q=questions[currentQuestionIndex];
+  const levelLabel=["Easy","Medium","Hard"][q.partIndex];
+  const fullLabel=`${levelLabel} — Question ${q.indexInPart+1}`;
+  const hasHint=(q.hint||"").trim()!=="";
+
+  const hintDiagramHtml = (hasHint && q.diagram)
+    ? `<div class="hint-diagram-wrap"><img src="${q.diagram}" alt="Hint diagram"></div>`
+    : "";
+
+  quizContent.innerHTML=`
+    <p class="question-text">Question ${currentQuestionIndex+1} of ${TOTAL_QUESTIONS}</p>
+    <div class="part-title">${escapeXml(PART_TITLES[q.partIndex])}</div>
+
+    <div class="single-question">
+      <div style="font-weight:800;margin-bottom:8px;">${escapeXml(fullLabel)}</div>
+
+      <div class="img-wrap">
+        <img class="q-img" src="${q.img}" alt="Question image">
+      </div>
+
+      <div class="answer-row">
+        <div style="font-weight:700;">Answer (whole number):</div>
+        <input id="answerInput" class="answer-box" type="text" inputmode="numeric"
+               placeholder="Type a whole number (e.g., 285)"
+               value="${escapeXml(q.userValue||"")}">
+      </div>
+
+      <div id="checkFeedback" style="display:none;"></div>
+
+      <div class="hint-row">
+        <button id="hintBtn" class="hint-btn" ${hasHint ? "" : "disabled"}>${hasHint ? "Hint" : "No Hint"}</button>
+      </div>
+
+      <div id="hintBox" class="hint">
+        <div>${hasHint ? escapeXml(q.hint) : ""}</div>
+        ${hintDiagramHtml}
+      </div>
+    </div>
+
+    <div id="navSlot"></div>
+  `;
+
+  mountNavButtonsInto("navSlot");
+
+  const hintBtn=document.getElementById("hintBtn");
+  const hintBox=document.getElementById("hintBox");
+  if(hintBtn && hintBox && hasHint){
+    hintBtn.addEventListener("click", ()=>{
+      const shown=hintBox.style.display==="block";
+      hintBox.style.display = shown ? "none" : "block";
+      hintBtn.textContent = shown ? "Hint" : "Hide Hint";
+    });
+  }
+
+  backButton.style.display="inline-block";
+  backButton.style.visibility=(currentQuestionIndex===0)?"hidden":"visible";
+
+  const isLast=(currentQuestionIndex===TOTAL_QUESTIONS-1);
+  nextButton.style.display=isLast?"none":"inline-block";
+  submitButton.style.display=isLast?"inline-block":"none";
+
+  saveButton.style.display=quizSubmitted?"inline-block":"none";
+  checkButton.style.display=(quizSubmitted && !q.isCorrect)?"inline-block":"none";
+
+  updateSidebarStatus();
+}
+
+/* ---------------- Results + Submit ---------------- */
+function calculateAndShowResults(){
+  saveCurrentInput();
+
+  const now=new Date();
+  let attemptMs=elapsedMs;
+  if(!isPaused && quizStartTime) attemptMs+=now-quizStartTime;
+  if(firstAttemptMs===null) firstAttemptMs=attemptMs;
+
+  const attemptStartTime=quizStartTime || now;
+  quizEndTime=now;
+  quizSubmitted=true;
+
+  let correctCount=0;
+  questions.forEach((q,i)=>{
+    gradeOneQuestion(i);
+    if(q.isCorrect) correctCount++;
+  });
+
+  updateSidebarStatus();
+
+  let html=`
+    <h3>Results for ${escapeXml(studentName)}</h3>
+    <p>Set: <strong>${setCounter}</strong></p>
+    <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
+    <p>Start time: <strong>${attemptStartTime.toLocaleTimeString()}</strong></p>
+    <p>Submit time: <strong>${quizEndTime.toLocaleTimeString()}</strong></p>
+    <p>Time taken (this attempt): <strong>${formatMs(attemptMs)}</strong></p>
+    <p>First attempt time: <strong>${formatMs(firstAttemptMs)}</strong></p>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th><th>Part</th><th>Image</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q,i)=>{
+    const partLbl=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
+    const ua=(q.userValue||"").trim();
+    html+=`
+      <tr class="${q.isCorrect ? "correct-answer":"incorrect-answer"}">
+        <td>${i+1}</td>
+        <td>${escapeXml(partLbl)}</td>
+        <td><img class="thumb" src="${q.img}" alt="Q${i+1}"></td>
+        <td>${ua==="" ? "—" : escapeXml(ua)}</td>
+        <td><strong>${q.value}</strong></td>
+        <td>${ua==="" ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
+      </tr>
+    `;
+  });
+
+  html+=`</table><div id="navSlot"></div>`;
+  quizContent.innerHTML=html;
+
+  mountNavButtonsInto("navSlot");
+
+  backButton.style.display="none";
+  nextButton.style.display="none";
+  submitButton.style.display="none";
+  checkButton.style.display="none";
+  saveButton.style.display="inline-block";
+
+  // reset timer for review attempt
+  elapsedMs=0; isPaused=false; quizStartTime=new Date();
+  pauseButton.textContent="Pause";
+  startTimerInterval();
+  updateTimerDisplay();
+}
+
+/* ---------------- Buttons ---------------- */
+nextButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex<TOTAL_QUESTIONS-1){
+    currentQuestionIndex++;
+    renderQuestion();
+  }
+});
+backButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex>0){
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+});
+submitButton.addEventListener("click", ()=>{
+  if(currentQuestionIndex===TOTAL_QUESTIONS-1){
+    calculateAndShowResults();
+  }
+});
+checkButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  const q=questions[currentQuestionIndex];
+  if(!quizSubmitted) return;
+
+  gradeOneQuestion(currentQuestionIndex);
+  updateSidebarStatus();
+
+  const box=document.getElementById("checkFeedback");
+  if(!box) return;
+
+  box.className="check-feedback";
+  box.style.display="block";
+
+  const userInt=parseIntegerAnswer(q.userValue||"");
+  if(isCorrectInt(userInt, q.value)){
+    box.innerHTML=`✅ Correct!`;
+    checkButton.style.display="none";
+  }else{
+    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${q.value}</strong>`;
+    checkButton.style.display="inline-block";
+  }
+});
+
+/* Save TXT */
+function formatDateForFilename(date){
+  if(!date) return "no_time";
+  const pad=n=>String(n).padStart(2,"0");
+  return date.getFullYear()+pad(date.getMonth()+1)+pad(date.getDate())+"_"+
+         pad(date.getHours())+pad(date.getMinutes())+pad(date.getSeconds());
+}
+function saveCurrentResultAsTxt(){
+  saveCurrentInput();
+  if(!quizSubmitted){
+    questions.forEach((q,i)=>gradeOneQuestion(i));
+  }
+  let correctCount=0;
+  questions.forEach(q=>{ if(q.isCorrect) correctCount++; });
+
+  const lines=[];
+  lines.push("Profit Problems - Line Segment Method - Current Result");
+  lines.push("Student: "+studentName);
+  lines.push("Set: "+setCounter);
+  if(quizStartTime) lines.push("Start time: "+quizStartTime.toLocaleString());
+  if(quizEndTime) lines.push("Last submit time: "+quizEndTime.toLocaleString());
+  lines.push("Score: "+correctCount+" / "+TOTAL_QUESTIONS);
+  if(firstAttemptMs!==null) lines.push("First attempt time: "+formatMs(firstAttemptMs));
+  lines.push("");
+
+  questions.forEach((q,i)=>{
+    const partLbl=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
+    const userAns=(q.userValue||"").trim()==="" ? "Not answered" : q.userValue;
+    const resultText=(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect?"Correct":"Incorrect");
+    lines.push(`Q${i+1} (${partLbl})`);
+    lines.push("Your answer: "+userAns);
+    lines.push("Correct answer: "+q.value);
+    lines.push("Result: "+resultText);
+    lines.push("");
+  });
+
+  const content=lines.join("\n");
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
+  const ts=formatDateForFilename(new Date());
+  a.href=url;
+  a.download=`ProfitProblems_${safeName}_Set${setCounter}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+saveButton.addEventListener("click", saveCurrentResultAsTxt);
+
+/* Pause/Resume (no pop-up) */
+pauseButton.addEventListener("click", ()=>{
+  if(!quizStartTime && elapsedMs===0 && !quizSubmitted) return;
+  if(isPaused){ resumeTimer(); pauseButton.textContent="Pause"; }
+  else { pauseTimer(); pauseButton.textContent="Resume"; }
+});
+
+/* Generate new set */
+generateBtn.addEventListener("click", ()=>{
+  if(!quizSubmitted && !confirm("Generate a new random set? All answers will be lost.")) return;
+
+  if(timerInterval) clearInterval(timerInterval);
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=new Date(); quizEndTime=null;
+  updateTimerDisplay(); startTimerInterval();
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+});
+
+/* ---------------- Export Questions PDF (2 per page, DYAA header) ---------------- */
+function waitForImages(container){
+  const imgs = Array.from(container.querySelectorAll("img"));
+  return Promise.all(imgs.map(img => {
+    if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve => {
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+    });
+  }));
+}
+exportQuestionsBtn.addEventListener("click", async ()=>{
+  if(!questions || questions.length===0){
+    alert("Please start a quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p","mm","a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const wrapper=document.createElement("div");
+  wrapper.style.position="fixed";
+  wrapper.style.left="-9999px";
+  wrapper.style.top="0";
+  wrapper.style.width="800px";
+  wrapper.style.background="#ffffff";
+  document.body.appendChild(wrapper);
+
+  try{
+    let groupDiv=null;
+
+    questions.forEach((q, idx)=>{
+      if(idx%2===0){
+        groupDiv=document.createElement("div");
+        groupDiv.style.padding="20px";
+        groupDiv.style.marginBottom="20px";
+        groupDiv.style.boxSizing="border-box";
+
+        const header=document.createElement("div");
+        header.innerHTML=`
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+              <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;line-height:1.1;">
+              <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+              <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+            </div>
+          </div>
+          <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Profit Problems — Line Segment Method</div>
+          <div style="color:#546e7a;font-weight:800;margin:0 0 10px 0;">Questions (Set ${setCounter})</div>
+        `;
+        groupDiv.appendChild(header);
+        wrapper.appendChild(groupDiv);
+      }
+
+      const qDiv=document.createElement("div");
+      qDiv.style.marginBottom="18px";
+      qDiv.innerHTML=`
+        <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx+1}</div>
+        <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+          <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+        </div>
+      `;
+      groupDiv.appendChild(qDiv);
+    });
+
+    const groups=Array.from(wrapper.children);
+
+    for(let i=0;i<groups.length;i++){
+      await waitForImages(groups[i]);
+
+      const canvas = await html2canvas(groups[i], {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff"
+      });
+      const imgData = canvas.toDataURL("image/png");
+
+      const imgWidth = pageWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      if(i>0) pdf.addPage();
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, Math.min(imgHeight, pageHeight - 20));
+    }
+
+    const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+    const ts=formatDateForFilename(new Date());
+    pdf.save(`ProfitProblems_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
+  } finally {
+    document.body.removeChild(wrapper);
+  }
+});
+
+/* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
+function getNameFromUrl(){
+  const url=new URL(window.location.href);
+  const name=url.searchParams.get("name");
+  return name ? name.trim() : "";
+}
+function showStartScreen(){
+  sidebarEl.style.display="none";
+  buttonContainer.style.display="none";
+  generateBtn.style.display="none";
+  saveButton.style.display="none";
+  pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
+
+  studentLine.textContent="";
+  setLine.textContent="";
+
+  if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=null; quizEndTime=null;
+  updateTimerDisplay();
+
+  const preset=getNameFromUrl();
+  if(preset){
+    studentName=preset;
+    studentLine.textContent=`Student: ${studentName}`;
+    startQuiz(true);
+    return;
+  }
+
+  quizContent.innerHTML=`
+    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> profit word problems using the <strong>line segment method</strong> (answers are <strong>whole numbers</strong>).</p>
+    <ul style="margin-top:6px;color:#555;line-height:1.7;">
+      <li><strong>Easy:</strong> 2 questions</li>
+      <li><strong>Medium:</strong> 2 questions</li>
+      <li><strong>Hard:</strong> 2 questions</li>
+    </ul>
+    <p style="margin-top:10px;">Please enter your name to begin:</p>
+
+    <input id="nameInput" type="text"
+      style="padding:10px;width:260px;font-size:1.05em;border:1px solid #ccc;border-radius:10px;"
+      placeholder="Your name">
+
+    <button id="startButton"
+      style="margin-left:10px;background:#4caf50;padding:10px 20px;color:white;border:none;border-radius:8px;">
+      Start Quiz
+    </button>
+  `;
+  document.getElementById("startButton").addEventListener("click", ()=>startQuiz(false));
+}
+function startQuiz(skipReadName){
+  if(!skipReadName){
+    const nameInput=document.getElementById("nameInput");
+    studentName=(nameInput.value || "Student").trim();
+  }
+  studentLine.textContent=`Student: ${studentName}`;
+
+  quizStartTime=new Date();
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  updateTimerDisplay(); startTimerInterval();
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+
+  generateBtn.style.display="inline-block";
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
+}
+
+/* ---------------- Init ---------------- */
+showStartScreen();
+</script>
+</body>
+</html>
