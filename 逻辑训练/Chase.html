@@ -964,6 +964,57 @@ function waitForImages(container){
     });
   }));
 }
+
+/** Add a canvas into jsPDF, auto-splitting into multiple pages if needed */
+function addCanvasAutoPagedToPdf(pdf, canvas, marginMm = 10){
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const usableW = pageWidth - marginMm * 2;
+  const usableH = pageHeight - marginMm * 2;
+
+  // scale to fit page width
+  const ratio = usableW / canvas.width;
+  const scaledH = canvas.height * ratio;
+
+  // If fits in one page, add directly
+  if(scaledH <= usableH){
+    const imgData = canvas.toDataURL("image/png", 1.0);
+    pdf.addImage(imgData, "PNG", marginMm, marginMm, usableW, scaledH);
+    return;
+  }
+
+  // Otherwise, slice the canvas by page height (in source pixels)
+  const sliceHpx = Math.floor(usableH / ratio); // source pixels per page
+  const pageCanvas = document.createElement("canvas");
+  const ctx = pageCanvas.getContext("2d", { willReadFrequently: true });
+
+  pageCanvas.width = canvas.width;
+
+  let y = 0;
+  let firstSlice = true;
+
+  while(y < canvas.height){
+    const remaining = canvas.height - y;
+    const curSliceH = Math.min(sliceHpx, remaining);
+
+    pageCanvas.height = curSliceH;
+    ctx.clearRect(0, 0, pageCanvas.width, pageCanvas.height);
+
+    // draw slice
+    ctx.drawImage(canvas, 0, y, canvas.width, curSliceH, 0, 0, canvas.width, curSliceH);
+
+    const imgData = pageCanvas.toDataURL("image/png", 1.0);
+
+    // first slice uses current page; next slices need new pages
+    if(!firstSlice) pdf.addPage();
+    firstSlice = false;
+
+    pdf.addImage(imgData, "PNG", marginMm, marginMm, usableW, curSliceH * ratio);
+
+    y += curSliceH;
+  }
+}
+
 exportQuestionsBtn.addEventListener("click", async ()=>{
   if(!questions || questions.length===0){
     alert("Please start a quiz first.");
@@ -972,29 +1023,34 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
 
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF("p","mm","a4");
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
 
-  const wrapper=document.createElement("div");
-  wrapper.style.position="fixed";
-  wrapper.style.left="-9999px";
-  wrapper.style.top="0";
-  wrapper.style.width="800px";
-  wrapper.style.background="#ffffff";
+  // offscreen wrapper
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "fixed";
+  wrapper.style.left = "0";
+  wrapper.style.top = "0";
+  wrapper.style.opacity = "0";
+  wrapper.style.pointerEvents = "none";
+  wrapper.style.zIndex = "-1";
+
+  // ✅ Force a stable “desktop-like” layout width for export
+  wrapper.style.width = "820px";
+  wrapper.style.background = "#ffffff";
+
   document.body.appendChild(wrapper);
 
   try{
-    let groupDiv=null;
+    let groupDiv = null;
 
     questions.forEach((q, idx)=>{
-      if(idx%2===0){
-        groupDiv=document.createElement("div");
-        groupDiv.style.padding="20px";
-        groupDiv.style.marginBottom="20px";
-        groupDiv.style.boxSizing="border-box";
+      if(idx % 2 === 0){
+        groupDiv = document.createElement("div");
+        groupDiv.style.padding = "18px";
+        groupDiv.style.marginBottom = "18px";
+        groupDiv.style.boxSizing = "border-box";
 
-        const header=document.createElement("div");
-        header.innerHTML=`
+        const header = document.createElement("div");
+        header.innerHTML = `
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
             <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
               <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
@@ -1012,34 +1068,37 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
         wrapper.appendChild(groupDiv);
       }
 
-      const qDiv=document.createElement("div");
-      qDiv.style.marginBottom="18px";
-      qDiv.innerHTML=`
+      const qDiv = document.createElement("div");
+      qDiv.style.marginBottom = "16px";
+      qDiv.innerHTML = `
         <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx+1}</div>
-        <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
-          <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+        <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;box-sizing:border-box;">
+          <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;display:block;" />
         </div>
       `;
       groupDiv.appendChild(qDiv);
     });
 
-    const groups=Array.from(wrapper.children);
+    const groups = Array.from(wrapper.children);
 
     for(let i=0;i<groups.length;i++){
       await waitForImages(groups[i]);
 
+      // ✅ Important: force desktop viewport in html2canvas clone to avoid mobile media-query layout
       const canvas = await html2canvas(groups[i], {
         scale: 2,
         useCORS: true,
-        backgroundColor: "#ffffff"
+        backgroundColor: "#ffffff",
+        windowWidth: 980,
+        windowHeight: 1600,
+        scrollX: 0,
+        scrollY: 0
       });
-      const imgData = canvas.toDataURL("image/png");
 
-      const imgWidth = pageWidth - 20;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      if(i > 0) pdf.addPage();
 
-      if(i>0) pdf.addPage();
-      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, Math.min(imgHeight, pageHeight - 20));
+      // ✅ No cropping: auto paginate if the canvas is taller than one PDF page
+      addCanvasAutoPagedToPdf(pdf, canvas, 10);
     }
 
     const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
