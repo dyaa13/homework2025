@@ -1,0 +1,2307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AS91027 Practice (Algebra Procedures) — Image Quiz</title>
+
+  <style>
+    body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f4f9;margin:0;padding:20px;color:#333;}
+    .quiz-container{max-width:900px;margin:40px auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 6px 15px rgba(0,0,0,0.1);}
+    #headerLogo{display:flex;align-items:center;gap:12px;margin-bottom:10px;border-bottom:2px solid #e0e0e0;padding-bottom:10px;}
+    .logo-icon{width:40px;height:40px;background:#0d47a1;border-radius:6px;position:relative;}
+    .logo-icon:before{content:"";position:absolute;width:20px;height:9px;background:#ff9800;top:-6px;left:20px;border-radius:3px;}
+    .logo-text{display:flex;flex-direction:column;line-height:1.1;}
+    .logo-text .brand{font-weight:900;letter-spacing:1px;color:#ff9800;}
+    .logo-text .edu{font-size:.9em;color:#0d47a1;font-weight:700;}
+
+    .top-bar{display:flex;justify-content:space-between;align-items:center;margin:10px 0 6px 0;gap:10px;flex-wrap:wrap;}
+    #timerDisplay{font-size:.95em;color:#333;}
+    #studentLine{font-size:.95em;color:#555;}
+
+    .quiz-main{display:flex;gap:20px;margin-top:10px;}
+    .sidebar{width:160px;border-right:1px solid #ddd;padding-right:10px;display:none;}
+    .sidebar h4{margin:0 0 8px;font-size:.95em;border-bottom:1px solid #eee;padding-bottom:4px;}
+    .sidebar ul{list-style:none;padding:0;margin:0;}
+    .sidebar li{padding:6px;cursor:pointer;border-radius:6px;font-size:.9em;margin-bottom:6px;border:1px solid #eee;background:#fafafa;}
+    .sidebar li.active{outline:2px solid #1976d2;font-weight:700;background:#fff;}
+    .sidebar li.answered{border-left:5px solid #4caf50;}
+    .sidebar li.correct{background:#d4edda;border-left:5px solid #28a745;border-color:#cbe7d1;}
+    .sidebar li.incorrect{background:#f8d7da;border-left:5px solid #f44336;border-color:#f1c7cc;}
+
+    #quizContent{flex:1;}
+    .question-text{font-size:1.05em;margin-bottom:8px;}
+    .part-title{font-weight:800;margin:8px 0 10px 0;}
+    .single-question{margin:6px 0;line-height:1.7;}
+    .answer-row{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+    .answer-box{width:420px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
+    .img-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px;box-shadow:0 3px 8px rgba(0,0,0,0.05);max-width:100%;}
+    .q-img{width:100%;height:auto;display:block;border-radius:10px;}
+
+    .format-row{margin-top:6px;color:#666;font-size:.92em;}
+    .hint-row{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    .hint-btn{background:#ff9800;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:0.95em;}
+    .hint-btn:disabled{opacity:.55;cursor:not-allowed;}
+    .hint{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;}
+
+    .button-container{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;}
+    button{padding:10px 18px;border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:1em;}
+    #nextButton{background:#4caf50;}
+    #backButton{background:#039be5;}
+    #generateButton{background:#ff9800;}
+    #submitButton{background:#9c27b0;}
+    #saveButton{background:#607d8b;}
+    #pauseButton{background:#f57c00;}
+    #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
+    button:disabled{opacity:.55;cursor:not-allowed;}
+
+    .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
+
+    table.review-table{width:100%;border-collapse:collapse;margin-top:18px;}
+    .review-table th,.review-table td{border:1px solid #ccc;padding:6px;font-size:.85em;text-align:center;vertical-align:top;}
+    .review-table th{background:#f2f2f2;}
+    .correct-answer{background:#d4edda;}
+    .incorrect-answer{background:#f8d7da;}
+    .thumb{width:160px;max-width:160px;height:auto;border-radius:8px;border:1px solid #ddd;background:#fff;}
+
+    /* exponent box + preview */
+    .exp-tools{margin-top:8px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+    .exp-builder{display:none;align-items:flex-end;gap:6px;}
+    .exp-base{width:260px;max-width:100%;}
+    .exp-pow{
+      width:54px;height:34px;
+      padding:4px 6px;
+      font-size:.95em;
+      border:1px solid #999;
+      border-radius:6px;
+      box-sizing:border-box;
+      text-align:center;
+      transform: translateY(-12px);
+      background:#fff;
+    }
+    .preview-line{margin-top:6px;color:#1f2a44;font-size:.95em;}
+    .preview-box{
+      display:inline-block;min-width:120px;
+      padding:4px 10px;border:1px dashed #cfd8dc;border-radius:10px;
+      background:#fafafa;
+    }
+
+    @media (max-width:760px){
+      .quiz-main{flex-direction:column;}
+      .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
+      .thumb{width:120px;max-width:120px;}
+      .answer-box{width:100%;}
+      .exp-base{width:100%;}
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text">
+      <div class="brand">DYAA</div>
+      <div class="edu">EDUCATION</div>
+    </div>
+  </div>
+
+  <div class="top-bar">
+    <div>
+      <div id="timerDisplay">Time: 00:00</div>
+      <div id="studentLine"></div>
+    </div>
+    <div>
+      <button id="pauseButton" style="display:none;">Pause</button>
+      <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
+    </div>
+  </div>
+
+  <h2 style="margin:6px 0 0 0;">Lesson Theme: AS91027 (Algebraic Procedures) — Practice Assessment</h2>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+
+  <div id="navButtons" class="button-container" style="display:none;">
+    <button id="backButton" style="display:none;">Previous</button>
+    <button id="submitButton" style="display:none;">Submit &amp; View Results</button>
+    <button id="nextButton" style="display:none;">Next</button>
+    <button id="checkButton" style="display:none;">Check</button>
+    <button id="saveButton" style="display:none;">Save Current Result</button>
+  </div>
+</div>
+
+<!-- jsPDF & html2canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+/* ---------------- CONFIG ---------------- */
+const PART_TITLES = [
+  "Part 1 (Skills) — Expand, factorise, simplify",
+  "Part 2 (Equations & Inequalities) — Solve linear / quadratic / simultaneous / quadratic inequalities",
+  "Part 3 (Applications) — Rearranging + word problems"
+];
+const PART_COUNTS = [6, 8, 6]; // Part2 includes +2 quadratic inequalities
+const TOTAL_QUESTIONS = PART_COUNTS.reduce((a,b)=>a+b,0);
+const PART_STARTS = (() => {
+  const s=[0];
+  for(let i=0;i<PART_COUNTS.length-1;i++) s.push(s[i] + PART_COUNTS[i]);
+  return s;
+})();
+
+/* ---------------- Utils ---------------- */
+function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function randChoice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function pickUniqueGenerators(pool, count){
+  const bag = [...pool];
+  const picked = [];
+  while(picked.length < count && bag.length){
+    const i = randInt(0, bag.length - 1);
+    picked.push(bag.splice(i, 1)[0]);
+  }
+  while(picked.length < count) picked.push(randChoice(pool));
+  return picked;
+}
+function formatMs(ms){
+  const totalSec=Math.floor(ms/1000), min=Math.floor(totalSec/60), sec=totalSec%60;
+  return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+function escapeXml(s){
+  return String(s)
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&apos;");
+}
+
+/* ---- Superscript rendering helpers (digit OR letter exponents) ---- */
+function svgTspansFromCaretPowers(text, baseFontSize){
+  const s = String(text ?? "");
+  const re = /\^([a-zA-Z]+|-?\d+)/g; // supports 2^x, x^2, y^n etc.
+  let last = 0;
+  let out = "";
+  let m;
+  while((m = re.exec(s)) !== null){
+    const before = s.slice(last, m.index);
+    if(before) out += `<tspan>${escapeXml(before)}</tspan>`;
+    const exp = m[1];
+    out += `<tspan baseline-shift="super" font-size="${Math.round(baseFontSize*0.72)}">${escapeXml(exp)}</tspan>`;
+    out += `<tspan baseline-shift="baseline" font-size="${baseFontSize}"></tspan>`;
+    last = re.lastIndex;
+  }
+  const rest = s.slice(last);
+  if(rest) out += `<tspan>${escapeXml(rest)}</tspan>`;
+  return out || `<tspan>${escapeXml(s)}</tspan>`;
+}
+function svgTextLine(x, y, text, fontSize=30, fill="#1f2a44", weight="normal"){
+  return `<text x="${x}" y="${y}" font-size="${fontSize}" fill="${fill}" font-weight="${weight}" font-family="Segoe UI, Arial">${svgTspansFromCaretPowers(text, fontSize)}</text>`;
+}
+// Preview/results: convert ^(digits/letters) to <sup>
+function htmlSuperscriptifySafe(text){
+  const s = escapeXml(String(text ?? ""));
+  return s.replace(/\^([a-zA-Z]+|-?\d+)/g, "<sup>$1</sup>");
+}
+
+function wrapLines(lines, maxChars = 58){
+  const out=[];
+  function pushWrapped(line){
+    const words=String(line).split(/\s+/).filter(Boolean);
+    let cur="";
+    for(const w of words){
+      if(w.length>maxChars){
+        if(cur){ out.push(cur); cur=""; }
+        for(let i=0;i<w.length;i+=maxChars) out.push(w.slice(i,i+maxChars));
+        continue;
+      }
+      if(!cur) cur=w;
+      else if((cur+" "+w).length<=maxChars) cur+=" "+w;
+      else { out.push(cur); cur=w; }
+    }
+    if(cur) out.push(cur);
+  }
+  for(const line of lines) pushWrapped(line);
+  return out;
+}
+
+function makeSvgQuestionImage(lines, titleText="AS91027 Practice"){
+  const W=980, headerH=72, padX=44, lineH=46, firstLineY=headerH+52, padBottom=54;
+  const wrapped=wrapLines(lines, 60);
+  const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
+
+  const textSpans=wrapped.map((t,i)=>{
+    const y=firstLineY + i*lineH;
+    return svgTextLine(padX, y, t, 30, "#1f2a44", "normal");
+  }).join("");
+
+  const svg=`
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f7fbff"/>
+        <stop offset="1" stop-color="#ffffff"/>
+      </linearGradient>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#000" flood-opacity="0.12"/>
+      </filter>
+    </defs>
+
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
+          fill="url(#g)" stroke="#dfe7f2" stroke-width="3" filter="url(#shadow)"/>
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${headerH}"
+          fill="#0d47a1" opacity="0.10"/>
+
+    <text x="${padX}" y="56" font-size="28" fill="#0d47a1" font-weight="700"
+          font-family="Segoe UI, Arial">${escapeXml(titleText)}</text>
+
+    ${textSpans}
+  </svg>`.trim();
+
+  const encoded=encodeURIComponent(svg)
+    .replaceAll("%0A","").replaceAll("%20"," ")
+    .replaceAll("%3D","=").replaceAll("%3A",":")
+    .replaceAll("%2F","/").replaceAll("%2C",",");
+
+  return "data:image/svg+xml;charset=utf-8," + encoded;
+}
+
+/* --- Paper/Cardboard diagram SVG --- */
+function makePaperCardboardSvg(params){
+  const {L,W,k,t} = params;
+  const lines = [
+    "A paper rectangle is " + L + " cm longer than it is wide.",
+    "It is glued onto a cardboard rectangle.",
+    "Cardboard width = paper width + " + W + " cm.",
+    "Cardboard length = " + k + " × (paper width).",
+    "Border area (cardboard minus paper) is " + t + " times the paper area.",
+    "Find the paper width x (cm). (not to scale)"
+  ];
+
+  const Wsvg = 980, headerH=72, padX=44, lineH=42;
+  const wrapped = wrapLines(lines, 62);
+  const textTopY = headerH + 50;
+  const textBlockH = wrapped.length * lineH + 10;
+
+  const diagramY = textTopY + textBlockH + 10;
+  const diagramH = 320;
+  const padBottom = 60;
+  const Hsvg = diagramY + diagramH + padBottom;
+
+  const outerX = 120, outerY = diagramY + 20, outerW = 740, outerH = 240;
+  const innerPad = 70;
+  const innerX = outerX + innerPad, innerY = outerY + innerPad;
+  const innerW = outerW - innerPad*2, innerH = outerH - innerPad*2;
+
+  const topLabel = `${k}x`;
+  const rightLabel = `x + ${W}`;
+  const innerTopLabel = `x + ${L}`;
+  const innerLeftLabel = `x`;
+
+  const textSpans = wrapped.map((tline,i)=>{
+    const y = textTopY + i*lineH;
+    return svgTextLine(padX, y, tline, 28, "#1f2a44", "normal");
+  }).join("");
+
+  const svg = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="${Wsvg}" height="${Hsvg}" viewBox="0 0 ${Wsvg} ${Hsvg}">
+    <defs>
+      <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f7fbff"/>
+        <stop offset="1" stop-color="#ffffff"/>
+      </linearGradient>
+      <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#000" flood-opacity="0.12"/>
+      </filter>
+    </defs>
+
+    <rect x="18" y="18" rx="18" ry="18" width="${Wsvg-36}" height="${Hsvg-36}"
+          fill="url(#g2)" stroke="#dfe7f2" stroke-width="3" filter="url(#shadow2)"/>
+    <rect x="18" y="18" rx="18" ry="18" width="${Wsvg-36}" height="${headerH}"
+          fill="#0d47a1" opacity="0.10"/>
+
+    <text x="${padX}" y="56" font-size="28" fill="#0d47a1" font-weight="700"
+          font-family="Segoe UI, Arial">AS91027 Practice</text>
+
+    ${textSpans}
+
+    <text x="${padX}" y="${diagramY-6}" font-size="26" fill="#5b677a" font-family="Segoe UI, Arial">Diagram:</text>
+
+    <rect x="${outerX}" y="${outerY}" width="${outerW}" height="${outerH}" rx="12" ry="12"
+          fill="#eef6ff" stroke="#6b93c6" stroke-width="4"/>
+    <rect x="${innerX}" y="${innerY}" width="${innerW}" height="${innerH}" rx="10" ry="10"
+          fill="#ffffff" stroke="#9fb7d6" stroke-width="3"/>
+
+    <text x="${outerX+20}" y="${outerY+outerH+42}" font-size="24" fill="#5b677a" font-family="Segoe UI, Arial">
+      Shaded border = cardboard area − paper area
+    </text>
+
+    <text x="${outerX + outerW/2 - 22}" y="${outerY - 14}" font-size="28" fill="#1f2a44" font-weight="700" font-family="Segoe UI, Arial">${escapeXml(topLabel)}</text>
+    <text x="${outerX + outerW + 18}" y="${outerY + outerH/2}" font-size="28" fill="#1f2a44" font-weight="700" font-family="Segoe UI, Arial">${escapeXml(rightLabel)}</text>
+
+    <text x="${innerX + innerW/2 - 40}" y="${innerY + innerH + 40}" font-size="26" fill="#1f2a44" font-weight="700" font-family="Segoe UI, Arial">${escapeXml(innerTopLabel)}</text>
+    <text x="${innerX - 42}" y="${innerY + innerH/2}" font-size="26" fill="#1f2a44" font-weight="700" font-family="Segoe UI, Arial">${escapeXml(innerLeftLabel)}</text>
+  </svg>`.trim();
+
+  const encoded=encodeURIComponent(svg)
+    .replaceAll("%0A","").replaceAll("%20"," ")
+    .replaceAll("%3D","=").replaceAll("%3A",":")
+    .replaceAll("%2F","/").replaceAll("%2C",",");
+
+  return "data:image/svg+xml;charset=utf-8," + encoded;
+}
+
+/* ---------------- Math helpers ---------------- */
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ const t=a%b; a=b; b=t; } return a||1; }
+function nearlyEqual(a,b,eps=1e-7){
+  if(!Number.isFinite(a)||!Number.isFinite(b)) return false;
+  const scale = Math.max(1, Math.abs(a), Math.abs(b));
+  return Math.abs(a-b) <= eps*scale;
+}
+
+/* ---------------- Expression parser (no eval) ---------------- */
+function normalizeExprInput(s){
+  return String(s||"")
+    .replaceAll("−","-").replaceAll("×","*").replaceAll("÷","/")
+    .trim();
+}
+function tokenizeExpr(expr){
+  const s = normalizeExprInput(expr).replace(/\s+/g,"");
+  const tokens=[];
+  let i=0;
+  while(i<s.length){
+    const ch=s[i];
+    if(/[0-9.]/.test(ch)){
+      let j=i+1;
+      while(j<s.length && /[0-9.]/.test(s[j])) j++;
+      tokens.push({t:"num", v:s.slice(i,j)});
+      i=j; continue;
+    }
+    if(/[a-zA-Z]/.test(ch)){
+      tokens.push({t:"var", v:ch});
+      i++; continue;
+    }
+    if("+-*/^()".includes(ch)){
+      tokens.push({t:"op", v:ch});
+      i++; continue;
+    }
+    if(ch==="$" || ch==="," ){ i++; continue; }
+    tokens.push({t:"bad", v:ch});
+    i++;
+  }
+  return tokens;
+}
+function insertImplicitMultiplication(tokens){
+  const out=[];
+  function isValue(tok){
+    return tok.t==="num" || tok.t==="var" || (tok.t==="op" && tok.v===")");
+  }
+  function isStartValue(tok){
+    return tok.t==="num" || tok.t==="var" || (tok.t==="op" && tok.v==="(");
+  }
+  for(let i=0;i<tokens.length;i++){
+    const cur=tokens[i];
+    const prev=out.length?out[out.length-1]:null;
+    if(prev && isValue(prev) && isStartValue(cur)) out.push({t:"op", v:"*"});
+    out.push(cur);
+  }
+  return out;
+}
+function toRpn(tokens){
+  const output=[];
+  const stack=[];
+  const prec={ "u-":4, "^":5, "*":3, "/":3, "+":2, "-":2 };
+  const rightAssoc={ "^":true, "u-":true };
+
+  function isOperator(tok){
+    return tok.t==="op" && "+-*/^".includes(tok.v);
+  }
+  function popOps(op){
+    while(stack.length){
+      const top=stack[stack.length-1];
+      if(top.t!=="op") break;
+      if(top.v==="(") break;
+      const pTop=prec[top.v], pOp=prec[op];
+      if(pTop>pOp || (pTop===pOp && !rightAssoc[op])){
+        output.push(stack.pop());
+      }else break;
+    }
+  }
+
+  for(let i=0;i<tokens.length;i++){
+    const tok=tokens[i];
+    if(tok.t==="bad") throw new Error("Bad token");
+    if(tok.t==="num" || tok.t==="var"){ output.push(tok); continue; }
+    if(tok.t==="op" && tok.v==="("){ stack.push(tok); continue; }
+    if(tok.t==="op" && tok.v===")"){
+      while(stack.length && stack[stack.length-1].v!=="(") output.push(stack.pop());
+      if(!stack.length) throw new Error("Mismatched )");
+      stack.pop();
+      continue;
+    }
+    if(isOperator(tok)){
+      let op=tok.v;
+      const prev = (i===0) ? null : tokens[i-1];
+      if(op==="-" && (i===0 || (prev && (prev.t==="op" && (prev.v==="(" || "+-*/^".includes(prev.v)))))) op="u-";
+      popOps(op);
+      stack.push({t:"op", v:op});
+      continue;
+    }
+    throw new Error("Unexpected token");
+  }
+  while(stack.length){
+    const top=stack.pop();
+    if(top.v==="(" || top.v===")") throw new Error("Mismatched ()");
+    output.push(top);
+  }
+  return output;
+}
+function evalRpn(rpn, vars){
+  const st=[];
+  for(const tok of rpn){
+    if(tok.t==="num"){
+      const v=Number(tok.v);
+      if(!Number.isFinite(v)) return NaN;
+      st.push(v); continue;
+    }
+    if(tok.t==="var"){
+      const v=vars[tok.v];
+      if(!Number.isFinite(v)) return NaN;
+      st.push(v); continue;
+    }
+    if(tok.t==="op"){
+      if(tok.v==="u-"){ if(st.length<1) return NaN; st.push(-st.pop()); continue; }
+      if(st.length<2) return NaN;
+      const b=st.pop(), a=st.pop();
+      let r=NaN;
+      if(tok.v==="+") r=a+b;
+      else if(tok.v==="-") r=a-b;
+      else if(tok.v==="*") r=a*b;
+      else if(tok.v==="/") r=a/b;
+      else if(tok.v==="^") r=Math.pow(a,b);
+      st.push(r);
+      continue;
+    }
+    return NaN;
+  }
+  return st.length===1 ? st[0] : NaN;
+}
+function compileExpr(expr){
+  const toks = insertImplicitMultiplication(tokenizeExpr(expr));
+  return toRpn(toks);
+}
+function expressionsEquivalent(userExpr, expectedExpr, varLetters){
+  try{
+    const urpn = compileExpr(userExpr);
+    const erpn = compileExpr(expectedExpr);
+    let okCount=0, trials=0;
+    const pool = [-4,-3,-2,-1,1,2,3,4,5];
+
+    while(trials<10 && okCount<5){
+      trials++;
+      const vars={};
+      for(const v of varLetters) vars[v]=randChoice(pool);
+      const u=evalRpn(urpn, vars);
+      const e=evalRpn(erpn, vars);
+      if(!Number.isFinite(u) || !Number.isFinite(e)) continue;
+      if(Math.abs(u)>1e9 || Math.abs(e)>1e9) continue;
+      if(!nearlyEqual(u,e,1e-6)) return false;
+      okCount++;
+    }
+    return okCount>=3;
+  }catch(err){
+    return false;
+  }
+}
+
+/* ---------------- Number parsing for solutions ---------------- */
+function parseFlexibleNumberToken(tok){
+  const s=String(tok||"").trim().replaceAll("$","");
+  if(s.includes("/")){
+    const parts=s.split("/").map(x=>x.trim());
+    if(parts.length!==2) return NaN;
+    const a=Number(parts[0]), b=Number(parts[1]);
+    if(!Number.isFinite(a)||!Number.isFinite(b)||b===0) return NaN;
+    return a/b;
+  }
+  const n=Number(s);
+  return Number.isFinite(n)?n:NaN;
+}
+function extractNumberTokens(s){
+  const str=String(s||"")
+    .replaceAll("−","-")
+    .replaceAll("$","")
+    .replaceAll("=", " ")
+    .replaceAll(":", " ")
+    .replaceAll(";", " ")
+    .replaceAll("or", " ")
+    .replaceAll("OR", " ")
+    .replaceAll("and", " ")
+    .replaceAll("&", " ")
+    .trim();
+  const re = /-?\d+(?:\.\d+)?(?:\s*\/\s*-?\d+(?:\.\d+)?)?/g;
+  const m = str.match(re) || [];
+  return m.map(t=>t.replace(/\s+/g,""));
+}
+function parseSolutionList(input){
+  const toks = extractNumberTokens(input);
+  const nums=[];
+  for(const t of toks){
+    const v=parseFlexibleNumberToken(t);
+    if(Number.isFinite(v)) nums.push(v);
+  }
+  return nums;
+}
+function sameSolutionSet(userList, expectedList){
+  if(!userList || userList.length===0) return false;
+  function uniq(arr){
+    const out=[];
+    for(const x of arr){
+      if(!out.some(y=>nearlyEqual(x,y,1e-7))) out.push(x);
+    }
+    return out;
+  }
+  const u=uniq(userList);
+  const e=uniq(expectedList);
+  if(u.length!==e.length) return false;
+
+  const used=new Array(u.length).fill(false);
+  for(const ev of e){
+    let found=false;
+    for(let i=0;i<u.length;i++){
+      if(used[i]) continue;
+      if(nearlyEqual(u[i], ev, 1e-7)){ used[i]=true; found=true; break; }
+    }
+    if(!found) return false;
+  }
+  return true;
+}
+
+/* ---------------- Quadratic inequality parsing ---------------- */
+function normalizeIneqStr(s){
+  return String(s||"")
+    .replaceAll("−","-")
+    .replaceAll("≤","<=")
+    .replaceAll("≥",">=")
+    .replaceAll("∞","inf")
+    .replaceAll("∪"," or ")
+    .toLowerCase()
+    .replace(/\s+/g," ")
+    .trim();
+}
+function parseNumberOrInf(token){
+  const t=String(token||"").trim().toLowerCase();
+  if(t==="inf" || t==="+inf" || t==="infinity" || t==="+infinity") return Infinity;
+  if(t==="-inf" || t==="-infinity") return -Infinity;
+  return parseFlexibleNumberToken(t);
+}
+function intervalContains(iv, x){
+  if(iv.lo !== -Infinity){
+    if(iv.loInc){ if(x < iv.lo - 1e-12) return false; }
+    else { if(x <= iv.lo + 1e-12) return false; }
+  }
+  if(iv.hi !== Infinity){
+    if(iv.hiInc){ if(x > iv.hi + 1e-12) return false; }
+    else { if(x >= iv.hi - 1e-12) return false; }
+  }
+  return true;
+}
+function setContains(intervals, x){
+  for(const iv of intervals) if(intervalContains(iv,x)) return true;
+  return false;
+}
+function normalizeAndMergeIntervals(intervals){
+  const arr = intervals
+    .map(iv => {
+      let lo=iv.lo, hi=iv.hi;
+      let loInc=!!iv.loInc, hiInc=!!iv.hiInc;
+      if(lo!==-Infinity && hi!==Infinity && lo>hi){
+        [lo,hi]=[hi,lo];
+        [loInc,hiInc]=[hiInc,loInc];
+      }
+      return {lo,hi,loInc,hiInc};
+    })
+    .sort((a,b)=> (a.lo===b.lo?0:(a.lo<b.lo?-1:1)));
+  const merged=[];
+  for(const iv of arr){
+    if(!merged.length){ merged.push(iv); continue; }
+    const last=merged[merged.length-1];
+    const overlaps = (last.hi===Infinity) ? true :
+      (iv.lo===-Infinity) ? true :
+      (iv.lo < last.hi || (nearlyEqual(iv.lo,last.hi,1e-12) && (iv.loInc || last.hiInc)));
+    if(overlaps){
+      if(last.hi===Infinity){
+        // nothing
+      }else if(iv.hi===Infinity){
+        last.hi=Infinity; last.hiInc=false;
+      }else if(iv.hi > last.hi + 1e-12){
+        last.hi=iv.hi; last.hiInc=iv.hiInc;
+      }else if(nearlyEqual(iv.hi,last.hi,1e-12)){
+        last.hiInc = last.hiInc || iv.hiInc;
+      }
+    }else merged.push(iv);
+  }
+  return merged;
+}
+function parseIntervalNotation(s){
+  const parts = s.split(/\bor\b/).map(x=>x.trim()).filter(Boolean);
+  const intervals=[];
+  for(const p0 of parts){
+    const p = p0.replace(/\s+/g,"");
+    const m = p.match(/^([\(\[])([^,]+),([^\)\]]+)([\)\]])$/);
+    if(!m) return null;
+    const loInc = m[1]==="[";
+    const hiInc = m[4]==="]";
+    const lo = parseNumberOrInf(m[2]);
+    const hi = parseNumberOrInf(m[3]);
+    if(!(Number.isFinite(lo)||lo===-Infinity) || !(Number.isFinite(hi)||hi===Infinity)) return null;
+    intervals.push({lo,hi,loInc,hiInc});
+  }
+  return normalizeAndMergeIntervals(intervals);
+}
+function parseClauseToInterval(clause){
+  let c = clause.trim();
+
+  // a < x < b
+  let m = c.match(/^(.+?)\s*(<=|<|>=|>)\s*x\s*(<=|<|>=|>)\s*(.+)$/);
+  if(m){
+    const leftVal=parseNumberOrInf(m[1]);
+    const op1=m[2];
+    const op2=m[3];
+    const rightVal=parseNumberOrInf(m[4]);
+    if(!(Number.isFinite(leftVal)||leftVal===-Infinity) || !(Number.isFinite(rightVal)||rightVal===Infinity)) return null;
+
+    const flip = (op)=> op==="<" ? ">" : op==="<=" ? ">=" : op===">" ? "<" : "<=";
+    const c1op = flip(op1); // x c1op leftVal
+    const c2op = op2;       // x c2op rightVal
+
+    let iv = {lo:-Infinity, hi:Infinity, loInc:false, hiInc:false};
+
+    // apply x c1op leftVal
+    if(c1op===">" || c1op===">="){ iv.lo=leftVal; iv.loInc=(c1op===">="); }
+    else { iv.hi=leftVal; iv.hiInc=(c1op==="<="); }
+
+    // apply x c2op rightVal
+    if(c2op==="<" || c2op==="<="){ iv.hi=rightVal; iv.hiInc=(c2op==="<="); }
+    else { iv.lo=rightVal; iv.loInc=(c2op===">="); }
+
+    return iv;
+  }
+
+  const parts = c.split(/\band\b/).map(x=>x.trim()).filter(Boolean);
+  let iv = {lo:-Infinity, hi:Infinity, loInc:false, hiInc:false};
+
+  for(const p of parts){
+    let m1 = p.match(/^x\s*(<=|<|>=|>)\s*(.+)$/);
+    if(m1){
+      const op=m1[1];
+      const val=parseNumberOrInf(m1[2]);
+      if(!Number.isFinite(val)) return null;
+
+      if(op==="<" || op==="<="){
+        iv.hi=val; iv.hiInc=(op==="<=");
+      }else{
+        iv.lo=val; iv.loInc=(op===">=");
+      }
+      continue;
+    }
+    let m2 = p.match(/^(.+)\s*(<=|<|>=|>)\s*x$/);
+    if(m2){
+      const val=parseNumberOrInf(m2[1]);
+      const op=m2[2];
+      if(!Number.isFinite(val)) return null;
+      const flip = (op)=> op==="<" ? ">" : op==="<=" ? ">=" : op===">" ? "<" : "<=";
+      const opX = flip(op);
+      if(opX==="<" || opX==="<="){
+        iv.hi=val; iv.hiInc=(opX==="<=");
+      }else{
+        iv.lo=val; iv.loInc=(opX===">=");
+      }
+      continue;
+    }
+    return null;
+  }
+  return iv;
+}
+function parseIntervalSetFromInequalities(s){
+  const orParts = s.split(/\bor\b/).map(x=>x.trim()).filter(Boolean);
+  const intervals=[];
+  for(const part of orParts){
+    const iv = parseClauseToInterval(part);
+    if(!iv) return null;
+    intervals.push(iv);
+  }
+  return normalizeAndMergeIntervals(intervals);
+}
+function parseIntervalSet(input){
+  const s = normalizeIneqStr(input);
+  if(!s) return null;
+
+  // interval notation
+  if((s.includes("(") || s.includes("[")) && s.includes(",") && (s.includes(")") || s.includes("]"))){
+    const ivs = parseIntervalNotation(s);
+    if(ivs) return ivs;
+  }
+  // inequalities
+  if(s.includes("x") && (s.includes("<") || s.includes(">"))) return parseIntervalSetFromInequalities(s);
+  return null;
+}
+function intervalSetsEquivalent(userIntervals, expectedIntervals){
+  if(!userIntervals || !expectedIntervals) return false;
+
+  const bounds=new Set();
+  for(const iv of expectedIntervals){
+    if(iv.lo!==-Infinity) bounds.add(iv.lo);
+    if(iv.hi!==Infinity) bounds.add(iv.hi);
+  }
+  const bArr=[...bounds].filter(Number.isFinite).sort((a,b)=>a-b);
+
+  const pts = new Set([-100,-10,0,10,100]);
+  for(const b of bArr){
+    pts.add(b);
+    pts.add(b-2); pts.add(b-0.5); pts.add(b-0.1);
+    pts.add(b+0.1); pts.add(b+0.5); pts.add(b+2);
+  }
+  for(const iv of expectedIntervals){
+    if(iv.lo!==-Infinity && iv.hi!==Infinity) pts.add((iv.lo+iv.hi)/2);
+    else if(iv.lo===-Infinity && iv.hi!==Infinity) pts.add(iv.hi-1);
+    else if(iv.lo!==-Infinity && iv.hi===Infinity) pts.add(iv.lo+1);
+  }
+
+  for(const x of pts){
+    const e=setContains(expectedIntervals, x);
+    const u=setContains(userIntervals, x);
+    if(e!==u) return false;
+  }
+  return true;
+}
+
+/* ---------------- Problem Generators (from your two images + extras) ---------------- */
+/* Part 1 (skills) */
+function genQ_ExpandSimplify(){
+  const k1=randInt(2,7);
+  const k2=randInt(1,5);
+  let k3=randInt(-9,9); if(k3===0) k3=randInt(1,9);
+  const k4=randInt(1,7);
+  const k5=randInt(1,9);
+
+  const m = k1*k2 - k4;
+  const b = k1*k3 + k4*k5;
+
+  const sign3 = k3>=0 ? "+" : "-";
+  const abs3 = Math.abs(k3);
+
+  const expr = `${k1}(${k2}x ${sign3} ${abs3}) - ${k4}(x - ${k5})`;
+  const expected = `${m}x + ${b}`;
+
+  return {
+    img: makeSvgQuestionImage(["Expand and simplify:", expr, "Give your answer as an expression in x."]),
+    expected: {type:"expr", expr: expected, vars:["x"]},
+    correctText: expected.replaceAll(" ",""),
+    answerFormat: "Expression in x, e.g. 7x+17",
+    hint: "Expand each bracket, then collect like terms."
+  };
+}
+function genQ_FactoriseMonic(){
+  let r1=randInt(-9,9), r2=randInt(-9,9);
+  while(r2===r1) r2=randInt(-9,9);
+
+  const B = -(r1+r2);
+  const C = r1*r2;
+
+  const poly = `x^2 ${B>=0?"+":"-"} ${Math.abs(B)}x ${C>=0?"+":"-"} ${Math.abs(C)}`;
+  const expected = `(x ${r1>=0?"-":"+"} ${Math.abs(r1)})(x ${r2>=0?"-":"+"} ${Math.abs(r2)})`;
+
+  return {
+    img: makeSvgQuestionImage(["Factorise:", poly, "Any correct factorised form is accepted."]),
+    expected: {type:"expr", expr: expected, vars:["x"]},
+    correctText: expected.replaceAll(" ",""),
+    answerFormat: "Factorised form, e.g. (x-2)(x+5)",
+    hint: "Find two numbers that multiply to the constant and add to the x coefficient."
+  };
+}
+function genQ_SimplifyPowers(){
+  const m=randInt(2,9);
+  const n=randInt(2,9);
+  const mn=m*n;
+  const factors=[];
+  for(let d=2; d<=mn; d++) if(mn%d===0) factors.push(d);
+  const k=randChoice(factors);
+
+  const p=randInt(1,5);
+  const q=randInt(1,5);
+  const r=randInt(1,p+q);
+
+  const coef = mn / k;
+  const exp = p+q-r;
+
+  const expr = `(${m}a^${p} × ${n}a^${q}) / (${k}a^${r})`;
+  let expected = `${coef}`;
+  if(exp>0) expected += `a^${exp}`;
+
+  return {
+    img: makeSvgQuestionImage(["Simplify:", expr, "Write your answer with a positive index."]),
+    expected: {type:"expr", expr: expected, vars:["a"]},
+    correctText: expected.replaceAll(" ",""),
+    answerFormat: "e.g. 2a^4",
+    hint: "Multiply coefficients; add powers in numerator; subtract the power in denominator."
+  };
+}
+function genQ_SimplifyRational(){
+  let A=randInt(1,9);
+  let B=randInt(-9,9); while(B===0) B=randInt(-9,9);
+  let C=randInt(1,9);
+  while(gcd(gcd(A,B),C)!==1){
+    A=randInt(1,9);
+    B=randInt(-9,9); while(B===0) B=randInt(-9,9);
+    C=randInt(1,9);
+  }
+  const g=randInt(2,6);
+
+  const numA=g*A;
+  const numB=g*B;
+  const denC=g*C;
+
+  const numStr = `${numA}x^2 ${numB>=0?"+":"-"} ${Math.abs(numB)}x`;
+  const denStr = `${denC}x^2`;
+
+  const expected = `(${A}x ${B>=0?"+":"-"} ${Math.abs(B)}) / (${C}x)`;
+
+  return {
+    img: makeSvgQuestionImage(["Simplify fully:", `(${numStr}) / (${denStr})`, "Write your answer in simplest form."]),
+    expected: {type:"expr", expr: expected, vars:["x"]},
+    correctText: expected.replaceAll(" ",""),
+    answerFormat: "Fraction in x, e.g. (2x-3)/(4x)",
+    hint: "Factor out x from the numerator and cancel common factors."
+  };
+}
+function genQ_SimplifyPowerBracket(){
+  const k=randInt(2,6);
+  const pa=randInt(1,3);
+  const pb=randInt(1,3);
+  const power=randInt(2,4);
+
+  const coef = Math.pow(k, power);
+  const expA = pa*power;
+  const expB = pb*power;
+
+  const expr = `(${k}a^${pa}b^${pb})^${power}`;
+  const expected = `${coef}a^${expA}b^${expB}`;
+
+  return {
+    img: makeSvgQuestionImage(["Simplify:", expr, "Write your answer with positive indices."]),
+    expected: {type:"expr", expr: expected, vars:["a","b"]},
+    correctText: expected.replaceAll(" ",""),
+    answerFormat: "e.g. 27a^3b^6",
+    hint: "Raise the coefficient and each variable power to the outside power."
+  };
+}
+function genQ_ExpandBinomials(){
+  const a=randInt(2,6);
+  let b=randInt(-9,9); while(b===0) b=randInt(-9,9);
+  const c=randInt(1,6);
+  const d=randInt(1,4);
+
+  const expr = `(${a}x ${b>=0?"+":"-"} ${Math.abs(b)})(${c} - ${d}x)`;
+  const A2 = -a*d;
+  const B1 = a*c - b*d;
+  const C0 = b*c;
+
+  const expected = `${A2}x^2 ${B1>=0?"+":"-"} ${Math.abs(B1)}x ${C0>=0?"+":"-"} ${Math.abs(C0)}`;
+
+  return {
+    img: makeSvgQuestionImage(["Expand and simplify:", expr, "Give your answer in standard form ax^2+bx+c."]),
+    expected: {type:"expr", expr: expected, vars:["x"]},
+    correctText: expected.replaceAll(" ",""),
+    answerFormat: "Quadratic expression",
+    hint: "Use distributive law (FOIL), then collect like terms."
+  };
+}
+
+/* Part 2 (equations & inequalities) */
+
+/* --- Include the exact screenshot linear-decimal equation in the bank --- */
+function genQ_SolveLinearDecimal(){
+  // 30% chance: exact screenshot-style question
+  if(Math.random() < 0.30){
+    const eq = "3.0p - 10 = 1.6p + 4";
+    return {
+      img: makeSvgQuestionImage(["Solve for p:", eq, "Give a single value for p."]),
+      expected: {type:"solutions", values:[10]},
+      correctText: "10",
+      answerFormat: "One number (p)",
+      hint: "Collect p terms on one side and constants on the other."
+    };
+  }
+
+  // Otherwise: random, but guaranteed clean numbers (no 4.0000000002)
+  const pSol = randChoice([5,10,15,20]);
+  const k = randChoice([-10,-8,-6,-4,-2,2,4,6,8,10]); // ensures 0.2 steps
+  const aTenths = randChoice([10,12,14,16,18,20,22,24,26,28,30,32,34,36]); // 1.0..3.6
+  const cTenths = aTenths - 2*k;
+  if(cTenths <= 4 || cTenths >= 50) return genQ_SolveLinearDecimal();
+
+  const b = randInt(-12,12);
+  const addConst = k*(pSol/5); // integer
+  const d = b + addConst;      // integer
+
+  const aStr = (aTenths/10).toFixed(1);
+  const cStr = (cTenths/10).toFixed(1);
+  const eq = `${aStr}p ${b>=0?"+":"-"} ${Math.abs(b)} = ${cStr}p ${d>=0?"+":"-"} ${Math.abs(d)}`;
+
+  return {
+    img: makeSvgQuestionImage(["Solve for p:", eq, "Give a single value for p."]),
+    expected: {type:"solutions", values:[pSol]},
+    correctText: String(pSol),
+    answerFormat: "One number (p)",
+    hint: "Collect p terms on one side and constants on the other, then divide."
+  };
+}
+
+function genQ_SolveFactorZero(){
+  const r1=randInt(-9,9);
+  let r2=randInt(-9,9);
+  while(r2===r1) r2=randInt(-9,9);
+
+  const m=randInt(1,5);
+  const p=randInt(1,5);
+  const n=-m*r1;
+  const q=-p*r2;
+
+  const factor1 = `${m}x ${n>=0?"+":"-"} ${Math.abs(n)}`;
+  const factor2 = `${p}x ${q>=0?"+":"-"} ${Math.abs(q)}`;
+  const eq = `(${factor1})(${factor2}) = 0`;
+
+  return {
+    img: makeSvgQuestionImage(["Solve for x:", eq, "Give both solutions, separated by a comma."]),
+    expected: {type:"solutions", values:[r1,r2]},
+    correctText: `${r1}, ${r2}`,
+    answerFormat: "Two solutions, e.g. -2, 5",
+    hint: "A product is zero only when at least one factor is zero."
+  };
+}
+function genQ_SolveFractionEquation(){
+  const d2=randInt(2,9);
+  const t=randInt(1,5);
+  const d1=d2*t;
+  const N=randInt(2,6);
+  const xSol = t*(N*d2 - 1);
+
+  const eq = `x/${d1} + 1/${d2} = ${N}`;
+  return {
+    img: makeSvgQuestionImage(["Solve for x:", eq, "Give one value for x."]),
+    expected: {type:"solutions", values:[xSol]},
+    correctText: String(xSol),
+    answerFormat: "One number (x)",
+    hint: "Move the fraction term, then multiply through by the denominator."
+  };
+}
+
+/* --- Include the exact screenshot exponential equation 2^x = 32 in the bank --- */
+function genQ_SolveExponential(){
+  if(Math.random() < 0.30){
+    const eq = "2^x = 32";
+    return {
+      img: makeSvgQuestionImage(["Solve for x:", eq, "Give one integer value for x."]),
+      expected: {type:"solutions", values:[5]},
+      correctText: "5",
+      answerFormat: "One integer (x)",
+      hint: "32 is a power of 2."
+    };
+  }
+
+  const base = randChoice([2,3,5]);
+  const exp = randInt(4,8);
+  const rhs = Math.pow(base, exp);
+  const eq = `${base}^x = ${rhs}`;
+  return {
+    img: makeSvgQuestionImage(["Solve for x:", eq, "Give one integer value for x."]),
+    expected: {type:"solutions", values:[exp]},
+    correctText: String(exp),
+    answerFormat: "One integer (x)",
+    hint: "Rewrite the right-hand side as a power of the same base."
+  };
+}
+
+function genQ_SolveSimultaneousAB(){
+  const a0=randInt(-5,5);
+  let b0=randInt(-5,5);
+  while(b0===0 && a0===0) b0=randInt(-5,5);
+
+  let p=randInt(-6,6), q=randInt(-6,6);
+  while(p===0 && q===0){ p=randInt(-6,6); q=randInt(-6,6); }
+  let s=randInt(-6,6), t=randInt(-6,6);
+  while(s===0 && t===0){ s=randInt(-6,6); t=randInt(-6,6); }
+  while(p*t - q*s === 0){
+    s=randInt(-6,6); t=randInt(-6,6);
+    while(s===0 && t===0){ s=randInt(-6,6); t=randInt(-6,6); }
+  }
+  const r = p*a0 + q*b0;
+  const u = s*a0 + t*b0;
+
+  const eq1 = `${p}a ${q>=0?"+":"-"} ${Math.abs(q)}b = ${r}`;
+  const eq2 = `${s}a ${t>=0?"+":"-"} ${Math.abs(t)}b = ${u}`;
+
+  return {
+    img: makeSvgQuestionImage(["Solve for a and b:", eq1, eq2, "Enter your answer as: a, b (comma separated)."]),
+    expected: {type:"pair", values:[a0,b0]},
+    correctText: `a=${a0}, b=${b0}`,
+    answerFormat: "Two numbers: a, b",
+    hint: "Use elimination or substitution."
+  };
+}
+
+function genQ_SolveQuadratic(){
+  const p=randInt(1,6);
+  const r=randInt(1,6);
+  let q=randInt(-12,12); while(q===0) q=randInt(-12,12);
+  let s=randInt(-12,12); while(s===0) s=randInt(-12,12);
+
+  const A=p*r;
+  const B=p*s + q*r;
+  const C=q*s;
+
+  const eq = `${A}x^2 ${B>=0?"+":"-"} ${Math.abs(B)}x ${C>=0?"+":"-"} ${Math.abs(C)} = 0`;
+
+  const root1 = -q/p;
+  const root2 = -s/r;
+
+  return {
+    img: makeSvgQuestionImage(["Solve for x:", eq, "Give both solutions, separated by a comma (fractions allowed)."]),
+    expected: {type:"solutions", values:[root1,root2]},
+    correctText: `${root1}, ${root2}`,
+    answerFormat: "Two solutions, e.g. -2, 5/2",
+    hint: "If it factorises, set each factor to zero; otherwise use the quadratic formula."
+  };
+}
+
+/* Quadratic inequalities (2 questions) */
+function flipRel(rel){
+  if(rel===">") return "<";
+  if(rel===">=") return "<=";
+  if(rel==="<") return ">";
+  if(rel==="<=") return ">=";
+  return rel;
+}
+function buildIntervalSetForLeadingPlus(rel, r1, r2){
+  const a=Math.min(r1,r2), b=Math.max(r1,r2);
+  const outside = (rel===">" || rel===">=");
+  const inclusive = (rel===">=" || rel==="<=");
+  if(outside){
+    return [
+      {lo:-Infinity, hi:a, loInc:false, hiInc:inclusive},
+      {lo:b, hi:Infinity, loInc:inclusive, hiInc:false}
+    ];
+  }else{
+    return [{lo:a, hi:b, loInc:inclusive, hiInc:inclusive}];
+  }
+}
+function genQ_QuadInequality(){
+  let r1=randInt(-8,6);
+  let r2=randInt(-6,9);
+  while(r2===r1) r2=randInt(-6,9);
+  if(r1>r2){ const tmp=r1; r1=r2; r2=tmp; }
+
+  const a = randChoice([1,1,-1]); // mostly +1
+  const rel = randChoice([">", "<", ">=", "<="]);
+  const effectiveRel = (a>0) ? rel : flipRel(rel);
+
+  const f1 = `(x ${(-r1)>=0?"+":"-"} ${Math.abs(-r1)})`;
+  const f2 = `(x ${(-r2)>=0?"+":"-"} ${Math.abs(-r2)})`;
+
+  let expr = `${f1}${f2} ${effectiveRel} 0`;
+  if(a<0) expr = `- ${f1}${f2} ${rel} 0`;
+
+  const expectedIntervals = normalizeAndMergeIntervals(buildIntervalSetForLeadingPlus(effectiveRel, r1, r2));
+
+  let correctText;
+  if(effectiveRel===">" || effectiveRel===">="){
+    correctText = (effectiveRel===">=") ? `x <= ${r1} or x >= ${r2}` : `x < ${r1} or x > ${r2}`;
+  }else{
+    correctText = (effectiveRel==="<=") ? `${r1} <= x <= ${r2}` : `${r1} < x < ${r2}`;
+  }
+
+  return {
+    img: makeSvgQuestionImage(["Solve the quadratic inequality:", expr, "Write the solution as inequalities or interval notation."]),
+    expected: {type:"intervalSet", intervals: expectedIntervals},
+    correctText,
+    answerFormat: "Inequalities or intervals",
+    hint: "Find the roots, then use a sign diagram."
+  };
+}
+function genQ_QuadInequality2(){ return genQ_QuadInequality(); }
+
+/* Part 3 (applications) */
+function genQ_TrapeziumHeight(){
+  const choices=[];
+  for(let v=3.0; v<=12.0; v+=0.5) choices.push(Number(v.toFixed(1)));
+  const a=randChoice(choices);
+  let b=randChoice(choices);
+  while(Math.abs(b-a)<0.5) b=randChoice(choices);
+  const h=randChoice([2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10]);
+  const A=(a+b)*h/2;
+
+  return {
+    img: makeSvgQuestionImage([
+      "The height h of a trapezium of area A is given by:",
+      "h = 2A/(a + b), where a and b are the parallel sides.",
+      `A = ${A.toFixed(1)} cm^2, a = ${a} cm, b = ${b} cm.`,
+      "Find the height h (cm). Give your answer to 2 dp if needed."
+    ]),
+    expected: {type:"number", value:h},
+    correctText: h.toFixed(2),
+    answerFormat: "One number (cm)",
+    hint: "Substitute values into h = 2A/(a+b)."
+  };
+}
+function genQ_RearrangeSqrt(){
+  const a=randInt(1,6);
+  const c=randInt(1,6);
+  let b=randInt(-9,9); while(b===0) b=randInt(-9,9);
+  let d=randInt(-9,9); while(d===0) d=randInt(-9,9);
+
+  const formula = `y = √((${a}x ${b>=0?"+":"-"} ${Math.abs(b)}) / (${c}x ${d>=0?"+":"-"} ${Math.abs(d)}))`;
+  const expected = `(${b} - (${d})*y^2) / (${c}*y^2 - ${a})`;
+
+  return {
+    img: makeSvgQuestionImage([
+      "Rearrange the formula to make x the subject:",
+      formula,
+      "Enter x as a function of y (use y^2 for (y squared))."
+    ]),
+    expected: {type:"expr", expr: expected, vars:["y"]},
+    correctText: `x = ${expected}`.replaceAll(" ",""),
+    answerFormat: "Expression in y",
+    hint: "Square both sides, cross-multiply, collect x terms, then divide."
+  };
+}
+function genQ_CafeSimultaneous(){
+  const names=["Manu","Aroha","Tama","Sione","Mia","Jack","Liam","Sasha"];
+  const person=randChoice(names);
+
+  const drink=randChoice(["coffee","hot chocolate","tea","iced latte"]);
+  const food=randChoice(["sandwich","muffin","wrap","bagel"]);
+
+  const m=randInt(3,7);
+  const n=randInt(4,9);
+  const deltaCents=randChoice([30,40,50,60,70]);
+
+  const drinkCents=randChoice([280,300,320,340,360,380,400,420,450,480,500]);
+  const foodCents=drinkCents + deltaCents;
+  const totalCents=m*drinkCents + n*foodCents;
+
+  const lines=[
+    `${person} buys lunches at a local café.`,
+    `${person} buys ${m} ${drink}${m===1?"":"s"} and ${n} ${food}${n===1?"":"s"} for a total of $${(totalCents/100).toFixed(2)}.`,
+    `Each ${food} costs $${(deltaCents/100).toFixed(2)} more than each ${drink}.`,
+    `Find the cost of one ${food} (in dollars).`
+  ];
+
+  return {
+    img: makeSvgQuestionImage(lines),
+    expected: {type:"money", value: foodCents/100},
+    correctText: `$${(foodCents/100).toFixed(2)}`,
+    answerFormat: "Money amount, e.g. 6.80",
+    hint: "Let drink=c and food=s. Use s=c+delta and the total-cost equation."
+  };
+}
+function genQ_PaperCardboard(){
+  const L=randInt(4,10);
+  const W=randInt(1,4);
+  const t=randChoice([2,3]);
+  const kpicks=[3,4,5,6,7,8];
+  let k=randChoice(kpicks);
+  while(k===(t+1)) k=randChoice(kpicks);
+
+  const num = (t+1)*L - k*W;
+  const den = (k-(t+1));
+  const x = num/den;
+
+  if(!Number.isFinite(x) || x<=0 || x>25 || Math.abs(x-Math.round(x))>1e-9){
+    const params={L:6,W:2,k:5,t:2};
+    return {
+      img: makePaperCardboardSvg(params),
+      expected: {type:"number", value:4},
+      correctText: "4",
+      answerFormat: "One number (cm)",
+      hint: "Border area = cardboard area − paper area; convert to an equation in x."
+    };
+  }
+
+  const params={L,W,k,t};
+  return {
+    img: makePaperCardboardSvg(params),
+    expected: {type:"number", value:x},
+    correctText: String(x),
+    answerFormat: "One number (cm)",
+    hint: "Border area = cardboard area − paper area; set it equal to t × paper area."
+  };
+}
+function genQ_SweetsTotal(){
+  const pairs=[["Jack","Mia"],["Liam","Sasha"],["Noah","Ella"],["Leo","Ava"]];
+  const [Jname,Mname]=randChoice(pairs);
+
+  const a=randInt(2,6);
+  const b=randInt(1,6);
+  const r=randChoice([2,3]);
+
+  const M = ((r+1)*b + 2*a) / (r-1);
+  const J = M + 2*a;
+
+  if(!Number.isInteger(M) || M<=b || J<=a || M<=0 || J<=0 || M>60 || J>60) return genQ_SweetsTotal();
+
+  const total = J + M;
+
+  return {
+    img: makeSvgQuestionImage([
+      `${Jname} and ${Mname} each have a bag of sweets.`,
+      `If ${Jname} gave ${Mname} ${a} sweets, they would then have the same number of sweets.`,
+      `If ${Mname} gave ${Jname} ${b} sweets, then ${Jname} would have ${r} times as many sweets as ${Mname}.`,
+      "Find the total number of sweets they have altogether."
+    ]),
+    expected: {type:"solutions", values:[total]},
+    correctText: String(total),
+    answerFormat: "One integer (total sweets)",
+    hint: "Let J and M be the starting amounts. Make two equations then solve."
+  };
+}
+
+/* ---- Application bank (expanded, including exponential equation word problems) ---- */
+function genApp_TicketsAdultCost(){
+  const place = randChoice(["zoo","aquarium","theme park","ice rink"]);
+  const names=["Manu","Aroha","Tama","Sione","Mia","Jack","Liam","Sasha","Noah","Ella"];
+  const person=randChoice(names);
+
+  const adultCents = randChoice([1200,1350,1500,1600,1800,2000]);
+  const deltaCents = randChoice([200,250,300,350,400]);
+  const childCents = adultCents - deltaCents;
+
+  const adults = randInt(1,6);
+  const kids = randInt(1,8);
+  const totalCents = adults*adultCents + kids*childCents;
+
+  return {
+    img: makeSvgQuestionImage([
+      `${person} buys tickets for a ${place}.`,
+      `${person} buys ${adults} adult ticket${adults===1?"":"s"} and ${kids} child ticket${kids===1?"":"s"} for a total of $${(totalCents/100).toFixed(2)}.`,
+      `A child ticket costs $${(deltaCents/100).toFixed(2)} less than an adult ticket.`,
+      "Find the cost of one adult ticket (in dollars)."
+    ]),
+    expected: {type:"money", value: adultCents/100},
+    correctText: `$${(adultCents/100).toFixed(2)}`,
+    answerFormat: "Money amount",
+    hint: "Let adult=a. Then child=a−delta. Substitute into the total-cost equation."
+  };
+}
+
+function genApp_RectangleQuadratic(){
+  const w = randInt(4,18);
+  const d = randInt(2,10);
+  const area = w*(w+d);
+
+  return {
+    img: makeSvgQuestionImage([
+      "A rectangle has length (width + d).",
+      `The length is ${d} cm more than the width.`,
+      `The area is ${area} cm^2.`,
+      "Find the width (cm)."
+    ]),
+    expected: {type:"number", value:w},
+    correctText: String(w),
+    answerFormat: "One number (cm)",
+    hint: "Let width=x. Then x(x+d)=area. Solve the quadratic."
+  };
+}
+
+function genApp_PerimeterAreaQuadratic(){
+  // choose integer solution for width and length
+  const w = randInt(3,14);
+  const l = w + randInt(2,10);
+  const P = 2*(w+l);
+  const A = w*l;
+
+  return {
+    img: makeSvgQuestionImage([
+      "A rectangle has perimeter P and area A.",
+      `P = ${P} cm and A = ${A} cm^2.`,
+      "Find the rectangle's width and length.",
+      "Enter as: width, length (comma separated)."
+    ]),
+    expected: {type:"pair", values:[w,l]},
+    correctText: `${w}, ${l}`,
+    answerFormat: "Two numbers: width, length",
+    hint: "Use 2(w+l)=P and wl=A. Substitute l = P/2 − w into wl=A."
+  };
+}
+
+function genApp_AgeSimultaneous(){
+  // integer-safe: adult is r times child; after y years, sums etc
+  const tuples = [
+    {r:3, y:10, child:10},
+    {r:4, y:6, child:12},
+    {r:5, y:9, child:9},
+    {r:3, y:8, child:8},
+    {r:4, y:9, child:18}
+  ];
+  const t = randChoice(tuples);
+  const r = t.r, y = t.y, child = t.child;
+  const adult = r*child;
+
+  const names = ["Sam","Tom","Ava","Leo","Mia","Jack","Ella","Noah"];
+  const A = randChoice(names);
+  let B = randChoice(names);
+  while(B===A) B = randChoice(names);
+
+  // sentence: after y years, adult age will be s times child age (pick consistent)
+  const s = r - 1; // still >1
+  // Check: (adult+y) = s*(child+y) => r*child + y = (r-1)(child+y) => r*child + y = (r-1)child + (r-1)y => child + y = (r-1)y => child = (r-2)y
+  // Ensure consistent by overriding child to satisfy.
+  const child2 = (r-2)*y;
+  const adult2 = r*child2;
+
+  return {
+    img: makeSvgQuestionImage([
+      `${A} is ${r} times as old as ${B}.`,
+      `In ${y} years, ${A} will be ${s} times as old as ${B}.`,
+      "Find their current ages.",
+      "Enter as: A, B (comma separated)."
+    ]),
+    expected: {type:"pair", values:[adult2, child2]},
+    correctText: `${adult2}, ${child2}`,
+    answerFormat: "Two integers: A, B",
+    hint: "Let A and B be their current ages. Translate both sentences into equations then solve."
+  };
+}
+
+function genApp_NumberQuadratic(){
+  const x = randInt(2,20);
+  const d = randChoice([3,4,5,6,7,8]);
+  const prod = x*(x+d);
+
+  return {
+    img: makeSvgQuestionImage([
+      "A number is d more than another number.",
+      `Their product is ${prod}.`,
+      `The larger number is ${d} more than the smaller number.`,
+      "Find the smaller number."
+    ]),
+    expected: {type:"number", value:x},
+    correctText: String(x),
+    answerFormat: "One integer",
+    hint: "Let smaller=x, larger=x+d. Then x(x+d)=product."
+  };
+}
+
+/* NEW: Solve problems using exponential equations (word problems) */
+function genApp_ExponentialEquation(){
+  const scenario = randChoice(["growth","decay","doubling","tripling"]);
+  if(scenario==="growth"){
+    const base = randChoice([2,3,5]);
+    const n = randInt(2,6);
+    const start = randChoice([20,25,30,40,50,60,75,80,100,120,150,200]);
+    const final = start * Math.pow(base, n);
+    const item = randChoice(["bacteria","followers","tickets sold","widgets produced","points in a game"]);
+    return {
+      img: makeSvgQuestionImage([
+        `A quantity grows by a factor of ${base} each day.`,
+        `It starts at ${start} ${item}.`,
+        `After some days it becomes ${final} ${item}.`,
+        "How many days passed?"
+      ]),
+      expected: {type:"solutions", values:[n]},
+      correctText: String(n),
+      answerFormat: "One integer (days)",
+      hint: "Write start × base^t = final, then match to a power of the base."
+    };
+  }
+  if(scenario==="decay"){
+    const base = randChoice([2,3,4,5]);
+    const n = randInt(2,6);
+    const start = randChoice([200,240,320,400,500,600,640,800,1000]);
+    const final = start / Math.pow(base, n);
+    if(!Number.isInteger(final)) return genApp_ExponentialEquation();
+    const item = randChoice(["value ($)","mass (g)","population","energy units"]);
+    return {
+      img: makeSvgQuestionImage([
+        `A quantity decreases by a factor of ${base} each year.`,
+        `It starts at ${start} (${item}).`,
+        `After some years it becomes ${final} (${item}).`,
+        "How many years passed?"
+      ]),
+      expected: {type:"solutions", values:[n]},
+      correctText: String(n),
+      answerFormat: "One integer (years)",
+      hint: "Write start / base^t = final, so base^t = start/final."
+    };
+  }
+  if(scenario==="doubling"){
+    const n = randInt(2,7);
+    const step = randChoice([5,10,15,20,30]);
+    const start = randChoice([3,5,6,8,10,12,15,20,25]);
+    const final = start * Math.pow(2, n);
+    const item = randChoice(["cells","coins","pages read","points"]);
+    return {
+      img: makeSvgQuestionImage([
+        `A quantity doubles every ${step} minutes.`,
+        `It starts at ${start} ${item}.`,
+        `It becomes ${final} ${item}.`,
+        "How many minutes passed?"
+      ]),
+      expected: {type:"solutions", values:[n*step]},
+      correctText: String(n*step),
+      answerFormat: "One integer (minutes)",
+      hint: "Use start × 2^(t/step) = final. Recognise final/start as a power of 2."
+    };
+  }
+  // tripling
+  const n = randInt(2,5);
+  const start = randChoice([10,15,20,25,30,40,50,60]);
+  const final = start * Math.pow(3, n);
+  const item = randChoice(["views","points","plants"]);
+  return {
+    img: makeSvgQuestionImage([
+      `A quantity triples each week.`,
+      `It starts at ${start} ${item}.`,
+      `After some weeks it becomes ${final} ${item}.`,
+      "How many weeks passed?"
+    ]),
+    expected: {type:"solutions", values:[n]},
+    correctText: String(n),
+    answerFormat: "One integer (weeks)",
+    hint: "Write start × 3^w = final and match final/start to a power of 3."
+  };
+}
+
+
+/* ---- More application word problems (expanded bank) ---- */
+function genApp_NutsMixture(){
+  // Two types of nuts with different prices: solve for kilograms of each (simultaneous equations)
+  const items = [
+    ["almonds","cashews"],
+    ["peanuts","almonds"],
+    ["raisins","mixed nuts"],
+    ["walnuts","almonds"],
+    ["trail mix","cashews"]
+  ];
+  const [item1,item2] = randChoice(items);
+
+  const x = randInt(1,8);     // kg of item1
+  const y = randInt(1,8);     // kg of item2
+  const totalKg = x + y;
+
+  const p1 = randChoice([600,650,700,750,800,850,900]); // cents per kg
+  const delta = randChoice([150,200,250,300,350]);
+  const p2 = p1 + delta; // item2 more expensive
+  const totalCents = x*p1 + y*p2;
+
+  return {
+    img: makeSvgQuestionImage([
+      "A shop sells two types of nuts.",
+      `${item1} cost $${(p1/100).toFixed(2)} per kg and ${item2} cost $${(p2/100).toFixed(2)} per kg.`,
+      `A customer buys ${totalKg} kg of nuts for a total cost of $${(totalCents/100).toFixed(2)}.`,
+      `How many kg of ${item1} and how many kg of ${item2} did they buy?`,
+      "Enter as: item1, item2 (kg)."
+    ]),
+    expected: {type:"pair", values:[x,y]},
+    correctText: `${x}, ${y}`,
+    answerFormat: "Two integers (kg): item1, item2",
+    hint: "Let x be kg of item1 and y be kg of item2. Use x+y=total and p1x+p2y=totalCost."
+  };
+}
+
+function genApp_Coins(){
+  // $1 and $2 coins (or $2 and $5) - solve simultaneous equations
+  const coinSets = [
+    ["$1 coins", 100, "$2 coins", 200],
+    ["$2 coins", 200, "$5 coins", 500],
+    ["50c coins", 50, "$2 coins", 200]
+  ];
+  const [c1Name, c1, c2Name, c2] = randChoice(coinSets);
+
+  const x = randInt(3,18);
+  const y = randInt(3,18);
+  const totalCoins = x + y;
+  const totalValue = x*c1 + y*c2; // cents
+
+  return {
+    img: makeSvgQuestionImage([
+      "A purse contains two types of coins.",
+      `There are ${totalCoins} coins in total: ${c1Name} and ${c2Name}.`,
+      `The total value is $${(totalValue/100).toFixed(2)}.`,
+      `How many ${c1Name} and how many ${c2Name} are there?`,
+      "Enter as: type1, type2 (number of coins)."
+    ]),
+    expected: {type:"pair", values:[x,y]},
+    correctText: `${x}, ${y}`,
+    answerFormat: "Two integers: type1, type2",
+    hint: "Let x and y be the numbers of the two coins. Use x+y=totalCoins and value equation."
+  };
+}
+
+function genApp_PensPencils(){
+  // Two purchases, find cost per item (simultaneous equations)
+  const name = randChoice(["Aroha","Manu","Tama","Sione","Mia","Jack","Liam","Sasha"]);
+  const a = randInt(2,8);  // pens
+  const b = randInt(2,10); // pencils
+  const c = randInt(2,9);
+  const d = randInt(2,10);
+
+  // Choose integer-cent prices
+  const pen = randChoice([120,150,180,200,220,250,280]); // cents
+  const pencil = randChoice([60,70,80,90,100,110,120]);  // cents
+  const total1 = a*pen + b*pencil;
+  const total2 = c*pen + d*pencil;
+
+  return {
+    img: makeSvgQuestionImage([
+      `${name} buys pens and pencils.`,
+      `Order 1: ${a} pens and ${b} pencils cost $${(total1/100).toFixed(2)}.`,
+      `Order 2: ${c} pens and ${d} pencils cost $${(total2/100).toFixed(2)}.`,
+      "Find the cost of one pen (in dollars)."
+    ]),
+    expected: {type:"money", value: pen/100},
+    correctText: `$${(pen/100).toFixed(2)}`,
+    answerFormat: "Money amount, e.g. 2.20",
+    hint: "Let p be pen cost and q be pencil cost. Form two equations and eliminate."
+  };
+}
+
+function genApp_PhonePlan(){
+  // Monthly fee + per-GB charge (simultaneous equations)
+  const provider = randChoice(["Koru Mobile","SouthernTel","Kiwi Connect","CloudPhone"]);
+  const fee = randChoice([1500,1800,2000,2200,2500]); // cents
+  const rate = randChoice([250,300,350,400,450]);     // cents per GB
+
+  const g1 = randInt(2,10);
+  let g2 = randInt(2,10);
+  while(g2 === g1) g2 = randInt(2,10);
+
+  const bill1 = fee + g1*rate;
+  const bill2 = fee + g2*rate;
+
+  return {
+    img: makeSvgQuestionImage([
+      `A phone plan from ${provider} charges a fixed monthly fee plus a cost per GB of data.`,
+      `In Month 1, a customer used ${g1} GB and paid $${(bill1/100).toFixed(2)}.`,
+      `In Month 2, the customer used ${g2} GB and paid $${(bill2/100).toFixed(2)}.`,
+      "Find the monthly fee (in dollars)."
+    ]),
+    expected: {type:"money", value: fee/100},
+    correctText: `$${(fee/100).toFixed(2)}`,
+    answerFormat: "Money amount",
+    hint: "Let F be the monthly fee and r be the cost per GB. Use two equations: F+r*g1=bill1 and F+r*g2=bill2."
+  };
+}
+
+function genApp_ConsecutiveIntegers(){
+  // Quadratic: consecutive integers product
+  const n = randInt(3,20);
+  const prod = n*(n+1);
+  return {
+    img: makeSvgQuestionImage([
+      "Two consecutive positive integers have a product of:",
+      `${prod}`,
+      "Find the smaller integer."
+    ]),
+    expected: {type:"number", value:n},
+    correctText: String(n),
+    answerFormat: "One integer",
+    hint: "Let the smaller integer be x. Then x(x+1)=product. Solve the quadratic."
+  };
+}
+
+function genQ_RandomApplication(){
+  const pool = [
+    genQ_CafeSimultaneous,
+    genQ_PaperCardboard,
+    genQ_SweetsTotal,
+    genApp_TicketsAdultCost,
+    genApp_NutsMixture,
+    genApp_Coins,
+    genApp_PensPencils,
+    genApp_PhonePlan,
+    genApp_RectangleQuadratic,
+    genApp_PerimeterAreaQuadratic,
+    genApp_AgeSimultaneous,
+    genApp_NumberQuadratic,
+    genApp_ConsecutiveIntegers,
+    genApp_ExponentialEquation
+  ];
+  return randChoice(pool)();
+}
+function generateQuiz(){
+  const built = [];
+  // Part 1 (6)
+  built.push(genQ_ExpandSimplify());
+  built.push(genQ_FactoriseMonic());
+  built.push(genQ_SimplifyPowers());
+  built.push(genQ_SimplifyRational());
+  built.push(genQ_SimplifyPowerBracket());
+  built.push(genQ_ExpandBinomials());
+
+  // Part 2 (8)
+  built.push(genQ_SolveLinearDecimal());
+  built.push(genQ_SolveFactorZero());
+  built.push(genQ_SolveFractionEquation());
+  built.push(genQ_SolveExponential());
+  built.push(genQ_SolveSimultaneousAB());
+  built.push(genQ_SolveQuadratic());
+  built.push(genQ_QuadInequality());
+  built.push(genQ_QuadInequality2());
+
+  // Part 3 (6)
+  built.push(genQ_TrapeziumHeight());
+  built.push(genQ_RearrangeSqrt());
+
+  // At least one word problem from the original page, plus more random word problems from an expanded bank
+  const coreFromImage = [genQ_CafeSimultaneous, genQ_PaperCardboard, genQ_SweetsTotal];
+  const firstCoreFn = randChoice(coreFromImage);
+  built.push(firstCoreFn());
+
+  const appPool = [
+    genQ_CafeSimultaneous,
+    genQ_PaperCardboard,
+    genQ_SweetsTotal,
+    genApp_TicketsAdultCost,
+    genApp_NutsMixture,
+    genApp_Coins,
+    genApp_PensPencils,
+    genApp_PhonePlan,
+    genApp_RectangleQuadratic,
+    genApp_PerimeterAreaQuadratic,
+    genApp_AgeSimultaneous,
+    genApp_NumberQuadratic,
+    genApp_ConsecutiveIntegers,
+    genApp_ExponentialEquation
+  ];
+
+  const remainingFns = pickUniqueGenerators(appPool.filter(fn => fn !== firstCoreFn), 3);
+  for(const fn of remainingFns) built.push(fn());
+const questions=[];
+  for(let i=0;i<built.length;i++){
+    const partIndex = (i < 6) ? 0 : (i < 14 ? 1 : 2);
+    const indexInPart = (partIndex===0) ? i : (partIndex===1 ? i-6 : i-14);
+    questions.push({
+      partIndex,
+      indexInPart,
+      img: built[i].img,
+      expected: built[i].expected,
+      correctText: built[i].correctText,
+      answerFormat: built[i].answerFormat,
+      hint: built[i].hint || "",
+      userValue:"",
+      isCorrect:false
+    });
+  }
+  return questions;
+}
+
+/* ---------------- Grading ---------------- */
+function gradeQuestion(q, userInput){
+  const input = String(userInput||"").trim();
+  if(input==="") return {ok:false};
+
+  const exp=q.expected;
+
+  if(exp.type==="number" || exp.type==="money"){
+    const nums=parseSolutionList(input);
+    if(nums.length<1) return {ok:false};
+    const v=nums[0];
+    return {ok: nearlyEqual(v, exp.value, 1e-7)};
+  }
+  if(exp.type==="pair"){
+    const nums=parseSolutionList(input);
+    if(nums.length<2) return {ok:false};
+    return {ok: nearlyEqual(nums[0], exp.values[0], 1e-7) && nearlyEqual(nums[1], exp.values[1], 1e-7)};
+  }
+  if(exp.type==="solutions"){
+    const nums=parseSolutionList(input);
+    return {ok: sameSolutionSet(nums, exp.values)};
+  }
+  if(exp.type==="expr"){
+    const vars=exp.vars || ["x"];
+    const cleaned = input.replace(/^[a-zA-Z]\s*=\s*/,"");
+    return {ok: expressionsEquivalent(cleaned, exp.expr, vars)};
+  }
+  if(exp.type==="intervalSet"){
+    const userIntervals = parseIntervalSet(input);
+    if(!userIntervals) return {ok:false};
+    return {ok: intervalSetsEquivalent(userIntervals, exp.intervals)};
+  }
+  return {ok:false};
+}
+
+/* ---------------- State ---------------- */
+let questions=[];
+let currentQuestionIndex=0;
+let studentName="Student";
+let quizStartTime=null;
+let quizEndTime=null;
+let quizSubmitted=false;
+
+let timerInterval=null;
+let elapsedMs=0;
+let isPaused=false;
+let firstAttemptMs=null;
+
+const quizContent=document.getElementById("quizContent");
+const sidebarEl=document.getElementById("sidebar");
+
+const buttonContainer=document.getElementById("navButtons");
+const backButton=document.getElementById("backButton");
+const nextButton=document.getElementById("nextButton");
+const submitButton=document.getElementById("submitButton");
+const checkButton=document.getElementById("checkButton");
+const saveButton=document.getElementById("saveButton");
+
+const generateBtn=document.getElementById("generateButton");
+const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
+const timerDisplay=document.getElementById("timerDisplay");
+const studentLine=document.getElementById("studentLine");
+
+/* ---------------- Timer ---------------- */
+function updateTimerDisplay(){
+  let totalMs=elapsedMs;
+  if(!isPaused && quizStartTime) totalMs+=(new Date()-quizStartTime);
+  let text=`Time: ${formatMs(totalMs)}`;
+  if(firstAttemptMs!==null) text+=` (First: ${formatMs(firstAttemptMs)})`;
+  timerDisplay.textContent=text;
+}
+function startTimerInterval(){
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval=setInterval(updateTimerDisplay, 1000);
+}
+function pauseTimer(){
+  if(isPaused || !quizStartTime) return;
+  const now=new Date();
+  elapsedMs+=now-quizStartTime;
+  isPaused=true;
+  quizStartTime=null;
+  updateTimerDisplay();
+}
+function resumeTimer(){
+  if(!isPaused) return;
+  isPaused=false;
+  quizStartTime=new Date();
+  updateTimerDisplay();
+}
+
+/* ---------------- Sidebar ---------------- */
+function renderSidebar(){
+  sidebarEl.style.display="block";
+  sidebarEl.innerHTML=`<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul=document.getElementById("qList");
+  for(let i=0;i<TOTAL_QUESTIONS;i++){
+    const q=questions[i];
+    const li=document.createElement("li");
+    const label=["Part 1","Part 2","Part 3"][q.partIndex]+`-${q.indexInPart+1}`;
+    li.textContent=`Q${i+1} (${label})`;
+    li.dataset.index=i;
+    li.addEventListener("click",()=>{
+      saveCurrentInput();
+      currentQuestionIndex=i;
+      renderQuestion();
+    });
+    ul.appendChild(li);
+  }
+  updateSidebarStatus();
+}
+function updateSidebarStatus(){
+  const items=document.querySelectorAll("#qList li");
+  items.forEach(li=>{
+    const idx=Number(li.dataset.index);
+    const q=questions[idx];
+    li.classList.remove("active","answered","correct","incorrect");
+
+    if(!quizSubmitted){
+      li.classList.toggle("active", idx===currentQuestionIndex);
+      if((q.userValue||"").trim()!=="") li.classList.add("answered");
+    }else{
+      if((q.userValue||"").trim()!==""){
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ---------------- Helpers ---------------- */
+function saveCurrentInput(){
+  const input=document.getElementById("answerInput");
+  if(input){
+    questions[currentQuestionIndex].userValue=input.value.trim();
+  }
+}
+function mountNavButtonsInto(slotId){
+  const slot=document.getElementById(slotId);
+  if(!slot) return;
+  slot.appendChild(buttonContainer);
+  buttonContainer.style.display="flex";
+}
+
+/* ---------------- Render Question ---------------- */
+function renderQuestion(){
+  const q=questions[currentQuestionIndex];
+  const fullLabel=`Question ${currentQuestionIndex+1} of ${TOTAL_QUESTIONS}`;
+  const hasHint=(q.hint||"").trim()!=="";
+
+  quizContent.innerHTML=`
+    <p class="question-text">${fullLabel}</p>
+    <div class="part-title">${PART_TITLES[q.partIndex]}</div>
+
+    <div class="single-question">
+      <div style="font-weight:800;margin-bottom:8px;">Part ${q.partIndex+1} — Q${q.indexInPart+1}</div>
+
+      <div class="img-wrap">
+        <img class="q-img" src="${q.img}" alt="Question image">
+      </div>
+
+      <div class="answer-row">
+        <div style="font-weight:700;">Answer:</div>
+        <input id="answerInput" class="answer-box" type="text"
+               placeholder="Type your answer (use ^ for powers; preview shows superscripts)"
+               value="${escapeXml(q.userValue||"")}">
+      </div>
+
+      <div class="exp-tools">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+          <input type="checkbox" id="useExpBox">
+          Use exponent box (optional)
+        </label>
+
+        <div id="expBuilder" class="exp-builder">
+          <input id="expBase" class="answer-box exp-base" type="text" placeholder="Base (e.g. x, 3x+2)">
+          <input id="expPow" class="exp-pow" type="text" placeholder="2">
+        </div>
+      </div>
+
+      <div class="preview-line">
+        <strong>Preview:</strong>
+        <span id="ansPreview" class="preview-box">—</span>
+      </div>
+
+      <div class="format-row"><strong>Format:</strong> ${escapeXml(q.answerFormat||"")}</div>
+
+      <div id="checkFeedback" style="display:none;"></div>
+
+      <div class="hint-row">
+        <button id="hintBtn" class="hint-btn" ${hasHint ? "" : "disabled"}>${hasHint ? "Hint" : "No Hint"}</button>
+      </div>
+      <div id="hintBox" class="hint">${hasHint ? escapeXml(q.hint) : ""}</div>
+    </div>
+
+    <div id="navSlot"></div>
+  `;
+
+  mountNavButtonsInto("navSlot");
+
+  // hint
+  const hintBtn=document.getElementById("hintBtn");
+  const hintBox=document.getElementById("hintBox");
+  if(hintBtn && hintBox && hasHint){
+    hintBtn.addEventListener("click", ()=>{
+      const shown = hintBox.style.display==="block";
+      hintBox.style.display = shown ? "none" : "block";
+      hintBtn.textContent = shown ? "Hint" : "Hide Hint";
+    });
+  }
+
+  // exponent box + preview
+  const answerInput = document.getElementById("answerInput");
+  const useExpBox = document.getElementById("useExpBox");
+  const expBuilder = document.getElementById("expBuilder");
+  const expBase = document.getElementById("expBase");
+  const expPow = document.getElementById("expPow");
+  const ansPreview = document.getElementById("ansPreview");
+
+  function updatePreview(){
+    const v = (answerInput.value || "").trim();
+    ansPreview.innerHTML = v ? htmlSuperscriptifySafe(v) : "—";
+  }
+  function syncFromExpBox(){
+    const base = (expBase.value || "").trim();
+    const pow  = (expPow.value || "").trim();
+    if(base && pow) answerInput.value = `${base}^${pow}`;
+    else answerInput.value = base || "";
+    updatePreview();
+  }
+  updatePreview();
+
+  useExpBox.addEventListener("change", ()=>{
+    const on = useExpBox.checked;
+    expBuilder.style.display = on ? "flex" : "none";
+    answerInput.style.display = on ? "none" : "inline-block";
+    if(on){
+      const m = (answerInput.value || "").trim().match(/^(.+)\^([a-zA-Z]+|-?\d+)$/);
+      if(m){ expBase.value = m[1]; expPow.value = m[2]; }
+      else { expBase.value = (answerInput.value || "").trim(); expPow.value=""; }
+      syncFromExpBox();
+    }else updatePreview();
+  });
+
+  answerInput.addEventListener("input", updatePreview);
+  expBase.addEventListener("input", syncFromExpBox);
+  expPow.addEventListener("input", syncFromExpBox);
+
+  // nav buttons
+  backButton.style.display="inline-block";
+  backButton.style.visibility=(currentQuestionIndex===0)?"hidden":"visible";
+
+  const isLast=(currentQuestionIndex===TOTAL_QUESTIONS-1);
+  nextButton.style.display=isLast?"none":"inline-block";
+  submitButton.style.display=isLast?"inline-block":"none";
+
+  saveButton.style.display=quizSubmitted?"inline-block":"none";
+  checkButton.style.display=(quizSubmitted && !q.isCorrect)?"inline-block":"none";
+
+  updateSidebarStatus();
+}
+
+/* ---------------- Results + Submit ---------------- */
+function calculateAndShowResults(){
+  saveCurrentInput();
+
+  const now=new Date();
+  let attemptMs=elapsedMs;
+  if(!isPaused && quizStartTime) attemptMs+=now-quizStartTime;
+  if(firstAttemptMs===null) firstAttemptMs=attemptMs;
+
+  const attemptStartTime=quizStartTime || now;
+  quizEndTime=now;
+  quizSubmitted=true;
+
+  let correctCount=0;
+  questions.forEach(q=>{
+    const res=gradeQuestion(q, q.userValue);
+    q.isCorrect=!!res.ok;
+    if(q.isCorrect) correctCount++;
+  });
+
+  updateSidebarStatus();
+
+  let html=`
+    <h3>Results for ${escapeXml(studentName)}</h3>
+    <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
+    <p>Start time: <strong>${attemptStartTime.toLocaleTimeString()}</strong></p>
+    <p>Submit time: <strong>${quizEndTime.toLocaleTimeString()}</strong></p>
+    <p>Time taken (this attempt): <strong>${formatMs(attemptMs)}</strong></p>
+    <p>First attempt time: <strong>${formatMs(firstAttemptMs)}</strong></p>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th><th>Part</th><th>Image</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q,i)=>{
+    const partLbl=["Part 1","Part 2","Part 3"][q.partIndex]+`-${q.indexInPart+1}`;
+    const ua=(q.userValue||"").trim();
+    html+=`
+      <tr class="${q.isCorrect ? "correct-answer":"incorrect-answer"}">
+        <td>${i+1}</td>
+        <td>${escapeXml(partLbl)}</td>
+        <td><img class="thumb" src="${q.img}" alt="Q${i+1}"></td>
+        <td>${ua==="" ? "—" : htmlSuperscriptifySafe(ua)}</td>
+        <td><strong>${htmlSuperscriptifySafe(q.correctText)}</strong></td>
+        <td>${ua==="" ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
+      </tr>
+    `;
+  });
+
+  html+=`</table><div id="navSlot"></div>`;
+  quizContent.innerHTML=html;
+
+  mountNavButtonsInto("navSlot");
+
+  backButton.style.display="none";
+  nextButton.style.display="none";
+  submitButton.style.display="none";
+  checkButton.style.display="none";
+  saveButton.style.display="inline-block";
+
+  // reset timer for next attempt
+  elapsedMs=0; isPaused=false; quizStartTime=new Date();
+  pauseButton.textContent="Pause";
+  startTimerInterval();
+  updateTimerDisplay();
+}
+
+/* ---------------- Buttons ---------------- */
+nextButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex<TOTAL_QUESTIONS-1){
+    currentQuestionIndex++;
+    renderQuestion();
+  }
+});
+backButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex>0){
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+});
+submitButton.addEventListener("click", ()=>{
+  if(currentQuestionIndex===TOTAL_QUESTIONS-1){
+    calculateAndShowResults();
+  }
+});
+checkButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  const q=questions[currentQuestionIndex];
+  if(!quizSubmitted) return;
+
+  const res=gradeQuestion(q, q.userValue);
+  q.isCorrect=!!res.ok;
+  updateSidebarStatus();
+
+  const box=document.getElementById("checkFeedback");
+  if(!box) return;
+
+  box.className="check-feedback";
+  box.style.display="block";
+
+  if(q.isCorrect){
+    box.innerHTML=`✅ Correct!`;
+    checkButton.style.display="none";
+  }else{
+    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${htmlSuperscriptifySafe(q.correctText)}</strong>`;
+    checkButton.style.display="inline-block";
+  }
+});
+
+/* Save TXT */
+function formatDateForFilename(date){
+  const pad=n=>String(n).padStart(2,"0");
+  return date.getFullYear()+pad(date.getMonth()+1)+pad(date.getDate())+"_"+
+         pad(date.getHours())+pad(date.getMinutes())+pad(date.getSeconds());
+}
+function saveCurrentResultAsTxt(){
+  saveCurrentInput();
+
+  // grade all
+  let correctCount=0;
+  questions.forEach(q=>{
+    const res=gradeQuestion(q, q.userValue);
+    q.isCorrect=!!res.ok;
+    if(q.isCorrect) correctCount++;
+  });
+
+  const lines=[];
+  lines.push("AS91027 Practice (Algebra Procedures) - Current Result");
+  lines.push("Student: "+studentName);
+  if(quizStartTime) lines.push("Start time: "+quizStartTime.toLocaleString());
+  if(quizEndTime) lines.push("Last submit time: "+quizEndTime.toLocaleString());
+  lines.push("Score: "+correctCount+" / "+TOTAL_QUESTIONS);
+  if(firstAttemptMs!==null) lines.push("First attempt time: "+formatMs(firstAttemptMs));
+  lines.push("");
+
+  questions.forEach((q,i)=>{
+    const partLbl=["Part 1","Part 2","Part 3"][q.partIndex]+`-${q.indexInPart+1}`;
+    const userAns=(q.userValue||"").trim()==="" ? "Not answered" : q.userValue;
+    const resultText=(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect?"Correct":"Incorrect");
+    lines.push(`Q${i+1} (${partLbl})`);
+    lines.push("Your answer: "+userAns);
+    lines.push("Correct answer: "+q.correctText);
+    lines.push("Result: "+resultText);
+    lines.push("");
+  });
+
+  const content=lines.join("\n");
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
+  const ts=formatDateForFilename(new Date());
+  a.href=url;
+  a.download=`AS91027_${safeName}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+saveButton.addEventListener("click", saveCurrentResultAsTxt);
+
+/* Pause/Resume */
+pauseButton.addEventListener("click", ()=>{
+  if(!quizStartTime && elapsedMs===0 && !quizSubmitted) return;
+  if(isPaused){ resumeTimer(); pauseButton.textContent="Pause"; }
+  else { pauseTimer(); pauseButton.textContent="Resume"; }
+});
+
+/* Generate new set */
+generateBtn.addEventListener("click", ()=>{
+  if(!quizSubmitted && !confirm("Generate a new random set? All answers will be lost.")) return;
+
+  if(timerInterval) clearInterval(timerInterval);
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=new Date(); quizEndTime=null;
+  updateTimerDisplay(); startTimerInterval();
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+
+  questions=generateQuiz();
+  quizSubmitted=false;
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+});
+
+/* ---- Export questions PDF: 2 questions per page ---- */
+exportQuestionsBtn.addEventListener("click", async () => {
+  if (!questions || questions.length === 0) { alert("Please start a quiz first."); return; }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "fixed";
+  wrapper.style.left = "-9999px";
+  wrapper.style.top = "0";
+  wrapper.style.width = "800px";
+  wrapper.style.background = "#ffffff";
+  document.body.appendChild(wrapper);
+
+  let groupDiv = null;
+
+  questions.forEach((q, idx) => {
+    if (idx % 2 === 0) {
+      groupDiv = document.createElement("div");
+      groupDiv.style.padding = "20px";
+      groupDiv.style.marginBottom = "20px";
+      groupDiv.style.boxSizing = "border-box";
+
+      const header = document.createElement("div");
+      header.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+            <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;line-height:1.1;">
+            <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+            <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+          </div>
+        </div>
+        <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+      `;
+      groupDiv.appendChild(header);
+      wrapper.appendChild(groupDiv);
+    }
+
+    const qDiv = document.createElement("div");
+    qDiv.style.marginBottom = "18px";
+    qDiv.innerHTML = `
+      <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx + 1}</div>
+      <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+        <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+      </div>
+    `;
+    groupDiv.appendChild(qDiv);
+  });
+
+  const groups = Array.from(wrapper.children);
+
+  for (let i = 0; i < groups.length; i++) {
+    const canvas = await html2canvas(groups[i], { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL("image/png");
+    const imgWidth = pageWidth - 20;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    if (i > 0) pdf.addPage();
+    pdf.addImage(imgData, "PNG", 10, 10, imgWidth, Math.min(imgHeight, pageHeight - 20));
+  }
+
+  const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  pdf.save(`AS91027_Questions_${safeName}_${ts}.pdf`);
+
+  document.body.removeChild(wrapper);
+});
+
+/* ---------------- Start Screen (+ optional ?name=Tiger) ---------------- */
+function getNameFromUrl(){
+  const url=new URL(window.location.href);
+  const name=url.searchParams.get("name");
+  return name ? name.trim() : "";
+}
+function showStartScreen(){
+  sidebarEl.style.display="none";
+  buttonContainer.style.display="none";
+  generateBtn.style.display="none";
+  saveButton.style.display="none";
+  pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
+  studentLine.textContent="";
+
+  if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=null; quizEndTime=null;
+  updateTimerDisplay();
+
+  const preset=getNameFromUrl();
+  if(preset){
+    studentName=preset;
+    studentLine.textContent=`Student: ${studentName}`;
+    startQuiz(true);
+    return;
+  }
+
+  quizContent.innerHTML=`
+    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> questions (from your AS91027 pages), with randomised numbers each set.</p>
+    <ul style="margin-top:6px;color:#555;line-height:1.7;">
+      <li><strong>Part 1:</strong> ${PART_COUNTS[0]} skill questions</li>
+      <li><strong>Part 2:</strong> ${PART_COUNTS[1]} equations & inequalities questions</li>
+      <li><strong>Part 3:</strong> ${PART_COUNTS[2]} application questions (expanded bank, includes exponential word problems)</li>
+    </ul>
+    <p style="margin-top:10px;">Please enter your name to begin:</p>
+
+    <input id="nameInput" type="text"
+      style="padding:10px;width:260px;font-size:1.05em;border:1px solid #ccc;border-radius:10px;"
+      placeholder="Your name">
+
+    <button id="startButton"
+      style="margin-left:10px;background:#4caf50;padding:10px 20px;color:white;border:none;border-radius:8px;">
+      Start Quiz
+    </button>
+  `;
+  document.getElementById("startButton").addEventListener("click", ()=>startQuiz(false));
+}
+function startQuiz(skipReadName){
+  if(!skipReadName){
+    const nameInput=document.getElementById("nameInput");
+    studentName=(nameInput.value || "Student").trim();
+  }
+  studentLine.textContent=`Student: ${studentName}`;
+
+  quizStartTime=new Date();
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  updateTimerDisplay(); startTimerInterval();
+
+  questions=generateQuiz();
+  quizSubmitted=false;
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+
+  generateBtn.style.display="inline-block";
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
+  buttonContainer.style.display="flex";
+}
+showStartScreen();
+</script>
+</body>
+</html>
