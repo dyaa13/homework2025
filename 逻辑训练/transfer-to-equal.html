@@ -142,19 +142,28 @@ function escapeXml(s){
 function makeSvgQuestionImage(lines){
   const W = 980;
 
-  const headerH = 72;          // header band height
+  const headerH = 78;     // 稍微加高
   const padX = 44;
-  const lineH = 46;            // line spacing
-  const firstLineY = headerH + 52; // first content line starts well below header
-  const padBottom = 54;
+  const fontSize = 30;
 
-  const contentH = (lines.length - 1) * lineH;
-  const H = firstLineY + contentH + padBottom;
+  const lineH = 54;       // ✅ 行距加大（原来 46）
+  const topGap = 36;      // header 后留空
+  const firstY = headerH + topGap;
 
+  const padBottom = 110;  // ✅ 底部留更大安全区（原来 54）
+
+  // ✅ 用“hanging”从文字顶部定位，不用 baseline（iOS 更一致）
   const textSpans = lines.map((t,i)=>{
-    const y = firstLineY + i * lineH;
-    return `<text x="${padX}" y="${y}" font-size="30" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+    const y = firstY + i * lineH;
+    return `<text x="${padX}" y="${y}"
+      font-size="${fontSize}"
+      dominant-baseline="hanging"
+      fill="#1f2a44"
+      font-family="Arial, Helvetica, sans-serif">${escapeXml(t)}</text>`;
   }).join("");
+
+  // ✅ 高度给足：最后一行 + 字号高度 + 底部 padding
+  const H = firstY + lines.length * lineH + fontSize + padBottom;
 
   const svg = `
   <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
@@ -171,25 +180,18 @@ function makeSvgQuestionImage(lines){
     <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
           fill="url(#g)" stroke="#dfe7f2" stroke-width="3" filter="url(#shadow)"/>
 
-    <!-- header band -->
     <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${headerH}"
           fill="#0d47a1" opacity="0.10"/>
 
-    <text x="${padX}" y="56" font-size="28" fill="#0d47a1" font-weight="700"
-          font-family="Segoe UI, Arial">Transfer to Make Equal</text>
+    <text x="${padX}" y="52" font-size="28" fill="#0d47a1" font-weight="700"
+          font-family="Arial, Helvetica, sans-serif">Transfer to Make Equal</text>
 
     ${textSpans}
   </svg>`.trim();
 
-  const encoded = encodeURIComponent(svg)
-    .replaceAll("%0A","")
-    .replaceAll("%20"," ")
-    .replaceAll("%3D","=")
-    .replaceAll("%3A",":")
-    .replaceAll("%2F","/")
-    .replaceAll("%2C",",");
-
-  return "data:image/svg+xml;charset=utf-8," + encoded;
+  // ✅ 建议用 base64，iOS 对 URI encode 更挑剔
+  const b64 = btoa(unescape(encodeURIComponent(svg)));
+  return "data:image/svg+xml;base64," + b64;
 }
 
 function parseAnswer(str){
@@ -886,7 +888,7 @@ exportQuestionsBtn.addEventListener("click", async () => {
 
     for (let i = 0; i < groups.length; i++) {
       await waitForImages(groups[i]);
-
+	  await new Promise(r => requestAnimationFrame(()=>requestAnimationFrame(r)));
       const canvas = await html2canvas(groups[i], {
         scale: SCALE,
         useCORS: true,
@@ -1011,7 +1013,5 @@ function startQuiz(skipReadName){
 /* ---------------- Init ---------------- */
 showStartScreen();
 </script>
-  <script src="./patch-jspdf-save.js"></script>
 </body>
 </html>
-
