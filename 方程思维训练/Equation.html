@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Equations Practice Quiz</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        #headerLogo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #0d47a1;
+            border-radius: 4px;
+            position: relative;
+        }
+        /* little orange accent (match other pages) */
+        .logo-icon:before{
+            content:"";
+            position:absolute;
+            width:20px;height:9px;
+            background:#ff9800;
+            top:-6px;left:20px;
+            border-radius:3px;
+        }
+
+        .logo-text span.edu {
+            font-size: 0.9em;
+            color: #ff9800;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        #timerDisplay {
+            font-size: 0.95em;
+            color: #333;
+        }
+
+        .quiz-main {
+            display: flex;
+            gap: 20px;
+        }
+
+        .sidebar {
+            width: 150px;
+            border-right: 1px solid #ddd;
+            padding-right: 10px;
+            display: none;
+        }
+
+        .sidebar h4 {
+            margin: 0 0 8px;
+            font-size: 0.95em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 4px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar li {
+            padding: 6px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .sidebar li.active {
+            outline: 2px solid #1976d2;
+            font-weight: 600;
+        }
+
+        .sidebar li.answered {
+            border-left: 4px solid #4caf50;
+        }
+
+        .sidebar li.correct {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+
+        .sidebar li.incorrect {
+            background: #f8d7da;
+            border-left: 4px solid #f44336;
+        }
+
+        #quizContent {
+            flex: 1;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        .instructions {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 12px;
+        }
+
+        .part-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .single-question {
+            margin-top: 6px;
+            margin-bottom: 6px;
+        }
+
+        .answer-box {
+            width: 160px;
+            padding: 6px;
+            font-size: 1em;
+            margin-left: 8px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        #nextButton { background:#4caf50; }
+        #backButton { background:#039be5; }
+        #submitButton { background:#9c27b0; }
+        #saveButton { background:#607d8b; }
+        #pauseButton { background:#f57c00; }
+        #generateButton { background:#ff9800; }
+        #exportQuestionsBtn { background:#6a1b9a; }
+
+        table.review-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .review-table th,
+        .review-table td {
+            border: 1px solid #ccc;
+            padding: 6px;
+            font-size: 0.85em;
+            text-align: center;
+        }
+
+        .review-table th {
+            background: #f2f2f2;
+        }
+
+        .correct-answer { background: #d4edda; }
+        .incorrect-answer { background: #f8d7da; }
+
+        /* fraction (stacked) */
+        .frac {
+            display: inline-block;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .frac .top {
+            display: block;
+            border-bottom: 1px solid #000;
+            padding: 0 2px;
+        }
+        .frac .bottom {
+            display: block;
+            padding: 0 2px;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 700px) {
+            .quiz-main { flex-direction: column; }
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="quiz-container">
+    <div id="headerLogo">
+        <div class="logo-icon"></div>
+        <div class="logo-text"><span class="edu">EDUCATION</span></div>
+    </div>
+
+    <div class="top-bar">
+        <div id="timerDisplay">Time: 00:00</div>
+        <div>
+            <button id="pauseButton" style="display:none;">Pause</button>
+            <button id="generateButton" style="display:none;">Generate New Set</button>
+            <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
+        </div>
+    </div>
+
+    <h2>Linear Equations Practice Quiz</h2>
+    <h2 id="studentName"></h2>
+
+    <div class="quiz-main">
+        <div id="sidebar" class="sidebar"></div>
+        <div id="quizContent"></div>
+    </div>
+
+    <div class="button-container">
+        <button id="backButton" style="display:none;">Previous</button>
+        <button id="submitButton" style="display:none;">Submit &amp; View Results</button>
+        <button id="nextButton" style="display:none;">Next</button>
+        <button id="saveButton" style="display:none;">Save Current Result</button>
+    </div>
+</div>
+
+<!-- PDF Export dependencies -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+/* ----------------------------------------------------------
+   NEW: URL param student name
+---------------------------------------------------------- */
+function getStudentNameFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const n = (params.get("name") || "").trim();
+    return n;
+}
+const urlStudentName = getStudentNameFromURL();
+
+/* ----------------------------------------------------------
+   CONFIG & STATE
+---------------------------------------------------------- */
+
+const PART_TITLES = [
+    "A. Integer Equations (two-step, variable on both sides)",
+    "B. Decimal & Fraction Equations",
+    "C. Equations with Brackets",
+    "D. Word Problems (Applications)"
+];
+
+const TOTAL_QUESTIONS = 15; // 6 + 2 + 3 + 4
+
+let questions = [];
+
+let currentQuestionIndex = 0;
+let studentName = "Student";
+let quizStartTime = null;
+let quizEndTime = null;
+let quizSubmitted = false;
+
+let timerInterval = null;
+let elapsedMs = 0;
+let isPaused = false;
+let firstAttemptMs = null;
+
+const quizContent   = document.getElementById("quizContent");
+const sidebarEl     = document.getElementById("sidebar");
+const backButton    = document.getElementById("backButton");
+const nextButton    = document.getElementById("nextButton");
+const submitButton  = document.getElementById("submitButton");
+const saveButton    = document.getElementById("saveButton");
+const pauseButton   = document.getElementById("pauseButton");
+const timerDisplay  = document.getElementById("timerDisplay");
+const generateBtn   = document.getElementById("generateButton");
+const exportQuestionsBtn = document.getElementById("exportQuestionsBtn");
+const studentNameEl = document.getElementById("studentName");
+
+/* ----------------------------------------------------------
+   helper: update name display
+---------------------------------------------------------- */
+function updateStudentNameDisplay() {
+    studentNameEl.textContent = "Student Name: " + (studentName || "Student");
+}
+
+/* ----------------------------------------------------------
+   工具函数
+---------------------------------------------------------- */
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function choice(arr) { return arr[randInt(0, arr.length - 1)]; }
+function shuffle(array) {
+    const a = array.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+function formatDecimal(x, dp = 2) {
+    let s = x.toFixed(dp);
+    s = s.replace(/\.0+$/,"").replace(/(\.\d*[1-9])0+$/,"$1");
+    return s;
+}
+// ✅ For final answers: keep 2 decimal places when the answer is a decimal (e.g., 3.50)
+function isIntegerish(n, eps = 1e-9) {
+    return Number.isFinite(n) && Math.abs(n - Math.round(n)) < eps;
+}
+function formatFixed(n, dp = 2) {
+    return Number.isFinite(n) ? n.toFixed(dp) : String(n);
+}
+function formatAnswer(n, dp = 2) {
+    if (!Number.isFinite(n)) return String(n);
+    return isIntegerish(n) ? String(Math.round(n)) : n.toFixed(dp);
+}
+function formatLinearExpr(a, variable, b) {
+    let str = (a === 1 ? variable : a + variable);
+    if (b > 0) str += " + " + b;
+    else if (b < 0) str += " - " + Math.abs(b);
+    return str;
+}
+function fracHtml(n, d) {
+    return `<span class="frac"><span class="top">${n}</span><span class="bottom">${d}</span></span>`;
+}
+function parseAnswer(str) {
+    let s = str.trim();
+    if (s === "") return NaN;
+
+    let sign = 1;
+    if (s[0] === "+") s = s.slice(1).trim();
+    else if (s[0] === "-") { sign = -1; s = s.slice(1).trim(); }
+    if (s === "") return NaN;
+
+    const spaceParts = s.split(/\s+/);
+    if (spaceParts.length === 2 && spaceParts[1].includes("/")) {
+        const whole = Number(spaceParts[0]);
+        const fracParts = spaceParts[1].split("/");
+        if (fracParts.length !== 2) return NaN;
+        const num = Number(fracParts[0]);
+        const den = Number(fracParts[1]);
+        if (!Number.isFinite(num) || !Number.isFinite(den) || den === 0) return NaN;
+
+        const absWhole = Math.abs(whole);
+        const fracVal = num / den;
+        let value = absWhole + fracVal;
+        if (whole < 0) value = -value;
+        return sign * value;
+    }
+
+    if (s.includes("/")) {
+        const parts = s.split("/");
+        if (parts.length !== 2) return NaN;
+        const num = Number(parts[0]);
+        const den = Number(parts[1]);
+        if (!Number.isFinite(num) || !Number.isFinite(den) || den === 0) return NaN;
+        return sign * (num / den);
+    }
+
+    const n = Number(s);
+    return Number.isFinite(n) ? sign * n : NaN;
+}
+function nearlyEqual(a, b, eps = 1e-6) {
+    if (!Number.isFinite(a) || !Number.isFinite(b)) return false;
+    return Math.abs(a - b) < eps;
+}
+function formatMs(ms) {
+    const totalSec = Math.floor(ms / 1000);
+    const min = Math.floor(totalSec / 60);
+    const sec = totalSec % 60;
+    return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+function formatDateForFilename(date) {
+    if (!date) return "no_time";
+    const pad = n => String(n).padStart(2, "0");
+    return (
+        date.getFullYear() +
+        pad(date.getMonth() + 1) +
+        pad(date.getDate()) + "_" +
+        pad(date.getHours()) +
+        pad(date.getMinutes()) +
+        pad(date.getSeconds())
+    );
+}
+
+/* ----------------------------------------------------------
+   计时器
+---------------------------------------------------------- */
+function updateTimerDisplay() {
+    let totalMs = elapsedMs;
+    if (!isPaused && quizStartTime) totalMs += (new Date() - quizStartTime);
+    let text = `Time: ${formatMs(totalMs)}`;
+    if (firstAttemptMs !== null) text += ` (First: ${formatMs(firstAttemptMs)})`;
+    timerDisplay.textContent = text;
+}
+function startTimerInterval() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(updateTimerDisplay, 1000);
+}
+function pauseTimer() {
+    if (isPaused || !quizStartTime) return;
+    const now = new Date();
+    elapsedMs += now - quizStartTime;
+    isPaused = true;
+    quizStartTime = null;
+    updateTimerDisplay();
+}
+function resumeTimer() {
+    if (!isPaused) return;
+    isPaused = false;
+    quizStartTime = new Date();
+    updateTimerDisplay();
+}
+
+/* ----------------------------------------------------------
+   Part 1
+---------------------------------------------------------- */
+function generatePart1() {
+    const letters = ["a","m","k","p","y","n","x","b"];
+    for (let i = 0; i < 6; i++) {
+        const v = letters[i % letters.length];
+        let solution = randInt(-10, 10);
+        if (solution === 0) solution = 5;
+
+        let a1 = randInt(2, 9);
+        let a2;
+        do { a2 = randInt(1, 8); } while (a2 === a1);
+
+        const b1 = randInt(-15, 15);
+        const leftAtSol = a1 * solution + b1;
+        const b2 = leftAtSol - a2 * solution;
+
+        const leftExpr  = formatLinearExpr(a1, v, b1);
+        const rightExpr = formatLinearExpr(a2, v, b2);
+
+        questions.push({
+            partIndex: 0,
+            indexInPart: i,
+            text: `Solve for ${v}: ${leftExpr} = ${rightExpr}`,
+            value: solution,
+            display: `${v} = ${formatAnswer(solution)}`,
+            userValue: "",
+            isCorrect: false
+        });
+    }
+}
+
+/* ----------------------------------------------------------
+   Part 2
+---------------------------------------------------------- */
+const coeffPool = [
+    { val: 0.5,  html: "0.5" },
+    { val: 0.6,  html: "0.6" },
+    { val: 0.75, html: "0.75" },
+    { val: 1.2,  html: "1.2" },
+    { val: 0.4,  html: "0.4" },
+    { val: 1/2,  html: fracHtml(1,2) },
+    { val: 3/4,  html: fracHtml(3,4) },
+    { val: 2/3,  html: fracHtml(2,3) }
+];
+
+function generatePart2() {
+    const letters = ["x","t","p","q"];
+    let count = 0;
+    while (count < 2) {
+        const v = letters[count];
+        const sol = randInt(1, 10);
+
+        let c1 = choice(coeffPool);
+        let c2;
+        do { c2 = choice(coeffPool); } while (c2 === c1);
+
+        let c1Const = randInt(-4, 6) + (Math.random() < 0.4 ? 0.5 : 0);
+        c1Const = Number(c1Const.toFixed(1));
+
+        const leftAtSol = c1.val * sol + c1Const;
+
+        let c2ConstRaw = leftAtSol - c2.val * sol;
+        let c2Const = Number(c2ConstRaw.toFixed(2));
+        if (!Number.isFinite(c2Const) || Math.abs(c2Const) > 20) continue;
+
+        const c1Str = formatDecimal(c1Const, 2);
+        const c2Str = formatDecimal(c2Const, 2);
+
+        const const1Show = c1Const > 0 ? " + " + c1Str : (c1Const < 0 ? " - " + formatDecimal(Math.abs(c1Const),2) : "");
+        const const2Show = c2Const > 0 ? " + " + c2Str : (c2Const < 0 ? " - " + formatDecimal(Math.abs(c2Const),2) : "");
+
+        const leftExpr  = `${c1.html}${v}${const1Show}`;
+        const rightExpr = `${c2.html}${v}${const2Show}`;
+
+        questions.push({
+            partIndex: 1,
+            indexInPart: count,
+            text: `Solve for ${v}: ${leftExpr} = ${rightExpr}`,
+            value: sol,
+            display: `${v} = ${formatAnswer(sol)}`,
+            displayHtml: `${v} = ${formatAnswer(sol)}`,
+            userValue: "",
+            isCorrect: false
+        });
+
+        count++;
+    }
+}
+
+/* ----------------------------------------------------------
+   Part 3
+---------------------------------------------------------- */
+function generatePart3() {
+    const letters = ["x","y","k","z"];
+    const coeffs = [2,3,4,1.5,2.5];
+
+    for (let i = 0; i < 3; i++) {
+        const v = letters[i];
+        const sol = randInt(-6, 10);
+        const c1 = choice(coeffs);
+        const c2 = choice(coeffs);
+        const k = randInt(1, 5);
+
+        const pattern = choice(["plus", "minus"]);
+
+        let rhs;
+        let text;
+        if (pattern === "plus") {
+            rhs = c1 * (sol - k) + c2 * sol;
+            text = `Solve for ${v}: ${formatDecimal(c1,1)}(${v} - ${k}) + ${formatDecimal(c2,1)}${v} = ${formatDecimal(rhs,1)}`;
+        } else {
+            rhs = c1 * (sol + k) - c2 * sol;
+            text = `Solve for ${v}: ${formatDecimal(c1,1)}(${v} + ${k}) - ${formatDecimal(c2,1)}${v} = ${formatDecimal(rhs,1)}`;
+        }
+
+        questions.push({
+            partIndex: 2,
+            indexInPart: i,
+            text,
+            value: sol,
+            display: `${v} = ${formatAnswer(sol)}`,
+            userValue: "",
+            isCorrect: false
+        });
+    }
+}
+
+/* ----------------------------------------------------------
+   Part 4 generators
+---------------------------------------------------------- */
+function genTravelProblem() {
+    const tTotal = randInt(3,5);
+    const tFast = randInt(1, tTotal - 1);
+    const vFast = choice([10,12,15]);
+    const vSlow = choice([6,8,9]);
+    const distance = vFast * tFast + vSlow * (tTotal - tFast);
+
+    const text = `Travel problem: A cyclist travelled ${distance} km in total. `
+        + `He rode part of the journey at ${vFast} km/h and the rest at ${vSlow} km/h. `
+        + `The total travel time was ${tTotal} hours. `
+        + `How long did he travel at ${vFast} km/h? (Answer in hours.)`;
+
+    return { text, value: tFast, display: `${formatAnswer(tFast)} hours` };
+}
+function genDistributionProblem() {
+    const students = randInt(10, 30);
+    const per = randInt(2, 5);
+    const leftover = randInt(5, 18);
+    const total = students * per + leftover;
+    const item = choice(["apples","oranges","books","stickers"]);
+
+    const text = `Distribution problem: A teacher distributed ${item}. `
+        + `Each student received ${per} ${item}, and ${leftover} ${item} were left over. `
+        + `If there were ${total} ${item} in total, how many students were there?`;
+
+    return { text, value: students, display: `${students} students` };
+}
+function genProfitProblem() {
+    const n = randInt(8, 30);
+    const buy = randInt(2, 6);
+    const margin = choice([2,3,4]);
+    const sell = buy + margin;
+    const profit = margin * n;
+    const item = choice(["notebooks","pens","toy cars","T-shirts"]);
+
+    const text = `Profit problem: A shop buys ${item} at $${buy} each and sells them at $${sell} each. `
+        + `The total profit was $${profit}. How many ${item} were sold?`;
+
+    return { text, value: n, display: `${n} ${item}` };
+}
+function genWorkProblem() {
+    const rate = choice([10,12,15,20]);
+    const hoursDone = randInt(1, 4);
+    const done = rate * hoursDone;
+    const extraHours = randInt(2, 5);
+    const total = done + rate * extraHours;
+
+    const text = `Work problem: A machine can pack ${rate} boxes per hour. `
+        + `It has already worked for ${hoursDone} hours and packed ${done} boxes. `
+        + `It needs to pack ${total} boxes in total. `
+        + `How many more hours must it work to finish?`;
+
+    return { text, value: extraHours, display: `${formatAnswer(extraHours)} hours` };
+}
+function genBillingProblem() {
+    const base = choice([3.5,4,5]);
+    const rate = choice([1.2,1.5,2]);
+    const distance = randInt(3, 15);
+    const total = base + rate * distance;
+
+    const text = `Billing problem: A taxi company charges a fixed fee of $${formatFixed(base,2)} `
+        + `plus $${formatFixed(rate,2)} per kilometre. `
+        + `A trip cost $${formatFixed(total,2)} in total. `
+        + `How many kilometres was the trip?`;
+
+    return { text, value: distance, display: `${formatAnswer(distance)} km` };
+}
+function genPointsProblem() {
+    const totalGames =  randInt(8, 14);
+    const wins = randInt(3, totalGames - 2);
+    const draws = randInt(1, totalGames - wins);
+    const points = 3 * wins + 2 * draws;
+
+    const text = `Points problem: In a league, a team earns 3 points for a win and 2 points for a draw, `
+        + `and 0 points for a loss. There were no losses. `
+        + `The team played ${totalGames} games and earned ${points} points in total. `
+        + `If they won ${wins} of those games, how many games were draws?`;
+
+    return { text, value: draws, display: `${draws} draws` };
+}
+function genNumberProblem() {
+    const n = randInt(-10, 20);
+    const add = randInt(2, 10);
+    const mul = randInt(2, 5);
+    const result = mul * (n + add);
+
+    const text = `Number problem: A number was increased by ${add} and then multiplied by ${mul}. `
+        + `The result was ${result}. What was the original number?`;
+
+    return { text, value: n, display: `${formatAnswer(n)}` };
+}
+function genAgeProblem() {
+    const b = randInt(6, 15);
+    const k = randInt(3,6);
+    const newA = 2*(b - k) + k;
+
+    const text = `Age problem (harder): Alice is currently ${newA} years old and Bob is younger. `
+        + `${k} years ago, Alice was twice Bob’s age at that time. `
+        + `How old is Bob now?`;
+
+    return { text, value: b, display: `${formatAnswer(b)} years` };
+}
+function genSumDiffProblem() {
+    const big = randInt(20, 60);
+    const diff = randInt(4, 18);
+    const small = big - diff;
+    const sum = big + small;
+
+    const text = `Sum & difference problem: The sum of two numbers is ${sum} and their difference is ${diff}. `
+        + `What is the larger number?`;
+
+    return { text, value: big, display: `${formatAnswer(big)}` };
+}
+function genSumMultipleProblem() {
+    const b = randInt(3, 12);
+    const k = choice([2,3,4]);
+    const a = k * b;
+    const total = a + b;
+
+    const text = `Sum & multiple problem: In a club, the number of senior members is ${k} times the number `
+        + `of junior members. Together, there are ${total} members. `
+        + `How many junior members are there?`;
+
+    return { text, value: b, display: `${b} juniors` };
+}
+function genDecisionProblem() {
+    const rateA = choice([1.2,1.5,2]);
+    const rateB = rateA + choice([0.4,0.5,0.8]);
+    const diff = rateB - rateA;
+    const n = randInt(10, 25);
+    const fixedAdj = diff * n;
+
+    const text = `Decision problem: A copy shop offers two pricing plans. `
+        + `Plan A: a fixed fee of $${formatFixed(fixedAdj,2)} plus $${formatFixed(rateA,2)} per page. `
+        + `Plan B: no fixed fee and $${formatFixed(rateB,2)} per page. `
+        + `For how many pages will the total cost be the same under both plans?`;
+
+    return { text, value: n, display: `${formatAnswer(n)} pages` };
+}
+
+const wordGeneratorsA = [
+    genTravelProblem,
+    genDistributionProblem,
+    genProfitProblem,
+    genWorkProblem,
+    genBillingProblem,
+    genPointsProblem,
+    genNumberProblem
+];
+const wordGeneratorsB = [
+    genAgeProblem,
+    genSumDiffProblem,
+    genSumMultipleProblem,
+    genDecisionProblem
+];
+
+function generatePart4() {
+    const easyPicked = shuffle(wordGeneratorsA).slice(0, 3);
+    const hardPicked = shuffle(wordGeneratorsB).slice(0, 1);
+    const picked = shuffle(easyPicked.concat(hardPicked));
+
+    picked.forEach((genFn, idx) => {
+        const w = genFn();
+        questions.push({
+            partIndex: 3,
+            indexInPart: idx,
+            text: w.text,
+            value: w.value,
+            display: w.display,
+            userValue: "",
+            isCorrect: false
+        });
+    });
+}
+
+function generateQuiz() {
+    questions = [];
+    generatePart1();
+    generatePart2();
+    generatePart3();
+    generatePart4();
+}
+
+/* ----------------------------------------------------------
+   Sidebar
+---------------------------------------------------------- */
+function renderSidebar() {
+    sidebarEl.style.display = "block";
+    sidebarEl.innerHTML = `<h4>Questions</h4><ul id="qList"></ul>`;
+    const ul = document.getElementById("qList");
+
+    questions.forEach((q, idx) => {
+        const li = document.createElement("li");
+        const label = ["A","B","C","D"][q.partIndex] + (q.indexInPart + 1);
+        li.textContent = `Q${idx + 1} (${label})`;
+        li.dataset.index = idx;
+        li.addEventListener("click", () => {
+            saveCurrentInput();
+            currentQuestionIndex = idx;
+            renderQuestion();
+        });
+        ul.appendChild(li);
+    });
+
+    updateSidebarStatus();
+}
+function updateSidebarStatus() {
+    const items = document.querySelectorAll("#qList li");
+    items.forEach(li => {
+        const idx = Number(li.dataset.index);
+        const q = questions[idx];
+
+        li.classList.remove("active", "answered", "correct", "incorrect");
+
+        if (!quizSubmitted) {
+            li.classList.toggle("active", idx === currentQuestionIndex);
+            if ((q.userValue || "").trim() !== "") li.classList.add("answered");
+        } else {
+            if ((q.userValue || "").trim() !== "") {
+                li.classList.add(q.isCorrect ? "correct" : "incorrect");
+            }
+        }
+    });
+}
+
+/* ----------------------------------------------------------
+   显示单题
+---------------------------------------------------------- */
+function renderQuestion() {
+    const q = questions[currentQuestionIndex];
+    const partLabel = ["A","B","C","D"][q.partIndex];
+    const fullLabel = `${partLabel}${q.indexInPart + 1}`;
+
+    quizContent.innerHTML = `
+        <p class="question-text">Question ${currentQuestionIndex + 1} of ${TOTAL_QUESTIONS}</p>
+
+        <p class="instructions">
+            Enter your answer as an integer, decimal, or fraction (e.g., 7, 2.5, 3/4 or -2 1/3).
+            You only need to enter the value of the unknown (or the required quantity in word problems).
+        </p>
+
+        <div class="part-title">${PART_TITLES[q.partIndex]}</div>
+
+        <div class="single-question">
+            ${fullLabel}. ${q.text}
+            <input id="answerInput" class="answer-box" type="text" value="${q.userValue || ""}">
+        </div>
+    `;
+
+    backButton.style.display = "inline-block";
+    nextButton.style.display = "inline-block";
+    submitButton.style.display = "inline-block";
+
+    backButton.style.visibility = currentQuestionIndex === 0 ? "hidden" : "visible";
+    nextButton.textContent = "Next";
+
+    updateSidebarStatus();
+}
+function saveCurrentInput() {
+    const input = document.getElementById("answerInput");
+    if (input && questions[currentQuestionIndex]) {
+        questions[currentQuestionIndex].userValue = input.value.trim();
+    }
+}
+
+/* ----------------------------------------------------------
+   保存结果为 txt
+---------------------------------------------------------- */
+function saveCurrentResultAsTxt() {
+    saveCurrentInput();
+
+    if (!quizSubmitted) {
+        questions.forEach(q => {
+            const val = parseAnswer(q.userValue || "");
+            q.isCorrect = nearlyEqual(val, q.value);
+        });
+    }
+
+    let correctCount = 0;
+    questions.forEach(q => { if (q.isCorrect) correctCount++; });
+
+    let lines = [];
+    lines.push("Linear Equations Practice Quiz - Current Result");
+    lines.push("Student: " + studentName);
+    if (quizStartTime) lines.push("Last start time: " + quizStartTime.toLocaleString());
+    if (quizEndTime) lines.push("Last submit time: " + quizEndTime.toLocaleString());
+    if (firstAttemptMs !== null) lines.push("First attempt time: " + formatMs(firstAttemptMs));
+    lines.push("Score (current marking): " + correctCount + " / " + TOTAL_QUESTIONS);
+    lines.push("");
+    lines.push("Details:");
+    lines.push("----------");
+
+    questions.forEach((q, i) => {
+        const partLbl = ["A","B","C","D"][q.partIndex] + (q.indexInPart + 1);
+        const userAns = (q.userValue || "").trim() === "" ? "Not answered" : q.userValue;
+        const resultText = (q.userValue || "").trim() === ""
+            ? "Not answered"
+            : (q.isCorrect ? "Correct" : "Incorrect");
+
+        const plainQuestion = q.text.replace(/<[^>]+>/g,"");
+
+        lines.push(
+            `Q${i + 1} (${partLbl})` +
+            "\nQuestion: " + plainQuestion +
+            "\nYour answer: " + userAns +
+            "\nCorrect answer: " + q.display +
+            "\nResult: " + resultText
+        );
+        lines.push("");
+    });
+
+    const content = lines.join("\n");
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_") || "Student";
+    const ts = formatDateForFilename(new Date());
+    a.href = url;
+    a.download = `LinearEquations_${safeName}_${ts}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+/* ----------------------------------------------------------
+   Export Questions PDF (2 questions per page)
+---------------------------------------------------------- */
+exportQuestionsBtn.addEventListener("click", async () => {
+  if (!questions || questions.length === 0) {
+    alert("Please start the quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pageWmm = pdf.internal.pageSize.getWidth();
+  const pageHmm = pdf.internal.pageSize.getHeight();
+
+  // ---- PDF render sizing (important for auto paging) ----
+  const WRAP_W = 820;               // px
+  const DPI = 96;                   // typical screen dpi for html2canvas layout
+  const MM_PER_IN = 25.4;
+  const PX_PER_MM = DPI / MM_PER_IN;
+  const PAGE_H_PX = Math.floor((pageHmm - 20) * PX_PER_MM); // 10mm top + 10mm bottom margins
+  const PAGE_W_PX = WRAP_W;
+
+  // offscreen container
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "fixed";
+  wrapper.style.left = "-9999px";
+  wrapper.style.top = "0";
+  wrapper.style.width = PAGE_W_PX + "px";
+  wrapper.style.background = "#fff";
+  wrapper.style.boxSizing = "border-box";
+  document.body.appendChild(wrapper);
+
+  // build a new "page" div
+  function makePageDiv() {
+    const page = document.createElement("div");
+    page.style.width = PAGE_W_PX + "px";
+    page.style.boxSizing = "border-box";
+    page.style.padding = "14px 18px";
+    page.style.background = "#fff";
+
+    // header
+    const header = document.createElement("div");
+    header.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+          <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;line-height:1.1;">
+          <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+          <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+        </div>
+        <div style="margin-left:auto;font-size:12px;color:#555;">
+          ${studentName ? "Student: " + studentName : ""}
+        </div>
+      </div>
+      <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 10px 0;">
+    `;
+    page.appendChild(header);
+
+    // content area
+    const content = document.createElement("div");
+    content.className = "pdf-content";
+    page.appendChild(content);
+
+    return { page, content };
+  }
+
+  // create question block
+  function makeQuestionBlock(q, idx) {
+    const partLabel = ["A", "B", "C", "D"][q.partIndex] || "";
+    const fullLabel = `${partLabel}${(q.indexInPart ?? 0) + 1}`;
+
+    const block = document.createElement("div");
+    // ✅ 题目之间“空两行”级别：不要很大（你可改 14~18）
+    block.style.marginBottom = "16px";
+
+    block.innerHTML = `
+      <div style="font-weight:700;margin:0 0 6px 0;font-size:14px;">
+        Q${idx + 1} (${fullLabel})
+      </div>
+      <div style="border:1px solid #e5e5e5;border-radius:10px;padding:8px 10px;
+                  font-size:15px;line-height:1.55;color:#1f2a44;">
+        ${q.text}
+      </div>
+    `;
+    return block;
+  }
+
+  // --- Build pages by height ---
+  const pages = [];
+  let { page, content } = makePageDiv();
+  wrapper.appendChild(page);
+
+  for (let i = 0; i < questions.length; i++) {
+    const block = makeQuestionBlock(questions[i], i);
+    content.appendChild(block);
+
+    // if overflow: move this block to new page
+    if (page.scrollHeight > PAGE_H_PX) {
+      content.removeChild(block);
+
+      // start new page
+      ({ page, content } = makePageDiv());
+      wrapper.appendChild(page);
+      content.appendChild(block);
+    }
+  }
+
+  // Collect final page divs (direct children of wrapper)
+  pages.push(...Array.from(wrapper.children));
+
+  // --- Render each page div to pdf ---
+  for (let i = 0; i < pages.length; i++) {
+    const canvas = await html2canvas(pages[i], { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL("image/png");
+
+    const imgWmm = pageWmm - 20; // 10mm margins
+    const imgHmm = (canvas.height * imgWmm) / canvas.width;
+
+    if (i > 0) pdf.addPage();
+    pdf.addImage(imgData, "PNG", 10, 10, imgWmm, Math.min(imgHmm, pageHmm - 20));
+  }
+
+  const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  pdf.save(`LinearEquations_Questions_${safeName}_${ts}.pdf`);
+
+  document.body.removeChild(wrapper);
+});
+
+/* ----------------------------------------------------------
+   提交 & 结果页面
+---------------------------------------------------------- */
+function calculateAndShowResults() {
+    saveCurrentInput();
+
+    const now = new Date();
+    let attemptMs = elapsedMs;
+    if (!isPaused && quizStartTime) attemptMs += now - quizStartTime;
+
+    if (firstAttemptMs === null) firstAttemptMs = attemptMs;
+
+    const attemptStartTime = quizStartTime || now;
+    quizEndTime = now;
+    quizSubmitted = true;
+
+    let correctCount = 0;
+    questions.forEach(q => {
+        const val = parseAnswer(q.userValue || "");
+        q.isCorrect = nearlyEqual(val, q.value);
+        if (q.isCorrect) correctCount++;
+    });
+
+    updateSidebarStatus();
+
+    const diffSec = Math.floor(attemptMs / 1000);
+    const min = Math.floor(diffSec / 60);
+    const sec = diffSec % 60;
+
+    let timeInfo = `
+        <p>Start time (this attempt): <strong>${attemptStartTime.toLocaleTimeString()}</strong></p>
+        <p>Submit time: <strong>${quizEndTime.toLocaleTimeString()}</strong></p>
+        <p>Time taken (this attempt): <strong>${min}m ${sec}s</strong></p>
+        <p>First attempt time: <strong>${formatMs(firstAttemptMs)}</strong></p>
+    `;
+
+    let html = `
+        <h3>Results for ${studentName}</h3>
+        <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
+        ${timeInfo}
+        <p>You can click any question number on the left to go back, change your answers, and submit again.</p>
+
+        <table class="review-table">
+            <tr>
+                <th>#</th>
+                <th>Part</th>
+                <th>Question</th>
+                <th>Your Answer</th>
+                <th>Correct</th>
+                <th>Result</th>
+            </tr>
+    `;
+
+    questions.forEach((q, i) => {
+        const partLbl = ["A","B","C","D"][q.partIndex] + (q.indexInPart + 1);
+        html += `
+            <tr class="${q.isCorrect ? "correct-answer" : "incorrect-answer"}">
+                <td>${i + 1}</td>
+                <td>${partLbl}</td>
+                <td>${q.text}</td>
+                <td>${q.userValue || "—"}</td>
+                <td>${q.displayHtml || q.display}</td>
+                <td>${q.isCorrect ? "Correct" : "Incorrect"}</td>
+            </tr>
+        `;
+    });
+
+    html += `</table>`;
+    quizContent.innerHTML = html;
+
+    backButton.style.display = "inline-block";
+    nextButton.style.display = "inline-block";
+    submitButton.style.display = "inline-block";
+    saveButton.style.display = "inline-block";
+
+    // reset timer for next attempt
+    elapsedMs = 0;
+    isPaused = false;
+    quizStartTime = new Date();
+    pauseButton.textContent = "Pause";
+    startTimerInterval();
+    updateTimerDisplay();
+}
+
+/* ----------------------------------------------------------
+   按钮事件
+---------------------------------------------------------- */
+nextButton.addEventListener("click", () => {
+    saveCurrentInput();
+    if (currentQuestionIndex < TOTAL_QUESTIONS - 1) {
+        currentQuestionIndex++;
+        renderQuestion();
+    }
+});
+backButton.addEventListener("click", () => {
+    saveCurrentInput();
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        renderQuestion();
+    }
+});
+submitButton.addEventListener("click", () => {
+    calculateAndShowResults();
+});
+saveButton.addEventListener("click", saveCurrentResultAsTxt);
+pauseButton.addEventListener("click", () => {
+    if (!quizStartTime && elapsedMs === 0 && !quizSubmitted) return;
+    if (isPaused) { resumeTimer(); pauseButton.textContent = "Pause"; }
+    else { pauseTimer(); pauseButton.textContent = "Resume"; }
+});
+generateBtn.addEventListener("click", () => {
+    if (!quizSubmitted && !confirm("Generate a new set? All current answers will be lost.")) return;
+
+    generateQuiz();
+    currentQuestionIndex = 0;
+    quizSubmitted = false;
+
+    if (timerInterval) clearInterval(timerInterval);
+    elapsedMs = 0;
+    isPaused = false;
+    firstAttemptMs = null;
+    quizStartTime = new Date();
+    quizEndTime = null;
+    startTimerInterval();
+    updateTimerDisplay();
+
+    renderSidebar();
+    renderQuestion();
+
+    saveButton.style.display = "none";
+});
+
+/* ----------------------------------------------------------
+   Start screen + auto-start
+---------------------------------------------------------- */
+function showStartScreen() {
+    sidebarEl.style.display = "none";
+    backButton.style.display = "none";
+    nextButton.style.display = "none";
+    submitButton.style.display = "none";
+    saveButton.style.display = "none";
+    pauseButton.style.display = "none";
+    generateBtn.style.display = "none";
+    exportQuestionsBtn.style.display = "none";
+
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+    elapsedMs = 0;
+    isPaused = false;
+    firstAttemptMs = null;
+    quizStartTime = null;
+    quizEndTime = null;
+    updateTimerDisplay();
+
+    // ✅ URL name exists -> auto start
+    if (urlStudentName) {
+        studentName = urlStudentName;
+        updateStudentNameDisplay();
+        startQuizAuto();
+        return;
+    }
+
+    // normal start screen
+    studentName = "Student";
+    updateStudentNameDisplay();
+
+    quizContent.innerHTML = `
+        <p>This quiz contains <strong>${TOTAL_QUESTIONS}</strong> questions in 4 parts:</p>
+        <ul>
+            <li>Part A: Integer equations (two-step, variable on both sides)</li>
+            <li>Part B: Decimal & fraction equations</li>
+            <li>Part C: Equations with brackets</li>
+            <li>Part D: Word problems (3 medium + 1 harder)</li>
+        </ul>
+        <p>Please enter your name to begin:</p>
+
+        <input id="nameInput"
+               type="text"
+               style="padding:10px; width:250px; font-size:1.05em;"
+               placeholder="Your name">
+
+        <button id="startButton"
+                style="margin-left:10px; background:#4caf50; padding:10px 20px; color:white; border:none; border-radius:6px;">
+            Start Quiz
+        </button>
+    `;
+
+    document.getElementById("startButton").addEventListener("click", startQuizManual);
+}
+
+function startQuizAuto() {
+    generateQuiz();
+    currentQuestionIndex = 0;
+    quizSubmitted = false;
+
+    quizStartTime = new Date();
+    elapsedMs = 0;
+    isPaused = false;
+    firstAttemptMs = null;
+    updateTimerDisplay();
+    startTimerInterval();
+
+    renderSidebar();
+    renderQuestion();
+
+    backButton.style.display = "inline-block";
+    nextButton.style.display = "inline-block";
+    submitButton.style.display = "inline-block";
+    saveButton.style.display = "none";
+    pauseButton.style.display = "inline-block";
+    pauseButton.textContent = "Pause";
+    generateBtn.style.display = "inline-block";
+    exportQuestionsBtn.style.display = "inline-block";
+}
+
+function startQuizManual() {
+    const nameInput = document.getElementById("nameInput");
+    studentName = ((nameInput && nameInput.value) ? nameInput.value : "Student").trim() || "Student";
+    updateStudentNameDisplay();
+    startQuizAuto();
+}
+
+/* ----------------------------------------------------------
+   初始化
+---------------------------------------------------------- */
+updateStudentNameDisplay();
+showStartScreen();
+</script>
+</body>
+</html>
