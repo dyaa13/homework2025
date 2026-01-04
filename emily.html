@@ -67,6 +67,7 @@
             color: white;
             cursor: pointer;
             transition: 0.25s;
+            white-space: nowrap;
         }
 
         .tab-buttons button:hover {
@@ -96,7 +97,9 @@
         #otago.tab-content       { background: #ede9fe; }
         #amc.tab-content         { background: #dcfce7; }
         #icas.tab-content        { background: #fee2e2; }
-        #others.tab-content      { background: #f3e8ff; }
+        #logic.tab-content       { background: #f3e8ff; }
+        #mistakes.tab-content    { background: #fff7ed; } /* Mistake Book */
+        #exam.tab-content        { background: #eaf2ff; } /* Exam */
 
         /* Link buttons */
         .links a {
@@ -113,15 +116,35 @@
         .links a:hover {
             background: #1d4ed8;
         }
+
+        /* Fractions subsection */
+        .subsection {
+            margin-top: 18px;
+            padding-top: 12px;
+            border-top: 2px dashed rgba(30,58,138,0.25);
+        }
+        .sub-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1e3a8a;
+            margin: 6px 0 10px;
+        }
+        .sub-note {
+            font-size: 13px;
+            color: #475569;
+            margin: 0 0 10px;
+        }
+        .fraction-links a {
+            font-size: 16px;
+            padding: 12px;
+        }
     </style>
 
     <script>
         /*********************************
          ⭐⭐⭐ 改这里即可切换学生名字 ⭐⭐⭐
         **********************************/
-        const STUDENT_NAME = "Emily";  
-        // 改成例如 "Dorathy" 就可以了
-
+        const STUDENT_NAME = "Emily";
 
         function openTab(tabName, btn) {
             document.querySelectorAll(".tab-content")
@@ -135,16 +158,17 @@
 
         document.addEventListener('DOMContentLoaded', function () {
 
-            // 设置标题 & Student Name
+            // Set title & Student Name
             document.getElementById('pageTitle').textContent =
                 `${STUDENT_NAME} Math Page – DYAA`;
             document.getElementById('studentName').textContent =
                 `Student: ${STUDENT_NAME}`;
 
-            // ⭐ 自动为所有链接加上 ?name=STUDENT_NAME
+            // ⭐ Auto-append ?name=STUDENT_NAME AND replace $STUDENT_NAME in path
             document.querySelectorAll(".student-link").forEach(a => {
-                const base = a.dataset.link;
-                a.href = `${base}?name=${STUDENT_NAME}`;
+                const baseRaw = a.dataset.link || "";
+                const base = baseRaw.replaceAll("$STUDENT_NAME", encodeURIComponent(STUDENT_NAME));
+                a.href = `${base}?name=${encodeURIComponent(STUDENT_NAME)}`;
             });
         });
     </script>
@@ -172,55 +196,169 @@
             <button onclick="openTab('amc', this)">AMC</button>
             <button onclick="openTab('icas', this)">ICAS</button>
             <button onclick="openTab('logic', this)">Logic</button>
+            <button onclick="openTab('mistakes', this)">Mistake Book</button>
+            <button onclick="openTab('exam', this)">Exam</button>
         </div>
 
-        <!-- Contents -->
+        <!-- Daily -->
         <div id="daily" class="tab-content active">
             <div class="links">
-                <a class="student-link" data-link="./negative_number/negative_decimal.html">Negative Numbers</a>
-                <a class="student-link" data-link="./方程思维训练/equation.html">Linear Equations</a>
+                <a class="student-link" data-link="./negative_number/Negative_decimal.html">Negative Numbers</a>
+                 <a class="student-link" data-link="./方程思维训练/Equation.html">Linear Equations</a>
+                <a class="student-link" data-link="./方程思维训练/simequation.html">Sim Equations</a>
                 <a class="student-link" data-link="./计算训练/mixednumber.html">Random Mixed Calculation（fraction/decimal/precentage）</a>
+                <a class="student-link" data-link="./计算训练/mixednumber_no_percentag_mixedinput.html">Positive Mixed Calculation（fraction/decimal）</a>
+                <a class="student-link" data-link="./percentage/precentage.html">Percentage</a>
+                <a class="student-link" data-link="./ratio/ratio.html">Ratio</a>
+            </div>
+
+            <!-- Fractions Teaching subsection -->
+            <div class="subsection">
+                <div class="sub-title">Fractions (Teaching)</div>
+                <div class="sub-note">Basics → Convert → Add/Subtract → Multiply → Divide → Review → Applications</div>
+
+                <div class="links fraction-links">
+                    <a class="student-link" data-link="./分数教学/fraction_basic.html">Fractions — Basic Concepts</a>
+                    <a class="student-link" data-link="./分数教学/fraction_convert.html">Fractions — Convert (Fraction/Decimal/Percent)</a>
+                    <a class="student-link" data-link="./分数教学/fraction_addition_substraction.html">Fractions — Addition & Subtraction</a>
+                    <a class="student-link" data-link="./分数教学/fraction_multi.html">Fractions — Multiplication</a>
+                    <a class="student-link" data-link="./分数教学/fraction_div.html">Fractions — Division</a>
+                    <a class="student-link" data-link="./分数教学/fraction_app.html">Fractions — Applications (Word Problems)</a>
+                    <a class="student-link" data-link="./分数教学/fraction_review.html">Fractions — Review</a>
+                </div>
             </div>
         </div>
 
+        <!-- Cantamath -->
         <div id="cantamath" class="tab-content">
             <div class="links">
-                <a class="student-link" data-link="./cath1.html">Cath1</a>
+                <a class="student-link" data-link="./cath2025y7.html">Cath2025y7</a>
+                <a class="student-link" data-link="./cath1.html">Cath2025y7_1</a>
+                <a class="student-link" data-link="./cath2025y7_2.html">Cath2025y7_2</a>
+                <a class="student-link" data-link="./cath2025y7_3.html">Cath2025y7_3</a>
+                <a class="student-link" data-link="./cath2025y7_4.html">Cath2025y7_4</a>
             </div>
         </div>
 
+        <!-- Otago -->
         <div id="otago" class="tab-content">
             <div class="links">
+                <a class="student-link" data-link="./otago2020.html">Otago2020</a>
             </div>
         </div>
 
+        <!-- AMC -->
         <div id="amc" class="tab-content">
             <div class="links">
+                <a class="student-link" data-link="./ac2007.html">AMC Year 7 – 2007</a>
+                <a class="student-link" data-link="./ac2008.html">AMC Year 7 – 2008</a>
             </div>
         </div>
 
+        <!-- ICAS -->
         <div id="icas" class="tab-content">
             <div class="links">
                 <a class="student-link" data-link="./homework_y7_1.html">ICAS Year 7 – 2019</a>
             </div>
         </div>
 
+        <!-- Logic -->
         <div id="logic" class="tab-content">
+		<!-- Fractions Teaching subsection -->
+            <div class="subsection">
+                <div class="sub-title">Number</div>
             <div class="links">
-            <div class="links">
-                <a class="student-link" data-link="./逻辑训练/line.html">Line counting</a>
-                <a class="student-link" data-link="./逻辑训练/Climb-the-Well.html">Climb-the-Well</a>
-                <a class="student-link" data-link="./逻辑训练/Logic Reasoning.html">Logic Reasoning</a>
-                <a class="student-link" data-link="./逻辑训练/matching-counting.html">matching-counting</a>
-                <a class="student-link" data-link="./逻辑训练/money-count.html">money-count</a>
-                <a class="student-link" data-link="./逻辑训练/transfer-to-equal.html">transfer-to-equal</a>
-                <a class="student-link" data-link="./逻辑训练/interval.html">interval</a>
-                <a class="student-link" data-link="./逻辑训练/RemainderProblems.html">RemainderProblems</a>
-                <a class="student-link" data-link="./逻辑训练/time.html">time</a>
-                <a class="student-link" data-link="./逻辑训练/CountingandArrangements.html">CountingandArrangements</a>
-			
+                <a class="student-link" data-link="./逻辑训练/line.html">1. Line counting</a>
+                <a class="student-link" data-link="./逻辑训练/Climb-the-Well.html">2. Climb-the-Well</a>
+                <a class="student-link" data-link="./逻辑训练/Logic Reasoning.html">3. Logic Reasoning</a>
+                <a class="student-link" data-link="./逻辑训练/Matching-counting.html">4. Matching-counting</a>
+                <a class="student-link" data-link="./逻辑训练/money-count.html">5. Money-count</a>
+                <a class="student-link" data-link="./逻辑训练/transfer-to-equal.html">6. Transfer-to-equal</a>
+                <a class="student-link" data-link="./逻辑训练/interval.html">7. Interval</a>
+                <a class="student-link" data-link="./逻辑训练/RemainderProblems.html">8. RemainderProblems</a>
+                <a class="student-link" data-link="./逻辑训练/time.html">9. Time</a>
+                <a class="student-link" data-link="./逻辑训练/CountingandArrangements.html">10. CountingandArrangements</a>
+                <a class="student-link" data-link="./逻辑训练/ErrorCorrection.html">11. ErrorCorrection</a>
+                <a class="student-link" data-link="./逻辑训练/Average1.html">12. Average - 1</a>
+                <a class="student-link" data-link="./逻辑训练/SumMultiple.html">13. SumMultiple</a>
+                <a class="student-link" data-link="./逻辑训练/DiffMultiple.html">14. DiffMultiple</a>
+                <a class="student-link" data-link="./逻辑训练/SumDiff.html">15. SumDiff</a>
+                <a class="student-link" data-link="./逻辑训练/age.html">16. Age</a>
+                <a class="student-link" data-link="./逻辑训练/overlap.html">17. Overlap</a>
+                <a class="student-link" data-link="./逻辑训练/Periodic.html">18. Periodic</a>
+                <a class="student-link" data-link="./逻辑训练/Calendar-Based.html">19. Calendar-Based</a>
+                <a class="student-link" data-link="./逻辑训练/unitRate.html">20. UnitRate</a>
+                <a class="student-link" data-link="./逻辑训练/totalQuantity.html">21. TotalQuantity</a>
+                <a class="student-link" data-link="./逻辑训练/hollowSquare.html">22. HollowSquare</a>
+                <a class="student-link" data-link="./逻辑训练/workBackwards1.html">23. WorkBackwards - 1</a>
+                <a class="student-link" data-link="./逻辑训练/workBackwards2.html">24. WorkBackwards - 2</a>
+                <a class="student-link" data-link="./逻辑训练/meeting.html">25. Meeting</a>
+                <a class="student-link" data-link="./逻辑训练/Chase.html">26. Chase</a>
+                <a class="student-link" data-link="./逻辑训练/TrainBridge.html">27. TrainBridge</a>
+                <a class="student-link" data-link="./逻辑训练/age2.html">28. Age2</a>
+                <a class="student-link" data-link="./逻辑训练/Planting.html">29. Planting</a>
+                <a class="student-link" data-link="./逻辑训练/chicken-rabbit.html">30. chicken-rabbit</a>
+                <a class="student-link" data-link="./逻辑训练/Optimization.html">31. Optimization</a>
+                <a class="student-link" data-link="./逻辑训练/Strategy.html">32. Strategy</a>
+                <a class="student-link" data-link="./逻辑训练/Surplus Deficit.html">33. Surplus_Deficit</a>
+                <a class="student-link" data-link="./逻辑训练/Logic_Reasoning2.html">34. Logic Reasoning part2</a>
+                <a class="student-link" data-link="./逻辑训练/Average2.html">35. Average part2</a>
+                <a class="student-link" data-link="./逻辑训练/Equation.html">36. Equation</a>
+                <a class="student-link" data-link="./逻辑训练/FactorsMultiples.html">37. FactorsMultiples</a>
+                <a class="student-link" data-link="./逻辑训练/SegmentedFee.html">38. SegmentedFee</a>
+                <a class="student-link" data-link="./逻辑训练/Defective.html">39. Defective</a>
+                <a class="student-link" data-link="./逻辑训练/CowsEatingGrass.html">40. CowsEatingGrass</a>
+                <a class="student-link" data-link="./逻辑训练/Inclusion_Exclusion.html">41. Inclusion_Exclusion</a>
+                <a class="student-link" data-link="./逻辑训练/Logic_Reasoning3.html">42. Logic Reasoning part3</a>
+                <a class="student-link" data-link="./逻辑训练/JourneyComprehensive1.html">43. Journey Comprehensive part1</a>
+                <a class="student-link" data-link="./逻辑训练/Ratio1.html">44. Ratio part1</a>
+                <a class="student-link" data-link="./逻辑训练/Ratio2.html">45. Ratio part2</a>
+                <a class="student-link" data-link="./逻辑训练/Profit.html">46. Profit</a>
+                <a class="student-link" data-link="./逻辑训练/Tax.html">47. Tax</a>
+                <a class="student-link" data-link="./逻辑训练/Saving.html">48. Savings</a>
+                <a class="student-link" data-link="./逻辑训练/Concentration.html">49. Concentration</a>
+                <a class="student-link" data-link="./逻辑训练/Probability.html">50. Probability</a>
+                <a class="student-link" data-link="./逻辑训练/CurrentBoat.html">51. CurrentBoat</a>
+                <a class="student-link" data-link="./逻辑训练/DepartureSchedule.html">52. Departure Schedule</a>
+                <a class="student-link" data-link="./逻辑训练/WorkRate.html">53. Work Rate Part 1</a>
+                <a class="student-link" data-link="./逻辑训练/WorkRate2.html">54. Work Rate Part 2</a>
+                <a class="student-link" data-link="./逻辑训练/PigeonholePrinciple.html">55. PigeonholePrinciple</a>
+                <a class="student-link" data-link="./逻辑训练/Escalator.html">56. Escalator</a>
+                <a class="student-link" data-link="./逻辑训练/JourneyComprehensive2.html">57. Journey Comprehensive part 2</a>
+                <a class="student-link" data-link="./geometry/JourneyComprehensive2.html">57. Journey Comprehensive part 2</a>
             </div>
-			
+			</div>
+            <!-- Fractions Teaching subsection -->
+            <div class="subsection">
+                <div class="sub-title">Geomotry</div>
+
+                <div class="links fraction-links">
+                    <a class="student-link" data-link="./geometry/Counting.html">Geomotry 1 — Counting</a>
+                    <a class="student-link" data-link="./geometry/Classic.html">Geomotry 2 — Classic </a>
+                    <a class="student-link" data-link="./geometry/HalfArea.html">Geomotry 3 — HalfArea</a>
+                    <a class="student-link" data-link="./geometry/Mapmodel.html">Geomotry 4  — Mapmodel</a>
+                    <a class="student-link" data-link="./geometry/Angles_Parallel_Lines.html">Geomotry 5 — Angles_Parallel_Lines</a>
+                    <a class="student-link" data-link="./geometry/Angles_Straight Line_At a Point _Vertically Opposite.html">Geomotry 6 —Angles_Straight Line_At a Point _Vertically Opposite</a>
+                </div>
+			</div>
+        </div>
+
+        <!-- Mistake Book (ONLY ONE LINK, NO AUTO-GENERATE) -->
+        <div id="mistakes" class="tab-content">
+            <div class="sub-title">Mistake Book</div>
+            <div class="links">
+                <a class="student-link" data-link="./错题集/$STUDENT_NAME/cuoti_update_online.html">Mistake Review </a>
+            </div>
+        </div>
+
+        <!-- Exam -->
+        <div id="exam" class="tab-content">
+            <div class="links">
+                <a class="student-link" data-link="./exams/examy4.html">Year 4 Exam</a>
+                <a class="student-link" data-link="./exams/examy5.html">Year 5 Exam</a>
+                <a class="student-link" data-link="./exams/examy6.html">Year 6 Exam</a>
+                <a class="student-link" data-link="./exams/examy7.html">Year 7 Exam</a>
+                <a class="student-link" data-link="./NCEA/AS91027_Practice.html">NCEA91027</a>
             </div>
         </div>
 
