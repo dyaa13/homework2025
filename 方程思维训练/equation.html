@@ -36,6 +36,16 @@
             height: 40px;
             background-color: #0d47a1;
             border-radius: 4px;
+            position: relative;
+        }
+        /* little orange accent (match other pages) */
+        .logo-icon:before{
+            content:"";
+            position:absolute;
+            width:20px;height:9px;
+            background:#ff9800;
+            top:-6px;left:20px;
+            border-radius:3px;
         }
 
         .logo-text span.edu {
@@ -51,6 +61,7 @@
             align-items: center;
             margin-bottom: 10px;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         #timerDisplay {
@@ -164,6 +175,7 @@
         #saveButton { background:#607d8b; }
         #pauseButton { background:#f57c00; }
         #generateButton { background:#ff9800; }
+        #exportQuestionsBtn { background:#6a1b9a; }
 
         table.review-table {
             width: 100%;
@@ -186,7 +198,7 @@
         .correct-answer { background: #d4edda; }
         .incorrect-answer { background: #f8d7da; }
 
-        /* 分数上下显示 */
+        /* fraction (stacked) */
         .frac {
             display: inline-block;
             text-align: center;
@@ -228,6 +240,7 @@
         <div>
             <button id="pauseButton" style="display:none;">Pause</button>
             <button id="generateButton" style="display:none;">Generate New Set</button>
+            <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
         </div>
     </div>
 
@@ -246,6 +259,10 @@
         <button id="saveButton" style="display:none;">Save Current Result</button>
     </div>
 </div>
+
+<!-- PDF Export dependencies -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ----------------------------------------------------------
@@ -293,6 +310,7 @@ const saveButton    = document.getElementById("saveButton");
 const pauseButton   = document.getElementById("pauseButton");
 const timerDisplay  = document.getElementById("timerDisplay");
 const generateBtn   = document.getElementById("generateButton");
+const exportQuestionsBtn = document.getElementById("exportQuestionsBtn");
 const studentNameEl = document.getElementById("studentName");
 
 /* ----------------------------------------------------------
@@ -319,6 +337,17 @@ function formatDecimal(x, dp = 2) {
     let s = x.toFixed(dp);
     s = s.replace(/\.0+$/,"").replace(/(\.\d*[1-9])0+$/,"$1");
     return s;
+}
+// ✅ For final answers: keep 2 decimal places when the answer is a decimal (e.g., 3.50)
+function isIntegerish(n, eps = 1e-9) {
+    return Number.isFinite(n) && Math.abs(n - Math.round(n)) < eps;
+}
+function formatFixed(n, dp = 2) {
+    return Number.isFinite(n) ? n.toFixed(dp) : String(n);
+}
+function formatAnswer(n, dp = 2) {
+    if (!Number.isFinite(n)) return String(n);
+    return isIntegerish(n) ? String(Math.round(n)) : n.toFixed(dp);
 }
 function formatLinearExpr(a, variable, b) {
     let str = (a === 1 ? variable : a + variable);
@@ -444,7 +473,7 @@ function generatePart1() {
             indexInPart: i,
             text: `Solve for ${v}: ${leftExpr} = ${rightExpr}`,
             value: solution,
-            display: `${v} = ${solution}`,
+            display: `${v} = ${formatAnswer(solution)}`,
             userValue: "",
             isCorrect: false
         });
@@ -499,8 +528,8 @@ function generatePart2() {
             indexInPart: count,
             text: `Solve for ${v}: ${leftExpr} = ${rightExpr}`,
             value: sol,
-            display: `${v} = ${sol}`,
-            displayHtml: `${v} = ${sol}`,
+            display: `${v} = ${formatAnswer(sol)}`,
+            displayHtml: `${v} = ${formatAnswer(sol)}`,
             userValue: "",
             isCorrect: false
         });
@@ -540,7 +569,7 @@ function generatePart3() {
             indexInPart: i,
             text,
             value: sol,
-            display: `${v} = ${sol}`,
+            display: `${v} = ${formatAnswer(sol)}`,
             userValue: "",
             isCorrect: false
         });
@@ -548,7 +577,7 @@ function generatePart3() {
 }
 
 /* ----------------------------------------------------------
-   Part 4 generators (same as your original)
+   Part 4 generators
 ---------------------------------------------------------- */
 function genTravelProblem() {
     const tTotal = randInt(3,5);
@@ -562,7 +591,7 @@ function genTravelProblem() {
         + `The total travel time was ${tTotal} hours. `
         + `How long did he travel at ${vFast} km/h? (Answer in hours.)`;
 
-    return { text, value: tFast, display: `${tFast} hours` };
+    return { text, value: tFast, display: `${formatAnswer(tFast)} hours` };
 }
 function genDistributionProblem() {
     const students = randInt(10, 30);
@@ -602,7 +631,7 @@ function genWorkProblem() {
         + `It needs to pack ${total} boxes in total. `
         + `How many more hours must it work to finish?`;
 
-    return { text, value: extraHours, display: `${extraHours} hours` };
+    return { text, value: extraHours, display: `${formatAnswer(extraHours)} hours` };
 }
 function genBillingProblem() {
     const base = choice([3.5,4,5]);
@@ -610,12 +639,12 @@ function genBillingProblem() {
     const distance = randInt(3, 15);
     const total = base + rate * distance;
 
-    const text = `Billing problem: A taxi company charges a fixed fee of $${formatDecimal(base,2)} `
-        + `plus $${formatDecimal(rate,2)} per kilometre. `
-        + `A trip cost $${formatDecimal(total,2)} in total. `
+    const text = `Billing problem: A taxi company charges a fixed fee of $${formatFixed(base,2)} `
+        + `plus $${formatFixed(rate,2)} per kilometre. `
+        + `A trip cost $${formatFixed(total,2)} in total. `
         + `How many kilometres was the trip?`;
 
-    return { text, value: distance, display: `${distance} km` };
+    return { text, value: distance, display: `${formatAnswer(distance)} km` };
 }
 function genPointsProblem() {
     const totalGames =  randInt(8, 14);
@@ -639,7 +668,7 @@ function genNumberProblem() {
     const text = `Number problem: A number was increased by ${add} and then multiplied by ${mul}. `
         + `The result was ${result}. What was the original number?`;
 
-    return { text, value: n, display: `${n}` };
+    return { text, value: n, display: `${formatAnswer(n)}` };
 }
 function genAgeProblem() {
     const b = randInt(6, 15);
@@ -650,7 +679,7 @@ function genAgeProblem() {
         + `${k} years ago, Alice was twice Bob’s age at that time. `
         + `How old is Bob now?`;
 
-    return { text, value: b, display: `${b} years` };
+    return { text, value: b, display: `${formatAnswer(b)} years` };
 }
 function genSumDiffProblem() {
     const big = randInt(20, 60);
@@ -661,7 +690,7 @@ function genSumDiffProblem() {
     const text = `Sum & difference problem: The sum of two numbers is ${sum} and their difference is ${diff}. `
         + `What is the larger number?`;
 
-    return { text, value: big, display: `${big}` };
+    return { text, value: big, display: `${formatAnswer(big)}` };
 }
 function genSumMultipleProblem() {
     const b = randInt(3, 12);
@@ -683,11 +712,11 @@ function genDecisionProblem() {
     const fixedAdj = diff * n;
 
     const text = `Decision problem: A copy shop offers two pricing plans. `
-        + `Plan A: a fixed fee of $${formatDecimal(fixedAdj,2)} plus $${formatDecimal(rateA,2)} per page. `
-        + `Plan B: no fixed fee and $${formatDecimal(rateB,2)} per page. `
+        + `Plan A: a fixed fee of $${formatFixed(fixedAdj,2)} plus $${formatFixed(rateA,2)} per page. `
+        + `Plan B: no fixed fee and $${formatFixed(rateB,2)} per page. `
         + `For how many pages will the total cost be the same under both plans?`;
 
-    return { text, value: n, display: `${n} pages` };
+    return { text, value: n, display: `${formatAnswer(n)} pages` };
 }
 
 const wordGeneratorsA = [
@@ -876,6 +905,136 @@ function saveCurrentResultAsTxt() {
 }
 
 /* ----------------------------------------------------------
+   Export Questions PDF (2 questions per page)
+---------------------------------------------------------- */
+exportQuestionsBtn.addEventListener("click", async () => {
+  if (!questions || questions.length === 0) {
+    alert("Please start the quiz first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pageWmm = pdf.internal.pageSize.getWidth();
+  const pageHmm = pdf.internal.pageSize.getHeight();
+
+  // ---- PDF render sizing (important for auto paging) ----
+  const WRAP_W = 820;               // px
+  const DPI = 96;                   // typical screen dpi for html2canvas layout
+  const MM_PER_IN = 25.4;
+  const PX_PER_MM = DPI / MM_PER_IN;
+  const PAGE_H_PX = Math.floor((pageHmm - 20) * PX_PER_MM); // 10mm top + 10mm bottom margins
+  const PAGE_W_PX = WRAP_W;
+
+  // offscreen container
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "fixed";
+  wrapper.style.left = "-9999px";
+  wrapper.style.top = "0";
+  wrapper.style.width = PAGE_W_PX + "px";
+  wrapper.style.background = "#fff";
+  wrapper.style.boxSizing = "border-box";
+  document.body.appendChild(wrapper);
+
+  // build a new "page" div
+  function makePageDiv() {
+    const page = document.createElement("div");
+    page.style.width = PAGE_W_PX + "px";
+    page.style.boxSizing = "border-box";
+    page.style.padding = "14px 18px";
+    page.style.background = "#fff";
+
+    // header
+    const header = document.createElement("div");
+    header.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+          <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;line-height:1.1;">
+          <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+          <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+        </div>
+        <div style="margin-left:auto;font-size:12px;color:#555;">
+          ${studentName ? "Student: " + studentName : ""}
+        </div>
+      </div>
+      <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 10px 0;">
+    `;
+    page.appendChild(header);
+
+    // content area
+    const content = document.createElement("div");
+    content.className = "pdf-content";
+    page.appendChild(content);
+
+    return { page, content };
+  }
+
+  // create question block
+  function makeQuestionBlock(q, idx) {
+    const partLabel = ["A", "B", "C", "D"][q.partIndex] || "";
+    const fullLabel = `${partLabel}${(q.indexInPart ?? 0) + 1}`;
+
+    const block = document.createElement("div");
+    // ✅ 题目之间“空两行”级别：不要很大（你可改 14~18）
+    block.style.marginBottom = "16px";
+
+    block.innerHTML = `
+      <div style="font-weight:700;margin:0 0 6px 0;font-size:14px;">
+        Q${idx + 1} (${fullLabel})
+      </div>
+      <div style="border:1px solid #e5e5e5;border-radius:10px;padding:8px 10px;
+                  font-size:15px;line-height:1.55;color:#1f2a44;">
+        ${q.text}
+      </div>
+    `;
+    return block;
+  }
+
+  // --- Build pages by height ---
+  const pages = [];
+  let { page, content } = makePageDiv();
+  wrapper.appendChild(page);
+
+  for (let i = 0; i < questions.length; i++) {
+    const block = makeQuestionBlock(questions[i], i);
+    content.appendChild(block);
+
+    // if overflow: move this block to new page
+    if (page.scrollHeight > PAGE_H_PX) {
+      content.removeChild(block);
+
+      // start new page
+      ({ page, content } = makePageDiv());
+      wrapper.appendChild(page);
+      content.appendChild(block);
+    }
+  }
+
+  // Collect final page divs (direct children of wrapper)
+  pages.push(...Array.from(wrapper.children));
+
+  // --- Render each page div to pdf ---
+  for (let i = 0; i < pages.length; i++) {
+    const canvas = await html2canvas(pages[i], { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL("image/png");
+
+    const imgWmm = pageWmm - 20; // 10mm margins
+    const imgHmm = (canvas.height * imgWmm) / canvas.width;
+
+    if (i > 0) pdf.addPage();
+    pdf.addImage(imgData, "PNG", 10, 10, imgWmm, Math.min(imgHmm, pageHmm - 20));
+  }
+
+  const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  pdf.save(`LinearEquations_Questions_${safeName}_${ts}.pdf`);
+
+  document.body.removeChild(wrapper);
+});
+
+/* ----------------------------------------------------------
    提交 & 结果页面
 ---------------------------------------------------------- */
 function calculateAndShowResults() {
@@ -1018,6 +1177,7 @@ function showStartScreen() {
     saveButton.style.display = "none";
     pauseButton.style.display = "none";
     generateBtn.style.display = "none";
+    exportQuestionsBtn.style.display = "none";
 
     if (timerInterval) {
         clearInterval(timerInterval);
@@ -1088,6 +1248,7 @@ function startQuizAuto() {
     pauseButton.style.display = "inline-block";
     pauseButton.textContent = "Pause";
     generateBtn.style.display = "inline-block";
+    exportQuestionsBtn.style.display = "inline-block";
 }
 
 function startQuizManual() {
