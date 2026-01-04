@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Train & Bridge Problems – Image Quiz</title>
+  <title>Ratio Problems (1) — Diagram Method (Image Quiz)</title>
 
   <style>
     body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f4f9;margin:0;padding:20px;color:#333;}
@@ -30,12 +30,12 @@
     .sidebar li.correct{background:#d4edda;border-left:5px solid #28a745;border-color:#cbe7d1;}
     .sidebar li.incorrect{background:#f8d7da;border-left:5px solid #f44336;border-color:#f1c7cc;}
 
-    #quizContent{flex:1;min-width:0;}
+    #quizContent{flex:1;}
     .question-text{font-size:1.05em;margin-bottom:8px;}
     .part-title{font-weight:800;margin:8px 0 10px 0;}
     .single-question{margin:6px 0;line-height:1.7;}
     .answer-row{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-    .answer-box{width:320px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
+    .answer-box{width:420px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
 
     .img-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px;box-shadow:0 3px 8px rgba(0,0,0,0.05);max-width:100%;}
     .q-img{width:100%;height:auto;display:block;border-radius:10px;}
@@ -43,25 +43,20 @@
     .hint-row{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
     .hint-btn{background:#ff9800;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:0.95em;}
     .hint-btn:disabled{opacity:.55;cursor:not-allowed;}
-    .hint{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;}
 
-    .hint-diagram-wrap{
-      margin-top:10px;
-      border:1px solid #ffe0b2;
-      background:#ffffff;
-      border-radius:10px;
-      padding:10px;
-      overflow-x:auto;
-      -webkit-overflow-scrolling:touch;
+    /* ✅ Windows-safe: prevent hint diagrams/tables overflow */
+    .hint{
+      display:none;margin-top:10px;padding:10px 12px;border-radius:10px;
+      background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;
+      max-width:100%;overflow:auto;
     }
-    .hint-diagram-wrap img{
-      display:block;
-      height:auto;
-      border-radius:8px;
-      width:auto;
-      max-width:none;
-      min-width:920px;
-    }
+    .hint *{max-width:100%;}
+    .hint img{max-width:100%;height:auto;display:block;}
+    .hint table{width:100%;max-width:100%;border-collapse:collapse;table-layout:fixed;}
+    .hint td,.hint th{border:1px solid #ffe0b2;padding:6px;word-wrap:break-word;}
+
+    .hint-diagram-wrap{margin-top:10px;border:1px solid #ffe0b2;background:#ffffff;border-radius:10px;padding:10px;}
+    .hint-diagram-wrap img{width:100%;height:auto;display:block;border-radius:8px;}
 
     .button-container{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;}
     button{padding:10px 18px;border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:1em;}
@@ -89,7 +84,6 @@
       .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
       .thumb{width:120px;max-width:120px;}
       .answer-box{width:100%;}
-      .hint-diagram-wrap img{min-width:860px;}
     }
   </style>
 </head>
@@ -117,7 +111,7 @@
     </div>
   </div>
 
-  <h2 style="margin:6px 0 0 0;">Lesson Theme: Train Passing a Bridge — Insertion Method</h2>
+  <h2 style="margin:6px 0 0 0;">Lesson Theme: Ratio Problems (1) — Diagram Method</h2>
 
   <div class="quiz-main">
     <div id="sidebar" class="sidebar"></div>
@@ -133,37 +127,38 @@
   </div>
 </div>
 
-<!-- ✅ Export-to-PDF libs (same as your other page) -->
+<!-- Export-to-PDF libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
-const SVG_TITLE = "Train & Bridge Problems";
+const SVG_TITLE = "Ratio Problems (1)";
 const PART_TITLES = [
-  "Part 1 (Easy) — One-step: use distance = speed × time",
-  "Part 2 (Medium) — Train length + bridge/tunnel length",
-  "Part 3 (Hard) — Two conditions / solve for unknowns"
+  "Part 1 (Easy) — Basic ratio units (2 questions)",
+  "Part 2 (Medium) — Ratio changes (2 questions)",
+  "Part 3 (Hard) — Multi-step ratio reasoning (2 questions)"
 ];
 const NUM_PARTS = 3;
 const QUESTIONS_PER_PART = 2;
 const TOTAL_QUESTIONS = NUM_PARTS * QUESTIONS_PER_PART;
 
-/* ---------------- Names (traditional English) ---------------- */
-const NAMES = [
-  "Thomas","Catherine","Henry","Sarah","William","Elizabeth",
-  "John","Mary","Edward","Anne","George","Margaret",
-  "Charles","Alice","Joseph","Jane","Robert","Emily",
-  "Oliver","Sophia","James","Arthur","Charlotte","Victoria"
-];
-function pickName(){
-  return NAMES[Math.floor(Math.random()*NAMES.length)];
+/* ---------------- Names / Context ---------------- */
+const SCHOOL_NAMES = ["Sunrise Primary School","Greenwood Primary School","Riverbank Primary School","Hilltop Primary School"];
+const TEACHERS = ["Ms. Carter","Mr. Lewis","Mrs. Nguyen","Mr. Patel","Ms. Johnson","Mrs. Brown"];
+const PEOPLE = ["Alex","Ben","Chloe","Daniel","Emily","Felix","Grace","Henry","Ivy","Jack","Kelly","Liam","Mia","Noah","Olivia","Peter","Quinn","Ruby","Samuel","Tina"];
+
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function pickUnique(arr,k){
+  const pool=[...arr], out=[];
+  while(out.length<k && pool.length){
+    out.push(pool.splice(randInt(0,pool.length-1),1)[0]);
+  }
+  return out;
 }
 
 /* ---------------- Utils ---------------- */
-function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
-function pick(arr){ return arr[randInt(0, arr.length-1)]; }
-function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ const t=a%b; a=b; b=t; } return a||1; }
 function formatMs(ms){
   const totalSec=Math.floor(ms/1000), min=Math.floor(totalSec/60), sec=totalSec%60;
   return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
@@ -173,7 +168,7 @@ function escapeXml(s){
     .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
     .replaceAll('"',"&quot;").replaceAll("'","&apos;");
 }
-function wrapLines(lines, maxChars = 58){
+function wrapLines(lines, maxChars=60){
   const out=[];
   function pushWrapped(line){
     const words=String(line).split(/\s+/).filter(Boolean);
@@ -193,8 +188,6 @@ function wrapLines(lines, maxChars = 58){
   for(const line of lines) pushWrapped(line);
   return out;
 }
-
-/* ✅ Whole-number-only answers */
 function parseIntegerAnswer(str){
   const s=(str||"").trim();
   if(s==="") return NaN;
@@ -206,13 +199,11 @@ function isCorrectInt(userInt, correctInt){
   return Number.isInteger(userInt) && userInt===correctInt;
 }
 
-/* ---------------- SVG: TEXT CARD (question image) ---------------- */
+/* ---------------- SVG: TEXT CARD ---------------- */
 function makeSvgTextCard(lines, titleText=SVG_TITLE){
   const W=980, headerH=72, padX=44, lineH=46, firstLineY=headerH+52, padBottom=54;
-  const wrapped=wrapLines(lines, 58);
+  const wrapped=wrapLines(lines, 60);
   const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
-
-  const nonce = Math.random().toString(36).slice(2);
 
   const textSpans=wrapped.map((t,i)=>{
     const y=firstLineY + i*lineH;
@@ -220,7 +211,7 @@ function makeSvgTextCard(lines, titleText=SVG_TITLE){
   }).join("");
 
   const svg=`
-  <svg xmlns="http://www.w3.org/2000/svg" data-nonce="${nonce}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
     <defs>
       <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stop-color="#f7fbff"/>
@@ -250,56 +241,36 @@ function makeSvgTextCard(lines, titleText=SVG_TITLE){
   return "data:image/svg+xml;charset=utf-8," + encoded;
 }
 
-/* ---------------- SVG: HINT DIAGRAM (ONLY inside Hint box) ---------------- */
-function hintDiagramSvg(cfg){
-  const W=980, H=380;
-  const nonce = Math.random().toString(36).slice(2);
+/* ---------------- SVG: Hint Card ---------------- */
+function hintCardSvg(lines, title="Hint"){
+  const W=980, headerH=60, padX=44, lineH=36, firstLineY=headerH+44, padBottom=44;
+  const wrapped=wrapLines(lines, 68);
+  const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
 
-  const top = cfg.topLabel || "Passing a pole (a single point)";
-  const bottom = cfg.bottomLabel || "Passing a bridge/tunnel (front in to back out)";
-  const a = cfg.aLabel || "Train length";
-  const b = cfg.bLabel || "Bridge length";
-  const sum = cfg.sumLabel || "Distance = speed × time";
-
-  const x0=110, totalW=760, barH=34;
-  const y1=120, y2=220;
-
-  const aW=Math.floor(totalW*0.38);
-  const bW=totalW-aW;
-
-  const sumLines = wrapLines([sum], 46);
-  const sumTspans = sumLines.map((t,i)=>
-    `<tspan x="${x0}" dy="${i===0?0:22}">${escapeXml(t)}</tspan>`
-  ).join("");
+  const textSpans=wrapped.map((t,i)=>{
+    const y=firstLineY + i*lineH;
+    return `<text x="${padX}" y="${y}" font-size="24" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+  }).join("");
 
   const svg=`
-  <svg xmlns="http://www.w3.org/2000/svg" data-nonce="${nonce}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
     <defs>
-      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff"/>
+        <stop offset="1" stop-color="#fff7e6"/>
+      </linearGradient>
+      <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
         <feDropShadow dx="0" dy="2" stdDeviation="5" flood-color="#000" flood-opacity="0.10"/>
       </filter>
     </defs>
 
     <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
-          fill="#ffffff" stroke="#ffe0b2" stroke-width="3" filter="url(#shadow)"/>
+          fill="url(#bg)" stroke="#ffe0b2" stroke-width="3" filter="url(#shadow2)"/>
 
-    <text x="${W/2}" y="62" text-anchor="middle" font-size="26" fill="#455a64" font-family="Segoe UI, Arial" font-weight="700">
-      Insertion Method Diagram
-    </text>
+    <text x="${padX}" y="52" font-size="26" fill="#8d6e63" font-weight="800"
+          font-family="Segoe UI, Arial">${escapeXml(title)}</text>
 
-    <text x="${x0}" y="${y1-18}" font-size="20" fill="#455a64" font-family="Segoe UI, Arial">${escapeXml(top)}</text>
-    <rect x="${x0}" y="${y1}" width="${aW}" height="${barH}" rx="10" ry="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2"/>
-    <text x="${x0 + aW/2}" y="${y1+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(a)}</text>
-
-    <text x="${x0}" y="${y2-18}" font-size="20" fill="#455a64" font-family="Segoe UI, Arial">${escapeXml(bottom)}</text>
-    <rect x="${x0}" y="${y2}" width="${aW}" height="${barH}" rx="10" ry="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2"/>
-    <rect x="${x0 + aW}" y="${y2}" width="${bW}" height="${barH}" rx="10" ry="10" fill="#fff3e0" stroke="#ffcc80" stroke-width="2"/>
-    <text x="${x0 + aW/2}" y="${y2+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(a)}</text>
-    <text x="${x0 + aW + bW/2}" y="${y2+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(b)}</text>
-
-    <text x="${x0}" y="${y2 + barH + 48}" font-size="18" fill="#455a64" font-family="Segoe UI, Arial" font-weight="700">
-      ${sumTspans}
-    </text>
+    ${textSpans}
   </svg>`.trim();
 
   const encoded=encodeURIComponent(svg)
@@ -310,196 +281,213 @@ function hintDiagramSvg(cfg){
   return "data:image/svg+xml;charset=utf-8," + encoded;
 }
 
-/* ---------------- Question Generators (ALL answers are INTEGERS) ---------------- */
-function genEasy_TimeThroughTunnel(){
-  const L = pick([180,200,240,270,300,360,400,450,500,600,720,900]);
-  const tPole = pick([6,8,9,10,12,15]);
+/* ---------------- Question Generators (6 total: Easy2, Medium2, Hard2) ---------------- */
 
-  const g = gcd(L, tPole);
-  const step = L / g;
-  const k = pick([6,8,10,12,14,16,18,20,24,28,30]);
-  const B = step * k * 10;
-  const tTunnel = (tPole * (L + B)) / L;
+/* Easy 1: Three groups with chained ratios (example style) */
+function genEasy_ThreeGroupsChainedRatio(){
+  const school = pick(SCHOOL_NAMES);
+  const totalUnit = 35;                 // units from (2:3) & (4:5) -> 8:12:15 (sum 35)
+  const k = randInt(3, 10);             // scale
+  const total = totalUnit * k;          // whole number students
+  const g3 = 15 * k;                    // group 3 students
 
   const lines = [
-    `A train is ${L} m long.`,
-    `It passes a pole in ${tPole} s.`,
-    `At the same speed, it passes through a tunnel that is ${B} m long.`,
-    `How many seconds does it take to pass through the tunnel?`
+    `${school} has ${total} Year 6 students.`,
+    `They are divided into three groups for an activity.`,
+    `Group 1 : Group 2 = 2 : 3.`,
+    `Group 2 : Group 3 = 4 : 5.`,
+    `How many students are in Group 3?`
   ];
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a pole: distance = train length",
-      bottomLabel: "Passing a tunnel: distance = train length + tunnel length",
-      aLabel: `Train: ${L} m`,
-      bLabel: `Tunnel: ${B} m`,
-      sumLabel: `Total distance = ${L + B} m`
-    }),
-    value: tTunnel,
-    hint: "Hint: Passing a pole uses distance = train length. Passing a tunnel uses distance = train length + tunnel length. Speed is the same."
-  };
+  const diagram = hintCardSvg([
+    "Diagram method (bar model):",
+    "Make Group 2 the same in both ratios.",
+    "2:3 becomes 8:12, and 4:5 becomes 12:15.",
+    "So Group 1 : Group 2 : Group 3 = 8 : 12 : 15.",
+    "Add units, find 1 unit, then find Group 3."
+  ], "Hint (Make the Middle Match)");
+
+  return { img: makeSvgTextCard(lines), diagram, value: g3, hint: "Turn 2:3 and 4:5 into one 3-part ratio by matching Group 2." };
 }
 
-function genEasy_FindBridgeLength(){
-  const v = pick([12,15,18,20,24,25,30,36]);
-  const tTree = pick([30,40,45,50,60,75]);
-  const L = v * tTree;
-  const T = tTree + pick([60,90,120,150,180,240,300]);
-  const bridge = v * T - L;
+/* Easy 2: Two rectangles, length ratio and width ratio, sum of areas */
+function genEasy_RectangleAreaFromRatios(){
+  const [rectA, rectB] = pickUnique(["Rectangle A","Rectangle B","Plot A","Plot B"],2);
+
+  // fixed ratios to keep it simple and always integer: (4:5) and (3:2) -> area ratio 12:10 = 6:5, sum units 11
+  const m = randInt(10, 45);
+  const sumArea = 11 * m;
+  const areaA = 6 * m;
 
   const lines = [
-    `A train passes a tree in ${tTree} s.`,
-    `The train then passes a bridge from front-on to back-off in ${T} s.`,
-    `Assume the speed stays the same.`,
-    `If the train is ${L} m long, how long is the bridge (in meters)?`
+    `Two rectangles ${rectA} and ${rectB} have the following ratios:`,
+    `Length of ${rectA} : length of ${rectB} = 4 : 5.`,
+    `Width of ${rectA} : width of ${rectB} = 3 : 2.`,
+    `The sum of their areas is ${sumArea} cm².`,
+    `What is the area of ${rectA} (in cm²)?`
   ];
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a tree: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ${L} m`,
-      bLabel: `Bridge: ? m`,
-      sumLabel: `Distance = speed × time`
-    }),
-    value: bridge,
-    hint: "Hint: Speed = (train length) ÷ (tree time). Then bridge length = (speed × bridge time) − train length."
-  };
+  const diagram = hintCardSvg([
+    "Area ratio = (length ratio) × (width ratio).",
+    "So areaA : areaB = (4×3) : (5×2) = 12 : 10 = 6 : 5.",
+    "Total units = 6 + 5 = 11 units.",
+    "Find 1 unit = total area ÷ 11, then find areaA."
+  ], "Hint (Multiply Ratios)");
+
+  return { img: makeSvgTextCard(lines), diagram, value: areaA, hint: "Find the area ratio first, then use total units." };
 }
 
-function genMedium_FindTrainLength_Ms(){
-  const v = pick([12,15,18,20,24,25,30,36,40]);
-  const T = pick([80,90,100,120,140,150,160,180,200]);
-  const totalDist = v * T;
-
-  const L = pick([300,360,400,450,500,600,720,800,900,1000,1200]);
-  const B = totalDist - L;
-  if(B <= 150 || B > 9000) return genMedium_FindTrainLength_Ms();
+/* Medium 1: Transfer items to change ratio (example style) */
+function genMedium_TransferToChangeRatio(){
+  const [nameA,nameB] = pickUnique(PEOPLE,2);
+  const item = pick(["boxes of pencils","packs of stickers","bags of marbles","bundles of notebooks"]);
+  const t = randInt(3, 15);       // k=2t, total=12t, transfer=3t
+  const A = 10 * t;               // 5k where k=2t
+  const B = 2 * t;                // 1k
+  const move = 3 * t;
+  const total = 12 * t;
 
   const lines = [
-    `A train travels at ${v} m/s.`,
-    `It takes ${T} s to pass completely over a bridge.`,
-    `The bridge is ${B} m long.`,
-    `How long is the train (in meters)?`
+    `${nameA} and ${nameB} have ${item} in two storerooms.`,
+    `At first, the numbers are in the ratio 5 : 1 (Storeroom A : Storeroom B).`,
+    `Then ${move} ${item} are moved from Storeroom A to Storeroom B.`,
+    `After that, the ratio becomes 7 : 5.`,
+    `How many ${item} are there in total?`
   ];
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a point: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ? m`,
-      bLabel: `Bridge: ${B} m`,
-      sumLabel: `Total distance = ${totalDist} m`
-    }),
-    value: L,
-    hint: "Hint: Total distance while passing the bridge = speed × time = train length + bridge length."
-  };
+  const diagram = hintCardSvg([
+    "Let A : B = 5 : 1, so A = 5k and B = k.",
+    "After moving x from A to B: (5k − x) : (k + x) = 7 : 5.",
+    "Solve for k, then total = 6k.",
+    "Bar model helps: draw 5 bars vs 1 bar, then shift x."
+  ], "Hint (Shift Between Bars)");
+
+  return { img: makeSvgTextCard(lines), diagram, value: total, hint: "Model A=5k, B=k, then apply the new ratio after the transfer." };
 }
 
-function genMedium_FindTrainLength_Mmin(){
-  const v = pick([1800,2000,2100,2400,2700,3000]);
-  const T = pick([2,3,4,5]);
-  const totalDist = v * T;
-
-  const L = pick([600,700,800,900,1000,1100,1200,1300,1400,1500]);
-  const B = totalDist - L;
-  if(B <= 300 || B > 8000) return genMedium_FindTrainLength_Mmin();
+/* Medium 2: Road repaired vs unrepaired after repairing p metres more */
+function genMedium_RoadRepairRatio(){
+  const team = pick(["Road Crew A","Road Crew B","Construction Team","Repair Team"]);
+  const p = 50 * randInt(4, 12);  // 200..600, total = 12p
+  const total = 12 * p;
 
   const lines = [
-    `A train moves at ${v} m/min.`,
-    `It takes ${T} min for the whole train to pass over a bridge.`,
-    `The bridge is ${B} m long.`,
-    `What is the train's length (in meters)?`
+    `${team} is repairing a road.`,
+    `At first, (repaired length) : (unrepaired length) = 1 : 3.`,
+    `After repairing ${p} m more, the ratio becomes 1 : 2.`,
+    `What is the total length of the road (in metres)?`
   ];
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a point: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ? m`,
-      bLabel: `Bridge: ${B} m`,
-      sumLabel: `Total distance = ${totalDist} m`
-    }),
-    value: L,
-    hint: "Hint: Use (speed × time) = train length + bridge length. Keep units consistent."
-  };
+  const diagram = hintCardSvg([
+    "Initial ratio 1:3 means repaired = x, unrepaired = 3x.",
+    "After +p metres: repaired = x + p, unrepaired = 3x − p.",
+    "New ratio 1:2 means (x+p) : (3x−p) = 1 : 2.",
+    "Solve x, then total = 4x."
+  ], "Hint (Before / After Bars)");
+
+  return { img: makeSvgTextCard(lines), diagram, value: total, hint: "Use before/after bar segments: repaired increases, unrepaired decreases." };
 }
 
-function genHard_TwoBridgesFindTrain(){
-  const v = pick([24,30,36,40,45,48]);
-  const L = pick([120,150,180,200,240,300,360,400,450]);
+/* Hard 1: Boys:girls ratio changes after some leave/join */
+function genHard_BoysGirlsRatioChange(){
+  let tries=0;
+  while(tries<2000){
+    const [teacher]=pickUnique(TEACHERS,1);
+    const cls = pick(["Class 6A","Class 6B","Class 7A","Class 7B"]);
 
-  const base = v;
-  const k1 = pick([6,7,8,9,10,11,12,14,15,16]);
-  const k2 = k1 + pick([2,3,4,5,6]);
-  const total1 = base * k1;
-  const total2 = base * k2;
-  const B1 = total1 - L;
-  const B2 = total2 - L;
-  if(B1 <= 80 || B2 <= 80) return genHard_TwoBridgesFindTrain();
+    const a = pick([2,3,4,5]);        // boys ratio
+    const b = pick([3,5,6,7,8]);      // girls ratio (often larger)
+    if(a>=b){ tries++; continue; }
 
-  const t1 = k1;
-  const t2 = k2;
+    const c = pick([1,2,3]);          // new boys ratio
+    const d = pick([2,3,4,5]);        // new girls ratio
+    if(c>=d){ tries++; continue; }
 
-  const lines = [
-    `The same train passes two different bridges at the same constant speed.`,
-    `It takes ${t1} s to pass a ${B1} m bridge.`,
-    `It takes ${t2} s to pass a ${B2} m bridge.`,
-    `How long is the train (in meters)?`
-  ];
+    const k = randInt(10, 28);
+    const boys = a*k, girls = b*k;
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Each bridge pass uses: distance = train + bridge",
-      bottomLabel: "Same speed in both cases",
-      aLabel: "Train: ? m",
-      bLabel: "Bridge: given",
-      sumLabel: "Set up: (L + B1) ÷ t1 = (L + B2) ÷ t2"
-    }),
-    value: L,
-    hint: "Hint: Let train length be L. Then (L + B1)/t1 = (L + B2)/t2. Solve for L."
-  };
+    // Choose p (boys leave) then compute q (girls join) so new ratio = c:d
+    const denom = (d*a - c*b);
+    if(denom<=0){ tries++; continue; }
+
+    const p = randInt(4, Math.min(24, boys-1));
+    const qNumer = d*(a*k - p) - c*(b*k);
+    if(qNumer<=0 || qNumer % c !== 0){ tries++; continue; }
+    const q = qNumer / c;
+    if(q<2 || q>28){ tries++; continue; }
+
+    const total = boys + girls;
+
+    const lines = [
+      `${teacher} records the ratio of boys to girls in ${cls} as ${a} : ${b}.`,
+      `Then ${p} boys leave the class and ${q} girls join the class.`,
+      `After that, the ratio of boys to girls becomes ${c} : ${d}.`,
+      `How many students were in the class at first?`
+    ];
+
+    const diagram = hintCardSvg([
+      "Diagram method (unit bars):",
+      "Initial boys = a parts, girls = b parts, so boys = a·k and girls = b·k.",
+      "After change: boys = a·k − p, girls = b·k + q.",
+      "Use the new ratio: (a·k − p) : (b·k + q) = c : d.",
+      "Solve for k, then total = (a+b)·k."
+    ], "Hint (Ratio with Add/Remove)");
+
+    return { img: makeSvgTextCard(lines), diagram, value: total, hint: "Let boys=a·k, girls=b·k, then apply the new ratio after the changes." };
+  }
+  // fallback (should not happen)
+  return genHard_BoysGirlsRatioChange();
 }
 
-function genHard_FindTrainFromTwoTimes(){
-  const tPole = pick([6,8,9,10,12,15]);
-  const multiplierNum = pick([11,12,13,14,15,16,17,18,19,20,22,24,25]);
-  const multiplierDen = pick([2,3,4,5]);
-  const ratioG = gcd(multiplierNum, multiplierDen);
-  const mN = multiplierNum / ratioG;
-  const mD = multiplierDen / ratioG;
+/* Hard 2: Three groups, move from Group 3 to Group 1 to form a new ratio */
+function genHard_ThreeGroupsMove(){
+  const [name1,name2,name3]=pickUnique(PEOPLE,3);
+  const context = pick([
+    "three reading clubs","three sports teams","three study groups","three volunteer groups"
+  ]);
 
-  const tPole2 = tPole * mD;
-  const tTunnel = tPole2 * mN;
+  // Construct ratios so the new ratio keeps the middle part unchanged
+  const b = pick([4,5,6]);
+  const a = pick([2,3,4]);
+  const c = pick([7,8,9,10,11]);
 
-  const L = pick([180,200,240,270,300,360,400,450,500,600,720,900]);
-  const B = (L * (tTunnel - tPole2)) / tPole2;
-  if(!Number.isInteger(B) || B <= 200) return genHard_FindTrainFromTwoTimes();
+  const delta = randInt(1, Math.min(3, c-2));  // move makes group1 bigger, group3 smaller
+  const a2 = a + delta;
+  const c2 = c - delta;
+
+  const k = randInt(6, 20);        // scale
+  const move = delta * k;
+  const total = (a + b + c) * k;
 
   const lines = [
-    `A train passes a pole in ${tPole2} s.`,
-    `At the same speed, it takes ${tTunnel} s to pass through a tunnel that is ${B} m long.`,
-    `How long is the train (in meters)?`
+    `${name1}, ${name2}, and ${name3} are in ${context}.`,
+    `At first, Group 1 : Group 2 : Group 3 = ${a} : ${b} : ${c}.`,
+    `Then ${move} people move from Group 3 to Group 1.`,
+    `After that, the ratio becomes ${a2} : ${b} : ${c2}.`,
+    `How many people were there in total at first?`
   ];
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: `Pole time = ${tPole2} s (distance = train length)`,
-      bottomLabel: `Tunnel time = ${tTunnel} s (distance = train + tunnel)`,
-      aLabel: "Train: ? m",
-      bLabel: `Tunnel: ${B} m`,
-      sumLabel: "Use equal speed: L/tPole = (L + tunnel)/tTunnel"
-    }),
-    value: L,
-    hint: "Hint: Speed is the same. Use L/tPole = (L + tunnel)/tTunnel and solve for L."
-  };
+  const diagram = hintCardSvg([
+    "Draw 3 bar groups with a, b, c equal parts.",
+    "Let 1 part = k people, so totals are a·k, b·k, c·k.",
+    "Moving x from Group 3 to Group 1 means:",
+    "Group1 becomes a·k + x and Group3 becomes c·k − x.",
+    "Match the new ratio (a2 : b : c2) to find the total."
+  ], "Hint (3-Part Bar Model)");
+
+  return { img: makeSvgTextCard(lines), diagram, value: total, hint: "Let each unit be k people. The middle group stays b·k in both ratios." };
+}
+
+/* ---------------- Build exactly 6 ---------------- */
+function buildSixQuestions(){
+  return [
+    genEasy_ThreeGroupsChainedRatio(),
+    genEasy_RectangleAreaFromRatios(),
+    genMedium_TransferToChangeRatio(),
+    genMedium_RoadRepairRatio(),
+    genHard_BoysGirlsRatioChange(),
+    genHard_ThreeGroupsMove()
+  ];
 }
 
 /* ---------------- State ---------------- */
@@ -575,15 +563,8 @@ function generateQuiz(){
   let tries=0;
   let built=null;
 
-  while(tries<20){
-    built = [
-      genEasy_TimeThroughTunnel(),
-      genEasy_FindBridgeLength(),
-      genMedium_FindTrainLength_Ms(),
-      genMedium_FindTrainLength_Mmin(),
-      genHard_TwoBridgesFindTrain(),
-      genHard_FindTrainFromTwoTimes()
-    ];
+  while(tries<30){
+    built = buildSixQuestions();
     const sig = answersSignature(built);
     if(sig !== lastAnswerSignature){
       lastAnswerSignature = sig;
@@ -604,7 +585,7 @@ function generateQuiz(){
       img: built[i].img,
       diagram: built[i].diagram || "",
       value: built[i].value,
-      hint: built[i].hint,
+      hint: built[i].hint || "",
       userValue:"",
       isCorrect:false
     });
@@ -685,10 +666,10 @@ function renderQuestion(){
 
   quizContent.innerHTML=`
     <p class="question-text">Question ${currentQuestionIndex+1} of ${TOTAL_QUESTIONS}</p>
-    <div class="part-title">${PART_TITLES[q.partIndex]}</div>
+    <div class="part-title">${escapeXml(PART_TITLES[q.partIndex])}</div>
 
     <div class="single-question">
-      <div style="font-weight:800;margin-bottom:8px;">${fullLabel}</div>
+      <div style="font-weight:800;margin-bottom:8px;">${escapeXml(fullLabel)}</div>
 
       <div class="img-wrap">
         <img class="q-img" src="${q.img}" alt="Question image">
@@ -697,8 +678,8 @@ function renderQuestion(){
       <div class="answer-row">
         <div style="font-weight:700;">Answer (whole number):</div>
         <input id="answerInput" class="answer-box" type="text" inputmode="numeric"
-               placeholder="Type a whole number (e.g., 12)"
-               value="${q.userValue||""}">
+               placeholder="Type a whole number (e.g., 60)"
+               value="${escapeXml(q.userValue||"")}">
       </div>
 
       <div id="checkFeedback" style="display:none;"></div>
@@ -708,7 +689,7 @@ function renderQuestion(){
       </div>
 
       <div id="hintBox" class="hint">
-        <div>${hasHint ? q.hint : ""}</div>
+        <div>${hasHint ? escapeXml(q.hint) : ""}</div>
         ${hintDiagramHtml}
       </div>
     </div>
@@ -722,7 +703,7 @@ function renderQuestion(){
   const hintBox=document.getElementById("hintBox");
   if(hintBtn && hintBox && hasHint){
     hintBtn.addEventListener("click", ()=>{
-      const shown = hintBox.style.display==="block";
+      const shown=hintBox.style.display==="block";
       hintBox.style.display = shown ? "none" : "block";
       hintBtn.textContent = shown ? "Hint" : "Hide Hint";
     });
@@ -755,16 +736,15 @@ function calculateAndShowResults(){
   quizSubmitted=true;
 
   let correctCount=0;
-  questions.forEach(q=>{
-    const val=parseIntegerAnswer(q.userValue||"");
-    q.isCorrect=isCorrectInt(val, q.value);
+  questions.forEach((q,i)=>{
+    gradeOneQuestion(i);
     if(q.isCorrect) correctCount++;
   });
 
   updateSidebarStatus();
 
   let html=`
-    <h3>Results for ${studentName}</h3>
+    <h3>Results for ${escapeXml(studentName)}</h3>
     <p>Set: <strong>${setCounter}</strong></p>
     <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
     <p>Start time: <strong>${attemptStartTime.toLocaleTimeString()}</strong></p>
@@ -784,9 +764,9 @@ function calculateAndShowResults(){
     html+=`
       <tr class="${q.isCorrect ? "correct-answer":"incorrect-answer"}">
         <td>${i+1}</td>
-        <td>${partLbl}</td>
+        <td>${escapeXml(partLbl)}</td>
         <td><img class="thumb" src="${q.img}" alt="Q${i+1}"></td>
-        <td>${ua==="" ? "—" : ua}</td>
+        <td>${ua==="" ? "—" : escapeXml(ua)}</td>
         <td><strong>${q.value}</strong></td>
         <td>${ua==="" ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
       </tr>
@@ -804,6 +784,7 @@ function calculateAndShowResults(){
   checkButton.style.display="none";
   saveButton.style.display="inline-block";
 
+  // reset timer for review attempt
   elapsedMs=0; isPaused=false; quizStartTime=new Date();
   pauseButton.textContent="Pause";
   startTimerInterval();
@@ -849,7 +830,7 @@ checkButton.addEventListener("click", ()=>{
     box.innerHTML=`✅ Correct!`;
     checkButton.style.display="none";
   }else{
-    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${q.value}</strong> (whole number)`;
+    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${q.value}</strong>`;
     checkButton.style.display="inline-block";
   }
 });
@@ -863,18 +844,14 @@ function formatDateForFilename(date){
 }
 function saveCurrentResultAsTxt(){
   saveCurrentInput();
-
   if(!quizSubmitted){
-    questions.forEach(q=>{
-      const val=parseIntegerAnswer(q.userValue||"");
-      q.isCorrect=isCorrectInt(val,q.value);
-    });
+    questions.forEach((q,i)=>gradeOneQuestion(i));
   }
   let correctCount=0;
   questions.forEach(q=>{ if(q.isCorrect) correctCount++; });
 
   const lines=[];
-  lines.push("Train & Bridge Problems - Current Result");
+  lines.push("Ratio Problems (1) - Diagram Method - Current Result");
   lines.push("Student: "+studentName);
   lines.push("Set: "+setCounter);
   if(quizStartTime) lines.push("Start time: "+quizStartTime.toLocaleString());
@@ -901,7 +878,7 @@ function saveCurrentResultAsTxt(){
   const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
   const ts=formatDateForFilename(new Date());
   a.href=url;
-  a.download=`TrainBridge_${safeName}_Set${setCounter}_${ts}.txt`;
+  a.download=`RatioProblems1_${safeName}_Set${setCounter}_${ts}.txt`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -909,7 +886,7 @@ function saveCurrentResultAsTxt(){
 }
 saveButton.addEventListener("click", saveCurrentResultAsTxt);
 
-/* Pause/Resume */
+/* Pause/Resume (no pop-up) */
 pauseButton.addEventListener("click", ()=>{
   if(!quizStartTime && elapsedMs===0 && !quizSubmitted) return;
   if(isPaused){ resumeTimer(); pauseButton.textContent="Pause"; }
@@ -933,7 +910,7 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
-/* ---------------- Export Questions PDF (same behavior as your other quiz) ---------------- */
+/* ---------------- Export Questions PDF (2 per page, DYAA header) ---------------- */
 function waitForImages(container){
   const imgs = Array.from(container.querySelectorAll("img"));
   return Promise.all(imgs.map(img => {
@@ -966,7 +943,6 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
   try{
     let groupDiv=null;
 
-    // 2 questions per PDF page
     questions.forEach((q, idx)=>{
       if(idx%2===0){
         groupDiv=document.createElement("div");
@@ -974,7 +950,6 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
         groupDiv.style.marginBottom="20px";
         groupDiv.style.boxSizing="border-box";
 
-        // DYAA header
         const header=document.createElement("div");
         header.innerHTML=`
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
@@ -987,7 +962,7 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
             </div>
           </div>
           <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
-          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Train & Bridge Problems</div>
+          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Ratio Problems (1) — Diagram Method</div>
           <div style="color:#546e7a;font-weight:800;margin:0 0 10px 0;">Questions (Set ${setCounter})</div>
         `;
         groupDiv.appendChild(header);
@@ -1026,7 +1001,7 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
 
     const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
     const ts=formatDateForFilename(new Date());
-    pdf.save(`TrainBridge_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
+    pdf.save(`RatioProblems1_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
   } finally {
     document.body.removeChild(wrapper);
   }
@@ -1063,11 +1038,11 @@ function showStartScreen(){
   }
 
   quizContent.innerHTML=`
-    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> train/bridge word problems (all answers are <strong>whole numbers</strong>).</p>
+    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> ratio word problems (answers are <strong>whole numbers</strong>).</p>
     <ul style="margin-top:6px;color:#555;line-height:1.7;">
-      <li><strong>Part 1 (Easy):</strong> 2 questions</li>
-      <li><strong>Part 2 (Medium):</strong> 2 questions</li>
-      <li><strong>Part 3 (Hard):</strong> 2 questions</li>
+      <li><strong>Easy:</strong> 2 questions</li>
+      <li><strong>Medium:</strong> 2 questions</li>
+      <li><strong>Hard:</strong> 2 questions</li>
     </ul>
     <p style="margin-top:10px;">Please enter your name to begin:</p>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Train & Bridge Problems – Image Quiz</title>
+  <title>Optimization Problems (Flowchart Method) — Image Quiz</title>
 
   <style>
     body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f4f9;margin:0;padding:20px;color:#333;}
@@ -30,7 +30,7 @@
     .sidebar li.correct{background:#d4edda;border-left:5px solid #28a745;border-color:#cbe7d1;}
     .sidebar li.incorrect{background:#f8d7da;border-left:5px solid #f44336;border-color:#f1c7cc;}
 
-    #quizContent{flex:1;min-width:0;}
+    #quizContent{flex:1;}
     .question-text{font-size:1.05em;margin-bottom:8px;}
     .part-title{font-weight:800;margin:8px 0 10px 0;}
     .single-question{margin:6px 0;line-height:1.7;}
@@ -43,25 +43,7 @@
     .hint-row{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
     .hint-btn{background:#ff9800;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:0.95em;}
     .hint-btn:disabled{opacity:.55;cursor:not-allowed;}
-    .hint{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;}
-
-    .hint-diagram-wrap{
-      margin-top:10px;
-      border:1px solid #ffe0b2;
-      background:#ffffff;
-      border-radius:10px;
-      padding:10px;
-      overflow-x:auto;
-      -webkit-overflow-scrolling:touch;
-    }
-    .hint-diagram-wrap img{
-      display:block;
-      height:auto;
-      border-radius:8px;
-      width:auto;
-      max-width:none;
-      min-width:920px;
-    }
+    .hint{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;white-space:pre-line;}
 
     .button-container{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;}
     button{padding:10px 18px;border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:1em;}
@@ -89,7 +71,6 @@
       .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
       .thumb{width:120px;max-width:120px;}
       .answer-box{width:100%;}
-      .hint-diagram-wrap img{min-width:860px;}
     }
   </style>
 </head>
@@ -117,7 +98,7 @@
     </div>
   </div>
 
-  <h2 style="margin:6px 0 0 0;">Lesson Theme: Train Passing a Bridge — Insertion Method</h2>
+  <h2 style="margin:6px 0 0 0;">Lesson 34: Optimization Problems — Flowchart Method</h2>
 
   <div class="quiz-main">
     <div id="sidebar" class="sidebar"></div>
@@ -133,37 +114,25 @@
   </div>
 </div>
 
-<!-- ✅ Export-to-PDF libs (same as your other page) -->
+<!-- Export-to-PDF libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
-const SVG_TITLE = "Train & Bridge Problems";
+const SVG_TITLE = "Optimization (Flowchart Method)";
 const PART_TITLES = [
-  "Part 1 (Easy) — One-step: use distance = speed × time",
-  "Part 2 (Medium) — Train length + bridge/tunnel length",
-  "Part 3 (Hard) — Two conditions / solve for unknowns"
+  "Part 1 (Easy) — Find the minimum total time",
+  "Part 2 (Medium) — Minimum time / minimum total waiting time",
+  "Part 3 (Hard) — Pipeline / critical path reasoning"
 ];
 const NUM_PARTS = 3;
 const QUESTIONS_PER_PART = 2;
 const TOTAL_QUESTIONS = NUM_PARTS * QUESTIONS_PER_PART;
 
-/* ---------------- Names (traditional English) ---------------- */
-const NAMES = [
-  "Thomas","Catherine","Henry","Sarah","William","Elizabeth",
-  "John","Mary","Edward","Anne","George","Margaret",
-  "Charles","Alice","Joseph","Jane","Robert","Emily",
-  "Oliver","Sophia","James","Arthur","Charlotte","Victoria"
-];
-function pickName(){
-  return NAMES[Math.floor(Math.random()*NAMES.length)];
-}
-
 /* ---------------- Utils ---------------- */
 function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
 function pick(arr){ return arr[randInt(0, arr.length-1)]; }
-function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ const t=a%b; a=b; b=t; } return a||1; }
 function formatMs(ms){
   const totalSec=Math.floor(ms/1000), min=Math.floor(totalSec/60), sec=totalSec%60;
   return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
@@ -173,45 +142,26 @@ function escapeXml(s){
     .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
     .replaceAll('"',"&quot;").replaceAll("'","&apos;");
 }
-function wrapLines(lines, maxChars = 58){
+function wrapLines(lines, maxChars = 62){
   const out=[];
-  function pushWrapped(line){
+  for(const line of lines){
     const words=String(line).split(/\s+/).filter(Boolean);
     let cur="";
     for(const w of words){
-      if(w.length>maxChars){
-        if(cur){ out.push(cur); cur=""; }
-        for(let i=0;i<w.length;i+=maxChars) out.push(w.slice(i,i+maxChars));
-        continue;
-      }
       if(!cur) cur=w;
       else if((cur+" "+w).length<=maxChars) cur+=" "+w;
       else { out.push(cur); cur=w; }
     }
     if(cur) out.push(cur);
   }
-  for(const line of lines) pushWrapped(line);
   return out;
 }
 
-/* ✅ Whole-number-only answers */
-function parseIntegerAnswer(str){
-  const s=(str||"").trim();
-  if(s==="") return NaN;
-  if(!/^[+-]?\d+$/.test(s)) return NaN;
-  const n=Number(s);
-  return Number.isInteger(n) ? n : NaN;
-}
-function isCorrectInt(userInt, correctInt){
-  return Number.isInteger(userInt) && userInt===correctInt;
-}
-
-/* ---------------- SVG: TEXT CARD (question image) ---------------- */
+/* ---------------- SVG: TEXT CARD ---------------- */
 function makeSvgTextCard(lines, titleText=SVG_TITLE){
   const W=980, headerH=72, padX=44, lineH=46, firstLineY=headerH+52, padBottom=54;
-  const wrapped=wrapLines(lines, 58);
+  const wrapped=wrapLines(lines, 62);
   const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
-
   const nonce = Math.random().toString(36).slice(2);
 
   const textSpans=wrapped.map((t,i)=>{
@@ -250,256 +200,251 @@ function makeSvgTextCard(lines, titleText=SVG_TITLE){
   return "data:image/svg+xml;charset=utf-8," + encoded;
 }
 
-/* ---------------- SVG: HINT DIAGRAM (ONLY inside Hint box) ---------------- */
-function hintDiagramSvg(cfg){
-  const W=980, H=380;
-  const nonce = Math.random().toString(36).slice(2);
-
-  const top = cfg.topLabel || "Passing a pole (a single point)";
-  const bottom = cfg.bottomLabel || "Passing a bridge/tunnel (front in to back out)";
-  const a = cfg.aLabel || "Train length";
-  const b = cfg.bLabel || "Bridge length";
-  const sum = cfg.sumLabel || "Distance = speed × time";
-
-  const x0=110, totalW=760, barH=34;
-  const y1=120, y2=220;
-
-  const aW=Math.floor(totalW*0.38);
-  const bW=totalW-aW;
-
-  const sumLines = wrapLines([sum], 46);
-  const sumTspans = sumLines.map((t,i)=>
-    `<tspan x="${x0}" dy="${i===0?0:22}">${escapeXml(t)}</tspan>`
-  ).join("");
-
-  const svg=`
-  <svg xmlns="http://www.w3.org/2000/svg" data-nonce="${nonce}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-    <defs>
-      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="0" dy="2" stdDeviation="5" flood-color="#000" flood-opacity="0.10"/>
-      </filter>
-    </defs>
-
-    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
-          fill="#ffffff" stroke="#ffe0b2" stroke-width="3" filter="url(#shadow)"/>
-
-    <text x="${W/2}" y="62" text-anchor="middle" font-size="26" fill="#455a64" font-family="Segoe UI, Arial" font-weight="700">
-      Insertion Method Diagram
-    </text>
-
-    <text x="${x0}" y="${y1-18}" font-size="20" fill="#455a64" font-family="Segoe UI, Arial">${escapeXml(top)}</text>
-    <rect x="${x0}" y="${y1}" width="${aW}" height="${barH}" rx="10" ry="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2"/>
-    <text x="${x0 + aW/2}" y="${y1+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(a)}</text>
-
-    <text x="${x0}" y="${y2-18}" font-size="20" fill="#455a64" font-family="Segoe UI, Arial">${escapeXml(bottom)}</text>
-    <rect x="${x0}" y="${y2}" width="${aW}" height="${barH}" rx="10" ry="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2"/>
-    <rect x="${x0 + aW}" y="${y2}" width="${bW}" height="${barH}" rx="10" ry="10" fill="#fff3e0" stroke="#ffcc80" stroke-width="2"/>
-    <text x="${x0 + aW/2}" y="${y2+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(a)}</text>
-    <text x="${x0 + aW + bW/2}" y="${y2+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(b)}</text>
-
-    <text x="${x0}" y="${y2 + barH + 48}" font-size="18" fill="#455a64" font-family="Segoe UI, Arial" font-weight="700">
-      ${sumTspans}
-    </text>
-  </svg>`.trim();
-
-  const encoded=encodeURIComponent(svg)
-    .replaceAll("%0A","").replaceAll("%20"," ")
-    .replaceAll("%3D","=").replaceAll("%3A",":")
-    .replaceAll("%2F","/").replaceAll("%2C",",");
-
-  return "data:image/svg+xml;charset=utf-8," + encoded;
+/* ---------------- Answer parsing: integer ---------------- */
+function parseIntegerAnswer(str){
+  const s=(str||"").trim();
+  if(s==="") return NaN;
+  if(!/^[+-]?\d+$/.test(s)) return NaN;
+  const n=Number(s);
+  return Number.isInteger(n) ? n : NaN;
 }
 
-/* ---------------- Question Generators (ALL answers are INTEGERS) ---------------- */
-function genEasy_TimeThroughTunnel(){
-  const L = pick([180,200,240,270,300,360,400,450,500,600,720,900]);
-  const tPole = pick([6,8,9,10,12,15]);
+/* ---------------- Generators (6 questions total) ---------------- */
 
-  const g = gcd(L, tPole);
-  const step = L / g;
-  const k = pick([6,8,10,12,14,16,18,20,24,28,30]);
-  const B = step * k * 10;
-  const tTunnel = (tPole * (L + B)) / L;
+/* Easy 1: scrambled eggs (critical path join) */
+function genEasy_ScrambledEggs(){
+  const name = pick(["Mrs. Wang","Chef Lina","Chef Owen","Chef Mia","Chef Noah"]);
+  const crack = pick([1,1,2]);
+  const whisk = pick([1,2]);
+  const chop  = pick([1,2,3]);
+  const rinse = pick([2,2,3]);
+  const heatPan = pick([1,1,2]);
+  const heatOil = pick([2,2,3]);
+  const fry = pick([3,3,4]);
+
+  const eggsPath = crack + whisk;
+  const scallionPath = chop + rinse;
+  const panPath = heatPan + heatOil;
+  const total = Math.max(eggsPath, scallionPath, panPath) + fry;
 
   const lines = [
-    `A train is ${L} m long.`,
-    `It passes a pole in ${tPole} s.`,
-    `At the same speed, it passes through a tunnel that is ${B} m long.`,
-    `How many seconds does it take to pass through the tunnel?`
+    `(Easy) ${name} tests a time-optimisation question.`,
+    `To cook scrambled eggs, these steps are needed:`,
+    `Crack eggs (${crack} min) → whisk (${whisk} min).`,
+    `Chop scallions (${chop} min) → rinse (${rinse} min).`,
+    `Heat pan (${heatPan} min) → heat oil (${heatOil} min) → stir-fry (${fry} min).`,
+    `Eggs can be stir-fried only after ALL the needed prep is ready.`,
+    `What is the minimum total time (in minutes)?`
   ];
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a pole: distance = train length",
-      bottomLabel: "Passing a tunnel: distance = train length + tunnel length",
-      aLabel: `Train: ${L} m`,
-      bLabel: `Tunnel: ${B} m`,
-      sumLabel: `Total distance = ${L + B} m`
-    }),
-    value: tTunnel,
-    hint: "Hint: Passing a pole uses distance = train length. Passing a tunnel uses distance = train length + tunnel length. Speed is the same."
-  };
+  const hint =
+`Hint (Flowchart / Critical Path):
+Draw three branches:
+1) Egg prep: ${crack}+${whisk} = ${eggsPath}
+2) Scallion prep: ${chop}+${rinse} = ${scallionPath}
+3) Pan+oil: ${heatPan}+${heatOil} = ${panPath}
+You must wait for the longest branch, then add stir-fry time:
+max(${eggsPath}, ${scallionPath}, ${panPath}) + ${fry} = ${total}.`;
+
+  return { img: makeSvgTextCard(lines), value: total, hint };
 }
 
-function genEasy_FindBridgeLength(){
-  const v = pick([12,15,18,20,24,25,30,36]);
-  const tTree = pick([30,40,45,50,60,75]);
-  const L = v * tTree;
-  const T = tTree + pick([60,90,120,150,180,240,300]);
-  const bridge = v * T - L;
+/* Easy 2: frying pancakes (capacity 2, two sides) */
+function genEasy_Pancakes(){
+  const n = pick([3,4,5,6]);
+  const t = pick([2,3,4]); // minutes per side
+  const capacity = 2;
+
+  // With perfect scheduling for this classic setup, minimum time = n * t.
+  const total = n * t;
 
   const lines = [
-    `A train passes a tree in ${tTree} s.`,
-    `The train then passes a bridge from front-on to back-off in ${T} s.`,
-    `Assume the speed stays the same.`,
-    `If the train is ${L} m long, how long is the bridge (in meters)?`
+    `(Easy) A pan can fry at most ${capacity} pancakes at the same time.`,
+    `Each pancake has TWO sides. Frying one side takes ${t} minutes.`,
+    `Both sides must be fried.`,
+    `How many minutes are needed to fry ${n} pancakes in the shortest possible time?`
   ];
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a tree: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ${L} m`,
-      bLabel: `Bridge: ? m`,
-      sumLabel: `Distance = speed × time`
-    }),
-    value: bridge,
-    hint: "Hint: Speed = (train length) ÷ (tree time). Then bridge length = (speed × bridge time) − train length."
-  };
+  const hint =
+`Hint:
+Think in blocks of ${t} minutes.
+Each block can fry ${capacity} "sides" at once.
+With good swapping, you can finish ${n} pancakes in ${n} blocks:
+Minimum time = ${n} × ${t} = ${total} minutes.`;
+
+  return { img: makeSvgTextCard(lines), value: total, hint };
 }
 
-function genMedium_FindTrainLength_Ms(){
-  const v = pick([12,15,18,20,24,25,30,36,40]);
-  const T = pick([80,90,100,120,140,150,160,180,200]);
-  const totalDist = v * T;
+/* Medium 1: clinic (minimise total time in clinic = sum of completion times) */
+function genMedium_Clinic3(){
+  const names = pick([
+    ["Leo","Maya","Ethan"],
+    ["Olivia","Jack","Sophie"],
+    ["Ryan","Chloe","Ben"],
+    ["Emma","Noah","Ava"]
+  ]);
+  let a = pick([1,2,3,4,5,6]);
+  let b = pick([1,2,3,4,5,6]);
+  let c = pick([1,2,3,4,5,6]);
+  // avoid all same
+  if(a===b && b===c) return genMedium_Clinic3();
 
-  const L = pick([300,360,400,450,500,600,720,800,900,1000,1200]);
-  const B = totalDist - L;
-  if(B <= 150 || B > 9000) return genMedium_FindTrainLength_Ms();
+  const times = [a,b,c];
+  const sorted = [...times].sort((x,y)=>x-y);
+
+  const total = (sorted[0]) + (sorted[0]+sorted[1]) + (sorted[0]+sorted[1]+sorted[2]);
 
   const lines = [
-    `A train travels at ${v} m/s.`,
-    `It takes ${T} s to pass completely over a bridge.`,
-    `The bridge is ${B} m long.`,
-    `How long is the train (in meters)?`
+    `(Medium) ${names[0]}, ${names[1]}, and ${names[2]} arrive at the school clinic at the same time.`,
+    `There is only one nurse.`,
+    `${names[0]}'s treatment takes ${a} minutes.`,
+    `${names[1]}'s treatment takes ${b} minutes.`,
+    `${names[2]}'s treatment takes ${c} minutes.`,
+    `Choose the order to minimise the TOTAL time they stay in the clinic (sum of their finishing times).`,
+    `What is the minimum total time (in minutes)?`
   ];
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a point: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ? m`,
-      bLabel: `Bridge: ${B} m`,
-      sumLabel: `Total distance = ${totalDist} m`
-    }),
-    value: L,
-    hint: "Hint: Total distance while passing the bridge = speed × time = train length + bridge length."
-  };
+  const hint =
+`Hint:
+To minimise the sum of finishing times, treat the shortest time first (SPT rule).
+Sorted times: ${sorted.join(", ")}
+Total = t1 + (t1+t2) + (t1+t2+t3) = ${total}.`;
+
+  return { img: makeSvgTextCard(lines), value: total, hint };
 }
 
-function genMedium_FindTrainLength_Mmin(){
-  const v = pick([1800,2000,2100,2400,2700,3000]);
-  const T = pick([2,3,4,5]);
-  const totalDist = v * T;
+/* Medium 2: cake + frosting (critical path with a join at the end) */
+function genMedium_Cake(){
+  const preheat = pick([5,6,7,8]);
+  const mix = pick([4,5,6]);
+  const grease = pick([2,3]);
+  const bake = pick([18,20,22,24,25]);
+  const cool = pick([10,12,14,15]);
+  const frosting = pick([6,7,8,9,10]);
+  const spread = pick([3,4,5]);
 
-  const L = pick([600,700,800,900,1000,1100,1200,1300,1400,1500]);
-  const B = totalDist - L;
-  if(B <= 300 || B > 8000) return genMedium_FindTrainLength_Mmin();
+  const batterReady = mix + grease;             // must be ready before baking
+  const startBake = Math.max(preheat, batterReady);
+  const cakeCooled = startBake + bake + cool;  // passive cooling
+  const frostingReady = mix + frosting;        // frosting can start after mixing is done
+  const total = Math.max(cakeCooled, frostingReady) + spread;
 
   const lines = [
-    `A train moves at ${v} m/min.`,
-    `It takes ${T} min for the whole train to pass over a bridge.`,
-    `The bridge is ${B} m long.`,
-    `What is the train's length (in meters)?`
+    `(Medium) You want to make a simple cake and frost it.`,
+    `Steps and times:`,
+    `Preheat oven (${preheat} min). Mix batter (${mix} min). Grease pan (${grease} min).`,
+    `Bake (${bake} min) after the oven is preheated AND the batter+pan are ready.`,
+    `Cool cake (${cool} min) after baking.`,
+    `Make frosting (${frosting} min) after mixing is finished (you can do it while the cake bakes/cools).`,
+    `Spread frosting (${spread} min) after the cake is cooled AND frosting is ready.`,
+    `What is the minimum total time (in minutes) to finish the frosted cake?`
   ];
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a point: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ? m`,
-      bLabel: `Bridge: ${B} m`,
-      sumLabel: `Total distance = ${totalDist} m`
-    }),
-    value: L,
-    hint: "Hint: Use (speed × time) = train length + bridge length. Keep units consistent."
-  };
+  const hint =
+`Hint (Flowchart):
+Batter+pan ready time = ${mix}+${grease} = ${batterReady}
+Start baking at max(preheat, batter+pan) = max(${preheat}, ${batterReady}) = ${startBake}
+Cake cooled time = ${startBake}+${bake}+${cool} = ${cakeCooled}
+Frosting ready time = ${mix}+${frosting} = ${frostingReady}
+Finish time = max(cake cooled, frosting ready) + spread
+= max(${cakeCooled}, ${frostingReady}) + ${spread} = ${total}.`;
+
+  return { img: makeSvgTextCard(lines), value: total, hint };
 }
 
-function genHard_TwoBridgesFindTrain(){
-  const v = pick([24,30,36,40,45,48]);
-  const L = pick([120,150,180,200,240,300,360,400,450]);
+/* Hard 1: event badges (3 branches join + final assembly) */
+function genHard_Badges(){
+  const event = pick(["a school fair","a science expo","a charity day","a sports day"]);
+  const design = pick([6,7,8,9]);
+  const print = pick([5,6,7]);
+  const cutBadges = pick([4,5,6]);
 
-  const base = v;
-  const k1 = pick([6,7,8,9,10,11,12,14,15,16]);
-  const k2 = k1 + pick([2,3,4,5,6]);
-  const total1 = base * k1;
-  const total2 = base * k2;
-  const B1 = total1 - L;
-  const B2 = total2 - L;
-  if(B1 <= 80 || B2 <= 80) return genHard_TwoBridgesFindTrain();
+  const cutStrings = pick([6,7,8,9]);
+  const attachClips = pick([3,4,5]);
 
-  const t1 = k1;
-  const t2 = k2;
+  const setupDesk = pick([5,6,7,8]);
+
+  const assemble = pick([3,4,5]);
+
+  const badgesPath = design + print + cutBadges;
+  const lanyardsPath = cutStrings + attachClips;
+  const total = Math.max(badgesPath, lanyardsPath, setupDesk) + assemble;
 
   const lines = [
-    `The same train passes two different bridges at the same constant speed.`,
-    `It takes ${t1} s to pass a ${B1} m bridge.`,
-    `It takes ${t2} s to pass a ${B2} m bridge.`,
-    `How long is the train (in meters)?`
+    `(Hard) For ${event}, a team prepares name badges.`,
+    `Three jobs can be done in parallel by different helpers:`,
+    `A) Design (${design} min) → print (${print} min) → cut badges (${cutBadges} min).`,
+    `B) Cut lanyard strings (${cutStrings} min) → attach clips (${attachClips} min).`,
+    `C) Set up the check-in desk (${setupDesk} min).`,
+    `Final assembly (${assemble} min) can start only after A, B, and C are all finished.`,
+    `What is the minimum total time (in minutes)?`
   ];
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Each bridge pass uses: distance = train + bridge",
-      bottomLabel: "Same speed in both cases",
-      aLabel: "Train: ? m",
-      bLabel: "Bridge: given",
-      sumLabel: "Set up: (L + B1) ÷ t1 = (L + B2) ÷ t2"
-    }),
-    value: L,
-    hint: "Hint: Let train length be L. Then (L + B1)/t1 = (L + B2)/t2. Solve for L."
-  };
+  const hint =
+`Hint:
+Compute each branch time:
+A = ${design}+${print}+${cutBadges} = ${badgesPath}
+B = ${cutStrings}+${attachClips} = ${lanyardsPath}
+C = ${setupDesk}
+Wait for the longest branch, then add assembly:
+max(${badgesPath}, ${lanyardsPath}, ${setupDesk}) + ${assemble} = ${total}.`;
+
+  return { img: makeSvgTextCard(lines), value: total, hint };
 }
 
-function genHard_FindTrainFromTwoTimes(){
-  const tPole = pick([6,8,9,10,12,15]);
-  const multiplierNum = pick([11,12,13,14,15,16,17,18,19,20,22,24,25]);
-  const multiplierDen = pick([2,3,4,5]);
-  const ratioG = gcd(multiplierNum, multiplierDen);
-  const mN = multiplierNum / ratioG;
-  const mD = multiplierDen / ratioG;
+/* Hard 2: printing + laminating pipeline (batch machine) */
+function pipelineTime(totalCards, batchSize, lamTime){
+  // print rate = 1 card per minute
+  let printed = 0;
+  let time = 0;
+  let lamEnd = 0;
+  const batches = totalCards / batchSize;
 
-  const tPole2 = tPole * mD;
-  const tTunnel = tPole2 * mN;
+  for(let b=1;b<=batches;b++){
+    // need b*batchSize printed before starting batch b
+    const need = b * batchSize;
+    if(printed < need){
+      const extra = need - printed;
+      time += extra;        // spend minutes printing
+      printed = need;
+    }
+    const start = Math.max(lamEnd, time);
+    lamEnd = start + lamTime;
+  }
+  // Must also ensure all printing is done
+  const printDone = totalCards; // 1 per minute from time 0
+  return Math.max(lamEnd, printDone);
+}
 
-  const L = pick([180,200,240,270,300,360,400,450,500,600,720,900]);
-  const B = (L * (tTunnel - tPole2)) / tPole2;
-  if(!Number.isInteger(B) || B <= 200) return genHard_FindTrainFromTwoTimes();
+function genHard_PrintLaminate(){
+  const totalCards = pick([9,12,15,16,18,20]);
+  const batchSize = pick([3,4,5]);
+  if(totalCards % batchSize !== 0) return genHard_PrintLaminate();
+
+  const lamTime = pick([3,4,5,6]);
+  const batches = totalCards / batchSize;
+
+  const total = pipelineTime(totalCards, batchSize, lamTime);
 
   const lines = [
-    `A train passes a pole in ${tPole2} s.`,
-    `At the same speed, it takes ${tTunnel} s to pass through a tunnel that is ${B} m long.`,
-    `How long is the train (in meters)?`
+    `(Hard) You need to prepare ${totalCards} ID cards.`,
+    `A printer prints 1 card per minute.`,
+    `A laminator laminates ${batchSize} cards at a time, taking ${lamTime} minutes per batch.`,
+    `You can start laminating as soon as you have enough printed cards for a batch.`,
+    `Printing and laminating can happen at the same time (different machines).`,
+    `What is the minimum total time (in minutes) to finish all laminated cards?`
   ];
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: `Pole time = ${tPole2} s (distance = train length)`,
-      bottomLabel: `Tunnel time = ${tTunnel} s (distance = train + tunnel)`,
-      aLabel: "Train: ? m",
-      bLabel: `Tunnel: ${B} m`,
-      sumLabel: "Use equal speed: L/tPole = (L + tunnel)/tTunnel"
-    }),
-    value: L,
-    hint: "Hint: Speed is the same. Use L/tPole = (L + tunnel)/tTunnel and solve for L."
-  };
+  const hint =
+`Hint (Pipeline / Flowchart):
+Draw two tracks: printing and laminating.
+First batch can start after ${batchSize} minutes of printing.
+Then each batch takes ${lamTime} minutes, but must wait until:
+(1) the previous batch finishes, and
+(2) enough cards are printed.
+There are ${batches} batches in total.`;
+
+  return { img: makeSvgTextCard(lines), value: total, hint };
 }
 
 /* ---------------- State ---------------- */
@@ -564,7 +509,7 @@ function resumeTimer(){
   updateTimerDisplay();
 }
 
-/* ---------------- Generate Quiz (ensure NEW answers) ---------------- */
+/* ---------------- Generate Quiz (ensure new answers) ---------------- */
 function answersSignature(built){
   return built.map(x=>String(x.value)).join("|");
 }
@@ -575,14 +520,14 @@ function generateQuiz(){
   let tries=0;
   let built=null;
 
-  while(tries<20){
+  while(tries<25){
     built = [
-      genEasy_TimeThroughTunnel(),
-      genEasy_FindBridgeLength(),
-      genMedium_FindTrainLength_Ms(),
-      genMedium_FindTrainLength_Mmin(),
-      genHard_TwoBridgesFindTrain(),
-      genHard_FindTrainFromTwoTimes()
+      genEasy_ScrambledEggs(),
+      genEasy_Pancakes(),
+      genMedium_Clinic3(),
+      genMedium_Cake(),
+      genHard_Badges(),
+      genHard_PrintLaminate()
     ];
     const sig = answersSignature(built);
     if(sig !== lastAnswerSignature){
@@ -602,7 +547,6 @@ function generateQuiz(){
       partIndex,
       indexInPart,
       img: built[i].img,
-      diagram: built[i].diagram || "",
       value: built[i].value,
       hint: built[i].hint,
       userValue:"",
@@ -619,7 +563,7 @@ function renderSidebar(){
   for(let i=0;i<TOTAL_QUESTIONS;i++){
     const q=questions[i];
     const li=document.createElement("li");
-    const label=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
+    const label=["Easy","Medium","Hard"][q.partIndex] + (q.indexInPart+1);
     li.textContent=`Q${i+1} (${label})`;
     li.dataset.index=i;
     li.addEventListener("click",()=>{
@@ -653,7 +597,7 @@ function updateSidebarStatus(){
 function gradeOneQuestion(i){
   const q=questions[i];
   const val=parseIntegerAnswer(q.userValue||"");
-  q.isCorrect=isCorrectInt(val, q.value);
+  q.isCorrect = Number.isInteger(val) && val===q.value;
 }
 function saveCurrentInput(){
   const input=document.getElementById("answerInput");
@@ -679,10 +623,6 @@ function renderQuestion(){
   const fullLabel=`${levelLabel} — Question ${q.indexInPart+1}`;
   const hasHint=(q.hint||"").trim()!=="";
 
-  const hintDiagramHtml = (hasHint && q.diagram)
-    ? `<div class="hint-diagram-wrap"><img src="${q.diagram}" alt="Hint diagram"></div>`
-    : "";
-
   quizContent.innerHTML=`
     <p class="question-text">Question ${currentQuestionIndex+1} of ${TOTAL_QUESTIONS}</p>
     <div class="part-title">${PART_TITLES[q.partIndex]}</div>
@@ -695,9 +635,9 @@ function renderQuestion(){
       </div>
 
       <div class="answer-row">
-        <div style="font-weight:700;">Answer (whole number):</div>
+        <div style="font-weight:700;">Answer (whole number of minutes):</div>
         <input id="answerInput" class="answer-box" type="text" inputmode="numeric"
-               placeholder="Type a whole number (e.g., 12)"
+               placeholder="e.g., 12"
                value="${q.userValue||""}">
       </div>
 
@@ -707,10 +647,7 @@ function renderQuestion(){
         <button id="hintBtn" class="hint-btn" ${hasHint ? "" : "disabled"}>${hasHint ? "Hint" : "No Hint"}</button>
       </div>
 
-      <div id="hintBox" class="hint">
-        <div>${hasHint ? q.hint : ""}</div>
-        ${hintDiagramHtml}
-      </div>
+      <div id="hintBox" class="hint">${hasHint ? q.hint : ""}</div>
     </div>
 
     <div id="navSlot"></div>
@@ -755,9 +692,8 @@ function calculateAndShowResults(){
   quizSubmitted=true;
 
   let correctCount=0;
-  questions.forEach(q=>{
-    const val=parseIntegerAnswer(q.userValue||"");
-    q.isCorrect=isCorrectInt(val, q.value);
+  questions.forEach((q,i)=>{
+    gradeOneQuestion(i);
     if(q.isCorrect) correctCount++;
   });
 
@@ -786,7 +722,7 @@ function calculateAndShowResults(){
         <td>${i+1}</td>
         <td>${partLbl}</td>
         <td><img class="thumb" src="${q.img}" alt="Q${i+1}"></td>
-        <td>${ua==="" ? "—" : ua}</td>
+        <td>${ua==="" ? "—" : escapeXml(ua)}</td>
         <td><strong>${q.value}</strong></td>
         <td>${ua==="" ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
       </tr>
@@ -845,11 +781,11 @@ checkButton.addEventListener("click", ()=>{
   box.style.display="block";
 
   const userInt=parseIntegerAnswer(q.userValue||"");
-  if(isCorrectInt(userInt, q.value)){
+  if(Number.isInteger(userInt) && userInt===q.value){
     box.innerHTML=`✅ Correct!`;
     checkButton.style.display="none";
   }else{
-    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${q.value}</strong> (whole number)`;
+    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${q.value}</strong>`;
     checkButton.style.display="inline-block";
   }
 });
@@ -865,16 +801,13 @@ function saveCurrentResultAsTxt(){
   saveCurrentInput();
 
   if(!quizSubmitted){
-    questions.forEach(q=>{
-      const val=parseIntegerAnswer(q.userValue||"");
-      q.isCorrect=isCorrectInt(val,q.value);
-    });
+    questions.forEach((q,i)=>gradeOneQuestion(i));
   }
   let correctCount=0;
   questions.forEach(q=>{ if(q.isCorrect) correctCount++; });
 
   const lines=[];
-  lines.push("Train & Bridge Problems - Current Result");
+  lines.push("Optimization Problems (Flowchart Method) - Current Result");
   lines.push("Student: "+studentName);
   lines.push("Set: "+setCounter);
   if(quizStartTime) lines.push("Start time: "+quizStartTime.toLocaleString());
@@ -882,6 +815,8 @@ function saveCurrentResultAsTxt(){
   lines.push("Score: "+correctCount+" / "+TOTAL_QUESTIONS);
   if(firstAttemptMs!==null) lines.push("First attempt time: "+formatMs(firstAttemptMs));
   lines.push("");
+  lines.push("Details:");
+  lines.push("----------");
 
   questions.forEach((q,i)=>{
     const partLbl=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
@@ -901,7 +836,7 @@ function saveCurrentResultAsTxt(){
   const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
   const ts=formatDateForFilename(new Date());
   a.href=url;
-  a.download=`TrainBridge_${safeName}_Set${setCounter}_${ts}.txt`;
+  a.download=`Optimization_${safeName}_Set${setCounter}_${ts}.txt`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -909,7 +844,7 @@ function saveCurrentResultAsTxt(){
 }
 saveButton.addEventListener("click", saveCurrentResultAsTxt);
 
-/* Pause/Resume */
+/* Pause/Resume (no popup) */
 pauseButton.addEventListener("click", ()=>{
   if(!quizStartTime && elapsedMs===0 && !quizSubmitted) return;
   if(isPaused){ resumeTimer(); pauseButton.textContent="Pause"; }
@@ -933,7 +868,7 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
-/* ---------------- Export Questions PDF (same behavior as your other quiz) ---------------- */
+/* ---------------- Export Questions PDF (2 per page, DYAA header) ---------------- */
 function waitForImages(container){
   const imgs = Array.from(container.querySelectorAll("img"));
   return Promise.all(imgs.map(img => {
@@ -966,7 +901,6 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
   try{
     let groupDiv=null;
 
-    // 2 questions per PDF page
     questions.forEach((q, idx)=>{
       if(idx%2===0){
         groupDiv=document.createElement("div");
@@ -974,7 +908,6 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
         groupDiv.style.marginBottom="20px";
         groupDiv.style.boxSizing="border-box";
 
-        // DYAA header
         const header=document.createElement("div");
         header.innerHTML=`
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
@@ -987,7 +920,7 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
             </div>
           </div>
           <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
-          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Train & Bridge Problems</div>
+          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Optimization — Flowchart Method</div>
           <div style="color:#546e7a;font-weight:800;margin:0 0 10px 0;">Questions (Set ${setCounter})</div>
         `;
         groupDiv.appendChild(header);
@@ -1026,7 +959,7 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
 
     const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
     const ts=formatDateForFilename(new Date());
-    pdf.save(`TrainBridge_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
+    pdf.save(`Optimization_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
   } finally {
     document.body.removeChild(wrapper);
   }
@@ -1063,11 +996,11 @@ function showStartScreen(){
   }
 
   quizContent.innerHTML=`
-    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> train/bridge word problems (all answers are <strong>whole numbers</strong>).</p>
+    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> optimization problems (answers are <strong>whole minutes</strong>).</p>
     <ul style="margin-top:6px;color:#555;line-height:1.7;">
-      <li><strong>Part 1 (Easy):</strong> 2 questions</li>
-      <li><strong>Part 2 (Medium):</strong> 2 questions</li>
-      <li><strong>Part 3 (Hard):</strong> 2 questions</li>
+      <li><strong>Easy:</strong> 2 questions</li>
+      <li><strong>Medium:</strong> 2 questions</li>
+      <li><strong>Hard:</strong> 2 questions</li>
     </ul>
     <p style="margin-top:10px;">Please enter your name to begin:</p>
 

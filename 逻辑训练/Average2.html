@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Train & Bridge Problems – Image Quiz</title>
+  <title>Average Problems (2) – Image Quiz</title>
 
   <style>
     body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f4f9;margin:0;padding:20px;color:#333;}
@@ -30,12 +30,12 @@
     .sidebar li.correct{background:#d4edda;border-left:5px solid #28a745;border-color:#cbe7d1;}
     .sidebar li.incorrect{background:#f8d7da;border-left:5px solid #f44336;border-color:#f1c7cc;}
 
-    #quizContent{flex:1;min-width:0;}
+    #quizContent{flex:1;}
     .question-text{font-size:1.05em;margin-bottom:8px;}
     .part-title{font-weight:800;margin:8px 0 10px 0;}
     .single-question{margin:6px 0;line-height:1.7;}
     .answer-row{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-    .answer-box{width:320px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
+    .answer-box{width:360px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
 
     .img-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px;box-shadow:0 3px 8px rgba(0,0,0,0.05);max-width:100%;}
     .q-img{width:100%;height:auto;display:block;border-radius:10px;}
@@ -44,24 +44,6 @@
     .hint-btn{background:#ff9800;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:0.95em;}
     .hint-btn:disabled{opacity:.55;cursor:not-allowed;}
     .hint{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;}
-
-    .hint-diagram-wrap{
-      margin-top:10px;
-      border:1px solid #ffe0b2;
-      background:#ffffff;
-      border-radius:10px;
-      padding:10px;
-      overflow-x:auto;
-      -webkit-overflow-scrolling:touch;
-    }
-    .hint-diagram-wrap img{
-      display:block;
-      height:auto;
-      border-radius:8px;
-      width:auto;
-      max-width:none;
-      min-width:920px;
-    }
 
     .button-container{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;}
     button{padding:10px 18px;border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:1em;}
@@ -89,7 +71,6 @@
       .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
       .thumb{width:120px;max-width:120px;}
       .answer-box{width:100%;}
-      .hint-diagram-wrap img{min-width:860px;}
     }
   </style>
 </head>
@@ -117,7 +98,7 @@
     </div>
   </div>
 
-  <h2 style="margin:6px 0 0 0;">Lesson Theme: Train Passing a Bridge — Insertion Method</h2>
+  <h2 style="margin:6px 0 0 0;">Lesson Theme: Average Problems (2) — Move-and-Compensate Method</h2>
 
   <div class="quiz-main">
     <div id="sidebar" class="sidebar"></div>
@@ -133,37 +114,37 @@
   </div>
 </div>
 
-<!-- ✅ Export-to-PDF libs (same as your other page) -->
+<!-- Export-to-PDF libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
-const SVG_TITLE = "Train & Bridge Problems";
+const SVG_TITLE = "Average Problems (2)";
 const PART_TITLES = [
-  "Part 1 (Easy) — One-step: use distance = speed × time",
-  "Part 2 (Medium) — Train length + bridge/tunnel length",
-  "Part 3 (Hard) — Two conditions / solve for unknowns"
+  "Part 1 (Easy) — Find a missing value using averages",
+  "Part 2 (Medium) — Compare averages / combine groups",
+  "Part 3 (Hard) — Average changes (add/remove) multi-step"
 ];
 const NUM_PARTS = 3;
 const QUESTIONS_PER_PART = 2;
 const TOTAL_QUESTIONS = NUM_PARTS * QUESTIONS_PER_PART;
 
-/* ---------------- Names (traditional English) ---------------- */
-const NAMES = [
-  "Thomas","Catherine","Henry","Sarah","William","Elizabeth",
-  "John","Mary","Edward","Anne","George","Margaret",
-  "Charles","Alice","Joseph","Jane","Robert","Emily",
-  "Oliver","Sophia","James","Arthur","Charlotte","Victoria"
+/* ---------------- Names / contexts ---------------- */
+const NAMES = ["Mia","Noah","Emma","Jack","Ava","Leo","Sophie","Tom","Ben","Chloe","Ryan","Nina","Alex","Diana","Sarah","James","Anne","Edward"];
+const ACTIVITIES = [
+  {thing:"jump rope jumps", unit:"jumps"},
+  {thing:"basketball free throws", unit:"shots"},
+  {thing:"pages read", unit:"pages"},
+  {thing:"push-ups", unit:"push-ups"},
+  {thing:"math practice questions", unit:"questions"},
+  {thing:"typing speed (words)", unit:"words"},
+  {thing:"piano practice minutes", unit:"minutes"}
 ];
-function pickName(){
-  return NAMES[Math.floor(Math.random()*NAMES.length)];
-}
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
 /* ---------------- Utils ---------------- */
-function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
-function pick(arr){ return arr[randInt(0, arr.length-1)]; }
-function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ const t=a%b; a=b; b=t; } return a||1; }
 function formatMs(ms){
   const totalSec=Math.floor(ms/1000), min=Math.floor(totalSec/60), sec=totalSec%60;
   return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
@@ -193,20 +174,6 @@ function wrapLines(lines, maxChars = 58){
   for(const line of lines) pushWrapped(line);
   return out;
 }
-
-/* ✅ Whole-number-only answers */
-function parseIntegerAnswer(str){
-  const s=(str||"").trim();
-  if(s==="") return NaN;
-  if(!/^[+-]?\d+$/.test(s)) return NaN;
-  const n=Number(s);
-  return Number.isInteger(n) ? n : NaN;
-}
-function isCorrectInt(userInt, correctInt){
-  return Number.isInteger(userInt) && userInt===correctInt;
-}
-
-/* ---------------- SVG: TEXT CARD (question image) ---------------- */
 function makeSvgTextCard(lines, titleText=SVG_TITLE){
   const W=980, headerH=72, padX=44, lineH=46, firstLineY=headerH+52, padBottom=54;
   const wrapped=wrapLines(lines, 58);
@@ -232,12 +199,12 @@ function makeSvgTextCard(lines, titleText=SVG_TITLE){
     </defs>
 
     <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
-          fill="url(#g)" stroke="#dfe7f2" stroke-width="3" filter="url(#shadow)"/>
+        fill="url(#g)" stroke="#dfe7f2" stroke-width="3" filter="url(#shadow)"/>
     <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${headerH}"
-          fill="#0d47a1" opacity="0.10"/>
+        fill="#0d47a1" opacity="0.10"/>
 
     <text x="${padX}" y="56" font-size="28" fill="#0d47a1" font-weight="700"
-          font-family="Segoe UI, Arial">${escapeXml(titleText)}</text>
+        font-family="Segoe UI, Arial">${escapeXml(titleText)}</text>
 
     ${textSpans}
   </svg>`.trim();
@@ -250,256 +217,229 @@ function makeSvgTextCard(lines, titleText=SVG_TITLE){
   return "data:image/svg+xml;charset=utf-8," + encoded;
 }
 
-/* ---------------- SVG: HINT DIAGRAM (ONLY inside Hint box) ---------------- */
-function hintDiagramSvg(cfg){
-  const W=980, H=380;
-  const nonce = Math.random().toString(36).slice(2);
-
-  const top = cfg.topLabel || "Passing a pole (a single point)";
-  const bottom = cfg.bottomLabel || "Passing a bridge/tunnel (front in to back out)";
-  const a = cfg.aLabel || "Train length";
-  const b = cfg.bLabel || "Bridge length";
-  const sum = cfg.sumLabel || "Distance = speed × time";
-
-  const x0=110, totalW=760, barH=34;
-  const y1=120, y2=220;
-
-  const aW=Math.floor(totalW*0.38);
-  const bW=totalW-aW;
-
-  const sumLines = wrapLines([sum], 46);
-  const sumTspans = sumLines.map((t,i)=>
-    `<tspan x="${x0}" dy="${i===0?0:22}">${escapeXml(t)}</tspan>`
-  ).join("");
-
-  const svg=`
-  <svg xmlns="http://www.w3.org/2000/svg" data-nonce="${nonce}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-    <defs>
-      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="0" dy="2" stdDeviation="5" flood-color="#000" flood-opacity="0.10"/>
-      </filter>
-    </defs>
-
-    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
-          fill="#ffffff" stroke="#ffe0b2" stroke-width="3" filter="url(#shadow)"/>
-
-    <text x="${W/2}" y="62" text-anchor="middle" font-size="26" fill="#455a64" font-family="Segoe UI, Arial" font-weight="700">
-      Insertion Method Diagram
-    </text>
-
-    <text x="${x0}" y="${y1-18}" font-size="20" fill="#455a64" font-family="Segoe UI, Arial">${escapeXml(top)}</text>
-    <rect x="${x0}" y="${y1}" width="${aW}" height="${barH}" rx="10" ry="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2"/>
-    <text x="${x0 + aW/2}" y="${y1+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(a)}</text>
-
-    <text x="${x0}" y="${y2-18}" font-size="20" fill="#455a64" font-family="Segoe UI, Arial">${escapeXml(bottom)}</text>
-    <rect x="${x0}" y="${y2}" width="${aW}" height="${barH}" rx="10" ry="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2"/>
-    <rect x="${x0 + aW}" y="${y2}" width="${bW}" height="${barH}" rx="10" ry="10" fill="#fff3e0" stroke="#ffcc80" stroke-width="2"/>
-    <text x="${x0 + aW/2}" y="${y2+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(a)}</text>
-    <text x="${x0 + aW + bW/2}" y="${y2+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(b)}</text>
-
-    <text x="${x0}" y="${y2 + barH + 48}" font-size="18" fill="#455a64" font-family="Segoe UI, Arial" font-weight="700">
-      ${sumTspans}
-    </text>
-  </svg>`.trim();
-
-  const encoded=encodeURIComponent(svg)
-    .replaceAll("%0A","").replaceAll("%20"," ")
-    .replaceAll("%3D","=").replaceAll("%3A",":")
-    .replaceAll("%2F","/").replaceAll("%2C",",");
-
-  return "data:image/svg+xml;charset=utf-8," + encoded;
+/* ---------------- Answer parsing (per question) ---------------- */
+function parseIntStrict(str){
+  const s=(str||"").trim();
+  if(s==="") return NaN;
+  if(!/^[+-]?\d+$/.test(s)) return NaN;
+  const n=Number(s);
+  return Number.isInteger(n) ? n : NaN;
+}
+function parsePairStrict(str){
+  const s=(str||"").trim();
+  if(s==="") return null;
+  // allow: "84,92" or "84 92" or "84; 92"
+  const parts = s.split(/[,; ]+/).map(x=>x.trim()).filter(Boolean);
+  if(parts.length !== 2) return null;
+  const a = parseIntStrict(parts[0]);
+  const b = parseIntStrict(parts[1]);
+  if(!Number.isInteger(a) || !Number.isInteger(b)) return null;
+  return [a,b];
+}
+function answerLabel(q){
+  if(q.answerType==="pair") return "Answer (two whole numbers, in order A, D):";
+  return "Answer (whole number):";
+}
+function answerPlaceholder(q){
+  if(q.answerType==="pair") return "e.g., 88, 92";
+  return "Type a whole number (e.g., 12)";
+}
+function formatCorrectAnswer(q){
+  if(q.answerType==="pair") return `${q.value[0]}, ${q.value[1]}`;
+  return String(q.value);
+}
+function gradeQuestion(q){
+  if(q.answerType==="pair"){
+    const pair = parsePairStrict(q.userValue||"");
+    q.isCorrect = !!pair && pair[0]===q.value[0] && pair[1]===q.value[1];
+    return;
+  }
+  const n = parseIntStrict(q.userValue||"");
+  q.isCorrect = Number.isInteger(n) && n===q.value;
 }
 
-/* ---------------- Question Generators (ALL answers are INTEGERS) ---------------- */
-function genEasy_TimeThroughTunnel(){
-  const L = pick([180,200,240,270,300,360,400,450,500,600,720,900]);
-  const tPole = pick([6,8,9,10,12,15]);
+/* ---------------- Generators (6 questions total) ---------------- */
+function genEasy_AboveAverage4th(){
+  const who = pick(NAMES);
+  const act = pick(ACTIVITIES);
 
-  const g = gcd(L, tPole);
-  const step = L / g;
-  const k = pick([6,8,10,12,14,16,18,20,24,28,30]);
-  const B = step * k * 10;
-  const tTunnel = (tPole * (L + B)) / L;
+  // Choose x and d so first3 sum is 3x - 4d, then pick a,b and compute c.
+  let tries=0;
+  while(tries<200){
+    const x = randInt(60, 180);
+    const d = randInt(1, 5);
+    const sum3 = 3*x - 4*d;
+    if(sum3 < 30) { tries++; continue; }
+
+    const a = x - randInt(0, 10);
+    const b = x + randInt(0, 10);
+    const c = sum3 - a - b;
+    if(c < 30 || c > 220) { tries++; continue; }
+    if([a,b,c].some(v=>v<=0)) { tries++; continue; }
+
+    const lines = [
+      `${who} practiced ${act.thing} on four days.`,
+      `Day 1: ${a} ${act.unit}, Day 2: ${b} ${act.unit}, Day 3: ${c} ${act.unit}.`,
+      `On Day 4, the number was ${d} more than the average of all 4 days.`,
+      `How many ${act.unit} did ${who} do on Day 4?`
+    ];
+
+    return {
+      img: makeSvgTextCard(lines, SVG_TITLE),
+      answerType: "int",
+      value: x,
+      hint: "Hint: Let Day 4 = x. Then the average is (Day1+Day2+Day3+x)/4. Use: x = average + d, then solve for x."
+    };
+  }
+  return genEasy_AboveAverage4th();
+}
+
+function genEasy_AddSubjectAverageDrops(){
+  const who = pick(NAMES);
+  const A = randInt(72, 98);
+  const k = randInt(1, 5);
+  const science = A - 4*k;
+  if(science < 0 || science > 100) return genEasy_AddSubjectAverageDrops();
 
   const lines = [
-    `A train is ${L} m long.`,
-    `It passes a pole in ${tPole} s.`,
-    `At the same speed, it passes through a tunnel that is ${B} m long.`,
-    `How many seconds does it take to pass through the tunnel?`
+    `${who}'s average score in English, Maths, and Reading is ${A}.`,
+    `After adding Science, the average of all 4 subjects drops by ${k}.`,
+    `What is ${who}'s Science score?`
   ];
 
   return {
     img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a pole: distance = train length",
-      bottomLabel: "Passing a tunnel: distance = train length + tunnel length",
-      aLabel: `Train: ${L} m`,
-      bLabel: `Tunnel: ${B} m`,
-      sumLabel: `Total distance = ${L + B} m`
-    }),
-    value: tTunnel,
-    hint: "Hint: Passing a pole uses distance = train length. Passing a tunnel uses distance = train length + tunnel length. Speed is the same."
+    answerType: "int",
+    value: science,
+    hint: "Hint: Convert averages to totals. Total for 3 subjects = 3×A. Total for 4 subjects = 4×(A−k). The Science score is the difference."
   };
 }
 
-function genEasy_FindBridgeLength(){
-  const v = pick([12,15,18,20,24,25,30,36]);
-  const tTree = pick([30,40,45,50,60,75]);
-  const L = v * tTree;
-  const T = tTree + pick([60,90,120,150,180,240,300]);
-  const bridge = v * T - L;
+function genMedium_OverlapAverages_FindAandD(){
+  // We will ask for two answers in order: A (Alex) and D (Diana).
+  const Aname = "Alex";
+  const Dname = "Diana";
+
+  let tries=0;
+  while(tries<400){
+    const A = randInt(70, 100);
+    const D = randInt(70, 100);
+    if((A+D)%2!==0){ tries++; continue; } // make avg(A,D) integer
+    const BC = randInt(120, 190);
+
+    if((A+BC)%3!==0){ tries++; continue; }
+    if((BC+D)%3!==0){ tries++; continue; }
+
+    const p = (A+BC)/3;   // avg of A,B,C
+    const q = (BC+D)/3;   // avg of B,C,D
+    const r = (A+D)/2;    // avg of A,D
+
+    if(p<60 || p>100 || q<60 || q>100){ tries++; continue; }
+
+    const lines = [
+      `In a test, the average score of ${Aname}, Ben, and Chloe is ${p}.`,
+      `The average score of Ben, Chloe, and ${Dname} is ${q}.`,
+      `The average score of ${Aname} and ${Dname} is ${r}.`,
+      `Find ${Aname}'s score and ${Dname}'s score.`,
+      `Answer format: ${Aname}, ${Dname}`
+    ];
+
+    return {
+      img: makeSvgTextCard(lines, SVG_TITLE),
+      answerType: "pair",
+      value: [A, D],
+      hint: "Hint: Turn each average into a total. Let (Ben+Chloe)=S. Then: Alex+S=3p, S+Diana=3q, Alex+Diana=2r. Eliminate S to solve."
+    };
+  }
+  return genMedium_OverlapAverages_FindAandD();
+}
+
+function genMedium_TwoGroupsFindSize(){
+  const teamA = pick(["Team A","Group A","Blue Team","Red Team"]);
+  const teamB = pick(["Team B","Group B","Green Team","Yellow Team"]);
+
+  let tries=0;
+  while(tries<400){
+    const nA = randInt(5, 9);
+    const nB = randInt(4, 16);
+    const avgA = randInt(120, 170);
+    const avgB = randInt(150, 210);
+
+    const total = nA*avgA + nB*avgB;
+    const nAll = nA + nB;
+    if(total % nAll !== 0){ tries++; continue; }
+    const avgAll = total / nAll;
+
+    // make it sensible: overall between the two avgs
+    if(!(avgAll>Math.min(avgA,avgB) && avgAll<Math.max(avgA,avgB))){ tries++; continue; }
+
+    const lines = [
+      `Two groups compete in jump rope.`,
+      `${teamA} has ${nA} students. Their average is ${avgA} jumps.`,
+      `${teamB}'s average is ${avgB} jumps.`,
+      `Overall, the average for all students is ${avgAll} jumps.`,
+      `How many students are in ${teamB}?`
+    ];
+
+    return {
+      img: makeSvgTextCard(lines, SVG_TITLE),
+      answerType: "int",
+      value: nB,
+      hint: "Hint: Overall total = (total students) × (overall average). Use: nA×avgA + nB×avgB = (nA+nB)×avgAll, then solve for nB."
+    };
+  }
+  return genMedium_TwoGroupsFindSize();
+}
+
+function genHard_RemoveHighest(){
+  // Highest = n*A - (n-1)*B (choose n=5)
+  const n = 5;
+  const A = randInt(70, 95);
+  const diff = randInt(1, 4);     // A - B
+  const B = A - diff;
+  const highest = n*A - (n-1)*B;  // = A + (n-1)(A-B)
+  if(highest > 100) return genHard_RemoveHighest();
+
+  const who = pick(NAMES);
 
   const lines = [
-    `A train passes a tree in ${tTree} s.`,
-    `The train then passes a bridge from front-on to back-off in ${T} s.`,
-    `Assume the speed stays the same.`,
-    `If the train is ${L} m long, how long is the bridge (in meters)?`
+    `${who} has ${n} quiz scores with an average of ${A}.`,
+    `If the highest score is removed, the average of the remaining ${n-1} scores becomes ${B}.`,
+    `What was the highest score?`
   ];
 
   return {
     img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a tree: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ${L} m`,
-      bLabel: `Bridge: ? m`,
-      sumLabel: `Distance = speed × time`
-    }),
-    value: bridge,
-    hint: "Hint: Speed = (train length) ÷ (tree time). Then bridge length = (speed × bridge time) − train length."
+    answerType: "int",
+    value: highest,
+    hint: "Hint: Total of 5 scores = 5×A. Total of remaining 4 scores = 4×B. Highest score = (5×A) − (4×B)."
   };
 }
 
-function genMedium_FindTrainLength_Ms(){
-  const v = pick([12,15,18,20,24,25,30,36,40]);
-  const T = pick([80,90,100,120,140,150,160,180,200]);
-  const totalDist = v * T;
-
-  const L = pick([300,360,400,450,500,600,720,800,900,1000,1200]);
-  const B = totalDist - L;
-  if(B <= 150 || B > 9000) return genMedium_FindTrainLength_Ms();
-
-  const lines = [
-    `A train travels at ${v} m/s.`,
-    `It takes ${T} s to pass completely over a bridge.`,
-    `The bridge is ${B} m long.`,
-    `How long is the train (in meters)?`
-  ];
-
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a point: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ? m`,
-      bLabel: `Bridge: ${B} m`,
-      sumLabel: `Total distance = ${totalDist} m`
-    }),
-    value: L,
-    hint: "Hint: Total distance while passing the bridge = speed × time = train length + bridge length."
-  };
-}
-
-function genMedium_FindTrainLength_Mmin(){
-  const v = pick([1800,2000,2100,2400,2700,3000]);
-  const T = pick([2,3,4,5]);
-  const totalDist = v * T;
-
-  const L = pick([600,700,800,900,1000,1100,1200,1300,1400,1500]);
-  const B = totalDist - L;
-  if(B <= 300 || B > 8000) return genMedium_FindTrainLength_Mmin();
-
-  const lines = [
-    `A train moves at ${v} m/min.`,
-    `It takes ${T} min for the whole train to pass over a bridge.`,
-    `The bridge is ${B} m long.`,
-    `What is the train's length (in meters)?`
-  ];
-
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a point: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ? m`,
-      bLabel: `Bridge: ${B} m`,
-      sumLabel: `Total distance = ${totalDist} m`
-    }),
-    value: L,
-    hint: "Hint: Use (speed × time) = train length + bridge length. Keep units consistent."
-  };
-}
-
-function genHard_TwoBridgesFindTrain(){
-  const v = pick([24,30,36,40,45,48]);
-  const L = pick([120,150,180,200,240,300,360,400,450]);
-
-  const base = v;
-  const k1 = pick([6,7,8,9,10,11,12,14,15,16]);
-  const k2 = k1 + pick([2,3,4,5,6]);
-  const total1 = base * k1;
-  const total2 = base * k2;
-  const B1 = total1 - L;
-  const B2 = total2 - L;
-  if(B1 <= 80 || B2 <= 80) return genHard_TwoBridgesFindTrain();
-
-  const t1 = k1;
-  const t2 = k2;
-
-  const lines = [
-    `The same train passes two different bridges at the same constant speed.`,
-    `It takes ${t1} s to pass a ${B1} m bridge.`,
-    `It takes ${t2} s to pass a ${B2} m bridge.`,
-    `How long is the train (in meters)?`
-  ];
-
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Each bridge pass uses: distance = train + bridge",
-      bottomLabel: "Same speed in both cases",
-      aLabel: "Train: ? m",
-      bLabel: "Bridge: given",
-      sumLabel: "Set up: (L + B1) ÷ t1 = (L + B2) ÷ t2"
-    }),
-    value: L,
-    hint: "Hint: Let train length be L. Then (L + B1)/t1 = (L + B2)/t2. Solve for L."
-  };
-}
-
-function genHard_FindTrainFromTwoTimes(){
-  const tPole = pick([6,8,9,10,12,15]);
-  const multiplierNum = pick([11,12,13,14,15,16,17,18,19,20,22,24,25]);
-  const multiplierDen = pick([2,3,4,5]);
-  const ratioG = gcd(multiplierNum, multiplierDen);
-  const mN = multiplierNum / ratioG;
-  const mD = multiplierDen / ratioG;
-
-  const tPole2 = tPole * mD;
-  const tTunnel = tPole2 * mN;
-
-  const L = pick([180,200,240,270,300,360,400,450,500,600,720,900]);
-  const B = (L * (tTunnel - tPole2)) / tPole2;
-  if(!Number.isInteger(B) || B <= 200) return genHard_FindTrainFromTwoTimes();
-
-  const lines = [
-    `A train passes a pole in ${tPole2} s.`,
-    `At the same speed, it takes ${tTunnel} s to pass through a tunnel that is ${B} m long.`,
-    `How long is the train (in meters)?`
-  ];
-
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: `Pole time = ${tPole2} s (distance = train length)`,
-      bottomLabel: `Tunnel time = ${tTunnel} s (distance = train + tunnel)`,
-      aLabel: "Train: ? m",
-      bLabel: `Tunnel: ${B} m`,
-      sumLabel: "Use equal speed: L/tPole = (L + tunnel)/tTunnel"
-    }),
-    value: L,
-    hint: "Hint: Speed is the same. Use L/tPole = (L + tunnel)/tTunnel and solve for L."
-  };
+function genHard_AddPeopleFindTotalNew(){
+  const club = pick(["a chess club","a science club","a basketball club","a coding club","a music club"]);
+  let tries=0;
+  while(tries<300){
+    const n = randInt(10, 20);
+    const m = randInt(2, 6);
+    const a = randInt(12, 16);   // initial average (age or points)
+    const b = a + randInt(1, 3); // new average increases
+    const sumNew = (n+m)*b - n*a;
+    if(sumNew <= 0) { tries++; continue; }
+    if(sumNew > 120) { tries++; continue; } // keep manageable
+    const lines = [
+      `There are ${n} members in ${club}. The average age is ${a}.`,
+      `${m} new members join, and the average age becomes ${b}.`,
+      `What is the total age of the ${m} new members?`
+    ];
+    return {
+      img: makeSvgTextCard(lines, SVG_TITLE),
+      answerType: "int",
+      value: sumNew,
+      hint: "Hint: Convert averages to totals. Old total = n×a. New total = (n+m)×b. New members' total = (new total) − (old total)."
+    };
+  }
+  return genHard_AddPeopleFindTotalNew();
 }
 
 /* ---------------- State ---------------- */
@@ -566,7 +506,10 @@ function resumeTimer(){
 
 /* ---------------- Generate Quiz (ensure NEW answers) ---------------- */
 function answersSignature(built){
-  return built.map(x=>String(x.value)).join("|");
+  return built.map(x=>{
+    if(x.answerType==="pair") return `${x.value[0]},${x.value[1]}`;
+    return String(x.value);
+  }).join("|");
 }
 function generateQuiz(){
   questions=[];
@@ -575,14 +518,14 @@ function generateQuiz(){
   let tries=0;
   let built=null;
 
-  while(tries<20){
+  while(tries<25){
     built = [
-      genEasy_TimeThroughTunnel(),
-      genEasy_FindBridgeLength(),
-      genMedium_FindTrainLength_Ms(),
-      genMedium_FindTrainLength_Mmin(),
-      genHard_TwoBridgesFindTrain(),
-      genHard_FindTrainFromTwoTimes()
+      genEasy_AboveAverage4th(),
+      genEasy_AddSubjectAverageDrops(),
+      genMedium_OverlapAverages_FindAandD(),
+      genMedium_TwoGroupsFindSize(),
+      genHard_RemoveHighest(),
+      genHard_AddPeopleFindTotalNew()
     ];
     const sig = answersSignature(built);
     if(sig !== lastAnswerSignature){
@@ -602,7 +545,7 @@ function generateQuiz(){
       partIndex,
       indexInPart,
       img: built[i].img,
-      diagram: built[i].diagram || "",
+      answerType: built[i].answerType,
       value: built[i].value,
       hint: built[i].hint,
       userValue:"",
@@ -650,17 +593,12 @@ function updateSidebarStatus(){
 }
 
 /* ---------------- Helpers ---------------- */
-function gradeOneQuestion(i){
-  const q=questions[i];
-  const val=parseIntegerAnswer(q.userValue||"");
-  q.isCorrect=isCorrectInt(val, q.value);
-}
 function saveCurrentInput(){
   const input=document.getElementById("answerInput");
   if(input){
     questions[currentQuestionIndex].userValue=input.value.trim();
     if(quizSubmitted){
-      gradeOneQuestion(currentQuestionIndex);
+      gradeQuestion(questions[currentQuestionIndex]);
       updateSidebarStatus();
     }
   }
@@ -679,10 +617,6 @@ function renderQuestion(){
   const fullLabel=`${levelLabel} — Question ${q.indexInPart+1}`;
   const hasHint=(q.hint||"").trim()!=="";
 
-  const hintDiagramHtml = (hasHint && q.diagram)
-    ? `<div class="hint-diagram-wrap"><img src="${q.diagram}" alt="Hint diagram"></div>`
-    : "";
-
   quizContent.innerHTML=`
     <p class="question-text">Question ${currentQuestionIndex+1} of ${TOTAL_QUESTIONS}</p>
     <div class="part-title">${PART_TITLES[q.partIndex]}</div>
@@ -695,9 +629,9 @@ function renderQuestion(){
       </div>
 
       <div class="answer-row">
-        <div style="font-weight:700;">Answer (whole number):</div>
+        <div style="font-weight:700;">${answerLabel(q)}</div>
         <input id="answerInput" class="answer-box" type="text" inputmode="numeric"
-               placeholder="Type a whole number (e.g., 12)"
+               placeholder="${answerPlaceholder(q)}"
                value="${q.userValue||""}">
       </div>
 
@@ -707,10 +641,7 @@ function renderQuestion(){
         <button id="hintBtn" class="hint-btn" ${hasHint ? "" : "disabled"}>${hasHint ? "Hint" : "No Hint"}</button>
       </div>
 
-      <div id="hintBox" class="hint">
-        <div>${hasHint ? q.hint : ""}</div>
-        ${hintDiagramHtml}
-      </div>
+      <div id="hintBox" class="hint">${hasHint ? q.hint : ""}</div>
     </div>
 
     <div id="navSlot"></div>
@@ -756,8 +687,7 @@ function calculateAndShowResults(){
 
   let correctCount=0;
   questions.forEach(q=>{
-    const val=parseIntegerAnswer(q.userValue||"");
-    q.isCorrect=isCorrectInt(val, q.value);
+    gradeQuestion(q);
     if(q.isCorrect) correctCount++;
   });
 
@@ -786,8 +716,8 @@ function calculateAndShowResults(){
         <td>${i+1}</td>
         <td>${partLbl}</td>
         <td><img class="thumb" src="${q.img}" alt="Q${i+1}"></td>
-        <td>${ua==="" ? "—" : ua}</td>
-        <td><strong>${q.value}</strong></td>
+        <td>${ua==="" ? "—" : escapeXml(ua)}</td>
+        <td><strong>${escapeXml(formatCorrectAnswer(q))}</strong></td>
         <td>${ua==="" ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
       </tr>
     `;
@@ -804,6 +734,7 @@ function calculateAndShowResults(){
   checkButton.style.display="none";
   saveButton.style.display="inline-block";
 
+  // reset timer for review attempt
   elapsedMs=0; isPaused=false; quizStartTime=new Date();
   pauseButton.textContent="Pause";
   startTimerInterval();
@@ -835,7 +766,7 @@ checkButton.addEventListener("click", ()=>{
   const q=questions[currentQuestionIndex];
   if(!quizSubmitted) return;
 
-  gradeOneQuestion(currentQuestionIndex);
+  gradeQuestion(q);
   updateSidebarStatus();
 
   const box=document.getElementById("checkFeedback");
@@ -844,12 +775,11 @@ checkButton.addEventListener("click", ()=>{
   box.className="check-feedback";
   box.style.display="block";
 
-  const userInt=parseIntegerAnswer(q.userValue||"");
-  if(isCorrectInt(userInt, q.value)){
+  if(q.isCorrect){
     box.innerHTML=`✅ Correct!`;
     checkButton.style.display="none";
   }else{
-    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${q.value}</strong> (whole number)`;
+    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${escapeXml(formatCorrectAnswer(q))}</strong>`;
     checkButton.style.display="inline-block";
   }
 });
@@ -865,16 +795,13 @@ function saveCurrentResultAsTxt(){
   saveCurrentInput();
 
   if(!quizSubmitted){
-    questions.forEach(q=>{
-      const val=parseIntegerAnswer(q.userValue||"");
-      q.isCorrect=isCorrectInt(val,q.value);
-    });
+    questions.forEach(q=>gradeQuestion(q));
   }
   let correctCount=0;
   questions.forEach(q=>{ if(q.isCorrect) correctCount++; });
 
   const lines=[];
-  lines.push("Train & Bridge Problems - Current Result");
+  lines.push("Average Problems (2) - Current Result");
   lines.push("Student: "+studentName);
   lines.push("Set: "+setCounter);
   if(quizStartTime) lines.push("Start time: "+quizStartTime.toLocaleString());
@@ -889,7 +816,7 @@ function saveCurrentResultAsTxt(){
     const resultText=(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect?"Correct":"Incorrect");
     lines.push(`Q${i+1} (${partLbl})`);
     lines.push("Your answer: "+userAns);
-    lines.push("Correct answer: "+q.value);
+    lines.push("Correct answer: "+formatCorrectAnswer(q));
     lines.push("Result: "+resultText);
     lines.push("");
   });
@@ -901,7 +828,7 @@ function saveCurrentResultAsTxt(){
   const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
   const ts=formatDateForFilename(new Date());
   a.href=url;
-  a.download=`TrainBridge_${safeName}_Set${setCounter}_${ts}.txt`;
+  a.download=`Average2_${safeName}_Set${setCounter}_${ts}.txt`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -933,7 +860,7 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
-/* ---------------- Export Questions PDF (same behavior as your other quiz) ---------------- */
+/* ---------------- Export Questions PDF (2 per page, DYAA header) ---------------- */
 function waitForImages(container){
   const imgs = Array.from(container.querySelectorAll("img"));
   return Promise.all(imgs.map(img => {
@@ -966,7 +893,6 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
   try{
     let groupDiv=null;
 
-    // 2 questions per PDF page
     questions.forEach((q, idx)=>{
       if(idx%2===0){
         groupDiv=document.createElement("div");
@@ -974,7 +900,6 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
         groupDiv.style.marginBottom="20px";
         groupDiv.style.boxSizing="border-box";
 
-        // DYAA header
         const header=document.createElement("div");
         header.innerHTML=`
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
@@ -987,7 +912,7 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
             </div>
           </div>
           <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
-          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Train & Bridge Problems</div>
+          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Average Problems (2)</div>
           <div style="color:#546e7a;font-weight:800;margin:0 0 10px 0;">Questions (Set ${setCounter})</div>
         `;
         groupDiv.appendChild(header);
@@ -1026,7 +951,7 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
 
     const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
     const ts=formatDateForFilename(new Date());
-    pdf.save(`TrainBridge_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
+    pdf.save(`Average2_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
   } finally {
     document.body.removeChild(wrapper);
   }
@@ -1063,12 +988,13 @@ function showStartScreen(){
   }
 
   quizContent.innerHTML=`
-    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> train/bridge word problems (all answers are <strong>whole numbers</strong>).</p>
+    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> average word problems.</p>
     <ul style="margin-top:6px;color:#555;line-height:1.7;">
       <li><strong>Part 1 (Easy):</strong> 2 questions</li>
       <li><strong>Part 2 (Medium):</strong> 2 questions</li>
       <li><strong>Part 3 (Hard):</strong> 2 questions</li>
     </ul>
+    <p style="margin-top:10px;">All answers are whole numbers. One question needs <strong>two numbers</strong> (shown in the question).</p>
     <p style="margin-top:10px;">Please enter your name to begin:</p>
 
     <input id="nameInput" type="text"

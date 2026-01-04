@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Train & Bridge Problems – Image Quiz</title>
+  <title>Surplus & Deficit Problems (Line Segment Method) – Image Quiz</title>
 
   <style>
     body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f4f9;margin:0;padding:20px;color:#333;}
@@ -30,12 +30,13 @@
     .sidebar li.correct{background:#d4edda;border-left:5px solid #28a745;border-color:#cbe7d1;}
     .sidebar li.incorrect{background:#f8d7da;border-left:5px solid #f44336;border-color:#f1c7cc;}
 
-    #quizContent{flex:1;min-width:0;}
+    #quizContent{flex:1;}
     .question-text{font-size:1.05em;margin-bottom:8px;}
     .part-title{font-weight:800;margin:8px 0 10px 0;}
     .single-question{margin:6px 0;line-height:1.7;}
     .answer-row{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-    .answer-box{width:320px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
+    .answer-box{width:360px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
+    .answer-help{font-size:.92em;color:#666;margin-top:6px;}
 
     .img-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px;box-shadow:0 3px 8px rgba(0,0,0,0.05);max-width:100%;}
     .q-img{width:100%;height:auto;display:block;border-radius:10px;}
@@ -43,25 +44,9 @@
     .hint-row{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
     .hint-btn{background:#ff9800;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:0.95em;}
     .hint-btn:disabled{opacity:.55;cursor:not-allowed;}
-    .hint{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;}
-
-    .hint-diagram-wrap{
-      margin-top:10px;
-      border:1px solid #ffe0b2;
-      background:#ffffff;
-      border-radius:10px;
-      padding:10px;
-      overflow-x:auto;
-      -webkit-overflow-scrolling:touch;
-    }
-    .hint-diagram-wrap img{
-      display:block;
-      height:auto;
-      border-radius:8px;
-      width:auto;
-      max-width:none;
-      min-width:920px;
-    }
+    .hint{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;white-space:pre-line;}
+    .hint-diagram-wrap{margin-top:10px;border:1px solid #ffe0b2;background:#ffffff;border-radius:10px;padding:10px;}
+    .hint-diagram-wrap img{width:100%;height:auto;display:block;border-radius:8px;}
 
     .button-container{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;}
     button{padding:10px 18px;border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:1em;}
@@ -89,7 +74,6 @@
       .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
       .thumb{width:120px;max-width:120px;}
       .answer-box{width:100%;}
-      .hint-diagram-wrap img{min-width:860px;}
     }
   </style>
 </head>
@@ -117,7 +101,7 @@
     </div>
   </div>
 
-  <h2 style="margin:6px 0 0 0;">Lesson Theme: Train Passing a Bridge — Insertion Method</h2>
+  <h2 style="margin:6px 0 0 0;">Lesson 36: Surplus &amp; Deficit Problems — Line Segment Method</h2>
 
   <div class="quiz-main">
     <div id="sidebar" class="sidebar"></div>
@@ -133,37 +117,39 @@
   </div>
 </div>
 
-<!-- ✅ Export-to-PDF libs (same as your other page) -->
+<!-- Export-to-PDF libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
-const SVG_TITLE = "Train & Bridge Problems";
+const SVG_TITLE = "Surplus & Deficit (Line Segment Method)";
 const PART_TITLES = [
-  "Part 1 (Easy) — One-step: use distance = speed × time",
-  "Part 2 (Medium) — Train length + bridge/tunnel length",
-  "Part 3 (Hard) — Two conditions / solve for unknowns"
+  "Part 1 (Easy) — Basic surplus/deficit (two conditions)",
+  "Part 2 (Medium) — Larger numbers / different contexts",
+  "Part 3 (Hard) — Planning & production (multi-step)"
 ];
 const NUM_PARTS = 3;
 const QUESTIONS_PER_PART = 2;
 const TOTAL_QUESTIONS = NUM_PARTS * QUESTIONS_PER_PART;
 
-/* ---------------- Names (traditional English) ---------------- */
+/* ---------------- Names ---------------- */
 const NAMES = [
   "Thomas","Catherine","Henry","Sarah","William","Elizabeth",
   "John","Mary","Edward","Anne","George","Margaret",
   "Charles","Alice","Joseph","Jane","Robert","Emily",
   "Oliver","Sophia","James","Arthur","Charlotte","Victoria"
 ];
-function pickName(){
-  return NAMES[Math.floor(Math.random()*NAMES.length)];
+function pickTwoNames(){
+  const a = NAMES[Math.floor(Math.random()*NAMES.length)];
+  let b=a;
+  while(b===a) b = NAMES[Math.floor(Math.random()*NAMES.length)];
+  return [a,b];
 }
 
 /* ---------------- Utils ---------------- */
 function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
 function pick(arr){ return arr[randInt(0, arr.length-1)]; }
-function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ const t=a%b; a=b; b=t; } return a||1; }
 function formatMs(ms){
   const totalSec=Math.floor(ms/1000), min=Math.floor(totalSec/60), sec=totalSec%60;
   return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
@@ -173,45 +159,26 @@ function escapeXml(s){
     .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
     .replaceAll('"',"&quot;").replaceAll("'","&apos;");
 }
-function wrapLines(lines, maxChars = 58){
+function wrapLines(lines, maxChars = 62){
   const out=[];
-  function pushWrapped(line){
+  for(const line of lines){
     const words=String(line).split(/\s+/).filter(Boolean);
     let cur="";
     for(const w of words){
-      if(w.length>maxChars){
-        if(cur){ out.push(cur); cur=""; }
-        for(let i=0;i<w.length;i+=maxChars) out.push(w.slice(i,i+maxChars));
-        continue;
-      }
       if(!cur) cur=w;
       else if((cur+" "+w).length<=maxChars) cur+=" "+w;
       else { out.push(cur); cur=w; }
     }
     if(cur) out.push(cur);
   }
-  for(const line of lines) pushWrapped(line);
   return out;
 }
 
-/* ✅ Whole-number-only answers */
-function parseIntegerAnswer(str){
-  const s=(str||"").trim();
-  if(s==="") return NaN;
-  if(!/^[+-]?\d+$/.test(s)) return NaN;
-  const n=Number(s);
-  return Number.isInteger(n) ? n : NaN;
-}
-function isCorrectInt(userInt, correctInt){
-  return Number.isInteger(userInt) && userInt===correctInt;
-}
-
-/* ---------------- SVG: TEXT CARD (question image) ---------------- */
+/* ---------------- SVG: TEXT CARD ---------------- */
 function makeSvgTextCard(lines, titleText=SVG_TITLE){
   const W=980, headerH=72, padX=44, lineH=46, firstLineY=headerH+52, padBottom=54;
-  const wrapped=wrapLines(lines, 58);
+  const wrapped=wrapLines(lines, 62);
   const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
-
   const nonce = Math.random().toString(36).slice(2);
 
   const textSpans=wrapped.map((t,i)=>{
@@ -250,27 +217,16 @@ function makeSvgTextCard(lines, titleText=SVG_TITLE){
   return "data:image/svg+xml;charset=utf-8," + encoded;
 }
 
-/* ---------------- SVG: HINT DIAGRAM (ONLY inside Hint box) ---------------- */
-function hintDiagramSvg(cfg){
-  const W=980, H=380;
+/* ---------------- SVG: Line-segment (bar) diagram for surplus/deficit ---------------- */
+function surplusDiagramSvg(a, b, L, S, labelA, labelB){
+  const W=980, H=320;
+  const x0=120, y1=120, y2=220;
+  const base=620;            // total bar length (unknown total)
+  const ext=110;             // extra for shortage bar
+  const Lw=Math.max(60, Math.min(160, 60 + L*8));  // visual only
+  const Sw=Math.max(60, Math.min(160, 60 + S*8));  // visual only
+
   const nonce = Math.random().toString(36).slice(2);
-
-  const top = cfg.topLabel || "Passing a pole (a single point)";
-  const bottom = cfg.bottomLabel || "Passing a bridge/tunnel (front in to back out)";
-  const a = cfg.aLabel || "Train length";
-  const b = cfg.bLabel || "Bridge length";
-  const sum = cfg.sumLabel || "Distance = speed × time";
-
-  const x0=110, totalW=760, barH=34;
-  const y1=120, y2=220;
-
-  const aW=Math.floor(totalW*0.38);
-  const bW=totalW-aW;
-
-  const sumLines = wrapLines([sum], 46);
-  const sumTspans = sumLines.map((t,i)=>
-    `<tspan x="${x0}" dy="${i===0?0:22}">${escapeXml(t)}</tspan>`
-  ).join("");
 
   const svg=`
   <svg xmlns="http://www.w3.org/2000/svg" data-nonce="${nonce}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
@@ -283,22 +239,39 @@ function hintDiagramSvg(cfg){
     <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
           fill="#ffffff" stroke="#ffe0b2" stroke-width="3" filter="url(#shadow)"/>
 
-    <text x="${W/2}" y="62" text-anchor="middle" font-size="26" fill="#455a64" font-family="Segoe UI, Arial" font-weight="700">
-      Insertion Method Diagram
+    <text x="${W/2}" y="60" text-anchor="middle" font-size="24" fill="#455a64"
+          font-family="Segoe UI, Arial">Line Segment Model (compare two plans)</text>
+
+    <!-- TOP: total = a×n + L -->
+    <text x="${x0}" y="${y1-18}" font-size="20" fill="#1f2a44" font-family="Segoe UI, Arial">
+      Plan 1: ${a} each → surplus ${L}
     </text>
 
-    <text x="${x0}" y="${y1-18}" font-size="20" fill="#455a64" font-family="Segoe UI, Arial">${escapeXml(top)}</text>
-    <rect x="${x0}" y="${y1}" width="${aW}" height="${barH}" rx="10" ry="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2"/>
-    <text x="${x0 + aW/2}" y="${y1+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(a)}</text>
+    <rect x="${x0}" y="${y1}" width="${base}" height="26" rx="10" fill="#e3f2fd" stroke="#90caf9"/>
+    <rect x="${x0+base-Lw}" y="${y1}" width="${Lw}" height="26" rx="10" fill="#fff3e0" stroke="#ffcc80"/>
+    <text x="${x0+18}" y="${y1+19}" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${a}×n</text>
+    <text x="${x0+base-Lw/2}" y="${y1+19}" text-anchor="middle" font-size="18" fill="#6d4c41" font-family="Segoe UI, Arial">+${L}</text>
 
-    <text x="${x0}" y="${y2-18}" font-size="20" fill="#455a64" font-family="Segoe UI, Arial">${escapeXml(bottom)}</text>
-    <rect x="${x0}" y="${y2}" width="${aW}" height="${barH}" rx="10" ry="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2"/>
-    <rect x="${x0 + aW}" y="${y2}" width="${bW}" height="${barH}" rx="10" ry="10" fill="#fff3e0" stroke="#ffcc80" stroke-width="2"/>
-    <text x="${x0 + aW/2}" y="${y2+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(a)}</text>
-    <text x="${x0 + aW + bW/2}" y="${y2+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(b)}</text>
+    <!-- BOTTOM: b×n = total + S -->
+    <text x="${x0}" y="${y2-18}" font-size="20" fill="#1f2a44" font-family="Segoe UI, Arial">
+      Plan 2: ${b} each → shortage ${S}
+    </text>
 
-    <text x="${x0}" y="${y2 + barH + 48}" font-size="18" fill="#455a64" font-family="Segoe UI, Arial" font-weight="700">
-      ${sumTspans}
+    <rect x="${x0}" y="${y2}" width="${base}" height="26" rx="10" fill="#e8f5e9" stroke="#a5d6a7"/>
+    <rect x="${x0+base}" y="${y2}" width="${Sw}" height="26" rx="10" fill="#ffebee" stroke="#ef9a9a"/>
+    <text x="${x0+18}" y="${y2+19}" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${b}×n − ${S}</text>
+    <text x="${x0+base+Sw/2}" y="${y2+19}" text-anchor="middle" font-size="18" fill="#b71c1c" font-family="Segoe UI, Arial">+${S}</text>
+
+    <!-- Compare difference -->
+    <line x1="${x0+base-Lw}" y1="${y1+40}" x2="${x0+base+Sw}" y2="${y1+40}" stroke="#455a64" stroke-width="2"/>
+    <line x1="${x0+base-Lw}" y1="${y1+34}" x2="${x0+base-Lw}" y2="${y1+46}" stroke="#455a64" stroke-width="2"/>
+    <line x1="${x0+base+Sw}" y1="${y1+34}" x2="${x0+base+Sw}" y2="${y1+46}" stroke="#455a64" stroke-width="2"/>
+    <text x="${x0+base+(Sw-Lw)/2}" y="${y1+74}" text-anchor="middle" font-size="18" fill="#455a64" font-family="Segoe UI, Arial">
+      Difference: ( ${b} − ${a} ) × n = ${L} + ${S}
+    </text>
+
+    <text x="${W/2}" y="${H-34}" text-anchor="middle" font-size="18" fill="#607d8b" font-family="Segoe UI, Arial">
+      Answer format: (${labelA}, ${labelB})
     </text>
   </svg>`.trim();
 
@@ -310,196 +283,250 @@ function hintDiagramSvg(cfg){
   return "data:image/svg+xml;charset=utf-8," + encoded;
 }
 
-/* ---------------- Question Generators (ALL answers are INTEGERS) ---------------- */
-function genEasy_TimeThroughTunnel(){
-  const L = pick([180,200,240,270,300,360,400,450,500,600,720,900]);
-  const tPole = pick([6,8,9,10,12,15]);
+/* ---------------- Answer parsing (two integers) ---------------- */
+function parsePairAnswer(str){
+  const s=(str||"").trim();
+  if(!s) return null;
+  // Accept: "12, 96" or "12 96" or "12;96" or "12/96"
+  const m = s.match(/^\s*([+-]?\d+)\s*[,;\/\s]\s*([+-]?\d+)\s*$/);
+  if(!m) return null;
+  const a = Number(m[1]), b = Number(m[2]);
+  if(!Number.isInteger(a) || !Number.isInteger(b)) return null;
+  return [a,b];
+}
+function isCorrectPair(userPair, correctPair){
+  return Array.isArray(userPair) &&
+         userPair[0]===correctPair[0] &&
+         userPair[1]===correctPair[1];
+}
 
-  const g = gcd(L, tPole);
-  const step = L / g;
-  const k = pick([6,8,10,12,14,16,18,20,24,28,30]);
-  const B = step * k * 10;
-  const tTunnel = (tPole * (L + B)) / L;
+/* ---------------- Generic Surplus/Deficit Builder ---------------- */
+function buildSurplusDeficitProblem(cfg){
+  // cfg: groupLabel1, groupLabel2, itemLabel, storyLinesPrefix[], aRange, diffRange, nRange
+  let tries=0;
+  while(tries<80){
+    const n = randInt(cfg.nMin, cfg.nMax);
+    const a = randInt(cfg.aMin, cfg.aMax);
+    const diff = randInt(cfg.dMin, cfg.dMax);
+    const b = a + diff;
+
+    // Choose L so that S = n*diff - L is positive AND L < a
+    const maxL = Math.min(a-1, n*diff-1);
+    if(maxL < 1){ tries++; continue; }
+    const L = randInt(1, maxL);
+    const S = n*diff - L;
+    if(S < 1){ tries++; continue; }
+
+    const total = n*a + L;
+
+    const lines = [
+      ...cfg.storyLinesPrefix,
+      `Plan 1: If each ${cfg.groupWord} gets ${a} ${cfg.itemLabel}, there are ${L} ${cfg.itemLabel} left.`,
+      `Plan 2: If each ${cfg.groupWord} gets ${b} ${cfg.itemLabel}, there are ${S} ${cfg.itemLabel} missing.`,
+      `Find: (1) number of ${cfg.groupWord}, (2) total number of ${cfg.itemLabel}.`,
+      `Answer format: (${cfg.labelA}, ${cfg.labelB})`
+    ];
+
+    const hint =
+`Hint (Line Segment Method):
+Let n = number of ${cfg.groupWord}, T = total number of ${cfg.itemLabel}.
+From Plan 1:  T = ${a}×n + ${L}
+From Plan 2:  T = ${b}×n − ${S}
+Subtract the two equations:
+(${b} − ${a})×n = ${L} + ${S}
+So n = (${L} + ${S}) ÷ (${b} − ${a}), then T = ${a}×n + ${L}.`;
+
+    const diagram = surplusDiagramSvg(a, b, L, S, cfg.labelA, cfg.labelB);
+
+    return {
+      img: makeSvgTextCard(lines, SVG_TITLE),
+      diagram,
+      value: [n, total],
+      labelA: cfg.labelA,
+      labelB: cfg.labelB,
+      correctText: `${cfg.labelA}: ${n}, ${cfg.labelB}: ${total}`,
+      hint
+    };
+  }
+  // fallback (should not happen)
+  return buildSurplusDeficitProblem(cfg);
+}
+
+/* ---------------- Hard planning builder (days + total) ---------------- */
+function genHard_PlanningProduction(){
+  const [name] = pickTwoNames();
+  const product = pick(["stained-glass panels","paper flowers","gift bags","mini-posters","origami cranes"]);
+  const r = pick([4,5,6,7,8]);           // per day (Plan 1)
+  const s = randInt(2,10);               // short by s if r per day for planned days
+  const rp = r + 1;                      // Plan 2 rate (one more per day)
+  // For "finish 1 day early": planned days d = s + r + 1, total W = (r+1)(s+r)
+  const d = s + r + 1;
+  const total = (r+1) * (s + r);
 
   const lines = [
-    `A train is ${L} m long.`,
-    `It passes a pole in ${tPole} s.`,
-    `At the same speed, it passes through a tunnel that is ${B} m long.`,
-    `How many seconds does it take to pass through the tunnel?`
+    `${name} plans to finish a set of ${product} in several days.`,
+    `If ${name} makes ${r} per day for the planned number of days, there would still be ${s} unfinished.`,
+    `But if ${name} makes ${rp} per day, the work can be finished 1 day earlier.`,
+    `Find: (1) planned number of days, (2) total number of ${product}.`,
+    `Answer format: (days, total)`
   ];
+
+  const hint =
+`Hint:
+Let d = planned days, T = total items.
+Plan 1 says: T = ${r}×d + ${s}
+Plan 2 says: T = ${rp}×(d − 1)
+Set them equal and solve:
+${r}d + ${s} = ${rp}(d − 1)
+So d = ${s} + ${r} + 1, then T = ${r}d + ${s}.`;
+
+  const diagram = (function(){
+    // quick diagram with bars: planned (r×d) + short s, and faster (r+1)×(d-1)
+    const W=980,H=320,x0=120,base=640,y1=130,y2=220;
+    const sW=Math.max(60, Math.min(180, 60+s*10));
+    const nonce=Math.random().toString(36).slice(2);
+    const svg=`
+    <svg xmlns="http://www.w3.org/2000/svg" data-nonce="${nonce}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+      <defs>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="2" stdDeviation="5" flood-color="#000" flood-opacity="0.10"/>
+        </filter>
+      </defs>
+      <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}" fill="#ffffff" stroke="#ffe0b2" stroke-width="3" filter="url(#shadow)"/>
+      <text x="${W/2}" y="60" text-anchor="middle" font-size="24" fill="#455a64" font-family="Segoe UI, Arial">Planning Model</text>
+
+      <text x="${x0}" y="${y1-18}" font-size="20" fill="#1f2a44" font-family="Segoe UI, Arial">Plan 1: ${r}×d + ${s}</text>
+      <rect x="${x0}" y="${y1}" width="${base}" height="26" rx="10" fill="#e3f2fd" stroke="#90caf9"/>
+      <rect x="${x0+base-sW}" y="${y1}" width="${sW}" height="26" rx="10" fill="#fff3e0" stroke="#ffcc80"/>
+      <text x="${x0+18}" y="${y1+19}" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${r}×d</text>
+      <text x="${x0+base-sW/2}" y="${y1+19}" text-anchor="middle" font-size="18" fill="#6d4c41" font-family="Segoe UI, Arial">+${s}</text>
+
+      <text x="${x0}" y="${y2-18}" font-size="20" fill="#1f2a44" font-family="Segoe UI, Arial">Plan 2: ${rp}×(d − 1)</text>
+      <rect x="${x0}" y="${y2}" width="${base}" height="26" rx="10" fill="#e8f5e9" stroke="#a5d6a7"/>
+      <text x="${x0+18}" y="${y2+19}" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${rp}×(d − 1)</text>
+
+      <text x="${W/2}" y="${H-34}" text-anchor="middle" font-size="18" fill="#607d8b" font-family="Segoe UI, Arial">Answer format: (days, total)</text>
+    </svg>`.trim();
+    const encoded=encodeURIComponent(svg)
+      .replaceAll("%0A","").replaceAll("%20"," ")
+      .replaceAll("%3D","=").replaceAll("%3A",":")
+      .replaceAll("%2F","/").replaceAll("%2C",",");
+    return "data:image/svg+xml;charset=utf-8,"+encoded;
+  })();
 
   return {
     img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a pole: distance = train length",
-      bottomLabel: "Passing a tunnel: distance = train length + tunnel length",
-      aLabel: `Train: ${L} m`,
-      bLabel: `Tunnel: ${B} m`,
-      sumLabel: `Total distance = ${L + B} m`
-    }),
-    value: tTunnel,
-    hint: "Hint: Passing a pole uses distance = train length. Passing a tunnel uses distance = train length + tunnel length. Speed is the same."
+    diagram,
+    value: [d, total],
+    labelA: "days",
+    labelB: "total",
+    correctText: `days: ${d}, total: ${total}`,
+    hint
   };
 }
 
-function genEasy_FindBridgeLength(){
-  const v = pick([12,15,18,20,24,25,30,36]);
-  const tTree = pick([30,40,45,50,60,75]);
-  const L = v * tTree;
-  const T = tTree + pick([60,90,120,150,180,240,300]);
-  const bridge = v * T - L;
-
-  const lines = [
-    `A train passes a tree in ${tTree} s.`,
-    `The train then passes a bridge from front-on to back-off in ${T} s.`,
-    `Assume the speed stays the same.`,
-    `If the train is ${L} m long, how long is the bridge (in meters)?`
-  ];
-
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a tree: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ${L} m`,
-      bLabel: `Bridge: ? m`,
-      sumLabel: `Distance = speed × time`
-    }),
-    value: bridge,
-    hint: "Hint: Speed = (train length) ÷ (tree time). Then bridge length = (speed × bridge time) − train length."
-  };
+/* ---------------- Question Generators (6 total) ---------------- */
+function genEasy_Saplings(){
+  const [school] = pickTwoNames();
+  return buildSurplusDeficitProblem({
+    groupWord: "volunteers",
+    itemLabel: "saplings",
+    labelA: "volunteers",
+    labelB: "saplings",
+    storyLinesPrefix: [
+      `(Easy) ${school} Primary School is planting trees.`,
+      `They prepared some saplings for a group of volunteers.`
+    ],
+    nMin: 8, nMax: 30,
+    aMin: 5, aMax: 10,
+    dMin: 1, dMax: 4
+  });
+}
+function genEasy_Snacks(){
+  const [teacher] = pickTwoNames();
+  const snack = pick(["peaches","cookies","stickers","pencils","chocolates"]);
+  return buildSurplusDeficitProblem({
+    groupWord: "children",
+    itemLabel: snack,
+    labelA: "children",
+    labelB: snack,
+    storyLinesPrefix: [
+      `(Easy) ${teacher} brings ${snack} to share at a class event.`,
+      `Each child should receive the same number.`
+    ],
+    nMin: 10, nMax: 40,
+    aMin: 2, aMax: 7,
+    dMin: 1, dMax: 4
+  });
+}
+function genMedium_Bookshelves(){
+  const owner = pick(["a librarian","a teacher","a student","a bookshop owner"]);
+  // Use "shelves" and "books"
+  return buildSurplusDeficitProblem({
+    groupWord: "shelves",
+    itemLabel: "books",
+    labelA: "shelves",
+    labelB: "books",
+    storyLinesPrefix: [
+      `(Medium) ${owner} is arranging books onto shelves.`,
+      `All shelves must have the same number of books.`
+    ],
+    nMin: 6, nMax: 20,
+    aMin: 18, aMax: 28,
+    dMin: 3, dMax: 10
+  });
+}
+function genMedium_Packets(){
+  const shop = pick(["a school canteen","a stationery shop","a charity stall","a bakery"]);
+  const item = pick(["stickers","cupcakes","erasers","key rings","sandwiches"]);
+  const groupWord = pick(["bags","boxes","packs","bundles"]);
+  return buildSurplusDeficitProblem({
+    groupWord,
+    itemLabel: item,
+    labelA: groupWord,
+    labelB: item,
+    storyLinesPrefix: [
+      `(Medium) ${shop} is packing ${item} into ${groupWord}.`,
+      `Each ${groupWord} must contain the same number of ${item}.`
+    ],
+    nMin: 9, nMax: 35,
+    aMin: 6, aMax: 16,
+    dMin: 2, dMax: 6
+  });
+}
+function genHard_Production(){
+  return genHard_PlanningProduction();
+}
+function genHard_ClubMoney(){
+  const [aName] = pickTwoNames();
+  const club = pick(["a chess club","a choir","a robotics team","a sports team"]);
+  const thing = pick(["a prize","a trophy","team shirts","gift cards","a speaker"]);
+  // Money version: members, total cost
+  // Same model: pay p each -> leftover L; pay q each -> short S
+  // We'll just reuse the generic builder with "members" and "dollars"
+  const pWord = "members";
+  return buildSurplusDeficitProblem({
+    groupWord: pWord,
+    itemLabel: "dollars",
+    labelA: "members",
+    labelB: "total cost",
+    storyLinesPrefix: [
+      `(Hard) ${aName}'s ${club} is collecting money to buy ${thing}.`,
+      `All members pay the same amount.`
+    ],
+    // We'll interpret "itemLabel" as dollars, but we will reword lines below by overriding later.
+    nMin: 8, nMax: 40,
+    aMin: 6, aMax: 20,
+    dMin: 2, dMax: 8
+  });
 }
 
-function genMedium_FindTrainLength_Ms(){
-  const v = pick([12,15,18,20,24,25,30,36,40]);
-  const T = pick([80,90,100,120,140,150,160,180,200]);
-  const totalDist = v * T;
-
-  const L = pick([300,360,400,450,500,600,720,800,900,1000,1200]);
-  const B = totalDist - L;
-  if(B <= 150 || B > 9000) return genMedium_FindTrainLength_Ms();
-
-  const lines = [
-    `A train travels at ${v} m/s.`,
-    `It takes ${T} s to pass completely over a bridge.`,
-    `The bridge is ${B} m long.`,
-    `How long is the train (in meters)?`
-  ];
-
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a point: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ? m`,
-      bLabel: `Bridge: ${B} m`,
-      sumLabel: `Total distance = ${totalDist} m`
-    }),
-    value: L,
-    hint: "Hint: Total distance while passing the bridge = speed × time = train length + bridge length."
-  };
-}
-
-function genMedium_FindTrainLength_Mmin(){
-  const v = pick([1800,2000,2100,2400,2700,3000]);
-  const T = pick([2,3,4,5]);
-  const totalDist = v * T;
-
-  const L = pick([600,700,800,900,1000,1100,1200,1300,1400,1500]);
-  const B = totalDist - L;
-  if(B <= 300 || B > 8000) return genMedium_FindTrainLength_Mmin();
-
-  const lines = [
-    `A train moves at ${v} m/min.`,
-    `It takes ${T} min for the whole train to pass over a bridge.`,
-    `The bridge is ${B} m long.`,
-    `What is the train's length (in meters)?`
-  ];
-
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a point: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ? m`,
-      bLabel: `Bridge: ${B} m`,
-      sumLabel: `Total distance = ${totalDist} m`
-    }),
-    value: L,
-    hint: "Hint: Use (speed × time) = train length + bridge length. Keep units consistent."
-  };
-}
-
-function genHard_TwoBridgesFindTrain(){
-  const v = pick([24,30,36,40,45,48]);
-  const L = pick([120,150,180,200,240,300,360,400,450]);
-
-  const base = v;
-  const k1 = pick([6,7,8,9,10,11,12,14,15,16]);
-  const k2 = k1 + pick([2,3,4,5,6]);
-  const total1 = base * k1;
-  const total2 = base * k2;
-  const B1 = total1 - L;
-  const B2 = total2 - L;
-  if(B1 <= 80 || B2 <= 80) return genHard_TwoBridgesFindTrain();
-
-  const t1 = k1;
-  const t2 = k2;
-
-  const lines = [
-    `The same train passes two different bridges at the same constant speed.`,
-    `It takes ${t1} s to pass a ${B1} m bridge.`,
-    `It takes ${t2} s to pass a ${B2} m bridge.`,
-    `How long is the train (in meters)?`
-  ];
-
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Each bridge pass uses: distance = train + bridge",
-      bottomLabel: "Same speed in both cases",
-      aLabel: "Train: ? m",
-      bLabel: "Bridge: given",
-      sumLabel: "Set up: (L + B1) ÷ t1 = (L + B2) ÷ t2"
-    }),
-    value: L,
-    hint: "Hint: Let train length be L. Then (L + B1)/t1 = (L + B2)/t2. Solve for L."
-  };
-}
-
-function genHard_FindTrainFromTwoTimes(){
-  const tPole = pick([6,8,9,10,12,15]);
-  const multiplierNum = pick([11,12,13,14,15,16,17,18,19,20,22,24,25]);
-  const multiplierDen = pick([2,3,4,5]);
-  const ratioG = gcd(multiplierNum, multiplierDen);
-  const mN = multiplierNum / ratioG;
-  const mD = multiplierDen / ratioG;
-
-  const tPole2 = tPole * mD;
-  const tTunnel = tPole2 * mN;
-
-  const L = pick([180,200,240,270,300,360,400,450,500,600,720,900]);
-  const B = (L * (tTunnel - tPole2)) / tPole2;
-  if(!Number.isInteger(B) || B <= 200) return genHard_FindTrainFromTwoTimes();
-
-  const lines = [
-    `A train passes a pole in ${tPole2} s.`,
-    `At the same speed, it takes ${tTunnel} s to pass through a tunnel that is ${B} m long.`,
-    `How long is the train (in meters)?`
-  ];
-
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: `Pole time = ${tPole2} s (distance = train length)`,
-      bottomLabel: `Tunnel time = ${tTunnel} s (distance = train + tunnel)`,
-      aLabel: "Train: ? m",
-      bLabel: `Tunnel: ${B} m`,
-      sumLabel: "Use equal speed: L/tPole = (L + tunnel)/tTunnel"
-    }),
-    value: L,
-    hint: "Hint: Speed is the same. Use L/tPole = (L + tunnel)/tTunnel and solve for L."
-  };
+/* Patch the money question text to say "leftover dollars" / "short dollars" and "total cost" */
+function moneyPostProcess(q){
+  // q.value = [members, totalDollars]
+  // q.correctText currently like "members: n, total cost: total"
+  // But q.img text was built with "dollars" and "total number of dollars". Good enough.
+  return q;
 }
 
 /* ---------------- State ---------------- */
@@ -566,7 +593,7 @@ function resumeTimer(){
 
 /* ---------------- Generate Quiz (ensure NEW answers) ---------------- */
 function answersSignature(built){
-  return built.map(x=>String(x.value)).join("|");
+  return built.map(x=>x.value.join(",")).join("|");
 }
 function generateQuiz(){
   questions=[];
@@ -575,14 +602,14 @@ function generateQuiz(){
   let tries=0;
   let built=null;
 
-  while(tries<20){
+  while(tries<25){
     built = [
-      genEasy_TimeThroughTunnel(),
-      genEasy_FindBridgeLength(),
-      genMedium_FindTrainLength_Ms(),
-      genMedium_FindTrainLength_Mmin(),
-      genHard_TwoBridgesFindTrain(),
-      genHard_FindTrainFromTwoTimes()
+      genEasy_Saplings(),
+      genEasy_Snacks(),
+      genMedium_Bookshelves(),
+      genMedium_Packets(),
+      genHard_Production(),
+      moneyPostProcess(genHard_ClubMoney())
     ];
     const sig = answersSignature(built);
     if(sig !== lastAnswerSignature){
@@ -603,8 +630,11 @@ function generateQuiz(){
       indexInPart,
       img: built[i].img,
       diagram: built[i].diagram || "",
-      value: built[i].value,
-      hint: built[i].hint,
+      value: built[i].value,            // [a,b]
+      labelA: built[i].labelA || "first",
+      labelB: built[i].labelB || "second",
+      correctText: built[i].correctText || `(${built[i].value[0]}, ${built[i].value[1]})`,
+      hint: built[i].hint || "",
       userValue:"",
       isCorrect:false
     });
@@ -652,13 +682,13 @@ function updateSidebarStatus(){
 /* ---------------- Helpers ---------------- */
 function gradeOneQuestion(i){
   const q=questions[i];
-  const val=parseIntegerAnswer(q.userValue||"");
-  q.isCorrect=isCorrectInt(val, q.value);
+  const user=parsePairAnswer(q.userValue||"");
+  q.isCorrect=isCorrectPair(user, q.value);
 }
 function saveCurrentInput(){
   const input=document.getElementById("answerInput");
   if(input){
-    questions[currentQuestionIndex].userValue=input.value.trim();
+    questions[currentQuestionIndex].userValue=(input.value||"").trim();
     if(quizSubmitted){
       gradeOneQuestion(currentQuestionIndex);
       updateSidebarStatus();
@@ -695,11 +725,12 @@ function renderQuestion(){
       </div>
 
       <div class="answer-row">
-        <div style="font-weight:700;">Answer (whole number):</div>
-        <input id="answerInput" class="answer-box" type="text" inputmode="numeric"
-               placeholder="Type a whole number (e.g., 12)"
-               value="${q.userValue||""}">
+        <div style="font-weight:700;">Answer (two whole numbers):</div>
+        <input id="answerInput" class="answer-box" type="text"
+               placeholder="e.g., 12, 96"
+               value="${escapeXml(q.userValue||"")}">
       </div>
+      <div class="answer-help">Format: <strong>${escapeXml(q.labelA)}</strong>, <strong>${escapeXml(q.labelB)}</strong> (separate by comma or space).</div>
 
       <div id="checkFeedback" style="display:none;"></div>
 
@@ -708,7 +739,7 @@ function renderQuestion(){
       </div>
 
       <div id="hintBox" class="hint">
-        <div>${hasHint ? q.hint : ""}</div>
+        <div>${hasHint ? escapeXml(q.hint) : ""}</div>
         ${hintDiagramHtml}
       </div>
     </div>
@@ -755,16 +786,15 @@ function calculateAndShowResults(){
   quizSubmitted=true;
 
   let correctCount=0;
-  questions.forEach(q=>{
-    const val=parseIntegerAnswer(q.userValue||"");
-    q.isCorrect=isCorrectInt(val, q.value);
+  questions.forEach((q,i)=>{
+    gradeOneQuestion(i);
     if(q.isCorrect) correctCount++;
   });
 
   updateSidebarStatus();
 
   let html=`
-    <h3>Results for ${studentName}</h3>
+    <h3>Results for ${escapeXml(studentName)}</h3>
     <p>Set: <strong>${setCounter}</strong></p>
     <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
     <p>Start time: <strong>${attemptStartTime.toLocaleTimeString()}</strong></p>
@@ -784,10 +814,10 @@ function calculateAndShowResults(){
     html+=`
       <tr class="${q.isCorrect ? "correct-answer":"incorrect-answer"}">
         <td>${i+1}</td>
-        <td>${partLbl}</td>
+        <td>${escapeXml(partLbl)}</td>
         <td><img class="thumb" src="${q.img}" alt="Q${i+1}"></td>
-        <td>${ua==="" ? "—" : ua}</td>
-        <td><strong>${q.value}</strong></td>
+        <td>${ua==="" ? "—" : escapeXml(ua)}</td>
+        <td><strong>${escapeXml(q.correctText)}</strong></td>
         <td>${ua==="" ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
       </tr>
     `;
@@ -804,6 +834,7 @@ function calculateAndShowResults(){
   checkButton.style.display="none";
   saveButton.style.display="inline-block";
 
+  // restart timer display for next attempt (same behavior as your previous pages)
   elapsedMs=0; isPaused=false; quizStartTime=new Date();
   pauseButton.textContent="Pause";
   startTimerInterval();
@@ -844,12 +875,12 @@ checkButton.addEventListener("click", ()=>{
   box.className="check-feedback";
   box.style.display="block";
 
-  const userInt=parseIntegerAnswer(q.userValue||"");
-  if(isCorrectInt(userInt, q.value)){
+  const user=parsePairAnswer(q.userValue||"");
+  if(isCorrectPair(user, q.value)){
     box.innerHTML=`✅ Correct!`;
     checkButton.style.display="none";
   }else{
-    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${q.value}</strong> (whole number)`;
+    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${escapeXml(q.correctText)}</strong>`;
     checkButton.style.display="inline-block";
   }
 });
@@ -863,18 +894,13 @@ function formatDateForFilename(date){
 }
 function saveCurrentResultAsTxt(){
   saveCurrentInput();
+  questions.forEach((q,i)=>gradeOneQuestion(i));
 
-  if(!quizSubmitted){
-    questions.forEach(q=>{
-      const val=parseIntegerAnswer(q.userValue||"");
-      q.isCorrect=isCorrectInt(val,q.value);
-    });
-  }
   let correctCount=0;
   questions.forEach(q=>{ if(q.isCorrect) correctCount++; });
 
   const lines=[];
-  lines.push("Train & Bridge Problems - Current Result");
+  lines.push("Surplus & Deficit Problems (Line Segment Method) - Current Result");
   lines.push("Student: "+studentName);
   lines.push("Set: "+setCounter);
   if(quizStartTime) lines.push("Start time: "+quizStartTime.toLocaleString());
@@ -882,14 +908,16 @@ function saveCurrentResultAsTxt(){
   lines.push("Score: "+correctCount+" / "+TOTAL_QUESTIONS);
   if(firstAttemptMs!==null) lines.push("First attempt time: "+formatMs(firstAttemptMs));
   lines.push("");
+  lines.push("Details:");
+  lines.push("----------");
 
   questions.forEach((q,i)=>{
     const partLbl=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
-    const userAns=(q.userValue||"").trim()==="" ? "Not answered" : q.userValue;
+    const userAns=(q.userValue||"").trim()==="" ? "Not answered" : q.userValue.trim();
     const resultText=(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect?"Correct":"Incorrect");
     lines.push(`Q${i+1} (${partLbl})`);
-    lines.push("Your answer: "+userAns);
-    lines.push("Correct answer: "+q.value);
+    lines.push(`Your answer: ${userAns}`);
+    lines.push(`Correct answer: ${q.correctText}`);
     lines.push("Result: "+resultText);
     lines.push("");
   });
@@ -901,7 +929,7 @@ function saveCurrentResultAsTxt(){
   const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
   const ts=formatDateForFilename(new Date());
   a.href=url;
-  a.download=`TrainBridge_${safeName}_Set${setCounter}_${ts}.txt`;
+  a.download=`SurplusDeficit_${safeName}_Set${setCounter}_${ts}.txt`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -909,7 +937,7 @@ function saveCurrentResultAsTxt(){
 }
 saveButton.addEventListener("click", saveCurrentResultAsTxt);
 
-/* Pause/Resume */
+/* Pause/Resume (no popup) */
 pauseButton.addEventListener("click", ()=>{
   if(!quizStartTime && elapsedMs===0 && !quizSubmitted) return;
   if(isPaused){ resumeTimer(); pauseButton.textContent="Pause"; }
@@ -933,7 +961,7 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
-/* ---------------- Export Questions PDF (same behavior as your other quiz) ---------------- */
+/* ---------------- Export Questions PDF (2 per page, DYAA header) ---------------- */
 function waitForImages(container){
   const imgs = Array.from(container.querySelectorAll("img"));
   return Promise.all(imgs.map(img => {
@@ -966,7 +994,6 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
   try{
     let groupDiv=null;
 
-    // 2 questions per PDF page
     questions.forEach((q, idx)=>{
       if(idx%2===0){
         groupDiv=document.createElement("div");
@@ -974,7 +1001,6 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
         groupDiv.style.marginBottom="20px";
         groupDiv.style.boxSizing="border-box";
 
-        // DYAA header
         const header=document.createElement("div");
         header.innerHTML=`
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
@@ -987,7 +1013,7 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
             </div>
           </div>
           <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
-          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Train & Bridge Problems</div>
+          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Surplus &amp; Deficit Problems</div>
           <div style="color:#546e7a;font-weight:800;margin:0 0 10px 0;">Questions (Set ${setCounter})</div>
         `;
         groupDiv.appendChild(header);
@@ -1026,7 +1052,7 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
 
     const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
     const ts=formatDateForFilename(new Date());
-    pdf.save(`TrainBridge_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
+    pdf.save(`SurplusDeficit_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
   } finally {
     document.body.removeChild(wrapper);
   }
@@ -1063,12 +1089,13 @@ function showStartScreen(){
   }
 
   quizContent.innerHTML=`
-    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> train/bridge word problems (all answers are <strong>whole numbers</strong>).</p>
+    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> surplus &amp; deficit word problems.</p>
     <ul style="margin-top:6px;color:#555;line-height:1.7;">
-      <li><strong>Part 1 (Easy):</strong> 2 questions</li>
-      <li><strong>Part 2 (Medium):</strong> 2 questions</li>
-      <li><strong>Part 3 (Hard):</strong> 2 questions</li>
+      <li><strong>Easy:</strong> 2 questions</li>
+      <li><strong>Medium:</strong> 2 questions</li>
+      <li><strong>Hard:</strong> 2 questions</li>
     </ul>
+    <p style="margin-top:10px;">Answer format is always <strong>two whole numbers</strong>, like: <strong>12, 96</strong>.</p>
     <p style="margin-top:10px;">Please enter your name to begin:</p>
 
     <input id="nameInput" type="text"

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Train & Bridge Problems – Image Quiz</title>
+  <title>Probability Problems — Tree Diagram Method (Image Quiz)</title>
 
   <style>
     body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f4f9;margin:0;padding:20px;color:#333;}
@@ -21,7 +21,7 @@
     #setLine{font-size:.9em;color:#777;margin-top:2px;}
 
     .quiz-main{display:flex;gap:20px;margin-top:10px;}
-    .sidebar{width:160px;border-right:1px solid #ddd;padding-right:10px;display:none;}
+    .sidebar{width:170px;border-right:1px solid #ddd;padding-right:10px;display:none;}
     .sidebar h4{margin:0 0 8px;font-size:.95em;border-bottom:1px solid #eee;padding-bottom:4px;}
     .sidebar ul{list-style:none;padding:0;margin:0;}
     .sidebar li{padding:6px;cursor:pointer;border-radius:6px;font-size:.9em;margin-bottom:6px;border:1px solid #eee;background:#fafafa;}
@@ -30,12 +30,12 @@
     .sidebar li.correct{background:#d4edda;border-left:5px solid #28a745;border-color:#cbe7d1;}
     .sidebar li.incorrect{background:#f8d7da;border-left:5px solid #f44336;border-color:#f1c7cc;}
 
-    #quizContent{flex:1;min-width:0;}
+    #quizContent{flex:1;}
     .question-text{font-size:1.05em;margin-bottom:8px;}
     .part-title{font-weight:800;margin:8px 0 10px 0;}
     .single-question{margin:6px 0;line-height:1.7;}
     .answer-row{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-    .answer-box{width:320px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
+    .answer-box{width:420px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
 
     .img-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px;box-shadow:0 3px 8px rgba(0,0,0,0.05);max-width:100%;}
     .q-img{width:100%;height:auto;display:block;border-radius:10px;}
@@ -43,25 +43,20 @@
     .hint-row{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
     .hint-btn{background:#ff9800;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:0.95em;}
     .hint-btn:disabled{opacity:.55;cursor:not-allowed;}
-    .hint{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;}
 
-    .hint-diagram-wrap{
-      margin-top:10px;
-      border:1px solid #ffe0b2;
-      background:#ffffff;
-      border-radius:10px;
-      padding:10px;
-      overflow-x:auto;
-      -webkit-overflow-scrolling:touch;
+    /* ✅ Fix: hint window overflow on Windows */
+    .hint{
+      display:none;margin-top:10px;padding:10px 12px;border-radius:10px;
+      background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;
+      max-width:100%;overflow:auto;
     }
-    .hint-diagram-wrap img{
-      display:block;
-      height:auto;
-      border-radius:8px;
-      width:auto;
-      max-width:none;
-      min-width:920px;
-    }
+    .hint *{max-width:100%;}
+    .hint img{max-width:100%;height:auto;display:block;}
+    .hint table{width:100%;max-width:100%;border-collapse:collapse;table-layout:fixed;}
+    .hint td,.hint th{border:1px solid #ffe0b2;padding:6px;word-wrap:break-word;}
+
+    .hint-diagram-wrap{margin-top:10px;border:1px solid #ffe0b2;background:#ffffff;border-radius:10px;padding:10px;}
+    .hint-diagram-wrap img{width:100%;height:auto;display:block;border-radius:8px;}
 
     .button-container{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;}
     button{padding:10px 18px;border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:1em;}
@@ -89,7 +84,6 @@
       .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
       .thumb{width:120px;max-width:120px;}
       .answer-box{width:100%;}
-      .hint-diagram-wrap img{min-width:860px;}
     }
   </style>
 </head>
@@ -117,7 +111,7 @@
     </div>
   </div>
 
-  <h2 style="margin:6px 0 0 0;">Lesson Theme: Train Passing a Bridge — Insertion Method</h2>
+  <h2 style="margin:6px 0 0 0;">Lesson Theme: Probability Problems — Tree Diagram Method</h2>
 
   <div class="quiz-main">
     <div id="sidebar" class="sidebar"></div>
@@ -133,37 +127,37 @@
   </div>
 </div>
 
-<!-- ✅ Export-to-PDF libs (same as your other page) -->
+<!-- Export-to-PDF libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
-const SVG_TITLE = "Train & Bridge Problems";
+const SVG_TITLE = "Probability Problems (Tree Diagram Method)";
 const PART_TITLES = [
-  "Part 1 (Easy) — One-step: use distance = speed × time",
-  "Part 2 (Medium) — Train length + bridge/tunnel length",
-  "Part 3 (Hard) — Two conditions / solve for unknowns"
+  "Part 1 (Easy) — Simple Probability (2 questions)",
+  "Part 2 (Medium) — Two-Stage Events (2 questions)",
+  "Part 3 (Hard) — Multi-Stage / Counting (2 questions)"
 ];
 const NUM_PARTS = 3;
 const QUESTIONS_PER_PART = 2;
 const TOTAL_QUESTIONS = NUM_PARTS * QUESTIONS_PER_PART;
 
-/* ---------------- Names (traditional English) ---------------- */
-const NAMES = [
-  "Thomas","Catherine","Henry","Sarah","William","Elizabeth",
-  "John","Mary","Edward","Anne","George","Margaret",
-  "Charles","Alice","Joseph","Jane","Robert","Emily",
-  "Oliver","Sophia","James","Arthur","Charlotte","Victoria"
-];
-function pickName(){
-  return NAMES[Math.floor(Math.random()*NAMES.length)];
-}
-
 /* ---------------- Utils ---------------- */
-function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
-function pick(arr){ return arr[randInt(0, arr.length-1)]; }
-function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ const t=a%b; a=b; b=t; } return a||1; }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ [a,b]=[b,a%b]; } return a||1; }
+function reduceFrac(n,d){
+  if(d<0){ n=-n; d=-d; }
+  const g=gcd(n,d);
+  return {n:n/g, d:d/g};
+}
+function fracToText(n,d){
+  if(d===1) return String(n);
+  return `${n}/${d}`;
+}
+function fracToNumber(n,d){ return n/d; }
+
 function formatMs(ms){
   const totalSec=Math.floor(ms/1000), min=Math.floor(totalSec/60), sec=totalSec%60;
   return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
@@ -173,7 +167,7 @@ function escapeXml(s){
     .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
     .replaceAll('"',"&quot;").replaceAll("'","&apos;");
 }
-function wrapLines(lines, maxChars = 58){
+function wrapLines(lines, maxChars=62){
   const out=[];
   function pushWrapped(line){
     const words=String(line).split(/\s+/).filter(Boolean);
@@ -194,25 +188,47 @@ function wrapLines(lines, maxChars = 58){
   return out;
 }
 
-/* ✅ Whole-number-only answers */
-function parseIntegerAnswer(str){
+/* Accept: "a/b" or decimals like "0.4" or integers */
+function parseUserProbability(str){
   const s=(str||"").trim();
-  if(s==="") return NaN;
-  if(!/^[+-]?\d+$/.test(s)) return NaN;
-  const n=Number(s);
-  return Number.isInteger(n) ? n : NaN;
-}
-function isCorrectInt(userInt, correctInt){
-  return Number.isInteger(userInt) && userInt===correctInt;
+  if(s==="") return null;
+
+  // fraction
+  const m = s.match(/^([+-]?\d+)\s*\/\s*([+-]?\d+)$/);
+  if(m){
+    const n = Number(m[1]), d = Number(m[2]);
+    if(!Number.isFinite(n)||!Number.isFinite(d)||d===0) return null;
+    const r = reduceFrac(n,d);
+    return {type:"frac", n:r.n, d:r.d, value: r.n/r.d};
+  }
+
+  // decimal / integer
+  if(!/^[+-]?(\d+(\.\d+)?|\.\d+)$/.test(s)) return null;
+  const v = Number(s);
+  if(!Number.isFinite(v)) return null;
+  return {type:"dec", value:v};
 }
 
-/* ---------------- SVG: TEXT CARD (question image) ---------------- */
+function isCorrectProb(userParsed, correct){
+  if(!userParsed) return false;
+
+  const correctVal = correct.n / correct.d;
+
+  if(userParsed.type==="frac"){
+    const r = reduceFrac(userParsed.n, userParsed.d);
+    return r.n===correct.n && r.d===correct.d;
+  }
+
+  // decimal tolerance (allow reasonable rounding)
+  const tol = 1e-3;
+  return Math.abs(userParsed.value - correctVal) <= tol;
+}
+
+/* ---------------- SVG builders ---------------- */
 function makeSvgTextCard(lines, titleText=SVG_TITLE){
   const W=980, headerH=72, padX=44, lineH=46, firstLineY=headerH+52, padBottom=54;
-  const wrapped=wrapLines(lines, 58);
+  const wrapped=wrapLines(lines, 62);
   const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
-
-  const nonce = Math.random().toString(36).slice(2);
 
   const textSpans=wrapped.map((t,i)=>{
     const y=firstLineY + i*lineH;
@@ -220,7 +236,7 @@ function makeSvgTextCard(lines, titleText=SVG_TITLE){
   }).join("");
 
   const svg=`
-  <svg xmlns="http://www.w3.org/2000/svg" data-nonce="${nonce}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
     <defs>
       <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stop-color="#f7fbff"/>
@@ -250,56 +266,35 @@ function makeSvgTextCard(lines, titleText=SVG_TITLE){
   return "data:image/svg+xml;charset=utf-8," + encoded;
 }
 
-/* ---------------- SVG: HINT DIAGRAM (ONLY inside Hint box) ---------------- */
-function hintDiagramSvg(cfg){
-  const W=980, H=380;
-  const nonce = Math.random().toString(36).slice(2);
+function hintCardSvg(lines, title="Hint"){
+  const W=980, headerH=60, padX=44, lineH=34, firstLineY=headerH+44, padBottom=44;
+  const wrapped=wrapLines(lines, 75);
+  const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
 
-  const top = cfg.topLabel || "Passing a pole (a single point)";
-  const bottom = cfg.bottomLabel || "Passing a bridge/tunnel (front in to back out)";
-  const a = cfg.aLabel || "Train length";
-  const b = cfg.bLabel || "Bridge length";
-  const sum = cfg.sumLabel || "Distance = speed × time";
-
-  const x0=110, totalW=760, barH=34;
-  const y1=120, y2=220;
-
-  const aW=Math.floor(totalW*0.38);
-  const bW=totalW-aW;
-
-  const sumLines = wrapLines([sum], 46);
-  const sumTspans = sumLines.map((t,i)=>
-    `<tspan x="${x0}" dy="${i===0?0:22}">${escapeXml(t)}</tspan>`
-  ).join("");
+  const textSpans=wrapped.map((t,i)=>{
+    const y=firstLineY + i*lineH;
+    return `<text x="${padX}" y="${y}" font-size="24" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+  }).join("");
 
   const svg=`
-  <svg xmlns="http://www.w3.org/2000/svg" data-nonce="${nonce}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
     <defs>
-      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff"/>
+        <stop offset="1" stop-color="#fff7e6"/>
+      </linearGradient>
+      <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
         <feDropShadow dx="0" dy="2" stdDeviation="5" flood-color="#000" flood-opacity="0.10"/>
       </filter>
     </defs>
 
     <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
-          fill="#ffffff" stroke="#ffe0b2" stroke-width="3" filter="url(#shadow)"/>
+          fill="url(#bg)" stroke="#ffe0b2" stroke-width="3" filter="url(#shadow2)"/>
 
-    <text x="${W/2}" y="62" text-anchor="middle" font-size="26" fill="#455a64" font-family="Segoe UI, Arial" font-weight="700">
-      Insertion Method Diagram
-    </text>
+    <text x="${padX}" y="52" font-size="26" fill="#8d6e63" font-weight="800"
+          font-family="Segoe UI, Arial">${escapeXml(title)}</text>
 
-    <text x="${x0}" y="${y1-18}" font-size="20" fill="#455a64" font-family="Segoe UI, Arial">${escapeXml(top)}</text>
-    <rect x="${x0}" y="${y1}" width="${aW}" height="${barH}" rx="10" ry="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2"/>
-    <text x="${x0 + aW/2}" y="${y1+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(a)}</text>
-
-    <text x="${x0}" y="${y2-18}" font-size="20" fill="#455a64" font-family="Segoe UI, Arial">${escapeXml(bottom)}</text>
-    <rect x="${x0}" y="${y2}" width="${aW}" height="${barH}" rx="10" ry="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2"/>
-    <rect x="${x0 + aW}" y="${y2}" width="${bW}" height="${barH}" rx="10" ry="10" fill="#fff3e0" stroke="#ffcc80" stroke-width="2"/>
-    <text x="${x0 + aW/2}" y="${y2+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(a)}</text>
-    <text x="${x0 + aW + bW/2}" y="${y2+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(b)}</text>
-
-    <text x="${x0}" y="${y2 + barH + 48}" font-size="18" fill="#455a64" font-family="Segoe UI, Arial" font-weight="700">
-      ${sumTspans}
-    </text>
+    ${textSpans}
   </svg>`.trim();
 
   const encoded=encodeURIComponent(svg)
@@ -310,196 +305,310 @@ function hintDiagramSvg(cfg){
   return "data:image/svg+xml;charset=utf-8," + encoded;
 }
 
-/* ---------------- Question Generators (ALL answers are INTEGERS) ---------------- */
-function genEasy_TimeThroughTunnel(){
-  const L = pick([180,200,240,270,300,360,400,450,500,600,720,900]);
-  const tPole = pick([6,8,9,10,12,15]);
+/* Simple 2-level tree diagram (root -> 2 branches -> 2 leaves each) */
+function tree2StageSvg(opts){
+  const {
+    title="Tree Diagram",
+    root="Start",
+    b1="A", p1="1/2",
+    b2="B", p2="1/2",
+    a1="Event", pa1="",
+    a2="Not",  pa2="",
+    c1="Event", pc1="",
+    c2="Not",  pc2=""
+  } = opts || {};
 
-  const g = gcd(L, tPole);
-  const step = L / g;
-  const k = pick([6,8,10,12,14,16,18,20,24,28,30]);
-  const B = step * k * 10;
-  const tTunnel = (tPole * (L + B)) / L;
+  const W=980, H=340;
+  const svg=`
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <filter id="s" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="2" stdDeviation="5" flood-color="#000" flood-opacity="0.10"/>
+      </filter>
+    </defs>
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}" fill="#ffffff" stroke="#ffe0b2" stroke-width="3" filter="url(#s)"/>
+
+    <text x="48" y="60" font-size="26" font-weight="800" fill="#8d6e63" font-family="Segoe UI, Arial">${escapeXml(title)}</text>
+
+    <!-- root -->
+    <circle cx="140" cy="175" r="6" fill="#0d47a1"/>
+    <text x="60" y="172" font-size="22" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(root)}</text>
+
+    <!-- first split lines -->
+    <line x1="146" y1="175" x2="380" y2="110" stroke="#0d47a1" stroke-width="3"/>
+    <line x1="146" y1="175" x2="380" y2="240" stroke="#0d47a1" stroke-width="3"/>
+
+    <text x="250" y="125" font-size="22" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(b1)} (${escapeXml(p1)})</text>
+    <text x="250" y="255" font-size="22" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(b2)} (${escapeXml(p2)})</text>
+
+    <!-- second split from branch A -->
+    <circle cx="380" cy="110" r="6" fill="#0d47a1"/>
+    <line x1="386" y1="110" x2="760" y2="75" stroke="#0d47a1" stroke-width="3"/>
+    <line x1="386" y1="110" x2="760" y2="145" stroke="#0d47a1" stroke-width="3"/>
+    <text x="540" y="86" font-size="22" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(a1)} ${pa1?`(${escapeXml(pa1)})`:""}</text>
+    <text x="540" y="156" font-size="22" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(a2)} ${pa2?`(${escapeXml(pa2)})`:""}</text>
+
+    <!-- second split from branch B -->
+    <circle cx="380" cy="240" r="6" fill="#0d47a1"/>
+    <line x1="386" y1="240" x2="760" y2="205" stroke="#0d47a1" stroke-width="3"/>
+    <line x1="386" y1="240" x2="760" y2="275" stroke="#0d47a1" stroke-width="3"/>
+    <text x="540" y="216" font-size="22" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(c1)} ${pc1?`(${escapeXml(pc1)})`:""}</text>
+    <text x="540" y="286" font-size="22" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(c2)} ${pc2?`(${escapeXml(pc2)})`:""}</text>
+
+    <!-- leaf dots -->
+    <circle cx="760" cy="75" r="5" fill="#ff9800"/>
+    <circle cx="760" cy="145" r="5" fill="#ff9800"/>
+    <circle cx="760" cy="205" r="5" fill="#ff9800"/>
+    <circle cx="760" cy="275" r="5" fill="#ff9800"/>
+  </svg>`.trim();
+
+  const encoded=encodeURIComponent(svg)
+    .replaceAll("%0A","").replaceAll("%20"," ")
+    .replaceAll("%3D","=").replaceAll("%3A",":")
+    .replaceAll("%2F","/").replaceAll("%2C",",");
+
+  return "data:image/svg+xml;charset=utf-8," + encoded;
+}
+
+/* ---------------- Pools ---------------- */
+const NAMES = ["Ming","Qihao","Yuanyuan","Alex","Ben","Chloe","Daniel","Emily","Felix","Grace","Henry","Ivy","Jack","Kelly","Liam","Mia","Noah","Olivia","Peter","Ruby","Samuel","Tina"];
+
+/* ---------------- Question Generators (exactly 6) ---------------- */
+/* Easy 1: RPS all choose one gesture */
+function genEasy_RPSAllSameGesture(){
+  const nPlayers = pick([3,4]); // 3 or 4
+  const players = [];
+  while(players.length<nPlayers){
+    const nm = pick(NAMES);
+    if(!players.includes(nm)) players.push(nm);
+  }
+  const gesture = pick(["Rock","Paper","Scissors"]);
+  const den = Math.pow(3,nPlayers);
+  const r = reduceFrac(1, den);
 
   const lines = [
-    `A train is ${L} m long.`,
-    `It passes a pole in ${tPole} s.`,
-    `At the same speed, it passes through a tunnel that is ${B} m long.`,
-    `How many seconds does it take to pass through the tunnel?`
+    "(★★) Rock–Paper–Scissors",
+    `${players.join(", ")} each choose randomly and independently.`,
+    `Each person is equally likely to choose Rock, Paper or Scissors.`,
+    `What is the probability that ALL ${nPlayers} people choose "${gesture}"?`
   ];
 
+  const hint = `Draw a tree with ${nPlayers} levels. Each branch has probability 1/3. Multiply along a path: (1/3)^${nPlayers}.`;
+  const diagram = hintCardSvg([
+    "Tree idea:",
+    `Level 1: 3 branches (R/P/S), each 1/3.`,
+    `Repeat for ${nPlayers} people.`,
+    "Probability of a specific outcome path = multiply branch probabilities."
+  ], "Hint (Tree Diagram)");
+
   return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a pole: distance = train length",
-      bottomLabel: "Passing a tunnel: distance = train length + tunnel length",
-      aLabel: `Train: ${L} m`,
-      bLabel: `Tunnel: ${B} m`,
-      sumLabel: `Total distance = ${L + B} m`
-    }),
-    value: tTunnel,
-    hint: "Hint: Passing a pole uses distance = train length. Passing a tunnel uses distance = train length + tunnel length. Speed is the same."
+    img: makeSvgTextCard(lines),
+    diagram,
+    value: {n:r.n, d:r.d, text: fracToText(r.n,r.d)}
   };
 }
 
-function genEasy_FindBridgeLength(){
-  const v = pick([12,15,18,20,24,25,30,36]);
-  const tTree = pick([30,40,45,50,60,75]);
-  const L = v * tTree;
-  const T = tTree + pick([60,90,120,150,180,240,300]);
-  const bridge = v * T - L;
+/* Easy 2: Two red balls without replacement */
+function genEasy_TwoRedNoReplacement(){
+  const red = pick([2,3,4,5]);
+  const blue = pick([1,2,3,4]);
+  const green = pick([0,1,2,3]);
+  const total = red+blue+green;
+  if(total<4 || red<2) return genEasy_TwoRedNoReplacement();
+
+  // P = r/t * (r-1)/(t-1)
+  const n = red*(red-1);
+  const d = total*(total-1);
+  const r = reduceFrac(n,d);
 
   const lines = [
-    `A train passes a tree in ${tTree} s.`,
-    `The train then passes a bridge from front-on to back-off in ${T} s.`,
-    `Assume the speed stays the same.`,
-    `If the train is ${L} m long, how long is the bridge (in meters)?`
+    "(★★) Drawing balls (no replacement)",
+    `A bag has ${red} red balls, ${blue} blue balls, and ${green} green balls.`,
+    "Two balls are drawn one after another WITHOUT replacement.",
+    "What is the probability that both balls are red?"
   ];
 
+  const hint = "Use a tree: first draw red (red/total), then red again ((red−1)/(total−1)). Multiply them.";
+  const diagram = tree2StageSvg({
+    title:"Hint (Tree Diagram)",
+    root:"First draw",
+    b1:"Red", p1:`${red}/${total}`,
+    b2:"Not red", p2:`${total-red}/${total}`,
+    a1:"Second draw: Red", pa1:`${red-1}/${total-1}`,
+    a2:"Second draw: Not red", pa2:`${(total-1)-(red-1)}/${total-1}`,
+    c1:"(not needed)", pc1:"",
+    c2:"(not needed)", pc2:""
+  });
+
   return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a tree: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ${L} m`,
-      bLabel: `Bridge: ? m`,
-      sumLabel: `Distance = speed × time`
-    }),
-    value: bridge,
-    hint: "Hint: Speed = (train length) ÷ (tree time). Then bridge length = (speed × bridge time) − train length."
+    img: makeSvgTextCard(lines),
+    diagram,
+    value: {n:r.n, d:r.d, text: fracToText(r.n,r.d)}
   };
 }
 
-function genMedium_FindTrainLength_Ms(){
-  const v = pick([12,15,18,20,24,25,30,36,40]);
-  const T = pick([80,90,100,120,140,150,160,180,200]);
-  const totalDist = v * T;
+/* Medium 1: Total probability (factory defective) */
+function genMedium_TotalProbabilityFactory(){
+  const factoryA = pick(["Factory A","Plant A","Line A"]);
+  const factoryB = pick(["Factory B","Plant B","Line B"]);
 
-  const L = pick([300,360,400,450,500,600,720,800,900,1000,1200]);
-  const B = totalDist - L;
-  if(B <= 150 || B > 9000) return genMedium_FindTrainLength_Ms();
+  const pA = pick([{n:1,d:2},{n:2,d:5},{n:3,d:5},{n:3,d:10},{n:2,d:3}]); // A share
+  const pB = reduceFrac(pA.d - pA.n, pA.d);
+
+  const dA = pick([{n:1,d:20},{n:1,d:25},{n:1,d:50},{n:2,d:100}]);
+  const dB = pick([{n:1,d:25},{n:1,d:40},{n:1,d:50},{n:3,d:100}]);
+
+  // P(def) = pA*dA + pB*dB
+  const n1 = pA.n * dA.n * pB.d * dA.d; // not used (keep rational arithmetic carefully)
+  // do common denominator: pA = a/b, dA = c/e, pB = (b-a)/b, dB = f/g
+  const a=pA.n, b=pA.d, c=dA.n, e=dA.d, f=dB.n, g=dB.d;
+  const num = a*c*g + (b-a)*f*e;
+  const den = b*e*g;
+  const r = reduceFrac(num, den);
 
   const lines = [
-    `A train travels at ${v} m/s.`,
-    `It takes ${T} s to pass completely over a bridge.`,
-    `The bridge is ${B} m long.`,
-    `How long is the train (in meters)?`
+    "(★★★) Total probability (tree diagram)",
+    `A product is made by two factories.`,
+    `${factoryA} makes ${fracToText(pA.n,pA.d)} of all products; ${factoryB} makes the rest.`,
+    `Defective rate: ${factoryA} is ${fracToText(c,e)}, and ${factoryB} is ${fracToText(f,g)}.`,
+    "If one product is chosen at random, what is the probability it is defective?"
   ];
 
+  const hint = "Tree: first choose factory (pA / pB), then choose defective (dA / dB). Add the two defective branches.";
+  const diagram = tree2StageSvg({
+    title:"Hint (Tree Diagram)",
+    root:"Choose factory",
+    b1:factoryA, p1:fracToText(pA.n,pA.d),
+    b2:factoryB, p2:fracToText(pB.n,pB.d),
+    a1:"Defective", pa1:fracToText(c,e),
+    a2:"Good",      pa2:fracToText(e-c,e),
+    c1:"Defective", pc1:fracToText(f,g),
+    c2:"Good",      pc2:fracToText(g-f,g)
+  });
+
   return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a point: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ? m`,
-      bLabel: `Bridge: ${B} m`,
-      sumLabel: `Total distance = ${totalDist} m`
-    }),
-    value: L,
-    hint: "Hint: Total distance while passing the bridge = speed × time = train length + bridge length."
+    img: makeSvgTextCard(lines),
+    diagram,
+    value: {n:r.n, d:r.d, text: fracToText(r.n,r.d)}
   };
 }
 
-function genMedium_FindTrainLength_Mmin(){
-  const v = pick([1800,2000,2100,2400,2700,3000]);
-  const T = pick([2,3,4,5]);
-  const totalDist = v * T;
+/* Medium 2: Choose a box then draw red */
+function genMedium_ChooseBoxThenDraw(){
+  const box1 = {r: pick([1,2,3,4]), b: pick([1,2,3,4])};
+  const box2 = {r: pick([1,2,3,4]), b: pick([1,2,3,4])};
+  const t1 = box1.r+box1.b, t2 = box2.r+box2.b;
+  if(t1<3 || t2<3) return genMedium_ChooseBoxThenDraw();
 
-  const L = pick([600,700,800,900,1000,1100,1200,1300,1400,1500]);
-  const B = totalDist - L;
-  if(B <= 300 || B > 8000) return genMedium_FindTrainLength_Mmin();
+  const p1 = pick([{n:1,d:2},{n:2,d:5},{n:3,d:5}]); // choose Box 1
+  const p2 = reduceFrac(p1.d - p1.n, p1.d);
+
+  // P(red)=p1*(r1/t1)+p2*(r2/t2)
+  const a=p1.n, b=p1.d;
+  const num = a*box1.r*t2 + (b-a)*box2.r*t1;
+  const den = b*t1*t2;
+  const r = reduceFrac(num, den);
+
+  const who = pick(NAMES);
 
   const lines = [
-    `A train moves at ${v} m/min.`,
-    `It takes ${T} min for the whole train to pass over a bridge.`,
-    `The bridge is ${B} m long.`,
-    `What is the train's length (in meters)?`
+    "(★★★) Two-stage selection (tree diagram)",
+    `${who} flips a biased coin: Box 1 is chosen with probability ${fracToText(p1.n,p1.d)} (otherwise Box 2).`,
+    `Box 1 has ${box1.r} red and ${box1.b} blue balls.`,
+    `Box 2 has ${box2.r} red and ${box2.b} blue balls.`,
+    "One ball is drawn from the chosen box. What is the probability it is red?"
   ];
 
+  const hint = "Draw a 2-stage tree: (choose box) → (draw red/blue). Multiply along each red path, then add.";
+  const diagram = tree2StageSvg({
+    title:"Hint (Tree Diagram)",
+    root:"Choose a box",
+    b1:"Box 1", p1:fracToText(p1.n,p1.d),
+    b2:"Box 2", p2:fracToText(p2.n,p2.d),
+    a1:"Red", pa1:`${box1.r}/${t1}`,
+    a2:"Blue",pa2:`${box1.b}/${t1}`,
+    c1:"Red", pc1:`${box2.r}/${t2}`,
+    c2:"Blue",pc2:`${box2.b}/${t2}`
+  });
+
   return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a point: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ? m`,
-      bLabel: `Bridge: ${B} m`,
-      sumLabel: `Total distance = ${totalDist} m`
-    }),
-    value: L,
-    hint: "Hint: Use (speed × time) = train length + bridge length. Keep units consistent."
+    img: makeSvgTextCard(lines),
+    diagram,
+    value: {n:r.n, d:r.d, text: fracToText(r.n,r.d)}
   };
 }
 
-function genHard_TwoBridgesFindTrain(){
-  const v = pick([24,30,36,40,45,48]);
-  const L = pick([120,150,180,200,240,300,360,400,450]);
-
-  const base = v;
-  const k1 = pick([6,7,8,9,10,11,12,14,15,16]);
-  const k2 = k1 + pick([2,3,4,5,6]);
-  const total1 = base * k1;
-  const total2 = base * k2;
-  const B1 = total1 - L;
-  const B2 = total2 - L;
-  if(B1 <= 80 || B2 <= 80) return genHard_TwoBridgesFindTrain();
-
-  const t1 = k1;
-  const t2 = k2;
+/* Hard 1: At least one boy among n children */
+function genHard_AtLeastOneBoy(){
+  const n = pick([3,4]);
+  // P(at least one boy)=1-(1/2)^n = (2^n-1)/2^n
+  const den = Math.pow(2,n);
+  const num = den - 1;
+  const r = reduceFrac(num, den);
 
   const lines = [
-    `The same train passes two different bridges at the same constant speed.`,
-    `It takes ${t1} s to pass a ${B1} m bridge.`,
-    `It takes ${t2} s to pass a ${B2} m bridge.`,
-    `How long is the train (in meters)?`
+    "(★★★★) Children (tree diagram)",
+    `A family has ${n} children.`,
+    "Assume each child is equally likely to be a boy or a girl, and independent.",
+    "What is the probability that the family has at least ONE boy?"
   ];
 
+  const hint = "Use complement: P(at least one boy) = 1 − P(all girls). A tree would have 2 branches each level (B/G), each 1/2.";
+  const diagram = hintCardSvg([
+    "Tree method:",
+    `Each child: Boy (1/2) or Girl (1/2).`,
+    `P(all girls) = (1/2)^${n}.`,
+    "So P(at least one boy) = 1 − (1/2)^n."
+  ], "Hint (Use Complement)");
+
   return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Each bridge pass uses: distance = train + bridge",
-      bottomLabel: "Same speed in both cases",
-      aLabel: "Train: ? m",
-      bLabel: "Bridge: given",
-      sumLabel: "Set up: (L + B1) ÷ t1 = (L + B2) ÷ t2"
-    }),
-    value: L,
-    hint: "Hint: Let train length be L. Then (L + B1)/t1 = (L + B2)/t2. Solve for L."
+    img: makeSvgTextCard(lines),
+    diagram,
+    value: {n:r.n, d:r.d, text: fracToText(r.n,r.d)}
   };
 }
 
-function genHard_FindTrainFromTwoTimes(){
-  const tPole = pick([6,8,9,10,12,15]);
-  const multiplierNum = pick([11,12,13,14,15,16,17,18,19,20,22,24,25]);
-  const multiplierDen = pick([2,3,4,5]);
-  const ratioG = gcd(multiplierNum, multiplierDen);
-  const mN = multiplierNum / ratioG;
-  const mD = multiplierDen / ratioG;
+/* Hard 2: Two dice sum probability */
+function genHard_TwoDiceSum(){
+  const target = pick([6,7,8,9,10]); // avoid extremes
+  let ways;
+  if(target<=7) ways = target - 1;
+  else ways = 13 - target;
 
-  const tPole2 = tPole * mD;
-  const tTunnel = tPole2 * mN;
-
-  const L = pick([180,200,240,270,300,360,400,450,500,600,720,900]);
-  const B = (L * (tTunnel - tPole2)) / tPole2;
-  if(!Number.isInteger(B) || B <= 200) return genHard_FindTrainFromTwoTimes();
+  const r = reduceFrac(ways, 36);
 
   const lines = [
-    `A train passes a pole in ${tPole2} s.`,
-    `At the same speed, it takes ${tTunnel} s to pass through a tunnel that is ${B} m long.`,
-    `How long is the train (in meters)?`
+    "(★★★★) Two dice",
+    "Two fair six-sided dice are rolled.",
+    `What is the probability that the sum of the two dice is ${target}?`,
+    "Answer as a simplified fraction (or a decimal)."
   ];
 
+  const hint = "Make a table or draw a tree for Die 1 (1–6) then Die 2 (1–6). Count the successful outcomes and divide by 36.";
+  const diagram = hintCardSvg([
+    "Counting idea:",
+    "There are 6×6 = 36 equally likely outcomes.",
+    `Number of ways to get sum ${target} = ${ways}.`,
+    "Probability = ways / 36 (simplify)."
+  ], "Hint (Count Outcomes)");
+
   return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: `Pole time = ${tPole2} s (distance = train length)`,
-      bottomLabel: `Tunnel time = ${tTunnel} s (distance = train + tunnel)`,
-      aLabel: "Train: ? m",
-      bLabel: `Tunnel: ${B} m`,
-      sumLabel: "Use equal speed: L/tPole = (L + tunnel)/tTunnel"
-    }),
-    value: L,
-    hint: "Hint: Speed is the same. Use L/tPole = (L + tunnel)/tTunnel and solve for L."
+    img: makeSvgTextCard(lines),
+    diagram,
+    value: {n:r.n, d:r.d, text: fracToText(r.n,r.d)}
   };
+}
+
+/* ---------------- Build exactly 6 (Easy2, Medium2, Hard2) ---------------- */
+function buildSixQuestions(){
+  return [
+    genEasy_RPSAllSameGesture(),
+    genEasy_TwoRedNoReplacement(),
+    genMedium_TotalProbabilityFactory(),
+    genMedium_ChooseBoxThenDraw(),
+    genHard_AtLeastOneBoy(),
+    genHard_TwoDiceSum()
+  ];
 }
 
 /* ---------------- State ---------------- */
@@ -564,9 +673,9 @@ function resumeTimer(){
   updateTimerDisplay();
 }
 
-/* ---------------- Generate Quiz (ensure NEW answers) ---------------- */
+/* ---------------- Generate Quiz (ensure NEW signature) ---------------- */
 function answersSignature(built){
-  return built.map(x=>String(x.value)).join("|");
+  return built.map(x=>x.value.text).join("|");
 }
 function generateQuiz(){
   questions=[];
@@ -575,15 +684,8 @@ function generateQuiz(){
   let tries=0;
   let built=null;
 
-  while(tries<20){
-    built = [
-      genEasy_TimeThroughTunnel(),
-      genEasy_FindBridgeLength(),
-      genMedium_FindTrainLength_Ms(),
-      genMedium_FindTrainLength_Mmin(),
-      genHard_TwoBridgesFindTrain(),
-      genHard_FindTrainFromTwoTimes()
-    ];
+  while(tries<30){
+    built = buildSixQuestions();
     const sig = answersSignature(built);
     if(sig !== lastAnswerSignature){
       lastAnswerSignature = sig;
@@ -603,8 +705,8 @@ function generateQuiz(){
       indexInPart,
       img: built[i].img,
       diagram: built[i].diagram || "",
-      value: built[i].value,
-      hint: built[i].hint,
+      value: built[i].value, // {n,d,text}
+      hint: "Use a tree diagram where possible. You may answer as a simplified fraction (e.g., 2/5) or a decimal (e.g., 0.4).",
       userValue:"",
       isCorrect:false
     });
@@ -652,8 +754,8 @@ function updateSidebarStatus(){
 /* ---------------- Helpers ---------------- */
 function gradeOneQuestion(i){
   const q=questions[i];
-  const val=parseIntegerAnswer(q.userValue||"");
-  q.isCorrect=isCorrectInt(val, q.value);
+  const parsed = parseUserProbability(q.userValue||"");
+  q.isCorrect = isCorrectProb(parsed, q.value);
 }
 function saveCurrentInput(){
   const input=document.getElementById("answerInput");
@@ -677,38 +779,37 @@ function renderQuestion(){
   const q=questions[currentQuestionIndex];
   const levelLabel=["Easy","Medium","Hard"][q.partIndex];
   const fullLabel=`${levelLabel} — Question ${q.indexInPart+1}`;
-  const hasHint=(q.hint||"").trim()!=="";
 
-  const hintDiagramHtml = (hasHint && q.diagram)
+  const hintDiagramHtml = q.diagram
     ? `<div class="hint-diagram-wrap"><img src="${q.diagram}" alt="Hint diagram"></div>`
     : "";
 
   quizContent.innerHTML=`
     <p class="question-text">Question ${currentQuestionIndex+1} of ${TOTAL_QUESTIONS}</p>
-    <div class="part-title">${PART_TITLES[q.partIndex]}</div>
+    <div class="part-title">${escapeXml(PART_TITLES[q.partIndex])}</div>
 
     <div class="single-question">
-      <div style="font-weight:800;margin-bottom:8px;">${fullLabel}</div>
+      <div style="font-weight:800;margin-bottom:8px;">${escapeXml(fullLabel)}</div>
 
       <div class="img-wrap">
         <img class="q-img" src="${q.img}" alt="Question image">
       </div>
 
       <div class="answer-row">
-        <div style="font-weight:700;">Answer (whole number):</div>
-        <input id="answerInput" class="answer-box" type="text" inputmode="numeric"
-               placeholder="Type a whole number (e.g., 12)"
-               value="${q.userValue||""}">
+        <div style="font-weight:700;">Answer:</div>
+        <input id="answerInput" class="answer-box" type="text"
+               placeholder="e.g., 2/5  or  0.4"
+               value="${escapeXml(q.userValue||"")}">
       </div>
 
       <div id="checkFeedback" style="display:none;"></div>
 
       <div class="hint-row">
-        <button id="hintBtn" class="hint-btn" ${hasHint ? "" : "disabled"}>${hasHint ? "Hint" : "No Hint"}</button>
+        <button id="hintBtn" class="hint-btn">Hint</button>
       </div>
 
       <div id="hintBox" class="hint">
-        <div>${hasHint ? q.hint : ""}</div>
+        <div>${escapeXml(q.hint)}</div>
         ${hintDiagramHtml}
       </div>
     </div>
@@ -720,13 +821,11 @@ function renderQuestion(){
 
   const hintBtn=document.getElementById("hintBtn");
   const hintBox=document.getElementById("hintBox");
-  if(hintBtn && hintBox && hasHint){
-    hintBtn.addEventListener("click", ()=>{
-      const shown = hintBox.style.display==="block";
-      hintBox.style.display = shown ? "none" : "block";
-      hintBtn.textContent = shown ? "Hint" : "Hide Hint";
-    });
-  }
+  hintBtn.addEventListener("click", ()=>{
+    const shown=hintBox.style.display==="block";
+    hintBox.style.display = shown ? "none" : "block";
+    hintBtn.textContent = shown ? "Hint" : "Hide Hint";
+  });
 
   backButton.style.display="inline-block";
   backButton.style.visibility=(currentQuestionIndex===0)?"hidden":"visible";
@@ -755,16 +854,15 @@ function calculateAndShowResults(){
   quizSubmitted=true;
 
   let correctCount=0;
-  questions.forEach(q=>{
-    const val=parseIntegerAnswer(q.userValue||"");
-    q.isCorrect=isCorrectInt(val, q.value);
+  questions.forEach((q,i)=>{
+    gradeOneQuestion(i);
     if(q.isCorrect) correctCount++;
   });
 
   updateSidebarStatus();
 
   let html=`
-    <h3>Results for ${studentName}</h3>
+    <h3>Results for ${escapeXml(studentName)}</h3>
     <p>Set: <strong>${setCounter}</strong></p>
     <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
     <p>Start time: <strong>${attemptStartTime.toLocaleTimeString()}</strong></p>
@@ -781,13 +879,14 @@ function calculateAndShowResults(){
   questions.forEach((q,i)=>{
     const partLbl=["Easy","Medium","Hard"][q.partIndex]+(q.indexInPart+1);
     const ua=(q.userValue||"").trim();
+    const correctText = q.value.text + (q.value.d!==1 ? ` (≈ ${fracToNumber(q.value.n,q.value.d).toFixed(3)})` : "");
     html+=`
       <tr class="${q.isCorrect ? "correct-answer":"incorrect-answer"}">
         <td>${i+1}</td>
-        <td>${partLbl}</td>
+        <td>${escapeXml(partLbl)}</td>
         <td><img class="thumb" src="${q.img}" alt="Q${i+1}"></td>
-        <td>${ua==="" ? "—" : ua}</td>
-        <td><strong>${q.value}</strong></td>
+        <td>${ua==="" ? "—" : escapeXml(ua)}</td>
+        <td><strong>${escapeXml(correctText)}</strong></td>
         <td>${ua==="" ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
       </tr>
     `;
@@ -804,6 +903,7 @@ function calculateAndShowResults(){
   checkButton.style.display="none";
   saveButton.style.display="inline-block";
 
+  // reset timer for review attempt
   elapsedMs=0; isPaused=false; quizStartTime=new Date();
   pauseButton.textContent="Pause";
   startTimerInterval();
@@ -844,12 +944,12 @@ checkButton.addEventListener("click", ()=>{
   box.className="check-feedback";
   box.style.display="block";
 
-  const userInt=parseIntegerAnswer(q.userValue||"");
-  if(isCorrectInt(userInt, q.value)){
+  const parsed = parseUserProbability(q.userValue||"");
+  if(isCorrectProb(parsed, q.value)){
     box.innerHTML=`✅ Correct!`;
     checkButton.style.display="none";
   }else{
-    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${q.value}</strong> (whole number)`;
+    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${escapeXml(q.value.text)}</strong>`;
     checkButton.style.display="inline-block";
   }
 });
@@ -863,18 +963,14 @@ function formatDateForFilename(date){
 }
 function saveCurrentResultAsTxt(){
   saveCurrentInput();
-
   if(!quizSubmitted){
-    questions.forEach(q=>{
-      const val=parseIntegerAnswer(q.userValue||"");
-      q.isCorrect=isCorrectInt(val,q.value);
-    });
+    questions.forEach((q,i)=>gradeOneQuestion(i));
   }
   let correctCount=0;
   questions.forEach(q=>{ if(q.isCorrect) correctCount++; });
 
   const lines=[];
-  lines.push("Train & Bridge Problems - Current Result");
+  lines.push("Probability Problems - Tree Diagram Method - Current Result");
   lines.push("Student: "+studentName);
   lines.push("Set: "+setCounter);
   if(quizStartTime) lines.push("Start time: "+quizStartTime.toLocaleString());
@@ -889,7 +985,7 @@ function saveCurrentResultAsTxt(){
     const resultText=(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect?"Correct":"Incorrect");
     lines.push(`Q${i+1} (${partLbl})`);
     lines.push("Your answer: "+userAns);
-    lines.push("Correct answer: "+q.value);
+    lines.push("Correct answer: "+q.value.text);
     lines.push("Result: "+resultText);
     lines.push("");
   });
@@ -901,7 +997,7 @@ function saveCurrentResultAsTxt(){
   const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
   const ts=formatDateForFilename(new Date());
   a.href=url;
-  a.download=`TrainBridge_${safeName}_Set${setCounter}_${ts}.txt`;
+  a.download=`Probability_${safeName}_Set${setCounter}_${ts}.txt`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -909,7 +1005,7 @@ function saveCurrentResultAsTxt(){
 }
 saveButton.addEventListener("click", saveCurrentResultAsTxt);
 
-/* Pause/Resume */
+/* Pause/Resume (no pop-up) */
 pauseButton.addEventListener("click", ()=>{
   if(!quizStartTime && elapsedMs===0 && !quizSubmitted) return;
   if(isPaused){ resumeTimer(); pauseButton.textContent="Pause"; }
@@ -933,7 +1029,7 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
-/* ---------------- Export Questions PDF (same behavior as your other quiz) ---------------- */
+/* ---------------- Export Questions PDF (2 per page, DYAA header) ---------------- */
 function waitForImages(container){
   const imgs = Array.from(container.querySelectorAll("img"));
   return Promise.all(imgs.map(img => {
@@ -966,7 +1062,6 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
   try{
     let groupDiv=null;
 
-    // 2 questions per PDF page
     questions.forEach((q, idx)=>{
       if(idx%2===0){
         groupDiv=document.createElement("div");
@@ -974,7 +1069,6 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
         groupDiv.style.marginBottom="20px";
         groupDiv.style.boxSizing="border-box";
 
-        // DYAA header
         const header=document.createElement("div");
         header.innerHTML=`
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
@@ -987,7 +1081,7 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
             </div>
           </div>
           <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
-          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Train & Bridge Problems</div>
+          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Probability Problems — Tree Diagram Method</div>
           <div style="color:#546e7a;font-weight:800;margin:0 0 10px 0;">Questions (Set ${setCounter})</div>
         `;
         groupDiv.appendChild(header);
@@ -1026,7 +1120,7 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
 
     const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
     const ts=formatDateForFilename(new Date());
-    pdf.save(`TrainBridge_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
+    pdf.save(`Probability_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
   } finally {
     document.body.removeChild(wrapper);
   }
@@ -1063,13 +1157,13 @@ function showStartScreen(){
   }
 
   quizContent.innerHTML=`
-    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> train/bridge word problems (all answers are <strong>whole numbers</strong>).</p>
+    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> probability questions. Use a <strong>tree diagram</strong> where helpful.</p>
     <ul style="margin-top:6px;color:#555;line-height:1.7;">
-      <li><strong>Part 1 (Easy):</strong> 2 questions</li>
-      <li><strong>Part 2 (Medium):</strong> 2 questions</li>
-      <li><strong>Part 3 (Hard):</strong> 2 questions</li>
+      <li><strong>Easy:</strong> 2 questions</li>
+      <li><strong>Medium:</strong> 2 questions</li>
+      <li><strong>Hard:</strong> 2 questions</li>
     </ul>
-    <p style="margin-top:10px;">Please enter your name to begin:</p>
+    <p style="margin-top:10px;">Enter your name to begin:</p>
 
     <input id="nameInput" type="text"
       style="padding:10px;width:260px;font-size:1.05em;border:1px solid #ccc;border-radius:10px;"

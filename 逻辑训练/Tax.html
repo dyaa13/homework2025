@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Train & Bridge Problems – Image Quiz</title>
+  <title>Tax Problems — Line Segment Method (Image Quiz)</title>
 
   <style>
     body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f4f9;margin:0;padding:20px;color:#333;}
@@ -30,12 +30,12 @@
     .sidebar li.correct{background:#d4edda;border-left:5px solid #28a745;border-color:#cbe7d1;}
     .sidebar li.incorrect{background:#f8d7da;border-left:5px solid #f44336;border-color:#f1c7cc;}
 
-    #quizContent{flex:1;min-width:0;}
+    #quizContent{flex:1;}
     .question-text{font-size:1.05em;margin-bottom:8px;}
     .part-title{font-weight:800;margin:8px 0 10px 0;}
     .single-question{margin:6px 0;line-height:1.7;}
     .answer-row{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-    .answer-box{width:320px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
+    .answer-box{width:420px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
 
     .img-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px;box-shadow:0 3px 8px rgba(0,0,0,0.05);max-width:100%;}
     .q-img{width:100%;height:auto;display:block;border-radius:10px;}
@@ -43,25 +43,20 @@
     .hint-row{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
     .hint-btn{background:#ff9800;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:0.95em;}
     .hint-btn:disabled{opacity:.55;cursor:not-allowed;}
-    .hint{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;}
 
-    .hint-diagram-wrap{
-      margin-top:10px;
-      border:1px solid #ffe0b2;
-      background:#ffffff;
-      border-radius:10px;
-      padding:10px;
-      overflow-x:auto;
-      -webkit-overflow-scrolling:touch;
+    /* ✅ Fix: hint window overflow (Windows-safe) */
+    .hint{
+      display:none;margin-top:10px;padding:10px 12px;border-radius:10px;
+      background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;
+      max-width:100%;overflow:auto;
     }
-    .hint-diagram-wrap img{
-      display:block;
-      height:auto;
-      border-radius:8px;
-      width:auto;
-      max-width:none;
-      min-width:920px;
-    }
+    .hint *{max-width:100%;}
+    .hint img{max-width:100%;height:auto;display:block;}
+    .hint table{width:100%;max-width:100%;border-collapse:collapse;table-layout:fixed;}
+    .hint td,.hint th{border:1px solid #ffe0b2;padding:6px;word-wrap:break-word;}
+
+    .hint-diagram-wrap{margin-top:10px;border:1px solid #ffe0b2;background:#ffffff;border-radius:10px;padding:10px;}
+    .hint-diagram-wrap img{width:100%;height:auto;display:block;border-radius:8px;}
 
     .button-container{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;}
     button{padding:10px 18px;border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:1em;}
@@ -89,7 +84,6 @@
       .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
       .thumb{width:120px;max-width:120px;}
       .answer-box{width:100%;}
-      .hint-diagram-wrap img{min-width:860px;}
     }
   </style>
 </head>
@@ -117,7 +111,7 @@
     </div>
   </div>
 
-  <h2 style="margin:6px 0 0 0;">Lesson Theme: Train Passing a Bridge — Insertion Method</h2>
+  <h2 style="margin:6px 0 0 0;">Lesson Theme: Tax Problems — Line Segment Method</h2>
 
   <div class="quiz-main">
     <div id="sidebar" class="sidebar"></div>
@@ -133,37 +127,31 @@
   </div>
 </div>
 
-<!-- ✅ Export-to-PDF libs (same as your other page) -->
+<!-- Export-to-PDF libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ---------------- CONFIG ---------------- */
-const SVG_TITLE = "Train & Bridge Problems";
+const SVG_TITLE = "Tax Problems (Line Segment Method)";
 const PART_TITLES = [
-  "Part 1 (Easy) — One-step: use distance = speed × time",
-  "Part 2 (Medium) — Train length + bridge/tunnel length",
-  "Part 3 (Hard) — Two conditions / solve for unknowns"
+  "Part 1 (Easy) — Basic tax / VAT (2 questions)",
+  "Part 2 (Medium) — Brackets & reverse VAT (2 questions)",
+  "Part 3 (Hard) — Reverse tax & discount+VAT (2 questions)"
 ];
 const NUM_PARTS = 3;
 const QUESTIONS_PER_PART = 2;
 const TOTAL_QUESTIONS = NUM_PARTS * QUESTIONS_PER_PART;
 
-/* ---------------- Names (traditional English) ---------------- */
-const NAMES = [
-  "Thomas","Catherine","Henry","Sarah","William","Elizabeth",
-  "John","Mary","Edward","Anne","George","Margaret",
-  "Charles","Alice","Joseph","Jane","Robert","Emily",
-  "Oliver","Sophia","James","Arthur","Charlotte","Victoria"
-];
-function pickName(){
-  return NAMES[Math.floor(Math.random()*NAMES.length)];
-}
+/* ---------------- Context Pools ---------------- */
+const PEOPLE = ["Alex","Ben","Chloe","Daniel","Emily","Felix","Grace","Henry","Ivy","Jack","Kelly","Liam","Mia","Noah","Olivia","Peter","Quinn","Ruby","Samuel","Tina"];
+const ITEMS = ["a laptop","a bicycle","a smartphone","a camera","a scooter","a washing machine","a tablet","a TV"];
+const SHOPS = ["Sunshine Motors","River City Store","GreenLeaf Mart","Harbour Retail","Maple Trading","Central Auto"];
 
-/* ---------------- Utils ---------------- */
-function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
-function pick(arr){ return arr[randInt(0, arr.length-1)]; }
-function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ const t=a%b; a=b; b=t; } return a||1; }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ [a,b]=[b,a%b]; } return a||1; }
+
 function formatMs(ms){
   const totalSec=Math.floor(ms/1000), min=Math.floor(totalSec/60), sec=totalSec%60;
   return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
@@ -173,7 +161,7 @@ function escapeXml(s){
     .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
     .replaceAll('"',"&quot;").replaceAll("'","&apos;");
 }
-function wrapLines(lines, maxChars = 58){
+function wrapLines(lines, maxChars=62){
   const out=[];
   function pushWrapped(line){
     const words=String(line).split(/\s+/).filter(Boolean);
@@ -193,8 +181,6 @@ function wrapLines(lines, maxChars = 58){
   for(const line of lines) pushWrapped(line);
   return out;
 }
-
-/* ✅ Whole-number-only answers */
 function parseIntegerAnswer(str){
   const s=(str||"").trim();
   if(s==="") return NaN;
@@ -205,14 +191,14 @@ function parseIntegerAnswer(str){
 function isCorrectInt(userInt, correctInt){
   return Number.isInteger(userInt) && userInt===correctInt;
 }
+function money(n){ return `$${n}`; }
+function pct(p){ return `${p}%`; }
 
-/* ---------------- SVG: TEXT CARD (question image) ---------------- */
+/* ---------------- SVG Cards ---------------- */
 function makeSvgTextCard(lines, titleText=SVG_TITLE){
   const W=980, headerH=72, padX=44, lineH=46, firstLineY=headerH+52, padBottom=54;
-  const wrapped=wrapLines(lines, 58);
+  const wrapped=wrapLines(lines, 62);
   const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
-
-  const nonce = Math.random().toString(36).slice(2);
 
   const textSpans=wrapped.map((t,i)=>{
     const y=firstLineY + i*lineH;
@@ -220,7 +206,7 @@ function makeSvgTextCard(lines, titleText=SVG_TITLE){
   }).join("");
 
   const svg=`
-  <svg xmlns="http://www.w3.org/2000/svg" data-nonce="${nonce}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
     <defs>
       <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stop-color="#f7fbff"/>
@@ -250,56 +236,35 @@ function makeSvgTextCard(lines, titleText=SVG_TITLE){
   return "data:image/svg+xml;charset=utf-8," + encoded;
 }
 
-/* ---------------- SVG: HINT DIAGRAM (ONLY inside Hint box) ---------------- */
-function hintDiagramSvg(cfg){
-  const W=980, H=380;
-  const nonce = Math.random().toString(36).slice(2);
+function hintCardSvg(lines, title="Hint"){
+  const W=980, headerH=60, padX=44, lineH=36, firstLineY=headerH+44, padBottom=44;
+  const wrapped=wrapLines(lines, 70);
+  const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
 
-  const top = cfg.topLabel || "Passing a pole (a single point)";
-  const bottom = cfg.bottomLabel || "Passing a bridge/tunnel (front in to back out)";
-  const a = cfg.aLabel || "Train length";
-  const b = cfg.bLabel || "Bridge length";
-  const sum = cfg.sumLabel || "Distance = speed × time";
-
-  const x0=110, totalW=760, barH=34;
-  const y1=120, y2=220;
-
-  const aW=Math.floor(totalW*0.38);
-  const bW=totalW-aW;
-
-  const sumLines = wrapLines([sum], 46);
-  const sumTspans = sumLines.map((t,i)=>
-    `<tspan x="${x0}" dy="${i===0?0:22}">${escapeXml(t)}</tspan>`
-  ).join("");
+  const textSpans=wrapped.map((t,i)=>{
+    const y=firstLineY + i*lineH;
+    return `<text x="${padX}" y="${y}" font-size="24" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+  }).join("");
 
   const svg=`
-  <svg xmlns="http://www.w3.org/2000/svg" data-nonce="${nonce}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
     <defs>
-      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff"/>
+        <stop offset="1" stop-color="#fff7e6"/>
+      </linearGradient>
+      <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
         <feDropShadow dx="0" dy="2" stdDeviation="5" flood-color="#000" flood-opacity="0.10"/>
       </filter>
     </defs>
 
     <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
-          fill="#ffffff" stroke="#ffe0b2" stroke-width="3" filter="url(#shadow)"/>
+          fill="url(#bg)" stroke="#ffe0b2" stroke-width="3" filter="url(#shadow2)"/>
 
-    <text x="${W/2}" y="62" text-anchor="middle" font-size="26" fill="#455a64" font-family="Segoe UI, Arial" font-weight="700">
-      Insertion Method Diagram
-    </text>
+    <text x="${padX}" y="52" font-size="26" fill="#8d6e63" font-weight="800"
+          font-family="Segoe UI, Arial">${escapeXml(title)}</text>
 
-    <text x="${x0}" y="${y1-18}" font-size="20" fill="#455a64" font-family="Segoe UI, Arial">${escapeXml(top)}</text>
-    <rect x="${x0}" y="${y1}" width="${aW}" height="${barH}" rx="10" ry="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2"/>
-    <text x="${x0 + aW/2}" y="${y1+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(a)}</text>
-
-    <text x="${x0}" y="${y2-18}" font-size="20" fill="#455a64" font-family="Segoe UI, Arial">${escapeXml(bottom)}</text>
-    <rect x="${x0}" y="${y2}" width="${aW}" height="${barH}" rx="10" ry="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2"/>
-    <rect x="${x0 + aW}" y="${y2}" width="${bW}" height="${barH}" rx="10" ry="10" fill="#fff3e0" stroke="#ffcc80" stroke-width="2"/>
-    <text x="${x0 + aW/2}" y="${y2+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(a)}</text>
-    <text x="${x0 + aW + bW/2}" y="${y2+24}" text-anchor="middle" font-size="18" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(b)}</text>
-
-    <text x="${x0}" y="${y2 + barH + 48}" font-size="18" fill="#455a64" font-family="Segoe UI, Arial" font-weight="700">
-      ${sumTspans}
-    </text>
+    ${textSpans}
   </svg>`.trim();
 
   const encoded=encodeURIComponent(svg)
@@ -310,196 +275,244 @@ function hintDiagramSvg(cfg){
   return "data:image/svg+xml;charset=utf-8," + encoded;
 }
 
-/* ---------------- Question Generators (ALL answers are INTEGERS) ---------------- */
-function genEasy_TimeThroughTunnel(){
-  const L = pick([180,200,240,270,300,360,400,450,500,600,720,900]);
-  const tPole = pick([6,8,9,10,12,15]);
+/* ---------------- Question Generators (6 total) ---------------- */
 
-  const g = gcd(L, tPole);
-  const step = L / g;
-  const k = pick([6,8,10,12,14,16,18,20,24,28,30]);
-  const B = step * k * 10;
-  const tTunnel = (tPole * (L + B)) / L;
+/* Easy 1: tax only on portion above a threshold */
+function genEasy_FlatAboveThreshold(){
+  const who = pick(PEOPLE);
+  const threshold = pick([4000, 5000, 6000]);
+  const rate = pick([3, 5, 8, 10, 12]); // percent
+
+  // ensure integer tax: diff must be multiple of 100 / gcd(rate,100)
+  const need = 100 / gcd(rate, 100);
+  const diff = need * randInt(10, 45); // nice
+  const income = threshold + diff;
+  const tax = diff * rate / 100;
 
   const lines = [
-    `A train is ${L} m long.`,
-    `It passes a pole in ${tPole} s.`,
-    `At the same speed, it passes through a tunnel that is ${B} m long.`,
-    `How many seconds does it take to pass through the tunnel?`
+    `${who}'s monthly salary is ${money(income)}.`,
+    `By the rule, only the part ABOVE ${money(threshold)} is taxed, at a rate of ${pct(rate)}.`,
+    `How much tax should ${who} pay for this month (in dollars)?`
   ];
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a pole: distance = train length",
-      bottomLabel: "Passing a tunnel: distance = train length + tunnel length",
-      aLabel: `Train: ${L} m`,
-      bLabel: `Tunnel: ${B} m`,
-      sumLabel: `Total distance = ${L + B} m`
-    }),
-    value: tTunnel,
-    hint: "Hint: Passing a pole uses distance = train length. Passing a tunnel uses distance = train length + tunnel length. Speed is the same."
-  };
+  const diagram = hintCardSvg([
+    "Use a line segment:",
+    `Total salary = ${money(threshold)} (not taxed) + (salary − ${money(threshold)}) (taxed).`,
+    `Tax = (salary − ${money(threshold)}) × ${rate}%.`
+  ], "Hint (Split into Parts)");
+
+  return { img: makeSvgTextCard(lines), diagram, value: tax, hint: "Split: tax-free part + taxable part above the threshold." };
 }
 
-function genEasy_FindBridgeLength(){
-  const v = pick([12,15,18,20,24,25,30,36]);
-  const tTree = pick([30,40,45,50,60,75]);
-  const L = v * tTree;
-  const T = tTree + pick([60,90,120,150,180,240,300]);
-  const bridge = v * T - L;
+/* Easy 2: total price includes VAT, find net price */
+function genEasy_ReverseVAT(){
+  const who = pick(PEOPLE);
+  const item = pick(ITEMS);
+  const shop = pick(SHOPS);
+
+  const vat = pick([12.5, 15, 20, 25]); // %
+  // Choose net so total is integer
+  let denom = 1;
+  if(vat === 12.5) denom = 8;        // factor 9/8
+  else if(vat === 15) denom = 20;    // factor 23/20
+  else if(vat === 20) denom = 5;     // factor 6/5
+  else if(vat === 25) denom = 4;     // factor 5/4
+
+  const net = denom * randInt(40, 140);
+  const total = Math.round(net * (1 + vat/100)); // integer by construction
 
   const lines = [
-    `A train passes a tree in ${tTree} s.`,
-    `The train then passes a bridge from front-on to back-off in ${T} s.`,
-    `Assume the speed stays the same.`,
-    `If the train is ${L} m long, how long is the bridge (in meters)?`
+    `${who} buys ${item} from ${shop}.`,
+    `The total paid is ${money(total)} (this INCLUDES VAT).`,
+    `VAT is ${pct(vat)} of the net (before-tax) price.`,
+    `What is the net price (in dollars)?`
   ];
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a tree: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ${L} m`,
-      bLabel: `Bridge: ? m`,
-      sumLabel: `Distance = speed × time`
-    }),
-    value: bridge,
-    hint: "Hint: Speed = (train length) ÷ (tree time). Then bridge length = (speed × bridge time) − train length."
-  };
+  const diagram = hintCardSvg([
+    "Line segment idea:",
+    "Total = Net + VAT.",
+    `VAT = ${vat}% of Net, so Total = (1 + ${vat}%) × Net.`,
+    "Net = Total ÷ (1 + VAT rate)."
+  ], "Hint (Total = Net + VAT)");
+
+  return { img: makeSvgTextCard(lines), diagram, value: net, hint: "Total = Net × (1 + VAT rate). So Net = Total ÷ (1 + VAT rate)." };
 }
 
-function genMedium_FindTrainLength_Ms(){
-  const v = pick([12,15,18,20,24,25,30,36,40]);
-  const T = pick([80,90,100,120,140,150,160,180,200]);
-  const totalDist = v * T;
+/* Medium 1: progressive monthly tax, compute tax */
+function genMedium_ProgressiveCompute(){
+  const who = pick(PEOPLE);
 
-  const L = pick([300,360,400,450,500,600,720,800,900,1000,1200]);
-  const B = totalDist - L;
-  if(B <= 150 || B > 9000) return genMedium_FindTrainLength_Ms();
+  // Brackets: first A tax-free; next B at r1%; remaining at r2%
+  const A = pick([3000, 4000, 5000]);
+  const B = pick([2000, 3000, 4000]);
+  const r1 = pick([8, 10, 12]);
+  const r2 = pick([18, 20, 22]);
+
+  // ensure integer tax: choose income so (income-A-B) is multiple of 10 and also taxable parts meet integer
+  const extra = 10 * randInt(50, 180);
+  const income = A + B + extra;
+
+  const tax = (B * r1 / 100) + (extra * r2 / 100);
 
   const lines = [
-    `A train travels at ${v} m/s.`,
-    `It takes ${T} s to pass completely over a bridge.`,
-    `The bridge is ${B} m long.`,
-    `How long is the train (in meters)?`
+    `${who}'s monthly income is ${money(income)}.`,
+    `Tax rule: first ${money(A)} is tax-free;`,
+    `the next ${money(B)} is taxed at ${pct(r1)}; anything above that is taxed at ${pct(r2)}.`,
+    `How much tax does ${who} pay (in dollars)?`
   ];
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a point: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ? m`,
-      bLabel: `Bridge: ${B} m`,
-      sumLabel: `Total distance = ${totalDist} m`
-    }),
-    value: L,
-    hint: "Hint: Total distance while passing the bridge = speed × time = train length + bridge length."
-  };
+  const diagram = hintCardSvg([
+    "Draw one line segment for the income and split into 3 parts:",
+    `Part 1: ${money(A)} at 0% (tax-free).`,
+    `Part 2: ${money(B)} at ${r1}%.`,
+    `Part 3: Remaining (income − ${money(A)} − ${money(B)}) at ${r2}%.`,
+    "Total tax = tax(part 2) + tax(part 3)."
+  ], "Hint (Brackets)");
+
+  return { img: makeSvgTextCard(lines), diagram, value: tax, hint: "Split income into bracket parts and add the tax from each taxed part." };
 }
 
-function genMedium_FindTrainLength_Mmin(){
-  const v = pick([1800,2000,2100,2400,2700,3000]);
-  const T = pick([2,3,4,5]);
-  const totalDist = v * T;
+/* Medium 2: yearly tax table above threshold; given tax, find total income */
+function genMedium_FindIncomeFromTaxTable(){
+  const who = pick(PEOPLE);
+  const base = 60000;
 
-  const L = pick([600,700,800,900,1000,1100,1200,1300,1400,1500]);
-  const B = totalDist - L;
-  if(B <= 300 || B > 8000) return genMedium_FindTrainLength_Mmin();
+  // Table on the amount (Income - 60000):
+  // 0–36000 at 3%
+  // 36000–144000 at 10% (for the part above 36000)
+  // above 144000 at 20% (not used here)
+  const chooseSecond = Math.random() < 0.55;
+
+  let remainder, tax;
+  if(!chooseSecond){
+    // first bracket: remainder <= 36000, choose multiple of 100 for integer tax at 3%
+    remainder = 100 * randInt(50, 360); // 5000..36000
+    tax = remainder * 3 / 100;
+  }else{
+    // second bracket: remainder in (36000, 144000], choose (remainder-36000) multiple of 10 for integer
+    const extra = 10 * randInt(200, 900); // 2000..9000
+    remainder = 36000 + extra;
+    tax = 36000 * 3 / 100 + extra * 10 / 100; // 1080 + extra/10
+  }
+
+  const income = base + remainder;
 
   const lines = [
-    `A train moves at ${v} m/min.`,
-    `It takes ${T} min for the whole train to pass over a bridge.`,
-    `The bridge is ${B} m long.`,
-    `What is the train's length (in meters)?`
+    `${who}'s annual income is above ${money(base)}. Only the part ABOVE ${money(base)} is taxable.`,
+    `Tax table for (income − ${money(base)}):`,
+    `• Up to ${money(36000)}: ${pct(3)}`,
+    `• The part from ${money(36000)} to ${money(144000)}: ${pct(10)}`,
+    `• Above ${money(144000)}: ${pct(20)}`,
+    `${who} paid ${money(tax)} tax in total. What is ${who}'s annual income (in dollars)?`
   ];
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Passing a point: distance = train length",
-      bottomLabel: "Passing a bridge: distance = train length + bridge length",
-      aLabel: `Train: ? m`,
-      bLabel: `Bridge: ${B} m`,
-      sumLabel: `Total distance = ${totalDist} m`
-    }),
-    value: L,
-    hint: "Hint: Use (speed × time) = train length + bridge length. Keep units consistent."
-  };
+  const diagram = hintCardSvg([
+    "Let R = income − 60000.",
+    "If tax is small, it may be in the 3% bracket: tax = 3% of R.",
+    "If R > 36000: tax = 3% of 36000 + 10% of (R − 36000).",
+    "Solve for R, then income = 60000 + R."
+  ], "Hint (Work Backwards)");
+
+  return { img: makeSvgTextCard(lines), diagram, value: income, hint: "Work backwards: find R = income − 60000 from the bracket formula, then add 60000." };
 }
 
-function genHard_TwoBridgesFindTrain(){
-  const v = pick([24,30,36,40,45,48]);
-  const L = pick([120,150,180,200,240,300,360,400,450]);
+/* Hard 1: after-tax income given under threshold+flat rate, find gross */
+function genHard_FindGrossFromNet(){
+  const who = pick(PEOPLE);
+  const threshold = pick([4500, 5000, 5500, 6000]);
+  const rate = pick([10, 12, 15, 20]); // %
 
-  const base = v;
-  const k1 = pick([6,7,8,9,10,11,12,14,15,16]);
-  const k2 = k1 + pick([2,3,4,5,6]);
-  const total1 = base * k1;
-  const total2 = base * k2;
-  const B1 = total1 - L;
-  const B2 = total2 - L;
-  if(B1 <= 80 || B2 <= 80) return genHard_TwoBridgesFindTrain();
-
-  const t1 = k1;
-  const t2 = k2;
+  // net = threshold + (gross-threshold)*(1-rate)
+  // choose gross so net integer and also nice: take gross = threshold + need*k
+  // need ensures (gross-threshold)*rate/100 integer (for clean net); pick multiple of 100/gcd(rate,100)
+  const need = 100 / gcd(rate, 100);
+  const taxable = need * randInt(40, 160);
+  const gross = threshold + taxable;
+  const tax = taxable * rate / 100;
+  const net = gross - tax;
 
   const lines = [
-    `The same train passes two different bridges at the same constant speed.`,
-    `It takes ${t1} s to pass a ${B1} m bridge.`,
-    `It takes ${t2} s to pass a ${B2} m bridge.`,
-    `How long is the train (in meters)?`
+    `${who} has a monthly salary that is taxed like this:`,
+    `• The first ${money(threshold)} is tax-free.`,
+    `• The part above ${money(threshold)} is taxed at ${pct(rate)}.`,
+    `After tax, ${who} receives ${money(net)} (net pay).`,
+    `What was ${who}'s gross salary before tax (in dollars)?`
   ];
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: "Each bridge pass uses: distance = train + bridge",
-      bottomLabel: "Same speed in both cases",
-      aLabel: "Train: ? m",
-      bLabel: "Bridge: given",
-      sumLabel: "Set up: (L + B1) ÷ t1 = (L + B2) ÷ t2"
-    }),
-    value: L,
-    hint: "Hint: Let train length be L. Then (L + B1)/t1 = (L + B2)/t2. Solve for L."
-  };
+  const diagram = hintCardSvg([
+    "Use the line segment method:",
+    "Gross = tax-free part + taxable part.",
+    "Net = tax-free part + (taxable part after tax).",
+    `Taxable part after tax = (1 − ${rate}%) × taxable part.`,
+    "Work backwards to find taxable part, then add the threshold."
+  ], "Hint (Net to Gross)");
+
+  return { img: makeSvgTextCard(lines), diagram, value: gross, hint: "Net = threshold + (gross−threshold)×(1−rate). Solve for gross." };
 }
 
-function genHard_FindTrainFromTwoTimes(){
-  const tPole = pick([6,8,9,10,12,15]);
-  const multiplierNum = pick([11,12,13,14,15,16,17,18,19,20,22,24,25]);
-  const multiplierDen = pick([2,3,4,5]);
-  const ratioG = gcd(multiplierNum, multiplierDen);
-  const mN = multiplierNum / ratioG;
-  const mD = multiplierDen / ratioG;
+/* Hard 2: discount then VAT, given final price, find original net (before discount & VAT) */
+function genHard_DiscountThenVATReverse(){
+  const who = pick(PEOPLE);
+  const item = pick(ITEMS);
+  const shop = pick(SHOPS);
 
-  const tPole2 = tPole * mD;
-  const tTunnel = tPole2 * mN;
+  // final = P * (1-discount) * (1+vat)
+  // Choose combos so P is integer from final.
+  const combos = [
+    {disc:10, vat:20, factorNum:27, factorDen:25}, // final = P*(27/25) => P = final*25/27 (need final multiple 27)
+    {disc:25, vat:15, factorNum:69, factorDen:80}, // final = P*(69/80) => P = final*80/69 (need final multiple 69)
+    {disc:20, vat:15, factorNum:92, factorDen:100}, // final = P*(92/100)=P*23/25 => P = final*25/23 (need final multiple 23)
+    {disc:15, vat:25, factorNum:425, factorDen:400} // final = P*(425/400)=P*17/16 => P = final*16/17 (need final multiple 17)
+  ];
+  const c = pick(combos);
 
-  const L = pick([180,200,240,270,300,360,400,450,500,600,720,900]);
-  const B = (L * (tTunnel - tPole2)) / tPole2;
-  if(!Number.isInteger(B) || B <= 200) return genHard_FindTrainFromTwoTimes();
+  let P, finalPaid;
+
+  if(c.factorNum===27 && c.factorDen===25){
+    finalPaid = 27 * randInt(60, 180);
+    P = finalPaid * 25 / 27;
+  }else if(c.factorNum===69 && c.factorDen===80){
+    finalPaid = 69 * randInt(40, 120);
+    P = finalPaid * 80 / 69;
+  }else if(c.factorNum===92 && c.factorDen===100){
+    finalPaid = 23 * randInt(80, 260);   // multiple 23
+    P = finalPaid * 25 / 23;
+  }else{
+    finalPaid = 17 * randInt(80, 240);   // multiple 17
+    P = finalPaid * 16 / 17;
+  }
+
+  P = Math.round(P);
 
   const lines = [
-    `A train passes a pole in ${tPole2} s.`,
-    `At the same speed, it takes ${tTunnel} s to pass through a tunnel that is ${B} m long.`,
-    `How long is the train (in meters)?`
+    `${who} buys ${item} from ${shop}.`,
+    `The shop gives a ${pct(c.disc)} discount on the net price (before VAT).`,
+    `Then VAT of ${pct(c.vat)} is added to the discounted price.`,
+    `The final amount paid is ${money(finalPaid)}.`,
+    `What was the original net price BEFORE the discount and VAT (in dollars)?`
   ];
 
-  return {
-    img: makeSvgTextCard(lines, SVG_TITLE),
-    diagram: hintDiagramSvg({
-      topLabel: `Pole time = ${tPole2} s (distance = train length)`,
-      bottomLabel: `Tunnel time = ${tTunnel} s (distance = train + tunnel)`,
-      aLabel: "Train: ? m",
-      bLabel: `Tunnel: ${B} m`,
-      sumLabel: "Use equal speed: L/tPole = (L + tunnel)/tTunnel"
-    }),
-    value: L,
-    hint: "Hint: Speed is the same. Use L/tPole = (L + tunnel)/tTunnel and solve for L."
-  };
+  const diagram = hintCardSvg([
+    "Think as a line segment scaling:",
+    `After discount: price becomes (1 − ${c.disc}%) × P.`,
+    `After VAT: price becomes (1 + ${c.vat}%) × (discounted price).`,
+    "Final = P × (1 − discount) × (1 + VAT).",
+    "So P = Final ÷ [(1 − discount) × (1 + VAT)]."
+  ], "Hint (Reverse the Multipliers)");
+
+  return { img: makeSvgTextCard(lines), diagram, value: P, hint: "Original P = Final ÷ [(1−discount)×(1+VAT)]." };
+}
+
+/* ---------------- Build exactly 6 (Easy2, Medium2, Hard2) ---------------- */
+function buildSixQuestions(){
+  return [
+    genEasy_FlatAboveThreshold(),
+    genEasy_ReverseVAT(),
+    genMedium_ProgressiveCompute(),
+    genMedium_FindIncomeFromTaxTable(),
+    genHard_FindGrossFromNet(),
+    genHard_DiscountThenVATReverse()
+  ];
 }
 
 /* ---------------- State ---------------- */
@@ -575,15 +588,8 @@ function generateQuiz(){
   let tries=0;
   let built=null;
 
-  while(tries<20){
-    built = [
-      genEasy_TimeThroughTunnel(),
-      genEasy_FindBridgeLength(),
-      genMedium_FindTrainLength_Ms(),
-      genMedium_FindTrainLength_Mmin(),
-      genHard_TwoBridgesFindTrain(),
-      genHard_FindTrainFromTwoTimes()
-    ];
+  while(tries<30){
+    built = buildSixQuestions();
     const sig = answersSignature(built);
     if(sig !== lastAnswerSignature){
       lastAnswerSignature = sig;
@@ -604,7 +610,7 @@ function generateQuiz(){
       img: built[i].img,
       diagram: built[i].diagram || "",
       value: built[i].value,
-      hint: built[i].hint,
+      hint: built[i].hint || "",
       userValue:"",
       isCorrect:false
     });
@@ -685,10 +691,10 @@ function renderQuestion(){
 
   quizContent.innerHTML=`
     <p class="question-text">Question ${currentQuestionIndex+1} of ${TOTAL_QUESTIONS}</p>
-    <div class="part-title">${PART_TITLES[q.partIndex]}</div>
+    <div class="part-title">${escapeXml(PART_TITLES[q.partIndex])}</div>
 
     <div class="single-question">
-      <div style="font-weight:800;margin-bottom:8px;">${fullLabel}</div>
+      <div style="font-weight:800;margin-bottom:8px;">${escapeXml(fullLabel)}</div>
 
       <div class="img-wrap">
         <img class="q-img" src="${q.img}" alt="Question image">
@@ -697,8 +703,8 @@ function renderQuestion(){
       <div class="answer-row">
         <div style="font-weight:700;">Answer (whole number):</div>
         <input id="answerInput" class="answer-box" type="text" inputmode="numeric"
-               placeholder="Type a whole number (e.g., 12)"
-               value="${q.userValue||""}">
+               placeholder="Type a whole number (e.g., 780)"
+               value="${escapeXml(q.userValue||"")}">
       </div>
 
       <div id="checkFeedback" style="display:none;"></div>
@@ -708,7 +714,7 @@ function renderQuestion(){
       </div>
 
       <div id="hintBox" class="hint">
-        <div>${hasHint ? q.hint : ""}</div>
+        <div>${hasHint ? escapeXml(q.hint) : ""}</div>
         ${hintDiagramHtml}
       </div>
     </div>
@@ -722,7 +728,7 @@ function renderQuestion(){
   const hintBox=document.getElementById("hintBox");
   if(hintBtn && hintBox && hasHint){
     hintBtn.addEventListener("click", ()=>{
-      const shown = hintBox.style.display==="block";
+      const shown=hintBox.style.display==="block";
       hintBox.style.display = shown ? "none" : "block";
       hintBtn.textContent = shown ? "Hint" : "Hide Hint";
     });
@@ -755,16 +761,15 @@ function calculateAndShowResults(){
   quizSubmitted=true;
 
   let correctCount=0;
-  questions.forEach(q=>{
-    const val=parseIntegerAnswer(q.userValue||"");
-    q.isCorrect=isCorrectInt(val, q.value);
+  questions.forEach((q,i)=>{
+    gradeOneQuestion(i);
     if(q.isCorrect) correctCount++;
   });
 
   updateSidebarStatus();
 
   let html=`
-    <h3>Results for ${studentName}</h3>
+    <h3>Results for ${escapeXml(studentName)}</h3>
     <p>Set: <strong>${setCounter}</strong></p>
     <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
     <p>Start time: <strong>${attemptStartTime.toLocaleTimeString()}</strong></p>
@@ -784,9 +789,9 @@ function calculateAndShowResults(){
     html+=`
       <tr class="${q.isCorrect ? "correct-answer":"incorrect-answer"}">
         <td>${i+1}</td>
-        <td>${partLbl}</td>
+        <td>${escapeXml(partLbl)}</td>
         <td><img class="thumb" src="${q.img}" alt="Q${i+1}"></td>
-        <td>${ua==="" ? "—" : ua}</td>
+        <td>${ua==="" ? "—" : escapeXml(ua)}</td>
         <td><strong>${q.value}</strong></td>
         <td>${ua==="" ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
       </tr>
@@ -804,6 +809,7 @@ function calculateAndShowResults(){
   checkButton.style.display="none";
   saveButton.style.display="inline-block";
 
+  // reset timer for review attempt
   elapsedMs=0; isPaused=false; quizStartTime=new Date();
   pauseButton.textContent="Pause";
   startTimerInterval();
@@ -849,7 +855,7 @@ checkButton.addEventListener("click", ()=>{
     box.innerHTML=`✅ Correct!`;
     checkButton.style.display="none";
   }else{
-    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${q.value}</strong> (whole number)`;
+    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${q.value}</strong>`;
     checkButton.style.display="inline-block";
   }
 });
@@ -863,18 +869,14 @@ function formatDateForFilename(date){
 }
 function saveCurrentResultAsTxt(){
   saveCurrentInput();
-
   if(!quizSubmitted){
-    questions.forEach(q=>{
-      const val=parseIntegerAnswer(q.userValue||"");
-      q.isCorrect=isCorrectInt(val,q.value);
-    });
+    questions.forEach((q,i)=>gradeOneQuestion(i));
   }
   let correctCount=0;
   questions.forEach(q=>{ if(q.isCorrect) correctCount++; });
 
   const lines=[];
-  lines.push("Train & Bridge Problems - Current Result");
+  lines.push("Tax Problems - Line Segment Method - Current Result");
   lines.push("Student: "+studentName);
   lines.push("Set: "+setCounter);
   if(quizStartTime) lines.push("Start time: "+quizStartTime.toLocaleString());
@@ -901,7 +903,7 @@ function saveCurrentResultAsTxt(){
   const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
   const ts=formatDateForFilename(new Date());
   a.href=url;
-  a.download=`TrainBridge_${safeName}_Set${setCounter}_${ts}.txt`;
+  a.download=`TaxProblems_${safeName}_Set${setCounter}_${ts}.txt`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -909,7 +911,7 @@ function saveCurrentResultAsTxt(){
 }
 saveButton.addEventListener("click", saveCurrentResultAsTxt);
 
-/* Pause/Resume */
+/* Pause/Resume (no pop-up) */
 pauseButton.addEventListener("click", ()=>{
   if(!quizStartTime && elapsedMs===0 && !quizSubmitted) return;
   if(isPaused){ resumeTimer(); pauseButton.textContent="Pause"; }
@@ -933,7 +935,7 @@ generateBtn.addEventListener("click", ()=>{
   renderQuestion();
 });
 
-/* ---------------- Export Questions PDF (same behavior as your other quiz) ---------------- */
+/* ---------------- Export Questions PDF (2 per page, DYAA header) ---------------- */
 function waitForImages(container){
   const imgs = Array.from(container.querySelectorAll("img"));
   return Promise.all(imgs.map(img => {
@@ -966,7 +968,6 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
   try{
     let groupDiv=null;
 
-    // 2 questions per PDF page
     questions.forEach((q, idx)=>{
       if(idx%2===0){
         groupDiv=document.createElement("div");
@@ -974,7 +975,6 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
         groupDiv.style.marginBottom="20px";
         groupDiv.style.boxSizing="border-box";
 
-        // DYAA header
         const header=document.createElement("div");
         header.innerHTML=`
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
@@ -987,7 +987,7 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
             </div>
           </div>
           <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
-          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Train & Bridge Problems</div>
+          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">Tax Problems — Line Segment Method</div>
           <div style="color:#546e7a;font-weight:800;margin:0 0 10px 0;">Questions (Set ${setCounter})</div>
         `;
         groupDiv.appendChild(header);
@@ -1026,7 +1026,7 @@ exportQuestionsBtn.addEventListener("click", async ()=>{
 
     const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
     const ts=formatDateForFilename(new Date());
-    pdf.save(`TrainBridge_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
+    pdf.save(`TaxProblems_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
   } finally {
     document.body.removeChild(wrapper);
   }
@@ -1063,11 +1063,11 @@ function showStartScreen(){
   }
 
   quizContent.innerHTML=`
-    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> train/bridge word problems (all answers are <strong>whole numbers</strong>).</p>
+    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> tax word problems using the <strong>line segment method</strong>.</p>
     <ul style="margin-top:6px;color:#555;line-height:1.7;">
-      <li><strong>Part 1 (Easy):</strong> 2 questions</li>
-      <li><strong>Part 2 (Medium):</strong> 2 questions</li>
-      <li><strong>Part 3 (Hard):</strong> 2 questions</li>
+      <li><strong>Easy:</strong> 2 questions</li>
+      <li><strong>Medium:</strong> 2 questions</li>
+      <li><strong>Hard:</strong> 2 questions</li>
     </ul>
     <p style="margin-top:10px;">Please enter your name to begin:</p>
 
