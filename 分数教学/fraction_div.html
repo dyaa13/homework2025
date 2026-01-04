@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fractions Skills — Division (Proper / Improper / Mixed / Word Problems)</title>
+
+  <style>
+    body{
+      font-family:'Segoe UI',Tahoma,sans-serif;
+      background:#f4f4f9;margin:0;padding:20px;color:#333;
+    }
+    .quiz-container{
+      max-width:900px;margin:40px auto;background:#fff;padding:30px;
+      border-radius:12px;box-shadow:0 6px 15px rgba(0,0,0,0.1);
+    }
+    #headerLogo{
+      display:flex;align-items:center;margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;padding-bottom:10px;
+    }
+    .logo-icon{width:40px;height:40px;background:#0d47a1;border-radius:4px;}
+    .logo-text span.edu{font-size:.9em;color:#ff9800;font-weight:700;margin-left:10px;}
+
+    .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;}
+    .top-left{display:flex;flex-direction:column;gap:4px;}
+    #timerDisplay{font-size:.95em;color:#333;}
+    #studentDisplay{font-size:.95em;color:#333;}
+    #studentDisplay strong{color:#0d47a1;}
+
+    .quiz-main{display:flex;gap:20px;}
+    .sidebar{
+      width:170px;border-right:1px solid #ddd;padding-right:10px;display:none;
+    }
+    .sidebar h4{margin:0 0 8px;font-size:.95em;border-bottom:1px solid #eee;padding-bottom:4px;}
+    .sidebar ul{list-style:none;padding:0;margin:0;}
+    .sidebar li{padding:6px;cursor:pointer;border-radius:4px;font-size:.9em;}
+    .sidebar li.active{outline:2px solid #1976d2;font-weight:600;}
+    .sidebar li.answered{border-left:4px solid #4caf50;}
+    .sidebar li.correct{background:#d4edda;border-left:4px solid #28a745;}
+    .sidebar li.incorrect{background:#f8d7da;border-left:4px solid #f44336;}
+
+    #quizContent{flex:1;}
+    .question-text{font-size:1.1em;margin-bottom:8px;}
+    .part-title{font-weight:bold;margin-bottom:8px;}
+    .single-question{margin:6px 0;line-height:1.9;}
+    .answer-box{width:280px;padding:6px;font-size:1em;margin-top:8px;}
+
+    .hint{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:10px;
+      background:#fff7e6;
+      border:1px solid #ffe0b2;
+      color:#5d4037;
+      font-size:0.95em;
+    }
+
+    .button-container{
+      display:flex;justify-content:space-between;gap:10px;margin-top:14px;
+    }
+    button{
+      padding:10px 20px;border:none;color:#fff;border-radius:6px;cursor:pointer;font-size:1em;
+      white-space:nowrap;
+    }
+    #nextButton{background:#4caf50;}
+    #backButton{background:#039be5;}
+    #generateButton{background:#ff9800;}
+    #submitButton{background:#9c27b0;}
+    #saveButton{background:#607d8b;}
+    #pauseButton{background:#f57c00;}
+    #checkButton{background:#455a64;}
+    #exportPdfButton{background:#673ab7;}
+
+    table.review-table{width:100%;border-collapse:collapse;margin-top:20px;}
+    .review-table th,.review-table td{border:1px solid #ccc;padding:6px;font-size:.85em;text-align:center;vertical-align:top;}
+    .review-table th{background:#f2f2f2;}
+    .correct-answer{background:#d4edda;}
+    .incorrect-answer{background:#f8d7da;}
+
+    .frac{display:inline-block;text-align:center;vertical-align:middle;min-width:22px;}
+    .frac .top{display:block;border-bottom:1px solid #000;padding:0 2px;}
+    .frac .bottom{display:block;padding:0 2px;font-size:.9em;}
+
+    .check-feedback{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:10px;
+      background:#f7f7f7;
+      border:1px solid #e0e0e0;
+      color:#333;
+      font-size:0.95em;
+    }
+
+    /* Mixed number display (small) */
+    :root{
+      --mixWholeW: 78px;
+      --mixFracW: 78px;
+      --mixNumH: 26px;
+      --mixDenH: 26px;
+      --mixBarH: 2px;
+      --mixBorder: 2px;
+      --mixRadius: 8px;
+    }
+    .mix3{
+      display:inline-grid;
+      grid-template-columns: var(--mixWholeW) var(--mixFracW);
+      column-gap: 10px;
+      align-items: center;
+      vertical-align: middle;
+    }
+    .mix-cell{
+      box-sizing: border-box;
+      border: var(--mixBorder) solid #333;
+      border-radius: var(--mixRadius);
+      background:#fff;
+      font-weight: 700;
+      text-align: center;
+      font-size: 0.95em;
+    }
+    .mix-whole{
+      width: var(--mixWholeW);
+      height: calc(var(--mixNumH) + var(--mixDenH) + var(--mixBarH));
+      display:flex;align-items:center;justify-content:center;
+    }
+    .mix-frac{
+      width: var(--mixFracW);
+      display:grid;
+      grid-template-rows: var(--mixNumH) var(--mixBarH) var(--mixDenH);
+      align-items: stretch;
+    }
+    .mix-num, .mix-den{
+      width: var(--mixFracW);
+      height: 100%;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .mix-bar{
+      width: var(--mixFracW);
+      height: var(--mixBarH);
+      background:#111;
+      border-radius: 1px;
+    }
+
+    @media (max-width:700px){
+      .quiz-main{flex-direction:column;}
+      .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
+      .button-container{flex-wrap:wrap;}
+      .top-left{flex-direction:column;}
+      .answer-box{width:100%;max-width:340px;}
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text"><span class="edu">DYAA EDUCATION</span></div>
+  </div>
+
+  <div class="top-bar">
+    <div class="top-left">
+      <div id="timerDisplay">Time: 00:00</div>
+      <div id="studentDisplay">Student: <strong>—</strong></div>
+    </div>
+    <div>
+      <button id="pauseButton" style="display:none;">Pause</button>
+      <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportPdfButton" style="display:none;">Export Questions PDF</button>
+    </div>
+  </div>
+
+  <h2>Fractions Skills — Division</h2>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+
+  <div id="navButtons" class="button-container" style="display:none;">
+    <button id="backButton" style="display:none;">Previous</button>
+    <button id="submitButton" style="display:none;">Submit &amp; View Results</button>
+    <button id="nextButton" style="display:none;">Next</button>
+    <button id="checkButton" style="display:none;">Check</button>
+    <button id="saveButton" style="display:none;">Save Current Result</button>
+  </div>
+</div>
+
+<script>
+/* ---------------- PARTS ---------------- */
+const PART_TITLES = [
+  "A. Fraction ÷ Fraction — 2 questions",
+  "B. Fraction ÷ Integer — 2 questions",
+  "C. Fraction ÷ Decimal — 2 questions",
+  "D. Improper Fraction ÷ Improper Fraction — 1 question",
+  "E. Improper Fraction ÷ Integer — 1 question",
+  "F. Improper Fraction ÷ Decimal — 1 question",
+  "G. Mixed Number ÷ Mixed Number — 2 questions",
+  "H. Mixed Number ÷ Integer — 2 questions",
+  "I. Mixed Number ÷ Decimal — 2 questions",
+  "J. Three Numbers with Division (÷ ÷) — 3 questions",
+  "K. One-step Word Problems (fraction division) — 2 questions",
+  "L. Multi-step Word Problems (2+ steps) — 3 questions"
+];
+const PART_COUNTS  = [2,2,2,1,1,1,2,2,2,3,2,3];
+const PART_LETTERS = ["A","B","C","D","E","F","G","H","I","J","K","L"];
+const TOTAL_QUESTIONS = PART_COUNTS.reduce((a,b)=>a+b,0);
+
+/* ---------------- Utils ---------------- */
+function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function choice(arr){ return arr[randInt(0, arr.length-1)]; }
+function gcd(a,b){
+  a=Math.abs(a); b=Math.abs(b);
+  while(b!==0){ const t=b; b=a%b; a=t; }
+  return a===0?1:a;
+}
+function simplifyFraction(fr){
+  let n=fr.n, d=fr.d;
+  if(d<0){ n=-n; d=-d; }
+  const g=gcd(n,d);
+  return {n:n/g, d:d/g};
+}
+function fractionToValue(fr){ return fr.n/fr.d; }
+function fractionToString(fr){
+  const s=simplifyFraction(fr);
+  if(s.d===1) return String(s.n);
+  return `${s.n}/${s.d}`;
+}
+function fractionToHtml(fr){
+  const s=simplifyFraction(fr);
+  if(s.d===1) return String(s.n);
+  return `<span class="frac"><span class="top">${s.n}</span><span class="bottom">${s.d}</span></span>`;
+}
+function mulFrac(a,b){ return simplifyFraction({n:a.n*b.n, d:a.d*b.d}); }
+function divFrac(a,b){
+  // a ÷ b = a × (1/b)
+  return simplifyFraction({n:a.n*b.d, d:a.d*b.n});
+}
+
+/* ---------------- Mixed display ---------------- */
+function mixedBoxesHtml(whole, num, den){
+  return `
+    <span class="mix3" aria-label="mixed number display">
+      <span class="mix-cell mix-whole">${whole}</span>
+      <span class="mix-frac" aria-label="fraction part">
+        <span class="mix-cell mix-num">${num}</span>
+        <span class="mix-bar" aria-hidden="true"></span>
+        <span class="mix-cell mix-den">${den}</span>
+      </span>
+    </span>
+  `;
+}
+function mixedToImproper(m){
+  return simplifyFraction({n: m.whole*m.den + m.num, d: m.den});
+}
+
+/* ---------------- Decimals as fractions (simple) ---------------- */
+const DECIMAL_POOL = [
+  {str:"0.2",  fr:{n:1,d:5}},
+  {str:"0.25", fr:{n:1,d:4}},
+  {str:"0.4",  fr:{n:2,d:5}},
+  {str:"0.5",  fr:{n:1,d:2}},
+  {str:"0.6",  fr:{n:3,d:5}},
+  {str:"0.75", fr:{n:3,d:4}},
+  {str:"1.2",  fr:{n:6,d:5}},
+  {str:"1.5",  fr:{n:3,d:2}},
+  {str:"2.4",  fr:{n:12,d:5}}
+];
+
+/* ---------------- Formatting ---------------- */
+function formatMs(ms){
+  const totalSec=Math.floor(ms/1000);
+  const min=Math.floor(totalSec/60);
+  const sec=totalSec%60;
+  return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+
+/* ---------------- URL name param ---------------- */
+function getNameFromUrl(){
+  try{
+    const sp = new URLSearchParams(window.location.search);
+    const raw = sp.get("name");
+    if(!raw) return null;
+    const name = String(raw).trim();
+    return name.length ? name : null;
+  }catch(e){ return null; }
+}
+function updateStudentDisplay(){
+  const el = document.getElementById("studentDisplay");
+  if(el) el.innerHTML = `Student: <strong>${studentName || "—"}</strong>`;
+}
+
+/* ---------------- Parse Answers ---------------- */
+function parseAnswer(str){
+  let s=(str||"").trim();
+  if(s==="") return NaN;
+
+  let sign=1;
+  if(s[0]==="+"){ s=s.slice(1).trim(); }
+  else if(s[0]==="-"){ sign=-1; s=s.slice(1).trim(); }
+  if(s==="") return NaN;
+
+  // mixed: "2 1/3"
+  const spaceParts=s.split(/\s+/);
+  if(spaceParts.length===2 && spaceParts[1].includes("/")){
+    const whole=Number(spaceParts[0]);
+    const fracParts=spaceParts[1].split("/");
+    if(fracParts.length!==2) return NaN;
+    const num=Number(fracParts[0]);
+    const den=Number(fracParts[1]);
+    if(!Number.isFinite(whole)||!Number.isFinite(num)||!Number.isFinite(den)||den===0) return NaN;
+    const absWhole=Math.abs(whole);
+    const fracVal=num/den;
+    let value=absWhole+fracVal;
+    if(whole<0) value=-value;
+    return sign*value;
+  }
+
+  // fraction: a/b
+  if(s.includes("/")){
+    const parts=s.split("/");
+    if(parts.length!==2) return NaN;
+    const num=Number(parts[0]);
+    const den=Number(parts[1]);
+    if(!Number.isFinite(num)||!Number.isFinite(den)||den===0) return NaN;
+    return sign*(num/den);
+  }
+
+  // decimal/int
+  const n=Number(s);
+  return Number.isFinite(n)?sign*n:NaN;
+}
+function nearlyEqual(a,b,eps=1e-6){
+  if(!Number.isFinite(a)||!Number.isFinite(b)) return false;
+  return Math.abs(a-b)<eps;
+}
+function gradeOneQuestion(i){
+  const q = questions[i];
+  const val = parseAnswer(q.userValue || "");
+  q.isCorrect = nearlyEqual(val, q.value);
+}
+
+/* ---------------- Random building blocks (small + reducible) ---------------- */
+const PROPER_DENS = [3,4,5,6,8,9,10,12];
+const IMPROPER_DENS = [3,4,5,6,7,8,9,10,12];
+
+function randomProperFracReduced(){
+  for(let t=0;t<200;t++){
+    const d=choice(PROPER_DENS);
+    const n=randInt(1,d-1);
+    const f=simplifyFraction({n,d});
+    if(f.n>0 && f.n<f.d) return f;
+  }
+  return simplifyFraction({n:1,d:2});
+}
+function randomImproperFracReduced(){
+  for(let t=0;t<250;t++){
+    const d=choice(IMPROPER_DENS);
+    const n=randInt(d+1, d*2+10);
+    const f=simplifyFraction({n,d});
+    if(f.n>f.d) return f;
+  }
+  return simplifyFraction({n:7,d:4});
+}
+function randomMixedNumber(){
+  for(let t=0;t<300;t++){
+    const whole=randInt(1,4);
+    const d=choice([3,4,5,6,8,9,10,12]);
+    const n=randInt(1,d-1);
+    const fr=simplifyFraction({n,d});
+    if(fr.n>0 && fr.n<fr.d) return {whole, num:fr.n, den:fr.d};
+  }
+  return {whole:2,num:1,den:3};
+}
+
+/* Ensure division stays simple, and "can cancel" when doing a × reciprocal b */
+function hasCancelForDivision(a,b){
+  // a ÷ b = a × (b.d/b.n)
+  // cancellation can happen between a.n and b.n OR between a.d and b.d OR between a.n and b.d etc.
+  // main useful cancellation in multiplication: gcd(a.n, b.n)>1 OR gcd(a.d, b.d)>1 OR gcd(a.n, b.d)>1 OR gcd(b.n, a.d)>1
+  return gcd(a.n,b.n)>1 || gcd(a.d,b.d)>1 || gcd(a.n,b.d)>1 || gcd(b.n,a.d)>1;
+}
+function safeDivPair(getA,getB,needImproperA=false,needImproperB=false){
+  for(let t=0;t<2000;t++){
+    const a=getA();
+    const b=getB();
+    if(needImproperA && !(a.n>a.d)) continue;
+    if(needImproperB && !(b.n>b.d)) continue;
+    if(b.n===0) continue;
+    if(!hasCancelForDivision(a,b)) continue;
+
+    const ans=divFrac(a,b);
+    if(ans.d===0) continue;
+    if(Math.abs(ans.n)<=520 && ans.d<=520) return {a,b,ans};
+  }
+  const a=getA(), b=getB();
+  return {a,b,ans:divFrac(a,b)};
+}
+
+/* ---------------- Question generators ---------------- */
+// A) fraction ÷ fraction (2)
+function qFractionDivFraction(){
+  const {a,b,ans}=safeDivPair(randomProperFracReduced, randomProperFracReduced);
+  return {
+    text:`Compute: ${fractionToHtml(a)} ÷ ${fractionToHtml(b)} = ? <span style="color:#555">(Simplest form.)</span>`,
+    value:fractionToValue(ans),
+    display:fractionToString(ans),
+    displayHtml:fractionToHtml(ans)
+  };
+}
+
+// B) fraction ÷ integer (2)
+function qFractionDivInteger(){
+  for(let t=0;t<2000;t++){
+    const a=randomProperFracReduced();
+    const k=choice([2,3,4,5,6,8,9,10,12]);
+    // a ÷ k = a × 1/k => cancellation if gcd(a.n,k)>1
+    if(gcd(a.n,k)<=1) continue;
+    const ans=divFrac(a,{n:k,d:1});
+    if(ans.n<=520 && ans.d<=520){
+      return {
+        text:`Compute: ${fractionToHtml(a)} ÷ ${k} = ? <span style="color:#555">(Simplest form.)</span>`,
+        value:fractionToValue(ans),
+        display:fractionToString(ans),
+        displayHtml:fractionToHtml(ans)
+      };
+    }
+  }
+  return qFractionDivInteger();
+}
+
+// C) fraction ÷ decimal (2)
+function qFractionDivDecimal(){
+  for(let t=0;t<2500;t++){
+    const a=randomProperFracReduced();
+    const dec=choice(DECIMAL_POOL);
+    const b=simplifyFraction(dec.fr); // decimal as fraction
+    // a ÷ b = a × reciprocal(b) => cancellation often between a.n and b.d or a.d and b.n
+    if(!hasCancelForDivision(a,b)) continue;
+    const ans=divFrac(a,b);
+    if(ans.n<=520 && ans.d<=520 && b.n!==0){
+      return {
+        text:`Compute: ${fractionToHtml(a)} ÷ ${dec.str} = ? <span style="color:#555">(Simplest form.)</span>`,
+        value:fractionToValue(ans),
+        display:fractionToString(ans),
+        displayHtml:fractionToHtml(ans)
+      };
+    }
+  }
+  return qFractionDivDecimal();
+}
+
+// D) improper ÷ improper (1)
+function qImproperDivImproper(){
+  const {a,b,ans}=safeDivPair(randomImproperFracReduced, randomImproperFracReduced, true, true);
+  return {
+    text:`Compute: ${fractionToHtml(a)} ÷ ${fractionToHtml(b)} = ? <span style="color:#555">(Simplest form.)</span>`,
+    value:fractionToValue(ans),
+    display:fractionToString(ans),
+    displayHtml:fractionToHtml(ans)
+  };
+}
+
+// E) improper ÷ integer (1)
+function qImproperDivInteger(){
+  for(let t=0;t<2500;t++){
+    const a=randomImproperFracReduced();
+    const k=choice([2,3,4,5,6,8,9,10,12]);
+    if(gcd(a.n,k)<=1) continue;
+    const ans=divFrac(a,{n:k,d:1});
+    if(ans.n<=520 && ans.d<=520){
+      return {
+        text:`Compute: ${fractionToHtml(a)} ÷ ${k} = ? <span style="color:#555">(Simplest form.)</span>`,
+        value:fractionToValue(ans),
+        display:fractionToString(ans),
+        displayHtml:fractionToHtml(ans)
+      };
+    }
+  }
+  return qImproperDivInteger();
+}
+
+// F) improper ÷ decimal (1)
+function qImproperDivDecimal(){
+  for(let t=0;t<3500;t++){
+    const a=randomImproperFracReduced();
+    const dec=choice(DECIMAL_POOL);
+    const b=simplifyFraction(dec.fr);
+    if(!hasCancelForDivision(a,b)) continue;
+    const ans=divFrac(a,b);
+    if(ans.n<=520 && ans.d<=520){
+      return {
+        text:`Compute: ${fractionToHtml(a)} ÷ ${dec.str} = ? <span style="color:#555">(Simplest form.)</span>`,
+        value:fractionToValue(ans),
+        display:fractionToString(ans),
+        displayHtml:fractionToHtml(ans)
+      };
+    }
+  }
+  return qImproperDivDecimal();
+}
+
+// G) mixed ÷ mixed (2)
+function qMixedDivMixed(){
+  for(let t=0;t<4000;t++){
+    const m1=randomMixedNumber();
+    const m2=randomMixedNumber();
+    const a=mixedToImproper(m1);
+    const b=mixedToImproper(m2);
+    if(!hasCancelForDivision(a,b)) continue;
+    const ans=divFrac(a,b);
+    if(ans.n<=520 && ans.d<=520){
+      return {
+        text:`Compute: ${mixedBoxesHtml(m1.whole,m1.num,m1.den)} ÷ ${mixedBoxesHtml(m2.whole,m2.num,m2.den)} = ? <span style="color:#555">(Simplest form. You may answer as a fraction or mixed number.)</span>`,
+        value:fractionToValue(ans),
+        display:fractionToString(ans),
+        displayHtml:fractionToHtml(ans)
+      };
+    }
+  }
+  return qMixedDivMixed();
+}
+
+// H) mixed ÷ integer (2)
+function qMixedDivInteger(){
+  for(let t=0;t<4000;t++){
+    const m=randomMixedNumber();
+    const a=mixedToImproper(m);
+    const k=choice([2,3,4,5,6,8,9,10,12]);
+    // a ÷ k = a × 1/k => cancel if gcd(a.n,k)>1
+    if(gcd(a.n,k)<=1) continue;
+    const ans=divFrac(a,{n:k,d:1});
+    if(ans.n<=520 && ans.d<=520){
+      return {
+        text:`Compute: ${mixedBoxesHtml(m.whole,m.num,m.den)} ÷ ${k} = ? <span style="color:#555">(Simplest form. You may answer as a fraction or mixed number.)</span>`,
+        value:fractionToValue(ans),
+        display:fractionToString(ans),
+        displayHtml:fractionToHtml(ans)
+      };
+    }
+  }
+  return qMixedDivInteger();
+}
+
+// I) mixed ÷ decimal (2)
+function qMixedDivDecimal(){
+  for(let t=0;t<5000;t++){
+    const m=randomMixedNumber();
+    const a=mixedToImproper(m);
+    const dec=choice(DECIMAL_POOL);
+    const b=simplifyFraction(dec.fr);
+    if(!hasCancelForDivision(a,b)) continue;
+    const ans=divFrac(a,b);
+    if(ans.n<=520 && ans.d<=520){
+      return {
+        text:`Compute: ${mixedBoxesHtml(m.whole,m.num,m.den)} ÷ ${dec.str} = ? <span style="color:#555">(Simplest form. You may answer as a fraction or mixed number.)</span>`,
+        value:fractionToValue(ans),
+        display:fractionToString(ans),
+        displayHtml:fractionToHtml(ans)
+      };
+    }
+  }
+  return qMixedDivDecimal();
+}
+
+// J) three numbers with division (3)  -> (a ÷ b) ÷ c
+function qThreeDivision(){
+  function randomTerm(){
+    const type = choice(["int","proper","improper","mixed"]);
+    if(type==="int"){
+      const k=randInt(2,10);
+      return {kind:"frac", fr:{n:k,d:1}, html: ()=>String(k)};
+    }
+    if(type==="proper"){
+      const f=randomProperFracReduced();
+      return {kind:"frac", fr:f, html: ()=>fractionToHtml(f)};
+    }
+    if(type==="improper"){
+      const f=randomImproperFracReduced();
+      return {kind:"frac", fr:f, html: ()=>fractionToHtml(f)};
+    }
+    const m=randomMixedNumber();
+    const fr=mixedToImproper(m);
+    return {kind:"mixed", fr:fr, m:m, html: ()=>mixedBoxesHtml(m.whole,m.num,m.den)};
+  }
+
+  for(let t=0;t<9000;t++){
+    const T1=randomTerm(), T2=randomTerm(), T3=randomTerm();
+    const a=T1.fr, b=T2.fr, c=T3.fr;
+
+    // avoid dividing by 0
+    if(b.n===0 || c.n===0) continue;
+
+    // compute ans = (a ÷ b) ÷ c = a × (b.d/b.n) × (c.d/c.n)
+    const ans = simplifyFraction({n: a.n * b.d * c.d, d: a.d * b.n * c.n});
+    if(ans.d===0) continue;
+
+    // require some reduction potential
+    const step1Can = hasCancelForDivision(a,b);
+    const step2Can = hasCancelForDivision(divFrac(a,b), c);
+    if(!(step1Can || step2Can)) continue;
+
+    if(Math.abs(ans.n)<=520 && ans.d<=520){
+      return {
+        text:`Compute: ${T1.html()} ÷ ${T2.html()} ÷ ${T3.html()} = ? <span style="color:#555">(Work left to right. Simplest form.)</span>`,
+        value:fractionToValue(ans),
+        display:fractionToString(ans),
+        displayHtml:fractionToHtml(ans)
+      };
+    }
+  }
+  return qThreeDivision();
+}
+
+/* ---------------- Word Problems ---------------- */
+const NAMES = ["Ava","Leo","Mia","Noah","Sofia","Ethan","Zoe","Lucas","Ivy","Hugo","Aria","Mason"];
+const PLACES = ["the art room","the library","the kitchen","the sports shed","the science lab","the bakery"];
+const THINGS = ["juice","ribbon","flour","paint","trail mix","yogurt"];
+const WP_USED = new Set();
+
+function pickUnique(pool){
+  const avail = pool.filter(p=>!WP_USED.has(p.key));
+  const pick = choice(avail.length?avail:pool);
+  WP_USED.add(pick.key);
+  return pick;
+}
+
+function makeNiceQuantityFrac(){
+  // create a small reduced fraction that often cancels with common divisors
+  const d=choice([3,4,5,6,8,9,10,12]);
+  let n=randInt(1,d-1);
+  let f=simplifyFraction({n,d});
+  if(f.n===1 && f.d===2) f=simplifyFraction({n:2,d:3});
+  return f;
+}
+
+const WP_ONE_STEP = [
+  {
+    key:"wp_equal_portions",
+    build: ()=>{
+      const name=choice(NAMES);
+      const item=choice(THINGS);
+      const total = simplifyFraction({n:choice([3,4,5,6,8,9,10,12,15]), d:1}); // total cups/kg/l
+      const parts = choice([2,3,4,5,6,8,9,10,12]);
+      // ensure reduction: total ÷ parts gives simple fraction (allow cancel)
+      if(gcd(total.n, parts)<=1) return WP_ONE_STEP[0].build();
+      const ans = divFrac(total,{n:parts,d:1});
+      return {
+        text:`${name} has ${fractionToHtml(total)} litres of ${item}. It is shared equally into ${parts} cups. How many litres of ${item} are in each cup?`,
+        ans
+      };
+    }
+  },
+  {
+    key:"wp_fraction_per_bag",
+    build: ()=>{
+      const name=choice(NAMES);
+      const place=choice(PLACES);
+      const total = makeNiceQuantityFrac(); // e.g., 3/4 kg
+      const perBag = simplifyFraction({n:choice([1,2,3,4,5,6]), d:choice([6,8,10,12])});
+      // ensure division has cancellation: total ÷ perBag
+      if(!hasCancelForDivision(total, perBag)) return WP_ONE_STEP[1].build();
+      const ans = divFrac(total, perBag);
+      return {
+        text:`In ${place}, ${name} has ${fractionToHtml(total)} kg of nuts. Each bag holds ${fractionToHtml(perBag)} kg. How many full bags can be made? <span style="color:#555">(Answer as a fraction if needed.)</span>`,
+        ans
+      };
+    }
+  }
+];
+
+const WP_MULTI_STEP = [
+  {
+    key:"wp_multi_pour_then_share",
+    build: ()=>{
+      const name=choice(NAMES);
+      const item=choice(THINGS);
+      const start = simplifyFraction({n:choice([8,10,12,15,18,20,24]), d:1});
+      const usedFrac = simplifyFraction({n:choice([2,3,4,6]), d:choice([6,8,10,12])});
+      if(gcd(start.n, usedFrac.d)<=1) return WP_MULTI_STEP[0].build();
+      const used = mulFrac(start, usedFrac);
+      const remaining = simplifyFraction({n:start.n*used.d - used.n*start.d, d:start.d*used.d}); // start - used
+      // share remaining equally
+      const parts=choice([2,3,4,5,6,8,10,12]);
+      if(gcd(remaining.n, parts)<=1) return WP_MULTI_STEP[0].build();
+      const ans = divFrac(remaining, {n:parts,d:1});
+      return {
+        text:`${name} has ${fractionToHtml(start)} litres of ${item}. ${name} uses ${fractionToHtml(usedFrac)} of it. The remaining ${item} is shared equally into ${parts} bottles. How many litres are in each bottle?`,
+        ans
+      };
+    }
+  },
+  {
+    key:"wp_multi_two_divisions",
+    build: ()=>{
+      const name=choice(NAMES);
+      const place=choice(PLACES);
+      const total = simplifyFraction({n:choice([12,15,18,20,24,30,36]), d:1});
+      const trays = choice([3,4,5,6,8,9,10,12]);
+      if(gcd(total.n, trays)<=1) return WP_MULTI_STEP[1].build();
+      const perTray = divFrac(total, {n:trays,d:1}); // step 1
+
+      const groups = choice([2,3,4,5,6,8,9,10,12]);
+      if(gcd(perTray.n, groups)<=1) return WP_MULTI_STEP[1].build();
+      const ans = divFrac(perTray, {n:groups,d:1}); // step 2
+      return {
+        text:`At ${place}, ${name} has ${fractionToHtml(total)} metres of ribbon. It is first divided equally into ${trays} bundles. Then each bundle is divided equally into ${groups} pieces. How many metres are in each small piece?`,
+        ans
+      };
+    }
+  },
+  {
+    key:"wp_multi_mixed_then_divide",
+    build: ()=>{
+      const name=choice(NAMES);
+      const m = randomMixedNumber();
+      const total = mixedToImproper(m);
+
+      const dec=choice(DECIMAL_POOL);
+      const per = simplifyFraction(dec.fr);
+      if(!hasCancelForDivision(total, per)) return WP_MULTI_STEP[2].build();
+      const count = divFrac(total, per); // number of servings
+      // then share those servings equally between some people (another division)
+      const people = choice([2,3,4,5,6,8,10,12]);
+      if(gcd(count.n, people)<=1) return WP_MULTI_STEP[2].build();
+      const ans = divFrac(count, {n:people,d:1});
+      return {
+        text:`${name} has ${mixedBoxesHtml(m.whole,m.num,m.den)} litres of smoothie. Each cup holds ${dec.str} litres. How many cups is that in total, then shared equally among ${people} people—how many cups does each person get? <span style="color:#555">(Answer as a simplified number or fraction.)</span>`,
+        ans
+      };
+    }
+  }
+];
+
+/* Build word questions */
+function qWordOneStep(){
+  const t = pickUnique(WP_ONE_STEP);
+  const built = t.build();
+  const ans = simplifyFraction(built.ans);
+  return {
+    text: built.text + ` <span style="color:#555">(Simplest form.)</span>`,
+    value: fractionToValue(ans),
+    display: fractionToString(ans),
+    displayHtml: fractionToHtml(ans)
+  };
+}
+function qWordMultiStep(){
+  const t = pickUnique(WP_MULTI_STEP);
+  const built = t.build();
+  const ans = simplifyFraction(built.ans);
+  return {
+    text: built.text + ` <span style="color:#555">(Simplest form.)</span>`,
+    value: fractionToValue(ans),
+    display: fractionToString(ans),
+    displayHtml: fractionToHtml(ans)
+  };
+}
+
+/* ---------------- Dispatcher ---------------- */
+function generateQuestionForPart(partIndex){
+  if(partIndex===0) return qFractionDivFraction();
+  if(partIndex===1) return qFractionDivInteger();
+  if(partIndex===2) return qFractionDivDecimal();
+  if(partIndex===3) return qImproperDivImproper();
+  if(partIndex===4) return qImproperDivInteger();
+  if(partIndex===5) return qImproperDivDecimal();
+  if(partIndex===6) return qMixedDivMixed();
+  if(partIndex===7) return qMixedDivInteger();
+  if(partIndex===8) return qMixedDivDecimal();
+  if(partIndex===9) return qThreeDivision();
+  if(partIndex===10) return qWordOneStep();
+  return qWordMultiStep();
+}
+
+/* ---------------- State ---------------- */
+let questions=[];
+let currentQuestionIndex=0;
+let studentName="Student";
+let quizStartTime=null;
+let quizEndTime=null;
+let quizSubmitted=false;
+
+let timerInterval=null;
+let elapsedMs=0;
+let isPaused=false;
+let firstAttemptMs=null;
+
+const quizContent=document.getElementById("quizContent");
+const sidebarEl=document.getElementById("sidebar");
+
+const buttonContainer=document.getElementById("navButtons");
+const backButton=document.getElementById("backButton");
+const nextButton=document.getElementById("nextButton");
+const submitButton=document.getElementById("submitButton");
+const checkButton=document.getElementById("checkButton");
+const saveButton=document.getElementById("saveButton");
+
+const generateBtn=document.getElementById("generateButton");
+const pauseButton=document.getElementById("pauseButton");
+const exportPdfButton=document.getElementById("exportPdfButton");
+const timerDisplay=document.getElementById("timerDisplay");
+
+/* ---------------- Timer ---------------- */
+function updateTimerDisplay(){
+  let totalMs=elapsedMs;
+  if(!isPaused && quizStartTime) totalMs+=(new Date()-quizStartTime);
+  let text=`Time: ${formatMs(totalMs)}`;
+  if(firstAttemptMs!==null) text+=` (First: ${formatMs(firstAttemptMs)})`;
+  timerDisplay.textContent=text;
+}
+function startTimerInterval(){
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval=setInterval(updateTimerDisplay, 1000);
+}
+function pauseTimer(){
+  if(isPaused || !quizStartTime) return;
+  const now=new Date();
+  elapsedMs+=now-quizStartTime;
+  isPaused=true;
+  quizStartTime=null;
+  updateTimerDisplay();
+}
+function resumeTimer(){
+  if(!isPaused) return;
+  isPaused=false;
+  quizStartTime=new Date();
+  updateTimerDisplay();
+}
+
+/* ---------------- Generate Quiz ---------------- */
+function generateQuiz(){
+  questions=[];
+  quizSubmitted=false;
+  WP_USED.clear();
+
+  for(let p=0;p<PART_TITLES.length;p++){
+    for(let i=0;i<PART_COUNTS[p];i++){
+      const baseQ = generateQuestionForPart(p);
+      questions.push({
+        partIndex:p,
+        indexInPart:i,
+        text:baseQ.text,
+        value:baseQ.value,
+        display:baseQ.display,
+        displayHtml:baseQ.displayHtml||null,
+        userValue:"",
+        isCorrect:false
+      });
+    }
+  }
+}
+
+/* ---------------- Sidebar ---------------- */
+function renderSidebar(){
+  sidebarEl.style.display="block";
+  sidebarEl.innerHTML=`<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul=document.getElementById("qList");
+
+  for(let i=0;i<questions.length;i++){
+    const q=questions[i];
+    const li=document.createElement("li");
+    const label = PART_LETTERS[q.partIndex] + (q.indexInPart+1);
+    li.textContent=`Q${i+1} (${label})`;
+    li.dataset.index=i;
+    li.addEventListener("click", ()=>{
+      saveCurrentInput();
+      currentQuestionIndex=i;
+      renderQuestion();
+    });
+    ul.appendChild(li);
+  }
+  updateSidebarStatus();
+}
+function updateSidebarStatus(){
+  const items=document.querySelectorAll("#qList li");
+  items.forEach(li=>{
+    const idx=Number(li.dataset.index);
+    const q=questions[idx];
+
+    li.classList.remove("active","answered","correct","incorrect");
+
+    if(!quizSubmitted){
+      li.classList.toggle("active", idx===currentQuestionIndex);
+      if((q.userValue||"").trim()!=="") li.classList.add("answered");
+    }else{
+      if((q.userValue||"").trim()!==""){
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ---------------- Helpers ---------------- */
+function saveCurrentInput(){
+  const input=document.getElementById("answerInput");
+  if(input){
+    questions[currentQuestionIndex].userValue = input.value.trim();
+    if(quizSubmitted){
+      gradeOneQuestion(currentQuestionIndex);
+      updateSidebarStatus();
+    }
+  }
+}
+function mountNavButtonsInto(slotId){
+  const slot=document.getElementById(slotId);
+  if(!slot) return;
+  slot.appendChild(buttonContainer);
+  buttonContainer.style.display="flex";
+}
+function buildPerQuestionHint(q){
+  if(q.partIndex<=8){
+    return `Hint: <strong>Divide by a fraction</strong> means multiply by its <strong>reciprocal</strong>. Convert decimals to fractions, and cross-cancel before multiplying.`;
+  }
+  if(q.partIndex===9){
+    return `Hint: Work <strong>left to right</strong>: (a ÷ b) ÷ c. Each division by a fraction becomes “multiply by the reciprocal”. Simplify as you go.`;
+  }
+  if(q.partIndex===10){
+    return `Hint: “Shared equally” often means division. Write an expression first, then use reciprocal and simplify.`;
+  }
+  return `Hint: Break into steps: compute one division, simplify, then continue. Keep cancelling to avoid large numbers.`;
+}
+
+/* ---------------- Render Question ---------------- */
+function renderQuestion(){
+  const q=questions[currentQuestionIndex];
+  const fullLabel = PART_LETTERS[q.partIndex] + (q.indexInPart+1);
+  const hintText = buildPerQuestionHint(q);
+
+  quizContent.innerHTML=`
+    <p class="question-text">Question ${currentQuestionIndex+1} of ${questions.length}</p>
+    <div class="part-title">${PART_TITLES[q.partIndex]}</div>
+
+    <div class="single-question">
+      <strong>${fullLabel}.</strong> ${q.text}
+      <div>
+        <input id="answerInput" class="answer-box" type="text"
+          value="${(q.userValue||"").replace(/"/g,'&quot;')}"
+          placeholder="e.g., 3/10 or 1 1/2 or 0.3">
+      </div>
+      <div id="checkFeedback" style="display:none;"></div>
+      <div class="hint">${hintText}</div>
+    </div>
+
+    <div id="navSlot"></div>
+  `;
+
+  mountNavButtonsInto("navSlot");
+
+  backButton.style.display="inline-block";
+  backButton.style.visibility = (currentQuestionIndex===0) ? "hidden" : "visible";
+
+  const isLast = (currentQuestionIndex===questions.length-1);
+  nextButton.style.display = isLast ? "none" : "inline-block";
+  submitButton.style.display = isLast ? "inline-block" : "none";
+
+  saveButton.style.display = quizSubmitted ? "inline-block" : "none";
+  checkButton.style.display = (quizSubmitted && !q.isCorrect) ? "inline-block" : "none";
+
+  updateSidebarStatus();
+}
+
+/* ---------------- Results + Submit ---------------- */
+function calculateAndShowResults(){
+  saveCurrentInput();
+
+  const now=new Date();
+  let attemptMs=elapsedMs;
+  if(!isPaused && quizStartTime) attemptMs+=now-quizStartTime;
+
+  if(firstAttemptMs===null) firstAttemptMs=attemptMs;
+
+  const attemptStartTime=quizStartTime || now;
+  quizEndTime=now;
+  quizSubmitted=true;
+
+  let correctCount=0;
+  questions.forEach(q=>{
+    const val=parseAnswer(q.userValue||"");
+    q.isCorrect=nearlyEqual(val, q.value);
+    if(q.isCorrect) correctCount++;
+  });
+
+  updateSidebarStatus();
+
+  let html=`
+    <h3>Results for ${studentName}</h3>
+    <p>Score: <strong>${correctCount} / ${questions.length}</strong></p>
+    <p>Start time: <strong>${attemptStartTime.toLocaleTimeString()}</strong></p>
+    <p>Submit time: <strong>${quizEndTime.toLocaleTimeString()}</strong></p>
+    <p>Time taken (this attempt): <strong>${formatMs(attemptMs)}</strong></p>
+    <p>First attempt time: <strong>${formatMs(firstAttemptMs)}</strong></p>
+    <p>Click question numbers on the left to review. Incorrect questions will have a <strong>Check</strong> button.</p>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th><th>Part</th><th>Question</th><th>Your Answer</th><th>Correct</th><th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q,i)=>{
+    const partLbl = PART_LETTERS[q.partIndex] + (q.indexInPart+1);
+    html+=`
+      <tr class="${q.isCorrect ? "correct-answer":"incorrect-answer"}">
+        <td>${i+1}</td>
+        <td>${partLbl}</td>
+        <td>${q.text}</td>
+        <td>${(q.userValue||"").trim()==="" ? "—" : (q.userValue||"")}</td>
+        <td>${q.displayHtml || q.display}</td>
+        <td>${(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
+      </tr>
+    `;
+  });
+
+  html+=`</table><div id="navSlot"></div>`;
+  quizContent.innerHTML=html;
+
+  mountNavButtonsInto("navSlot");
+
+  backButton.style.display="none";
+  nextButton.style.display="none";
+  submitButton.style.display="none";
+  checkButton.style.display="none";
+  saveButton.style.display="inline-block";
+
+  // reset timer for next attempt
+  elapsedMs=0; isPaused=false; quizStartTime=new Date();
+  pauseButton.textContent="Pause";
+  startTimerInterval();
+  updateTimerDisplay();
+}
+
+/* ---------------- Buttons ---------------- */
+nextButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex<questions.length-1){
+    currentQuestionIndex++;
+    renderQuestion();
+  }
+});
+backButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex>0){
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+});
+submitButton.addEventListener("click", ()=>{
+  if(currentQuestionIndex===questions.length-1){
+    calculateAndShowResults();
+  }
+});
+checkButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  const q = questions[currentQuestionIndex];
+  if(!quizSubmitted) return;
+
+  gradeOneQuestion(currentQuestionIndex);
+  updateSidebarStatus();
+
+  const box=document.getElementById("checkFeedback");
+  if(!box) return;
+
+  box.className="check-feedback";
+  box.style.display="block";
+
+  if(q.isCorrect){
+    box.innerHTML = `✅ Correct!`;
+    checkButton.style.display = "none";
+  }else{
+    const correctHtml = q.displayHtml || q.display;
+    box.innerHTML = `❌ Incorrect. Correct answer: <strong>${correctHtml}</strong>`;
+    checkButton.style.display = "inline-block";
+  }
+});
+
+/* Save TXT */
+function formatDateForFilename(date){
+  if(!date) return "no_time";
+  const pad=n=>String(n).padStart(2,"0");
+  return date.getFullYear()+pad(date.getMonth()+1)+pad(date.getDate())+"_"+
+         pad(date.getHours())+pad(date.getMinutes())+pad(date.getSeconds());
+}
+function saveCurrentResultAsTxt(){
+  saveCurrentInput();
+
+  if(!quizSubmitted){
+    questions.forEach(q=>{
+      const val=parseAnswer(q.userValue||"");
+      q.isCorrect=nearlyEqual(val,q.value);
+    });
+  }
+  let correctCount=0;
+  questions.forEach(q=>{ if(q.isCorrect) correctCount++; });
+
+  const lines=[];
+  lines.push("Fractions Division Quiz - Current Result");
+  lines.push("Student: "+studentName);
+  if(quizStartTime) lines.push("Start time: "+quizStartTime.toLocaleString());
+  if(quizEndTime) lines.push("Last submit time: "+quizEndTime.toLocaleString());
+  lines.push("Score: "+correctCount+" / "+questions.length);
+  if(firstAttemptMs!==null) lines.push("First attempt time: "+formatMs(firstAttemptMs));
+  lines.push("");
+  lines.push("Details:");
+  lines.push("----------");
+
+  questions.forEach((q,i)=>{
+    const partLbl = PART_LETTERS[q.partIndex] + (q.indexInPart+1);
+    const userAns=(q.userValue||"").trim()==="" ? "Not answered" : q.userValue;
+    const resultText=(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect?"Correct":"Incorrect");
+    const plainQuestion=q.text.replace(/<[^>]+>/g,"").replace(/\s+/g," ").trim();
+    lines.push(
+      `Q${i+1} (${partLbl})`+
+      "\nQuestion: "+plainQuestion+
+      "\nYour answer: "+userAns+
+      "\nCorrect answer: "+q.display+
+      "\nResult: "+resultText
+    );
+    lines.push("");
+  });
+
+  const content=lines.join("\n");
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
+  const ts=formatDateForFilename(new Date());
+  a.href=url;
+  a.download=`Fractions_Division_${safeName}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+saveButton.addEventListener("click", saveCurrentResultAsTxt);
+
+/* Pause/Resume */
+pauseButton.addEventListener("click", ()=>{
+  if(!quizStartTime && elapsedMs===0 && !quizSubmitted) return;
+  if(isPaused){ resumeTimer(); pauseButton.textContent="Pause"; }
+  else { pauseTimer(); pauseButton.textContent="Resume"; }
+});
+
+/* Generate new set */
+generateBtn.addEventListener("click", ()=>{
+  if(!quizSubmitted && !confirm("Generate a new random set? All answers will be lost.")) return;
+
+  if(timerInterval) clearInterval(timerInterval);
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=new Date(); quizEndTime=null;
+  updateTimerDisplay(); startTimerInterval();
+
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+});
+
+/* ---------------- Export Questions PDF (Print) ---------------- */
+function escapeHtml(s){
+  return String(s)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+function buildQuestionsForPrint(){
+  let out = "";
+  for(let p=0;p<PART_TITLES.length;p++){
+    out += `<div class="part">${escapeHtml(PART_TITLES[p])}</div>`;
+    const qs = questions.filter(q=>q.partIndex===p);
+    qs.forEach(q=>{
+      const label = `${PART_LETTERS[p]}${q.indexInPart+1}`;
+      out += `
+        <div class="q">
+          <div class="qline"><strong>${label}.</strong> ${q.text}</div>
+          <div class="blankline"></div>
+        </div>
+      `;
+    });
+  }
+  return out;
+}
+function exportQuestionsToPdf(){
+  if(!questions || questions.length===0){
+    alert("Please start the quiz first.");
+    return;
+  }
+  saveCurrentInput();
+
+  const w = window.open("", "_blank");
+  if(!w){
+    alert("Popup blocked. Please allow popups for this page, then try again.");
+    return;
+  }
+
+  const now = new Date();
+  const title = "Fractions Division Quiz — Questions";
+
+  const html = `
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>${title}</title>
+  <style>
+    body{font-family:'Segoe UI',Tahoma,sans-serif;color:#111;padding:18px 22px;}
+    h1{font-size:20px;margin:0 0 6px;}
+    .meta{font-size:12.5px;color:#444;margin-bottom:14px;}
+    .part{margin-top:14px;font-weight:700;font-size:14px;padding-top:4px;border-top:1px solid #ddd;}
+    .q{margin:10px 0 0;}
+    .qline{font-size:13.5px;line-height:1.6;}
+    .blankline{height:18px;}
+
+    .frac{display:inline-block;text-align:center;vertical-align:middle;min-width:22px;}
+    .frac .top{display:block;border-bottom:1px solid #000;padding:0 2px;}
+    .frac .bottom{display:block;padding:0 2px;font-size:.9em;}
+
+    :root{--mixWholeW:78px;--mixFracW:78px;--mixNumH:26px;--mixDenH:26px;--mixBarH:2px;--mixBorder:2px;--mixRadius:8px;}
+    .mix3{display:inline-grid;grid-template-columns:var(--mixWholeW) var(--mixFracW);column-gap:10px;align-items:center;vertical-align:middle;}
+    .mix-cell{box-sizing:border-box;border:var(--mixBorder) solid #333;border-radius:var(--mixRadius);background:#fff;font-weight:700;text-align:center;font-size:0.95em;}
+    .mix-whole{width:var(--mixWholeW);height:calc(var(--mixNumH) + var(--mixDenH) + var(--mixBarH));display:flex;align-items:center;justify-content:center;}
+    .mix-frac{width:var(--mixFracW);display:grid;grid-template-rows:var(--mixNumH) var(--mixBarH) var(--mixDenH);align-items:stretch;}
+    .mix-num,.mix-den{width:var(--mixFracW);height:100%;display:flex;align-items:center;justify-content:center;}
+    .mix-bar{width:var(--mixFracW);height:var(--mixBarH);background:#111;border-radius:1px;}
+
+    @media print{@page{margin:14mm;}body{padding:0;}}
+  </style>
+</head>
+<body>
+  <h1>${title}</h1>
+  <div class="meta">
+    Student: <strong>${escapeHtml(studentName)}</strong>
+    &nbsp; | &nbsp;
+    ${escapeHtml(now.toLocaleString())}
+  </div>
+  ${buildQuestionsForPrint()}
+</body>
+</html>`;
+
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+
+  w.onload = function(){
+    w.focus();
+    w.print();
+  };
+}
+exportPdfButton.addEventListener("click", exportQuestionsToPdf);
+
+/* ---------------- Start Screen ---------------- */
+function showStartScreen(){
+  sidebarEl.style.display="none";
+  buttonContainer.style.display="none";
+  generateBtn.style.display="none";
+  saveButton.style.display="none";
+  pauseButton.style.display="none";
+  exportPdfButton.style.display="none";
+
+  if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=null; quizEndTime=null;
+  updateTimerDisplay();
+
+  updateStudentDisplay();
+
+  quizContent.innerHTML=`
+    <p>This quiz contains <strong>${TOTAL_QUESTIONS}</strong> questions.</p>
+    <ul style="margin-top:6px;color:#555;line-height:1.6;">
+      <li>Divide by a fraction = multiply by the reciprocal</li>
+      <li>Proper / Improper / Mixed numbers ÷ fractions / integers / decimals</li>
+      <li>Three-number division (left to right)</li>
+      <li>Word problems (1-step and multi-step)</li>
+    </ul>
+    <p>Please enter your name to begin:</p>
+
+    <input id="nameInput" type="text"
+      style="padding:10px;width:250px;font-size:1.05em;"
+      placeholder="Your name">
+
+    <button id="startButton"
+      style="margin-left:10px;background:#4caf50;padding:10px 20px;color:white;border:none;border-radius:6px;">
+      Start Quiz
+    </button>
+  `;
+  document.getElementById("startButton").addEventListener("click", startQuizFromInput);
+}
+
+function startQuizCommon(){
+  updateStudentDisplay();
+
+  quizStartTime=new Date();
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  updateTimerDisplay(); startTimerInterval();
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+
+  generateBtn.style.display="inline-block";
+  pauseButton.style.display="inline-block";
+  exportPdfButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+}
+
+function startQuizFromInput(){
+  const nameInput=document.getElementById("nameInput");
+  studentName=(nameInput.value || "Student").trim() || "Student";
+  startQuizCommon();
+}
+function startQuizAutoWithName(name){
+  studentName = (name || "Student").trim() || "Student";
+  startQuizCommon();
+}
+
+/* ---------------- Init ---------------- */
+(function init(){
+  const urlName = getNameFromUrl();
+  if(urlName){
+    startQuizAutoWithName(urlName);
+  }else{
+    studentName = "Student";
+    showStartScreen();
+  }
+})();
+</script>
+</body>
+</html>

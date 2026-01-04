@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fractions Word Problems (12 Questions)</title>
+
+  <style>
+    body{
+      font-family:'Segoe UI',Tahoma,sans-serif;
+      background:#f4f4f9;margin:0;padding:20px;color:#333;
+    }
+    .quiz-container{
+      max-width:900px;margin:40px auto;background:#fff;padding:30px;
+      border-radius:12px;box-shadow:0 6px 15px rgba(0,0,0,0.1);
+    }
+    #headerLogo{
+      display:flex;align-items:center;margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;padding-bottom:10px;
+    }
+    .logo-icon{width:40px;height:40px;background:#0d47a1;border-radius:4px;}
+    .logo-text span.edu{font-size:.9em;color:#ff9800;font-weight:700;margin-left:10px;}
+
+    .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;}
+    .top-left{display:flex;flex-direction:column;gap:4px;}
+    #timerDisplay{font-size:.95em;color:#333;}
+    #studentDisplay{font-size:.95em;color:#333;}
+    #studentDisplay strong{color:#0d47a1;}
+
+    .quiz-main{display:flex;gap:20px;}
+    .sidebar{
+      width:180px;border-right:1px solid #ddd;padding-right:10px;display:none;
+    }
+    .sidebar h4{margin:0 0 8px;font-size:.95em;border-bottom:1px solid #eee;padding-bottom:4px;}
+    .sidebar ul{list-style:none;padding:0;margin:0;}
+    .sidebar li{padding:6px;cursor:pointer;border-radius:4px;font-size:.9em;}
+    .sidebar li.active{outline:2px solid #1976d2;font-weight:600;}
+    .sidebar li.answered{border-left:4px solid #4caf50;}
+    .sidebar li.correct{background:#d4edda;border-left:4px solid #28a745;}
+    .sidebar li.incorrect{background:#f8d7da;border-left:4px solid #f44336;}
+
+    #quizContent{flex:1;}
+    .question-text{font-size:1.1em;margin-bottom:8px;}
+    .part-title{font-weight:bold;margin-bottom:8px;}
+    .single-question{margin:6px 0;line-height:1.9;}
+    .answer-box{width:320px;max-width:100%;padding:6px;font-size:1em;margin-top:8px;}
+
+    .hint{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:10px;
+      background:#fff7e6;
+      border:1px solid #ffe0b2;
+      color:#5d4037;
+      font-size:0.95em;
+    }
+
+    .button-container{
+      display:flex;justify-content:space-between;gap:10px;margin-top:14px;
+    }
+    button{
+      padding:10px 20px;border:none;color:#fff;border-radius:6px;cursor:pointer;font-size:1em;
+      white-space:nowrap;
+    }
+    #nextButton{background:#4caf50;}
+    #backButton{background:#039be5;}
+    #generateButton{background:#ff9800;}
+    #submitButton{background:#9c27b0;}
+    #saveButton{background:#607d8b;}
+    #pauseButton{background:#f57c00;}
+    #checkButton{background:#455a64;}
+    #exportPdfButton{background:#673ab7;}
+
+    .hint-btn{
+      background:#ff9800;
+      padding:8px 14px;
+      font-size:.95em;
+      margin-top:8px;
+    }
+
+    table.review-table{width:100%;border-collapse:collapse;margin-top:20px;}
+    .review-table th,.review-table td{border:1px solid #ccc;padding:6px;font-size:.85em;text-align:center;vertical-align:top;}
+    .review-table th{background:#f2f2f2;}
+    .correct-answer{background:#d4edda;}
+    .incorrect-answer{background:#f8d7da;}
+
+    /* stacked fraction */
+    .frac{display:inline-block;text-align:center;vertical-align:middle;min-width:22px;}
+    .frac .top{display:block;border-bottom:1px solid #000;padding:0 2px;}
+    .frac .bottom{display:block;padding:0 2px;font-size:.9em;}
+
+    /* mixed number: whole aligned with fraction bar */
+    .mixed{
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      vertical-align:middle;
+      white-space:nowrap;
+    }
+    .mixed .whole{
+      font-weight:600;
+      line-height:1;
+      transform: translateY(1px);
+    }
+
+    .check-feedback{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:10px;
+      background:#f7f7f7;
+      border:1px solid #e0e0e0;
+      color:#333;
+      font-size:0.95em;
+    }
+
+    @media (max-width:700px){
+      .quiz-main{flex-direction:column;}
+      .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
+      .button-container{flex-wrap:wrap;}
+      .top-left{flex-direction:column;}
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text"><span class="edu">DYAA EDUCATION</span></div>
+  </div>
+
+  <div class="top-bar">
+    <div class="top-left">
+      <div id="timerDisplay">Time: 00:00</div>
+      <div id="studentDisplay">Student: <strong>—</strong></div>
+    </div>
+    <div>
+      <button id="pauseButton" style="display:none;">Pause</button>
+      <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportPdfButton" style="display:none;">Export Questions PDF</button>
+    </div>
+  </div>
+
+  <h2>Fractions Word Problems</h2>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+
+  <div id="navButtons" class="button-container" style="display:none;">
+    <button id="backButton" style="display:none;">Previous</button>
+    <button id="submitButton" style="display:none;">Submit &amp; View Results</button>
+    <button id="nextButton" style="display:none;">Next</button>
+    <button id="checkButton" style="display:none;">Check</button>
+    <button id="saveButton" style="display:none;">Save Current Result</button>
+  </div>
+</div>
+
+<script>
+/* ---------------- CONFIG ---------------- */
+const PART_TITLES = ["A. Word Problems"];
+const NUM_PARTS = 1;
+
+/* ---------------- Utils (Fractions) ---------------- */
+function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function choice(arr){ return arr[randInt(0, arr.length-1)]; }
+
+function gcd(a,b){
+  a=Math.abs(a); b=Math.abs(b);
+  while(b!==0){ const t=b; b=a%b; a=t; }
+  return a===0?1:a;
+}
+function lcm(a,b){ return Math.abs(a/gcd(a,b)*b); }
+
+function simplifyFraction(fr){
+  let n=fr.n, d=fr.d;
+  if(d<0){ n=-n; d=-d; }
+  const g=gcd(n,d);
+  return {n:n/g, d:d/g};
+}
+function addFrac(a,b){ return simplifyFraction({n:a.n*b.d + b.n*a.d, d:a.d*b.d}); }
+function subFrac(a,b){ return simplifyFraction({n:a.n*b.d - b.n*a.d, d:a.d*b.d}); }
+function mulFrac(a,b){ return simplifyFraction({n:a.n*b.n, d:a.d*b.d}); }
+function divFrac(a,b){ return simplifyFraction({n:a.n*b.d, d:a.d*b.n}); }
+function fractionToValue(fr){ return fr.n/fr.d; }
+
+/* ---- pretty display: mixed number if improper ---- */
+function toMixed(fr){
+  const s=simplifyFraction(fr);
+  if(s.d===1) return {whole:s.n, rem:null}; // integer
+  const sign = s.n<0 ? -1 : 1;
+  const an = Math.abs(s.n), d = s.d;
+  if(an < d) return {whole:0, rem:{n:s.n, d:s.d}}; // proper (keep sign in rem)
+  const whole = sign * Math.floor(an/d);
+  const remN = an % d;
+  if(remN===0) return {whole, rem:null};
+  return {whole, rem:{n:sign*remN, d}};
+}
+function fracHtmlProper(fr){
+  const s=simplifyFraction(fr);
+  return `<span class="frac"><span class="top">${s.n}</span><span class="bottom">${s.d}</span></span>`;
+}
+function fractionToPrettyHtml(fr){
+  const s=simplifyFraction(fr);
+  if(s.d===1) return String(s.n);
+
+  const m = toMixed(s);
+  if(m.rem===null) return String(m.whole);
+
+  // proper only
+  const rem = simplifyFraction(m.rem);
+  if(m.whole===0){
+    return fracHtmlProper(rem);
+  }
+  const absWhole = m.whole; // already has sign
+  const remAbs = {n: Math.abs(rem.n), d: rem.d};
+  return `<span class="mixed"><span class="whole">${absWhole}</span>${fracHtmlProper(remAbs)}</span>`;
+}
+function fractionToPrettyString(fr){
+  const s=simplifyFraction(fr);
+  if(s.d===1) return String(s.n);
+
+  const m=toMixed(s);
+  if(m.rem===null) return String(m.whole);
+
+  if(m.whole===0) return `${s.n}/${s.d}`;
+  const remAbsN=Math.abs(m.rem.n);
+  return `${m.whole} ${remAbsN}/${m.rem.d}`;
+}
+
+function formatMs(ms){
+  const totalSec=Math.floor(ms/1000);
+  const min=Math.floor(totalSec/60);
+  const sec=totalSec%60;
+  return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+
+/* ---------------- URL name param ---------------- */
+function getNameFromUrl(){
+  try{
+    const sp = new URLSearchParams(window.location.search);
+    const raw = sp.get("name");
+    if(!raw) return null;
+    const name = String(raw).trim();
+    return name.length ? name : null;
+  }catch(e){ return null; }
+}
+function updateStudentDisplay(){
+  const el = document.getElementById("studentDisplay");
+  if(el) el.innerHTML = `Student: <strong>${studentName || "—"}</strong>`;
+}
+
+/* ---------------- Parse Answers ---------------- */
+function parseAnswer(str){
+  let s=(str||"").trim();
+  if(s==="") return NaN;
+
+  let sign=1;
+  if(s[0]==="+"){ s=s.slice(1).trim(); }
+  else if(s[0]==="-"){ sign=-1; s=s.slice(1).trim(); }
+  if(s==="") return NaN;
+
+  // mixed: "2 1/3"
+  const spaceParts=s.split(/\s+/);
+  if(spaceParts.length===2 && spaceParts[1].includes("/")){
+    const whole=Number(spaceParts[0]);
+    const fracParts=spaceParts[1].split("/");
+    if(fracParts.length!==2) return NaN;
+    const num=Number(fracParts[0]);
+    const den=Number(fracParts[1]);
+    if(!Number.isFinite(whole)||!Number.isFinite(num)||!Number.isFinite(den)||den===0) return NaN;
+    const absWhole=Math.abs(whole);
+    const fracVal=num/den;
+    let value=absWhole+fracVal;
+    if(whole<0) value=-value;
+    return sign*value;
+  }
+
+  // fraction: a/b
+  if(s.includes("/")){
+    const parts=s.split("/");
+    if(parts.length!==2) return NaN;
+    const num=Number(parts[0]);
+    const den=Number(parts[1]);
+    if(!Number.isFinite(num)||!Number.isFinite(den)||den===0) return NaN;
+    return sign*(num/den);
+  }
+
+  // decimal/int
+  const n=Number(s);
+  return Number.isFinite(n)?sign*n:NaN;
+}
+function nearlyEqual(a,b,eps=1e-6){
+  if(!Number.isFinite(a)||!Number.isFinite(b)) return false;
+  return Math.abs(a-b)<eps;
+}
+function gradeOneQuestion(i){
+  const q=questions[i];
+  const val=parseAnswer(q.userValue||"");
+  q.isCorrect=nearlyEqual(val,q.value);
+}
+
+/* ---------------- Random helpers ---------------- */
+const NAMES = ["Ava","Leo","Mia","Noah","Sofia","Ethan","Zoe","Lucas","Ivy","Hugo","Aria","Mason","Ella","Owen","Liam","Grace","Jack","Chloe","Henry","Nora"];
+const ITEMS = ["rice","flour","salt","paint","juice","rope","ribbon","wire","chocolate","yogurt","sand","coffee beans","pasta"];
+const PLACES = ["a kitchen","a library","a workshop","a bakery","a school hall","a garden shed","a classroom","a sports club"];
+const CURRENCIES = ["$","$","$"]; // keep simple (English-style dollars)
+const UNITS = {
+  length: ["m","cm","km"],
+  mass: ["kg","g","t"],
+  volume: ["L","mL"],
+  time: ["hour","hours"]
+};
+const DENS = [2,3,4,5,6,8,9,10,12];
+
+function randDen(){ return choice(DENS); }
+function randProperFrac(den=null){
+  const d = den || randDen();
+  const n = randInt(1, d-1);
+  return simplifyFraction({n,d});
+}
+function randImproperOrMixedFrac(){
+  const d = randDen();
+  const whole = randInt(1,3);          // 1..3
+  const rem = randInt(1, d-1);
+  return simplifyFraction({n: whole*d + rem, d});
+}
+function randFracAllowImproper(){
+  return Math.random()<0.55 ? randProperFrac() : randImproperOrMixedFrac();
+}
+function randNiceWhole(min,max,step=1){
+  const a = Math.ceil(min/step);
+  const b = Math.floor(max/step);
+  return randInt(a,b)*step;
+}
+
+const DEC_OPTS = [
+  {v:0.2, fr:{n:1,d:5}},
+  {v:0.25, fr:{n:1,d:4}},
+  {v:0.4, fr:{n:2,d:5}},
+  {v:0.5, fr:{n:1,d:2}},
+  {v:0.75, fr:{n:3,d:4}},
+  {v:1.2, fr:{n:6,d:5}},
+  {v:1.5, fr:{n:3,d:2}},
+  {v:2.5, fr:{n:5,d:2}}
+];
+function randDecimalAsFrac(){
+  const o=choice(DEC_OPTS);
+  return {dec:o.v, fr:simplifyFraction(o.fr)};
+}
+
+/* ---------------- Hints ---------------- */
+function hintAddSub(){
+  return `• One step: turn the story into <strong>addition / subtraction</strong>.<br>
+• If needed, make denominators the same.<br>
+• Simplify at the end.`;
+}
+function hintMul(){
+  return `• “Fraction of a quantity” → multiply.<br>
+• Multiply numerators and denominators (or cancel first).<br>
+• Simplify your final answer.`;
+}
+function hintDiv(){
+  return `• Division of fractions: <strong>multiply by the reciprocal</strong>.<br>
+• If dividing by an integer/decimal, rewrite it as a fraction first.<br>
+• Simplify your final answer.`;
+}
+function hintMixed(){
+  return `• Read carefully and write the steps in order.<br>
+• Use fraction rules (+, −, ×, ÷) and simplify as you go.<br>
+• Your final answer can be a fraction, mixed number, or decimal.`;
+}
+
+/* ---------------- Uniqueness (within a generated set) ---------------- */
+const usedKeys = new Set();
+function pickUnique(keyBase){
+  let key = keyBase, k=0;
+  while(usedKeys.has(key) && k<80){ k++; key = keyBase + "_" + k; }
+  usedKeys.add(key);
+  return key;
+}
+
+/* ---------------- Answer normalization (fraction OR number) ---------------- */
+function normalizeAns(ans){
+  if(typeof ans === "number"){
+    return { value: ans, display: String(ans), displayHtml: String(ans) };
+  }
+  // fraction object
+  return {
+    value: fractionToValue(ans),
+    display: fractionToPrettyString(ans),
+    displayHtml: fractionToPrettyHtml(ans)
+  };
+}
+
+/* ===========================================================
+   BANKS (Q1–Q8: each has 20 scenario templates)
+   Q9–Q12: banks from your images (translated + randomized)
+   =========================================================== */
+
+/* ---------- Q1: one-step fraction addition (20) ---------- */
+function buildAddQuestion(ctx){
+  const name=choice(NAMES);
+  const item=choice(ITEMS);
+  const place=choice(PLACES);
+
+  const a = randFracAllowImproper();
+  const b = randFracAllowImproper();
+
+  let unit = ctx.unit || "L";
+  let thing = ctx.thing || item;
+  let verb1 = ctx.verb1 || "uses";
+  let verb2 = ctx.verb2 || "uses";
+
+  const ans = addFrac(a,b);
+
+  const templates = [
+    `${name} ${verb1} ${fractionToPrettyHtml(a)} ${unit} of ${thing} and then ${verb2} ${fractionToPrettyHtml(b)} ${unit} more. How much ${thing} is used in total?`,
+    `In ${place}, a recipe needs ${fractionToPrettyHtml(a)} ${unit} of ${thing} and ${fractionToPrettyHtml(b)} ${unit} of another ingredient. What is the total amount used?`,
+    `${name} measures ${fractionToPrettyHtml(a)} ${unit} of ${thing} in the morning and ${fractionToPrettyHtml(b)} ${unit} in the afternoon. What is the total?`,
+    `${name} buys ${fractionToPrettyHtml(a)} ${unit} of ${thing} and later buys ${fractionToPrettyHtml(b)} ${unit} more. How much does ${name} have altogether?`
+  ];
+
+  return {
+    key: pickUnique("Q1_add_"+ctx.id),
+    text: choice(templates),
+    ans,
+    hint: hintAddSub()
+  };
+}
+
+const ADD_CONTEXTS = [
+  {id:1, thing:"juice", unit:"L", verb1:"pours", verb2:"pours"},
+  {id:2, thing:"paint", unit:"L", verb1:"uses", verb2:"uses"},
+  {id:3, thing:"flour", unit:"kg", verb1:"weighs", verb2:"weighs"},
+  {id:4, thing:"ribbon", unit:"m", verb1:"cuts", verb2:"cuts"},
+  {id:5, thing:"rope", unit:"m", verb1:"measures", verb2:"measures"},
+  {id:6, thing:"rice", unit:"kg", verb1:"cooks", verb2:"cooks"},
+  {id:7, thing:"water", unit:"L", verb1:"collects", verb2:"collects"},
+  {id:8, thing:"sand", unit:"kg", verb1:"fills", verb2:"fills"},
+  {id:9, thing:"yogurt", unit:"kg", verb1:"eats", verb2:"eats"},
+  {id:10, thing:"pasta", unit:"kg", verb1:"uses", verb2:"uses"},
+  {id:11, thing:"wire", unit:"m", verb1:"uses", verb2:"uses"},
+  {id:12, thing:"chocolate", unit:"kg", verb1:"buys", verb2:"buys"},
+  {id:13, thing:"milk", unit:"L", verb1:"adds", verb2:"adds"},
+  {id:14, thing:"coffee beans", unit:"kg", verb1:"grinds", verb2:"grinds"},
+  {id:15, thing:"olive oil", unit:"L", verb1:"uses", verb2:"uses"},
+  {id:16, thing:"fertilizer", unit:"kg", verb1:"spreads", verb2:"spreads"},
+  {id:17, thing:"lemonade", unit:"L", verb1:"drinks", verb2:"drinks"},
+  {id:18, thing:"flour", unit:"cup(s)", verb1:"scoops", verb2:"scoops"},
+  {id:19, thing:"soap", unit:"L", verb1:"makes", verb2:"makes"},
+  {id:20, thing:"glue", unit:"L", verb1:"uses", verb2:"uses"}
+];
+const ADD_BANK = ADD_CONTEXTS.map(ctx => ()=>buildAddQuestion(ctx));
+
+/* ---------- Q2: one-step fraction subtraction (20) ---------- */
+function buildSubQuestion(ctx){
+  const name=choice(NAMES);
+  const item=choice(ITEMS);
+
+  const start = randFracAllowImproper();
+  const used = randProperFrac(choice([2,3,4,5,6,8,10,12])); // keep simpler
+  const ans = subFrac(start, used);
+
+  const templates = [
+    `${name} has ${fractionToPrettyHtml(start)} ${ctx.unit} of ${ctx.thing || item}. ${name} uses ${fractionToPrettyHtml(used)} ${ctx.unit}. How much is left?`,
+    `A container holds ${fractionToPrettyHtml(start)} ${ctx.unit} of ${ctx.thing || item}. ${fractionToPrettyHtml(used)} ${ctx.unit} is poured out. How much remains?`,
+    `${name} measured ${fractionToPrettyHtml(start)} ${ctx.unit} of ${ctx.thing || item}. After using ${fractionToPrettyHtml(used)} ${ctx.unit}, what is left?`,
+    `A roll is ${fractionToPrettyHtml(start)} ${ctx.unit} long. ${fractionToPrettyHtml(used)} ${ctx.unit} is cut off. How much is left?`
+  ];
+
+  return {
+    key: pickUnique("Q2_sub_"+ctx.id),
+    text: choice(templates),
+    ans,
+    hint: hintAddSub()
+  };
+}
+const SUB_CONTEXTS = [
+  {id:1, thing:"juice", unit:"L"},
+  {id:2, thing:"paint", unit:"L"},
+  {id:3, thing:"flour", unit:"kg"},
+  {id:4, thing:"ribbon", unit:"m"},
+  {id:5, thing:"rope", unit:"m"},
+  {id:6, thing:"rice", unit:"kg"},
+  {id:7, thing:"water", unit:"L"},
+  {id:8, thing:"sand", unit:"kg"},
+  {id:9, thing:"wire", unit:"m"},
+  {id:10, thing:"chocolate", unit:"kg"},
+  {id:11, thing:"milk", unit:"L"},
+  {id:12, thing:"oil", unit:"L"},
+  {id:13, thing:"yogurt", unit:"kg"},
+  {id:14, thing:"pasta", unit:"kg"},
+  {id:15, thing:"tea", unit:"L"},
+  {id:16, thing:"glue", unit:"L"},
+  {id:17, thing:"soap", unit:"L"},
+  {id:18, thing:"sugar", unit:"kg"},
+  {id:19, thing:"salt", unit:"kg"},
+  {id:20, thing:"coffee beans", unit:"kg"}
+];
+const SUB_BANK = SUB_CONTEXTS.map(ctx => ()=>buildSubQuestion(ctx));
+
+/* ---------- Q3: fraction multiplication (20) (fraction × fraction / integer / decimal) ---------- */
+function buildMulA(ctx){
+  const name=choice(NAMES);
+  const f = randFracAllowImproper();
+
+  // multiply by integer or decimal or fraction
+  const mode = choice(["int","dec","frac"]);
+  let factorText="", factorFrac=null;
+
+  if(mode==="int"){
+    const k = randNiceWhole(2,12,1);
+    factorFrac = {n:k,d:1};
+    factorText = String(k);
+  }else if(mode==="dec"){
+    const d = randDecimalAsFrac();
+    factorFrac = d.fr;
+    factorText = d.dec.toString();
+  }else{
+    factorFrac = randProperFrac();
+    factorText = fractionToPrettyHtml(factorFrac);
+  }
+
+  const ans = mulFrac(f, factorFrac);
+
+  const templates = [
+    `${name} makes ${factorText} batches of a recipe. Each batch uses ${fractionToPrettyHtml(f)} kg of ${ctx.thing}. How many kilograms of ${ctx.thing} are used in total?`,
+    `${name} cycles ${factorText} hours at ${fractionToPrettyHtml(f)} km per hour. How far does ${name} travel?`,
+    `A rectangle is ${fractionToPrettyHtml(f)} m long. Its width is ${factorText} m. What is the area (in m²)?`,
+    `A project needs ${fractionToPrettyHtml(f)} L of paint per room. If ${factorText} rooms are painted, how many litres are needed?`
+  ];
+
+  return {
+    key: pickUnique("Q3_mulA_"+ctx.id),
+    text: choice(templates),
+    ans,
+    hint: hintMul()
+  };
+}
+const MUL_A_CONTEXTS = [
+  {id:1, thing:"flour"},
+  {id:2, thing:"rice"},
+  {id:3, thing:"paint"},
+  {id:4, thing:"rope"},
+  {id:5, thing:"ribbon"},
+  {id:6, thing:"juice"},
+  {id:7, thing:"wire"},
+  {id:8, thing:"sand"},
+  {id:9, thing:"coffee beans"},
+  {id:10, thing:"yogurt"},
+  {id:11, thing:"pasta"},
+  {id:12, thing:"chocolate"},
+  {id:13, thing:"milk"},
+  {id:14, thing:"oil"},
+  {id:15, thing:"salt"},
+  {id:16, thing:"sugar"},
+  {id:17, thing:"fertilizer"},
+  {id:18, thing:"soap"},
+  {id:19, thing:"glue"},
+  {id:20, thing:"water"}
+];
+const MUL_A_BANK = MUL_A_CONTEXTS.map(ctx => ()=>buildMulA(ctx));
+
+/* ---------- Q4: fraction multiplication (20) (more “fraction of a fraction”, scaling, money) ---------- */
+function buildMulB(ctx){
+  const name=choice(NAMES);
+  const base = randFracAllowImproper();
+  const f = randProperFrac();
+
+  const mode = choice(["fraction_of_quantity","money_discount","area_scale","mixture"]);
+  let ans, text;
+
+  if(mode==="fraction_of_quantity"){
+    ans = mulFrac(base, f);
+    text = `${name} has ${fractionToPrettyHtml(base)} ${ctx.unit}. ${name} uses ${fractionToPrettyHtml(f)} of it. How much does ${name} use?`;
+  }else if(mode==="money_discount"){
+    const sym=choice(CURRENCIES);
+    const price = randNiceWhole(30,240,10); // multiple of 10
+    // discount fraction f, ensure not too big
+    const disc = randProperFrac(choice([4,5,8,10,12]));
+    ans = mulFrac({n:price,d:1}, disc);
+    text = `A backpack costs ${sym}${price}. It is discounted by ${fractionToPrettyHtml(disc)} of the original price. How many dollars is the discount?`;
+  }else if(mode==="area_scale"){
+    // area = (a/b) * (c/d)
+    const a = randProperFrac(choice([4,5,6,7,8,10,12]));
+    const b = randProperFrac(choice([4,5,6,7,8,10,12]));
+    ans = mulFrac(a,b);
+    text = `A small garden bed is ${fractionToPrettyHtml(a)} m long and ${fractionToPrettyHtml(b)} m wide. What is its area (in m²)?`;
+  }else{
+    // mixture scale: base litres, then make f times as much
+    ans = mulFrac(base, f);
+    text = `A drink recipe uses ${fractionToPrettyHtml(base)} L of milk. Today, ${name} makes ${fractionToPrettyHtml(f)} times the recipe. How many litres of milk are needed?`;
+  }
+
+  return {
+    key: pickUnique("Q4_mulB_"+ctx.id),
+    text,
+    ans,
+    hint: hintMul()
+  };
+}
+const MUL_B_CONTEXTS = Array.from({length:20}, (_,i)=>({id:i+1, unit:choice(["L","m","kg"])}));
+const MUL_B_BANK = MUL_B_CONTEXTS.map(ctx => ()=>buildMulB(ctx));
+
+/* ---------- Q5: fraction division (20) (share, unit rate, per day) ---------- */
+function buildDivA(ctx){
+  const name=choice(NAMES);
+
+  const mode = choice(["share_equal","per_day","unit_rate","side_of_square"]);
+  let ans, text;
+
+  if(mode==="share_equal"){
+    const total = randFracAllowImproper();
+    const parts = randNiceWhole(2,8,1);
+    ans = divFrac(total, {n:parts,d:1});
+    text = `${name} has ${fractionToPrettyHtml(total)} ${ctx.unit}. It is shared equally among ${parts} people. How much does each person get?`;
+  }else if(mode==="per_day"){
+    const frac = randProperFrac(choice([6,7,8,9,10,12]));
+    const days = randNiceWhole(2,6,1);
+    ans = divFrac(frac, {n:days,d:1});
+    text = `${name} uses ${fractionToPrettyHtml(frac)} of a bag of ${ctx.thing} in ${days} days. On average, what fraction of the bag is used per day?`;
+  }else if(mode==="unit_rate"){
+    const km = randNiceWhole(6,15,1);
+    const fuel = randProperFrac(choice([2,3,4,5,6,8,10,12]));
+    ans = divFrac(fuel, {n:km,d:1});
+    text = `A car uses ${fractionToPrettyHtml(fuel)} L of fuel to travel ${km} km. How many litres does it use per kilometre?`;
+  }else{
+    const per = randProperFrac(choice([6,7,8,9,10,12]));
+    ans = divFrac(per, {n:4,d:1});
+    text = `A square has a perimeter of ${fractionToPrettyHtml(per)} m. What is the length of one side (in metres)?`;
+  }
+
+  return {
+    key: pickUnique("Q5_divA_"+ctx.id),
+    text,
+    ans,
+    hint: hintDiv()
+  };
+}
+const DIV_A_CONTEXTS = Array.from({length:20}, (_,i)=>({id:i+1, thing:choice(ITEMS), unit:choice(["L","kg","m"])}));
+const DIV_A_BANK = DIV_A_CONTEXTS.map(ctx => ()=>buildDivA(ctx));
+
+/* ---------- Q6: fraction division (20) (find original total, speed, reverse fraction) ---------- */
+function buildDivB(ctx){
+  const mode = choice(["find_whole_from_fraction","speed","batches","total_from_part"]);
+
+  let ans, text;
+
+  if(mode==="find_whole_from_fraction"){
+    // done is fraction of total -> total = done ÷ fraction
+    const frac = randProperFrac(choice([3,4,5,6,7,8,9,10,12]));
+    const k = randNiceWhole(2,10,1);
+    const done = {n: frac.n * k, d:1}; // ensure divisible later
+    ans = divFrac(done, frac);
+    text = `A team has completed ${done.n} km, which is ${fractionToPrettyHtml(frac)} of the whole route. How long is the route in total (in km)?`;
+  }else if(mode==="speed"){
+    const dist = randProperFrac(choice([10,20,25,50,100])); // keep small fractions
+    const time = randProperFrac(choice([2,3,4,5,6,8]));
+    ans = divFrac(dist, time);
+    text = `A small robot travels ${fractionToPrettyHtml(dist)} km in ${fractionToPrettyHtml(time)} hour. What is its speed (in km per hour)?`;
+  }else if(mode==="batches"){
+    // total ÷ per batch (decimal allowed)
+    const total = randFracAllowImproper();
+    const d = randDecimalAsFrac();
+    ans = divFrac(total, d.fr);
+    text = `A recipe needs ${d.dec} cup(s) of oil per batch. If you have ${fractionToPrettyHtml(total)} cup(s) of oil, how many batches can you make?`;
+  }else{
+    const part = randNiceWhole(24,180,6);
+    const frac = randProperFrac(choice([3,4,5,6,8,9,10,12]));
+    ans = divFrac({n:part,d:1}, frac);
+    text = `${part} tickets were sold, which is ${fractionToPrettyHtml(frac)} of all the tickets. How many tickets were there in total?`;
+  }
+
+  return {
+    key: pickUnique("Q6_divB_"+ctx.id),
+    text,
+    ans,
+    hint: hintDiv()
+  };
+}
+const DIV_B_CONTEXTS = Array.from({length:20}, (_,i)=>({id:i+1}));
+const DIV_B_BANK = DIV_B_CONTEXTS.map(ctx => ()=>buildDivB(ctx));
+
+/* ---------- Q7: mixed operations (20) ---------- */
+function buildMixedA(ctx){
+  const name=choice(NAMES);
+  const total = randNiceWhole(12,60,2);
+
+  const f1 = randProperFrac(choice([3,4,5,6,8,10,12]));
+  const f2 = randProperFrac(choice([3,4,5,6,8,10,12]));
+
+  // story: used f1 of total, then used f2 of what remains
+  const used1 = mulFrac({n:total,d:1}, f1);
+  const remain1 = subFrac({n:total,d:1}, used1);
+  const used2 = mulFrac(remain1, f2);
+  const ans = subFrac(remain1, used2);
+
+  const text = `${name} has ${total} ${ctx.unit} of ${ctx.thing}. First, ${name} uses ${fractionToPrettyHtml(f1)} of the total. Then ${name} uses ${fractionToPrettyHtml(f2)} of what is left. How many ${ctx.unit} are left?`;
+
+  return { key: pickUnique("Q7_mixedA_"+ctx.id), text, ans, hint: hintMixed() };
+}
+const MIX_A_CONTEXTS = Array.from({length:20}, (_,i)=>({
+  id:i+1,
+  unit:choice(["kg","L","m"]),
+  thing:choice(ITEMS)
+}));
+const MIX_A_BANK = MIX_A_CONTEXTS.map(ctx => ()=>buildMixedA(ctx));
+
+/* ---------- Q8: mixed operations (20) ---------- */
+function buildMixedB(ctx){
+  const name=choice(NAMES);
+
+  // story: add then multiply or multiply then subtract
+  const mode = choice(["add_then_fraction","fraction_then_subtract","three_step"]);
+
+  let ans, text;
+
+  if(mode==="add_then_fraction"){
+    const a = randFracAllowImproper();
+    const b = randFracAllowImproper();
+    const f = randProperFrac(choice([3,4,5,6,8,10,12]));
+    const sum = addFrac(a,b);
+    ans = mulFrac(sum, f);
+    text = `${name} mixed ${fractionToPrettyHtml(a)} L of juice with ${fractionToPrettyHtml(b)} L of water. Then ${fractionToPrettyHtml(f)} of the mixture was poured into bottles. How many litres were poured into bottles?`;
+  }else if(mode==="fraction_then_subtract"){
+    const total = {n:randNiceWhole(30,120,6), d:1};
+    const f = randProperFrac(choice([3,4,5,6,8,10,12]));
+    const taken = mulFrac(total, f);
+    const extra = randProperFrac(choice([2,3,4,5,6,8]));
+    ans = subFrac(taken, extra);
+    text = `${name} had ${total.n} m of ribbon. ${name} used ${fractionToPrettyHtml(f)} of it for decorations, then found that ${fractionToPrettyHtml(extra)} m was wasted. How many metres were actually used for decorations?`;
+  }else{
+    const price = randNiceWhole(40,200,10);
+    const sym = choice(CURRENCIES);
+    const disc = randProperFrac(choice([4,5,8,10,12]));
+    const tax = randProperFrac(choice([10,20])); // 1/10 or 1/20
+    const afterDisc = mulFrac({n:price,d:1}, subFrac({n:1,d:1}, disc));
+    ans = mulFrac(afterDisc, addFrac({n:1,d:1}, tax));
+    text = `A jacket costs ${sym}${price}. It is discounted by ${fractionToPrettyHtml(disc)} of the original price, then a sales tax of ${fractionToPrettyHtml(tax)} of the discounted price is added. What is the final price?`;
+  }
+
+  return { key: pickUnique("Q8_mixedB_"+ctx.id), text, ans, hint: hintMixed() };
+}
+const MIX_B_CONTEXTS = Array.from({length:20}, (_,i)=>({id:i+1}));
+const MIX_B_BANK = MIX_B_CONTEXTS.map(ctx => ()=>buildMixedB(ctx));
+
+/* ===========================================================
+   Q9–Q12 banks (from your images) — translated + randomized
+   =========================================================== */
+
+/* ---------- Q9 bank = Image 1 & 2 (8 templates) ---------- */
+function q9_StampsChain(){
+  const aDen=choice([6,8,10,12]);
+  const bDen=choice([3,4,5,6,8,10,12]);
+
+  const f1 = simplifyFraction({n: randInt(2,aDen-1), d:aDen});
+  const f2 = simplifyFraction({n: randInt(2,bDen-1), d:bDen});
+
+  const total = lcm(f1.d, lcm(f2.d, 12)) * randInt(2,6);
+  const nameA = choice(NAMES), nameB=choice(NAMES), nameC=choice(NAMES);
+
+  const b = mulFrac({n:total,d:1}, f1);
+  const c = mulFrac(b, f2);
+
+  return {
+    key: pickUnique("Q9_stamps"),
+    text: `${nameA} has ${total} stickers. ${nameB} has ${fractionToPrettyHtml(f1)} as many stickers as ${nameA}. ${nameC} has ${fractionToPrettyHtml(f2)} as many stickers as ${nameB}. How many stickers does ${nameC} have?`,
+    ans: c,
+    hint: hintMixed()
+  };
+}
+function q9_SkippingChain(){
+  const base = lcm(5, lcm(4,6)) * randInt(10,30);
+  const f1 = simplifyFraction({n: randInt(2,4), d:5}); // 2/5..4/5
+  const f2 = simplifyFraction({n: randInt(2,3), d:4}); // 2/4 or 3/4
+  const nameA=choice(NAMES), nameB=choice(NAMES), nameC=choice(NAMES);
+
+  const b = mulFrac({n:base,d:1}, f1);
+  const c = mulFrac(b, f2);
+
+  return {
+    key: pickUnique("Q9_skip"),
+    text: `Three students practise skipping. ${nameA} does ${base} jumps. ${nameB} does ${fractionToPrettyHtml(f1)} as many jumps as ${nameA}. ${nameC} does ${fractionToPrettyHtml(f2)} as many jumps as ${nameB}. How many jumps does ${nameC} do?`,
+    ans: c,
+    hint: hintMixed()
+  };
+}
+function q9_PaperPartsDiff(){
+  const d1=choice([10,12,15,20]);
+  const d2=choice([4,5,6,8,10,12]);
+  let f1 = simplifyFraction({n: randInt(2, Math.min(d1-1, Math.floor(d1*0.6))), d:d1});
+  let f2 = simplifyFraction({n: randInt(1, Math.min(d2-1, Math.floor(d2*0.4))), d:d2});
+
+  // ensure f1+f2 < 1
+  const sum = addFrac(f1,f2);
+  if(sum.n >= sum.d){
+    f2 = simplifyFraction({n:1,d:d2});
+  }
+
+  const total = lcm(f1.d, f2.d) * randInt(40,90);
+
+  const p1 = mulFrac({n:total,d:1}, f1);
+  const p2 = mulFrac({n:total,d:1}, f2);
+  const p3 = subFrac({n:total,d:1}, addFrac(p1,p2));
+  const ans = subFrac(p3, p1);
+
+  return {
+    key: pickUnique("Q9_paper"),
+    text: `There are ${total} sheets of paper divided into 3 parts. Part A is ${fractionToPrettyHtml(f1)} of the total, Part B is ${fractionToPrettyHtml(f2)} of the total, and the rest is Part C. How many more sheets are in Part C than in Part A?`,
+    ans,
+    hint: hintMixed()
+  };
+}
+function q9_BuildingDistance(){
+  const storeyH = randInt(26,32)/10; // 2.6..3.2
+  const storeys = randInt(18,38);
+  const frac = choice([
+    simplifyFraction({n:3,d:5}),
+    simplifyFraction({n:4,d:7}),
+    simplifyFraction({n:5,d:6}),
+    simplifyFraction({n:2,d:3})
+  ]);
+  const height = storeyH * storeys;
+  const dist = height * (frac.n/frac.d);
+  const rounded = Math.round(dist*10)/10; // 1 decimal
+
+  return {
+    key: pickUnique("Q9_build"),
+    text: `In building design, a suitable distance between two neighbouring buildings can be ${fractionToPrettyHtml(frac)} of the building height. If a building is ${storeyH} m per storey and has ${storeys} storeys, what is a suitable distance (in metres), rounded to 1 decimal place?`,
+    ans: rounded,
+    hint: hintMixed()
+  };
+}
+function q9_MuseumYear4(){
+  const y6 = randNiceWhole(110,220,11);
+  const f5 = simplifyFraction({n: randInt(8,12), d: randInt(10,13)}); // around 0.7~1.2
+  const f4 = simplifyFraction({n: randInt(2,4), d: randInt(5,7)});     // around 0.3~0.8
+
+  // force integers: choose y6 multiple of denom, and adjust if needed
+  const base = lcm(f5.d, f4.d);
+  const y6Adj = base * randInt(10,20);
+  const y5 = mulFrac({n:y6Adj,d:1}, f5);
+  const y4 = mulFrac(y5, f4);
+
+  return {
+    key: pickUnique("Q9_museum"),
+    text: `On a trip to a science centre, there are ${y6Adj} Year 6 students. The number of Year 5 students is ${fractionToPrettyHtml(f5)} of the Year 6 students, and the number of Year 4 students is ${fractionToPrettyHtml(f4)} of the Year 5 students. How many Year 4 students went?`,
+    ans: y4,
+    hint: hintMixed()
+  };
+}
+function q9_TouristsQ3(){
+  const total = randNiceWhole(140,280,7);
+  const fHalf = simplifyFraction({n:3,d:7});
+  const fQ3 = simplifyFraction({n:2,d:3});
+  const firstHalf = mulFrac({n:total,d:1}, fHalf);
+  const q3 = mulFrac(firstHalf, fQ3);
+
+  return {
+    key: pickUnique("Q9_tour"),
+    text: `A tourist site received ${total} (ten-thousand) visitor-times in total this year. The first half of the year accounted for ${fractionToPrettyHtml(fHalf)} of the total. The third quarter was ${fractionToPrettyHtml(fQ3)} of the first-half total. How many (ten-thousand) visitor-times were received in the third quarter?`,
+    ans: q3,
+    hint: hintMixed()
+  };
+}
+function q9_PassOrAbove(){
+  const total = choice([36,40,48,56,60]);
+  const excellentFrac = choice([ simplifyFraction({n:3,d:5}), simplifyFraction({n:5,d:8}), simplifyFraction({n:2,d:3}) ]);
+  const failFrac = choice([ simplifyFraction({n:1,d:10}), simplifyFraction({n:2,d:15}), simplifyFraction({n:1,d:8}) ]);
+
+  const excellent = mulFrac({n:total,d:1}, excellentFrac);
+  const fail = mulFrac(excellent, failFrac);
+  const passed = subFrac({n:total,d:1}, fail);
+
+  return {
+    key: pickUnique("Q9_pass"),
+    text: `A class has ${total} students. The number of excellent students is ${fractionToPrettyHtml(excellentFrac)} of the class. The number of failing students is ${fractionToPrettyHtml(failFrac)} of the excellent students. How many students passed (pass or above)?`,
+    ans: passed,
+    hint: hintMixed()
+  };
+}
+function q9_PhoneFinalPrice(){
+  const sym=choice(CURRENCIES);
+  const price = randNiceWhole(900,2400,30); // multiple of 30
+  const disc = choice([ simplifyFraction({n:1,d:6}), simplifyFraction({n:1,d:5}), simplifyFraction({n:1,d:4}) ]);
+  const inc  = choice([ simplifyFraction({n:1,d:10}), simplifyFraction({n:3,d:20}), simplifyFraction({n:3,d:10}) ]);
+
+  const afterDisc = mulFrac({n:price,d:1}, subFrac({n:1,d:1}, disc));
+  const final = mulFrac(afterDisc, addFrac({n:1,d:1}, inc));
+
+  return {
+    key: pickUnique("Q9_phone"),
+    text: `A phone costs ${sym}${price}. During a sale, it is reduced by ${fractionToPrettyHtml(disc)} of its price, and then the new price is increased by ${fractionToPrettyHtml(inc)} of the new price. What is the final price?`,
+    ans: final,
+    hint: hintMixed()
+  };
+}
+const Q9_BANK = [
+  q9_StampsChain,
+  q9_SkippingChain,
+  q9_PaperPartsDiff,
+  q9_BuildingDistance,
+  q9_MuseumYear4,
+  q9_TouristsQ3,
+  q9_PassOrAbove,
+  q9_PhoneFinalPrice
+];
+
+/* ---------- Q10 bank = Image 3 & 4 (8 templates) ---------- */
+function q10_CargoShipped(){
+  const total = randNiceWhole(3,10,1);
+  const firstFrac = randProperFrac(choice([4,5,6,8,10,12]));
+  const second = randProperFrac(choice([2,3,4,5,6,8])); // tonnes as fraction
+  const ans = addFrac(mulFrac({n:total,d:1}, firstFrac), second);
+
+  return {
+    key: pickUnique("Q10_cargo"),
+    text: `A shipment is ${total} tonnes. The first trip carries ${fractionToPrettyHtml(firstFrac)} of the shipment. The second trip carries ${fractionToPrettyHtml(second)} tonne. How many tonnes are carried in total?`,
+    ans,
+    hint: hintMixed()
+  };
+}
+function q10_BasketballChain(){
+  const a = randNiceWhole(8,24,2);
+  const f1 = choice([ simplifyFraction({n:3,d:4}), simplifyFraction({n:2,d:3}), simplifyFraction({n:5,d:6}) ]);
+  const f2 = choice([ simplifyFraction({n:1,d:2}), simplifyFraction({n:1,d:3}), simplifyFraction({n:2,d:5}) ]);
+  const nameA=choice(NAMES), nameB=choice(NAMES), nameC=choice(NAMES);
+
+  const b = mulFrac({n:a,d:1}, f1);
+  const c = mulFrac(b, f2);
+
+  return {
+    key: pickUnique("Q10_basket"),
+    text: `${nameA}, ${nameB}, and ${nameC} play basketball. ${nameA} makes ${a} shots. ${nameB} makes ${fractionToPrettyHtml(f1)} as many shots as ${nameA}. ${nameC} makes ${fractionToPrettyHtml(f2)} as many shots as ${nameB}. How many shots does ${nameC} make?`,
+    ans: c,
+    hint: hintMixed()
+  };
+}
+function q10_GreatWallBeacons(){
+  const total = randNiceWhole(6000,12000,200);
+  const man = choice([ simplifyFraction({n:7,d:10}), simplifyFraction({n:3,d:5}), simplifyFraction({n:2,d:3}) ]);
+  const natural = choice([ simplifyFraction({n:1,d:4}), simplifyFraction({n:1,d:5}), simplifyFraction({n:1,d:6}) ]);
+  // remaining = 1 - man - natural
+  const others = subFrac({n:1,d:1}, addFrac(man,natural));
+  const ans = mulFrac({n:total,d:1}, others);
+
+  return {
+    key: pickUnique("Q10_wall"),
+    text: `A wall is about ${total} km long. Man-made wall accounts for ${fractionToPrettyHtml(man)} of the total, and natural mountains account for ${fractionToPrettyHtml(natural)} of the total. The rest are beacon towers. How many kilometres are beacon towers?`,
+    ans,
+    hint: hintMixed()
+  };
+}
+function q10_BounceThird(){
+  const drop = randNiceWhole(10,40,5);
+  const ratio = choice([ simplifyFraction({n:1,d:2}), simplifyFraction({n:2,d:5}), simplifyFraction({n:3,d:5}) ]);
+  const ans = mulFrac({n:drop,d:1}, mulFrac(ratio, mulFrac(ratio, ratio)));
+
+  return {
+    key: pickUnique("Q10_bounce"),
+    text: `A ball is dropped from ${drop} m. Each bounce reaches ${fractionToPrettyHtml(ratio)} of the previous drop height. What is the height (in m) of the third bounce?`,
+    ans,
+    hint: hintMixed()
+  };
+}
+function q10_KoalaSleep(){
+  const base = choice([9,18,27]); // so base*(1+1/9) is neat
+  const more = simplifyFraction({n:1,d:9});
+  const ans = mulFrac({n:base,d:1}, addFrac({n:1,d:1}, more)); // base*10/9
+
+  return {
+    key: pickUnique("Q10_sleep"),
+    text: `A lion sleeps about ${base} hours per day. A koala sleeps ${fractionToPrettyHtml(more)} more than the lion (as a fraction of the lion’s sleep time). About how many hours does the koala sleep per day?`,
+    ans,
+    hint: hintMixed()
+  };
+}
+function q10_ArtContestDiff(){
+  const total = randNiceWhole(100,200,25);
+  const firstPrize = randInt(5,12);
+  const secondFrac = choice([ simplifyFraction({n:1,d:5}), simplifyFraction({n:4,d:25}), simplifyFraction({n:3,d:20}) ]);
+  const thirdMore = choice([ simplifyFraction({n:1,d:4}), simplifyFraction({n:2,d:5}), simplifyFraction({n:1,d:3}) ]);
+  const second = mulFrac({n:total,d:1}, secondFrac);
+  const third = mulFrac(second, addFrac({n:1,d:1}, thirdMore));
+  const ans = subFrac(third, {n:firstPrize,d:1});
+
+  return {
+    key: pickUnique("Q10_art"),
+    text: `An art contest has ${total} artworks. First prize has ${firstPrize} artworks. Second prize has ${fractionToPrettyHtml(secondFrac)} of the total artworks. Third prize has ${fractionToPrettyHtml(thirdMore)} more than the second prize (as a fraction of the second prize). How many fewer artworks does first prize have than third prize?`,
+    ans,
+    hint: hintMixed()
+  };
+}
+function q10_RopeSkippingTotal(){
+  const base = 72 * randInt(2,5); // multiple of 72 so 1/9 & 1/8 work nicely
+  const less = simplifyFraction({n:1,d:9});
+  const more = simplifyFraction({n:1,d:8});
+
+  const wang = mulFrac({n:base,d:1}, subFrac({n:1,d:1}, less));
+  const li = mulFrac({n:base,d:1}, addFrac({n:1,d:1}, more));
+  const ans = addFrac(wang, li);
+
+  const nameA=choice(NAMES), nameB=choice(NAMES), nameC=choice(NAMES);
+
+  return {
+    key: pickUnique("Q10_skip_total"),
+    text: `In a skipping contest, ${nameA} makes ${base} jumps. ${nameB} makes ${fractionToPrettyHtml(less)} fewer jumps than ${nameA} (as a fraction of ${nameA}). ${nameC} makes ${fractionToPrettyHtml(more)} more jumps than ${nameA} (as a fraction of ${nameA}). How many jumps do ${nameB} and ${nameC} make in total?`,
+    ans,
+    hint: hintMixed()
+  };
+}
+function q10_RocketPayloadLEO(){
+  const sso = randNiceWhole(120,360,15);
+  const more = choice([ simplifyFraction({n:31,d:45}), simplifyFraction({n:2,d:3}), simplifyFraction({n:3,d:5}) ]);
+  const ans = mulFrac({n:sso,d:1}, addFrac({n:1,d:1}, more));
+
+  return {
+    key: pickUnique("Q10_rocket"),
+    text: `A rocket can carry ${sso} kg to a sun-synchronous orbit. Its low-Earth-orbit (LEO) payload is ${fractionToPrettyHtml(more)} more than the sun-synchronous payload (as a fraction of the sun-synchronous payload). What is the LEO payload (in kg)?`,
+    ans,
+    hint: hintMixed()
+  };
+}
+const Q10_BANK = [
+  q10_CargoShipped,
+  q10_BasketballChain,
+  q10_GreatWallBeacons,
+  q10_BounceThird,
+  q10_KoalaSleep,
+  q10_ArtContestDiff,
+  q10_RopeSkippingTotal,
+  q10_RocketPayloadLEO
+];
+
+/* ---------- Q11 bank = Image 5 (4 templates) ---------- */
+function q11_TreesTotal(){
+  const first = randNiceWhole(150,350,10);
+  const frac = simplifyFraction({n:7,d:10});
+  const extra = randInt(10,30);
+  const second = addFrac(mulFrac({n:first,d:1}, frac), {n:extra,d:1});
+  const ans = addFrac({n:first,d:1}, second);
+
+  return {
+    key: pickUnique("Q11_trees"),
+    text: `A village planted ${first} trees in the first year. In the second year, the number of trees planted was ${extra} more than ${fractionToPrettyHtml(frac)} of the first year’s number. How many trees were planted in total over the two years?`,
+    ans,
+    hint: hintMixed()
+  };
+}
+function q11_BananasMass(){
+  const apples = randNiceWhole(240,720,20);
+  const orangeFrac = choice([ simplifyFraction({n:3,d:4}), simplifyFraction({n:2,d:3}), simplifyFraction({n:5,d:6}) ]);
+  const lessFrac = choice([ simplifyFraction({n:1,d:6}), simplifyFraction({n:1,d:5}), simplifyFraction({n:1,d:4}) ]);
+
+  const oranges = mulFrac({n:apples,d:1}, orangeFrac);
+  const bananas = mulFrac(oranges, subFrac({n:1,d:1}, lessFrac));
+
+  return {
+    key: pickUnique("Q11_bananas"),
+    text: `A fruit shop has ${apples} kg of apples. The mass of oranges is ${fractionToPrettyHtml(orangeFrac)} of the mass of apples. The mass of bananas is ${fractionToPrettyHtml(lessFrac)} less than the mass of oranges (as a fraction of the oranges). How many kilograms of bananas are there?`,
+    ans: bananas,
+    hint: hintMixed()
+  };
+}
+function q11_ActualWaterUse(){
+  const plan = randNiceWhole(300,900,30);
+  const saveFrac = choice([ simplifyFraction({n:1,d:5}), simplifyFraction({n:1,d:6}), simplifyFraction({n:1,d:4}) ]);
+  const ans = mulFrac({n:plan,d:1}, subFrac({n:1,d:1}, saveFrac));
+
+  return {
+    key: pickUnique("Q11_water"),
+    text: `A factory planned to use ${plan} tonnes of water in a month, but it saved ${fractionToPrettyHtml(saveFrac)} of the planned amount. How many tonnes of water did it actually use?`,
+    ans,
+    hint: hintMixed()
+  };
+}
+function q11_ThumbLength(){
+  const neck = randNiceWhole(20,35,5); // cm
+  const neckIsHalf = simplifyFraction({n:1,d:2}); // neck = 1/2 wrist
+  const thumbLess = simplifyFraction({n:3,d:5});  // thumb is 3/5 less than wrist
+  const wrist = divFrac({n:neck,d:1}, neckIsHalf); // 2*neck
+  const thumb = mulFrac(wrist, subFrac({n:1,d:1}, thumbLess)); // 2/5 wrist
+
+  return {
+    key: pickUnique("Q11_thumb"),
+    text: `A simple body ratio says: neck circumference is ${fractionToPrettyHtml(neckIsHalf)} of wrist circumference. Thumb length is ${fractionToPrettyHtml(thumbLess)} less than the wrist circumference (as a fraction of the wrist). If the neck circumference is ${neck} cm, what is the thumb length (in cm)?`,
+    ans: thumb,
+    hint: hintMixed()
+  };
+}
+const Q11_BANK = [q11_TreesTotal, q11_BananasMass, q11_ActualWaterUse, q11_ThumbLength];
+
+/* ---------- Q12 bank = Image 6 (4 templates) ---------- */
+function q12_TractorPlow(){
+  const day1 = choice([ simplifyFraction({n:1,d:3}), simplifyFraction({n:2,d:5}), simplifyFraction({n:3,d:8}) ]);
+  const day2Frac = choice([ simplifyFraction({n:1,d:2}), simplifyFraction({n:2,d:3}), simplifyFraction({n:3,d:5}) ]);
+  const rem = subFrac({n:1,d:1}, day1);
+  const day2 = mulFrac(rem, day2Frac);
+  const ans = addFrac(day1, day2);
+
+  return {
+    key: pickUnique("Q12_plow"),
+    text: `A tractor ploughs ${fractionToPrettyHtml(day1)} of a field on the first day. On the second day it ploughs ${fractionToPrettyHtml(day2Frac)} of the remaining part. What fraction of the field is ploughed in total after two days?`,
+    ans,
+    hint: hintMixed()
+  };
+}
+function q12_CandiesTotal(){
+  const fruit = choice([ simplifyFraction({n:1,d:2}), simplifyFraction({n:3,d:4}), simplifyFraction({n:2,d:3}) ]);
+  const milk = choice([ simplifyFraction({n:1,d:4}), simplifyFraction({n:1,d:3}), simplifyFraction({n:1,d:5}) ]);
+  const crispFrac = choice([ simplifyFraction({n:2,d:3}), simplifyFraction({n:3,d:5}), simplifyFraction({n:1,d:2}) ]);
+  const crisp = mulFrac(fruit, crispFrac);
+  const ans = addFrac(addFrac(fruit, milk), crisp);
+
+  return {
+    key: pickUnique("Q12_candy"),
+    text: `A parent buys ${fractionToPrettyHtml(fruit)} kg of fruit candy and ${fractionToPrettyHtml(milk)} kg of milk candy. They also buy crisp candy whose mass is ${fractionToPrettyHtml(crispFrac)} of the fruit candy. What is the total mass of the three types of candy (in kg)?`,
+    ans,
+    hint: hintMixed()
+  };
+}
+function q12_TwoVehiclesMeet(){
+  const dist = randNiceWhole(360,960,30);
+  const carSpeed = randNiceWhole(50,90,5);
+  const slower = choice([ simplifyFraction({n:1,d:6}), simplifyFraction({n:2,d:7}), simplifyFraction({n:1,d:5}) ]);
+  const truckSpeed = mulFrac({n:carSpeed,d:1}, subFrac({n:1,d:1}, slower));
+  const totalSpeed = addFrac({n:carSpeed,d:1}, truckSpeed);
+  const ans = divFrac({n:dist,d:1}, totalSpeed);
+
+  return {
+    key: pickUnique("Q12_meet"),
+    text: `Two towns are ${dist} km apart. A car leaves Town A towards Town B at ${carSpeed} km/h. At the same time, a truck leaves Town B towards Town A, and its speed is ${fractionToPrettyHtml(slower)} less than the car’s speed (as a fraction of the car’s speed). After how many hours do they meet?`,
+    ans,
+    hint: hintMixed()
+  };
+}
+function q12_WaterBuckets(){
+  const fat = randNiceWhole(30,80,5);
+  const less = choice([ simplifyFraction({n:1,d:5}), simplifyFraction({n:1,d:4}), simplifyFraction({n:2,d:7}) ]);
+  const more = choice([ simplifyFraction({n:1,d:4}), simplifyFraction({n:1,d:3}), simplifyFraction({n:2,d:5}) ]);
+
+  const little = mulFrac({n:fat,d:1}, subFrac({n:1,d:1}, less));
+  const thin = mulFrac(little, addFrac({n:1,d:1}, more));
+  const ans = subFrac(thin, little);
+
+  return {
+    key: pickUnique("Q12_buckets"),
+    text: `Three people carry water buckets. One person carried ${fat} buckets in total. Another person carried ${fractionToPrettyHtml(less)} fewer buckets than the first person (as a fraction of the first person’s amount). The third person carried ${fractionToPrettyHtml(more)} more buckets than the second person (as a fraction of the second person’s amount). How many more buckets did the third person carry than the second person?`,
+    ans,
+    hint: hintMixed()
+  };
+}
+const Q12_BANK = [q12_TractorPlow, q12_CandiesTotal, q12_TwoVehiclesMeet, q12_WaterBuckets];
+
+/* ===========================================================
+   QUESTION DEFINITIONS (Q1–Q12 fixed types)
+   =========================================================== */
+const QUESTION_BANKS = [
+  { label:"Q1 (Easy)", builders: ADD_BANK },
+  { label:"Q2 (Easy)", builders: SUB_BANK },
+  { label:"Q3 (Easy)", builders: MUL_A_BANK },
+  { label:"Q4 (Easy)", builders: MUL_B_BANK },
+  { label:"Q5 (Easy)", builders: DIV_A_BANK },
+  { label:"Q6 (Easy)", builders: DIV_B_BANK },
+  { label:"Q7 (Medium)", builders: MIX_A_BANK },
+  { label:"Q8 (Medium)", builders: MIX_B_BANK },
+  { label:"Q9 (Medium)", builders: Q9_BANK },
+  { label:"Q10 (Hard)", builders: Q10_BANK },
+  { label:"Q11 (Hard)", builders: Q11_BANK },
+  { label:"Q12 (Hard)", builders: Q12_BANK }
+];
+
+const TOTAL_QUESTIONS = QUESTION_BANKS.length;
+const QUESTIONS_PER_PART = TOTAL_QUESTIONS;
+
+/* pick a builder (avoid repeating the same template back-to-back for each question index) */
+const lastPickIndex = Array(TOTAL_QUESTIONS).fill(-1);
+
+function pickFromBuilders(builders, qIdx){
+  let idx = randInt(0, builders.length-1);
+  let guard=0;
+  while(idx===lastPickIndex[qIdx] && guard<25){
+    idx = randInt(0, builders.length-1);
+    guard++;
+  }
+  lastPickIndex[qIdx]=idx;
+  return builders[idx]();
+}
+
+/* ---------------- Build 12 questions (fixed order) ---------------- */
+function buildQuestionSet(){
+  usedKeys.clear();
+
+  const built = QUESTION_BANKS.map((qb, i)=> pickFromBuilders(qb.builders, i));
+
+  return built.map((b,i)=>{
+    const a = normalizeAns(b.ans);
+    return {
+      partIndex:0,
+      indexInPart:i,
+      text: b.text,
+      hint: b.hint || "",
+      value: a.value,
+      display: a.display,
+      displayHtml: a.displayHtml,
+      userValue:"",
+      isCorrect:false
+    };
+  });
+}
+
+/* ---------------- State ---------------- */
+let questions=[];
+let currentQuestionIndex=0;
+let studentName="Student";
+let quizStartTime=null;
+let quizEndTime=null;
+let quizSubmitted=false;
+
+let timerInterval=null;
+let elapsedMs=0;
+let isPaused=false;
+let firstAttemptMs=null;
+
+const quizContent=document.getElementById("quizContent");
+const sidebarEl=document.getElementById("sidebar");
+
+const buttonContainer=document.getElementById("navButtons");
+const backButton=document.getElementById("backButton");
+const nextButton=document.getElementById("nextButton");
+const submitButton=document.getElementById("submitButton");
+const checkButton=document.getElementById("checkButton");
+const saveButton=document.getElementById("saveButton");
+
+const generateBtn=document.getElementById("generateButton");
+const pauseButton=document.getElementById("pauseButton");
+const exportPdfButton=document.getElementById("exportPdfButton");
+const timerDisplay=document.getElementById("timerDisplay");
+
+/* ---------------- Timer ---------------- */
+function updateTimerDisplay(){
+  let totalMs=elapsedMs;
+  if(!isPaused && quizStartTime) totalMs+=(new Date()-quizStartTime);
+  let text=`Time: ${formatMs(totalMs)}`;
+  if(firstAttemptMs!==null) text+=` (First: ${formatMs(firstAttemptMs)})`;
+  timerDisplay.textContent=text;
+}
+function startTimerInterval(){
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval=setInterval(updateTimerDisplay, 1000);
+}
+function pauseTimer(){
+  if(isPaused || !quizStartTime) return;
+  const now=new Date();
+  elapsedMs+=now-quizStartTime;
+  isPaused=true;
+  quizStartTime=null;
+  updateTimerDisplay();
+}
+function resumeTimer(){
+  if(!isPaused) return;
+  isPaused=false;
+  quizStartTime=new Date();
+  updateTimerDisplay();
+}
+
+/* ---------------- Generate Quiz ---------------- */
+function generateQuiz(){
+  questions = buildQuestionSet();
+  quizSubmitted=false;
+}
+
+/* ---------------- Sidebar ---------------- */
+function renderSidebar(){
+  sidebarEl.style.display="block";
+  sidebarEl.innerHTML=`<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul=document.getElementById("qList");
+  for(let i=0;i<TOTAL_QUESTIONS;i++){
+    const li=document.createElement("li");
+    li.textContent=`Q${i+1}`;
+    li.dataset.index=i;
+    li.addEventListener("click", ()=>{
+      saveCurrentInput();
+      currentQuestionIndex=i;
+      renderQuestion();
+    });
+    ul.appendChild(li);
+  }
+  updateSidebarStatus();
+}
+function updateSidebarStatus(){
+  const items=document.querySelectorAll("#qList li");
+  items.forEach(li=>{
+    const idx=Number(li.dataset.index);
+    const q=questions[idx];
+    li.classList.remove("active","answered","correct","incorrect");
+
+    if(!quizSubmitted){
+      li.classList.toggle("active", idx===currentQuestionIndex);
+      if((q.userValue||"").trim()!=="") li.classList.add("answered");
+    }else{
+      if((q.userValue||"").trim()!==""){
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ---------------- Helpers ---------------- */
+function saveCurrentInput(){
+  const input=document.getElementById("answerInput");
+  if(input){
+    questions[currentQuestionIndex].userValue = input.value.trim();
+    if(quizSubmitted){
+      gradeOneQuestion(currentQuestionIndex);
+      updateSidebarStatus();
+    }
+  }
+}
+function mountNavButtonsInto(slotId){
+  const slot=document.getElementById(slotId);
+  if(!slot) return;
+  slot.appendChild(buttonContainer);
+  buttonContainer.style.display="flex";
+}
+
+/* ---------------- Hint toggle ---------------- */
+function wireHintButton(){
+  const btn=document.getElementById("hintBtn");
+  const box=document.getElementById("hintBox");
+  if(!btn || !box) return;
+
+  btn.addEventListener("click", ()=>{
+    const isHidden = (box.style.display==="none" || box.style.display==="");
+    box.style.display = isHidden ? "block" : "none";
+    btn.textContent = isHidden ? "Hide Hint" : "Hint";
+  });
+}
+
+/* ---------------- Render Question ---------------- */
+function renderQuestion(){
+  const q=questions[currentQuestionIndex];
+  const label = QUESTION_BANKS[currentQuestionIndex]?.label || "";
+
+  quizContent.innerHTML=`
+    <p class="question-text">Question ${currentQuestionIndex+1} of ${TOTAL_QUESTIONS}</p>
+    <div class="part-title">${PART_TITLES[0]} &nbsp; <span style="font-weight:600;color:#0d47a1;">(${label})</span></div>
+
+    <div class="single-question">
+      <strong>Q${currentQuestionIndex+1}.</strong> ${q.text}
+
+      <div>
+        <button id="hintBtn" class="hint-btn" type="button">Hint</button>
+        <div id="hintBox" class="hint" style="display:none;">${q.hint || ""}</div>
+      </div>
+
+      <div>
+        <input id="answerInput" class="answer-box" type="text"
+          value="${(q.userValue||"").replace(/"/g,'&quot;')}"
+          placeholder="Answer (e.g., 3/5 or 1 1/2 or 0.6)">
+      </div>
+
+      <div id="checkFeedback" style="display:none;"></div>
+    </div>
+
+    <div id="navSlot"></div>
+  `;
+
+  wireHintButton();
+  mountNavButtonsInto("navSlot");
+
+  backButton.style.display="inline-block";
+  backButton.style.visibility = (currentQuestionIndex===0) ? "hidden" : "visible";
+
+  const isLast = (currentQuestionIndex===TOTAL_QUESTIONS-1);
+  nextButton.style.display = isLast ? "none" : "inline-block";
+  submitButton.style.display = isLast ? "inline-block" : "none";
+
+  saveButton.style.display = quizSubmitted ? "inline-block" : "none";
+  checkButton.style.display = (quizSubmitted && !q.isCorrect) ? "inline-block" : "none";
+
+  updateSidebarStatus();
+}
+
+/* ---------------- Results + Submit ---------------- */
+function calculateAndShowResults(){
+  saveCurrentInput();
+
+  const now=new Date();
+  let attemptMs=elapsedMs;
+  if(!isPaused && quizStartTime) attemptMs+=now-quizStartTime;
+
+  if(firstAttemptMs===null) firstAttemptMs=attemptMs;
+
+  const attemptStartTime=quizStartTime || now;
+  quizEndTime=now;
+  quizSubmitted=true;
+
+  let correctCount=0;
+  questions.forEach(q=>{
+    const val=parseAnswer(q.userValue||"");
+    q.isCorrect=nearlyEqual(val, q.value);
+    if(q.isCorrect) correctCount++;
+  });
+
+  updateSidebarStatus();
+
+  let html=`
+    <h3>Results for ${studentName}</h3>
+    <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
+    <p>Start time: <strong>${attemptStartTime.toLocaleTimeString()}</strong></p>
+    <p>Submit time: <strong>${quizEndTime.toLocaleTimeString()}</strong></p>
+    <p>Time taken (this attempt): <strong>${formatMs(attemptMs)}</strong></p>
+    <p>First attempt time: <strong>${formatMs(firstAttemptMs)}</strong></p>
+    <p>Click question numbers on the left to review. Incorrect questions will have a <strong>Check</strong> button.</p>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th><th>Question</th><th>Your Answer</th><th>Correct</th><th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q,i)=>{
+    html+=`
+      <tr class="${q.isCorrect ? "correct-answer":"incorrect-answer"}">
+        <td>${i+1}</td>
+        <td>${q.text}</td>
+        <td>${(q.userValue||"").trim()==="" ? "—" : (q.userValue||"")}</td>
+        <td>${q.displayHtml || q.display}</td>
+        <td>${(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
+      </tr>
+    `;
+  });
+
+  html+=`</table><div id="navSlot"></div>`;
+  quizContent.innerHTML=html;
+
+  mountNavButtonsInto("navSlot");
+
+  backButton.style.display="none";
+  nextButton.style.display="none";
+  submitButton.style.display="none";
+  checkButton.style.display="none";
+  saveButton.style.display="inline-block";
+
+  // reset timer for next attempt
+  elapsedMs=0; isPaused=false; quizStartTime=new Date();
+  pauseButton.textContent="Pause";
+  startTimerInterval();
+  updateTimerDisplay();
+}
+
+/* ---------------- Buttons ---------------- */
+nextButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex<TOTAL_QUESTIONS-1){
+    currentQuestionIndex++;
+    renderQuestion();
+  }
+});
+backButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex>0){
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+});
+submitButton.addEventListener("click", ()=>{
+  if(currentQuestionIndex===TOTAL_QUESTIONS-1){
+    calculateAndShowResults();
+  }
+});
+checkButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  const q = questions[currentQuestionIndex];
+  if(!quizSubmitted) return;
+
+  gradeOneQuestion(currentQuestionIndex);
+  updateSidebarStatus();
+
+  const box=document.getElementById("checkFeedback");
+  if(!box) return;
+
+  box.className="check-feedback";
+  box.style.display="block";
+
+  if(q.isCorrect){
+    box.innerHTML = `✅ Correct!`;
+    checkButton.style.display = "none";
+  }else{
+    const correctHtml = q.displayHtml || q.display;
+    box.innerHTML = `❌ Incorrect. Correct answer: <strong>${correctHtml}</strong>`;
+    checkButton.style.display = "inline-block";
+  }
+});
+
+/* Save TXT */
+function formatDateForFilename(date){
+  if(!date) return "no_time";
+  const pad=n=>String(n).padStart(2,"0");
+  return date.getFullYear()+pad(date.getMonth()+1)+pad(date.getDate())+"_"+
+         pad(date.getHours())+pad(date.getMinutes())+pad(date.getSeconds());
+}
+function saveCurrentResultAsTxt(){
+  saveCurrentInput();
+
+  if(!quizSubmitted){
+    questions.forEach(q=>{
+      const val=parseAnswer(q.userValue||"");
+      q.isCorrect=nearlyEqual(val,q.value);
+    });
+  }
+  let correctCount=0;
+  questions.forEach(q=>{ if(q.isCorrect) correctCount++; });
+
+  const lines=[];
+  lines.push("Fractions Word Problems - Current Result");
+  lines.push("Student: "+studentName);
+  if(quizStartTime) lines.push("Start time: "+quizStartTime.toLocaleString());
+  if(quizEndTime) lines.push("Last submit time: "+quizEndTime.toLocaleString());
+  lines.push("Score: "+correctCount+" / "+TOTAL_QUESTIONS);
+  if(firstAttemptMs!==null) lines.push("First attempt time: "+formatMs(firstAttemptMs));
+  lines.push("");
+  lines.push("Details:");
+  lines.push("----------");
+
+  questions.forEach((q,i)=>{
+    const userAns=(q.userValue||"").trim()==="" ? "Not answered" : q.userValue;
+    const resultText=(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect?"Correct":"Incorrect");
+    const plainQuestion=q.text.replace(/<[^>]+>/g,"").replace(/\s+/g," ").trim();
+    lines.push(
+      `Q${i+1}`+
+      "\nQuestion: "+plainQuestion+
+      "\nYour answer: "+userAns+
+      "\nCorrect answer: "+q.display+
+      "\nResult: "+resultText
+    );
+    lines.push("");
+  });
+
+  const content=lines.join("\n");
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
+  const ts=formatDateForFilename(new Date());
+  a.href=url;
+  a.download=`Fractions_WordProblems_${safeName}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+saveButton.addEventListener("click", saveCurrentResultAsTxt);
+
+/* Pause/Resume */
+pauseButton.addEventListener("click", ()=>{
+  if(!quizStartTime && elapsedMs===0 && !quizSubmitted) return;
+  if(isPaused){ resumeTimer(); pauseButton.textContent="Pause"; }
+  else { pauseTimer(); pauseButton.textContent="Resume"; }
+});
+
+/* Generate new set */
+generateBtn.addEventListener("click", ()=>{
+  if(!quizSubmitted && !confirm("Generate a new random set? All answers will be lost.")) return;
+
+  if(timerInterval) clearInterval(timerInterval);
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=new Date(); quizEndTime=null;
+  updateTimerDisplay(); startTimerInterval();
+
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+});
+
+/* ---------------- Export Questions PDF (Print) ---------------- */
+function escapeHtml(s){
+  return String(s)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+function buildQuestionsForPrint(){
+  let out = "";
+  out += `<div class="part">${escapeHtml(PART_TITLES[0])}</div>`;
+  questions.forEach((q,i)=>{
+    out += `
+      <div class="q">
+        <div class="qline"><strong>Q${i+1}.</strong> ${q.text}</div>
+        <div class="blankline"></div>
+      </div>
+    `;
+  });
+  return out;
+}
+function exportQuestionsToPdf(){
+  if(!questions || questions.length===0){
+    alert("Please start the quiz first.");
+    return;
+  }
+  saveCurrentInput();
+
+  const w = window.open("", "_blank");
+  if(!w){
+    alert("Popup blocked. Please allow popups for this page, then try again.");
+    return;
+  }
+
+  const now = new Date();
+  const title = "Fractions Word Problems — Questions";
+
+  const html = `
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>${title}</title>
+  <style>
+    body{font-family:'Segoe UI',Tahoma,sans-serif;color:#111;padding:18px 22px;}
+    h1{font-size:20px;margin:0 0 6px;}
+    .meta{font-size:12.5px;color:#444;margin-bottom:14px;}
+    .part{margin-top:14px;font-weight:700;font-size:14px;padding-top:4px;border-top:1px solid #ddd;}
+    .q{margin:10px 0 0;}
+    .qline{font-size:13.5px;line-height:1.6;}
+    .blankline{height:18px;}
+
+    .frac{display:inline-block;text-align:center;vertical-align:middle;min-width:22px;}
+    .frac .top{display:block;border-bottom:1px solid #000;padding:0 2px;}
+    .frac .bottom{display:block;padding:0 2px;font-size:.9em;}
+    .mixed{display:inline-flex;align-items:center;gap:4px;vertical-align:middle;white-space:nowrap;}
+    .mixed .whole{font-weight:600;line-height:1;transform: translateY(1px);}
+
+    @media print{@page{margin:14mm;}body{padding:0;}}
+  </style>
+</head>
+<body>
+  <h1>${title}</h1>
+  <div class="meta">
+    Student: <strong>${escapeHtml(studentName)}</strong>
+    &nbsp; | &nbsp;
+    ${escapeHtml(now.toLocaleString())}
+  </div>
+  ${buildQuestionsForPrint()}
+</body>
+</html>`;
+
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+
+  w.onload = function(){
+    w.focus();
+    w.print();
+  };
+}
+exportPdfButton.addEventListener("click", exportQuestionsToPdf);
+
+/* ---------------- Start Screen ---------------- */
+function showStartScreen(){
+  sidebarEl.style.display="none";
+  buttonContainer.style.display="none";
+  generateBtn.style.display="none";
+  saveButton.style.display="none";
+  pauseButton.style.display="none";
+  exportPdfButton.style.display="none";
+
+  if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=null; quizEndTime=null;
+  updateTimerDisplay();
+
+  updateStudentDisplay();
+
+  quizContent.innerHTML=`
+    <p>This quiz contains <strong>${TOTAL_QUESTIONS}</strong> questions (Q1–Q12).</p>
+    <p>Please enter your name to begin:</p>
+
+    <input id="nameInput" type="text"
+      style="padding:10px;width:250px;font-size:1.05em;"
+      placeholder="Your name">
+
+    <button id="startButton"
+      style="margin-left:10px;background:#4caf50;padding:10px 20px;color:white;border:none;border-radius:6px;">
+      Start Quiz
+    </button>
+  `;
+  document.getElementById("startButton").addEventListener("click", startQuizFromInput);
+}
+
+function startQuizCommon(){
+  updateStudentDisplay();
+
+  quizStartTime=new Date();
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  updateTimerDisplay(); startTimerInterval();
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+
+  generateBtn.style.display="inline-block";
+  pauseButton.style.display="inline-block";
+  exportPdfButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+}
+
+function startQuizFromInput(){
+  const nameInput=document.getElementById("nameInput");
+  studentName=(nameInput.value || "Student").trim() || "Student";
+  startQuizCommon();
+}
+function startQuizAutoWithName(name){
+  studentName=(name||"Student").trim()||"Student";
+  startQuizCommon();
+}
+
+/* ---------------- Init ---------------- */
+(function init(){
+  const urlName = getNameFromUrl();
+  if(urlName){
+    startQuizAutoWithName(urlName);
+  }else{
+    studentName="Student";
+    showStartScreen();
+  }
+})();
+</script>
+</body>
+</html>
