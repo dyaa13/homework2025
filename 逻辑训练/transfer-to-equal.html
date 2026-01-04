@@ -780,18 +780,17 @@ function addCanvasAutoPagedToPdf(pdf, canvas, marginMm = 10){
   const usableW = pageWidth - marginMm * 2;
   const usableH = pageHeight - marginMm * 2;
 
-  // scale to fit page width
   const ratio = usableW / canvas.width;
   const scaledH = canvas.height * ratio;
 
-  // fits on one page
+  // fits one page
   if(scaledH <= usableH){
     const imgData = canvas.toDataURL("image/png", 1.0);
     pdf.addImage(imgData, "PNG", marginMm, marginMm, usableW, scaledH);
     return;
   }
 
-  // slice by page height (in source pixels)
+  // slice canvas into multiple pages
   const sliceHpx = Math.floor(usableH / ratio);
   const pageCanvas = document.createElement("canvas");
   const ctx = pageCanvas.getContext("2d", { willReadFrequently: true });
@@ -827,10 +826,10 @@ exportQuestionsBtn.addEventListener("click", async () => {
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF("p", "mm", "a4");
 
-  // ✅ iOS 适当降低 scale，避免 canvas 过大导致裁切/内存问题
+  // iOS 降 scale，避免 canvas 过大导致渲染/裁切问题
   const SCALE = isIOSDevice() ? 1.2 : 2;
 
-  // ✅ 不要 left:-9999px（iOS 可能不完整渲染），改成屏幕内但透明
+  // 不要 left:-9999px（iOS 有时会渲染不完整），用透明+不可点
   const wrapper = document.createElement("div");
   wrapper.style.position = "fixed";
   wrapper.style.left = "0";
@@ -838,14 +837,17 @@ exportQuestionsBtn.addEventListener("click", async () => {
   wrapper.style.opacity = "0";
   wrapper.style.pointerEvents = "none";
   wrapper.style.zIndex = "-1";
-  wrapper.style.width = "820px";
+  wrapper.style.width = "800px";
   wrapper.style.background = "#ffffff";
+  wrapper.style.webkitTextSizeAdjust = "100%"; // iOS 防字体自动放大
+  wrapper.style.textSizeAdjust = "100%";
   document.body.appendChild(wrapper);
 
-  try{
+  try {
     let groupDiv = null;
 
     questions.forEach((q, idx) => {
+      // 每 2 题一组（你原来的逻辑）
       if (idx % 2 === 0) {
         groupDiv = document.createElement("div");
         groupDiv.style.padding = "20px";
@@ -889,7 +891,7 @@ exportQuestionsBtn.addEventListener("click", async () => {
         scale: SCALE,
         useCORS: true,
         backgroundColor: "#ffffff",
-        windowWidth: 980,
+        windowWidth: 980,   // 强制“桌面布局”，避免 iOS media query 干扰
         windowHeight: 1600,
         scrollX: 0,
         scrollY: 0
@@ -897,7 +899,7 @@ exportQuestionsBtn.addEventListener("click", async () => {
 
       if (i > 0) pdf.addPage();
 
-      // ✅ 关键：自动分页，不裁切
+      // ✅ 关键：不裁切，自动分页
       addCanvasAutoPagedToPdf(pdf, canvas, 10);
     }
 
@@ -1009,7 +1011,5 @@ function startQuiz(skipReadName){
 /* ---------------- Init ---------------- */
 showStartScreen();
 </script>
-  <script src="./patch-jspdf-save.js"></script>
 </body>
 </html>
-
