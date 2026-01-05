@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fractions — Part 2 (Fractions • Decimals • Percents • Reciprocals • Mixed) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --radius:14px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      user-select:none;
+      z-index:0;
+      white-space:nowrap;
+    }
+
+    .container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:24px auto 60px;
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+    }
+
+    /* Header */
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:42px;height:42px;
+      background:var(--blue);
+      border-radius:8px;
+      position:relative;
+      flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px;height:10px;
+      background:var(--orange);
+      top:-6px;left:10px;
+      border-radius:6px;
+    }
+    .logo-text{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .logo-text h1{
+      font-size:22px;
+      margin:0;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .logo-text .tag{
+      font-size:13px;
+      color:var(--orange);
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .student-pill{
+      margin-left:auto;
+      display:none;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      font-weight:800;
+      color:#111;
+      white-space:nowrap;
+    }
+    .student-pill.show{ display:inline-flex; }
+
+    /* Top bar */
+    .top-bar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:14px 0 10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .tabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .tab-btn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--blue);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+    }
+    .tab-btn.active{
+      background:var(--blue);
+      color:#fff;
+      border-color:var(--blue);
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    select, input[type="number"], input[type="text"]{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:9px 10px;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn.primary{ background:var(--blue); color:#fff; }
+    .btn.secondary{ background:#eef2ff; color:var(--blue); border:1px solid #dbe3ff; }
+    .btn.warn{ background:#fff3e0; color:#8a4b00; border:1px solid #ffe0b2; }
+    .btn:active{ transform:translateY(1px); }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+
+    /* Sections */
+    .section{ display:none; margin-top:16px; }
+    .section.active{ display:block; }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    @media (min-width: 860px){
+      .grid.two{ grid-template-columns:1fr 1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      padding:16px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+    .card h3{
+      margin:10px 0 8px;
+      font-size:15px;
+      color:#111;
+    }
+    .muted{ color:var(--muted); }
+    .note{
+      background:#f7fbff;
+      border:1px solid #d9ecff;
+      padding:12px;
+      border-radius:12px;
+      color:#123;
+    }
+    .rule{ border-top:1px dashed var(--line); margin:12px 0; }
+
+    /* Fraction styling */
+    .frac{
+      display:inline-grid;
+      grid-template-rows:auto auto;
+      align-items:center;
+      justify-items:center;
+      font-weight:800;
+      line-height:1;
+      margin:0 2px;
+      vertical-align:middle;
+      min-width:22px;
+    }
+    .frac .top{ padding:0 4px 2px; }
+    .frac .bar{
+      width:100%;
+      height:2px;
+      background:#111;
+      opacity:.75;
+      border-radius:2px;
+    }
+    .frac .bottom{ padding:2px 4px 0; }
+    .mixed{
+      display:inline-flex;
+      gap:4px;
+      align-items:center;
+      font-weight:800;
+      vertical-align:middle;
+      margin:0 2px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      color:#111;
+      flex-wrap:wrap;
+    }
+
+    .svgbox{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px;
+      background:#fff;
+      overflow:hidden;
+    }
+    .svgbox svg{ width:100%; height:auto; display:block; }
+
+    /* Practice */
+    .practice-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .practice-meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      background:#f6f7ff;
+      border:1px solid #e2e6ff;
+      color:#1d2a7a;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:13px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:14px;
+      background:#fff;
+    }
+    .q-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+    .q-num{ font-weight:900; color:var(--blue); }
+    .q-topic{
+      font-size:12px;
+      font-weight:900;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color:#111;
+      background:#fafafe;
+      white-space:nowrap;
+    }
+    .q-body{
+      font-size:15px;
+      line-height:1.45;
+      margin-bottom:10px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .q-input{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:10px;
+    }
+    .tiny{ width:80px; }
+    .tiny2{ width:92px; }
+    .symbol{ font-weight:900; padding:0 2px; }
+    .q-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .feedback{
+      margin-top:10px;
+      border-radius:12px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      background:#fafafa;
+      display:none;
+    }
+    .feedback.show{ display:block; }
+    .feedback.ok{ border-color:#c9e7cf; background:#f0fbf2; }
+    .feedback.bad{ border-color:#ffd0d0; background:#fff3f3; }
+    .feedback .title{ font-weight:900; margin-bottom:6px; }
+
+    .footer-actions{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      border-top:1px solid var(--line);
+      padding-top:14px;
+    }
+    .scorebox{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fff;
+      min-width:220px;
+    }
+    .scorebox strong{ color:var(--blue); }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+    .modal-backdrop.show{ display:flex; }
+    .modal{
+      width:min(560px, 96vw);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 18px 45px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+      padding:16px;
+    }
+    .modal h3{ margin:0 0 6px; color:var(--blue); }
+    .modal p{ margin:6px 0 14px; color:var(--muted); }
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); border:0;
+    }
+
+    /* hidden print layout for PDF */
+    #pdfPrintArea{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:794px; /* ~A4 at 96dpi */
+      background:#fff;
+      color:#111;
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      padding:0;
+    }
+    .pdf-page{
+      width:794px;
+      min-height:1123px; /* ~A4 at 96dpi */
+      padding:36px 44px;
+      page-break-after:always;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .pdf-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+      padding-bottom:10px;
+      border-bottom:2px solid #e6e6ef;
+    }
+    .pdf-title{
+      font-weight:900;
+      color:#0d47a1;
+      font-size:18px;
+      line-height:1.2;
+    }
+    .pdf-sub{
+      color:#666;
+      font-size:12px;
+      margin-top:4px;
+    }
+    .pdf-meta{
+      text-align:right;
+      font-size:12px;
+      color:#666;
+      white-space:nowrap;
+      line-height:1.35;
+    }
+    .pdf-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    .pdf-q{
+      border:1px solid #e6e6ef;
+      border-radius:12px;
+      padding:12px 12px;
+    }
+    .pdf-qhead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .pdf-qnum{ font-weight:900; color:#0d47a1; }
+    .pdf-qtopic{
+      font-size:11px;
+      font-weight:900;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid #e6e6ef;
+      background:#fafafe;
+    }
+    .pdf-qbody{
+      font-size:13px;
+      line-height:1.45;
+      margin-bottom:8px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .pdf-answerline{
+      margin-top:8px;
+      font-size:12px;
+      color:#111;
+    }
+    .linebox{
+      display:inline-block;
+      border-bottom:2px solid #111;
+      min-width:180px;
+      height:14px;
+      vertical-align:baseline;
+      margin-left:6px;
+    }
+    .linebox.small{ min-width:120px; }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div>
+        <div class="logo-text">
+          <h1>Fractions — Part 2</h1>
+          <span class="tag">DYAA EDUCATION</span>
+        </div>
+        <p class="subtitle">Fraction ↔ Decimal ↔ Percent • Reciprocals • Improper ↔ Mixed</p>
+      </div>
+
+      <!-- shows only when name is known -->
+      <div id="studentPillHeader" class="student-pill" aria-live="polite">
+        Student: <span id="studentNameHeader"></span>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="learn">Learn</button>
+        <button class="tab-btn" data-tab="practice">Practice</button>
+      </div>
+
+      <div class="controls" id="practiceControls" style="display:none;">
+        <label class="chip">
+          Questions:
+          <select id="countSelect" aria-label="Number of questions">
+            <option value="12">12</option>
+            <option value="16" selected>16</option>
+            <option value="20">20</option>
+          </select>
+        </label>
+
+        <label class="chip">
+          PDF per page:
+          <select id="perPageSelect" aria-label="PDF questions per page">
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+        </label>
+
+        <button class="btn secondary" id="exportPdfBtn">Export to PDF</button>
+        <button class="btn warn" id="newSetBtn">Generate New Set</button>
+        <button class="btn secondary" id="resetBtn">Reset Answers</button>
+      </div>
+    </div>
+
+    <!-- LEARN -->
+    <div class="section active" id="learnSection">
+      <div class="grid two">
+
+        <div class="card">
+          <h2>1) Fractions ↔ Decimals</h2>
+          <p class="muted">
+            A fraction means <b>division</b>:
+            <span class="frac"><span class="top">a</span><span class="bar"></span><span class="bottom">b</span></span>
+            = a ÷ b.
+          </p>
+
+          <div class="note">
+            <div class="chip">
+              Example:
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">4</span></span>
+              = 3 ÷ 4 = <b>0.75</b>
+            </div>
+          </div>
+
+          <div class="rule"></div>
+
+          <h3>Decimal → Fraction (quick method)</h3>
+          <p class="muted">
+            If there are 2 decimal places, write it over 100 and simplify.
+          </p>
+          <div class="chip">
+            Example: <b>0.60</b> = <span class="frac"><span class="top">60</span><span class="bar"></span><span class="bottom">100</span></span>
+            = <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">5</span></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>2) Decimals ↔ Percents</h2>
+          <p class="muted">
+            <b>Percent</b> means “out of 100”.
+            To convert:
+          </p>
+          <ul class="muted" style="margin:0 0 0 18px;">
+            <li>Decimal → Percent: multiply by <b>100</b>.</li>
+            <li>Percent → Decimal: divide by <b>100</b>.</li>
+          </ul>
+
+          <div class="note" style="margin-top:10px;">
+            <div class="chip">0.37 → 0.37 × 100 = <b>37%</b></div>
+            <div class="chip">5% → 5 ÷ 100 = <b>0.05</b></div>
+          </div>
+
+          <div class="rule"></div>
+
+          <h3>Tip</h3>
+          <p class="muted">
+            In this practice, if a decimal is needed, write it to <b>2 decimal places</b> (e.g., 0.50).
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>3) Fractions ↔ Percents</h2>
+          <p class="muted">
+            You can convert a fraction to a percent by converting it to a decimal and multiplying by 100.
+          </p>
+          <div class="note">
+            <div class="chip">
+              Example:
+              <span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">5</span></span>
+              = 0.2 → <b>20%</b>
+            </div>
+          </div>
+
+          <div class="rule"></div>
+
+          <h3>Percent → Fraction</h3>
+          <p class="muted">Write it over 100 then simplify.</p>
+          <div class="chip">
+            Example: <b>25%</b> =
+            <span class="frac"><span class="top">25</span><span class="bar"></span><span class="bottom">100</span></span>
+            =
+            <span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">4</span></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>4) Improper ↔ Mixed Numbers</h2>
+          <p class="muted">
+            <b>Improper fraction</b>: numerator ≥ denominator.<br/>
+            <b>Mixed number</b>: whole number + fraction.
+          </p>
+
+          <div class="note">
+            <div class="chip">
+              Example:
+              <span class="frac"><span class="top">11</span><span class="bar"></span><span class="bottom">4</span></span>
+              =
+              <span class="mixed">
+                <span>2</span>
+                <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">4</span></span>
+              </span>
+            </div>
+          </div>
+
+          <div class="rule"></div>
+
+          <h3>How to convert</h3>
+          <ul class="muted" style="margin:0 0 0 18px;">
+            <li>Improper → Mixed: do division (11 ÷ 4 = 2 remainder 3).</li>
+            <li>Mixed → Improper: whole × denominator + numerator.</li>
+          </ul>
+        </div>
+
+        <div class="card" style="grid-column:1/-1;">
+          <h2>5) Reciprocals</h2>
+          <p class="muted">
+            The reciprocal of a non-zero number is what you multiply by to get 1.
+          </p>
+          <div class="note">
+            <div class="chip">
+              Reciprocal of
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">5</span></span>
+              is
+              <span class="frac"><span class="top">5</span><span class="bar"></span><span class="bottom">3</span></span>
+            </div>
+            <div class="chip">
+              Reciprocal of <b>4</b> is
+              <span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">4</span></span>
+            </div>
+          </div>
+          <p class="muted" style="margin-top:10px;">
+            Tip: For a fraction, swap numerator and denominator (but you cannot take reciprocal of 0).
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="section" id="practiceSection">
+      <div class="practice-header">
+        <div>
+          <h2 style="margin:0;color:var(--blue);font-size:18px;">Practice Quiz</h2>
+          <p class="muted" style="margin:6px 0 0;">
+            Decimals: write to <b>2 decimal places</b> if needed. Use <b>simplest form</b> for fractions.
+          </p>
+        </div>
+        <div class="practice-meta">
+          <span class="pill" id="studentPillPractice" style="display:none;">Student: <span id="studentNamePractice"></span></span>
+          <span class="pill" id="setLabel">Set: A</span>
+          <span class="pill" id="progressLabel">0 checked</span>
+        </div>
+      </div>
+
+      <div id="questionsWrap" class="grid"></div>
+
+      <div class="footer-actions">
+        <div class="scorebox">
+          <div><strong id="scoreText">Score:</strong> <span id="scoreValue">—</span></div>
+          <div class="muted" style="font-size:13px;margin-top:4px;">Tip: Fractions must be simplified (no common factors).</div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn primary" id="submitBtn">Submit & View Result</button>
+          <button class="btn secondary" id="showAllBtn">Show All Explanations</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- hidden print area for PDF -->
+  <div id="pdfPrintArea" aria-hidden="true"></div>
+
+  <!-- Confirm modal (new set) -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle">Generate a new set?</h3>
+      <p>This will clear your current answers and create a new random set of questions.</p>
+      <div class="modal-actions">
+        <button class="btn secondary" id="cancelModalBtn">Cancel</button>
+        <button class="btn warn" id="confirmModalBtn">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Name modal (required when URL has no ?name=...) -->
+  <div class="modal-backdrop" id="nameBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+      <h3 id="nameTitle">Enter student name to start</h3>
+      <p>
+        Tip: You can skip this step by using a link like:
+        <b>mixed_quiz.html?name=Tiger</b>
+      </p>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <label class="sr-only" for="nameInput">Student name</label>
+        <input id="nameInput" type="text" placeholder="e.g., Tiger" autocomplete="off" style="min-width:240px;" />
+        <button class="btn primary" id="startWithNameBtn">Start</button>
+      </div>
+
+      <div class="modal-actions" style="margin-top:14px;">
+        <button class="btn secondary" id="cancelNameBtn">Back to Learn</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Student name logic
+     ************************/
+    let studentName = "";
+
+    function escapeHTML(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function sanitizeName(raw){
+      let s = String(raw || "").trim();
+      s = s.replace(/[\u0000-\u001F\u007F]/g, "");
+      if(s.length > 40) s = s.slice(0, 40);
+      return s;
+    }
+
+    function setStudentName(name){
+      studentName = sanitizeName(name);
+      updateStudentUI();
+    }
+
+    function updateStudentUI(){
+      const headerPill = document.getElementById("studentPillHeader");
+      const headerName = document.getElementById("studentNameHeader");
+      const practicePill = document.getElementById("studentPillPractice");
+      const practiceName = document.getElementById("studentNamePractice");
+
+      if(studentName){
+        headerPill.classList.add("show");
+        headerName.textContent = studentName;
+
+        practicePill.style.display = "inline-flex";
+        practiceName.textContent = studentName;
+
+        setPracticeButtonsEnabled(true);
+      }else{
+        headerPill.classList.remove("show");
+        headerName.textContent = "";
+
+        practicePill.style.display = "none";
+        practiceName.textContent = "";
+
+        setPracticeButtonsEnabled(false);
+      }
+    }
+
+    function setPracticeButtonsEnabled(enabled){
+      document.getElementById("exportPdfBtn").disabled = !enabled;
+      document.getElementById("newSetBtn").disabled = !enabled;
+      document.getElementById("resetBtn").disabled = !enabled;
+      document.getElementById("submitBtn").disabled = !enabled;
+      document.getElementById("showAllBtn").disabled = !enabled;
+    }
+
+    function getNameFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("name");
+      if(!raw) return "";
+      return sanitizeName(raw);
+    }
+
+    /***********************
+     * Utilities (no floats for checking logic)
+     ************************/
+    function randInt(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function gcd(a, b){
+      a = Math.abs(a); b = Math.abs(b);
+      while(b !== 0){
+        const t = a % b;
+        a = b; b = t;
+      }
+      return a;
+    }
+    function simplify(n, d){
+      if(d < 0){ n = -n; d = -d; }
+      const g = gcd(n, d);
+      return { n: n / g, d: d / g };
+    }
+    function isIntegerStr(s){
+      return /^-?\d+$/.test(String(s).trim());
+    }
+    function parseNumLoose(s){
+      const t = String(s || "").trim().replace(/%/g,"");
+      if(!t) return null;
+      if(!/^-?\d+(\.\d+)?$/.test(t)) return null;
+      const v = Number(t);
+      return Number.isFinite(v) ? v : null;
+    }
+    function roundTo2(v){
+      return Math.round(v * 100) / 100;
+    }
+    function toFixed2(v){
+      return roundTo2(v).toFixed(2);
+    }
+
+    function fracHTML(n, d){
+      return `<span class="frac"><span class="top">${n}</span><span class="bar"></span><span class="bottom">${d}</span></span>`;
+    }
+    function mixedHTML(w, n, d){
+      return `<span class="mixed"><span>${w}</span>${fracHTML(n,d)}</span>`;
+    }
+
+    function topicLabel(type){
+      switch(type){
+        case "f2d": return "Frac → Dec";
+        case "d2f": return "Dec → Frac";
+        case "d2p": return "Dec → %";
+        case "p2d": return "% → Dec";
+        case "f2p": return "Frac → %";
+        case "p2f": return "% → Frac";
+        case "imp2mix": return "Improper → Mixed";
+        case "mix2imp": return "Mixed → Improper";
+        case "recip": return "Reciprocal";
+        default: return "Practice";
+      }
+    }
+
+    /***********************
+     * Conversion helpers
+     ************************/
+    const TERM_DENOMS = [2,4,5,8,10,20,25,40,50,100];
+
+    function makeNiceFraction(allowImproper=false){
+      const d = TERM_DENOMS[randInt(0, TERM_DENOMS.length-1)];
+      let n;
+      if(allowImproper){
+        n = randInt(d+1, d*2+ (d-1)); // 1.something to <3
+      }else{
+        n = randInt(1, d-1);
+      }
+      const red = simplify(n, d);
+      return { n:red.n, d:red.d };
+    }
+
+    function fractionToDecimal2(n, d){
+      return toFixed2(n / d);
+    }
+
+    function fractionToPercent2(n, d){
+      return toFixed2((n / d) * 100);
+    }
+
+    function decimalStrToFraction(decStr){
+      // treat as 2dp rational: "0.70" => 70/100
+      const s = String(decStr).trim();
+      if(!/^-?\d+(\.\d+)?$/.test(s)) return null;
+      const parts = s.split(".");
+      const whole = parseInt(parts[0],10);
+      const frac = parts[1] || "";
+      const dp = frac.length;
+      const pow = dp === 0 ? 1 : Math.pow(10, dp);
+      const sign = whole < 0 ? -1 : 1;
+
+      // build integer numerator from string to avoid float
+      const absWholeStr = String(Math.abs(whole));
+      const absNumStr = absWholeStr + (dp ? frac : "");
+      const absNum = parseInt(absNumStr, 10);
+
+      let num = sign * absNum;
+      let den = pow;
+
+      const red = simplify(num, den);
+      return red;
+    }
+
+    function percentToFraction(p){
+      // p can be integer or have 1-2 decimals; convert to rational safely using string
+      const s = String(p).trim().replace(/%/g,"");
+      if(!/^-?\d+(\.\d+)?$/.test(s)) return null;
+      const parts = s.split(".");
+      const whole = parseInt(parts[0],10);
+      const frac = parts[1] || "";
+      const dp = frac.length;
+      const pow = dp === 0 ? 1 : Math.pow(10, dp);
+
+      const sign = whole < 0 ? -1 : 1;
+      const absWholeStr = String(Math.abs(whole));
+      const absNumStr = absWholeStr + (dp ? frac : "");
+      const absNum = parseInt(absNumStr, 10);
+
+      // (absNum / pow) / 100 = absNum / (pow*100)
+      let num = sign * absNum;
+      let den = pow * 100;
+
+      return simplify(num, den);
+    }
+
+    function mixedToImproper(w, n, d){
+      // assume w>=0, n>=0, d>0
+      return simplify(w * d + n, d);
+    }
+
+    function improperToMixed(n, d){
+      const w = Math.floor(n / d);
+      const r = n % d;
+      if(r === 0) return { w, n:0, d:1 };
+      const red = simplify(r, d);
+      return { w, n:red.n, d:red.d };
+    }
+
+    /***********************
+     * Question generators
+     ************************/
+    function makeF2D(){
+      const f = makeNiceFraction(false);
+      const dec = fractionToDecimal2(f.n, f.d);
+
+      const prompt = `Convert to a decimal (2 d.p.): ${fracHTML(f.n, f.d)}`;
+      const hint = `A fraction is division: ${f.n} ÷ ${f.d}. Round to <b>2 decimal places</b>.`;
+      const explain = `Compute ${f.n} ÷ ${f.d} = <b>${dec}</b>.`;
+
+      return {
+        type:"f2d",
+        promptHTML: prompt,
+        inputHTML: `<input class="tiny2" type="text" inputmode="decimal" autocomplete="off" placeholder="e.g., 0.75" />`,
+        getUser: (card)=> card.querySelector("input").value.trim(),
+        isCorrect: (u)=> {
+          const v = parseNumLoose(u);
+          if(v === null) return false;
+          return toFixed2(v) === dec;
+        },
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Decimal (2 d.p.): ____",
+        answerText: dec
+      };
+    }
+
+    function makeD2F(){
+      // generate from a nice fraction so it terminates, then show 2dp
+      const f = makeNiceFraction(false);
+      const dec = fractionToDecimal2(f.n, f.d);
+      const expected = decimalStrToFraction(dec); // rational from displayed decimal
+
+      const prompt = `Convert to a fraction in <b>simplest form</b>: <b>${dec}</b>`;
+      const hint = `Two decimal places → write over 100: ${dec} = __ / 100, then simplify.`;
+      const explain = `Write ${dec} as a fraction: <b>${expected.n}/${expected.d}</b> (simplest form).`;
+
+      return {
+        type:"d2f",
+        promptHTML: prompt,
+        inputHTML: `
+          <span class="muted">Answer:</span>
+          <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="num" />
+          <span class="symbol">/</span>
+          <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="den" />
+        `,
+        getUser: (card)=>{
+          const ins = card.querySelectorAll("input");
+          return { a: ins[0].value.trim(), b: ins[1].value.trim() };
+        },
+        isCorrect: (u)=>{
+          if(!isIntegerStr(u.a) || !isIntegerStr(u.b)) return false;
+          const un = parseInt(u.a,10), ud = parseInt(u.b,10);
+          if(ud === 0) return false;
+          const red = simplify(un, ud);
+          // require simplest and positive denominator
+          if(gcd(un, ud) !== 1 || ud < 0) return false;
+          return red.n === expected.n && red.d === expected.d;
+        },
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Fraction (simplest): ____ / ____",
+        answerText: `${expected.n}/${expected.d}`
+      };
+    }
+
+    function makeD2P(){
+      const f = makeNiceFraction(false);
+      const dec = fractionToDecimal2(f.n, f.d);
+      const pct = fractionToPercent2(f.n, f.d); // 2dp percent
+
+      const prompt = `Convert to a percent: <b>${dec}</b>`;
+      const hint = `Decimal → percent: multiply by 100.`;
+      const explain = `${dec} × 100 = <b>${pct}%</b>.`;
+
+      return {
+        type:"d2p",
+        promptHTML: prompt,
+        inputHTML: `<input class="tiny2" type="text" inputmode="decimal" autocomplete="off" placeholder="e.g., 25 or 25%" /> <span class="muted">%</span>`,
+        getUser: (card)=> card.querySelector("input").value.trim(),
+        isCorrect: (u)=>{
+          const v = parseNumLoose(u);
+          if(v === null) return false;
+          // compare to 2dp
+          return toFixed2(v) === pct;
+        },
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Percent: ____ %",
+        answerText: `${pct}%`
+      };
+    }
+
+    function makeP2D(){
+      // percent that gives 2dp decimal nicely
+      const choices = [5,10,12.5,15,20,25,30,37.5,40,50,62.5,75,80,87.5,90];
+      const p = choices[randInt(0, choices.length-1)];
+      const dec = toFixed2(p / 100);
+
+      const prompt = `Convert to a decimal (2 d.p.): <b>${String(p)}%</b>`;
+      const hint = `Percent → decimal: divide by 100.`;
+      const explain = `${p}% ÷ 100 = <b>${dec}</b>.`;
+
+      return {
+        type:"p2d",
+        promptHTML: prompt,
+        inputHTML: `<input class="tiny2" type="text" inputmode="decimal" autocomplete="off" placeholder="e.g., 0.25" />`,
+        getUser: (card)=> card.querySelector("input").value.trim(),
+        isCorrect: (u)=>{
+          const v = parseNumLoose(u);
+          if(v === null) return false;
+          return toFixed2(v) === dec;
+        },
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Decimal (2 d.p.): ____",
+        answerText: dec
+      };
+    }
+
+    function makeF2P(){
+      const f = makeNiceFraction(false);
+      const pct = fractionToPercent2(f.n, f.d);
+
+      const prompt = `Convert to a percent: ${fracHTML(f.n, f.d)}`;
+      const hint = `Fraction → percent: (numerator ÷ denominator) × 100.`;
+      const explain = `${f.n} ÷ ${f.d} × 100 = <b>${pct}%</b>.`;
+
+      return {
+        type:"f2p",
+        promptHTML: prompt,
+        inputHTML: `<input class="tiny2" type="text" inputmode="decimal" autocomplete="off" placeholder="e.g., 12.5" /> <span class="muted">%</span>`,
+        getUser: (card)=> card.querySelector("input").value.trim(),
+        isCorrect: (u)=>{
+          const v = parseNumLoose(u);
+          if(v === null) return false;
+          return toFixed2(v) === pct;
+        },
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Percent: ____ %",
+        answerText: `${pct}%`
+      };
+    }
+
+    function makeP2F(){
+      const choices = [5,10,12.5,15,20,25,30,37.5,40,50,62.5,75,80,87.5,90];
+      const p = choices[randInt(0, choices.length-1)];
+      const frac = percentToFraction(String(p));
+
+      const prompt = `Convert to a fraction in <b>simplest form</b>: <b>${String(p)}%</b>`;
+      const hint = `Write it over 100, then simplify.`;
+      const explain = `${p}% = ${p}/100 = <b>${frac.n}/${frac.d}</b> (simplest form).`;
+
+      return {
+        type:"p2f",
+        promptHTML: prompt,
+        inputHTML: `
+          <span class="muted">Answer:</span>
+          <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="num" />
+          <span class="symbol">/</span>
+          <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="den" />
+        `,
+        getUser: (card)=>{
+          const ins = card.querySelectorAll("input");
+          return { a: ins[0].value.trim(), b: ins[1].value.trim() };
+        },
+        isCorrect: (u)=>{
+          if(!isIntegerStr(u.a) || !isIntegerStr(u.b)) return false;
+          const un = parseInt(u.a,10), ud = parseInt(u.b,10);
+          if(ud === 0) return false;
+          if(gcd(un, ud) !== 1 || ud < 0) return false;
+          const red = simplify(un, ud);
+          return red.n === frac.n && red.d === frac.d;
+        },
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Fraction (simplest): ____ / ____",
+        answerText: `${frac.n}/${frac.d}`
+      };
+    }
+
+    function makeImp2Mix(){
+      // ensure not whole number
+      const d = TERM_DENOMS[randInt(0, TERM_DENOMS.length-1)];
+      let n = randInt(d+1, d*3 - 1);
+      if(n % d === 0) n += 1;
+
+      const red = simplify(n, d);
+      n = red.n; const dd = red.d;
+
+      const mix = improperToMixed(n, dd);
+      const prompt = `Convert to a mixed number: ${fracHTML(n, dd)}`;
+      const hint = `Divide: ${n} ÷ ${dd} = (whole) remainder. Then simplify the remainder fraction.`;
+      const explain = `${n} ÷ ${dd} = ${mix.w} remainder ${ (n - mix.w*dd) }.<br/>
+                      So the mixed number is <b>${mixedHTML(mix.w, mix.n, mix.d)}</b>.`;
+
+      return {
+        type:"imp2mix",
+        promptHTML: prompt,
+        inputHTML: `
+          <span class="muted">Answer:</span>
+          <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="whole" aria-label="whole" />
+          <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="num" aria-label="numerator" />
+          <span class="symbol">/</span>
+          <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="den" aria-label="denominator" />
+        `,
+        getUser: (card)=>{
+          const ins = card.querySelectorAll("input");
+          return { w: ins[0].value.trim(), a: ins[1].value.trim(), b: ins[2].value.trim() };
+        },
+        isCorrect: (u)=>{
+          if(!isIntegerStr(u.w) || !isIntegerStr(u.a) || !isIntegerStr(u.b)) return false;
+          const uw = parseInt(u.w,10), un = parseInt(u.a,10), ud = parseInt(u.b,10);
+          if(ud === 0) return false;
+          if(uw < 0 || un < 0) return false;
+          if(un >= ud) return false;
+          if(gcd(un, ud) !== 1 || ud < 0) return false;
+
+          // compare as improper (uw + un/ud)
+          const userImp = simplify(uw * ud + un, ud);
+          const ansImp = simplify(mix.w * mix.d + mix.n, mix.d);
+          return userImp.n === ansImp.n && userImp.d === ansImp.d;
+        },
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Mixed: whole __  num __ / den __",
+        answerText: (mix.n === 0) ? String(mix.w) : `${mix.w} ${mix.n}/${mix.d}`
+      };
+    }
+
+    function makeMix2Imp(){
+      const d = TERM_DENOMS[randInt(0, TERM_DENOMS.length-1)];
+      const w = randInt(1, 3);
+      let n = randInt(1, d-1);
+      const redPart = simplify(n, d);
+      n = redPart.n;
+      const dd = redPart.d;
+
+      const imp = mixedToImproper(w, n, dd);
+
+      const prompt = `Convert to an improper fraction: ${mixedHTML(w, n, dd)}`;
+      const hint = `Whole × denominator + numerator, over the same denominator.`;
+      const explain = `${w}×${dd} + ${n} = <b>${w*dd+n}</b>, so the improper fraction is <b>${imp.n}/${imp.d}</b>.`;
+
+      return {
+        type:"mix2imp",
+        promptHTML: prompt,
+        inputHTML: `
+          <span class="muted">Answer:</span>
+          <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="num" />
+          <span class="symbol">/</span>
+          <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="den" />
+        `,
+        getUser: (card)=>{
+          const ins = card.querySelectorAll("input");
+          return { a: ins[0].value.trim(), b: ins[1].value.trim() };
+        },
+        isCorrect: (u)=>{
+          if(!isIntegerStr(u.a) || !isIntegerStr(u.b)) return false;
+          const un = parseInt(u.a,10), ud = parseInt(u.b,10);
+          if(ud === 0) return false;
+          if(gcd(un, ud) !== 1 || ud < 0) return false;
+          const red = simplify(un, ud);
+          return red.n === imp.n && red.d === imp.d;
+        },
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Improper: ____ / ____",
+        answerText: `${imp.n}/${imp.d}`
+      };
+    }
+
+    function makeReciprocal(){
+      const mode = Math.random() < 0.35 ? "whole" : "frac";
+
+      if(mode === "whole"){
+        const w = randInt(2, 12);
+        const ans = simplify(1, w);
+        const prompt = `Find the reciprocal of <b>${w}</b>. Write your answer as a fraction in simplest form.`;
+        const hint = `Reciprocal of a whole number w is 1/w.`;
+        const explain = `Reciprocal of ${w} is <b>${ans.n}/${ans.d}</b>.`;
+
+        return {
+          type:"recip",
+          promptHTML: prompt,
+          inputHTML: `
+            <span class="muted">Answer:</span>
+            <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="num" />
+            <span class="symbol">/</span>
+            <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="den" />
+          `,
+          getUser: (card)=>{
+            const ins = card.querySelectorAll("input");
+            return { a: ins[0].value.trim(), b: ins[1].value.trim() };
+          },
+          isCorrect: (u)=>{
+            if(!isIntegerStr(u.a) || !isIntegerStr(u.b)) return false;
+            const un = parseInt(u.a,10), ud = parseInt(u.b,10);
+            if(ud === 0) return false;
+            if(gcd(un, ud) !== 1 || ud < 0) return false;
+            const red = simplify(un, ud);
+            return red.n === ans.n && red.d === ans.d;
+          },
+          hintHTML: hint,
+          explainHTML: explain,
+          pdfAnswerHint: "Reciprocal: ____ / ____",
+          answerText: `${ans.n}/${ans.d}`
+        };
+      }else{
+        const f = makeNiceFraction(false);
+        // ensure not 0
+        const ans = simplify(f.d, f.n);
+
+        const prompt = `Find the reciprocal of ${fracHTML(f.n, f.d)}. Write your answer in simplest form.`;
+        const hint = `Swap numerator and denominator.`;
+        const explain = `Reciprocal of ${f.n}/${f.d} is ${f.d}/${f.n} = <b>${ans.n}/${ans.d}</b>.`;
+
+        return {
+          type:"recip",
+          promptHTML: prompt,
+          inputHTML: `
+            <span class="muted">Answer:</span>
+            <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="num" />
+            <span class="symbol">/</span>
+            <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="den" />
+          `,
+          getUser: (card)=>{
+            const ins = card.querySelectorAll("input");
+            return { a: ins[0].value.trim(), b: ins[1].value.trim() };
+          },
+          isCorrect: (u)=>{
+            if(!isIntegerStr(u.a) || !isIntegerStr(u.b)) return false;
+            const un = parseInt(u.a,10), ud = parseInt(u.b,10);
+            if(ud === 0) return false;
+            if(gcd(un, ud) !== 1 || ud < 0) return false;
+            const red = simplify(un, ud);
+            return red.n === ans.n && red.d === ans.d;
+          },
+          hintHTML: hint,
+          explainHTML: explain,
+          pdfAnswerHint: "Reciprocal: ____ / ____",
+          answerText: `${ans.n}/${ans.d}`
+        };
+      }
+    }
+
+    function buildQuestionSet(count){
+      const types = ["f2d","d2f","d2p","p2d","f2p","p2f","imp2mix","mix2imp","recip"];
+      const qs = [];
+      for(let i=0;i<count;i++){
+        const t = types[i % types.length];
+        let q;
+        if(t==="f2d") q = makeF2D();
+        if(t==="d2f") q = makeD2F();
+        if(t==="d2p") q = makeD2P();
+        if(t==="p2d") q = makeP2D();
+        if(t==="f2p") q = makeF2P();
+        if(t==="p2f") q = makeP2F();
+        if(t==="imp2mix") q = makeImp2Mix();
+        if(t==="mix2imp") q = makeMix2Imp();
+        if(t==="recip") q = makeReciprocal();
+        qs.push(q);
+      }
+      // shuffle
+      for(let i=qs.length-1;i>0;i--){
+        const j = randInt(0,i);
+        [qs[i],qs[j]] = [qs[j],qs[i]];
+      }
+      return qs;
+    }
+
+    /***********************
+     * PDF helpers
+     ************************/
+    function loadScript(src){
+      return new Promise((resolve, reject)=>{
+        const s = document.createElement("script");
+        s.src = src;
+        s.onload = ()=> resolve();
+        s.onerror = ()=> reject(new Error("Failed to load " + src));
+        document.head.appendChild(s);
+      });
+    }
+
+    let pdfLibReady = false;
+    async function ensurePdfLibs(){
+      if(pdfLibReady) return;
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
+      pdfLibReady = true;
+    }
+
+    // Question pages first, then Answer Key at the end
+    function buildPdfPages(){
+      const perPage = parseInt(document.getElementById("perPageSelect").value, 10);
+      const printArea = document.getElementById("pdfPrintArea");
+      printArea.innerHTML = "";
+
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, {year:"numeric", month:"short", day:"2-digit", hour:"2-digit", minute:"2-digit"});
+
+      const total = state.questions.length;
+      const pagesQ = Math.ceil(total / perPage);
+
+      const ansPerPage = 24;
+      const pagesA = Math.ceil(total / ansPerPage);
+
+      const totalPagesAll = pagesQ + pagesA;
+
+      const safeStudentForHtml = escapeHTML(studentName || "");
+      const setName = setNameFromIndex(state.setIndex-1);
+
+      // 1) Question pages
+      for(let p=0; p<pagesQ; p++){
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const startIdx = p * perPage;
+        const endIdx = Math.min(total, startIdx + perPage);
+
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div>
+              <div class="pdf-title">Fractions — Part 2 (Practice)</div>
+              <div class="pdf-sub">Fraction ↔ Decimal ↔ Percent • Reciprocals • Mixed</div>
+            </div>
+            <div class="pdf-meta">
+              Student: <b>${safeStudentForHtml || "—"}</b><br/>
+              Set ${setName}<br/>
+              ${dateStr}<br/>
+              Page ${p+1} / ${totalPagesAll}
+            </div>
+          </div>
+          <div class="pdf-grid"></div>
+        `;
+
+        const grid = page.querySelector(".pdf-grid");
+
+        for(let i=startIdx; i<endIdx; i++){
+          const q = state.questions[i];
+          const qBox = document.createElement("div");
+          qBox.className = "pdf-q";
+          qBox.innerHTML = `
+            <div class="pdf-qhead">
+              <div class="pdf-qnum">Q${i+1}</div>
+              <div class="pdf-qtopic">${topicLabel(q.type)}</div>
+            </div>
+            <div class="pdf-qbody">${q.promptHTML}</div>
+            <div class="pdf-answerline">
+              ${q.pdfAnswerHint || "Answer:"}
+              <span class="linebox ${q.type==="compare" ? "small" : ""}"></span>
+            </div>
+          `;
+          grid.appendChild(qBox);
+        }
+
+        printArea.appendChild(page);
+      }
+
+      // 2) Answer key pages appended at the end
+      for(let ap=0; ap<pagesA; ap++){
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const startIdx = ap * ansPerPage;
+        const endIdx = Math.min(total, startIdx + ansPerPage);
+        const pageNumber = pagesQ + ap + 1;
+
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div>
+              <div class="pdf-title">Fractions — Part 2 (Answer Key)</div>
+              <div class="pdf-sub">Answers for the generated set</div>
+            </div>
+            <div class="pdf-meta">
+              Student: <b>${safeStudentForHtml || "—"}</b><br/>
+              Set ${setName}<br/>
+              ${dateStr}<br/>
+              Page ${pageNumber} / ${totalPagesAll}
+            </div>
+          </div>
+          <div class="pdf-grid"></div>
+        `;
+
+        const grid = page.querySelector(".pdf-grid");
+
+        for(let i=startIdx; i<endIdx; i++){
+          const q = state.questions[i];
+          const ans = (q && typeof q.answerText === "string") ? q.answerText : "";
+          const qBox = document.createElement("div");
+          qBox.className = "pdf-q";
+          qBox.innerHTML = `
+            <div class="pdf-qhead">
+              <div class="pdf-qnum">Q${i+1}</div>
+              <div class="pdf-qtopic">${topicLabel(q.type)}</div>
+            </div>
+            <div class="pdf-qbody"><b>Answer:</b> ${escapeHTML(ans)}</div>
+          `;
+          grid.appendChild(qBox);
+        }
+
+        printArea.appendChild(page);
+      }
+    }
+
+    function safeFileNamePart(s){
+      return String(s || "")
+        .trim()
+        .replace(/[\\/:*?"<>|]+/g, "-")
+        .replace(/\s+/g, "_")
+        .slice(0, 40);
+    }
+
+    async function exportToPdf(){
+      if(!studentName){
+        alert("Please enter the student name first.");
+        return;
+      }
+      await ensurePdfLibs();
+      buildPdfPages();
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+      const pages = Array.from(document.querySelectorAll("#pdfPrintArea .pdf-page"));
+
+      for(let i=0; i<pages.length; i++){
+        const pageEl = pages[i];
+
+        const canvas = await html2canvas(pageEl, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false
+        });
+
+        const imgData = canvas.toDataURL("image/png", 1.0);
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight, undefined, "FAST");
+        if(i < pages.length - 1) pdf.addPage();
+      }
+
+      const setName = setNameFromIndex(state.setIndex-1);
+      const fileStudent = safeFileNamePart(studentName);
+      pdf.save(`DYAA_Fractions_Part2_${fileStudent}_Set_${setName}.pdf`);
+    }
+
+    /***********************
+     * Render + checking
+     ************************/
+    const tabs = document.querySelectorAll(".tab-btn");
+    const learnSection = document.getElementById("learnSection");
+    const practiceSection = document.getElementById("practiceSection");
+    const practiceControls = document.getElementById("practiceControls");
+    const questionsWrap = document.getElementById("questionsWrap");
+    const countSelect = document.getElementById("countSelect");
+    const scoreValue = document.getElementById("scoreValue");
+    const progressLabel = document.getElementById("progressLabel");
+    const setLabel = document.getElementById("setLabel");
+
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const cancelModalBtn = document.getElementById("cancelModalBtn");
+    const confirmModalBtn = document.getElementById("confirmModalBtn");
+
+    const nameBackdrop = document.getElementById("nameBackdrop");
+    const nameInput = document.getElementById("nameInput");
+    const startWithNameBtn = document.getElementById("startWithNameBtn");
+    const cancelNameBtn = document.getElementById("cancelNameBtn");
+
+    const newSetBtn = document.getElementById("newSetBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const showAllBtn = document.getElementById("showAllBtn");
+    const exportPdfBtn = document.getElementById("exportPdfBtn");
+
+    let state = {
+      setIndex: 0,
+      questions: [],
+      checked: new Set(),
+      results: new Map(),
+    };
+
+    function setNameFromIndex(i){
+      return String.fromCharCode(65 + (i % 26));
+    }
+
+    function renderQuestions(){
+      questionsWrap.innerHTML = "";
+      state.questions.forEach((q, idx)=>{
+        const card = document.createElement("div");
+        card.className = "q-card";
+        card.dataset.qindex = String(idx);
+
+        card.innerHTML = `
+          <div class="q-head">
+            <div class="q-num">Q${idx+1}</div>
+            <div class="q-topic">${topicLabel(q.type)}</div>
+          </div>
+          <div class="q-body">${q.promptHTML}</div>
+          <div class="q-input">${q.inputHTML}</div>
+          <div class="q-actions">
+            <button class="btn primary" data-action="check">Check</button>
+            <button class="btn secondary" data-action="hint">Hint</button>
+            <button class="btn secondary" data-action="reveal">Reveal</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+        `;
+        questionsWrap.appendChild(card);
+      });
+    }
+
+    function updateProgress(){
+      progressLabel.textContent = `${state.checked.size} checked`;
+    }
+
+    function showFeedback(card, ok, title, html){
+      const fb = card.querySelector(".feedback");
+      fb.classList.add("show");
+      fb.classList.toggle("ok", !!ok);
+      fb.classList.toggle("bad", !ok);
+      fb.innerHTML = `
+        <div class="title" style="color:${ok ? "var(--ok)" : "var(--bad)"}">${title}</div>
+        <div>${html}</div>
+      `;
+    }
+
+    function checkOne(card){
+      const idx = parseInt(card.dataset.qindex, 10);
+      const q = state.questions[idx];
+      const user = q.getUser(card);
+      const ok = q.isCorrect(user);
+
+      state.checked.add(idx);
+      state.results.set(idx, ok);
+
+      showFeedback(
+        card,
+        ok,
+        ok ? "✅ Correct" : "❌ Not quite",
+        ok
+          ? `Great. ${q.explainHTML}`
+          : `Hint: ${q.hintHTML}<div class="rule"></div>${q.explainHTML}`
+      );
+
+      updateProgress();
+      return ok;
+    }
+
+    function resetAnswers(){
+      state.checked = new Set();
+      state.results = new Map();
+      scoreValue.textContent = "—";
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const fb = card.querySelector(".feedback");
+        fb.className = "feedback";
+        fb.innerHTML = "";
+        card.querySelectorAll("input").forEach(i => i.value = "");
+        card.querySelectorAll("select").forEach(s => s.value = "");
+      });
+      updateProgress();
+    }
+
+    function generateNewSet(){
+      const count = parseInt(countSelect.value, 10);
+      state.setIndex++;
+      state.questions = buildQuestionSet(count);
+      state.checked = new Set();
+      state.results = new Map();
+      setLabel.textContent = `Set: ${setNameFromIndex(state.setIndex-1)}`;
+      scoreValue.textContent = "—";
+      renderQuestions();
+      updateProgress();
+      practiceSection.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    function submitAll(){
+      let correct = 0;
+      state.questions.forEach((_, idx)=>{
+        const card = document.querySelector(`.q-card[data-qindex="${idx}"]`);
+        const ok = checkOne(card);
+        if(ok) correct++;
+      });
+      scoreValue.textContent = `${correct} / ${state.questions.length}`;
+      scoreValue.style.fontWeight = "900";
+    }
+
+    function showAllExplanations(){
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const idx = parseInt(card.dataset.qindex,10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "📌 Explanation", q.explainHTML);
+      });
+    }
+
+    /***********************
+     * Tabs + Name gating
+     ************************/
+    function openNameModal(){
+      nameBackdrop.classList.add("show");
+      nameBackdrop.setAttribute("aria-hidden","false");
+      nameInput.value = "";
+      setTimeout(()=> nameInput.focus(), 50);
+    }
+    function closeNameModal(){
+      nameBackdrop.classList.remove("show");
+      nameBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    function setTab(tab){
+      tabs.forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      const isPractice = tab === "practice";
+      learnSection.classList.toggle("active", !isPractice);
+      practiceSection.classList.toggle("active", isPractice);
+      practiceControls.style.display = isPractice ? "flex" : "none";
+
+      if(isPractice){
+        if(!studentName){
+          openNameModal();
+          setPracticeButtonsEnabled(false);
+          return;
+        }
+        if(state.questions.length === 0){
+          generateNewSet();
+        }
+      }
+    }
+
+    tabs.forEach(btn=>{
+      btn.addEventListener("click", ()=> setTab(btn.dataset.tab));
+    });
+
+    // Name modal actions
+    startWithNameBtn.addEventListener("click", ()=>{
+      const v = sanitizeName(nameInput.value);
+      if(!v){
+        alert("Please enter a student name.");
+        nameInput.focus();
+        return;
+      }
+      setStudentName(v);
+      closeNameModal();
+      if(practiceSection.classList.contains("active") && state.questions.length === 0){
+        generateNewSet();
+      }
+    });
+    nameInput.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter"){
+        e.preventDefault();
+        startWithNameBtn.click();
+      }
+      if(e.key === "Escape"){
+        e.preventDefault();
+        cancelNameBtn.click();
+      }
+    });
+    cancelNameBtn.addEventListener("click", ()=>{
+      closeNameModal();
+      setTab("learn");
+    });
+    nameBackdrop.addEventListener("click", (e)=>{
+      if(e.target === nameBackdrop){
+        // keep modal open (do not bypass)
+      }
+    });
+
+    /***********************
+     * New-set confirm modal
+     ************************/
+    function openModal(){
+      modalBackdrop.classList.add("show");
+      modalBackdrop.setAttribute("aria-hidden","false");
+    }
+    function closeModal(){
+      modalBackdrop.classList.remove("show");
+      modalBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    newSetBtn.addEventListener("click", openModal);
+    cancelModalBtn.addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", (e)=>{
+      if(e.target === modalBackdrop) closeModal();
+    });
+    confirmModalBtn.addEventListener("click", ()=>{
+      closeModal();
+      generateNewSet();
+    });
+
+    questionsWrap.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button");
+      if(!btn) return;
+      const action = btn.dataset.action;
+      const card = e.target.closest(".q-card");
+      if(!card) return;
+
+      if(action === "check"){
+        checkOne(card);
+      }else if(action === "hint"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "💡 Hint", q.hintHTML);
+      }else if(action === "reveal"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "🧠 Solution", q.explainHTML);
+      }
+    });
+
+    resetBtn.addEventListener("click", resetAnswers);
+    submitBtn.addEventListener("click", submitAll);
+    showAllBtn.addEventListener("click", showAllExplanations);
+
+    exportPdfBtn.addEventListener("click", async ()=>{
+      if(!practiceSection.classList.contains("active")) setTab("practice");
+      if(!studentName){
+        openNameModal();
+        return;
+      }
+      if(state.questions.length === 0) generateNewSet();
+
+      try{
+        exportPdfBtn.textContent = "Exporting...";
+        exportPdfBtn.disabled = true;
+        await exportToPdf();
+      }catch(err){
+        alert("Export failed. If you opened this file locally, try hosting it on GitHub Pages (recommended) or allow internet access for CDNs.\n\n" + err.message);
+      }finally{
+        exportPdfBtn.textContent = "Export to PDF";
+        exportPdfBtn.disabled = false;
+      }
+    });
+
+    /***********************
+     * Init: read URL ?name=
+     ************************/
+    (function init(){
+      setPracticeButtonsEnabled(false);
+      const urlName = getNameFromUrl();
+      if(urlName){
+        setStudentName(urlName);
+      }else{
+        setStudentName("");
+      }
+    })();
+  </script>
+</body>
+</html>

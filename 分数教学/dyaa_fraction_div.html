@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fractions — Division (Proper • Improper • Mixed) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --radius:14px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      user-select:none;
+      z-index:0;
+      white-space:nowrap;
+    }
+
+    .container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:24px auto 60px;
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+    }
+
+    /* Header */
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:42px;height:42px;
+      background:var(--blue);
+      border-radius:8px;
+      position:relative;
+      flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px;height:10px;
+      background:var(--orange);
+      top:-6px;left:10px;
+      border-radius:6px;
+    }
+    .logo-text{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .logo-text h1{
+      font-size:22px;
+      margin:0;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .logo-text .tag{
+      font-size:13px;
+      color:var(--orange);
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .student-pill{
+      margin-left:auto;
+      display:none;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      font-weight:800;
+      color:#111;
+      white-space:nowrap;
+    }
+    .student-pill.show{ display:inline-flex; }
+
+    /* Top bar */
+    .top-bar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:14px 0 10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .tabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .tab-btn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--blue);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+    }
+    .tab-btn.active{
+      background:var(--blue);
+      color:#fff;
+      border-color:var(--blue);
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    select, input[type="number"], input[type="text"]{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:9px 10px;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn.primary{ background:var(--blue); color:#fff; }
+    .btn.secondary{ background:#eef2ff; color:var(--blue); border:1px solid #dbe3ff; }
+    .btn.warn{ background:#fff3e0; color:#8a4b00; border:1px solid #ffe0b2; }
+    .btn:active{ transform:translateY(1px); }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+
+    /* Sections */
+    .section{ display:none; margin-top:16px; }
+    .section.active{ display:block; }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    @media (min-width: 860px){
+      .grid.two{ grid-template-columns:1fr 1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      padding:16px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+    .card h3{
+      margin:10px 0 8px;
+      font-size:15px;
+      color:#111;
+    }
+    .muted{ color:var(--muted); }
+    .note{
+      background:#f7fbff;
+      border:1px solid #d9ecff;
+      padding:12px;
+      border-radius:12px;
+      color:#123;
+    }
+    .rule{ border-top:1px dashed var(--line); margin:12px 0; }
+
+    /* Fraction styling */
+    .frac{
+      display:inline-grid;
+      grid-template-rows:auto auto;
+      align-items:center;
+      justify-items:center;
+      font-weight:800;
+      line-height:1;
+      margin:0 2px;
+      vertical-align:middle;
+      min-width:22px;
+    }
+    .frac .top{ padding:0 4px 2px; }
+    .frac .bar{
+      width:100%;
+      height:2px;
+      background:#111;
+      opacity:.75;
+      border-radius:2px;
+    }
+    .frac .bottom{ padding:2px 4px 0; }
+    .mixed{
+      display:inline-flex;
+      gap:4px;
+      align-items:center;
+      font-weight:800;
+      vertical-align:middle;
+      margin:0 2px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      color:#111;
+      flex-wrap:wrap;
+    }
+
+    .svgbox{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px;
+      background:#fff;
+      overflow:hidden;
+    }
+    .svgbox svg{ width:100%; height:auto; display:block; }
+
+    /* Practice */
+    .practice-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .practice-meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      background:#f6f7ff;
+      border:1px solid #e2e6ff;
+      color:#1d2a7a;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:13px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:14px;
+      background:#fff;
+    }
+    .q-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+    .q-num{ font-weight:900; color:var(--blue); }
+    .q-topic{
+      font-size:12px;
+      font-weight:900;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color:#111;
+      background:#fafafe;
+      white-space:nowrap;
+    }
+    .q-body{
+      font-size:15px;
+      line-height:1.45;
+      margin-bottom:10px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .q-input{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:10px;
+    }
+    .tiny{ width:80px; }
+    .symbol{ font-weight:900; padding:0 2px; }
+    .q-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .feedback{
+      margin-top:10px;
+      border-radius:12px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      background:#fafafa;
+      display:none;
+    }
+    .feedback.show{ display:block; }
+    .feedback.ok{ border-color:#c9e7cf; background:#f0fbf2; }
+    .feedback.bad{ border-color:#ffd0d0; background:#fff3f3; }
+    .feedback .title{ font-weight:900; margin-bottom:6px; }
+
+    .footer-actions{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      border-top:1px solid var(--line);
+      padding-top:14px;
+    }
+    .scorebox{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fff;
+      min-width:220px;
+    }
+    .scorebox strong{ color:var(--blue); }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+    .modal-backdrop.show{ display:flex; }
+    .modal{
+      width:min(560px, 96vw);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 18px 45px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+      padding:16px;
+    }
+    .modal h3{ margin:0 0 6px; color:var(--blue); }
+    .modal p{ margin:6px 0 14px; color:var(--muted); }
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); border:0;
+    }
+
+    /* hidden print layout for PDF */
+    #pdfPrintArea{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:794px; /* ~A4 at 96dpi */
+      background:#fff;
+      color:#111;
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      padding:0;
+    }
+    .pdf-page{
+      width:794px;
+      min-height:1123px; /* ~A4 at 96dpi */
+      padding:36px 44px;
+      page-break-after:always;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .pdf-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+      padding-bottom:10px;
+      border-bottom:2px solid #e6e6ef;
+    }
+    .pdf-title{
+      font-weight:900;
+      color:#0d47a1;
+      font-size:18px;
+      line-height:1.2;
+    }
+    .pdf-sub{
+      color:#666;
+      font-size:12px;
+      margin-top:4px;
+    }
+    .pdf-meta{
+      text-align:right;
+      font-size:12px;
+      color:#666;
+      white-space:nowrap;
+      line-height:1.35;
+    }
+    .pdf-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    .pdf-q{
+      border:1px solid #e6e6ef;
+      border-radius:12px;
+      padding:12px 12px;
+    }
+    .pdf-qhead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .pdf-qnum{ font-weight:900; color:#0d47a1; }
+    .pdf-qtopic{
+      font-size:11px;
+      font-weight:900;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid #e6e6ef;
+      background:#fafafe;
+    }
+    .pdf-qbody{
+      font-size:13px;
+      line-height:1.45;
+      margin-bottom:8px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .pdf-answerline{
+      margin-top:8px;
+      font-size:12px;
+      color:#111;
+    }
+    .linebox{
+      display:inline-block;
+      border-bottom:2px solid #111;
+      min-width:180px;
+      height:14px;
+      vertical-align:baseline;
+      margin-left:6px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div>
+        <div class="logo-text">
+          <h1>Fractions — Division</h1>
+          <span class="tag">DYAA EDUCATION</span>
+        </div>
+        <p class="subtitle">Proper • Improper • Mixed Numbers • Divide by a Fraction</p>
+      </div>
+
+      <!-- shows only when name is known -->
+      <div id="studentPillHeader" class="student-pill" aria-live="polite">
+        Student: <span id="studentNameHeader"></span>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="learn">Learn</button>
+        <button class="tab-btn" data-tab="practice">Practice</button>
+      </div>
+
+      <div class="controls" id="practiceControls" style="display:none;">
+        <label class="chip">
+          Questions:
+          <select id="countSelect" aria-label="Number of questions">
+            <option value="12">12</option>
+            <option value="16" selected>16</option>
+            <option value="20">20</option>
+          </select>
+        </label>
+
+        <label class="chip">
+          PDF per page:
+          <select id="perPageSelect" aria-label="PDF questions per page">
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+        </label>
+
+        <button class="btn secondary" id="exportPdfBtn">Export to PDF</button>
+        <button class="btn warn" id="newSetBtn">Generate New Set</button>
+        <button class="btn secondary" id="resetBtn">Reset Answers</button>
+      </div>
+    </div>
+
+    <!-- LEARN -->
+    <div class="section active" id="learnSection">
+      <div class="grid two">
+
+        <div class="card">
+          <h2>1) Proper / Improper / Mixed / Whole</h2>
+          <p class="muted">
+            <b>Proper fraction</b>: numerator &lt; denominator (less than 1).<br/>
+            <b>Improper fraction</b>: numerator ≥ denominator (1 or more).<br/>
+            <b>Mixed number</b>: whole number + fraction part.<br/>
+            <b>Whole number</b>: no fraction part (but you can write it as /1).
+          </p>
+
+          <div class="note">
+            <div class="chip">
+              Proper:
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">5</span></span>
+            </div>
+            <div class="chip">
+              Improper:
+              <span class="frac"><span class="top">11</span><span class="bar"></span><span class="bottom">6</span></span>
+            </div>
+            <div class="chip">
+              Mixed:
+              <span class="mixed"><span>2</span><span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">4</span></span></span>
+            </div>
+            <div class="chip">
+              Whole: <b>7</b> = <span class="frac"><span class="top">7</span><span class="bar"></span><span class="bottom">1</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>2) Divide by a Fraction</h2>
+          <p class="muted">
+            To divide by a fraction, <b>multiply by the reciprocal</b>.
+          </p>
+
+          <div class="note">
+            <div class="chip">
+              Example:
+              <b>6</b> ÷
+              <span class="frac"><span class="top">2</span><span class="bar"></span><span class="bottom">3</span></span>
+              =
+              <b>6</b> ×
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">2</span></span>
+              =
+              <b>9</b>
+            </div>
+          </div>
+
+          <div class="rule"></div>
+          <p class="muted">
+            Reciprocal of
+            <span class="frac"><span class="top">a</span><span class="bar"></span><span class="bottom">b</span></span>
+            is
+            <span class="frac"><span class="top">b</span><span class="bar"></span><span class="bottom">a</span></span>
+            (swap top and bottom).
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>3) Mixed ↔ Improper (convert first!)</h2>
+          <p class="muted">
+            You often convert mixed numbers into improper fractions before dividing.
+          </p>
+
+          <div class="note">
+            <div class="chip">
+              Mixed → Improper:
+              <span class="mixed"><span>3</span><span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">5</span></span></span>
+              =
+              <span class="frac"><span class="top">16</span><span class="bar"></span><span class="bottom">5</span></span>
+              (because 3×5+1=16)
+            </div>
+            <div class="chip">
+              Improper → Mixed:
+              <span class="frac"><span class="top">14</span><span class="bar"></span><span class="bottom">3</span></span>
+              =
+              <span class="mixed"><span>4</span><span class="frac"><span class="top">2</span><span class="bar"></span><span class="bottom">3</span></span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>4) Division with Proper / Improper / Mixed</h2>
+          <p class="muted">
+            Steps:
+          </p>
+          <ol class="muted" style="margin:0 0 0 18px;">
+            <li>Convert any mixed numbers to improper fractions.</li>
+            <li>Change ÷ to × and flip the second fraction (reciprocal).</li>
+            <li>Multiply across.</li>
+            <li>Simplify (cancel if possible).</li>
+          </ol>
+
+          <div class="note" style="margin-top:10px;">
+            <div class="chip">
+              Example:
+              <span class="mixed"><span>1</span><span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">2</span></span></span>
+              ÷
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">4</span></span>
+              =
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">2</span></span>
+              ×
+              <span class="frac"><span class="top">4</span><span class="bar"></span><span class="bottom">3</span></span>
+              =
+              <span class="frac"><span class="top">12</span><span class="bar"></span><span class="bottom">6</span></span>
+              =
+              <b>2</b>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="grid-column:1/-1;">
+          <h2>5) Three-number Division (left to right)</h2>
+          <p class="muted">
+            Division is done <b>left to right</b>:
+            <b>(A ÷ B) ÷ C</b>. Do the first division, then divide by the third number.
+          </p>
+
+          <div class="note">
+            <div class="chip">
+              Example:
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">4</span></span>
+              ÷
+              <span class="frac"><span class="top">2</span><span class="bar"></span><span class="bottom">3</span></span>
+              ÷
+              <b>2</b>
+              =
+              ( <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">4</span></span>
+              ×
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">2</span></span> )
+              ÷ 2
+              =
+              <span class="frac"><span class="top">9</span><span class="bar"></span><span class="bottom">8</span></span>
+              ÷ 2
+              =
+              <span class="frac"><span class="top">9</span><span class="bar"></span><span class="bottom">16</span></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="section" id="practiceSection">
+      <div class="practice-header">
+        <div>
+          <h2 style="margin:0;color:var(--blue);font-size:18px;">Practice Quiz</h2>
+          <p class="muted" style="margin:6px 0 0;">
+            Enter your final answer in <b>simplest form</b>. You may use whole number, improper fraction, or mixed number.
+          </p>
+        </div>
+        <div class="practice-meta">
+          <span class="pill" id="studentPillPractice" style="display:none;">Student: <span id="studentNamePractice"></span></span>
+          <span class="pill" id="setLabel">Set: A</span>
+          <span class="pill" id="progressLabel">0 checked</span>
+        </div>
+      </div>
+
+      <div id="questionsWrap" class="grid"></div>
+
+      <div class="footer-actions">
+        <div class="scorebox">
+          <div><strong id="scoreText">Score:</strong> <span id="scoreValue">—</span></div>
+          <div class="muted" style="font-size:13px;margin-top:4px;">Tip: If your fraction can be simplified, it is not correct yet.</div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn primary" id="submitBtn">Submit & View Result</button>
+          <button class="btn secondary" id="showAllBtn">Show All Explanations</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- hidden print area for PDF -->
+  <div id="pdfPrintArea" aria-hidden="true"></div>
+
+  <!-- Confirm modal (new set) -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle">Generate a new set?</h3>
+      <p>This will clear your current answers and create a new random set of questions.</p>
+      <div class="modal-actions">
+        <button class="btn secondary" id="cancelModalBtn">Cancel</button>
+        <button class="btn warn" id="confirmModalBtn">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Name modal (required when URL has no ?name=...) -->
+  <div class="modal-backdrop" id="nameBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+      <h3 id="nameTitle">Enter student name to start</h3>
+      <p>
+        Tip: You can skip this step by using a link like:
+        <b>fractions_division.html?name=Tiger</b>
+      </p>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <label class="sr-only" for="nameInput">Student name</label>
+        <input id="nameInput" type="text" placeholder="e.g., Tiger" autocomplete="off" style="min-width:240px;" />
+        <button class="btn primary" id="startWithNameBtn">Start</button>
+      </div>
+
+      <div class="modal-actions" style="margin-top:14px;">
+        <button class="btn secondary" id="cancelNameBtn">Back to Learn</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Student name logic
+     ************************/
+    let studentName = "";
+
+    function escapeHTML(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function sanitizeName(raw){
+      let s = String(raw || "").trim();
+      s = s.replace(/[\u0000-\u001F\u007F]/g, "");
+      if(s.length > 40) s = s.slice(0, 40);
+      return s;
+    }
+
+    function setStudentName(name){
+      studentName = sanitizeName(name);
+      updateStudentUI();
+    }
+
+    function updateStudentUI(){
+      const headerPill = document.getElementById("studentPillHeader");
+      const headerName = document.getElementById("studentNameHeader");
+      const practicePill = document.getElementById("studentPillPractice");
+      const practiceName = document.getElementById("studentNamePractice");
+
+      if(studentName){
+        headerPill.classList.add("show");
+        headerName.textContent = studentName;
+
+        practicePill.style.display = "inline-flex";
+        practiceName.textContent = studentName;
+
+        setPracticeButtonsEnabled(true);
+      }else{
+        headerPill.classList.remove("show");
+        headerName.textContent = "";
+
+        practicePill.style.display = "none";
+        practiceName.textContent = "";
+
+        setPracticeButtonsEnabled(false);
+      }
+    }
+
+    function setPracticeButtonsEnabled(enabled){
+      document.getElementById("exportPdfBtn").disabled = !enabled;
+      document.getElementById("newSetBtn").disabled = !enabled;
+      document.getElementById("resetBtn").disabled = !enabled;
+      document.getElementById("submitBtn").disabled = !enabled;
+      document.getElementById("showAllBtn").disabled = !enabled;
+    }
+
+    function getNameFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("name");
+      if(!raw) return "";
+      return sanitizeName(raw);
+    }
+
+    /***********************
+     * Utilities (integers only)
+     ************************/
+    function randInt(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function gcd(a, b){
+      a = Math.abs(a); b = Math.abs(b);
+      while(b !== 0){
+        const t = a % b;
+        a = b; b = t;
+      }
+      return a;
+    }
+
+    function simplify(n, d){
+      if(d === 0) return { n:0, d:0 };
+      if(d < 0){ n = -n; d = -d; }
+      const g = gcd(n, d);
+      return { n: n / g, d: d / g };
+    }
+function isWholeFrac(f){
+  return f && f.d === 1;
+}
+function isOneFrac(f){
+  return f && f.n === f.d; // includes 1/1
+}	
+
+    function mulFrac(a, b){
+      return simplify(a.n * b.n, a.d * b.d);
+    }
+    function divFrac(a, b){
+      // a / b = a * (b reciprocal)
+      return simplify(a.n * b.d, a.d * b.n);
+    }
+
+    function fracHTML(n, d){
+      return `<span class="frac"><span class="top">${n}</span><span class="bar"></span><span class="bottom">${d}</span></span>`;
+    }
+    function mixedHTML(w, n, d){
+      return `<span class="mixed"><span>${w}</span>${fracHTML(n,d)}</span>`;
+    }
+    function wholeHTML(w){
+      return `<b>${w}</b>`;
+    }
+
+    function toMixed(n, d){
+      const s = simplify(n, d);
+      n = s.n; d = s.d;
+
+      const absN = Math.abs(n);
+      const w = Math.floor(absN / d);
+      const r = absN % d;
+      if(r === 0) return { w, n:0, d:1 };
+
+      const part = simplify(r, d);
+      return { w, n: part.n, d: part.d };
+    }
+
+    function formatAnswerText(n, d){
+      const s = simplify(n, d);
+      if(s.d === 1) return String(s.n);
+      if(Math.abs(s.n) < s.d) return `${s.n}/${s.d}`;
+      const m = toMixed(s.n, s.d);
+      if(m.n === 0) return String(m.w);
+      return `${m.w} ${m.n}/${m.d}`;
+    }
+
+    function isIntegerStr(s){
+      return /^-?\d+$/.test(String(s).trim());
+    }
+
+    /***********************
+     * Mixed-style input (whole / num / den)
+     * - allow: whole only (fraction blank)
+     * - allow: improper or proper (whole blank or 0)
+     * - require: simplest form (gcd=1) and positive values
+     ************************/
+    function parseUserMixed(card){
+      const ins = card.querySelectorAll("input");
+      const wStr = ins[0].value.trim();
+      const nStr = ins[1].value.trim();
+      const dStr = ins[2].value.trim();
+
+      const wEmpty = wStr === "";
+      const nEmpty = nStr === "";
+      const dEmpty = dStr === "";
+
+      // Whole only
+      if(!wEmpty && nEmpty && dEmpty){
+        if(!isIntegerStr(wStr)) return null;
+        const w = parseInt(wStr,10);
+        if(w < 0) return null;
+        return simplify(w, 1);
+      }
+
+      const w = wEmpty ? 0 : (isIntegerStr(wStr) ? parseInt(wStr,10) : NaN);
+      if(Number.isNaN(w) || w < 0) return null;
+
+      if(nEmpty || dEmpty) return null;
+      if(!isIntegerStr(nStr) || !isIntegerStr(dStr)) return null;
+
+      const num = parseInt(nStr,10);
+      const den = parseInt(dStr,10);
+      if(den <= 0) return null;
+      if(num < 0) return null;
+
+      const totalN = w * den + num;
+      const totalD = den;
+
+      // simplest form required
+      if(gcd(totalN, totalD) !== 1) return null;
+
+      return simplify(totalN, totalD);
+    }
+
+    function mixedInputHTML(){
+      return `
+        <span class="muted">Answer:</span>
+        <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="whole" aria-label="whole" />
+        <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="num" aria-label="numerator" />
+        <span class="symbol">/</span>
+        <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="den" aria-label="denominator" />
+        <span class="muted" style="font-size:13px;">(whole can be blank/0)</span>
+      `;
+    }
+
+    /***********************
+     * Random number makers (for prompts)
+     ************************/
+    const DENOMS = [2,3,4,5,6,8,10,12];
+
+    function randProperFrac(){
+      const d = DENOMS[randInt(0, DENOMS.length-1)];
+      let n = randInt(1, d-1);
+      const s = simplify(n,d);
+      return { n:s.n, d:s.d };
+    }
+
+    function makeNumber(kind){
+      // returns { value:{n,d}, html, kind }
+      if(kind === "whole"){
+        const w = randInt(1, 9);
+        return { value: { n:w, d:1 }, html: wholeHTML(w), kind:"whole" };
+      }
+
+      if(kind === "proper"){
+        const f = randProperFrac();
+        return { value: f, html: fracHTML(f.n, f.d), kind:"proper" };
+      }
+
+      if(kind === "improper"){
+        const d = DENOMS[randInt(0, DENOMS.length-1)];
+        const n = randInt(d+1, d*3-1);
+        const s = simplify(n,d);
+        return { value: s, html: fracHTML(s.n, s.d), kind:"improper" };
+      }
+
+      // mixed
+      const w = randInt(1, 4);
+      let d = DENOMS[randInt(0, DENOMS.length-1)];
+      let n = randInt(1, d-1);
+      // keep the fractional part already simplest
+      const part = simplify(n,d);
+      n = part.n; d = part.d;
+
+      const total = simplify(w*d + n, d);
+      return { value: total, html: mixedHTML(w, n, d), kind:"mixed" };
+    }
+
+    function ensureNotTooBig(ans){
+      // keep answers friendly: numerator and denominator not huge
+      return ans.d > 0 && ans.d <= 240 && ans.n <= 600;
+    }
+
+    function topicLabel(type){
+      switch(type){
+        case "div1": return "÷ by Fraction";
+        case "div2": return "Mixed/Imp ÷";
+        case "div3": return "3-number ÷";
+        default: return "Practice";
+      }
+    }
+
+    /***********************
+     * Explanation builders
+     ************************/
+    function explainTwoNumberDivision(A_dispHtml, A_val, B_dispHtml, B_val, ans){
+      const Aimp = simplify(A_val.n, A_val.d);
+      const Bimp = simplify(B_val.n, B_val.d);
+      const recip = simplify(Bimp.d, Bimp.n);
+      const prod = simplify(Aimp.n * recip.n, Aimp.d * recip.d);
+
+      // show an intermediate unsimplified multiplication as well
+      const rawN = Aimp.n * recip.n;
+      const rawD = Aimp.d * recip.d;
+
+      return `
+        <div class="muted">
+          <b>Step 1:</b> Use improper fractions (if needed).<br/>
+          A = ${fracHTML(Aimp.n, Aimp.d)}, B = ${fracHTML(Bimp.n, Bimp.d)}.
+          <div class="rule"></div>
+          <b>Step 2:</b> Change ÷ to × and flip B (reciprocal).<br/>
+          ${A_dispHtml} ÷ ${B_dispHtml}
+          = ${fracHTML(Aimp.n, Aimp.d)} × ${fracHTML(Bimp.d, Bimp.n)}.
+          <div class="rule"></div>
+          <b>Step 3:</b> Multiply.<br/>
+          = ${fracHTML(rawN, rawD)}
+          <div class="rule"></div>
+          <b>Step 4:</b> Simplify.<br/>
+          = <b>${formatAnswerText(ans.n, ans.d)}</b>
+        </div>
+      `;
+    }
+
+    function explainThreeNumberDivision(A_html, A_val, B_html, B_val, C_html, C_val, ans){
+      const first = divFrac(A_val, B_val);
+      const second = divFrac(first, C_val);
+
+      return `
+        <div class="muted">
+          Division is done <b>left to right</b>: (A ÷ B) ÷ C.
+          <div class="rule"></div>
+          <b>Step 1:</b> Do the first division:<br/>
+          ${A_html} ÷ ${B_html} = <b>${formatAnswerText(first.n, first.d)}</b>
+          <div class="rule"></div>
+          <b>Step 2:</b> Divide the result by the third number:<br/>
+          <b>${formatAnswerText(first.n, first.d)}</b> ÷ ${C_html}
+          = <b>${formatAnswerText(second.n, second.d)}</b>
+          <div class="rule"></div>
+          <b>Final answer:</b> <b>${formatAnswerText(ans.n, ans.d)}</b>
+        </div>
+      `;
+    }
+
+    /***********************
+     * Question generators (requested 3 parts)
+     ************************/
+    function makeDivByFractionQuestion(){
+      // 1) Proper / Improper / Mixed / Whole ÷ (a fraction)
+      const dividendKinds = ["proper","improper","mixed","whole"];
+      const kA = dividendKinds[randInt(0, dividendKinds.length-1)];
+      const A = makeNumber(kA);
+
+      // divisor must be a fraction (proper or simple improper, but keep small)
+      let Bv;
+      let tries = 0;
+      do{
+        Bv = randProperFrac(); // proper fraction
+        tries++;
+      }while((Bv.n === 1 && Bv.d >= 10) && tries < 20);
+
+      const B = { value: Bv, html: fracHTML(Bv.n, Bv.d), kind:"fraction" };
+
+      const ans = divFrac(A.value, B.value);
+      if(!ensureNotTooBig(ans)) return makeDivByFractionQuestion();
+
+      const prompt = `Calculate: ${A.html} <span class="symbol">÷</span> ${B.html}. Write your answer in simplest form.`;
+      const hint = `Divide by a fraction = multiply by its reciprocal. Convert mixed numbers to improper first.`;
+      const explain = explainTwoNumberDivision(A.html, A.value, B.html, B.value, ans);
+
+      return {
+        type:"div1",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+function makeGeneralDivisionQuestion(){
+  // 2) Proper/Improper/Mixed ÷ fractions/integers/improper/mixed
+  const dividendKinds = ["proper","improper","mixed"];
+  const divisorKinds = ["proper","whole","improper","mixed"];
+
+  let A, B, ans;
+  let tries = 0;
+
+  do{
+    A = makeNumber(dividendKinds[randInt(0, dividendKinds.length-1)]);
+    B = makeNumber(divisorKinds[randInt(0, divisorKinds.length-1)]);
+
+    // avoid divisor = 1 (too trivial)
+    if(isOneFrac(B.value)) { tries++; continue; }
+
+    // ✅ avoid "all integers" in this question: A and B both whole
+    if(isWholeFrac(A.value) && isWholeFrac(B.value)) { tries++; continue; }
+
+    ans = divFrac(A.value, B.value);
+
+    tries++;
+  }while((!ans || ans.d === 0 || !ensureNotTooBig(ans)) && tries < 80);
+
+  if(!ans || ans.d === 0 || !ensureNotTooBig(ans)){
+    return makeGeneralDivisionQuestion(); // fallback
+  }
+
+  const prompt = `Calculate: ${A.html} <span class="symbol">÷</span> ${B.html}. Write your answer in simplest form.`;
+  const hint = `Convert to improper fractions, then multiply by the reciprocal of the divisor.`;
+  const explain = explainTwoNumberDivision(A.html, A.value, B.html, B.value, ans);
+
+  return {
+    type:"div2",
+    promptHTML: prompt,
+    inputHTML: mixedInputHTML(),
+    getUser: (card)=> parseUserMixed(card),
+    isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+    hintHTML: hint,
+    explainHTML: explain,
+    pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+    answerText: formatAnswerText(ans.n, ans.d)
+  };
+}
+
+function makeThreeNumberDivisionQuestion(){
+  // 3) Three-number division (left to right): (A ÷ B) ÷ C
+  const A_kinds = ["proper","mixed","whole"];
+  const B_kinds = ["proper","whole","mixed"];
+  const C_kinds = ["proper","whole"];
+
+  let A, B, C, first, ans;
+  let tries = 0;
+
+  do{
+    A = makeNumber(A_kinds[randInt(0, A_kinds.length-1)]);
+    B = makeNumber(B_kinds[randInt(0, B_kinds.length-1)]);
+    C = makeNumber(C_kinds[randInt(0, C_kinds.length-1)]);
+
+    // avoid 0
+    if(A.value.n === 0 || B.value.n === 0 || C.value.n === 0){ tries++; continue; }
+
+    // avoid divisor = 1 (too trivial) like ÷ 1 or ÷ ... ÷ 1
+    if(isOneFrac(B.value) || isOneFrac(C.value)){ tries++; continue; }
+
+    // ✅ KEY RULE: do NOT allow all three to be whole integers
+    if(isWholeFrac(A.value) && isWholeFrac(B.value) && isWholeFrac(C.value)){
+      tries++;
+      continue;
+    }
+
+    first = divFrac(A.value, B.value);
+    ans = divFrac(first, C.value);
+
+    tries++;
+  }while(
+    (!first || !ans || first.d === 0 || ans.d === 0 || !ensureNotTooBig(first) || !ensureNotTooBig(ans))
+    && tries < 120
+  );
+
+  if(!first || !ans || ans.d === 0 || !ensureNotTooBig(ans)){
+    return makeThreeNumberDivisionQuestion(); // fallback
+  }
+
+  const prompt = `Calculate left to right: ${A.html} <span class="symbol">÷</span> ${B.html} <span class="symbol">÷</span> ${C.html}. Write your answer in simplest form.`;
+  const hint = `Do it left to right: first (A ÷ B), then divide by C.`;
+  const explain = explainThreeNumberDivision(A.html, A.value, B.html, B.value, C.html, C.value, ans);
+
+  return {
+    type:"div3",
+    promptHTML: prompt,
+    inputHTML: mixedInputHTML(),
+    getUser: (card)=> parseUserMixed(card),
+    isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+    hintHTML: hint,
+    explainHTML: explain,
+    pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+    answerText: formatAnswerText(ans.n, ans.d)
+  };
+}
+
+    function buildQuestionSet(count){
+      const qs = [];
+      const types = ["div1","div2","div3"];
+      while(qs.length < count){
+        const t = types[qs.length % types.length];
+        let q;
+        if(t === "div1") q = makeDivByFractionQuestion();
+        if(t === "div2") q = makeGeneralDivisionQuestion();
+        if(t === "div3") q = makeThreeNumberDivisionQuestion();
+        qs.push(q);
+      }
+      // shuffle
+      for(let i=qs.length-1;i>0;i--){
+        const j = randInt(0,i);
+        [qs[i],qs[j]] = [qs[j],qs[i]];
+      }
+      return qs;
+    }
+
+    /***********************
+     * PDF helpers (Answer Key on last pages)
+     ************************/
+    function loadScript(src){
+      return new Promise((resolve, reject)=>{
+        const s = document.createElement("script");
+        s.src = src;
+        s.onload = ()=> resolve();
+        s.onerror = ()=> reject(new Error("Failed to load " + src));
+        document.head.appendChild(s);
+      });
+    }
+
+    let pdfLibReady = false;
+    async function ensurePdfLibs(){
+      if(pdfLibReady) return;
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
+      pdfLibReady = true;
+    }
+
+    function buildPdfPages(){
+      const perPage = parseInt(document.getElementById("perPageSelect").value, 10);
+      const printArea = document.getElementById("pdfPrintArea");
+      printArea.innerHTML = "";
+
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, {year:"numeric", month:"short", day:"2-digit", hour:"2-digit", minute:"2-digit"});
+
+      const total = state.questions.length;
+      const pagesQ = Math.ceil(total / perPage);
+
+      const ansPerPage = 24;
+      const pagesA = Math.ceil(total / ansPerPage);
+
+      const totalPagesAll = pagesQ + pagesA;
+
+      const safeStudentForHtml = escapeHTML(studentName || "");
+      const setName = setNameFromIndex(state.setIndex-1);
+
+      // Question pages
+      for(let p=0; p<pagesQ; p++){
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const startIdx = p * perPage;
+        const endIdx = Math.min(total, startIdx + perPage);
+
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div>
+              <div class="pdf-title">Fractions — Division (Practice)</div>
+              <div class="pdf-sub">Divide by Fraction • Mixed/Improper • 3-number Division</div>
+            </div>
+            <div class="pdf-meta">
+              Student: <b>${safeStudentForHtml || "—"}</b><br/>
+              Set ${setName}<br/>
+              ${dateStr}<br/>
+              Page ${p+1} / ${totalPagesAll}
+            </div>
+          </div>
+          <div class="pdf-grid"></div>
+        `;
+
+        const grid = page.querySelector(".pdf-grid");
+
+        for(let i=startIdx; i<endIdx; i++){
+          const q = state.questions[i];
+          const qBox = document.createElement("div");
+          qBox.className = "pdf-q";
+          qBox.innerHTML = `
+            <div class="pdf-qhead">
+              <div class="pdf-qnum">Q${i+1}</div>
+              <div class="pdf-qtopic">${topicLabel(q.type)}</div>
+            </div>
+            <div class="pdf-qbody">${q.promptHTML}</div>
+            <div class="pdf-answerline">
+              ${q.pdfAnswerHint || "Answer:"}
+              <span class="linebox"></span>
+            </div>
+          `;
+          grid.appendChild(qBox);
+        }
+
+        printArea.appendChild(page);
+      }
+
+      // Answer key pages at the end
+      for(let ap=0; ap<pagesA; ap++){
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const startIdx = ap * ansPerPage;
+        const endIdx = Math.min(total, startIdx + ansPerPage);
+        const pageNumber = pagesQ + ap + 1;
+
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div>
+              <div class="pdf-title">Fractions — Division (Answer Key)</div>
+              <div class="pdf-sub">Answers for the generated set</div>
+            </div>
+            <div class="pdf-meta">
+              Student: <b>${safeStudentForHtml || "—"}</b><br/>
+              Set ${setName}<br/>
+              ${dateStr}<br/>
+              Page ${pageNumber} / ${totalPagesAll}
+            </div>
+          </div>
+          <div class="pdf-grid"></div>
+        `;
+
+        const grid = page.querySelector(".pdf-grid");
+
+        for(let i=startIdx; i<endIdx; i++){
+          const q = state.questions[i];
+          const ans = (q && typeof q.answerText === "string") ? q.answerText : "";
+          const qBox = document.createElement("div");
+          qBox.className = "pdf-q";
+          qBox.innerHTML = `
+            <div class="pdf-qhead">
+              <div class="pdf-qnum">Q${i+1}</div>
+              <div class="pdf-qtopic">${topicLabel(q.type)}</div>
+            </div>
+            <div class="pdf-qbody"><b>Answer:</b> ${escapeHTML(ans)}</div>
+          `;
+          grid.appendChild(qBox);
+        }
+
+        printArea.appendChild(page);
+      }
+    }
+
+    function safeFileNamePart(s){
+      return String(s || "")
+        .trim()
+        .replace(/[\\/:*?"<>|]+/g, "-")
+        .replace(/\s+/g, "_")
+        .slice(0, 40);
+    }
+
+    async function exportToPdf(){
+      if(!studentName){
+        alert("Please enter the student name first.");
+        return;
+      }
+      await ensurePdfLibs();
+      buildPdfPages();
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+      const pages = Array.from(document.querySelectorAll("#pdfPrintArea .pdf-page"));
+
+      for(let i=0; i<pages.length; i++){
+        const pageEl = pages[i];
+
+        const canvas = await html2canvas(pageEl, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false
+        });
+
+        const imgData = canvas.toDataURL("image/png", 1.0);
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight, undefined, "FAST");
+        if(i < pages.length - 1) pdf.addPage();
+      }
+
+      const setName = setNameFromIndex(state.setIndex-1);
+      const fileStudent = safeFileNamePart(studentName);
+      pdf.save(`DYAA_Fractions_Division_${fileStudent}_Set_${setName}.pdf`);
+    }
+
+    /***********************
+     * Render + checking
+     ************************/
+    const tabs = document.querySelectorAll(".tab-btn");
+    const learnSection = document.getElementById("learnSection");
+    const practiceSection = document.getElementById("practiceSection");
+    const practiceControls = document.getElementById("practiceControls");
+    const questionsWrap = document.getElementById("questionsWrap");
+    const countSelect = document.getElementById("countSelect");
+    const scoreValue = document.getElementById("scoreValue");
+    const progressLabel = document.getElementById("progressLabel");
+    const setLabel = document.getElementById("setLabel");
+
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const cancelModalBtn = document.getElementById("cancelModalBtn");
+    const confirmModalBtn = document.getElementById("confirmModalBtn");
+
+    const nameBackdrop = document.getElementById("nameBackdrop");
+    const nameInput = document.getElementById("nameInput");
+    const startWithNameBtn = document.getElementById("startWithNameBtn");
+    const cancelNameBtn = document.getElementById("cancelNameBtn");
+
+    const newSetBtn = document.getElementById("newSetBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const showAllBtn = document.getElementById("showAllBtn");
+    const exportPdfBtn = document.getElementById("exportPdfBtn");
+
+    let state = {
+      setIndex: 0,
+      questions: [],
+      checked: new Set(),
+      results: new Map(),
+    };
+
+    function setNameFromIndex(i){
+      return String.fromCharCode(65 + (i % 26));
+    }
+
+    function renderQuestions(){
+      questionsWrap.innerHTML = "";
+      state.questions.forEach((q, idx)=>{
+        const card = document.createElement("div");
+        card.className = "q-card";
+        card.dataset.qindex = String(idx);
+
+        card.innerHTML = `
+          <div class="q-head">
+            <div class="q-num">Q${idx+1}</div>
+            <div class="q-topic">${topicLabel(q.type)}</div>
+          </div>
+          <div class="q-body">${q.promptHTML}</div>
+          <div class="q-input">${q.inputHTML}</div>
+          <div class="q-actions">
+            <button class="btn primary" data-action="check">Check</button>
+            <button class="btn secondary" data-action="hint">Hint</button>
+            <button class="btn secondary" data-action="reveal">Reveal</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+        `;
+        questionsWrap.appendChild(card);
+      });
+    }
+
+    function updateProgress(){
+      progressLabel.textContent = `${state.checked.size} checked`;
+    }
+
+    function showFeedback(card, ok, title, html){
+      const fb = card.querySelector(".feedback");
+      fb.classList.add("show");
+      fb.classList.toggle("ok", !!ok);
+      fb.classList.toggle("bad", !ok);
+      fb.innerHTML = `
+        <div class="title" style="color:${ok ? "var(--ok)" : "var(--bad)"}">${title}</div>
+        <div>${html}</div>
+      `;
+    }
+
+    function checkOne(card){
+      const idx = parseInt(card.dataset.qindex, 10);
+      const q = state.questions[idx];
+      const user = q.getUser(card);
+      const ok = q.isCorrect(user);
+
+      state.checked.add(idx);
+      state.results.set(idx, ok);
+
+      showFeedback(
+        card,
+        ok,
+        ok ? "✅ Correct" : "❌ Not quite",
+        ok
+          ? `Great. ${q.explainHTML}`
+          : `Hint: ${q.hintHTML}<div class="rule"></div>${q.explainHTML}`
+      );
+
+      updateProgress();
+      return ok;
+    }
+
+    function resetAnswers(){
+      state.checked = new Set();
+      state.results = new Map();
+      scoreValue.textContent = "—";
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const fb = card.querySelector(".feedback");
+        fb.className = "feedback";
+        fb.innerHTML = "";
+        card.querySelectorAll("input").forEach(i => i.value = "");
+        card.querySelectorAll("select").forEach(s => s.value = "");
+      });
+      updateProgress();
+    }
+
+    function generateNewSet(){
+      const count = parseInt(countSelect.value, 10);
+      state.setIndex++;
+      state.questions = buildQuestionSet(count);
+      state.checked = new Set();
+      state.results = new Map();
+      setLabel.textContent = `Set: ${setNameFromIndex(state.setIndex-1)}`;
+      scoreValue.textContent = "—";
+      renderQuestions();
+      updateProgress();
+      practiceSection.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    function submitAll(){
+      let correct = 0;
+      state.questions.forEach((_, idx)=>{
+        const card = document.querySelector(`.q-card[data-qindex="${idx}"]`);
+        const ok = checkOne(card);
+        if(ok) correct++;
+      });
+      scoreValue.textContent = `${correct} / ${state.questions.length}`;
+      scoreValue.style.fontWeight = "900";
+    }
+
+    function showAllExplanations(){
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const idx = parseInt(card.dataset.qindex,10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "📌 Explanation", q.explainHTML);
+      });
+    }
+
+    /***********************
+     * Tabs + Name gating
+     ************************/
+    function openNameModal(){
+      nameBackdrop.classList.add("show");
+      nameBackdrop.setAttribute("aria-hidden","false");
+      nameInput.value = "";
+      setTimeout(()=> nameInput.focus(), 50);
+    }
+    function closeNameModal(){
+      nameBackdrop.classList.remove("show");
+      nameBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    function setTab(tab){
+      tabs.forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      const isPractice = tab === "practice";
+      learnSection.classList.toggle("active", !isPractice);
+      practiceSection.classList.toggle("active", isPractice);
+      practiceControls.style.display = isPractice ? "flex" : "none";
+
+      if(isPractice){
+        if(!studentName){
+          openNameModal();
+          setPracticeButtonsEnabled(false);
+          return;
+        }
+        if(state.questions.length === 0){
+          generateNewSet();
+        }
+      }
+    }
+
+    tabs.forEach(btn=>{
+      btn.addEventListener("click", ()=> setTab(btn.dataset.tab));
+    });
+
+    // Name modal actions
+    startWithNameBtn.addEventListener("click", ()=>{
+      const v = sanitizeName(nameInput.value);
+      if(!v){
+        alert("Please enter a student name.");
+        nameInput.focus();
+        return;
+      }
+      setStudentName(v);
+      closeNameModal();
+      if(practiceSection.classList.contains("active") && state.questions.length === 0){
+        generateNewSet();
+      }
+    });
+    nameInput.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter"){
+        e.preventDefault();
+        startWithNameBtn.click();
+      }
+      if(e.key === "Escape"){
+        e.preventDefault();
+        cancelNameBtn.click();
+      }
+    });
+    cancelNameBtn.addEventListener("click", ()=>{
+      closeNameModal();
+      setTab("learn");
+    });
+    nameBackdrop.addEventListener("click", (e)=>{
+      if(e.target === nameBackdrop){
+        // keep modal open
+      }
+    });
+
+    /***********************
+     * New-set confirm modal
+     ************************/
+    function openModal(){
+      modalBackdrop.classList.add("show");
+      modalBackdrop.setAttribute("aria-hidden","false");
+    }
+    function closeModal(){
+      modalBackdrop.classList.remove("show");
+      modalBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    newSetBtn.addEventListener("click", openModal);
+    cancelModalBtn.addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", (e)=>{
+      if(e.target === modalBackdrop) closeModal();
+    });
+    confirmModalBtn.addEventListener("click", ()=>{
+      closeModal();
+      generateNewSet();
+    });
+
+    questionsWrap.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button");
+      if(!btn) return;
+      const action = btn.dataset.action;
+      const card = e.target.closest(".q-card");
+      if(!card) return;
+
+      if(action === "check"){
+        checkOne(card);
+      }else if(action === "hint"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "💡 Hint", q.hintHTML);
+      }else if(action === "reveal"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "🧠 Solution", q.explainHTML);
+      }
+    });
+
+    resetBtn.addEventListener("click", resetAnswers);
+    submitBtn.addEventListener("click", submitAll);
+    showAllBtn.addEventListener("click", showAllExplanations);
+
+    exportPdfBtn.addEventListener("click", async ()=>{
+      if(!practiceSection.classList.contains("active")) setTab("practice");
+      if(!studentName){
+        openNameModal();
+        return;
+      }
+      if(state.questions.length === 0) generateNewSet();
+
+      try{
+        exportPdfBtn.textContent = "Exporting...";
+        exportPdfBtn.disabled = true;
+        await exportToPdf();
+      }catch(err){
+        alert("Export failed. If you opened this file locally, try hosting it on GitHub Pages (recommended) or allow internet access for CDNs.\n\n" + err.message);
+      }finally{
+        exportPdfBtn.textContent = "Export to PDF";
+        exportPdfBtn.disabled = false;
+      }
+    });
+
+    /***********************
+     * Init: read URL ?name=
+     ************************/
+    (function init(){
+      setPracticeButtonsEnabled(false);
+      const urlName = getNameFromUrl();
+      if(urlName){
+        setStudentName(urlName);
+      }else{
+        setStudentName("");
+      }
+    })();
+  </script>
+</body>
+</html>
