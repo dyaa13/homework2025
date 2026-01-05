@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Division — Two-Digit Divisors (Learn + Practice) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --radius:14px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      user-select:none;
+      z-index:0;
+      white-space:nowrap;
+    }
+
+    .container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:24px auto 60px;
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+    }
+
+    /* Header */
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:42px;height:42px;
+      background:var(--blue);
+      border-radius:8px;
+      position:relative;
+      flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px;height:10px;
+      background:var(--orange);
+      top:-6px;left:10px;
+      border-radius:6px;
+    }
+    .logo-text{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .logo-text h1{
+      font-size:22px;
+      margin:0;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .logo-text .tag{
+      font-size:13px;
+      color:var(--orange);
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .student-pill{
+      margin-left:auto;
+      display:none;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      font-weight:800;
+      color:#111;
+      white-space:nowrap;
+    }
+    .student-pill.show{ display:inline-flex; }
+
+    /* Top bar */
+    .top-bar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:14px 0 10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .tabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .tab-btn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--blue);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+    }
+    .tab-btn.active{
+      background:var(--blue);
+      color:#fff;
+      border-color:var(--blue);
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    select, input[type="number"], input[type="text"]{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:9px 10px;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn.primary{ background:var(--blue); color:#fff; }
+    .btn.secondary{ background:#eef2ff; color:var(--blue); border:1px solid #dbe3ff; }
+    .btn.warn{ background:#fff3e0; color:#8a4b00; border:1px solid #ffe0b2; }
+    .btn:active{ transform:translateY(1px); }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+
+    /* Sections */
+    .section{ display:none; margin-top:16px; }
+    .section.active{ display:block; }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    @media (min-width: 860px){
+      .grid.two{ grid-template-columns:1fr 1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      padding:16px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+    .card h3{
+      margin:10px 0 8px;
+      font-size:15px;
+      color:#111;
+    }
+    .muted{ color:var(--muted); }
+    .note{
+      background:#f7fbff;
+      border:1px solid #d9ecff;
+      padding:12px;
+      border-radius:12px;
+      color:#123;
+    }
+    .rule{ border-top:1px dashed var(--line); margin:12px 0; }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      color:#111;
+      flex-wrap:wrap;
+    }
+
+    .math{
+      font-weight:900;
+      color:#111;
+    }
+    .ld{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+
+    /* Practice */
+    .practice-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .practice-meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      background:#f6f7ff;
+      border:1px solid #e2e6ff;
+      color:#1d2a7a;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:13px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:14px;
+      background:#fff;
+    }
+    .q-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+    .q-num{ font-weight:900; color:var(--blue); }
+    .q-topic{
+      font-size:12px;
+      font-weight:900;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color:#111;
+      background:#fafafe;
+      white-space:nowrap;
+    }
+    .q-body{
+      font-size:15px;
+      line-height:1.45;
+      margin-bottom:10px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .q-input{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:10px;
+    }
+    .tiny{ width:92px; }
+    .symbol{ font-weight:900; padding:0 2px; }
+    .q-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .feedback{
+      margin-top:10px;
+      border-radius:12px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      background:#fafafa;
+      display:none;
+    }
+    .feedback.show{ display:block; }
+    .feedback.ok{ border-color:#c9e7cf; background:#f0fbf2; }
+    .feedback.bad{ border-color:#ffd0d0; background:#fff3f3; }
+    .feedback .title{ font-weight:900; margin-bottom:6px; }
+
+    .footer-actions{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      border-top:1px solid var(--line);
+      padding-top:14px;
+    }
+    .scorebox{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fff;
+      min-width:220px;
+    }
+    .scorebox strong{ color:var(--blue); }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+    .modal-backdrop.show{ display:flex; }
+    .modal{
+      width:min(560px, 96vw);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 18px 45px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+      padding:16px;
+    }
+    .modal h3{ margin:0 0 6px; color:var(--blue); }
+    .modal p{ margin:6px 0 14px; color:var(--muted); }
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); border:0;
+    }
+
+    /* hidden print layout for PDF */
+    #pdfPrintArea{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:794px; /* ~A4 at 96dpi */
+      background:#fff;
+      color:#111;
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      padding:0;
+    }
+    .pdf-page{
+      width:794px;
+      min-height:1123px; /* ~A4 at 96dpi */
+      padding:36px 44px;
+      page-break-after:always;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .pdf-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+      padding-bottom:10px;
+      border-bottom:2px solid #e6e6ef;
+    }
+    .pdf-title{
+      font-weight:900;
+      color:#0d47a1;
+      font-size:18px;
+      line-height:1.2;
+    }
+    .pdf-sub{
+      color:#666;
+      font-size:12px;
+      margin-top:4px;
+    }
+    .pdf-meta{
+      text-align:right;
+      font-size:12px;
+      color:#666;
+      white-space:nowrap;
+      line-height:1.35;
+    }
+    .pdf-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    .pdf-q{
+      border:1px solid #e6e6ef;
+      border-radius:12px;
+      padding:12px 12px;
+    }
+    .pdf-qhead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .pdf-qnum{ font-weight:900; color:#0d47a1; }
+    .pdf-qtopic{
+      font-size:11px;
+      font-weight:900;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid #e6e6ef;
+      background:#fafafe;
+    }
+    .pdf-qbody{
+      font-size:13px;
+      line-height:1.45;
+      margin-bottom:8px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .pdf-answerline{
+      margin-top:8px;
+      font-size:12px;
+      color:#111;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:flex-end;
+    }
+    .linebox{
+      display:inline-block;
+      border-bottom:2px solid #111;
+      min-width:160px;
+      height:14px;
+      vertical-align:baseline;
+      margin-left:6px;
+    }
+    .linebox.small{ min-width:100px; }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div>
+        <div class="logo-text">
+          <h1>Division — Two-Digit Divisors</h1>
+          <span class="tag">DYAA EDUCATION</span>
+        </div>
+        <p class="subtitle">2-Digit ÷ 2-Digit • 3-Digit ÷ 2-Digit • Remainders • Word Problems • Trial Quotient (Estimate)</p>
+      </div>
+
+      <div id="studentPillHeader" class="student-pill" aria-live="polite">
+        Student: <span id="studentNameHeader"></span>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="learn">Learn</button>
+        <button class="tab-btn" data-tab="practice">Practice</button>
+      </div>
+
+      <div class="controls" id="practiceControls" style="display:none;">
+        <label class="chip">
+          Questions:
+          <select id="countSelect" aria-label="Number of questions">
+            <option value="12">12</option>
+            <option value="16" selected>16</option>
+            <option value="20">20</option>
+          </select>
+        </label>
+
+        <label class="chip">
+          PDF per page:
+          <select id="perPageSelect" aria-label="PDF questions per page">
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+        </label>
+
+        <button class="btn secondary" id="exportPdfBtn">Export to PDF</button>
+        <button class="btn warn" id="newSetBtn">Generate New Set</button>
+        <button class="btn secondary" id="resetBtn">Reset Answers</button>
+      </div>
+    </div>
+
+    <!-- LEARN -->
+    <div class="section active" id="learnSection">
+      <div class="grid two">
+
+        <div class="card">
+          <h2>1) Key words</h2>
+          <p class="muted">
+            In division:
+            <span class="chip"><span class="math">dividend</span> ÷ <span class="math">divisor</span> = <span class="math">quotient</span> … <span class="math">remainder</span></span>
+          </p>
+          <div class="note">
+            <div class="chip">
+              Example: <span class="math">148 ÷ 40 = 3 … 28</span>
+            </div>
+            <div class="muted" style="margin-top:8px;">
+              Check rule: <b>dividend = divisor × quotient + remainder</b>, and the remainder must be <b>less than</b> the divisor.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>2) 2-Digit ÷ 2-Digit (quick method)</h2>
+          <p class="muted">
+            First decide how many digits the quotient has:
+            compare the <b>first 1–2 digits</b> of the dividend with the divisor.
+          </p>
+          <div class="note">
+            <div class="chip">
+              Example: <span class="math">36 ÷ 10</span> → quotient has 1 digit.
+            </div>
+            <div class="chip">
+              Example: <span class="math">584 ÷ 26</span> → quotient has 2 digits (because 58 ≥ 26).
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>3) 3-Digit ÷ 2-Digit (long division steps)</h2>
+          <p class="muted">
+            Use the cycle: <b>Divide → Multiply → Subtract → Bring down</b>.
+            Repeat until there are no more digits to bring down.
+          </p>
+          <div class="note">
+            <div class="muted">
+              Example: <span class="math">486 ÷ 60</span><br/>
+              <b>Divide</b>: 48 ÷ 60 is 0, so start with 486 ÷ 60<br/>
+              <b>Quotient</b>: 8 (because 60×8=480), remainder 6 → <span class="math">486 ÷ 60 = 8 … 6</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>4) How to estimate / trial quotient (试商)</h2>
+          <p class="muted">
+            Estimation helps you choose the quotient digit quickly.
+            Round the divisor to a “friendly” number (often to the nearest ten).
+          </p>
+          <div class="note">
+            <div class="muted">
+              Example: <span class="math">204 ÷ 43</span><br/>
+              Estimate: 43 ≈ 40, so 204 ÷ 40 ≈ 5.<br/>
+              Check: 43×5=215 (too big) → try 4.<br/>
+              43×4=172, remainder 32 → <span class="math">204 ÷ 43 = 4 … 32</span>
+            </div>
+            <div class="rule"></div>
+            <div class="muted">
+              Quick tip: If your remainder is still ≥ divisor, your quotient is too small — increase by 1 and subtract one more divisor.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>5) Word problems with a 2-digit divisor</h2>
+          <p class="muted">
+            “Each / per / every” usually means division.
+            Decide if you need an exact quotient, or a quotient with remainder.
+          </p>
+          <div class="note">
+            <div class="chip">Packages cost $22 each → total ÷ 22</div>
+            <div class="chip">28 seats per row → students ÷ 28</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>6) Using the remainder correctly</h2>
+          <p class="muted">
+            Sometimes you must <b>round up</b> when the remainder means “extra group/trip/box needed”.
+          </p>
+          <div class="note">
+            <div class="muted">
+              Example: 160 people, 40 per trip → 160 ÷ 40 = 4 (exact).<br/>
+              If it were 162 people, 40 per trip → 162 ÷ 40 = 4 … 2 → need <b>5</b> trips.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="section" id="practiceSection">
+      <div class="practice-header">
+        <div>
+          <h2 style="margin:0;color:var(--blue);font-size:18px;">Practice Quiz</h2>
+          <p class="muted" style="margin:6px 0 0;">
+            For division questions, enter <b>Quotient</b> and <b>Remainder</b>. Remainder must be <b>&lt; divisor</b>.
+          </p>
+        </div>
+        <div class="practice-meta">
+          <span class="pill" id="studentPillPractice" style="display:none;">Student: <span id="studentNamePractice"></span></span>
+          <span class="pill" id="setLabel">Set: A</span>
+          <span class="pill" id="progressLabel">0 checked</span>
+        </div>
+      </div>
+
+      <div id="questionsWrap" class="grid"></div>
+
+      <div class="footer-actions">
+        <div class="scorebox">
+          <div><strong id="scoreText">Score:</strong> <span id="scoreValue">—</span></div>
+          <div class="muted" style="font-size:13px;margin-top:4px;">Tip: If your remainder is ≥ the divisor, adjust the quotient.</div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn primary" id="submitBtn">Submit & View Result</button>
+          <button class="btn secondary" id="showAllBtn">Show All Explanations</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- hidden print area for PDF -->
+  <div id="pdfPrintArea" aria-hidden="true"></div>
+
+  <!-- Confirm modal (new set) -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle">Generate a new set?</h3>
+      <p>This will clear your current answers and create a new random set of questions.</p>
+      <div class="modal-actions">
+        <button class="btn secondary" id="cancelModalBtn">Cancel</button>
+        <button class="btn warn" id="confirmModalBtn">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Name modal (required when URL has no ?name=...) -->
+  <div class="modal-backdrop" id="nameBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+      <h3 id="nameTitle">Enter student name to start</h3>
+      <p>
+        Tip: You can skip this step by using a link like:
+        <b>division_2digit.html?name=Tiger</b>
+      </p>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <label class="sr-only" for="nameInput">Student name</label>
+        <input id="nameInput" type="text" placeholder="e.g., Tiger" autocomplete="off" style="min-width:240px;" />
+        <button class="btn primary" id="startWithNameBtn">Start</button>
+      </div>
+
+      <div class="modal-actions" style="margin-top:14px;">
+        <button class="btn secondary" id="cancelNameBtn">Back to Learn</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Student name logic
+     ************************/
+    let studentName = "";
+
+    function escapeHTML(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function sanitizeName(raw){
+      let s = String(raw || "").trim();
+      s = s.replace(/[\u0000-\u001F\u007F]/g, "");
+      if(s.length > 40) s = s.slice(0, 40);
+      return s;
+    }
+
+    function setStudentName(name){
+      studentName = sanitizeName(name);
+      updateStudentUI();
+    }
+
+    function updateStudentUI(){
+      const headerPill = document.getElementById("studentPillHeader");
+      const headerName = document.getElementById("studentNameHeader");
+      const practicePill = document.getElementById("studentPillPractice");
+      const practiceName = document.getElementById("studentNamePractice");
+
+      if(studentName){
+        headerPill.classList.add("show");
+        headerName.textContent = studentName;
+
+        practicePill.style.display = "inline-flex";
+        practiceName.textContent = studentName;
+
+        setPracticeButtonsEnabled(true);
+      }else{
+        headerPill.classList.remove("show");
+        headerName.textContent = "";
+
+        practicePill.style.display = "none";
+        practiceName.textContent = "";
+
+        setPracticeButtonsEnabled(false);
+      }
+    }
+
+    function setPracticeButtonsEnabled(enabled){
+      document.getElementById("exportPdfBtn").disabled = !enabled;
+      document.getElementById("newSetBtn").disabled = !enabled;
+      document.getElementById("resetBtn").disabled = !enabled;
+      document.getElementById("submitBtn").disabled = !enabled;
+      document.getElementById("showAllBtn").disabled = !enabled;
+    }
+
+    function getNameFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("name");
+      if(!raw) return "";
+      return sanitizeName(raw);
+    }
+
+    /***********************
+     * Utilities
+     ************************/
+    function randInt(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function isIntegerStr(s){
+      return /^-?\d+$/.test(String(s).trim());
+    }
+
+    function divQR(dividend, divisor){
+      const q = Math.floor(dividend / divisor);
+      const r = dividend - q * divisor;
+      return { q, r };
+    }
+
+    function topicLabel(type){
+      switch(type){
+        case "mul": return "Multiply";
+        case "qr_easy": return "Divide • Easy";
+        case "qr": return "Divide • Q & R";
+        case "qr_hard": return "Divide • Hard";
+        case "approx": return "Estimate";
+        case "max": return "Max in ( )";
+        case "cmp": return "Compare";
+        case "word": return "Word Problem";
+        case "fill": return "Fill the Blank";
+        case "digits": return "Quotient Digits";
+        default: return "Practice";
+      }
+    }
+
+    function inlineLD(dividend, divisor){
+      return `<span class="ld">${dividend} ÷ ${divisor}</span>`;
+    }
+
+    /***********************
+     * Answer inputs
+     ************************/
+    function singleIntInputHTML(label="Answer", ph="number"){
+      return `
+        <span class="muted">${escapeHTML(label)}:</span>
+        <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="${escapeHTML(ph)}" aria-label="${escapeHTML(label)}" />
+      `;
+    }
+
+    function qrInputHTML(){
+      return `
+        <span class="muted">Quotient:</span>
+        <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="q" aria-label="quotient" />
+        <span class="muted">Remainder:</span>
+        <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="r" aria-label="remainder" />
+      `;
+    }
+
+    function twoIntInputHTML(label1="Answer 1", label2="Answer 2", ph1="number", ph2="number"){
+      return `
+        <span class="muted">${escapeHTML(label1)}:</span>
+        <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="${escapeHTML(ph1)}" aria-label="${escapeHTML(label1)}" />
+        <span class="muted">${escapeHTML(label2)}:</span>
+        <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="${escapeHTML(ph2)}" aria-label="${escapeHTML(label2)}" />
+      `;
+    }
+
+    function symbolSelectInputHTML(){
+      return `
+        <span class="muted">Choose:</span>
+        <select aria-label="comparison symbol">
+          <option value="" selected>—</option>
+          <option value=">">&gt;</option>
+          <option value="<">&lt;</option>
+          <option value="=">=</option>
+        </select>
+      `;
+    }
+
+    function digitsSelectInputHTML(){
+      return `
+        <span class="muted">Digits in quotient:</span>
+        <select aria-label="digits in quotient">
+          <option value="" selected>—</option>
+          <option value="1">1 digit</option>
+          <option value="2">2 digits</option>
+          <option value="3">3 digits</option>
+        </select>
+      `;
+    }
+
+    function parseSingleInt(card){
+      const inp = card.querySelector("input");
+      if(!inp) return null;
+      const s = inp.value.trim();
+      if(!isIntegerStr(s)) return null;
+      return parseInt(s, 10);
+    }
+
+    function parseTwoInts(card){
+      const ins = card.querySelectorAll("input");
+      if(ins.length < 2) return null;
+      const a = ins[0].value.trim();
+      const b = ins[1].value.trim();
+      if(!isIntegerStr(a) || !isIntegerStr(b)) return null;
+      return { a: parseInt(a,10), b: parseInt(b,10) };
+    }
+
+    function parseQR(card){
+      const ins = card.querySelectorAll("input");
+      if(ins.length < 2) return null;
+      const qStr = ins[0].value.trim();
+      const rStr = ins[1].value.trim();
+      if(!isIntegerStr(qStr) || !isIntegerStr(rStr)) return null;
+      const q = parseInt(qStr,10);
+      const r = parseInt(rStr,10);
+      if(q < 0 || r < 0) return null;
+      return { q, r };
+    }
+
+    function parseSelectValue(card){
+      const sel = card.querySelector("select");
+      if(!sel) return null;
+      const v = String(sel.value || "").trim();
+      if(!v) return null;
+      return v;
+    }
+
+    /***********************
+     * Fixed question builders (from your images)
+     ************************/
+    function qMul(a,b){
+      const ans = a*b;
+      return {
+        type:"mul",
+        signature:`mul_${a}x${b}`,
+        promptHTML:`Calculate directly: <b>${a} × ${b}</b>.`,
+        inputHTML: singleIntInputHTML("Answer",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === ans,
+        hintHTML:`Multiply: ${a} × ${b}.`,
+        explainHTML:`${a} × ${b} = <b>${ans}</b>.`,
+        pdfAnswerHint:"Answer: ",
+        answerText:String(ans)
+      };
+    }
+
+    function qQR(dividend, divisor, difficulty="qr"){
+      const {q, r} = divQR(dividend, divisor);
+      return {
+        type: difficulty,
+        signature:`qr_${dividend}_${divisor}`,
+        promptHTML:`Work out: <b>${inlineLD(dividend, divisor)}</b>.`,
+        inputHTML: qrInputHTML(),
+        getUser:(card)=> parseQR(card),
+        isCorrect:(u)=>{
+          if(!u) return false;
+          if(u.r >= divisor) return false;
+          return (u.q === q && u.r === r);
+        },
+        hintHTML:`Use long division. Remember: remainder < divisor.`,
+        explainHTML:`${dividend} ÷ ${divisor} = <b>${q}</b> … <b>${r}</b> (because ${divisor}×${q} = ${divisor*q}, and ${dividend} − ${divisor*q} = ${r}).`,
+        pdfAnswerHint:`Quotient <span class="linebox small"></span> Remainder <span class="linebox small"></span>`,
+        answerText:`${q} r ${r}`
+      };
+    }
+
+    function qApprox(dividend, divisor){
+      const approx = Math.round(dividend / divisor);
+      return {
+        type:"approx",
+        signature:`apx_${dividend}_${divisor}`,
+        promptHTML:`Estimate: <b>${dividend} ÷ ${divisor} ≈</b> (nearest whole number).`,
+        inputHTML: singleIntInputHTML("Estimate",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === approx,
+        hintHTML:`Round to a friendly number and estimate.`,
+        explainHTML:`${dividend} ÷ ${divisor} ≈ ${dividend/divisor}. Nearest whole number is <b>${approx}</b>.`,
+        pdfAnswerHint:"Estimate: ",
+        answerText:String(approx)
+      };
+    }
+
+    function qMaxParen(d, limit){
+      const k = Math.floor((limit - 1) / d);
+      return {
+        type:"max",
+        signature:`max_${d}_${limit}`,
+        promptHTML:`What is the maximum whole number that can go in <b>( )</b>? <span class="math">${d} × ( ) &lt; ${limit}</span>`,
+        inputHTML: singleIntInputHTML("Max number",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === k,
+        hintHTML:`Find the largest k such that ${d}×k is still less than ${limit}.`,
+        explainHTML:`${d}×${k} = ${d*k} &lt; ${limit}, but ${d}×${k+1} = ${d*(k+1)} is not &lt; ${limit}. So the maximum is <b>${k}</b>.`,
+        pdfAnswerHint:"Max number: ",
+        answerText:String(k)
+      };
+    }
+
+    function qCompare(a, b, c){
+      const left = a*b;
+      const sym = left > c ? ">" : (left < c ? "<" : "=");
+      return {
+        type:"cmp",
+        signature:`cmp_${a}_${b}_${c}`,
+        promptHTML:`Fill in the circle with <b>&gt;</b>, <b>&lt;</b>, or <b>=</b>: <span class="math">${a}×${b} ○ ${c}</span>`,
+        inputHTML: symbolSelectInputHTML(),
+        getUser:(card)=> parseSelectValue(card),
+        isCorrect:(u)=> u === sym,
+        hintHTML:`Compute ${a}×${b} and compare to ${c}.`,
+        explainHTML:`${a}×${b} = ${left}. Since ${left} ${sym} ${c}, the correct symbol is <b>${escapeHTML(sym)}</b>.`,
+        pdfAnswerHint:"Symbol: ",
+        answerText:sym
+      };
+    }
+
+    function qWordCeil(total, per, unitLabel="trips", context=""){
+      const ans = Math.ceil(total / per);
+      const {q, r} = divQR(total, per);
+      const extra = r === 0 ? "" : ` because there is a remainder (${r}), you need one more ${unitLabel}.`;
+      return {
+        type:"word",
+        signature:`wceil_${total}_${per}_${unitLabel}`,
+        promptHTML: `<b>Word problem:</b> ${escapeHTML(context)}<div class="rule"></div>
+          If there are <b>${total}</b> in total and each group can take <b>${per}</b>, how many <b>${escapeHTML(unitLabel)}</b> are needed?`,
+        inputHTML: singleIntInputHTML("Answer",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === ans,
+        hintHTML:`Compute ${total} ÷ ${per}. If there is a remainder, round up.`,
+        explainHTML:`${total} ÷ ${per} = ${q} … ${r}. So you need <b>${ans}</b> ${escapeHTML(unitLabel)}${extra}`,
+        pdfAnswerHint:"Answer: ",
+        answerText:String(ans)
+      };
+    }
+
+    function qWordBuy(cost, money, itemName="items", currency="$"){
+      const {q, r} = divQR(money, cost);
+      return {
+        type:"word",
+        signature:`wbuy_${cost}_${money}`,
+        promptHTML:`<b>Word problem:</b> One ${escapeHTML(itemName)} costs <b>${currency}${cost}</b>. You have <b>${currency}${money}</b>.<div class="rule"></div>
+          How many ${escapeHTML(itemName)} can you buy, and how much money will be left?`,
+        inputHTML: twoIntInputHTML("Number of items","Money left","items","left"),
+        getUser:(card)=> parseTwoInts(card),
+        isCorrect:(u)=> !!u && u.a === q && u.b === r,
+        hintHTML:`Divide money by cost. Quotient = number of items, remainder = money left.`,
+        explainHTML:`${money} ÷ ${cost} = ${q} … ${r}. So you can buy <b>${q}</b> ${escapeHTML(itemName)}, and you will have <b>${currency}${r}</b> left.`,
+        pdfAnswerHint:`Items <span class="linebox small"></span> Left <span class="linebox small"></span>`,
+        answerText:`${q} items, ${currency}${r} left`
+      };
+    }
+
+    function qFillDividend(divisor, quotient, remainder){
+      const dividend = divisor * quotient + remainder;
+      return {
+        type:"fill",
+        signature:`fdivd_${divisor}_${quotient}_${remainder}`,
+        promptHTML:`Fill in the blank: <span class="math">( ) ÷ ${divisor} = ${quotient} … ${remainder}</span>`,
+        inputHTML: singleIntInputHTML("Blank",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === dividend,
+        hintHTML:`Use: dividend = divisor × quotient + remainder.`,
+        explainHTML:`Dividend = ${divisor}×${quotient}+${remainder} = <b>${dividend}</b>.`,
+        pdfAnswerHint:"Blank: ",
+        answerText:String(dividend)
+      };
+    }
+
+    function qFillDivisor(dividend, quotient, remainder){
+      const divisor = (dividend - remainder) / quotient;
+      return {
+        type:"fill",
+        signature:`fdivs_${dividend}_${quotient}_${remainder}`,
+        promptHTML:`Fill in the blank: <span class="math">${dividend} ÷ ( ) = ${quotient} … ${remainder}</span>`,
+        inputHTML: singleIntInputHTML("Blank",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === divisor,
+        hintHTML:`Use: dividend = divisor × quotient + remainder.`,
+        explainHTML:`${dividend} = divisor×${quotient}+${remainder} ⇒ divisor = (${dividend}−${remainder})÷${quotient} = <b>${divisor}</b>.`,
+        pdfAnswerHint:"Blank: ",
+        answerText:String(divisor)
+      };
+    }
+
+    function qDigitsInQuotient(dividend, divisor){
+      const q = Math.floor(dividend / divisor);
+      const digits = String(q).length;
+      return {
+        type:"digits",
+        signature:`dig_${dividend}_${divisor}`,
+        promptHTML:`Without calculating fully, decide: how many digits are in the quotient of <b>${inlineLD(dividend, divisor)}</b>?`,
+        inputHTML: digitsSelectInputHTML(),
+        getUser:(card)=> parseSelectValue(card),
+        isCorrect:(u)=> String(u) === String(digits),
+        hintHTML:`Compare the first 1–2 digits of the dividend with the divisor.`,
+        explainHTML:`${dividend} ÷ ${divisor} = ${q} … (remainder). The quotient is <b>${q}</b>, which has <b>${digits}</b> digit(s).`,
+        pdfAnswerHint:"Digits: ",
+        answerText:`${digits}`
+      };
+    }
+
+    function qMagazine(issue){
+      const years = Math.floor(issue / 12);
+      return {
+        type:"word",
+        signature:`mag_${issue}`,
+        promptHTML:`A magazine is published once a month. The latest issue is Issue <b>${issue}</b>. How many years has this magazine been in publication?`,
+        inputHTML: singleIntInputHTML("Years",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === years,
+        hintHTML:`12 issues per year.`,
+        explainHTML:`${issue} months ÷ 12 = <b>${years}</b> years.`,
+        pdfAnswerHint:"Years: ",
+        answerText:String(years)
+      };
+    }
+
+    function qDealMolly(budget, singlePrice, pairPrice){
+      // maximize number of items
+      let best = {items:0, left:budget};
+      for(let pairs=0; pairs<=Math.floor(budget/pairPrice); pairs++){
+        const spentPairs = pairs * pairPrice;
+        const remaining = budget - spentPairs;
+        const singles = Math.floor(remaining / singlePrice);
+        const items = pairs*2 + singles;
+        const left = remaining - singles*singlePrice;
+        if(items > best.items || (items === best.items && left > best.left)){
+          best = {items, left};
+        }
+      }
+      return {
+        type:"word",
+        signature:`deal_${budget}_${singlePrice}_${pairPrice}`,
+        promptHTML:`Molly has <b>$${budget}</b>. A clothing item costs <b>$${singlePrice}</b> each, or <b>$${pairPrice}</b> for 2 items.<div class="rule"></div>
+          What is the <b>maximum</b> number of items she can buy? How much money will be left?`,
+        inputHTML: twoIntInputHTML("Max items","Money left","items","left"),
+        getUser:(card)=> parseTwoInts(card),
+        isCorrect:(u)=> !!u && u.a === best.items && u.b === best.left,
+        hintHTML:`Try buying as many pairs as possible (pairs are cheaper per item), then use leftover money for singles.`,
+        explainHTML:`The maximum is <b>${best.items}</b> items with <b>$${best.left}</b> left.`,
+        pdfAnswerHint:`Items <span class="linebox small"></span> Left <span class="linebox small"></span>`,
+        answerText:`${best.items} items, $${best.left} left`
+      };
+    }
+
+    /***********************
+     * Fixed bank from images (key items)
+     * (All answers are computed automatically.)
+     ************************/
+    function buildFixedBank(){
+      const bank = [];
+
+      // From image set: direct multiplications + divisions
+      bank.push(qMul(30,2), qMul(40,3), qMul(80,3), qMul(90,5));
+      bank.push(qQR(60,30,"qr_easy"), qQR(120,40,"qr_easy"), qQR(240,80,"qr_easy"), qQR(450,90,"qr_easy"));
+
+      // Diagram divisions
+      [30,120,180,270].forEach(v => bank.push(qQR(v,30,"qr_easy")));
+      [80,200,280,360].forEach(v => bank.push(qQR(v,40,"qr_easy")));
+
+      // Word: books bundles (240 ÷ 30)
+      bank.push(qWordCeil(240, 30, "bundles", "Emily wants to donate 240 books. If 30 books are packed into one bundle,"));
+
+      // More direct divisions (multiples of 10)
+      [
+        [70,10],[100,20],[270,90],
+        [400,50],[360,40],[90,30],
+        [160,80],[300,60],[490,70],
+        [320,80],[120,60],[630,90]
+      ].forEach(([a,b]) => bank.push(qQR(a,b,"qr_easy")));
+
+      // Word: ferry trips
+      bank.push(qWordCeil(160, 40, "trips", "A tour group of 160 people is taking a ferry. If the ferry can carry 40 passengers each trip,"));
+
+      // Estimation lines (≈)
+      bank.push(qApprox(143,20), qApprox(632,70), qApprox(363,40));
+
+      // Max in parentheses (image Q8)
+      [[20,81],[50,180],[40,98],[30,96],[70,412],[60,488]].forEach(([d,lim]) => bank.push(qMaxParen(d,lim)));
+
+      // Soccer ball (75 dollars, 30 each)
+      bank.push(qWordBuy(30, 75, "small soccer ball(s)", "$"));
+
+      // Long division practice set (image Q10)
+      [[36,10],[49,20],[100,30],[148,40],[250,50],[486,60],[315,70],[703,80]].forEach(([a,b]) => bank.push(qQR(a,b,"qr")));
+
+      // Direct division set (image Q11)
+      [[60,30],[70,10],[80,20],[280,40],[480,60],[160,80],[300,50],[630,90]].forEach(([a,b]) => bank.push(qQR(a,b,"qr_easy")));
+
+      // Work out set (image Q12)
+      [[64,40],[320,80],[102,30],[380,70],[308,60],[78,20],[432,50],[97,80]].forEach(([a,b]) => bank.push(qQR(a,b,"qr")));
+
+      // Compare products (image Q14)
+      [[38,6,240],[45,6,300],[83,7,560],[64,8,480],[36,9,360],[78,5,400]].forEach(([a,b,c])=> bank.push(qCompare(a,b,c)));
+
+      // More divisions (image Q15)
+      [
+        [236,40],[227,70],[725,90],[140,40],
+        [420,60],[179,80],[346,40],[117,20],
+        [370,70],[569,60],[245,30],[655,90]
+      ].forEach(([a,b]) => bank.push(qQR(a,b,"qr")));
+
+      // Fill blanks (image Q16)
+      bank.push(qFillDividend(40,6,28));
+      bank.push(qFillDividend(60,5,40));
+      bank.push(qFillDivisor(500,7,10));
+      bank.push(qFillDivisor(740,9,20));
+
+      // Seats word (image Q17)
+      bank.push({
+        type:"word",
+        signature:"seats_197_28",
+        promptHTML:`There are <b>28</b> seats in each row of the school auditorium. There are <b>197</b> students.<div class="rule"></div>
+          How many <b>full rows</b> can be filled? How many students will be <b>left</b>?`,
+        inputHTML: twoIntInputHTML("Full rows","Students left","rows","left"),
+        getUser:(card)=> parseTwoInts(card),
+        isCorrect:(u)=>{
+          const {q,r} = divQR(197,28);
+          return !!u && u.a===q && u.b===r;
+        },
+        hintHTML:`197 ÷ 28 = full rows … leftover.`,
+        explainHTML:(()=>{
+          const {q,r} = divQR(197,28);
+          return `197 ÷ 28 = ${q} … ${r}. So <b>${q}</b> full rows can be filled and <b>${r}</b> student(s) will be left.`;
+        })(),
+        pdfAnswerHint:`Rows <span class="linebox small"></span> Left <span class="linebox small"></span>`,
+        answerText:(()=>{
+          const {q,r}=divQR(197,28);
+          return `${q} rows, ${r} left`;
+        })()
+      });
+
+      // Another worksheet: Max in parentheses (image Q1)
+      [[20,85],[60,206],[40,316],[90,643],[70,165],[30,282]].forEach(([d,lim]) => bank.push(qMaxParen(d,lim)));
+
+      // Estimated quotient examples (convert to normal division)
+      [[64,22],[204,43],[350,51],[444,74]].forEach(([a,b]) => bank.push(qQR(a,b,"qr")));
+
+      // Mixed division set (image Q3)
+      [[84,42],[176,22],[326,73],[708,91],[68,21],[72,33],[410,82],[508,63]].forEach(([a,b]) => bank.push(qQR(a,b,"qr_hard")));
+
+      // Magazine (Issue 72)
+      bank.push(qMagazine(72));
+
+      // Oral calculation divisions (image Q5)
+      [[40,40],[50,50],[100,20],[810,90],[540,60],[280,40],[640,80],[560,70]].forEach(([a,b]) => bank.push(qQR(a,b,"qr_easy")));
+
+      // More (image Q6)
+      [[96,31],[100,30],[430,71],[251,80],[70,21],[86,43],[456,52],[360,63]].forEach(([a,b]) => bank.push(qQR(a,b,"qr_hard")));
+
+      // Quick quotient list (image Q8)
+      [[88,22],[155,52],[244,63],[264,33],[75,30],[375,91],[250,70],[496,82]].forEach(([a,b]) => bank.push(qQR(a,b,"qr_hard")));
+
+      // Deliveries word (132 ÷ 22)
+      bank.push(qWordCeil(132, 22, "packages", "Each package delivery costs $22. Uncle Wang spent $132 on deliveries."));
+
+      // Pattern noticing set (image Q10) – treat as normal divisions
+      [[108,12],[219,23],[425,44],[524,53]].forEach(([a,b]) => bank.push(qQR(a,b,"qr_hard")));
+
+      // Max in parentheses (image Q11)
+      [[60,262],[80,453],[30,206],[60,417],[50,368],[90,641]].forEach(([d,lim]) => bank.push(qMaxParen(d,lim)));
+
+      // Estimated quotient adjust (image Q12)
+      [[394,48],[246,27],[448,89],[227,26]].forEach(([a,b]) => bank.push(qQR(a,b,"qr_hard")));
+
+      // Display boards word (336 ÷ 48)
+      bank.push(qWordCeil(336, 48, "display boards", "One display board can hold 48 insect specimens. The school plans to display 336 specimens."));
+
+      // Quick quotient list (image Q16)
+      [[87,29],[134,19],[421,57],[738,78],[96,23],[341,47],[130,21],[219,52]].forEach(([a,b]) => bank.push(qQR(a,b,"qr_hard")));
+
+      // Pills word (100 ÷ 12)
+      bank.push({
+        type:"word",
+        signature:"pills_100_12",
+        promptHTML:`A bottle contains <b>100</b> pills. Grandpa Zhang takes <b>12</b> pills a day.<div class="rule"></div>
+          How many full days will the bottle last? How many pills will be left?`,
+        inputHTML: twoIntInputHTML("Days","Pills left","days","left"),
+        getUser:(card)=> parseTwoInts(card),
+        isCorrect:(u)=>{
+          const {q,r}=divQR(100,12);
+          return !!u && u.a===q && u.b===r;
+        },
+        hintHTML:`100 ÷ 12 = days … pills left.`,
+        explainHTML:(()=>{
+          const {q,r}=divQR(100,12);
+          return `100 ÷ 12 = ${q} … ${r}. So it lasts <b>${q}</b> full day(s), with <b>${r}</b> pill(s) left.`;
+        })(),
+        pdfAnswerHint:`Days <span class="linebox small"></span> Left <span class="linebox small"></span>`,
+        answerText:(()=>{
+          const {q,r}=divQR(100,12);
+          return `${q} days, ${r} left`;
+        })()
+      });
+
+      // Computation set (image Q18)
+      [[98,22],[100,41],[377,48],[205,52],[726,83],[489,57],[169,34],[507,79]].forEach(([a,b]) => bank.push(qQR(a,b,"qr_hard")));
+
+      // Molly deal (image with $680)
+      bank.push(qDealMolly(680, 69, 99));
+
+      // Some digit-count questions (from image Q10)
+      bank.push(qDigitsInQuotient(136,17));
+      bank.push(qDigitsInQuotient(584,26));
+      bank.push(qDigitsInQuotient(370,39));
+      bank.push(qDigitsInQuotient(762,63));
+
+      // Transport table word (600 km)
+      bank.push({
+        type:"word",
+        signature:"transport_600",
+        promptHTML:`The distance from Wang Ping's home to his grandmother's house is <b>600 km</b>.<div class="rule"></div>
+          Speeds: Bicycle 15 km/h, Bus 60 km/h, Car 75 km/h, Train 200 km/h.<br/>
+          Which transport is the fastest? (Answer with the name: Bicycle/Bus/Car/Train)`,
+        inputHTML: singleIntInputHTML("Fastest","Train"),
+        getUser:(card)=>{
+          const inp = card.querySelector("input");
+          if(!inp) return null;
+          return String(inp.value||"").trim().toLowerCase();
+        },
+        isCorrect:(u)=> !!u && u === "train",
+        hintHTML:`Time = distance ÷ speed. The fastest has the smallest time.`,
+        explainHTML:`Times: 600÷15=40h, 600÷60=10h, 600÷75=8h, 600÷200=3h. Fastest is <b>Train</b>.`,
+        pdfAnswerHint:"Fastest: ",
+        answerText:"Train"
+      });
+
+      // Rice bags word (900, 12 bags, left 60)
+      bank.push({
+        type:"word",
+        signature:"rice_900_12_60",
+        promptHTML:`Uncle Liu brought <b>$900</b> to buy rice. He bought <b>12</b> bags and had <b>$60</b> left.<div class="rule"></div>
+          What is the price of each bag?`,
+        inputHTML: singleIntInputHTML("Price per bag",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=>{
+          const price = (900-60)/12;
+          return Number.isInteger(u) && u === price;
+        },
+        hintHTML:`(total − left) ÷ number of bags.`,
+        explainHTML:`Spent: 900−60=840. Price: 840÷12 = <b>70</b>.`,
+        pdfAnswerHint:"Price: ",
+        answerText:"70"
+      });
+
+      return bank;
+    }
+
+    /***********************
+     * Random generators (extra variety)
+     ************************/
+    function makeRandom2DigitBy2Digit(){
+      let divisor = randInt(12, 98);
+      if(divisor % 10 === 0) divisor += 1;
+      let dividend = randInt(divisor, 99);
+      return qQR(dividend, divisor, "qr");
+    }
+
+    function makeRandom3DigitBy2Digit(){
+      let divisor = randInt(12, 98);
+      if(divisor % 10 === 0) divisor += 1;
+      let dividend = randInt(100, 999);
+      // avoid tiny quotient (keep it meaningful)
+      if(dividend < divisor) dividend += divisor;
+      return qQR(dividend, divisor, "qr_hard");
+    }
+
+    function makeRandomMaxParen(){
+      const dChoices = [20,30,40,50,60,70,80,90];
+      const d = dChoices[randInt(0,dChoices.length-1)];
+      const k = randInt(2, 9);
+      const wiggle = randInt(1, d-1);
+      const limit = d*k + wiggle; // ensures max is k
+      return qMaxParen(d, limit);
+    }
+
+    function makeRandomCompare(){
+      const a = randInt(30, 90);
+      const b = randInt(3, 9);
+      const left = a*b;
+      const c = left + randInt(-60, 60);
+      return qCompare(a,b, Math.max(1,c));
+    }
+
+    function makeRandomFillBlank(){
+      const divisor = randInt(12, 90);
+      const q = randInt(2, 12);
+      const r = randInt(0, Math.max(0, divisor-1));
+      if(Math.random() < 0.5){
+        return qFillDividend(divisor, q, r);
+      }
+      const dividend = divisor*q + r;
+      return qFillDivisor(dividend, q, r);
+    }
+
+    function makeRandomWordProblem(){
+      const contexts = [
+        ()=> {
+          const total = randInt(120, 480);
+          const per = randInt(12, 30);
+          return qWordCeil(total, per, "packages", `A delivery company needs to ship <b>${total}</b> packages. Each truck can carry <b>${per}</b> packages,`);
+        },
+        ()=> {
+          const money = randInt(60, 200);
+          const cost = randInt(12, 40);
+          return qWordBuy(cost, money, "item(s)", "$");
+        },
+        ()=> {
+          const seats = randInt(18, 36);
+          const students = randInt(120, 260);
+          return {
+            type:"word",
+            signature:`rows_${students}_${seats}_${Math.random()}`,
+            promptHTML:`There are <b>${seats}</b> seats in each row. There are <b>${students}</b> students.<div class="rule"></div>
+              How many full rows can be filled? How many students will be left?`,
+            inputHTML: twoIntInputHTML("Full rows","Students left","rows","left"),
+            getUser:(card)=> parseTwoInts(card),
+            isCorrect:(u)=>{
+              const {q,r} = divQR(students, seats);
+              return !!u && u.a===q && u.b===r;
+            },
+            hintHTML:`${students} ÷ ${seats} = rows … leftover.`,
+            explainHTML:(()=>{
+              const {q,r}=divQR(students,seats);
+              return `${students} ÷ ${seats} = ${q} … ${r}. So <b>${q}</b> full row(s), <b>${r}</b> left.`;
+            })(),
+            pdfAnswerHint:`Rows <span class="linebox small"></span> Left <span class="linebox small"></span>`,
+            answerText:(()=>{
+              const {q,r}=divQR(students,seats);
+              return `${q} rows, ${r} left`;
+            })()
+          };
+        }
+      ];
+      return contexts[randInt(0, contexts.length-1)]();
+    }
+
+    function makeRandomDigits(){
+      const divisor = randInt(12, 98);
+      const digits = randInt(1, 2);
+      let dividend;
+      if(digits === 1){
+        // force quotient 1 digit: first two digits < divisor
+        // pick dividend around 100..999 but ensure first two digits smaller
+        dividend = randInt(100, 999);
+        const firstTwo = Math.floor(dividend / 10);
+        // adjust by setting firstTwo to be smaller than divisor (roughly)
+        const targetFirstTwo = randInt(10, Math.min(99, divisor-1));
+        const last = dividend % 10;
+        dividend = targetFirstTwo*10 + last;
+        if(dividend < divisor) dividend += divisor; // safety
+      }else{
+        dividend = randInt(200, 999);
+        // ensure first two digits >= divisor if divisor is <= 99
+        const firstTwo = randInt(divisor, 99);
+        const last = randInt(0,9);
+        dividend = firstTwo*10 + last;
+      }
+      return qDigitsInQuotient(dividend, divisor);
+    }
+
+    /***********************
+     * Build set (balanced)
+     ************************/
+    let FIXED_BANK = [];
+    let fixedShuffleIdx = 0;
+
+    function shuffle(arr){
+      for(let i=arr.length-1;i>0;i--){
+        const j = randInt(0,i);
+        [arr[i],arr[j]] = [arr[j],arr[i]];
+      }
+      return arr;
+    }
+
+    function pickFromPool(pool, usedSigs){
+      for(let tries=0; tries<80; tries++){
+        const f = pool[randInt(0, pool.length-1)];
+        const q = f();
+        const sig = q.signature || (q.type + "_" + q.promptHTML);
+        if(!usedSigs.has(sig)){
+          usedSigs.add(sig);
+          return q;
+        }
+      }
+      // fallback: return something even if duplicated
+      const q = pool[0]();
+      return q;
+    }
+
+    function fixedFactory(){
+      // cycle through shuffled fixed items so they appear over time
+      if(FIXED_BANK.length === 0) FIXED_BANK = shuffle(buildFixedBank());
+      const q = FIXED_BANK[fixedShuffleIdx % FIXED_BANK.length];
+      fixedShuffleIdx++;
+      // clone shallow to avoid accidental shared mutation
+      return Object.assign({}, q);
+    }
+
+    function buildQuestionSet(count){
+      const used = new Set();
+      const qs = [];
+
+      const poolEstimate = [
+        ()=> fixedFactory(), // many fixed "max/approx" live here too
+        makeRandomMaxParen,
+        ()=> qApprox(randInt(120, 600), [20,30,40,50,60,70,80,90][randInt(0,7)]),
+        makeRandomFillBlank
+      ];
+
+      const poolQR = [
+        ()=> fixedFactory(),
+        makeRandom2DigitBy2Digit,
+        ()=> qQR([60,70,80,90,120,140,160,180,200,240,280,300,320,360,400,450,480,490,560,630][randInt(0,19)],
+                [10,20,30,40,50,60,70,80,90][randInt(0,8)],
+                "qr_easy")
+      ];
+
+      const poolHard = [
+        ()=> fixedFactory(),
+        makeRandom3DigitBy2Digit,
+        makeRandomDigits
+      ];
+
+      const poolWord = [
+        ()=> fixedFactory(),
+        makeRandomWordProblem,
+        ()=> qWordCeil(randInt(140, 520), randInt(18, 48), "groups", "Students are forming equal-size groups,"),
+      ];
+
+      const poolCompare = [
+        ()=> fixedFactory(),
+        makeRandomCompare
+      ];
+
+      // Distribution
+      let nEst=0, nQR=0, nHard=0, nWord=0, nCmp=0;
+      if(count === 12){ nEst=2; nQR=5; nHard=3; nWord=2; nCmp=0; }
+      if(count === 16){ nEst=3; nQR=6; nHard=4; nWord=2; nCmp=1; }
+      if(count === 20){ nEst=4; nQR=7; nHard=5; nWord=3; nCmp=1; }
+
+      for(let i=0;i<nEst;i++) qs.push(pickFromPool(poolEstimate, used));
+      for(let i=0;i<nCmp;i++) qs.push(pickFromPool(poolCompare, used));
+      for(let i=0;i<nQR;i++) qs.push(pickFromPool(poolQR, used));
+      for(let i=0;i<nHard;i++) qs.push(pickFromPool(poolHard, used));
+      for(let i=0;i<nWord;i++) qs.push(pickFromPool(poolWord, used));
+
+      // If still not enough (safety)
+      while(qs.length < count){
+        qs.push(pickFromPool([()=> fixedFactory(), makeRandom3DigitBy2Digit, makeRandom2DigitBy2Digit, makeRandomWordProblem], used));
+      }
+
+      // shuffle final
+      return shuffle(qs).slice(0, count);
+    }
+
+    /***********************
+     * PDF helpers (Answer Key on last pages)
+     ************************/
+    function loadScript(src){
+      return new Promise((resolve, reject)=>{
+        const s = document.createElement("script");
+        s.src = src;
+        s.onload = ()=> resolve();
+        s.onerror = ()=> reject(new Error("Failed to load " + src));
+        document.head.appendChild(s);
+      });
+    }
+
+    let pdfLibReady = false;
+    async function ensurePdfLibs(){
+      if(pdfLibReady) return;
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
+      pdfLibReady = true;
+    }
+
+    function buildPdfPages(){
+      const perPage = parseInt(document.getElementById("perPageSelect").value, 10);
+      const printArea = document.getElementById("pdfPrintArea");
+      printArea.innerHTML = "";
+
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, {year:"numeric", month:"short", day:"2-digit", hour:"2-digit", minute:"2-digit"});
+
+      const total = state.questions.length;
+      const pagesQ = Math.ceil(total / perPage);
+
+      const ansPerPage = 24;
+      const pagesA = Math.ceil(total / ansPerPage);
+
+      const totalPagesAll = pagesQ + pagesA;
+
+      const safeStudentForHtml = escapeHTML(studentName || "");
+      const setName = setNameFromIndex(state.setIndex-1);
+
+      // Question pages
+      for(let p=0; p<pagesQ; p++){
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const startIdx = p * perPage;
+        const endIdx = Math.min(total, startIdx + perPage);
+
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div>
+              <div class="pdf-title">Division — Two-Digit Divisors (Practice)</div>
+              <div class="pdf-sub">2-Digit ÷ 2-Digit • 3-Digit ÷ 2-Digit • Remainders • Word Problems</div>
+            </div>
+            <div class="pdf-meta">
+              Student: <b>${safeStudentForHtml || "—"}</b><br/>
+              Set ${setName}<br/>
+              ${dateStr}<br/>
+              Page ${p+1} / ${totalPagesAll}
+            </div>
+          </div>
+          <div class="pdf-grid"></div>
+        `;
+
+        const grid = page.querySelector(".pdf-grid");
+
+        for(let i=startIdx; i<endIdx; i++){
+          const q = state.questions[i];
+          const qBox = document.createElement("div");
+          qBox.className = "pdf-q";
+          qBox.innerHTML = `
+            <div class="pdf-qhead">
+              <div class="pdf-qnum">Q${i+1}</div>
+              <div class="pdf-qtopic">${topicLabel(q.type)}</div>
+            </div>
+            <div class="pdf-qbody">${q.promptHTML}</div>
+            <div class="pdf-answerline">
+              ${q.pdfAnswerHint || "Answer:"}
+              ${q.pdfAnswerHint ? "" : `<span class="linebox"></span>`}
+            </div>
+          `;
+          grid.appendChild(qBox);
+        }
+
+        printArea.appendChild(page);
+      }
+
+      // Answer key pages at the end
+      for(let ap=0; ap<pagesA; ap++){
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const startIdx = ap * ansPerPage;
+        const endIdx = Math.min(total, startIdx + ansPerPage);
+        const pageNumber = pagesQ + ap + 1;
+
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div>
+              <div class="pdf-title">Division — Answer Key</div>
+              <div class="pdf-sub">Answers for the generated set</div>
+            </div>
+            <div class="pdf-meta">
+              Student: <b>${safeStudentForHtml || "—"}</b><br/>
+              Set ${setName}<br/>
+              ${dateStr}<br/>
+              Page ${pageNumber} / ${totalPagesAll}
+            </div>
+          </div>
+          <div class="pdf-grid"></div>
+        `;
+
+        const grid = page.querySelector(".pdf-grid");
+
+        for(let i=startIdx; i<endIdx; i++){
+          const q = state.questions[i];
+          const ans = (q && typeof q.answerText === "string") ? q.answerText : "";
+          const qBox = document.createElement("div");
+          qBox.className = "pdf-q";
+          qBox.innerHTML = `
+            <div class="pdf-qhead">
+              <div class="pdf-qnum">Q${i+1}</div>
+              <div class="pdf-qtopic">${topicLabel(q.type)}</div>
+            </div>
+            <div class="pdf-qbody"><b>Answer:</b> ${escapeHTML(ans)}</div>
+          `;
+          grid.appendChild(qBox);
+        }
+
+        printArea.appendChild(page);
+      }
+    }
+
+    function safeFileNamePart(s){
+      return String(s || "")
+        .trim()
+        .replace(/[\\/:*?"<>|]+/g, "-")
+        .replace(/\s+/g, "_")
+        .slice(0, 40);
+    }
+
+    async function exportToPdf(){
+      if(!studentName){
+        alert("Please enter the student name first.");
+        return;
+      }
+      await ensurePdfLibs();
+      buildPdfPages();
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+      const pages = Array.from(document.querySelectorAll("#pdfPrintArea .pdf-page"));
+
+      for(let i=0; i<pages.length; i++){
+        const pageEl = pages[i];
+
+        const canvas = await html2canvas(pageEl, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false
+        });
+
+        const imgData = canvas.toDataURL("image/png", 1.0);
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight, undefined, "FAST");
+        if(i < pages.length - 1) pdf.addPage();
+      }
+
+      const setName = setNameFromIndex(state.setIndex-1);
+      const fileStudent = safeFileNamePart(studentName);
+      pdf.save(`DYAA_Division_2Digit_${fileStudent}_Set_${setName}.pdf`);
+    }
+
+    /***********************
+     * Render + checking
+     ************************/
+    const tabs = document.querySelectorAll(".tab-btn");
+    const learnSection = document.getElementById("learnSection");
+    const practiceSection = document.getElementById("practiceSection");
+    const practiceControls = document.getElementById("practiceControls");
+    const questionsWrap = document.getElementById("questionsWrap");
+    const countSelect = document.getElementById("countSelect");
+    const scoreValue = document.getElementById("scoreValue");
+    const progressLabel = document.getElementById("progressLabel");
+    const setLabel = document.getElementById("setLabel");
+
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const cancelModalBtn = document.getElementById("cancelModalBtn");
+    const confirmModalBtn = document.getElementById("confirmModalBtn");
+
+    const nameBackdrop = document.getElementById("nameBackdrop");
+    const nameInput = document.getElementById("nameInput");
+    const startWithNameBtn = document.getElementById("startWithNameBtn");
+    const cancelNameBtn = document.getElementById("cancelNameBtn");
+
+    const newSetBtn = document.getElementById("newSetBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const showAllBtn = document.getElementById("showAllBtn");
+    const exportPdfBtn = document.getElementById("exportPdfBtn");
+
+    let state = {
+      setIndex: 0,
+      questions: [],
+      checked: new Set(),
+      results: new Map(),
+    };
+
+    function setNameFromIndex(i){
+      return String.fromCharCode(65 + (i % 26));
+    }
+
+    function renderQuestions(){
+      questionsWrap.innerHTML = "";
+      state.questions.forEach((q, idx)=>{
+        const card = document.createElement("div");
+        card.className = "q-card";
+        card.dataset.qindex = String(idx);
+
+        card.innerHTML = `
+          <div class="q-head">
+            <div class="q-num">Q${idx+1}</div>
+            <div class="q-topic">${topicLabel(q.type)}</div>
+          </div>
+          <div class="q-body">${q.promptHTML}</div>
+          <div class="q-input">${q.inputHTML}</div>
+          <div class="q-actions">
+            <button class="btn primary" data-action="check">Check</button>
+            <button class="btn secondary" data-action="hint">Hint</button>
+            <button class="btn secondary" data-action="reveal">Reveal</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+        `;
+        questionsWrap.appendChild(card);
+      });
+    }
+
+    function updateProgress(){
+      progressLabel.textContent = `${state.checked.size} checked`;
+    }
+
+    function showFeedback(card, ok, title, html){
+      const fb = card.querySelector(".feedback");
+      fb.classList.add("show");
+      fb.classList.toggle("ok", !!ok);
+      fb.classList.toggle("bad", !ok);
+      fb.innerHTML = `
+        <div class="title" style="color:${ok ? "var(--ok)" : "var(--bad)"}">${title}</div>
+        <div>${html}</div>
+      `;
+    }
+
+    function checkOne(card){
+      const idx = parseInt(card.dataset.qindex, 10);
+      const q = state.questions[idx];
+      const user = q.getUser(card);
+
+      let ok = q.isCorrect(user);
+
+      // extra feedback for QR remainder rule
+      if(q.type.startsWith("qr") && user && typeof user.r === "number"){
+        // try to infer divisor from prompt (best-effort) – but correctness already checks remainder< divisor
+        if(!ok && user.r >= 0){
+          // no-op
+        }
+      }
+
+      state.checked.add(idx);
+      state.results.set(idx, ok);
+
+      showFeedback(
+        card,
+        ok,
+        ok ? "✅ Correct" : "❌ Not quite",
+        ok
+          ? `Good job. ${q.explainHTML}`
+          : `Hint: ${q.hintHTML}<div class="rule"></div>${q.explainHTML}`
+      );
+
+      updateProgress();
+      return ok;
+    }
+
+    function resetAnswers(){
+      state.checked = new Set();
+      state.results = new Map();
+      scoreValue.textContent = "—";
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const fb = card.querySelector(".feedback");
+        fb.className = "feedback";
+        fb.innerHTML = "";
+        card.querySelectorAll("input").forEach(i => i.value = "");
+        card.querySelectorAll("select").forEach(s => { s.selectedIndex = 0; });
+      });
+      updateProgress();
+    }
+
+    function generateNewSet(){
+      const count = parseInt(countSelect.value, 10);
+      state.setIndex++;
+      state.questions = buildQuestionSet(count);
+      state.checked = new Set();
+      state.results = new Map();
+      setLabel.textContent = `Set: ${setNameFromIndex(state.setIndex-1)}`;
+      scoreValue.textContent = "—";
+      renderQuestions();
+      updateProgress();
+      practiceSection.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    function submitAll(){
+      let correct = 0;
+      state.questions.forEach((_, idx)=>{
+        const card = document.querySelector(`.q-card[data-qindex="${idx}"]`);
+        const ok = checkOne(card);
+        if(ok) correct++;
+      });
+      scoreValue.textContent = `${correct} / ${state.questions.length}`;
+      scoreValue.style.fontWeight = "900";
+    }
+
+    function showAllExplanations(){
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const idx = parseInt(card.dataset.qindex,10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "📌 Explanation", q.explainHTML);
+      });
+    }
+
+    /***********************
+     * Tabs + Name gating
+     ************************/
+    function openNameModal(){
+      nameBackdrop.classList.add("show");
+      nameBackdrop.setAttribute("aria-hidden","false");
+      nameInput.value = "";
+      setTimeout(()=> nameInput.focus(), 50);
+    }
+    function closeNameModal(){
+      nameBackdrop.classList.remove("show");
+      nameBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    function setTab(tab){
+      tabs.forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      const isPractice = tab === "practice";
+      learnSection.classList.toggle("active", !isPractice);
+      practiceSection.classList.toggle("active", isPractice);
+      practiceControls.style.display = isPractice ? "flex" : "none";
+
+      if(isPractice){
+        if(!studentName){
+          openNameModal();
+          setPracticeButtonsEnabled(false);
+          return;
+        }
+        if(state.questions.length === 0){
+          generateNewSet();
+        }
+      }
+    }
+
+    tabs.forEach(btn=>{
+      btn.addEventListener("click", ()=> setTab(btn.dataset.tab));
+    });
+
+    // Name modal actions
+    startWithNameBtn.addEventListener("click", ()=>{
+      const v = sanitizeName(nameInput.value);
+      if(!v){
+        alert("Please enter a student name.");
+        nameInput.focus();
+        return;
+      }
+      setStudentName(v);
+      closeNameModal();
+      if(practiceSection.classList.contains("active") && state.questions.length === 0){
+        generateNewSet();
+      }
+    });
+    nameInput.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter"){
+        e.preventDefault();
+        startWithNameBtn.click();
+      }
+      if(e.key === "Escape"){
+        e.preventDefault();
+        cancelNameBtn.click();
+      }
+    });
+    cancelNameBtn.addEventListener("click", ()=>{
+      closeNameModal();
+      setTab("learn");
+    });
+    nameBackdrop.addEventListener("click", (e)=>{
+      if(e.target === nameBackdrop){
+        // keep modal open
+      }
+    });
+
+    /***********************
+     * New-set confirm modal
+     ************************/
+    function openModal(){
+      modalBackdrop.classList.add("show");
+      modalBackdrop.setAttribute("aria-hidden","false");
+    }
+    function closeModal(){
+      modalBackdrop.classList.remove("show");
+      modalBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    newSetBtn.addEventListener("click", openModal);
+    cancelModalBtn.addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", (e)=>{
+      if(e.target === modalBackdrop) closeModal();
+    });
+    confirmModalBtn.addEventListener("click", ()=>{
+      closeModal();
+      generateNewSet();
+    });
+
+    questionsWrap.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button");
+      if(!btn) return;
+      const action = btn.dataset.action;
+      const card = e.target.closest(".q-card");
+      if(!card) return;
+
+      if(action === "check"){
+        checkOne(card);
+      }else if(action === "hint"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "💡 Hint", q.hintHTML);
+      }else if(action === "reveal"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "🧠 Solution", q.explainHTML);
+      }
+    });
+
+    resetBtn.addEventListener("click", resetAnswers);
+    submitBtn.addEventListener("click", submitAll);
+    showAllBtn.addEventListener("click", showAllExplanations);
+
+    exportPdfBtn.addEventListener("click", async ()=>{
+      if(!practiceSection.classList.contains("active")) setTab("practice");
+      if(!studentName){
+        openNameModal();
+        return;
+      }
+      if(state.questions.length === 0) generateNewSet();
+
+      try{
+        exportPdfBtn.textContent = "Exporting...";
+        exportPdfBtn.disabled = true;
+        await exportToPdf();
+      }catch(err){
+        alert("Export failed. If you opened this file locally, try hosting it on GitHub Pages (recommended) or allow internet access for CDNs.\n\n" + err.message);
+      }finally{
+        exportPdfBtn.textContent = "Export to PDF";
+        exportPdfBtn.disabled = false;
+      }
+    });
+
+    /***********************
+     * Init: read URL ?name=
+     ************************/
+    (function init(){
+      setPracticeButtonsEnabled(false);
+      const urlName = getNameFromUrl();
+      if(urlName){
+        setStudentName(urlName);
+      }else{
+        setStudentName("");
+      }
+      // prepare fixed bank once
+      FIXED_BANK = shuffle(buildFixedBank());
+    })();
+  </script>
+</body>
+</html>

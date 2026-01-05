@@ -1,0 +1,1947 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Negative Numbers — Number Line • Absolute Value • Operations • Applications — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --radius:14px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      user-select:none;
+      z-index:0;
+      white-space:nowrap;
+    }
+
+    .container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:24px auto 60px;
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+    }
+
+    /* Header */
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:42px;height:42px;
+      background:var(--blue);
+      border-radius:8px;
+      position:relative;
+      flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px;height:10px;
+      background:var(--orange);
+      top:-6px;left:10px;
+      border-radius:6px;
+    }
+    .logo-text{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .logo-text h1{
+      font-size:22px;
+      margin:0;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .logo-text .tag{
+      font-size:13px;
+      color:var(--orange);
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .student-pill{
+      margin-left:auto;
+      display:none;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      font-weight:800;
+      color:#111;
+      white-space:nowrap;
+    }
+    .student-pill.show{ display:inline-flex; }
+
+    /* Top bar */
+    .top-bar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:14px 0 10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .tabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .tab-btn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--blue);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+    }
+    .tab-btn.active{
+      background:var(--blue);
+      color:#fff;
+      border-color:var(--blue);
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    select, input[type="text"]{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:9px 10px;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn.primary{ background:var(--blue); color:#fff; }
+    .btn.secondary{ background:#eef2ff; color:var(--blue); border:1px solid #dbe3ff; }
+    .btn.warn{ background:#fff3e0; color:#8a4b00; border:1px solid #ffe0b2; }
+    .btn:active{ transform:translateY(1px); }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+
+    /* Sections */
+    .section{ display:none; margin-top:16px; }
+    .section.active{ display:block; }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    @media (min-width: 860px){
+      .grid.two{ grid-template-columns:1fr 1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      padding:16px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+    .muted{ color:var(--muted); }
+    .note{
+      background:#f7fbff;
+      border:1px solid #d9ecff;
+      padding:12px;
+      border-radius:12px;
+      color:#123;
+    }
+    .rule{ border-top:1px dashed var(--line); margin:12px 0; }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      color:#111;
+      flex-wrap:wrap;
+    }
+    .math{ font-weight:900; color:#111; }
+
+    /* SVG helpers */
+    .svgbox{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px;
+      background:#fff;
+      overflow:hidden;
+    }
+    .svgbox svg{ width:100%; height:auto; display:block; }
+    .svgb{ fill:var(--blue); font-weight:900; }
+    .svghint{ fill:#666; font-weight:700; }
+
+    /* Practice */
+    .practice-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .practice-meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      background:#f6f7ff;
+      border:1px solid #e2e6ff;
+      color:#1d2a7a;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:13px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:14px;
+      background:#fff;
+    }
+    .q-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+    .q-num{ font-weight:900; color:var(--blue); }
+    .q-topic{
+      font-size:12px;
+      font-weight:900;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color:#111;
+      background:#fafafe;
+      white-space:nowrap;
+    }
+    .q-body{
+      font-size:15px;
+      line-height:1.45;
+      margin-bottom:10px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .q-input{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:10px;
+    }
+    .tiny{ width:160px; }
+    .tiny.small{ width:110px; }
+
+    .q-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .feedback{
+      margin-top:10px;
+      border-radius:12px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      background:#fafafa;
+      display:none;
+    }
+    .feedback.show{ display:block; }
+    .feedback.ok{ border-color:#c9e7cf; background:#f0fbf2; }
+    .feedback.bad{ border-color:#ffd0d0; background:#fff3f3; }
+    .feedback .title{ font-weight:900; margin-bottom:6px; }
+
+    .footer-actions{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      border-top:1px solid var(--line);
+      padding-top:14px;
+    }
+    .scorebox{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fff;
+      min-width:240px;
+    }
+    .scorebox strong{ color:var(--blue); }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+    .modal-backdrop.show{ display:flex; }
+    .modal{
+      width:min(560px, 96vw);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 18px 45px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+      padding:16px;
+    }
+    .modal h3{ margin:0 0 6px; color:var(--blue); }
+    .modal p{ margin:6px 0 14px; color:var(--muted); }
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); border:0;
+    }
+
+    /* hidden print layout for PDF */
+    #pdfPrintArea{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:794px; /* ~A4 at 96dpi */
+      background:#fff;
+      color:#111;
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      padding:0;
+    }
+    .pdf-page{
+      width:794px;
+      min-height:1123px; /* ~A4 at 96dpi */
+      padding:36px 44px;
+      page-break-after:always;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .pdf-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+      padding-bottom:10px;
+      border-bottom:2px solid #e6e6ef;
+    }
+    .pdf-title{
+      font-weight:900;
+      color:#0d47a1;
+      font-size:18px;
+      line-height:1.2;
+    }
+    .pdf-sub{
+      color:#666;
+      font-size:12px;
+      margin-top:4px;
+    }
+    .pdf-meta{
+      text-align:right;
+      font-size:12px;
+      color:#666;
+      white-space:nowrap;
+      line-height:1.35;
+    }
+    .pdf-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    .pdf-q{
+      border:1px solid #e6e6ef;
+      border-radius:12px;
+      padding:12px 12px;
+    }
+    .pdf-qhead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .pdf-qnum{ font-weight:900; color:#0d47a1; }
+    .pdf-qtopic{
+      font-size:11px;
+      font-weight:900;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid #e6e6ef;
+      background:#fafafe;
+    }
+    .pdf-qbody{
+      font-size:13px;
+      line-height:1.45;
+      margin-bottom:8px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .pdf-answerline{
+      margin-top:8px;
+      font-size:12px;
+      color:#111;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:flex-end;
+    }
+    .linebox{
+      display:inline-block;
+      border-bottom:2px solid #111;
+      min-width:260px;
+      height:14px;
+      vertical-align:baseline;
+    }
+    .linebox.small{ min-width:140px; }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div>
+        <div class="logo-text">
+          <h1>Negative Numbers — Number Line • Absolute Value • Operations • Applications</h1>
+          <span class="tag">DYAA EDUCATION</span>
+        </div>
+        <p class="subtitle">Number line • Opposites • Absolute value • Add/Subtract/Multiply/Divide • Squares • Mixed operations • 2-step word problems</p>
+      </div>
+
+      <div id="studentPillHeader" class="student-pill" aria-live="polite">
+        Student: <span id="studentNameHeader"></span>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="learn">Learn</button>
+        <button class="tab-btn" data-tab="practice">Practice</button>
+      </div>
+
+      <div class="controls" id="practiceControls" style="display:none;">
+        <label class="chip">
+          Questions:
+          <select id="countSelect" aria-label="Number of questions">
+            <option value="12">12</option>
+            <option value="16" selected>16</option>
+            <option value="20">20</option>
+          </select>
+        </label>
+
+        <label class="chip">
+          PDF per page:
+          <select id="perPageSelect" aria-label="PDF questions per page">
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+        </label>
+
+        <button class="btn secondary" id="exportPdfBtn">Export to PDF</button>
+        <button class="btn warn" id="newSetBtn">Generate New Set</button>
+        <button class="btn secondary" id="resetBtn">Reset Answers</button>
+      </div>
+    </div>
+
+    <!-- LEARN -->
+    <div class="section active" id="learnSection">
+      <div class="grid two">
+
+        <div class="card">
+          <h2>1) Number line</h2>
+          <p class="muted">
+            Numbers to the <b>right</b> are bigger, and numbers to the <b>left</b> are smaller.
+            <b>0</b> is the center.
+          </p>
+
+          <div class="svgbox" aria-label="number line">
+            <svg viewBox="0 0 620 160" role="img">
+              <text x="310" y="24" text-anchor="middle" class="svgb" font-size="16">Number line: -5 to 5</text>
+              <line x1="60" y1="80" x2="560" y2="80" stroke="#111" stroke-width="3"/>
+              <polygon points="560,80 546,72 546,88" fill="#111"/>
+              <polygon points="60,80 74,72 74,88" fill="#111"/>
+
+              <g font-size="14" font-weight="800">
+                <line x1="90"  y1="70" x2="90"  y2="90" stroke="#111" stroke-width="2"/><text x="90"  y="112" text-anchor="middle">-5</text>
+                <line x1="134" y1="70" x2="134" y2="90" stroke="#111" stroke-width="2"/><text x="134" y="112" text-anchor="middle">-4</text>
+                <line x1="178" y1="70" x2="178" y2="90" stroke="#111" stroke-width="2"/><text x="178" y="112" text-anchor="middle">-3</text>
+                <line x1="222" y1="70" x2="222" y2="90" stroke="#111" stroke-width="2"/><text x="222" y="112" text-anchor="middle">-2</text>
+                <line x1="266" y1="70" x2="266" y2="90" stroke="#111" stroke-width="2"/><text x="266" y="112" text-anchor="middle">-1</text>
+
+                <line x1="310" y1="66" x2="310" y2="94" stroke="#0d47a1" stroke-width="3"/><text x="310" y="112" text-anchor="middle" fill="#0d47a1" font-weight="900">0</text>
+
+                <line x1="354" y1="70" x2="354" y2="90" stroke="#111" stroke-width="2"/><text x="354" y="112" text-anchor="middle">1</text>
+                <line x1="398" y1="70" x2="398" y2="90" stroke="#111" stroke-width="2"/><text x="398" y="112" text-anchor="middle">2</text>
+                <line x1="442" y1="70" x2="442" y2="90" stroke="#111" stroke-width="2"/><text x="442" y="112" text-anchor="middle">3</text>
+                <line x1="486" y1="70" x2="486" y2="90" stroke="#111" stroke-width="2"/><text x="486" y="112" text-anchor="middle">4</text>
+                <line x1="530" y1="70" x2="530" y2="90" stroke="#111" stroke-width="2"/><text x="530" y="112" text-anchor="middle">5</text>
+              </g>
+
+              <text x="310" y="145" text-anchor="middle" class="svghint" font-size="13">Right = larger, Left = smaller</text>
+
+              <circle cx="178" cy="80" r="6" fill="#b71c1c"></circle>
+              <text x="178" y="56" text-anchor="middle" fill="#b71c1c" font-weight="900" font-size="14">-3</text>
+
+              <circle cx="442" cy="80" r="6" fill="#1b5e20"></circle>
+              <text x="442" y="56" text-anchor="middle" fill="#1b5e20" font-weight="900" font-size="14">3</text>
+            </svg>
+          </div>
+
+          <div class="note" style="margin-top:10px;">
+            <div class="chip"><span class="math">-3</span> is left of 0</div>
+            <div class="chip"><span class="math">3</span> is right of 0</div>
+            <div class="chip"><span class="math">-5 &lt; -2 &lt; 0 &lt; 2 &lt; 5</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>2) Opposite numbers</h2>
+          <p class="muted">
+            Opposite numbers are the same distance from 0, but on different sides.
+          </p>
+          <div class="note">
+            <div class="chip">The opposite of <span class="math">5</span> is <span class="math">-5</span></div>
+            <div class="chip">The opposite of <span class="math">-8</span> is <span class="math">8</span></div>
+            <div class="rule"></div>
+            <div class="muted"><b>Rule:</b> The opposite of a number <span class="math">a</span> is <span class="math">-a</span>.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>3) Absolute value</h2>
+          <p class="muted">
+            The absolute value <span class="math">|a|</span> means the <b>distance from 0</b> on the number line.
+            Distance is never negative.
+          </p>
+          <div class="note">
+            <div class="chip"><span class="math">|-7| = 7</span></div>
+            <div class="chip"><span class="math">|5| = 5</span></div>
+            <div class="chip"><span class="math">|0| = 0</span></div>
+            <div class="rule"></div>
+            <div class="muted">
+              <b>Rule:</b>
+              <span class="math">|a| = a</span> if <span class="math">a ≥ 0</span>, and
+              <span class="math">|a| = -a</span> if <span class="math">a &lt; 0</span>.
+            </div>
+            <div class="rule"></div>
+            <div class="muted">
+              <b>Distance between two numbers:</b>
+              <span class="math">distance(a, b) = |a − b|</span>.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>4) Adding negative numbers</h2>
+          <div class="note">
+            <div class="muted">
+              <b>Same sign:</b> add the absolute values, keep the sign.<br/>
+              Example: <span class="math">(-4) + (-7) = -(4+7) = -11</span>
+              <div class="rule"></div>
+              <b>Different signs:</b> subtract the absolute values, keep the sign of the larger absolute value.<br/>
+              Example: <span class="math">(-9) + 5 = -(9-5) = -4</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>5) Subtracting negative numbers</h2>
+          <div class="note">
+            <div class="muted">
+              Subtraction can be changed into addition of the opposite:
+              <div class="rule"></div>
+              <span class="math">a − b = a + (−b)</span>
+              <div class="rule"></div>
+              Examples:<br/>
+              <span class="math">6 − (−3) = 6 + 3 = 9</span><br/>
+              <span class="math">−2 − 5 = −2 + (−5) = −7</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>6) Multiplying negative numbers</h2>
+          <div class="note">
+            <div class="muted">
+              <b>Same signs</b> → positive<br/>
+              <b>Different signs</b> → negative
+              <div class="rule"></div>
+              Examples:<br/>
+              <span class="math">(-6) × (-4) = 24</span><br/>
+              <span class="math">(-6) × 4 = -24</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>7) Dividing negative numbers</h2>
+          <div class="note">
+            <div class="muted">
+              Same sign → positive, different sign → negative (same as multiplication).
+              <div class="rule"></div>
+              Examples:<br/>
+              <span class="math">(-35) ÷ 5 = -7</span><br/>
+              <span class="math">(-36) ÷ (-9) = 4</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>8) Squaring negative numbers</h2>
+          <div class="note">
+            <div class="muted">
+              A negative number squared is positive (because it is negative × negative).
+              <div class="rule"></div>
+              <span class="math">(-5)² = 25</span>
+              <div class="rule"></div>
+              <b>Be careful:</b> <span class="math">-5²</span> means <span class="math">-(5²) = -25</span>.
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="grid-column:1/-1;">
+          <h2>9) Mixed operations</h2>
+          <div class="note">
+            <div class="muted">
+              Use <b>order of operations</b>:<br/>
+              <b>1.</b> Brackets → <b>2.</b> Powers → <b>3.</b> Multiply/Divide → <b>4.</b> Add/Subtract
+              <div class="rule"></div>
+              Example: <span class="math">-3 + 2 × (-4) = -3 + (-8) = -11</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="grid-column:1/-1;">
+          <h2>10) Word problems (often 2 steps)</h2>
+          <div class="grid two" style="gap:14px;margin-top:10px;">
+            <div class="note" style="background:#fff;border:1px solid var(--line);">
+              <div class="muted">
+                <b>Temperature (2 steps)</b><br/>
+                Start at -2°C, rise 5°C, then fall 3°C → -2 + 5 - 3 = 0°C
+              </div>
+            </div>
+            <div class="note" style="background:#fff;border:1px solid var(--line);">
+              <div class="muted">
+                <b>Balance (2 steps)</b><br/>
+                Balance is -8, receive +3, then spend 4 → -8 + 3 - 4 = -9
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="section" id="practiceSection">
+      <div class="practice-header">
+        <div>
+          <h2 style="margin:0;color:var(--blue);font-size:18px;">Practice Quiz</h2>
+          <p class="muted" style="margin:6px 0 0;">
+            Word problems are mostly <b>2-step</b>. Enter <b>integers only</b>. Use brackets like <span class="math">(-3)</span> if needed.
+          </p>
+        </div>
+        <div class="practice-meta">
+          <span class="pill" id="studentPillPractice" style="display:none;">Student: <span id="studentNamePractice"></span></span>
+          <span class="pill" id="setLabel">Set: A</span>
+          <span class="pill" id="progressLabel">0 checked</span>
+        </div>
+      </div>
+
+      <div id="questionsWrap" class="grid"></div>
+
+      <div class="footer-actions">
+        <div class="scorebox">
+          <div><strong id="scoreText">Score:</strong> <span id="scoreValue">—</span></div>
+          <div class="muted" style="font-size:13px;margin-top:4px;">Tip: Convert subtraction to “add the opposite”.</div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn primary" id="submitBtn">Submit & View Result</button>
+          <button class="btn secondary" id="showAllBtn">Show All Explanations</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- hidden print area for PDF -->
+  <div id="pdfPrintArea" aria-hidden="true"></div>
+
+  <!-- Confirm modal (new set) -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle">Generate a new set?</h3>
+      <p>This will clear your current answers and create a new random set of questions.</p>
+      <div class="modal-actions">
+        <button class="btn secondary" id="cancelModalBtn">Cancel</button>
+        <button class="btn warn" id="confirmModalBtn">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Name modal -->
+  <div class="modal-backdrop" id="nameBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+      <h3 id="nameTitle">Enter student name to start</h3>
+      <p>
+        Tip: you can skip this step by using a link like:
+        <b>negative_numbers.html?name=Tiger</b>
+      </p>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <label class="sr-only" for="nameInput">Student name</label>
+        <input id="nameInput" type="text" placeholder="e.g., Tiger" autocomplete="off" style="min-width:240px;" />
+        <button class="btn primary" id="startWithNameBtn">Start</button>
+      </div>
+
+      <div class="modal-actions" style="margin-top:14px;">
+        <button class="btn secondary" id="cancelNameBtn">Back to Learn</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Student name logic
+     ************************/
+    let studentName = "";
+
+    function escapeHTML(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function sanitizeName(raw){
+      let s = String(raw || "").trim();
+      s = s.replace(/[\u0000-\u001F\u007F]/g, "");
+      if(s.length > 40) s = s.slice(0, 40);
+      return s;
+    }
+
+    function setStudentName(name){
+      studentName = sanitizeName(name);
+      updateStudentUI();
+    }
+
+    function updateStudentUI(){
+      const headerPill = document.getElementById("studentPillHeader");
+      const headerName = document.getElementById("studentNameHeader");
+      const practicePill = document.getElementById("studentPillPractice");
+      const practiceName = document.getElementById("studentNamePractice");
+
+      if(studentName){
+        headerPill.classList.add("show");
+        headerName.textContent = studentName;
+
+        practicePill.style.display = "inline-flex";
+        practiceName.textContent = studentName;
+
+        setPracticeButtonsEnabled(true);
+      }else{
+        headerPill.classList.remove("show");
+        headerName.textContent = "";
+
+        practicePill.style.display = "none";
+        practiceName.textContent = "";
+
+        setPracticeButtonsEnabled(false);
+      }
+    }
+
+    function setPracticeButtonsEnabled(enabled){
+      document.getElementById("exportPdfBtn").disabled = !enabled;
+      document.getElementById("newSetBtn").disabled = !enabled;
+      document.getElementById("resetBtn").disabled = !enabled;
+      document.getElementById("submitBtn").disabled = !enabled;
+      document.getElementById("showAllBtn").disabled = !enabled;
+    }
+
+    function getNameFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("name");
+      if(!raw) return "";
+      return sanitizeName(raw);
+    }
+
+    /***********************
+     * Utilities
+     ************************/
+    function randInt(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function isIntegerStr(s){
+      return /^-?\d+$/.test(String(s).trim());
+    }
+
+    function parseIntStrict(s){
+      if(!isIntegerStr(s)) return null;
+      return parseInt(s, 10);
+    }
+
+    function topicLabel(type){
+      switch(type){
+        case "nl": return "Number line";
+        case "opp": return "Opposites";
+        case "abs": return "Absolute value";
+        case "add": return "Addition";
+        case "sub": return "Subtraction";
+        case "mul": return "Multiplication";
+        case "div": return "Division";
+        case "sq": return "Squares";
+        case "mix": return "Mixed operations";
+        case "wp": return "2-step word problem";
+        default: return "Practice";
+      }
+    }
+
+    function formatSigned(n){
+      return (n < 0) ? `(${n})` : `${n}`;
+    }
+
+    function abs(n){ return Math.abs(n); }
+
+    /***********************
+     * Inputs
+     ************************/
+    function singleInputHTML(label="Answer", placeholder=""){
+      return `
+        <span class="muted">${escapeHTML(label)}:</span>
+        <input class="tiny" type="text" inputmode="numeric" autocomplete="off"
+               placeholder="${escapeHTML(placeholder)}" aria-label="${escapeHTML(label)}" />
+      `;
+    }
+
+    function parseSingleInt(card){
+      const inp = card.querySelector("input");
+      if(!inp) return null;
+      return parseIntStrict(inp.value.trim());
+    }
+
+    /***********************
+     * Question generators
+     ************************/
+    function makeNumberLineCompare(){
+      const a = randInt(-12, 12);
+      let b = randInt(-12, 12);
+      while(b === a) b = randInt(-12, 12);
+      const correct = (a > b) ? ">" : "<";
+
+      return {
+        type:"nl",
+        signature:`nlcmp_${a}_${b}`,
+        promptHTML:`Fill in the sign: <span class="math">${a}</span> ( &nbsp; ? &nbsp; ) <span class="math">${b}</span> . Use <b>&gt;</b> or <b>&lt;</b>.`,
+        inputHTML: `
+          <span class="muted">Sign:</span>
+          <input class="tiny small" type="text" maxlength="1" autocomplete="off" placeholder="> or <" aria-label="Sign" />
+        `,
+        getUser:(card)=>{
+          const v = (card.querySelector("input")?.value || "").trim();
+          if(v === ">" || v === "<") return v;
+          return null;
+        },
+        isCorrect:(u)=> u === correct,
+        hintHTML:`On a number line, numbers to the right are bigger.`,
+        explainHTML:`Since ${a} ${correct} ${b}, the correct sign is <b>${correct}</b>.`,
+        pdfAnswerHint:`Sign: <span class="linebox small"></span>`,
+        answerText: correct
+      };
+    }
+
+    function makeNumberLineMove(){
+      const start = randInt(-10, 10);
+      const steps = randInt(2, 9);
+      const dir = Math.random() < 0.5 ? "right" : "left";
+      const end = (dir === "right") ? start + steps : start - steps;
+
+      return {
+        type:"nl",
+        signature:`nlmove_${start}_${dir}_${steps}`,
+        promptHTML:`On a number line, start at <span class="math">${start}</span> and move <b>${steps}</b> steps to the <b>${dir}</b>. What number do you land on?`,
+        inputHTML: singleInputHTML("Number",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === end,
+        hintHTML:`Right means add; left means subtract.`,
+        explainHTML:`Start at ${start}. Moving ${steps} to the ${dir} gives <b>${end}</b>.`,
+        pdfAnswerHint:`Number: <span class="linebox"></span>`,
+        answerText: String(end)
+      };
+    }
+
+    function makeOpposite(){
+      const a = randInt(-20, 20);
+      if(a === 0) return makeOpposite();
+      const correct = -a;
+
+      return {
+        type:"opp",
+        signature:`opp_${a}`,
+        promptHTML:`What is the opposite of <span class="math">${a}</span>?`,
+        inputHTML: singleInputHTML("Opposite",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === correct,
+        hintHTML:`Opposite numbers are the same distance from 0 but on different sides.`,
+        explainHTML:`The opposite of ${a} is <b>${correct}</b>.`,
+        pdfAnswerHint:`Opposite: <span class="linebox"></span>`,
+        answerText: String(correct)
+      };
+    }
+
+    function makeAbsValue(){
+      const a = randInt(-25, 25);
+      const correct = abs(a);
+
+      return {
+        type:"abs",
+        signature:`absval_${a}`,
+        promptHTML:`Calculate: <span class="math">|${a}|</span>`,
+        inputHTML: singleInputHTML("Answer",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === correct,
+        hintHTML:`Absolute value means distance from 0, so it is never negative.`,
+        explainHTML:`|${a}| = <b>${correct}</b>.`,
+        pdfAnswerHint:`Answer: <span class="linebox"></span>`,
+        answerText: String(correct)
+      };
+    }
+
+    function makeAbsDistance(){
+      const a = randInt(-15, 15);
+      let b = randInt(-15, 15);
+      while(b === a) b = randInt(-15, 15);
+      const correct = abs(a - b);
+
+      return {
+        type:"abs",
+        signature:`absdist_${a}_${b}`,
+        promptHTML:`What is the distance between <span class="math">${a}</span> and <span class="math">${b}</span> on the number line?`,
+        inputHTML: singleInputHTML("Distance",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === correct,
+        hintHTML:`Distance between two numbers is |a − b|.`,
+        explainHTML:`Distance = |${a} − ${b}| = |${a-b}| = <b>${correct}</b>.`,
+        pdfAnswerHint:`Distance: <span class="linebox"></span>`,
+        answerText: String(correct)
+      };
+    }
+
+    function makeAdd(){
+      const a = randInt(-20, 20);
+      const b = randInt(-20, 20);
+      const correct = a + b;
+
+      return {
+        type:"add",
+        signature:`add_${a}_${b}`,
+        promptHTML:`Calculate: <span class="math">${formatSigned(a)} + ${formatSigned(b)}</span>`,
+        inputHTML: singleInputHTML("Answer",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === correct,
+        hintHTML:`Same sign → add and keep sign. Different signs → subtract absolute values and keep the sign of the larger absolute value.`,
+        explainHTML:`${formatSigned(a)} + ${formatSigned(b)} = <b>${correct}</b>.`,
+        pdfAnswerHint:`Answer: <span class="linebox"></span>`,
+        answerText: String(correct)
+      };
+    }
+
+    function makeSub(){
+      const a = randInt(-20, 20);
+      const b = randInt(-20, 20);
+      const correct = a - b;
+
+      return {
+        type:"sub",
+        signature:`sub_${a}_${b}`,
+        promptHTML:`Calculate: <span class="math">${formatSigned(a)} − ${formatSigned(b)}</span>`,
+        inputHTML: singleInputHTML("Answer",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === correct,
+        hintHTML:`Change subtraction to addition: a − b = a + (−b).`,
+        explainHTML:`${formatSigned(a)} − ${formatSigned(b)} = ${formatSigned(a)} + ${formatSigned(-b)} = <b>${correct}</b>.`,
+        pdfAnswerHint:`Answer: <span class="linebox"></span>`,
+        answerText: String(correct)
+      };
+    }
+
+    function makeMul(){
+      const a = randInt(-12, 12);
+      const b = randInt(-12, 12);
+      if(a === 0 || b === 0) return makeMul();
+      const correct = a * b;
+
+      return {
+        type:"mul",
+        signature:`mul_${a}_${b}`,
+        promptHTML:`Calculate: <span class="math">${formatSigned(a)} × ${formatSigned(b)}</span>`,
+        inputHTML: singleInputHTML("Answer",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === correct,
+        hintHTML:`Same sign → positive. Different signs → negative.`,
+        explainHTML:`${formatSigned(a)} × ${formatSigned(b)} = <b>${correct}</b>.`,
+        pdfAnswerHint:`Answer: <span class="linebox"></span>`,
+        answerText: String(correct)
+      };
+    }
+
+    function makeDiv(){
+      const b = randInt(-12, 12);
+      if(b === 0) return makeDiv();
+      const q = randInt(-12, 12);
+      if(q === 0) return makeDiv();
+      const a = b * q; // divisible
+      const correct = q;
+
+      return {
+        type:"div",
+        signature:`div_${a}_${b}`,
+        promptHTML:`Calculate: <span class="math">${formatSigned(a)} ÷ ${formatSigned(b)}</span>`,
+        inputHTML: singleInputHTML("Answer",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === correct,
+        hintHTML:`Division has the same sign rule as multiplication.`,
+        explainHTML:`${formatSigned(a)} ÷ ${formatSigned(b)} = <b>${correct}</b>.`,
+        pdfAnswerHint:`Answer: <span class="linebox"></span>`,
+        answerText: String(correct)
+      };
+    }
+
+    function makeSquare(){
+      const a = randInt(-12, 12);
+      if(a === 0) return makeSquare();
+      const correct = a * a;
+
+      return {
+        type:"sq",
+        signature:`sq_${a}`,
+        promptHTML:`Calculate: <span class="math">(${a})²</span>`,
+        inputHTML: singleInputHTML("Answer",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === correct,
+        hintHTML:`(−a)² is always positive because it is (−a)×(−a).`,
+        explainHTML:`(${a})² = ${a}×${a} = <b>${correct}</b>.`,
+        pdfAnswerHint:`Answer: <span class="linebox"></span>`,
+        answerText: String(correct)
+      };
+    }
+
+    function makeMixed(){
+      const t = randInt(1, 4);
+
+      if(t === 1){
+        const a = randInt(-20, 20);
+        const b = randInt(-9, 9); if(b===0) return makeMixed();
+        const c = randInt(-9, 9); if(c===0) return makeMixed();
+        const correct = a + b*c;
+        return {
+          type:"mix",
+          signature:`mix1_${a}_${b}_${c}`,
+          promptHTML:`Work out: <span class="math">${formatSigned(a)} + ${formatSigned(b)} × ${formatSigned(c)}</span>`,
+          inputHTML: singleInputHTML("Answer",""),
+          getUser:(card)=> parseSingleInt(card),
+          isCorrect:(u)=> Number.isInteger(u) && u === correct,
+          hintHTML:`Multiply first, then add.`,
+          explainHTML:`${formatSigned(b)}×${formatSigned(c)} = ${b*c}. Then ${a} + ${b*c} = <b>${correct}</b>.`,
+          pdfAnswerHint:`Answer: <span class="linebox"></span>`,
+          answerText: String(correct)
+        };
+      }
+
+      if(t === 2){
+        const a = randInt(-20, 20);
+        const b = randInt(-20, 20);
+        let c = randInt(-9, 9); if(c===0) c = -7;
+        const correct = (a - b) * c;
+        return {
+          type:"mix",
+          signature:`mix2_${a}_${b}_${c}`,
+          promptHTML:`Work out: <span class="math">(${a} − ${formatSigned(b)}) × ${formatSigned(c)}</span>`,
+          inputHTML: singleInputHTML("Answer",""),
+          getUser:(card)=> parseSingleInt(card),
+          isCorrect:(u)=> Number.isInteger(u) && u === correct,
+          hintHTML:`Do brackets first, then multiply.`,
+          explainHTML:`First: (${a} − ${formatSigned(b)}) = ${a-b}. Then ${a-b} × ${c} = <b>${correct}</b>.`,
+          pdfAnswerHint:`Answer: <span class="linebox"></span>`,
+          answerText: String(correct)
+        };
+      }
+
+      if(t === 3){
+        const a = randInt(-20, 20);
+        const b = randInt(-20, 20);
+        const c = randInt(-20, 20);
+        const correct = a - b - c;
+        return {
+          type:"mix",
+          signature:`mix3_${a}_${b}_${c}`,
+          promptHTML:`Work out: <span class="math">${formatSigned(a)} − ${formatSigned(b)} − ${formatSigned(c)}</span>`,
+          inputHTML: singleInputHTML("Answer",""),
+          getUser:(card)=> parseSingleInt(card),
+          isCorrect:(u)=> Number.isInteger(u) && u === correct,
+          hintHTML:`Change subtraction to adding the opposite.`,
+          explainHTML:`${a} − ${b} − ${c} = ${a} + (${ -b }) + (${ -c }) = <b>${correct}</b>.`,
+          pdfAnswerHint:`Answer: <span class="linebox"></span>`,
+          answerText: String(correct)
+        };
+      }
+
+      const c = randInt(-9, 9);
+      if(c===0) return makeMixed();
+      const q = randInt(-9, 9);
+      if(q===0) return makeMixed();
+      const b = c * q;
+      const a = randInt(-20, 20);
+      const correct = a + q;
+
+      return {
+        type:"mix",
+        signature:`mix4_${a}_${b}_${c}`,
+        promptHTML:`Work out: <span class="math">${formatSigned(a)} + (${formatSigned(b)} ÷ ${formatSigned(c)})</span>`,
+        inputHTML: singleInputHTML("Answer",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === correct,
+        hintHTML:`Do the division in brackets first.`,
+        explainHTML:`${formatSigned(b)} ÷ ${formatSigned(c)} = ${q}. Then ${a} + ${q} = <b>${correct}</b>.`,
+        pdfAnswerHint:`Answer: <span class="linebox"></span>`,
+        answerText: String(correct)
+      };
+    }
+
+    /***********************
+     * ✅ More 2-step word problems
+     ************************/
+    function makeWordProblem(){
+      const type = randInt(1, 9);
+
+      // 1) Temperature: 2 changes
+      if(type === 1){
+        const start = randInt(-15, 10);
+        const c1 = randInt(2, 12);
+        const c2 = randInt(2, 12);
+        const dir1Up = Math.random() < 0.5;
+        const dir2Up = Math.random() < 0.5;
+        const end = start + (dir1Up ? c1 : -c1) + (dir2Up ? c2 : -c2);
+
+        return {
+          type:"wp",
+          signature:`wpT2_${start}_${dir1Up?1:0}_${c1}_${dir2Up?1:0}_${c2}`,
+          promptHTML:
+            `The temperature was <b>${start}°C</b>. It then ${dir1Up ? "rose" : "fell"} by <b>${c1}°C</b>, and later it ${dir2Up ? "rose" : "fell"} by <b>${c2}°C</b>.<div class="rule"></div>What is the final temperature?`,
+          inputHTML: singleInputHTML("Temperature (°C)",""),
+          getUser:(card)=> parseSingleInt(card),
+          isCorrect:(u)=> Number.isInteger(u) && u === end,
+          hintHTML:`Do it step by step: new = start ± change₁, then ± change₂.`,
+          explainHTML:`Final = ${start} ${dir1Up?"+":"-"} ${c1} ${dir2Up?"+":"-"} ${c2} = <b>${end}°C</b>.`,
+          pdfAnswerHint:`Temperature: <span class="linebox"></span>`,
+          answerText:`${end}°C`
+        };
+      }
+
+      // 2) Balance: deposit then spend
+      if(type === 2){
+        let start = randInt(-30, 30);
+        if(start === 0) start = -12;
+        const dep = randInt(2, 25);
+        const spend = randInt(2, 25);
+        const end = start + dep - spend;
+
+        return {
+          type:"wp",
+          signature:`wpB2_${start}_${dep}_${spend}`,
+          promptHTML:
+            `Your account balance is <b>${start}</b> dollars (negative means you owe money). You deposit <b>$${dep}</b>, then you spend <b>$${spend}</b>.<div class="rule"></div>What is your new balance?`,
+          inputHTML: singleInputHTML("Balance","e.g., -5"),
+          getUser:(card)=> parseSingleInt(card),
+          isCorrect:(u)=> Number.isInteger(u) && u === end,
+          hintHTML:`Deposit adds. Spending subtracts.`,
+          explainHTML:`New balance = ${start} + ${dep} − ${spend} = <b>${end}</b>.`,
+          pdfAnswerHint:`Balance: <span class="linebox"></span>`,
+          answerText:String(end)
+        };
+      }
+
+      // 3) Debt: owe, pay, then borrow again
+      if(type === 3){
+        const owed = randInt(8, 40);
+        const pay = randInt(2, owed-1);
+        const borrow = randInt(2, 20);
+        const end = -owed + pay - borrow;
+
+        return {
+          type:"wp",
+          signature:`wpD2_${owed}_${pay}_${borrow}`,
+          promptHTML:
+            `You owe <b>$${owed}</b> (so your balance is <span class="math">-${owed}</span>). You pay back <b>$${pay}</b>, then you borrow <b>$${borrow}</b> more.<div class="rule"></div>What is your balance now?`,
+          inputHTML: singleInputHTML("Balance","e.g., -18"),
+          getUser:(card)=> parseSingleInt(card),
+          isCorrect:(u)=> Number.isInteger(u) && u === end,
+          hintHTML:`Owing/borrowing is negative. Paying back adds a positive amount.`,
+          explainHTML:`Balance = -${owed} + ${pay} − ${borrow} = <b>${end}</b>.`,
+          pdfAnswerHint:`Balance: <span class="linebox"></span>`,
+          answerText:String(end)
+        };
+      }
+
+      // 4) Elevator: 2 moves
+      if(type === 4){
+        const start = randInt(-6, 15);
+        const a = randInt(2, 12);
+        const b = randInt(2, 12);
+        const up1 = Math.random() < 0.5;
+        const up2 = Math.random() < 0.5;
+        const end = start + (up1 ? a : -a) + (up2 ? b : -b);
+
+        return {
+          type:"wp",
+          signature:`wpE2_${start}_${up1?1:0}_${a}_${up2?1:0}_${b}`,
+          promptHTML:
+            `An elevator starts at floor <b>${start}</b> (basement floors are negative). It goes <b>${up1 ? "up" : "down"}</b> <b>${a}</b> floors, then it goes <b>${up2 ? "up" : "down"}</b> <b>${b}</b> floors.<div class="rule"></div>What floor does it stop at?`,
+          inputHTML: singleInputHTML("Floor",""),
+          getUser:(card)=> parseSingleInt(card),
+          isCorrect:(u)=> Number.isInteger(u) && u === end,
+          hintHTML:`Up = add, down = subtract.`,
+          explainHTML:`Final floor = ${start} ${up1?"+":"-"} ${a} ${up2?"+":"-"} ${b} = <b>${end}</b>.`,
+          pdfAnswerHint:`Floor: <span class="linebox"></span>`,
+          answerText:String(end)
+        };
+      }
+
+      // 5) Diving depth: descend then ascend (or the reverse)
+      if(type === 5){
+        const start = 0; // sea level
+        const down = randInt(5, 30);
+        const up = randInt(2, 25);
+        const end = start - down + up; // may still be negative or return above
+        return {
+          type:"wp",
+          signature:`wpSea_${down}_${up}`,
+          promptHTML:
+            `A diver starts at sea level (0 m). The diver goes down <b>${down} m</b>, then goes up <b>${up} m</b>.<div class="rule"></div>What is the diver’s final position (in meters)?`,
+          inputHTML: singleInputHTML("Position (m)","e.g., -12"),
+          getUser:(card)=> parseSingleInt(card),
+          isCorrect:(u)=> Number.isInteger(u) && u === end,
+          hintHTML:`Down is negative, up is positive.`,
+          explainHTML:`Final position = 0 − ${down} + ${up} = <b>${end}</b> m.`,
+          pdfAnswerHint:`Position: <span class="linebox"></span>`,
+          answerText:`${end} m`
+        };
+      }
+
+      // 6) Game points: gain then lose (net change)
+      if(type === 6){
+        const gain = randInt(5, 40);
+        const lose = randInt(5, 40);
+        const start = randInt(-10, 20);
+        const end = start + gain - lose;
+
+        return {
+          type:"wp",
+          signature:`wpG_${start}_${gain}_${lose}`,
+          promptHTML:
+            `In a game, your score starts at <b>${start}</b>. You gain <b>${gain}</b> points, then you lose <b>${lose}</b> points.<div class="rule"></div>What is your final score?`,
+          inputHTML: singleInputHTML("Score",""),
+          getUser:(card)=> parseSingleInt(card),
+          isCorrect:(u)=> Number.isInteger(u) && u === end,
+          hintHTML:`Gain adds, lose subtracts.`,
+          explainHTML:`Final score = ${start} + ${gain} − ${lose} = <b>${end}</b>.`,
+          pdfAnswerHint:`Score: <span class="linebox"></span>`,
+          answerText:String(end)
+        };
+      }
+
+      // 7) City temperature + absolute value at end (magnitude)
+      if(type === 7){
+        const start = randInt(-12, 8);
+        const change1 = randInt(2, 10);
+        const change2 = randInt(2, 10);
+        const end = start - change1 + change2;
+        const mag = abs(end);
+
+        return {
+          type:"wp",
+          signature:`wpAbsT_${start}_${change1}_${change2}`,
+          promptHTML:
+            `A city starts at <b>${start}°C</b>. It falls by <b>${change1}°C</b>, then rises by <b>${change2}°C</b>.<div class="rule"></div>
+             (a) What is the final temperature?`,
+          inputHTML: singleInputHTML("Final temperature (°C)",""),
+          getUser:(card)=> parseSingleInt(card),
+          isCorrect:(u)=> Number.isInteger(u) && u === end,
+          hintHTML:`Do step by step: start − fall + rise.`,
+          explainHTML:`Final = ${start} − ${change1} + ${change2} = <b>${end}°C</b>. (Its magnitude is |${end}| = ${mag}.)`,
+          pdfAnswerHint:`Final temperature: <span class="linebox"></span>`,
+          answerText:`${end}°C`
+        };
+      }
+
+      // 8) Number line walk: left then right (or right then left)
+      if(type === 8){
+        const start = randInt(-15, 15);
+        const s1 = randInt(2, 12);
+        const s2 = randInt(2, 12);
+        const rightFirst = Math.random() < 0.5;
+        const end = start + (rightFirst ? s1 : -s1) + (rightFirst ? -s2 : s2); // opposite directions
+        return {
+          type:"wp",
+          signature:`wpWalk_${start}_${rightFirst?1:0}_${s1}_${s2}`,
+          promptHTML:
+            `On a number line, you start at <b>${start}</b>. You move <b>${s1}</b> steps ${rightFirst ? "to the right" : "to the left"}, then you move <b>${s2}</b> steps ${rightFirst ? "to the left" : "to the right"}.<div class="rule"></div>Where do you end?`,
+          inputHTML: singleInputHTML("Final number",""),
+          getUser:(card)=> parseSingleInt(card),
+          isCorrect:(u)=> Number.isInteger(u) && u === end,
+          hintHTML:`Right = +, left = −. Add both moves to the start.`,
+          explainHTML:`Final = ${start} ${rightFirst?"+":"-"} ${s1} ${rightFirst?"-":"+"} ${s2} = <b>${end}</b>.`,
+          pdfAnswerHint:`Final number: <span class="linebox"></span>`,
+          answerText:String(end)
+        };
+      }
+
+      // 9) Distance from 0 after 2 moves (absolute value)
+      const start = randInt(-12, 12);
+      const move1 = randInt(2, 10);
+      const move2 = randInt(2, 10);
+      const dir1Right = Math.random() < 0.5;
+      const dir2Right = Math.random() < 0.5;
+      const end = start + (dir1Right ? move1 : -move1) + (dir2Right ? move2 : -move2);
+      const distance = abs(end);
+
+      return {
+        type:"wp",
+        signature:`wpDist0_${start}_${dir1Right?1:0}_${move1}_${dir2Right?1:0}_${move2}`,
+        promptHTML:
+          `You start at <b>${start}</b> on the number line. You move <b>${move1}</b> steps ${dir1Right ? "right" : "left"}, then <b>${move2}</b> steps ${dir2Right ? "right" : "left"}.<div class="rule"></div>How far are you from 0 at the end?`,
+        inputHTML: singleInputHTML("Distance from 0",""),
+        getUser:(card)=> parseSingleInt(card),
+        isCorrect:(u)=> Number.isInteger(u) && u === distance,
+        hintHTML:`Find the final position, then take absolute value.`,
+        explainHTML:`Final position = ${end}. Distance from 0 = |${end}| = <b>${distance}</b>.`,
+        pdfAnswerHint:`Distance: <span class="linebox"></span>`,
+        answerText:String(distance)
+      };
+    }
+
+    /***********************
+     * Build question set
+     ************************/
+    function shuffle(arr){
+      for(let i=arr.length-1;i>0;i--){
+        const j = randInt(0,i);
+        [arr[i],arr[j]] = [arr[j],arr[i]];
+      }
+      return arr;
+    }
+
+    function pickUnique(factory, used){
+      for(let tries=0; tries<90; tries++){
+        const q = factory();
+        if(!used.has(q.signature)){
+          used.add(q.signature);
+          return q;
+        }
+      }
+      return factory();
+    }
+
+    function buildQuestionSet(count){
+      const used = new Set();
+      const qs = [];
+
+      let nNL=0, nOpp=0, nAbs=0, nAdd=0, nSub=0, nMul=0, nDiv=0, nSq=0, nMix=0, nWP=0;
+
+      // ✅ More 2-step word problems in each set
+      if(count === 12){
+        nNL=2; nOpp=1; nAbs=1; nAdd=2; nSub=2; nMul=1; nDiv=1; nSq=0; nMix=0; nWP=2; // total 12
+      }else if(count === 16){
+        nNL=2; nOpp=1; nAbs=2; nAdd=2; nSub=2; nMul=2; nDiv=1; nSq=1; nMix=0; nWP=3; // total 16
+      }else{ // 20
+        nNL=3; nOpp=2; nAbs=2; nAdd=2; nSub=3; nMul=2; nDiv=1; nSq=0; nMix=0; nWP=5; // total 20
+      }
+
+      for(let i=0;i<nNL;i++) qs.push(pickUnique(Math.random()<0.5 ? makeNumberLineCompare : makeNumberLineMove, used));
+      for(let i=0;i<nOpp;i++) qs.push(pickUnique(makeOpposite, used));
+      for(let i=0;i<nAbs;i++) qs.push(pickUnique(Math.random()<0.5 ? makeAbsValue : makeAbsDistance, used));
+      for(let i=0;i<nAdd;i++) qs.push(pickUnique(makeAdd, used));
+      for(let i=0;i<nSub;i++) qs.push(pickUnique(makeSub, used));
+      for(let i=0;i<nMul;i++) qs.push(pickUnique(makeMul, used));
+      for(let i=0;i<nDiv;i++) qs.push(pickUnique(makeDiv, used));
+      for(let i=0;i<nSq;i++)  qs.push(pickUnique(makeSquare, used));
+      for(let i=0;i<nMix;i++) qs.push(pickUnique(makeMixed, used));
+      for(let i=0;i<nWP;i++)  qs.push(pickUnique(makeWordProblem, used));
+
+      while(qs.length < count){
+        // fill with extra word problems (as requested)
+        qs.push(pickUnique(makeWordProblem, used));
+      }
+
+      return shuffle(qs).slice(0, count);
+    }
+
+    /***********************
+     * PDF helpers (Answer Key appended)
+     ************************/
+    function loadScript(src){
+      return new Promise((resolve, reject)=>{
+        const s = document.createElement("script");
+        s.src = src;
+        s.onload = ()=> resolve();
+        s.onerror = ()=> reject(new Error("Failed to load " + src));
+        document.head.appendChild(s);
+      });
+    }
+
+    let pdfLibReady = false;
+    async function ensurePdfLibs(){
+      if(pdfLibReady) return;
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
+      pdfLibReady = true;
+    }
+
+    function setNameFromIndex(i){
+      return String.fromCharCode(65 + (i % 26));
+    }
+
+    function buildPdfPages(){
+      const perPage = parseInt(document.getElementById("perPageSelect").value, 10);
+      const printArea = document.getElementById("pdfPrintArea");
+      printArea.innerHTML = "";
+
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, {year:"numeric", month:"short", day:"2-digit", hour:"2-digit", minute:"2-digit"});
+
+      const total = state.questions.length;
+      const pagesQ = Math.ceil(total / perPage);
+
+      const ansPerPage = 24;
+      const pagesA = Math.ceil(total / ansPerPage);
+
+      const totalPagesAll = pagesQ + pagesA;
+
+      const safeStudent = escapeHTML(studentName || "");
+      const setName = setNameFromIndex(state.setIndex-1);
+
+      // Question pages
+      for(let p=0; p<pagesQ; p++){
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const startIdx = p * perPage;
+        const endIdx = Math.min(total, startIdx + perPage);
+
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div>
+              <div class="pdf-title">Negative Numbers (Practice)</div>
+              <div class="pdf-sub">Number line • Absolute value • Operations • Mixed problems • 2-step word problems</div>
+            </div>
+            <div class="pdf-meta">
+              Student: <b>${safeStudent || "—"}</b><br/>
+              Set ${setName}<br/>
+              ${dateStr}<br/>
+              Page ${p+1} / ${totalPagesAll}
+            </div>
+          </div>
+          <div class="pdf-grid"></div>
+        `;
+
+        const grid = page.querySelector(".pdf-grid");
+
+        for(let i=startIdx; i<endIdx; i++){
+          const q = state.questions[i];
+          const qBox = document.createElement("div");
+          qBox.className = "pdf-q";
+          qBox.innerHTML = `
+            <div class="pdf-qhead">
+              <div class="pdf-qnum">Q${i+1}</div>
+              <div class="pdf-qtopic">${topicLabel(q.type)}</div>
+            </div>
+            <div class="pdf-qbody">${q.promptHTML}</div>
+            <div class="pdf-answerline">
+              ${q.pdfAnswerHint || `Answer: <span class="linebox"></span>`}
+            </div>
+          `;
+          grid.appendChild(qBox);
+        }
+
+        printArea.appendChild(page);
+      }
+
+      // Answer key pages
+      for(let ap=0; ap<pagesA; ap++){
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const startIdx = ap * ansPerPage;
+        const endIdx = Math.min(total, startIdx + ansPerPage);
+        const pageNumber = pagesQ + ap + 1;
+
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div>
+              <div class="pdf-title">Answer Key</div>
+              <div class="pdf-sub">Answers for the generated set</div>
+            </div>
+            <div class="pdf-meta">
+              Student: <b>${safeStudent || "—"}</b><br/>
+              Set ${setName}<br/>
+              ${dateStr}<br/>
+              Page ${pageNumber} / ${totalPagesAll}
+            </div>
+          </div>
+          <div class="pdf-grid"></div>
+        `;
+
+        const grid = page.querySelector(".pdf-grid");
+
+        for(let i=startIdx; i<endIdx; i++){
+          const q = state.questions[i];
+          const ans = (q && typeof q.answerText === "string") ? q.answerText : "";
+          const qBox = document.createElement("div");
+          qBox.className = "pdf-q";
+          qBox.innerHTML = `
+            <div class="pdf-qhead">
+              <div class="pdf-qnum">Q${i+1}</div>
+              <div class="pdf-qtopic">${topicLabel(q.type)}</div>
+            </div>
+            <div class="pdf-qbody"><b>Answer:</b> ${escapeHTML(ans)}</div>
+          `;
+          grid.appendChild(qBox);
+        }
+
+        printArea.appendChild(page);
+      }
+    }
+
+    function safeFileNamePart(s){
+      return String(s || "")
+        .trim()
+        .replace(/[\\/:*?"<>|]+/g, "-")
+        .replace(/\s+/g, "_")
+        .slice(0, 40);
+    }
+
+    async function exportToPdf(){
+      if(!studentName){
+        alert("Please enter the student name first.");
+        return;
+      }
+      await ensurePdfLibs();
+      buildPdfPages();
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+      const pages = Array.from(document.querySelectorAll("#pdfPrintArea .pdf-page"));
+
+      for(let i=0; i<pages.length; i++){
+        const pageEl = pages[i];
+
+        const canvas = await html2canvas(pageEl, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false
+        });
+
+        const imgData = canvas.toDataURL("image/png", 1.0);
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight, undefined, "FAST");
+        if(i < pages.length - 1) pdf.addPage();
+      }
+
+      const setName = setNameFromIndex(state.setIndex-1);
+      const fileStudent = safeFileNamePart(studentName);
+      pdf.save(`DYAA_Negative_Numbers_${fileStudent}_Set_${setName}.pdf`);
+    }
+
+    /***********************
+     * Render + checking
+     ************************/
+    const tabs = document.querySelectorAll(".tab-btn");
+    const learnSection = document.getElementById("learnSection");
+    const practiceSection = document.getElementById("practiceSection");
+    const practiceControls = document.getElementById("practiceControls");
+    const questionsWrap = document.getElementById("questionsWrap");
+
+    const countSelect = document.getElementById("countSelect");
+    const scoreValue = document.getElementById("scoreValue");
+    const progressLabel = document.getElementById("progressLabel");
+    const setLabel = document.getElementById("setLabel");
+
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const cancelModalBtn = document.getElementById("cancelModalBtn");
+    const confirmModalBtn = document.getElementById("confirmModalBtn");
+
+    const nameBackdrop = document.getElementById("nameBackdrop");
+    const nameInput = document.getElementById("nameInput");
+    const startWithNameBtn = document.getElementById("startWithNameBtn");
+    const cancelNameBtn = document.getElementById("cancelNameBtn");
+
+    const newSetBtn = document.getElementById("newSetBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const showAllBtn = document.getElementById("showAllBtn");
+    const exportPdfBtn = document.getElementById("exportPdfBtn");
+
+    let state = {
+      setIndex: 0,
+      questions: [],
+      checked: new Set(),
+      results: new Map(),
+    };
+
+    function renderQuestions(){
+      questionsWrap.innerHTML = "";
+      state.questions.forEach((q, idx)=>{
+        const card = document.createElement("div");
+        card.className = "q-card";
+        card.dataset.qindex = String(idx);
+
+        card.innerHTML = `
+          <div class="q-head">
+            <div class="q-num">Q${idx+1}</div>
+            <div class="q-topic">${topicLabel(q.type)}</div>
+          </div>
+          <div class="q-body">${q.promptHTML}</div>
+          <div class="q-input">${q.inputHTML}</div>
+          <div class="q-actions">
+            <button class="btn primary" data-action="check">Check</button>
+            <button class="btn secondary" data-action="hint">Hint</button>
+            <button class="btn secondary" data-action="reveal">Reveal</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+        `;
+        questionsWrap.appendChild(card);
+      });
+    }
+
+    function updateProgress(){
+      progressLabel.textContent = `${state.checked.size} checked`;
+    }
+
+    function showFeedback(card, ok, title, html){
+      const fb = card.querySelector(".feedback");
+      fb.classList.add("show");
+      fb.classList.toggle("ok", !!ok);
+      fb.classList.toggle("bad", !ok);
+      fb.innerHTML = `
+        <div class="title" style="color:${ok ? "var(--ok)" : "var(--bad)"}">${title}</div>
+        <div>${html}</div>
+      `;
+    }
+
+    function checkOne(card){
+      const idx = parseInt(card.dataset.qindex, 10);
+      const q = state.questions[idx];
+      const user = q.getUser(card);
+      const ok = q.isCorrect(user);
+
+      state.checked.add(idx);
+      state.results.set(idx, ok);
+
+      showFeedback(
+        card,
+        ok,
+        ok ? "✅ Correct" : "❌ Not quite",
+        ok
+          ? `Nice. ${q.explainHTML}`
+          : `Hint: ${q.hintHTML}<div class="rule"></div>${q.explainHTML}`
+      );
+
+      updateProgress();
+      return ok;
+    }
+
+    function resetAnswers(){
+      state.checked = new Set();
+      state.results = new Map();
+      scoreValue.textContent = "—";
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const fb = card.querySelector(".feedback");
+        fb.className = "feedback";
+        fb.innerHTML = "";
+        card.querySelectorAll("input").forEach(i => i.value = "");
+      });
+      updateProgress();
+    }
+
+    function generateNewSet(){
+      const count = parseInt(countSelect.value, 10);
+      state.setIndex++;
+      state.questions = buildQuestionSet(count);
+      state.checked = new Set();
+      state.results = new Map();
+      setLabel.textContent = `Set: ${setNameFromIndex(state.setIndex-1)}`;
+      scoreValue.textContent = "—";
+      renderQuestions();
+      updateProgress();
+      practiceSection.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    function submitAll(){
+      let correct = 0;
+      state.questions.forEach((_, idx)=>{
+        const card = document.querySelector(`.q-card[data-qindex="${idx}"]`);
+        const ok = checkOne(card);
+        if(ok) correct++;
+      });
+      scoreValue.textContent = `${correct} / ${state.questions.length}`;
+      scoreValue.style.fontWeight = "900";
+    }
+
+    function showAllExplanations(){
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const idx = parseInt(card.dataset.qindex,10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "📌 Explanation", q.explainHTML);
+      });
+    }
+
+    /***********************
+     * Tabs + Name gating
+     ************************/
+    function openNameModal(){
+      nameBackdrop.classList.add("show");
+      nameBackdrop.setAttribute("aria-hidden","false");
+      nameInput.value = "";
+      setTimeout(()=> nameInput.focus(), 50);
+    }
+    function closeNameModal(){
+      nameBackdrop.classList.remove("show");
+      nameBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    function setTab(tab){
+      tabs.forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      const isPractice = tab === "practice";
+      learnSection.classList.toggle("active", !isPractice);
+      practiceSection.classList.toggle("active", isPractice);
+      practiceControls.style.display = isPractice ? "flex" : "none";
+
+      if(isPractice){
+        if(!studentName){
+          openNameModal();
+          setPracticeButtonsEnabled(false);
+          return;
+        }
+        if(state.questions.length === 0){
+          generateNewSet();
+        }
+      }
+    }
+
+    tabs.forEach(btn=>{
+      btn.addEventListener("click", ()=> setTab(btn.dataset.tab));
+    });
+
+    // Name modal actions
+    startWithNameBtn.addEventListener("click", ()=>{
+      const v = sanitizeName(nameInput.value);
+      if(!v){
+        alert("Please enter a student name.");
+        nameInput.focus();
+        return;
+      }
+      setStudentName(v);
+      closeNameModal();
+      if(practiceSection.classList.contains("active") && state.questions.length === 0){
+        generateNewSet();
+      }
+    });
+
+    nameInput.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter"){
+        e.preventDefault();
+        startWithNameBtn.click();
+      }
+      if(e.key === "Escape"){
+        e.preventDefault();
+        cancelNameBtn.click();
+      }
+    });
+
+    cancelNameBtn.addEventListener("click", ()=>{
+      closeNameModal();
+      setTab("learn");
+    });
+
+    /***********************
+     * New-set confirm modal
+     ************************/
+    function openModal(){
+      modalBackdrop.classList.add("show");
+      modalBackdrop.setAttribute("aria-hidden","false");
+    }
+    function closeModal(){
+      modalBackdrop.classList.remove("show");
+      modalBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    newSetBtn.addEventListener("click", openModal);
+    cancelModalBtn.addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", (e)=>{
+      if(e.target === modalBackdrop) closeModal();
+    });
+    confirmModalBtn.addEventListener("click", ()=>{
+      closeModal();
+      generateNewSet();
+    });
+
+    questionsWrap.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button");
+      if(!btn) return;
+      const action = btn.dataset.action;
+      const card = e.target.closest(".q-card");
+      if(!card) return;
+
+      if(action === "check"){
+        checkOne(card);
+      }else if(action === "hint"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "💡 Hint", q.hintHTML);
+      }else if(action === "reveal"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "🧠 Solution", q.explainHTML);
+      }
+    });
+
+    resetBtn.addEventListener("click", resetAnswers);
+    submitBtn.addEventListener("click", submitAll);
+    showAllBtn.addEventListener("click", showAllExplanations);
+
+    /***********************
+     * PDF
+     ************************/
+    exportPdfBtn.addEventListener("click", async ()=>{
+      if(!practiceSection.classList.contains("active")) setTab("practice");
+      if(!studentName){
+        openNameModal();
+        return;
+      }
+      if(state.questions.length === 0) generateNewSet();
+
+      try{
+        exportPdfBtn.textContent = "Exporting...";
+        exportPdfBtn.disabled = true;
+        await exportToPdf();
+      }catch(err){
+        alert(
+          "Export failed. If you opened this file locally, make sure you have internet access for the PDF libraries (CDN).\n" +
+          "GitHub Pages is recommended.\n\n" + err.message
+        );
+      }finally{
+        exportPdfBtn.textContent = "Export to PDF";
+        exportPdfBtn.disabled = false;
+      }
+    });
+
+    /***********************
+     * Init
+     ************************/
+    (function init(){
+      setPracticeButtonsEnabled(false);
+      const urlName = getNameFromUrl();
+      if(urlName){
+        setStudentName(urlName);
+      }else{
+        setStudentName("");
+      }
+    })();
+  </script>
+</body>
+</html>
