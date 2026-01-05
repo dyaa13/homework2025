@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solving Equations — Rules, Two-Step, Both Sides, Fractions/Decimals (DYAA)</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#333;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI',Tahoma,sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    /* subtle DYAA watermark */
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      z-index:0;
+      user-select:none;
+      white-space:nowrap;
+    }
+
+    .quiz-container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:40px auto;
+      background:var(--card);
+      padding:28px;
+      border-radius:14px;
+      box-shadow:0 6px 16px rgba(0,0,0,0.10);
+      overflow:visible;
+    }
+
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:12px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:8px;position:relative;flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px;height:10px;
+      background:var(--orange);
+      top:-6px;left:18px;
+      border-radius:7px;
+    }
+    .logo-text{min-width:220px;}
+    .logo-title{
+      font-size:20px;
+      font-weight:800;
+      color:var(--blue);
+      line-height:1.1;
+      margin:0;
+    }
+    .logo-sub{
+      font-size:13px;
+      color:var(--orange);
+      font-weight:800;
+      margin-top:2px;
+      display:block;
+    }
+
+    .student-pill{
+      margin-left:auto;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      color:#1f2d5c;
+      font-weight:900;
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .student-pill .label{color:var(--blue);}
+    .student-pill .name{color:#1f2d5c;}
+
+    .top-bar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 12px;
+      background:#f7f9ff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      margin:14px 0 16px;
+      flex-wrap:wrap;
+    }
+
+    .status{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width:240px;
+    }
+    .status .big{
+      font-weight:800;
+      color:var(--blue);
+      font-size:14px;
+    }
+    .status .small{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .btns{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+
+    button{
+      border:0;
+      border-radius:10px;
+      padding:10px 12px;
+      font-weight:800;
+      cursor:pointer;
+      background:var(--blue);
+      color:#fff;
+      font-size:13px;
+      white-space:nowrap;
+    }
+    button.secondary{
+      background:#e8eefc;
+      color:var(--blue);
+      border:1px solid #cfe0ff;
+    }
+    button.orange{background:var(--orange);color:#111;}
+    button:active{transform:translateY(1px);}
+
+    .pdf-tools{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 8px;
+      border:1px solid #d8e6ff;
+      background:#fff;
+      border-radius:10px;
+    }
+    .pdf-tools label{
+      font-size:12px;
+      font-weight:900;
+      color:var(--blue);
+    }
+    #pdfPerPage{
+      width:72px;
+      padding:8px 10px;
+      border-radius:10px;
+      font-weight:800;
+      border:1px solid #cfd6ea;
+      background:#fff;
+      outline:none;
+    }
+
+    .nav{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:8px 0 18px;
+    }
+    .chip{
+      text-decoration:none;
+      font-size:12px;
+      font-weight:800;
+      color:var(--blue);
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      padding:7px 10px;
+      border-radius:999px;
+    }
+
+    .lesson{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      margin:14px 0;
+      background:#fff;
+    }
+
+    .lesson h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+
+    .lesson-grid{
+      display:grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap:14px;
+      align-items:start;
+    }
+    @media (max-width: 860px){
+      .lesson-grid{grid-template-columns:1fr;}
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      background:#fbfcff;
+      overflow:visible;
+    }
+    .panel h3{
+      margin:0 0 8px;
+      font-size:13px;
+      color:#1f2d5c;
+      letter-spacing:0.2px;
+      text-transform:uppercase;
+    }
+
+    .p{
+      margin:6px 0;
+      line-height:1.45;
+      color:#333;
+      font-size:14px;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+
+    .bullets{
+      margin:8px 0 0 18px;
+      padding:0;
+      color:#333;
+      font-size:14px;
+      line-height:1.5;
+    }
+    .bullets li{margin:4px 0;}
+
+    .math{
+      font-family: "Cambria Math","Times New Roman",serif;
+      font-size: 16px;
+    }
+
+    .ex{
+      border-left:4px solid #d8e6ff;
+      padding:8px 10px;
+      background:#fff;
+      border-radius:10px;
+      margin:8px 0;
+    }
+
+    /* Fractions & mixed numbers */
+    .frac{
+      display:inline-block;
+      vertical-align:middle;
+      text-align:center;
+      font-family:"Cambria Math","Times New Roman",serif;
+      line-height:1.05;
+      margin:0 2px;
+    }
+    .frac .top{
+      display:block;
+      padding:0 4px 2px;
+      border-bottom:1.6px solid #111;
+      font-size:0.98em;
+    }
+    .frac .bottom{
+      display:block;
+      padding:2px 4px 0;
+      font-size:0.98em;
+    }
+    .mixed{
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      vertical-align:middle;
+      font-family:"Cambria Math","Times New Roman",serif;
+      margin:0 2px;
+    }
+    .mixed .whole{font-size:1.02em;}
+
+    .practice-note{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:6px;
+      line-height:1.4;
+    }
+
+    .q{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:12px;
+      padding:10px;
+      margin:10px 0;
+      overflow:visible;
+    }
+    .q-top{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+      overflow:visible;
+    }
+    .q-num{
+      width:30px;height:30px;border-radius:8px;
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      color:var(--blue);
+      font-weight:900;
+      display:flex;align-items:center;justify-content:center;
+      flex:0 0 auto;
+    }
+    .q-text{
+      flex:1 1 260px;
+      min-width:220px;
+      line-height:1.45;
+      font-size:14px;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+
+    .q-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    input[type="text"], input[type="number"], select{
+      width:min(420px, 100%);
+      padding:10px 10px;
+      border-radius:10px;
+      border:1px solid #cfd6ea;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+
+    .check-btn{
+      padding:9px 12px;
+      border-radius:10px;
+      background:var(--blue);
+      color:#fff;
+      font-weight:900;
+      border:0;
+    }
+    .show-btn{
+      padding:9px 12px;
+      border-radius:10px;
+      background:#eef4ff;
+      color:var(--blue);
+      font-weight:900;
+      border:1px solid #d8e6ff;
+    }
+
+    .fb{
+      font-size:13px;
+      line-height:1.35;
+      color:var(--muted);
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+    .fb.ok{color:var(--ok);font-weight:800;}
+    .fb.bad{color:var(--bad);font-weight:800;}
+
+    .result-box{
+      display:none;
+      margin-top:16px;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#f7fff9;
+    }
+    .result-box.show{display:block;}
+    .result-title{
+      font-weight:900;
+      color:var(--ok);
+      margin:0 0 6px;
+    }
+    .result-text{margin:0;color:#2e3b2f;line-height:1.4;}
+
+    /* Modal */
+    .modal-backdrop{
+      display:none;
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      z-index:999;
+      padding:18px;
+    }
+    .modal{
+      max-width:520px;
+      margin:12vh auto 0;
+      background:#fff;
+      border-radius:14px;
+      padding:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+    }
+    .modal h3{
+      margin:0 0 6px;
+      color:var(--blue);
+      font-size:16px;
+    }
+    .modal p{margin:0 0 12px;color:#444;line-height:1.45;}
+    .modal .row{
+      display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;
+    }
+
+    /* Name modal specifics */
+    .modal .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      margin:10px 0 6px;
+    }
+    .modal .hint{
+      font-size:12px;
+      color:var(--muted);
+      margin:6px 0 0;
+      line-height:1.35;
+    }
+
+    /***********************
+     * Export Questions: Print-only area
+     ***********************/
+    .print-area{display:none;}
+
+    body.printing-questions:before{display:none;}
+    body.printing-questions .quiz-container{display:none !important;}
+    body.printing-questions .print-area{display:block !important;}
+
+    .print-page{
+      max-width:900px;
+      margin:0 auto;
+      background:#fff;
+      padding:18px 20px;
+      border-radius:0;
+    }
+
+    .print-header{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      padding-bottom:10px;
+      margin-bottom:12px;
+      border-bottom:2px solid #e0e0e0;
+    }
+    .print-header .icon{
+      width:38px;height:38px;background:var(--blue);
+      border-radius:8px;position:relative;flex:0 0 auto;
+      margin-top:2px;
+    }
+    .print-header .icon:before{
+      content:"";
+      position:absolute;width:20px;height:9px;background:var(--orange);
+      top:-6px;left:16px;border-radius:7px;
+    }
+    .print-header .t1{margin:0;font-size:18px;font-weight:900;color:var(--blue);line-height:1.1;}
+    .print-header .t2{margin:2px 0 0;font-size:12px;font-weight:900;color:var(--orange);}
+    .print-header .t3{margin:6px 0 0;font-size:12px;font-weight:800;color:#1f2d5c;}
+    .print-header .t3 span{font-weight:900;}
+
+    .pq{
+      border:1px solid #dfe7fb;
+      border-radius:12px;
+      padding:10px 12px;
+      margin:10px 0;
+    }
+    .pq .row1{
+      display:flex; gap:10px; align-items:flex-start;
+    }
+    .pq .n{
+      width:28px;height:28px;border-radius:8px;
+      background:#eef4ff;border:1px solid #d8e6ff;
+      color:var(--blue);font-weight:900;
+      display:flex;align-items:center;justify-content:center;
+      flex:0 0 auto;
+    }
+    .pq .txt{
+      flex:1 1 auto;
+      font-size:14px;
+      line-height:1.45;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+    .answer-lines{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .line{
+      border-bottom:1px solid #999;
+      height:16px;
+    }
+    .mini-label{
+      font-size:12px;
+      font-weight:800;
+      color:#1f2d5c;
+      margin-top:6px;
+    }
+
+    /* --- Answer Key MUST be ONE page --- */
+    .answer-key-page .ans-note{
+      margin:4px 0 8px;
+      font-size:11px;
+      color:#333;
+      line-height:1.25;
+    }
+    .answer-key-page .ans-grid{
+      display:grid;
+      gap:6px 10px;
+    }
+    .answer-key-page .ans-item{
+      border:1px solid #dfe7fb;
+      border-radius:10px;
+      padding:5px 7px;
+      font-size:11px;
+      line-height:1.2;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .answer-key-page .ans-item b{color:var(--blue);}
+
+    @media print{
+      body{background:#fff;padding:0;}
+      .modal-backdrop{display:none !important;}
+      .print-page{page-break-after:always;}
+      .print-page:last-child{page-break-after:auto;}
+      button, .top-bar, .nav{display:none !important;}
+    }
+  </style>
+</head>
+
+<body>
+  <!-- PRINT AREA (only used for Export Questions PDF) -->
+  <div class="print-area" id="printArea" aria-hidden="true"></div>
+
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="logo-text">
+        <h1 class="logo-title">DYAA Education</h1>
+        <span class="logo-sub">Solving Equations (Next Content)</span>
+      </div>
+
+      <div class="student-pill" id="studentPill" aria-live="polite">
+        <span class="label">Student:</span>
+        <span class="name" id="studentNameText">—</span>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="status">
+        <div class="big">Practice + Instant Checking</div>
+        <div class="small">
+          Enter answers (fractions like <b>3/4</b> or decimals like <b>0.75</b> are both accepted).
+          Click <b>Check</b> per question or <b>Submit & View Results</b> for overall.
+          <b>Generate New Set</b> changes the numbers.
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="orange" id="genBtn">Generate New Set</button>
+        <button id="submitBtn">Submit & View Results</button>
+        <button class="secondary" id="resetBtn">Reset</button>
+
+        <div class="pdf-tools">
+          <label for="pdfPerPage">PDF per page</label>
+          <select id="pdfPerPage" aria-label="PDF per page">
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+        </div>
+
+        <button class="orange" id="exportQBtn">Export Questions PDF</button>
+      </div>
+    </div>
+
+    <div class="nav" aria-label="Lesson navigation">
+      <a class="chip" href="#sec1">1. One-Step Rules</a>
+      <a class="chip" href="#sec2">2. Two-Step Equations</a>
+      <a class="chip" href="#sec3">3. Unknowns Both Sides</a>
+      <a class="chip" href="#sec4">4. Fractions & Decimals</a>
+    </div>
+
+    <!-- Section 1 -->
+    <section class="lesson" id="sec1">
+      <h2>1. One-Step Equations — 4 Rules</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Rules</h3>
+
+          <div class="ex">
+            <div class="p"><b>Rule 1 (Add → Subtract)</b></div>
+            <div class="p math">If x + a = b, then x = b − a</div>
+            <div class="p">The <b>+a</b> moves across the equals sign and becomes <b>−a</b>.</div>
+          </div>
+
+          <div class="ex">
+            <div class="p"><b>Rule 2 (Subtract → Add)</b></div>
+            <div class="p math">If x − a = b, then x = b + a</div>
+            <div class="p">The <b>−a</b> moves across and becomes <b>+a</b>.</div>
+          </div>
+
+          <div class="ex">
+            <div class="p"><b>Rule 3 (Multiply → Divide)</b></div>
+            <div class="p math">If a·x = b, then x = b ÷ a</div>
+            <div class="p">The <b>a</b> moves across and <b>divides</b> the other side (sign does not flip).</div>
+          </div>
+
+          <div class="ex">
+            <div class="p"><b>Rule 4 (Divide → Multiply)</b></div>
+            <div class="p math">If x ÷ a = b, then x = b·a</div>
+            <div class="p">The <b>a</b> moves across and <b>multiplies</b> the other side.</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Practice Questions</h3>
+          <div id="practice-sec1"></div>
+          <div class="practice-note">
+            Accepted inputs: <b>6</b>, <b>-3</b>, <b>3/4</b>, <b>1 1/2</b>, <b>0.75</b>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2 -->
+    <section class="lesson" id="sec2">
+      <h2>2. Two-Step Equations</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Explanation</h3>
+          <p class="p">
+            Two-step equations usually need <b>two inverse operations</b>.
+            Common order:
+          </p>
+          <ul class="bullets">
+            <li>Undo <b>+ / −</b> first</li>
+            <li>Then undo <b>× / ÷</b></li>
+          </ul>
+          <div class="ex">
+            <div class="p"><b>Example</b></div>
+            <div class="p math">3x + 2 = 23</div>
+            <div class="p">Subtract 2 → 3x = 21, then divide by 3 → x = 7</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Practice Questions</h3>
+          <div id="practice-sec2"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3 -->
+    <section class="lesson" id="sec3">
+      <h2>3. Equations with Unknowns on Both Sides</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Explanation</h3>
+          <p class="p">
+            When the variable appears on both sides, move all <b>variable terms</b> to one side,
+            and move all <b>number terms</b> to the other side.
+          </p>
+          <div class="ex">
+            <div class="p"><b>Example</b></div>
+            <div class="p math">7x − 3 = 5x + 11</div>
+            <div class="p">Subtract 5x → 2x − 3 = 11; add 3 → 2x = 14; divide → x = 7</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Practice Questions</h3>
+          <div id="practice-sec3"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4 -->
+    <section class="lesson" id="sec4">
+      <h2>4. Fraction & Decimal Equations</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Strategies</h3>
+          <ul class="bullets">
+            <li><b>Fractions:</b> multiply both sides by the LCM (to clear denominators), or use inverse operations.</li>
+            <li><b>Decimals:</b> multiply both sides by 10, 100, ... to remove decimals, then solve as normal.</li>
+          </ul>
+          <div class="ex">
+            <div class="p"><b>Example (fraction)</b></div>
+            <div class="p math">x − <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> =
+              <span class="frac"><span class="top">3</span><span class="bottom">4</span></span>
+              → x = <span class="frac"><span class="top">3</span><span class="bottom">4</span></span> +
+              <span class="frac"><span class="top">1</span><span class="bottom">2</span></span>
+            </div>
+          </div>
+          <div class="ex">
+            <div class="p"><b>Example (decimal)</b></div>
+            <div class="p math">0.4x + 1.2 = 3.6 → 0.4x = 2.4 → x = 6</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Practice Questions</h3>
+          <div id="practice-sec4"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="result-box" id="resultBox" aria-live="polite">
+      <p class="result-title" id="resultTitle"></p>
+      <p class="result-text" id="resultText"></p>
+    </div>
+  </div>
+
+  <!-- Name Required Modal (only if URL has no ?name=...) -->
+  <div class="modal-backdrop" id="nameBackdrop" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+    <div class="modal">
+      <h3 id="nameTitle">Enter student name</h3>
+      <p>Please enter the student name before starting.</p>
+      <div class="field">
+        <input id="nameInput" type="text" placeholder="e.g., Tiger" autocomplete="name" />
+        <div class="hint">
+          Tip: You can also open this page like <b>.../solving_equations.html?name=Tiger</b> and it will fill automatically.
+        </div>
+      </div>
+      <div class="row">
+        <button class="orange" id="nameOk">Start</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Modal (Generate New Set) -->
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <h3 id="modalTitle">Generate a new set?</h3>
+      <p>This will change the numbers in the practice questions and clear all your current answers.</p>
+      <div class="row">
+        <button class="secondary" id="modalCancel">Cancel</button>
+        <button class="orange" id="modalOk">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Student name (URL ?name=Tiger OR modal input)
+     ***********************/
+    let STUDENT_NAME = "";
+
+    function escapeHtml(s){
+      return (s ?? "").toString()
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    function getStudentNameFromUrl(){
+      const p = new URLSearchParams(window.location.search);
+      const raw = p.get("name");
+      if(!raw) return "";
+      return raw.toString().trim();
+    }
+
+    function setStudentName(name){
+      STUDENT_NAME = (name ?? "").toString().trim();
+      document.getElementById("studentNameText").textContent = STUDENT_NAME || "—";
+    }
+
+    const nameBackdrop = document.getElementById("nameBackdrop");
+    const nameInput = document.getElementById("nameInput");
+    const nameOkBtn = document.getElementById("nameOk");
+
+    function openNameModal(){
+      nameBackdrop.style.display = "block";
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+      setTimeout(() => { try{ nameInput.focus(); }catch(e){} }, 50);
+    }
+    function closeNameModal(){
+      nameBackdrop.style.display = "none";
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    }
+
+    function ensureStudentName(){
+      const urlName = getStudentNameFromUrl();
+      if(urlName){
+        setStudentName(urlName);
+        return;
+      }
+      openNameModal();
+    }
+
+    nameOkBtn.addEventListener("click", () => {
+      const v = (nameInput.value ?? "").toString().trim();
+      if(!v){
+        nameInput.focus();
+        return;
+      }
+      setStudentName(v);
+      closeNameModal();
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+
+    nameBackdrop.addEventListener("click", (e) => {
+      // do not allow closing by clicking backdrop (must enter name)
+      // intentionally empty
+    });
+
+    /***********************
+     * Helpers
+     ***********************/
+    function randInt(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function choice(arr){
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+    function gcd(a,b){
+      a = Math.abs(a); b = Math.abs(b);
+      while(b){ const t=a%b; a=b; b=t; }
+      return a || 1;
+    }
+
+    // rational as reduced {n,d} with d>0
+    function rat(n,d){
+      if(d === 0) throw new Error("Zero denominator");
+      if(d < 0){ n = -n; d = -d; }
+      const g = gcd(n,d);
+      return {n: n/g, d: d/g};
+    }
+    function ratAdd(r1,r2){ return rat(r1.n*r2.d + r2.n*r1.d, r1.d*r2.d); }
+    function ratSub(r1,r2){ return rat(r1.n*r2.d - r2.n*r1.d, r1.d*r2.d); }
+    function ratToFloat(r){ return r.n / r.d; }
+
+    // Parse: "3/4", "-2/5", "1 1/2", "-1 1/2", "0.75", "6"
+    function parseRationalInput(raw){
+      const s0 = (raw ?? "").toString().trim();
+      if(!s0) return { ok:false };
+
+      // normalize unicode minus
+      const s = s0.replace(/[−–]/g,"-");
+
+      // mixed number
+      const m = s.match(/^([+-]?\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+      if(m){
+        const whole = parseInt(m[1],10);
+        const num = parseInt(m[2],10);
+        const den = parseInt(m[3],10);
+        if(den === 0) return { ok:false };
+        const sign = whole < 0 ? -1 : 1;
+        const absWhole = Math.abs(whole);
+        const r = rat(sign*(absWhole*den + num), den);
+        return { ok:true, value: ratToFloat(r) };
+      }
+
+      // fraction
+      const f = s.match(/^([+-]?\d+)\s*\/\s*([+-]?\d+)$/);
+      if(f){
+        const num = parseInt(f[1],10);
+        const den = parseInt(f[2],10);
+        if(den === 0) return { ok:false };
+        const r = rat(num, den);
+        return { ok:true, value: ratToFloat(r) };
+      }
+
+      // decimal/integer
+      const v = Number(s);
+      if(!Number.isFinite(v)) return { ok:false };
+      return { ok:true, value: v };
+    }
+
+    function almostEqual(a,b,tol=1e-9){ return Math.abs(a-b) <= tol; }
+
+    function setFeedback(id, ok, msg){
+      const el = document.getElementById("fb-" + id);
+      if(!el) return;
+      el.className = "fb " + (ok ? "ok" : "bad");
+      el.textContent = msg;
+    }
+
+    function clearFeedback(id){
+      const el = document.getElementById("fb-" + id);
+      if(!el) return;
+      el.className = "fb";
+      el.textContent = "";
+    }
+
+    function readVal(id){
+      const el = document.getElementById("in-" + id);
+      if(!el) return "";
+      return el.value ?? "";
+    }
+
+    /***********************
+     * Fractions HTML helpers
+     ***********************/
+    function fracHTML(n,d){
+      const sign = (n < 0) ? "-" : "";
+      const nn = Math.abs(n);
+      return `${sign}<span class="frac"><span class="top">${nn}</span><span class="bottom">${d}</span></span>`;
+    }
+    function mixedHTML(whole, n, d){
+      const sign = (whole < 0) ? "-" : "";
+      const w = Math.abs(whole);
+      return `${sign}<span class="mixed"><span class="whole">${w}</span>${fracHTML(n,d).replace(/^-/,"")}</span>`;
+    }
+
+    function fmtSigned(k){
+      return (k < 0) ? `− ${Math.abs(k)}` : `+ ${k}`;
+    }
+
+    /***********************
+     * Current random set
+     ***********************/
+    let SET = {};
+
+    function buildNewSet(){
+      // ----- Section 1 (4 rules) -----
+      SET.r1_x = randInt(-12, 15);
+      SET.r1_a = randInt(3, 12);
+      SET.r1_b = SET.r1_x + SET.r1_a;
+
+      SET.r2_x = randInt(-12, 15);
+      SET.r2_a = randInt(3, 12);
+      SET.r2_b = SET.r2_x - SET.r2_a;
+
+      SET.r3_a = randInt(2, 12);
+      SET.r3_x = choice([-12,-10,-9,-8,-6,-5,-4,-3,-2,-1,1,2,3,4,5,6,8,9,10,12]);
+      SET.r3_b = SET.r3_a * SET.r3_x;
+
+      SET.r4_a = randInt(2, 12);
+      SET.r4_b = randInt(-12, 12);
+      if(SET.r4_b === 0) SET.r4_b = 6;
+      SET.r4_x = SET.r4_a * SET.r4_b;
+
+      // ----- Section 2 (two-step) -----
+      SET.t1_a = randInt(2, 9);
+      SET.t1_x = randInt(-10, 12);
+      SET.t1_b = randInt(-12, 12);
+      if(SET.t1_b === 0) SET.t1_b = 4;
+      SET.t1_c = SET.t1_a * SET.t1_x + SET.t1_b;
+
+      SET.t2_a = randInt(2, 9);
+      SET.t2_x = randInt(-8, 12);
+      SET.t2_b = randInt(2, 14);
+      SET.t2_c = SET.t2_a * SET.t2_x - SET.t2_b;
+
+      SET.t3_q = randInt(2, 9);
+      SET.t3_r = randInt(-10, 10);
+      if(SET.t3_r === 0) SET.t3_r = 4;
+      SET.t3_p = randInt(-10, 10);
+      SET.t3_x = SET.t3_q * SET.t3_r + SET.t3_p;
+
+      // ----- Section 3 (both sides) -----
+      SET.bs_x = randInt(-8, 12);
+      SET.bs_a = randInt(2, 9);
+      SET.bs_c = randInt(2, 9);
+      while(SET.bs_c === SET.bs_a) SET.bs_c = randInt(2, 9);
+
+      SET.bs_b = randInt(-12, 12);
+      SET.bs_d = (SET.bs_a - SET.bs_c) * SET.bs_x + SET.bs_b;
+
+      SET.bs2_x = randInt(-8, 12);
+      SET.bs2_a = randInt(2, 9);
+      SET.bs2_c = randInt(2, 9);
+      while(SET.bs2_c === SET.bs2_a) SET.bs2_c = randInt(2, 9);
+      SET.bs2_b = randInt(-12, 12);
+      SET.bs2_d = (SET.bs2_a - SET.bs2_c) * SET.bs2_x + SET.bs2_b;
+
+      // ----- Section 4 (fractions & decimals) -----
+      // fraction equation: x - p/q = r/s  => x = r/s + p/q
+      const den1 = choice([2,3,4,5,6,8,10]);
+      const den2 = choice([2,3,4,5,6,8,10]);
+      const p = randInt(1, den1-1);
+      const r = randInt(1, den2-1);
+      SET.f1_sub = rat(p, den1);
+      SET.f1_rhs = rat(choice([-1,1])*r, den2);
+      SET.f1_x = ratAdd(SET.f1_rhs, SET.f1_sub);
+
+      // fraction equation with mixed numbers: x + (a/b) = (w + c/d)
+      const den3 = choice([2,4,5,8,10]);
+      const den4 = choice([2,4,5,8,10]);
+      const a = randInt(1, den3-1);
+      const c = randInt(1, den4-1);
+      const w = randInt(1, 6);
+      SET.f2_add = rat(a, den3);
+      SET.f2_total = rat(w*den4 + c, den4);
+      SET.f2_x = ratSub(SET.f2_total, SET.f2_add);
+
+      // decimal equation: (m/10)x + b = c (nice)
+      SET.d1_m = choice([2,3,4,5,6,8]); // 0.2..0.8
+      SET.d1_x = randInt(2, 12);
+      SET.d1_b = choice([0.6,1.2,1.8,2.4,3.0]);
+      SET.d1_c = (SET.d1_m/10)*SET.d1_x + SET.d1_b;
+
+      // clear denominators type: x/den = k
+      SET.f3_den = randInt(2, 12);
+      SET.f3_k = randInt(-12, 12);
+      if(SET.f3_k === 0) SET.f3_k = 7;
+      SET.f3_x = SET.f3_den * SET.f3_k;
+    }
+
+    /***********************
+     * Question definitions
+     ***********************/
+    function qNum(id, promptHtmlFn, expectedValueFn, placeholder="Type your answer"){
+      return { id, type:"num", promptHtmlFn, expectedValueFn, placeholder };
+    }
+
+    const PRACTICE = {
+      sec1: [
+        qNum("s1q1", () => `Rule 1: Solve <span class="math">x + ${SET.r1_a} = ${SET.r1_b}</span>. Find <b>x</b>.`, () => SET.r1_x, "x = ?"),
+        qNum("s1q2", () => `Rule 2: Solve <span class="math">x − ${SET.r2_a} = ${SET.r2_b}</span>. Find <b>x</b>.`, () => SET.r2_x, "x = ?"),
+        qNum("s1q3", () => `Rule 3: Solve <span class="math">${SET.r3_a}x = ${SET.r3_b}</span>. Find <b>x</b>.`, () => SET.r3_x, "x = ?"),
+        qNum("s1q4", () => `Rule 4: Solve <span class="math">x ÷ ${SET.r4_a} = ${SET.r4_b}</span>. Find <b>x</b>.`, () => SET.r4_x, "x = ?")
+      ],
+      sec2: [
+        qNum(
+          "s2q1",
+          () => {
+            const sign = (SET.t1_b >= 0) ? "+" : "−";
+            const k = Math.abs(SET.t1_b);
+            return `Solve <span class="math">${SET.t1_a}x ${sign} ${k} = ${SET.t1_c}</span>. Find <b>x</b>.`;
+          },
+          () => SET.t1_x,
+          "x = ?"
+        ),
+        qNum("s2q2", () => `Solve <span class="math">${SET.t2_a}x − ${SET.t2_b} = ${SET.t2_c}</span>. Find <b>x</b>.`, () => SET.t2_x, "x = ?"),
+        qNum("s2q3", () => `Solve <span class="math">(x − ${SET.t3_p}) ÷ ${SET.t3_q} = ${SET.t3_r}</span>. Find <b>x</b>.`, () => SET.t3_x, "x = ?")
+      ],
+      sec3: [
+        qNum(
+          "s3q1",
+          () => {
+            const left = `${SET.bs_a}x ${fmtSigned(SET.bs_b)}`;
+            const right = `${SET.bs_c}x ${fmtSigned(SET.bs_d)}`;
+            return `Solve <span class="math">${left} = ${right}</span>. Find <b>x</b>.`;
+          },
+          () => SET.bs_x,
+          "x = ?"
+        ),
+        qNum(
+          "s3q2",
+          () => {
+            const left = `${SET.bs2_a}x ${fmtSigned(SET.bs2_b)}`;
+            const right = `${SET.bs2_c}x ${fmtSigned(SET.bs2_d)}`;
+            return `Solve <span class="math">${left} = ${right}</span>. Find <b>x</b>.`;
+          },
+          () => SET.bs2_x,
+          "x = ?"
+        )
+      ],
+      sec4: [
+        qNum(
+          "s4q1",
+          () => `Solve <span class="math">x − ${fracHTML(SET.f1_sub.n, SET.f1_sub.d)} = ${fracHTML(SET.f1_rhs.n, SET.f1_rhs.d)}</span>. Find <b>x</b>.`,
+          () => ratToFloat(SET.f1_x),
+          "e.g., 3/4 or 0.75"
+        ),
+        qNum(
+          "s4q2",
+          () => {
+            const totalW = Math.trunc(SET.f2_total.n / SET.f2_total.d);
+            const rem = SET.f2_total.n - totalW*SET.f2_total.d;
+            const totalHtml = (rem === 0)
+              ? `<span class="math">${totalW}</span>`
+              : mixedHTML(totalW, rem, SET.f2_total.d);
+            return `Solve <span class="math">x + ${fracHTML(SET.f2_add.n, SET.f2_add.d)} = ${totalHtml}</span>. Find <b>x</b>.`;
+          },
+          () => ratToFloat(SET.f2_x),
+          "fraction or decimal"
+        ),
+        qNum(
+          "s4q3",
+          () => {
+            const a = (SET.d1_m/10).toFixed(1);
+            const b = SET.d1_b.toFixed(1);
+            const c = SET.d1_c.toFixed(1);
+            return `Solve <span class="math">${a}x + ${b} = ${c}</span>. Find <b>x</b>.`;
+          },
+          () => SET.d1_x,
+          "x = ?"
+        ),
+        qNum("s4q4", () => `Solve <span class="math">x ÷ ${SET.f3_den} = ${SET.f3_k}</span>. Find <b>x</b>.`, () => SET.f3_x, "x = ?")
+      ]
+    };
+
+    /***********************
+     * Rendering
+     ***********************/
+    function renderPractice(sectionId, list){
+      const host = document.getElementById("practice-" + sectionId);
+      host.innerHTML = "";
+
+      list.forEach((q, idx) => {
+        const wrap = document.createElement("div");
+        wrap.className = "q";
+        wrap.id = "wrap-" + q.id;
+
+        const top = document.createElement("div");
+        top.className = "q-top";
+
+        const num = document.createElement("div");
+        num.className = "q-num";
+        num.textContent = String(idx + 1);
+
+        const text = document.createElement("div");
+        text.className = "q-text";
+        text.id = "prompt-" + q.id;
+        text.innerHTML = q.promptHtmlFn ? q.promptHtmlFn() : "";
+
+        top.appendChild(num);
+        top.appendChild(text);
+
+        const actions = document.createElement("div");
+        actions.className = "q-actions";
+
+        const inp = document.createElement("input");
+        inp.type = "text";
+        inp.id = "in-" + q.id;
+        inp.placeholder = q.placeholder || "";
+        actions.appendChild(inp);
+
+        const check = document.createElement("button");
+        check.className = "check-btn";
+        check.textContent = "Check";
+        check.addEventListener("click", () => checkOne(q));
+        actions.appendChild(check);
+
+        const show = document.createElement("button");
+        show.className = "show-btn";
+        show.textContent = "Show Answer";
+        show.addEventListener("click", () => showAnswer(q));
+        actions.appendChild(show);
+
+        const fb = document.createElement("div");
+        fb.className = "fb";
+        fb.id = "fb-" + q.id;
+
+        wrap.appendChild(top);
+        wrap.appendChild(actions);
+        wrap.appendChild(fb);
+
+        host.appendChild(wrap);
+      });
+    }
+
+    function renderAll(){
+      renderPractice("sec1", PRACTICE.sec1);
+      renderPractice("sec2", PRACTICE.sec2);
+      renderPractice("sec3", PRACTICE.sec3);
+      renderPractice("sec4", PRACTICE.sec4);
+      hideResults();
+    }
+
+    /***********************
+     * Checking
+     ***********************/
+    function checkOne(q){
+      clearFeedback(q.id);
+      const raw = readVal(q.id);
+      const parsed = parseRationalInput(raw);
+
+      if(!parsed.ok){
+        setFeedback(q.id, false, "❌ Please enter a valid number (e.g., 6, -3, 3/4, 1 1/2, 0.75).");
+        return false;
+      }
+
+      const exp = q.expectedValueFn();
+      const ok = almostEqual(parsed.value, exp, 1e-8);
+
+      if(ok){
+        setFeedback(q.id, true, "✅ Correct");
+        return true;
+      }
+
+      const expNice = (almostEqual(exp, Math.round(exp), 1e-10)) ? String(Math.round(exp)) : String(exp);
+      setFeedback(q.id, false, `❌ Not quite. (Expected ${expNice})`);
+      return false;
+    }
+
+    function showAnswer(q){
+      clearFeedback(q.id);
+      const exp = q.expectedValueFn();
+      setFeedback(q.id, true, `Answer: ${formatNumForAnswerKey(exp)}`);
+    }
+
+    function checkAll(){
+      let correct = 0;
+      let total = 0;
+      for(const sec of Object.values(PRACTICE)){
+        sec.forEach(q=>{
+          total++;
+          if(checkOne(q)) correct++;
+        });
+      }
+      showResults(correct, total);
+    }
+
+    function showResults(correct, total){
+      const box = document.getElementById("resultBox");
+      const title = document.getElementById("resultTitle");
+      const text = document.getElementById("resultText");
+
+      box.classList.add("show");
+      title.textContent = `Result: ${correct} / ${total}`;
+      text.textContent = (correct === total)
+        ? "Excellent — everything is correct."
+        : "Review the questions marked incorrect (❌) and try again.";
+      box.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    function hideResults(){
+      const box = document.getElementById("resultBox");
+      box.classList.remove("show");
+      document.getElementById("resultTitle").textContent = "";
+      document.getElementById("resultText").textContent = "";
+    }
+
+    function resetAll(){
+      hideResults();
+      document.querySelectorAll('input[type="text"], input[type="number"]').forEach(i => i.value = "");
+      document.querySelectorAll(".fb").forEach(fb => { fb.className="fb"; fb.textContent=""; });
+    }
+
+    /***********************
+     * Export Questions PDF (ONLY practice questions)
+     * + Answer Key on ONE extra page
+     ***********************/
+    const printArea = document.getElementById("printArea");
+
+    function getAllPracticeQuestionsFlat(){
+      const order = ["sec1","sec2","sec3","sec4"];
+      const out = [];
+      order.forEach(k => PRACTICE[k].forEach(q => out.push(q)));
+      return out;
+    }
+
+    function makePrintPageHeader(pageEl, perPage, subtitleOverride){
+      const header = document.createElement("div");
+      header.className = "print-header";
+
+      const icon = document.createElement("div");
+      icon.className = "icon";
+
+      const textWrap = document.createElement("div");
+
+      const t1 = document.createElement("p");
+      t1.className = "t1";
+      t1.textContent = "DYAA Education";
+
+      const t2 = document.createElement("p");
+      t2.className = "t2";
+      t2.textContent = subtitleOverride || `Solving Equations — Practice Questions ( ${perPage} per page )`;
+
+      const t3 = document.createElement("p");
+      t3.className = "t3";
+      const dateStr = new Date().toLocaleDateString();
+      const sName = STUDENT_NAME ? escapeHtml(STUDENT_NAME) : "________";
+      t3.innerHTML = `Student: <span>${sName}</span> &nbsp;&nbsp; Date: <span>${escapeHtml(dateStr)}</span>`;
+
+      textWrap.appendChild(t1);
+      textWrap.appendChild(t2);
+      textWrap.appendChild(t3);
+
+      header.appendChild(icon);
+      header.appendChild(textWrap);
+      pageEl.appendChild(header);
+    }
+
+    function buildAnswerLines(card){
+      const lines = document.createElement("div");
+      lines.className = "answer-lines";
+
+      const lab = document.createElement("div");
+      lab.className = "mini-label";
+      lab.textContent = "Answer:";
+      lines.appendChild(lab);
+
+      const line1 = document.createElement("div");
+      line1.className = "line";
+      const line2 = document.createElement("div");
+      line2.className = "line";
+      lines.appendChild(line1);
+      lines.appendChild(line2);
+
+      card.appendChild(lines);
+    }
+
+    // Convert a float to a nice integer / fraction / decimal string (for Answer Key)
+    function formatNumForAnswerKey(exp){
+      if(almostEqual(exp, Math.round(exp), 1e-10)){
+        return String(Math.round(exp));
+      }
+      // try fraction with small denominators
+      for(let d=2; d<=24; d++){
+        const n = Math.round(exp*d);
+        if(almostEqual(n/d, exp, 1e-8)){
+          return `${n}/${d}`;
+        }
+      }
+      // fallback decimal (trim trailing zeros)
+      return exp.toFixed(4).replace(/0+$/,"").replace(/\.$/,"");
+    }
+
+    function answerTextForQuestion(q){
+      const exp = q.expectedValueFn();
+      return formatNumForAnswerKey(exp);
+    }
+
+    function buildQuestionsPdf(perPage){
+      const allQs = getAllPracticeQuestionsFlat();
+      printArea.innerHTML = "";
+
+      // 1) Question pages
+      let globalIndex = 1;
+      for(let start = 0; start < allQs.length; start += perPage){
+        const page = document.createElement("div");
+        page.className = "print-page";
+        makePrintPageHeader(page, perPage);
+
+        const slice = allQs.slice(start, start + perPage);
+        slice.forEach(q=>{
+          const card = document.createElement("div");
+          card.className = "pq";
+
+          const row1 = document.createElement("div");
+          row1.className = "row1";
+
+          const n = document.createElement("div");
+          n.className = "n";
+          n.textContent = String(globalIndex++);
+
+          const txt = document.createElement("div");
+          txt.className = "txt";
+          txt.innerHTML = q.promptHtmlFn ? q.promptHtmlFn() : "";
+
+          row1.appendChild(n);
+          row1.appendChild(txt);
+          card.appendChild(row1);
+
+          buildAnswerLines(card);
+          page.appendChild(card);
+        });
+
+        printArea.appendChild(page);
+      }
+
+      // 2) Answer Key page (MUST be ONE page)
+      const ansPage = document.createElement("div");
+      ansPage.className = "print-page answer-key-page";
+      makePrintPageHeader(ansPage, perPage, "Answer Key (single page)");
+
+      const note = document.createElement("div");
+      note.className = "ans-note";
+      note.textContent = "Fractions and decimals are both acceptable. Mixed-number input is also acceptable.";
+      ansPage.appendChild(note);
+
+      const grid = document.createElement("div");
+      grid.className = "ans-grid";
+
+      // Dynamic columns to help keep it on ONE page
+      const count = allQs.length;
+      const cols = (count <= 16) ? 4 : (count <= 24) ? 5 : 6;
+      grid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+
+      allQs.forEach((q, i)=>{
+        const item = document.createElement("div");
+        item.className = "ans-item";
+
+        const b = document.createElement("b");
+        b.textContent = (i+1) + ". ";
+        item.appendChild(b);
+
+        const span = document.createElement("span");
+        span.textContent = answerTextForQuestion(q);
+        item.appendChild(span);
+
+        grid.appendChild(item);
+      });
+
+      ansPage.appendChild(grid);
+      printArea.appendChild(ansPage);
+    }
+
+    let cleanupAfterPrint = null;
+
+    function exportQuestionsPdf(){
+      if(!STUDENT_NAME){
+        openNameModal();
+        return;
+      }
+
+      const perPage = Number(document.getElementById("pdfPerPage").value) || 3;
+      buildQuestionsPdf(perPage);
+
+      document.body.classList.add("printing-questions");
+      cleanupAfterPrint = () => {
+        document.body.classList.remove("printing-questions");
+        printArea.innerHTML = "";
+        cleanupAfterPrint = null;
+      };
+
+      window.print();
+    }
+
+    window.addEventListener("afterprint", () => {
+      if(typeof cleanupAfterPrint === "function") cleanupAfterPrint();
+    });
+
+    /***********************
+     * Generate New Set Modal
+     ***********************/
+    const modal = document.getElementById("modalBackdrop");
+    const modalOk = document.getElementById("modalOk");
+    const modalCancel = document.getElementById("modalCancel");
+
+    function openModal(){
+      modal.style.display = "block";
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    }
+    function closeModal(){
+      modal.style.display = "none";
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    }
+
+    /***********************
+     * Buttons
+     ***********************/
+    document.getElementById("submitBtn").addEventListener("click", checkAll);
+    document.getElementById("resetBtn").addEventListener("click", resetAll);
+    document.getElementById("exportQBtn").addEventListener("click", exportQuestionsPdf);
+
+    document.getElementById("genBtn").addEventListener("click", openModal);
+    modalCancel.addEventListener("click", closeModal);
+    modalOk.addEventListener("click", () => {
+      closeModal();
+      buildNewSet();
+      renderAll();
+      resetAll();
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+    modal.addEventListener("click", (e) => { if(e.target === modal) closeModal(); });
+
+    /***********************
+     * Init
+     ***********************/
+    setStudentName(getStudentNameFromUrl());
+    buildNewSet();
+    renderAll();
+    ensureStudentName();
+  </script>
+</body>
+</html>

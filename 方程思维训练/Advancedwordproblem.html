@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced Equations — DYAA (Challenging Word Problems)</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#333;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI',Tahoma,sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    /* subtle DYAA watermark */
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      z-index:0;
+      user-select:none;
+      white-space:nowrap;
+    }
+
+    .quiz-container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:40px auto;
+      background:var(--card);
+      padding:28px;
+      border-radius:14px;
+      box-shadow:0 6px 16px rgba(0,0,0,0.10);
+      overflow:visible; /* iOS clipping */
+    }
+
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:12px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:8px;position:relative;flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px;height:10px;
+      background:var(--orange);
+      top:-6px;left:18px;
+      border-radius:7px;
+    }
+    .logo-text{min-width:240px;}
+    .logo-title{
+      font-size:20px;
+      font-weight:800;
+      color:var(--blue);
+      line-height:1.1;
+      margin:0;
+    }
+    .logo-sub{
+      font-size:13px;
+      color:var(--orange);
+      font-weight:800;
+      margin-top:2px;
+      display:block;
+    }
+    .student-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-top:6px;
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      color:#1f2d5c;
+      font-weight:900;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:12px;
+    }
+    .student-chip b{color:var(--blue);}
+    .student-chip .hint{color:#4c5a86;font-weight:800;}
+
+    .top-bar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 12px;
+      background:#f7f9ff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      margin:14px 0 16px;
+      flex-wrap:wrap;
+    }
+
+    .status{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width:260px;
+      flex:1 1 320px;
+    }
+    .status .big{
+      font-weight:800;
+      color:var(--blue);
+      font-size:14px;
+    }
+    .status .small{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .btns{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+
+    button{
+      border:0;
+      border-radius:10px;
+      padding:10px 12px;
+      font-weight:800;
+      cursor:pointer;
+      background:var(--blue);
+      color:#fff;
+      font-size:13px;
+    }
+    button.secondary{
+      background:#e8eefc;
+      color:var(--blue);
+      border:1px solid #cfe0ff;
+    }
+    button.orange{background:var(--orange);color:#111;}
+    button:active{transform:translateY(1px);}
+    button:disabled{
+      opacity:0.55;
+      cursor:not-allowed;
+      transform:none;
+    }
+
+    /* PDF control */
+    .pdfctl{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      background:#fff;
+      border:1px solid #dfe6fb;
+      border-radius:12px;
+      padding:6px 8px;
+    }
+    .pdfctl label{
+      font-size:12px;
+      font-weight:900;
+      color:#1f2d5c;
+      white-space:nowrap;
+    }
+    select{
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid #cfd6ea;
+      font-size:13px;
+      outline:none;
+      background:#fff;
+    }
+
+    .lesson{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      margin:14px 0;
+      background:#fff;
+    }
+    .lesson h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+    .p{
+      margin:6px 0;
+      line-height:1.45;
+      color:#333;
+      font-size:14px;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+    .ex{
+      border-left:4px solid #d8e6ff;
+      padding:8px 10px;
+      background:#fff;
+      border-radius:10px;
+      margin:8px 0;
+    }
+
+    .frac{
+      display:inline-block;
+      vertical-align:middle;
+      font-family:"Cambria Math","Times New Roman",serif;
+      font-size: 0.98em;
+      line-height:1;
+      margin:0 2px;
+    }
+    .frac sup, .frac sub{
+      display:block;
+      text-align:center;
+      font-size:0.78em;
+      line-height:1.05;
+    }
+    .frac .bar{
+      display:block;
+      border-top:1.6px solid #111;
+      margin:1px 0;
+      width:100%;
+    }
+
+    .q{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:12px;
+      padding:10px;
+      margin:10px 0;
+      overflow:visible;
+    }
+    .q-top{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+      overflow:visible;
+    }
+    .q-num{
+      width:30px;height:30px;border-radius:8px;
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      color:var(--blue);
+      font-weight:900;
+      display:flex;align-items:center;justify-content:center;
+      flex:0 0 auto;
+    }
+    .q-text{
+      flex:1 1 260px;
+      min-width:240px;
+      line-height:1.45;
+      font-size:14px;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+
+    .q-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    input[type="text"]{
+      width:min(520px, 100%);
+      padding:10px 10px;
+      border-radius:10px;
+      border:1px solid #cfd6ea;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+
+    .smallhint{
+      font-size:12px;color:var(--muted);
+    }
+
+    .check-btn{
+      padding:9px 12px;
+      border-radius:10px;
+      background:var(--blue);
+      color:#fff;
+      font-weight:900;
+      border:0;
+    }
+    .show-btn{
+      padding:9px 12px;
+      border-radius:10px;
+      background:#eef4ff;
+      color:var(--blue);
+      font-weight:900;
+      border:1px solid #d8e6ff;
+    }
+
+    .fb{
+      font-size:13px;
+      line-height:1.35;
+      color:var(--muted);
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+    .fb.ok{color:var(--ok);font-weight:800;}
+    .fb.bad{color:var(--bad);font-weight:800;}
+
+    .result-box{
+      display:none;
+      margin-top:16px;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#f7fff9;
+    }
+    .result-box.show{display:block;}
+    .result-title{
+      font-weight:900;
+      color:var(--ok);
+      margin:0 0 6px;
+    }
+    .result-text{margin:0;color:#2e3b2f;line-height:1.4;}
+
+    /* Modal */
+    .modal-backdrop{
+      display:none;
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      z-index:999;
+      padding:18px;
+    }
+    .modal{
+      max-width:520px;
+      margin:12vh auto 0;
+      background:#fff;
+      border-radius:14px;
+      padding:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+    }
+    .modal h3{
+      margin:0 0 6px;
+      color:var(--blue);
+      font-size:16px;
+    }
+    .modal p{margin:0 0 12px;color:#444;line-height:1.45;}
+    .modal .row{
+      display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .modal .err{
+      margin-top:8px;
+      font-size:12px;
+      color:var(--bad);
+      font-weight:800;
+      min-height:16px;
+    }
+
+    /* Hidden print area */
+    #printArea{display:none;}
+
+    /* Print rules */
+    @media print{
+      body{background:#fff;padding:0;}
+      body:before{display:none;}
+
+      /* default: hide everything */
+      .quiz-container, .modal-backdrop{display:none !important;}
+
+      /* when exporting */
+      body.printingQuestions #printArea{display:block !important;}
+      body.printingQuestions #printArea .page{
+        page-break-after:always;
+        padding:18px 22px;
+      }
+      body.printingQuestions #printArea .page:last-child{
+        page-break-after:auto;
+      }
+      body.printingQuestions #printArea .phead{
+        display:flex;
+        align-items:flex-start;
+        justify-content:space-between;
+        border-bottom:2px solid #e0e0e0;
+        padding-bottom:10px;
+        margin-bottom:12px;
+        gap:14px;
+      }
+      body.printingQuestions #printArea .pbrand{
+        display:flex;gap:10px;align-items:center;
+      }
+      body.printingQuestions #printArea .picon{
+        width:34px;height:34px;border-radius:7px;background:var(--blue);
+        position:relative;
+      }
+      body.printingQuestions #printArea .picon:before{
+        content:"";position:absolute;width:18px;height:8px;background:var(--orange);
+        top:-5px;left:14px;border-radius:6px;
+      }
+      body.printingQuestions #printArea .ptitle{
+        font-weight:900;color:var(--blue);margin:0;
+      }
+      body.printingQuestions #printArea .psub{
+        font-size:12px;color:#444;margin:2px 0 0;
+      }
+      body.printingQuestions #printArea .pright{
+        font-size:12px;color:#111;line-height:1.35; text-align:right;
+        white-space:nowrap;
+      }
+      body.printingQuestions #printArea .pq{
+        border:1px solid #e6e6ef;
+        border-radius:10px;
+        padding:10px 12px;
+        margin:10px 0;
+        break-inside:avoid;
+      }
+      body.printingQuestions #printArea .pqnum{
+        font-weight:900;color:var(--blue);margin-right:8px;
+      }
+
+      /* answer key page */
+      body.printingQuestions #printArea .ansTitle{
+        margin:0 0 8px;
+        color:#111;
+        font-weight:900;
+        font-size:15px;
+      }
+      body.printingQuestions #printArea .ansNote{
+        margin:0 0 12px;
+        color:#444;
+        font-size:12px;
+        line-height:1.35;
+      }
+      body.printingQuestions #printArea .ansTable{
+        width:100%;
+        border-collapse:collapse;
+        font-size:12.5px;
+      }
+      body.printingQuestions #printArea .ansTable td,
+      body.printingQuestions #printArea .ansTable th{
+        border:1px solid #e6e6ef;
+        padding:8px 10px;
+        vertical-align:top;
+      }
+      body.printingQuestions #printArea .ansTable th{
+        text-align:left;
+        background:#f7f9ff;
+        font-weight:900;
+        color:#1f2d5c;
+      }
+      body.printingQuestions #printArea .ansNum{
+        width:56px;
+        font-weight:900;
+        color:var(--blue);
+        white-space:nowrap;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="logo-text">
+        <h1 class="logo-title">DYAA Education</h1>
+        <span class="logo-sub">Advanced Equations — Challenging Word Problems (Make Sense?)</span>
+        <span class="student-chip" id="studentChip">
+          Student: <b id="studentNameText">—</b> <span class="hint" id="studentChipHint"></span>
+        </span>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="status">
+        <div class="big">Advanced Practice + Instant Checking</div>
+        <div class="small" id="statusLine">
+          Enter an answer as an <b>integer</b> or <b>fraction</b> (e.g., <b>7</b>, <b>3/5</b>, <b>50 2/5</b>).<br>
+          Some problems may be <b>not possible</b>. If so, select <b>Not possible</b> and give a short reason.
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="orange" id="genBtn">Generate New Set</button>
+        <button id="submitBtn">Submit & View Results</button>
+        <button class="secondary" id="resetBtn">Reset</button>
+
+        <div class="pdfctl" aria-label="PDF export control">
+          <label for="perPageSel">PDF per page</label>
+          <select id="perPageSel">
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+          <button class="orange" id="exportQuestionsBtn">Export Questions PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="lesson">
+      <h2>Set Up an Equation (Reminder)</h2>
+      <div class="ex">
+        <p class="p"><b>Typical steps</b></p>
+        <p class="p">1) Let the unknown be a variable (e.g., <b>x</b>).</p>
+        <p class="p">2) Translate each sentence into an algebra statement.</p>
+        <p class="p">3) Solve the equation and check whether the answer makes sense.</p>
+        <p class="p"><b>If the answer is impossible</b> (e.g., negative people, negative capacity, contradictions), choose <b>Not possible</b> and explain why.</p>
+      </div>
+
+      <div class="ex">
+        <p class="p smallhint">Answer input examples: <b>120</b> • <b>5/6</b> • <b>77.5</b> (allowed) • <b>50 2/5</b></p>
+      </div>
+    </section>
+
+    <section class="lesson">
+      <h2>Examples (2)</h2>
+      <div id="examples"></div>
+    </section>
+
+    <section class="lesson">
+      <h2>Exercises (10)</h2>
+      <div id="exercises"></div>
+    </section>
+
+    <div class="result-box" id="resultBox" aria-live="polite">
+      <p class="result-title" id="resultTitle"></p>
+      <p class="result-text" id="resultText"></p>
+    </div>
+  </div>
+
+  <!-- Print area -->
+  <div id="printArea" aria-hidden="true"></div>
+
+  <!-- Start Modal (name required if URL has no ?name=...) -->
+  <div class="modal-backdrop" id="startBackdrop" role="dialog" aria-modal="true" aria-labelledby="startTitle">
+    <div class="modal">
+      <h3 id="startTitle">Enter student name to start</h3>
+      <p>Please type the student name. After that, the quiz will load.</p>
+      <input type="text" id="startNameInput" placeholder="Student name (required)" autocomplete="name" />
+      <div class="err" id="startErr"></div>
+      <div class="row">
+        <button class="orange" id="startBtn">Start</button>
+      </div>
+      <p class="smallhint" style="margin-top:10px;">
+        Tip: You can also open the page like <b>?name=Tiger</b> to auto-fill the student name.
+      </p>
+    </div>
+  </div>
+
+  <!-- Generate New Set Confirm Modal -->
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <h3 id="modalTitle">Generate a new set?</h3>
+      <p>This will choose a different mix of questions and clear all current answers.</p>
+      <div class="row">
+        <button class="secondary" id="modalCancel">Cancel</button>
+        <button class="orange" id="modalOk">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Student name (URL ?name=...)
+     ***********************/
+    let STUDENT_NAME = "";
+    let HAS_STARTED = false;
+
+    function getNameFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      const n = (params.get("name") || "").trim();
+      return n;
+    }
+
+    function setStudentName(name){
+      STUDENT_NAME = (name || "").trim();
+      document.getElementById("studentNameText").textContent = STUDENT_NAME ? STUDENT_NAME : "—";
+      const hint = document.getElementById("studentChipHint");
+      hint.textContent = STUDENT_NAME ? "" : "(required)";
+    }
+
+    function setAppEnabled(enabled){
+      // main action buttons
+      ["genBtn","submitBtn","resetBtn","exportQuestionsBtn"].forEach(id=>{
+        const b = document.getElementById(id);
+        if(b) b.disabled = !enabled;
+      });
+      const sel = document.getElementById("perPageSel");
+      if(sel) sel.disabled = !enabled;
+    }
+
+    function openStartModal(){
+      const bd = document.getElementById("startBackdrop");
+      bd.style.display = "block";
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+      document.getElementById("startNameInput").focus();
+    }
+
+    function closeStartModal(){
+      const bd = document.getElementById("startBackdrop");
+      bd.style.display = "none";
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+      document.getElementById("startErr").textContent = "";
+    }
+
+    function startWithName(name){
+      setStudentName(name);
+      if(!STUDENT_NAME){
+        document.getElementById("startErr").textContent = "Please enter a student name.";
+        return;
+      }
+      HAS_STARTED = true;
+      closeStartModal();
+      setAppEnabled(true);
+      renderAll();
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+
+    /***********************
+     * Fraction HTML helper
+     ***********************/
+    function fracHTML(a,b){
+      return `<span class="frac"><sup>${a}</sup><span class="bar"></span><sub>${b}</sub></span>`;
+    }
+
+    /***********************
+     * BigInt rational utilities (NO repeating decimals)
+     ***********************/
+    function absBI(x){ return x < 0n ? -x : x; }
+
+    function gcdBI(a,b){
+      a = absBI(a); b = absBI(b);
+      while(b !== 0n){
+        const t = a % b;
+        a = b; b = t;
+      }
+      return a;
+    }
+
+    function normRat(r){
+      let n = r.n, d = r.d;
+      if(d === 0n) return null;
+      if(d < 0n){ n = -n; d = -d; }
+      const g = gcdBI(n,d);
+      return { n: n/g, d: d/g };
+    }
+
+    function rat(n,d=1n){ return normRat({n: BigInt(n), d: BigInt(d)}); }
+
+    function eqRat(a,b){
+      const A = normRat(a), B = normRat(b);
+      return A.n === B.n && A.d === B.d;
+    }
+
+    // parse: "7" | "3/5" | "50 2/5" | "77.5"
+    function parseRational(input){
+      if(input == null) return null;
+      const s = String(input).trim();
+      if(!s) return null;
+
+      // mixed: "A B/C"
+      let m = s.match(/^([+-]?\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+      if(m){
+        const A = BigInt(m[1]);
+        const B = BigInt(m[2]);
+        const C = BigInt(m[3]);
+        if(C === 0n) return null;
+        const sign = A < 0n ? -1n : 1n;
+        const whole = absBI(A);
+        return normRat({ n: sign*(whole*C + B), d: C });
+      }
+
+      // fraction: "A/B"
+      m = s.match(/^([+-]?\d+)\s*\/\s*(\d+)$/);
+      if(m){
+        const A = BigInt(m[1]);
+        const B = BigInt(m[2]);
+        if(B === 0n) return null;
+        return normRat({ n: A, d: B });
+      }
+
+      // decimal: "77.5"
+      if(s.includes(".")){
+        const md = s.match(/^([+-]?\d+)\.(\d+)$/);
+        if(!md) return null;
+        const intPart = BigInt(md[1]);          // includes sign
+        const decPartStr = md[2];
+        const scale = 10n ** BigInt(decPartStr.length);
+        const decPart = BigInt(decPartStr);
+        const sign = intPart < 0n ? -1n : 1n;
+        const whole = absBI(intPart);
+        const n = sign*(whole*scale + decPart);
+        return normRat({ n, d: scale });
+      }
+
+      // integer
+      if(/^[+-]?\d+$/.test(s)){
+        return normRat({ n: BigInt(s), d: 1n });
+      }
+
+      return null;
+    }
+
+    function ratToMixedString(r){
+      r = normRat(r);
+      const n = r.n, d = r.d;
+      if(d === 1n) return String(n);
+
+      const sign = n < 0n ? "-" : "";
+      const an = absBI(n);
+
+      const whole = an / d;
+      const rem = an % d;
+
+      if(whole === 0n){
+        return `${sign}${rem}/${d}`;
+      }
+      if(rem === 0n){
+        return `${sign}${whole}`;
+      }
+      return `${sign}${whole} ${rem}/${d}`;
+    }
+
+    function ratToSimpleString(r){
+      r = normRat(r);
+      if(r.d === 1n) return r.n.toString();
+      const mixed = ratToMixedString(r);
+      const frac = `${r.n.toString()}/${r.d.toString()}`;
+      return (mixed === frac) ? frac : `${mixed} (${frac})`;
+    }
+
+    function formatAnswerForRat(q){
+      const base = ratToSimpleString(q.answer);
+      if(q.unit === "$") return `$${base}`;
+      if(q.unit) return `${base} ${q.unit}`;
+      return base;
+    }
+
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    function shortDateStr(){
+      const d = new Date();
+      return d.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"2-digit"});
+    }
+
+    /***********************
+     * Question bank
+     ***********************/
+    const BANK = [
+      {
+        id:"fe3_1", type:"rat", unit:"L",
+        promptHTML: () => `A bottle was ${fracHTML(3,4)} full. After 9 litres were removed and then ${fracHTML(1,6)} of the remaining water was added back, the bottle became ${fracHTML(2,3)} full. What is the bottle’s full capacity?`,
+        answer: rat(252n,5n),
+      },
+      {
+        id:"fe3_2", type:"ynreason",
+        promptHTML: () => `A tank contained ${fracHTML(5,8)} of its capacity. After adding 20 litres, it became ${fracHTML(3,4)} full. Then ${fracHTML(1,10)} of the water was drained out, leaving 42 litres in the tank. What is the tank’s capacity? <br><span class="smallhint">(If not possible, choose “Not possible” and explain.)</span>`,
+        possible:false,
+        reason:`The conditions contradict each other (the same capacity cannot satisfy both statements).`
+      },
+      {
+        id:"fe3_3", type:"rat", unit:"m",
+        promptHTML: () => `A rope was cut into two pieces in the ratio 4 : 5. Then ${fracHTML(1,5)} of the longer piece and ${fracHTML(1,4)} of the shorter piece were used. A total of 22 metres were used. What was the original length of the rope?`,
+        answer: rat(99n,1n),
+      },
+      {
+        id:"fe3_4", type:"rat", unit:"$",
+        promptHTML: () => `A student spent ${fracHTML(1,3)} of her money on books. She then spent $15 more. After these purchases she had ${fracHTML(5,24)} of her money left. How much money did she have at first?`,
+        answer: rat(360n,11n),
+      },
+      {
+        id:"fe3_5", type:"rat", unit:"units",
+        promptHTML: () => `A machine completed ${fracHTML(3,10)} of a job in the morning and ${fracHTML(1,4)} of the job in the afternoon. The next day it finished another 18 units, which was the remaining ${fracHTML(1,5)} of the work left after day one. How many units were in the entire job?`,
+        answer: rat(200n,1n),
+      },
+      {
+        id:"fe3_6", type:"rat", unit:"L",
+        promptHTML: () => `A container initially had ${fracHTML(2,5)} as much water as a tank. After 16 litres of water were poured from the tank into the container, the container became half as full as the tank. Together they then held 336 litres. How much water was originally in the tank?`,
+        answer: rat(240n,1n),
+      },
+      {
+        id:"fe3_7", type:"rat", unit:"",
+        promptHTML: () => `A number was increased by ${fracHTML(1,2)} of itself, then decreased by 8, and then increased again by ${fracHTML(1,5)} of the new result. The final value was 84. What was the original number?`,
+        answer: rat(52n,1n),
+      },
+      {
+        id:"fe3_8", type:"rat", unit:"oranges",
+        promptHTML: () => `A shop sold ${fracHTML(2,5)} of its oranges in the morning. In the afternoon it sold another 36 oranges. At the end of the day ${fracHTML(1,3)} of the oranges remained. How many oranges were there at first?`,
+        answer: rat(135n,1n),
+      },
+      {
+        id:"fe3_9", type:"rat", unit:"",
+        promptHTML: () => `A number was multiplied by ${fracHTML(4,7)}. Then 12 was added. The result was then multiplied by ${fracHTML(3,5)}, giving a final answer of 36. What was the original number?`,
+        answer: rat(84n,1n),
+      },
+      {
+        id:"fe3_10", type:"ynreason",
+        promptHTML: () => `A class has ${fracHTML(5,4)} as many girls as boys. After 10 girls joined and 6 boys left, the number of girls became ${fracHTML(4,5)} of the number of boys. Is this possible? Give the reason.`,
+        possible:false,
+        reason:`Solving gives a negative starting number of boys, which is impossible.`
+      },
+      {
+        id:"fe3_11", type:"rat", unit:"years",
+        promptHTML: () => `A father is three times as old as his daughter. Eight years ago, the sum of their ages was 48. How old is the father now?`,
+        answer: rat(48n,1n),
+      },
+      {
+        id:"fe3_12", type:"rat", unit:"units",
+        promptHTML: () => `A factory completed ${fracHTML(1,4)} of a project in week one and ${fracHTML(7,20)} of the project in week two. In week three it produced the remaining 27 units. How many units are in the full project?`,
+        answer: rat(135n,2n),
+      },
+      {
+        id:"fe3_13", type:"ynreason",
+        promptHTML: () => `A tank was ${fracHTML(3,5)} full. After removing 18 litres and then adding ${fracHTML(1,4)} of the remaining water, the tank became ${fracHTML(5,6)} full. Is this possible? Give the reason.`,
+        possible:false,
+        reason:`Solving leads to a negative capacity, which is impossible.`
+      },
+      {
+        id:"fe3_14", type:"rat", unit:"$",
+        promptHTML: () => `A student spent ${fracHTML(1,5)} of her money on lunch, then bought a science kit for $14, and then spent ${fracHTML(1,6)} of what she had left. She now has $40. How much money did she originally have?`,
+        answer: rat(155n,2n),
+      },
+      {
+        id:"fe3_15", type:"rat", unit:"",
+        promptHTML: () => `A number was decreased by ${fracHTML(3,7)} of itself, then increased by 12, then reduced again by ${fracHTML(1,8)} of the result. The final answer was 60. What was the original number?`,
+        answer: rat(99n,1n),
+      },
+      {
+        id:"fe3_16", type:"rat", unit:"km",
+        promptHTML: () => `A cyclist travelled ${fracHTML(2,5)} of a journey on the first day. On the second day he travelled 18 km, which was ${fracHTML(3,10)} of the remaining distance. After that, he still had 42 km left. What was the total distance?`,
+        answer: rat(100n,1n),
+      },
+      {
+        id:"fe3_17", type:"rat", unit:"L",
+        promptHTML: () => `A tank was ${fracHTML(3,8)} full. After adding 30 litres, it became ${fracHTML(5,8)} full. What is the capacity of the tank?`,
+        answer: rat(120n,1n),
+      },
+      {
+        id:"fe3_18", type:"ynreason",
+        promptHTML: () => `A barrel contained ${fracHTML(2,3)} of its capacity. After removing 20 litres, adding 15 litres, and removing ${fracHTML(1,6)} of the remaining water, the barrel was left ${fracHTML(3,5)} full. Is this possible? Give the reason.`,
+        possible:false,
+        reason:`Solving leads to a negative capacity, which is impossible.`
+      },
+      {
+        id:"fe3_19", type:"rat", unit:"",
+        promptHTML: () => `A number is increased by 18 and then multiplied by ${fracHTML(3,4)}. The result is then decreased by ${fracHTML(1,5)} of the new value and becomes 48. What was the original number?`,
+        answer: rat(62n,1n),
+      },
+      {
+        id:"fe3_20", type:"ynreason",
+        promptHTML: () => `A tank was ${fracHTML(4,7)} full. After removing 28 litres, it became ${fracHTML(1,3)} full. After adding ${fracHTML(1,6)} of the tank’s capacity, it became ${fracHTML(2,3)} full. What is the capacity of the tank? <br><span class="smallhint">(If not possible, choose “Not possible” and explain.)</span>`,
+        possible:false,
+        reason:`From ${fracHTML(1,3)} to ${fracHTML(2,3)} needs adding ${fracHTML(1,3)} of capacity, but only ${fracHTML(1,6)} was added — contradiction.`
+      }
+    ];
+
+    /***********************
+     * Current displayed set
+     ***********************/
+    let CURRENT = []; // 12 questions (2 examples + 10 exercises)
+
+    function sampleUnique(arr, k){
+      if(k >= arr.length) return arr.slice();
+      const copy = arr.slice();
+      for(let i = copy.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy.slice(0,k);
+    }
+
+    /***********************
+     * Rendering
+     ***********************/
+    function clearResults(){
+      const box = document.getElementById("resultBox");
+      box.classList.remove("show");
+      document.getElementById("resultTitle").textContent = "";
+      document.getElementById("resultText").textContent = "";
+    }
+
+    function setFeedback(id, ok, msg){
+      const el = document.getElementById("fb-" + id);
+      if(!el) return;
+      el.className = "fb " + (ok ? "ok" : "bad");
+      el.innerHTML = msg;
+    }
+
+    function clearFeedback(id){
+      const el = document.getElementById("fb-" + id);
+      if(!el) return;
+      el.className = "fb";
+      el.textContent = "";
+    }
+
+    function renderList(hostId, list, startIndex){
+      const host = document.getElementById(hostId);
+      host.innerHTML = "";
+
+      list.forEach((q, idx) => {
+        const numIndex = startIndex + idx;
+
+        const wrap = document.createElement("div");
+        wrap.className = "q";
+        wrap.id = "wrap-" + q.id;
+
+        const top = document.createElement("div");
+        top.className = "q-top";
+
+        const num = document.createElement("div");
+        num.className = "q-num";
+        num.textContent = String(numIndex);
+
+        const text = document.createElement("div");
+        text.className = "q-text";
+        text.id = "prompt-" + q.id;
+        text.innerHTML = q.promptHTML();
+
+        top.appendChild(num);
+        top.appendChild(text);
+
+        const actions = document.createElement("div");
+        actions.className = "q-actions";
+
+        if(q.type === "rat"){
+          const inp = document.createElement("input");
+          inp.type = "text";
+          inp.id = "in-" + q.id;
+          inp.placeholder = "e.g., 120 or 3/5 or 50 2/5";
+          actions.appendChild(inp);
+        } else if(q.type === "ynreason"){
+          const sel = document.createElement("select");
+          sel.id = "in-" + q.id + "-yn";
+          const o1 = document.createElement("option"); o1.value="possible"; o1.textContent="Possible";
+          const o2 = document.createElement("option"); o2.value="notpossible"; o2.textContent="Not possible";
+          sel.appendChild(o1); sel.appendChild(o2);
+          actions.appendChild(sel);
+
+          const reason = document.createElement("input");
+          reason.type="text";
+          reason.id="in-" + q.id + "-reason";
+          reason.placeholder="Write a short reason (required if Not possible)";
+          actions.appendChild(reason);
+        }
+
+        const check = document.createElement("button");
+        check.className = "check-btn";
+        check.textContent = "Check";
+        check.addEventListener("click", () => checkOne(q));
+        actions.appendChild(check);
+
+        const show = document.createElement("button");
+        show.className = "show-btn";
+        show.textContent = "Show Answer";
+        show.addEventListener("click", () => showAnswer(q));
+        actions.appendChild(show);
+
+        const fb = document.createElement("div");
+        fb.className = "fb";
+        fb.id = "fb-" + q.id;
+
+        wrap.appendChild(top);
+        wrap.appendChild(actions);
+        wrap.appendChild(fb);
+        host.appendChild(wrap);
+      });
+    }
+
+    function renderAll(){
+      if(!HAS_STARTED) return;
+
+      clearResults();
+      const chosen = sampleUnique(BANK, 12);
+      CURRENT = chosen;
+
+      const examples = chosen.slice(0,2);
+      const exercises = chosen.slice(2);
+
+      renderList("examples", examples, 1);
+      renderList("exercises", exercises, 3);
+      resetAll(false);
+    }
+
+    /***********************
+     * Checking / Answers
+     ***********************/
+    function checkOne(q){
+      clearFeedback(q.id);
+
+      if(q.type === "rat"){
+        const raw = document.getElementById("in-" + q.id)?.value ?? "";
+        const r = parseRational(raw);
+        if(!r){
+          setFeedback(q.id, false, "❌ Please enter a valid number (integer / fraction / mixed number).");
+          return false;
+        }
+        const ok = eqRat(r, q.answer);
+        const exp = formatAnswerForRat(q);
+        setFeedback(q.id, ok, ok ? "✅ Correct" : `❌ Not quite. (Expected: ${escapeHtml(exp)})`);
+        return ok;
+      }
+
+      if(q.type === "ynreason"){
+        const yn = document.getElementById("in-" + q.id + "-yn")?.value ?? "possible";
+        const reason = (document.getElementById("in-" + q.id + "-reason")?.value ?? "").trim();
+
+        const expected = q.possible ? "possible" : "notpossible";
+        const ynOk = (yn === expected);
+
+        if(!ynOk){
+          setFeedback(q.id, false, "❌ Not quite. Check whether it is possible or not.");
+          return false;
+        }
+
+        if(expected === "notpossible" && reason.length < 6){
+          setFeedback(q.id, false, "❌ Please write a short reason (a few words).");
+          return false;
+        }
+
+        setFeedback(q.id, true, "✅ Correct");
+        return true;
+      }
+
+      return false;
+    }
+
+    function showAnswer(q){
+      clearFeedback(q.id);
+
+      if(q.type === "rat"){
+        setFeedback(q.id, true, `Answer: <b>${escapeHtml(formatAnswerForRat(q))}</b>`);
+        return;
+      }
+
+      if(q.type === "ynreason"){
+        if(q.possible){
+          setFeedback(q.id, true, "Answer: <b>Possible</b>.");
+        }else{
+          setFeedback(q.id, true, `Answer: <b>Not possible</b>. Reason: ${escapeHtml(q.reason)}`);
+        }
+      }
+    }
+
+    function checkAll(){
+      if(!HAS_STARTED) return;
+
+      let correct = 0;
+      let total = 0;
+
+      CURRENT.forEach(q=>{
+        total++;
+        if(checkOne(q)) correct++;
+      });
+
+      const box = document.getElementById("resultBox");
+      const title = document.getElementById("resultTitle");
+      const text = document.getElementById("resultText");
+
+      box.classList.add("show");
+      title.textContent = `Result: ${correct} / ${total}`;
+      text.textContent = (correct === total)
+        ? "Excellent — everything is correct."
+        : "Review the questions marked incorrect (❌) and try again.";
+      box.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    function resetAll(clearSet=true){
+      clearResults();
+
+      // Clear inputs
+      document.querySelectorAll('input[type="text"]').forEach(i => i.value = "");
+      document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+
+      // Clear feedback
+      document.querySelectorAll(".fb").forEach(fb => {
+        fb.className = "fb";
+        fb.textContent = "";
+      });
+
+      if(clearSet){
+        // keep current set
+      }
+    }
+
+    /***********************
+     * Export PDF: questions + last page answer key
+     ***********************/
+    function buildPrintArea(perPage){
+      const pa = document.getElementById("printArea");
+      pa.innerHTML = "";
+
+      const all = [
+        ...CURRENT.slice(0,2).map((q,i)=>({q, num:i+1, group:"Examples"})),
+        ...CURRENT.slice(2).map((q,i)=>({q, num:i+3, group:"Exercises"}))
+      ];
+
+      const dateStr = shortDateStr();
+      const student = STUDENT_NAME || "—";
+
+      // Question pages
+      for(let i=0; i<all.length; i += perPage){
+        const chunk = all.slice(i, i+perPage);
+
+        const page = document.createElement("div");
+        page.className = "page";
+
+        const head = document.createElement("div");
+        head.className = "phead";
+        head.innerHTML = `
+          <div class="pbrand">
+            <div class="picon" aria-hidden="true"></div>
+            <div>
+              <div class="ptitle">DYAA Education</div>
+              <div class="psub">Advanced Equations — Questions</div>
+              <div class="psub">Export date: ${escapeHtml(dateStr)} • ${perPage} per page</div>
+            </div>
+          </div>
+          <div class="pright">
+            <div><b>Student:</b> ${escapeHtml(student)}</div>
+            <div><b>Date:</b> __________</div>
+          </div>
+        `;
+        page.appendChild(head);
+
+        chunk.forEach(item=>{
+          const box = document.createElement("div");
+          box.className = "pq";
+          box.innerHTML = `<span class="pqnum">${item.num}.</span> <span>${item.q.promptHTML()}</span>`;
+          page.appendChild(box);
+        });
+
+        pa.appendChild(page);
+      }
+
+      // Answer key page (ALWAYS last page)
+      const ansPage = document.createElement("div");
+      ansPage.className = "page";
+
+      const ansHead = document.createElement("div");
+      ansHead.className = "phead";
+      ansHead.innerHTML = `
+        <div class="pbrand">
+          <div class="picon" aria-hidden="true"></div>
+          <div>
+            <div class="ptitle">DYAA Education</div>
+            <div class="psub">Advanced Equations — Answer Key</div>
+            <div class="psub">Export date: ${escapeHtml(dateStr)}</div>
+          </div>
+        </div>
+        <div class="pright">
+          <div><b>Student:</b> ${escapeHtml(student)}</div>
+        </div>
+      `;
+      ansPage.appendChild(ansHead);
+
+      const h = document.createElement("div");
+      h.innerHTML = `
+        <div class="ansTitle">Answer Key (Last Page)</div>
+        <div class="ansNote">This page is intentionally placed at the end of the PDF.</div>
+      `;
+      ansPage.appendChild(h);
+
+      const table = document.createElement("table");
+      table.className = "ansTable";
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th class="ansNum">Q#</th>
+            <th>Answer</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      `;
+      const tbody = table.querySelector("tbody");
+
+      all.forEach(item=>{
+        const q = item.q;
+        let ans = "";
+        if(q.type === "rat"){
+          ans = formatAnswerForRat(q);
+        }else if(q.type === "ynreason"){
+          ans = q.possible
+            ? "Possible"
+            : ("Not possible — " + (q.reason || ""));
+        }else{
+          ans = "";
+        }
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="ansNum">${item.num}</td>
+          <td>${escapeHtml(ans)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      ansPage.appendChild(table);
+      pa.appendChild(ansPage);
+    }
+
+    function exportQuestionsPDF(){
+      if(!HAS_STARTED){
+        openStartModal();
+        return;
+      }
+      if(!STUDENT_NAME){
+        openStartModal();
+        return;
+      }
+
+      const perPage = parseInt(document.getElementById("perPageSel").value, 10) || 3;
+      buildPrintArea(perPage);
+
+      document.body.classList.add("printingQuestions");
+      setTimeout(() => {
+        window.print();
+        setTimeout(() => {
+          document.body.classList.remove("printingQuestions");
+          document.getElementById("printArea").innerHTML = "";
+        }, 220);
+      }, 60);
+    }
+
+    /***********************
+     * Generate new set modal
+     ***********************/
+    const modal = document.getElementById("modalBackdrop");
+    const modalOk = document.getElementById("modalOk");
+    const modalCancel = document.getElementById("modalCancel");
+
+    function openModal(){
+      if(!HAS_STARTED) return;
+      modal.style.display = "block";
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    }
+    function closeModal(){
+      modal.style.display = "none";
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    }
+
+    /***********************
+     * Buttons
+     ***********************/
+    document.getElementById("submitBtn").addEventListener("click", checkAll);
+    document.getElementById("resetBtn").addEventListener("click", () => resetAll(false));
+    document.getElementById("genBtn").addEventListener("click", openModal);
+    document.getElementById("exportQuestionsBtn").addEventListener("click", exportQuestionsPDF);
+
+    modalCancel.addEventListener("click", closeModal);
+    modalOk.addEventListener("click", () => {
+      closeModal();
+      renderAll();
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+    modal.addEventListener("click", (e) => { if(e.target === modal) closeModal(); });
+
+    /***********************
+     * Start modal events
+     ***********************/
+    document.getElementById("startBtn").addEventListener("click", () => {
+      const name = document.getElementById("startNameInput").value;
+      startWithName(name);
+    });
+    document.getElementById("startNameInput").addEventListener("keydown", (e) => {
+      if(e.key === "Enter"){
+        e.preventDefault();
+        document.getElementById("startBtn").click();
+      }
+    });
+
+    /***********************
+     * Init
+     ***********************/
+    (function init(){
+      setAppEnabled(false);
+
+      const urlName = getNameFromUrl();
+      if(urlName){
+        setStudentName(urlName);
+        HAS_STARTED = true;
+        setAppEnabled(true);
+        renderAll();
+      }else{
+        setStudentName("");
+        openStartModal();
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Like Terms & Simplifying — DYAA (Algebra Basics)</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#333;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI',Tahoma,sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    /* subtle DYAA watermark */
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      z-index:0;
+      user-select:none;
+      white-space:nowrap;
+    }
+
+    .quiz-container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:40px auto;
+      background:var(--card);
+      padding:28px;
+      border-radius:14px;
+      box-shadow:0 6px 16px rgba(0,0,0,0.10);
+      overflow:visible; /* iOS clipping */
+    }
+
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:12px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:8px;position:relative;flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px;height:10px;
+      background:var(--orange);
+      top:-6px;left:18px;
+      border-radius:7px;
+    }
+    .logo-text{min-width:220px;}
+    .logo-title{
+      font-size:20px;
+      font-weight:800;
+      color:var(--blue);
+      line-height:1.1;
+      margin:0;
+    }
+    .logo-sub{
+      font-size:13px;
+      color:var(--orange);
+      font-weight:800;
+      margin-top:2px;
+      display:block;
+    }
+
+    .top-bar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 12px;
+      background:#f7f9ff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      margin:14px 0 16px;
+      flex-wrap:wrap;
+    }
+
+    .status{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width:240px;
+    }
+    .status .big{
+      font-weight:800;
+      color:var(--blue);
+      font-size:14px;
+    }
+    .status .small{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .btns{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+
+    button{
+      border:0;
+      border-radius:10px;
+      padding:10px 12px;
+      font-weight:800;
+      cursor:pointer;
+      background:var(--blue);
+      color:#fff;
+      font-size:13px;
+      white-space:nowrap;
+    }
+    button.secondary{
+      background:#e8eefc;
+      color:var(--blue);
+      border:1px solid #cfe0ff;
+    }
+    button.orange{background:var(--orange);color:#111;}
+    button:active{transform:translateY(1px);}
+
+    .pdf-tools{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 8px;
+      border:1px solid #d8e6ff;
+      background:#fff;
+      border-radius:10px;
+    }
+    .pdf-tools label{
+      font-size:12px;
+      font-weight:900;
+      color:var(--blue);
+    }
+    #pdfPerPage{
+      width:72px;
+      padding:8px 10px;
+      border-radius:10px;
+      font-weight:800;
+      border:1px solid #cfd6ea;
+      background:#fff;
+      outline:none;
+    }
+
+    .nav{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:8px 0 18px;
+    }
+    .chip{
+      text-decoration:none;
+      font-size:12px;
+      font-weight:800;
+      color:var(--blue);
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      padding:7px 10px;
+      border-radius:999px;
+    }
+
+    .lesson{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      margin:14px 0;
+      background:#fff;
+    }
+
+    .lesson h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+
+    .lesson-grid{
+      display:grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap:14px;
+      align-items:start;
+    }
+    @media (max-width: 860px){
+      .lesson-grid{grid-template-columns:1fr;}
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      background:#fbfcff;
+      overflow:visible;
+    }
+    .panel h3{
+      margin:0 0 8px;
+      font-size:13px;
+      color:#1f2d5c;
+      letter-spacing:0.2px;
+      text-transform:uppercase;
+    }
+
+    .p{
+      margin:6px 0;
+      line-height:1.45;
+      color:#333;
+      font-size:14px;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+
+    .bullets{
+      margin:8px 0 0 18px;
+      padding:0;
+      color:#333;
+      font-size:14px;
+      line-height:1.5;
+    }
+    .bullets li{margin:4px 0;}
+
+    .math{
+      font-family: "Cambria Math","Times New Roman",serif;
+      font-size: 16px;
+    }
+
+    .ex{
+      border-left:4px solid #d8e6ff;
+      padding:8px 10px;
+      background:#fff;
+      border-radius:10px;
+      margin:8px 0;
+    }
+
+    .practice-note{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:6px;
+      line-height:1.4;
+    }
+
+    .q{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:12px;
+      padding:10px;
+      margin:10px 0;
+      overflow:visible;
+    }
+    .q-top{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+      overflow:visible;
+    }
+    .q-num{
+      width:30px;height:30px;border-radius:8px;
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      color:var(--blue);
+      font-weight:900;
+      display:flex;align-items:center;justify-content:center;
+      flex:0 0 auto;
+    }
+    .q-text{
+      flex:1 1 260px;
+      min-width:220px;
+      line-height:1.45;
+      font-size:14px;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+
+    .q-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    input[type="text"], input[type="number"], select{
+      width:min(420px, 100%);
+      padding:10px 10px;
+      border-radius:10px;
+      border:1px solid #cfd6ea;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+
+    .check-btn{
+      padding:9px 12px;
+      border-radius:10px;
+      background:var(--blue);
+      color:#fff;
+      font-weight:900;
+      border:0;
+    }
+    .show-btn{
+      padding:9px 12px;
+      border-radius:10px;
+      background:#eef4ff;
+      color:var(--blue);
+      font-weight:900;
+      border:1px solid #d8e6ff;
+    }
+
+    .fb{
+      font-size:13px;
+      line-height:1.35;
+      color:var(--muted);
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+    .fb.ok{color:var(--ok);font-weight:800;}
+    .fb.bad{color:var(--bad);font-weight:800;}
+
+    .result-box{
+      display:none;
+      margin-top:16px;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#f7fff9;
+    }
+    .result-box.show{display:block;}
+    .result-title{
+      font-weight:900;
+      color:var(--ok);
+      margin:0 0 6px;
+    }
+    .result-text{margin:0;color:#2e3b2f;line-height:1.4;}
+
+    /* Modal */
+    .modal-backdrop{
+      display:none;
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      z-index:999;
+      padding:18px;
+    }
+    .modal{
+      max-width:520px;
+      margin:12vh auto 0;
+      background:#fff;
+      border-radius:14px;
+      padding:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+    }
+    .modal h3{
+      margin:0 0 6px;
+      color:var(--blue);
+      font-size:16px;
+    }
+    .modal p{margin:0 0 12px;color:#444;line-height:1.45;}
+    .modal .row{
+      display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;
+    }
+
+    /***********************
+     * Export Questions: Print-only area
+     ***********************/
+    .print-area{display:none;}
+
+    body.printing-questions:before{display:none;}
+    body.printing-questions .quiz-container{display:none !important;}
+    body.printing-questions .print-area{display:block !important;}
+
+    .print-page{
+      max-width:900px;
+      margin:0 auto;
+      background:#fff;
+      padding:18px 20px;
+      border-radius:0;
+    }
+
+    .print-header{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding-bottom:10px;
+      margin-bottom:12px;
+      border-bottom:2px solid #e0e0e0;
+    }
+    .print-header .icon{
+      width:38px;height:38px;background:var(--blue);
+      border-radius:8px;position:relative;flex:0 0 auto;
+    }
+    .print-header .icon:before{
+      content:"";
+      position:absolute;width:20px;height:9px;background:var(--orange);
+      top:-6px;left:16px;border-radius:7px;
+    }
+    .print-header .t1{margin:0;font-size:18px;font-weight:900;color:var(--blue);line-height:1.1;}
+    .print-header .t2{margin:0;font-size:12px;font-weight:900;color:var(--orange);}
+
+    .pq{
+      border:1px solid #dfe7fb;
+      border-radius:12px;
+      padding:10px 12px;
+      margin:10px 0;
+    }
+    .pq .row1{
+      display:flex; gap:10px; align-items:flex-start;
+    }
+    .pq .n{
+      width:28px;height:28px;border-radius:8px;
+      background:#eef4ff;border:1px solid #d8e6ff;
+      color:var(--blue);font-weight:900;
+      display:flex;align-items:center;justify-content:center;
+      flex:0 0 auto;
+    }
+    .pq .txt{
+      flex:1 1 auto;
+      font-size:14px;
+      line-height:1.45;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+    .answer-lines{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .line{
+      border-bottom:1px solid #999;
+      height:16px;
+    }
+    .mini-label{
+      font-size:12px;
+      font-weight:800;
+      color:#1f2d5c;
+      margin-top:6px;
+    }
+
+    /* --- Answer Key MUST be ONE page --- */
+    .answer-key-page .ans-note{
+      margin:4px 0 8px;
+      font-size:11px;
+      color:#333;
+      line-height:1.25;
+    }
+    .answer-key-page .ans-grid{
+      display:grid;
+      grid-template-columns:repeat(4, 1fr); /* 24 answers = 6 rows x 4 cols */
+      gap:6px 10px;
+    }
+    .answer-key-page .ans-item{
+      border:1px solid #dfe7fb;
+      border-radius:10px;
+      padding:5px 7px;
+      font-size:11px;
+      line-height:1.2;
+      white-space:nowrap;          /* keep short answers on one line */
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .answer-key-page .ans-item b{color:var(--blue);}
+
+    @media print{
+      body{background:#fff;padding:0;}
+      .modal-backdrop{display:none !important;}
+      .print-page{page-break-after:always;}
+      .print-page:last-child{page-break-after:auto;}
+      button, .top-bar, .nav{display:none !important;}
+    }
+  </style>
+</head>
+
+<body>
+  <!-- PRINT AREA (only used for Export Questions PDF) -->
+  <div class="print-area" id="printArea" aria-hidden="true"></div>
+
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="logo-text">
+        <h1 class="logo-title">DYAA Education</h1>
+        <span class="logo-sub">Like Terms • Combining • Expanding Brackets • Substitution</span>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="status">
+        <div class="big">Practice + Instant Checking</div>
+        <div class="small">
+          For expression answers, you can type like <b>7x-3</b> or <b>-3+7x</b> (both are accepted).
+          For substitution answers, you can type <b>6</b>, <b>3/4</b>, or <b>0.75</b>.
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="orange" id="genBtn">Generate New Set</button>
+        <button id="submitBtn">Submit & View Results</button>
+        <button class="secondary" id="resetBtn">Reset</button>
+
+        <div class="pdf-tools">
+          <label for="pdfPerPage">PDF per page</label>
+          <select id="pdfPerPage" aria-label="PDF per page">
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+        </div>
+
+        <button class="orange" id="exportQBtn">Export Questions PDF</button>
+      </div>
+    </div>
+
+    <div class="nav" aria-label="Lesson navigation">
+      <a class="chip" href="#sec1">1. Like Terms</a>
+      <a class="chip" href="#sec2">2. Combine Like Terms</a>
+      <a class="chip" href="#sec3">3. Expand Brackets</a>
+      <a class="chip" href="#sec4">4. Substitution</a>
+    </div>
+
+    <!-- Section 1 -->
+    <section class="lesson" id="sec1">
+      <h2>1. What Are Like Terms?</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Explanation</h3>
+          <p class="p">
+            <b>Like terms</b> have the <b>same letters</b> with the <b>same powers</b>.
+            Only the <b>number</b> in front (the coefficient) can be different.
+          </p>
+          <div class="ex">
+            <div class="p"><b>Examples</b></div>
+            <ul class="bullets">
+              <li><span class="math">3x</span> and <span class="math">−5x</span> → like terms ✅</li>
+              <li><span class="math">2a</span> and <span class="math">2a<sup>2</sup></span> → not like terms ❌</li>
+              <li><span class="math">4xy</span> and <span class="math">−2yx</span> → like terms ✅ (order doesn’t matter)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Practice Questions (6)</h3>
+          <div id="practice-sec1"></div>
+          <div class="practice-note">Choose: Like terms / Not like terms.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2 -->
+    <section class="lesson" id="sec2">
+      <h2>2. How to Combine Like Terms</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Steps</h3>
+          <ul class="bullets">
+            <li>Group terms with the same variable part (same letters & powers).</li>
+            <li>Add/subtract the <b>coefficients</b> only.</li>
+            <li>Keep the variable part the same.</li>
+          </ul>
+          <div class="ex">
+            <div class="p"><b>Example</b></div>
+            <div class="p math">3x + 5x − 2x = (3 + 5 − 2)x = 6x</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Practice Questions (6)</h3>
+          <div id="practice-sec2"></div>
+          <div class="practice-note">Type a simplified expression (e.g., <span class="math">7x-3</span>).</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3 -->
+    <section class="lesson" id="sec3">
+      <h2>3. Removing Brackets (Coefficient in Front)</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Key Rule</h3>
+          <p class="p">
+            Multiply the number outside the brackets by <b>every term inside</b>.
+          </p>
+          <div class="ex">
+            <div class="p"><b>Example</b></div>
+            <div class="p math">3(x + 4) = 3x + 12</div>
+            <div class="p math">−2(x − 5) = −2x + 10</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Practice Questions (6)</h3>
+          <div id="practice-sec3"></div>
+          <div class="practice-note">Expand and simplify.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4 -->
+    <section class="lesson" id="sec4">
+      <h2>4. Substitution (Evaluating Expressions)</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Explanation</h3>
+          <p class="p">
+            <b>Substitution</b> means replacing the letters with given numbers, then calculating using
+            the correct order of operations.
+          </p>
+          <div class="ex">
+            <div class="p"><b>Example</b></div>
+            <div class="p math">If a = 2 and b = 4, then ab = 2 × 4 = 8</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Practice Questions (6)</h3>
+          <div id="practice-sec4"></div>
+          <div class="practice-note">Type a number (fractions like <span class="math">3/4</span> are OK).</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="result-box" id="resultBox" aria-live="polite">
+      <p class="result-title" id="resultTitle"></p>
+      <p class="result-text" id="resultText"></p>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <h3 id="modalTitle">Generate a new set?</h3>
+      <p>This will change the numbers/letters in the practice questions and clear all your current answers.</p>
+      <div class="row">
+        <button class="secondary" id="modalCancel">Cancel</button>
+        <button class="orange" id="modalOk">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Helpers
+     ***********************/
+    function randInt(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function choice(arr){
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function gcd(a,b){
+      a = Math.abs(a); b = Math.abs(b);
+      while(b){ const t=a%b; a=b; b=t; }
+      return a || 1;
+    }
+    function rat(n,d){
+      if(d===0) throw new Error("Zero denominator");
+      if(d<0){ n=-n; d=-d; }
+      const g=gcd(n,d);
+      return {n:n/g, d:d/g};
+    }
+    function ratToFloat(r){ return r.n/r.d; }
+
+    function almostEqual(a,b,t=1e-9){ return Math.abs(a-b) <= t; }
+
+    function parseRationalInput(raw){
+      const s0 = (raw ?? "").toString().trim();
+      if(!s0) return { ok:false };
+      const s = s0.replace(/[−–]/g,"-");
+
+      // mixed number: "-1 1/2"
+      const m = s.match(/^([+-]?\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+      if(m){
+        const whole = parseInt(m[1],10);
+        const num = parseInt(m[2],10);
+        const den = parseInt(m[3],10);
+        if(den===0) return { ok:false };
+        const sign = whole < 0 ? -1 : 1;
+        const absWhole = Math.abs(whole);
+        const r = rat(sign*(absWhole*den + num), den);
+        return { ok:true, value: ratToFloat(r) };
+      }
+
+      // fraction: "3/4"
+      const f = s.match(/^([+-]?\d+)\s*\/\s*([+-]?\d+)$/);
+      if(f){
+        const num = parseInt(f[1],10);
+        const den = parseInt(f[2],10);
+        if(den===0) return { ok:false };
+        const r = rat(num, den);
+        return { ok:true, value: ratToFloat(r) };
+      }
+
+      // decimal/integer
+      const v = Number(s);
+      if(!Number.isFinite(v)) return { ok:false };
+      return { ok:true, value: v };
+    }
+
+    function setFeedback(id, ok, msg){
+      const el = document.getElementById("fb-" + id);
+      if(!el) return;
+      el.className = "fb " + (ok ? "ok" : "bad");
+      el.textContent = msg;
+    }
+    function clearFeedback(id){
+      const el = document.getElementById("fb-" + id);
+      if(!el) return;
+      el.className = "fb";
+      el.textContent = "";
+    }
+    function readVal(id){
+      const el = document.getElementById("in-" + id);
+      return el ? (el.value ?? "") : "";
+    }
+
+    /***********************
+     * Expression equivalence checker
+     * - compares user expression and expected by evaluating at random values
+     ***********************/
+    function extractVars(expr){
+      const s = (expr ?? "").toString().toLowerCase().replace(/\s+/g,"");
+      const set = new Set();
+      for(const ch of s){
+        if(ch>='a' && ch<='z') set.add(ch);
+      }
+      return [...set];
+    }
+
+    function toJsExpr(expr){
+      if(expr == null) return null;
+      let s = expr.toString().trim();
+
+      // if user writes "answer = ...", keep the part after last "="
+      if(s.includes("=")){
+        s = s.split("=").pop();
+      }
+
+      s = s
+        .toLowerCase()
+        .replace(/[×·]/g,"*")
+        .replace(/[−–]/g,"-")
+        .replace(/\s+/g,"");
+
+      // allow only safe chars
+      if(!/^[0-9a-z+\-*/().^]*$/.test(s)) return null;
+
+      // insert implicit multiplication
+      const isLetter = c => c>='a' && c<='z';
+      const isDigit = c => c>='0' && c<='9';
+
+      let out = "";
+      for(let i=0;i<s.length;i++){
+        const c = s[i];
+        const prev = out[out.length-1];
+
+        const prevIsDigit = prev && (isDigit(prev) || prev==="."); // number token
+        const prevIsLetter = prev && isLetter(prev);
+        const prevIsClose = prev === ")";
+
+        const currIsLetter = isLetter(c);
+        const currIsDigit = isDigit(c) || c===".";
+        const currIsOpen = c === "(";
+
+        if(i>0){
+          if((prevIsDigit || prevIsLetter || prevIsClose) && (currIsLetter || currIsOpen)){
+            out += "*";
+          } else if((prevIsLetter || prevIsClose) && currIsDigit){
+            out += "*";
+          } else if(prevIsDigit && currIsOpen){
+            out += "*";
+          }
+        }
+        out += c;
+      }
+
+      // basic exponent support: base^int  -> Math.pow(base,int)
+      // base can be ( ... ) without nested parentheses, or a simple token
+      let re = /(\([^()]*\)|[a-z0-9.]+)\^([0-9]+)/;
+      while(re.test(out)){
+        out = out.replace(re, "Math.pow($1,$2)");
+      }
+
+      return out;
+    }
+
+    function evalExpr(jsExpr, varsMap){
+      const vars = Object.keys(varsMap);
+      const vals = vars.map(k => varsMap[k]);
+      const fn = new Function(...vars, "return (" + jsExpr + ");");
+      return fn(...vals);
+    }
+
+    function expressionsEquivalent(userExpr, expectedExpr){
+      const uj = toJsExpr(userExpr);
+      const ej = toJsExpr(expectedExpr);
+      if(!uj || !ej) return false;
+
+      const vars = Array.from(new Set([...extractVars(userExpr), ...extractVars(expectedExpr)]));
+
+      // If no variables, compare numeric
+      if(vars.length === 0){
+        try{
+          const u = evalExpr(uj, {});
+          const e = evalExpr(ej, {});
+          return Number.isFinite(u) && Number.isFinite(e) && almostEqual(u,e,1e-9);
+        }catch{ return false; }
+      }
+
+      // test several random assignments
+      for(let t=0;t<6;t++){
+        const map = {};
+        vars.forEach(v=>{
+          let val = randInt(-6, 6);
+          if(val === 0) val = 2;
+          map[v] = val;
+        });
+        try{
+          const u = evalExpr(uj, map);
+          const e = evalExpr(ej, map);
+          if(!Number.isFinite(u) || !Number.isFinite(e)) return false;
+          if(!almostEqual(u, e, 1e-7)) return false;
+        }catch{
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function prettyExpr(s){
+      return (s ?? "").toString()
+        .replace(/\*/g,"×")
+        .replace(/-/g,"−");
+    }
+
+    /***********************
+     * Algebra formatting helpers
+     ***********************/
+    function buildPolyString(map, constant){
+      const vars = Object.keys(map).sort();
+      const parts = [];
+
+      vars.forEach(v=>{
+        const k = map[v];
+        if(k === 0) return;
+        const abs = Math.abs(k);
+        const c = (abs === 1) ? "" : String(abs);
+        const term = c + v;
+        parts.push({k, term});
+      });
+
+      if(constant !== 0){
+        parts.push({k: constant, term: String(Math.abs(constant)) , isConst:true});
+      }
+
+      if(parts.length === 0) return "0";
+
+      let out = "";
+      parts.forEach((p, i)=>{
+        const k = p.k;
+        const isConst = !!p.isConst;
+        const abs = Math.abs(k);
+
+        if(i === 0){
+          if(k < 0) out += "-";
+          out += isConst ? String(abs) : p.term;
+        }else{
+          out += (k < 0) ? "-" : "+";
+          out += isConst ? String(abs) : p.term;
+        }
+      });
+
+      return out;
+    }
+
+    function termHTML(coef, vars){
+      let coefStr = "";
+      const abs = Math.abs(coef);
+
+      if(vars.length === 0){
+        return `<span class="math">${coef}</span>`;
+      }
+
+      if(coef === -1){
+        coefStr = "−";
+      }else if(coef === 1){
+        coefStr = "";
+      }else if(coef < 0){
+        coefStr = "−" + abs;
+      }else{
+        coefStr = String(abs);
+      }
+
+      const varStr = vars.map(o=>{
+        return o.p === 1 ? o.v : `${o.v}<sup>${o.p}</sup>`;
+      }).join("");
+
+      return `<span class="math">${coefStr}${varStr}</span>`;
+    }
+
+    /***********************
+     * Question types
+     ***********************/
+    function qSelect(id, promptHtmlFn, options, expected){
+      return { id, type:"select", promptHtmlFn, options, expected };
+    }
+    function qExpr(id, promptHtmlFn, expectedExprFn, placeholder){
+      return { id, type:"expr", promptHtmlFn, expectedExprFn, placeholder: placeholder || "Type your simplified expression" };
+    }
+    function qNum(id, promptHtmlFn, expectedValueFn, placeholder){
+      return { id, type:"num", promptHtmlFn, expectedValueFn, placeholder: placeholder || "Type your answer" };
+    }
+
+    /***********************
+     * Build New Set (questions)
+     ***********************/
+    let PRACTICE = { sec1:[], sec2:[], sec3:[], sec4:[] };
+    let SET = {};
+
+    function buildNewSet(){
+      PRACTICE = { sec1:[], sec2:[], sec3:[], sec4:[] };
+      SET = {};
+
+      /***** Section 1: Like terms (6) *****/
+      const letters = ["x","y","a","b","m","n"];
+      function randCoef(){
+        let c = randInt(-9, 9);
+        if(c === 0) c = 4;
+        return c;
+      }
+
+      // create 3 like + 3 unlike, then shuffle
+      const pairs = [];
+
+      // Like 1: same single letter
+      {
+        const v = choice(letters);
+        const vars = [{v, p:1}];
+        pairs.push({t1:{coef:randCoef(), vars}, t2:{coef:randCoef(), vars:[{v, p:1}]}, like:true});
+      }
+      // Like 2: same with power 2
+      {
+        const v = choice(letters);
+        const vars = [{v, p:2}];
+        pairs.push({t1:{coef:randCoef(), vars}, t2:{coef:randCoef(), vars:[{v, p:2}]}, like:true});
+      }
+      // Like 3: two-letter term order swapped
+      {
+        const v1 = choice(letters);
+        let v2 = choice(letters);
+        while(v2 === v1) v2 = choice(letters);
+        const tA = [{v:v1,p:1},{v:v2,p:1}];
+        const tB = [{v:v2,p:1},{v:v1,p:1}];
+        pairs.push({t1:{coef:randCoef(), vars:tA}, t2:{coef:randCoef(), vars:tB}, like:true});
+      }
+
+      // Unlike 1: different letter
+      {
+        const v1 = choice(letters);
+        let v2 = choice(letters);
+        while(v2 === v1) v2 = choice(letters);
+        pairs.push({t1:{coef:randCoef(), vars:[{v:v1,p:1}]}, t2:{coef:randCoef(), vars:[{v:v2,p:1}]}, like:false});
+      }
+      // Unlike 2: power differs
+      {
+        const v = choice(letters);
+        pairs.push({t1:{coef:randCoef(), vars:[{v,p:1}]}, t2:{coef:randCoef(), vars:[{v,p:2}]}, like:false});
+      }
+      // Unlike 3: single-letter vs two-letter
+      {
+        const v1 = choice(letters);
+        let v2 = choice(letters);
+        while(v2 === v1) v2 = choice(letters);
+        pairs.push({t1:{coef:randCoef(), vars:[{v:v1,p:1}]}, t2:{coef:randCoef(), vars:[{v:v1,p:1},{v:v2,p:1}]}, like:false});
+      }
+
+      // shuffle
+      for(let i=pairs.length-1;i>0;i--){
+        const j = randInt(0,i);
+        [pairs[i],pairs[j]] = [pairs[j],pairs[i]];
+      }
+
+      pairs.forEach((p, idx)=>{
+        PRACTICE.sec1.push(
+          qSelect(
+            "l" + (idx+1),
+            () => `Are ${termHTML(p.t1.coef, p.t1.vars)} and ${termHTML(p.t2.coef, p.t2.vars)} <b>like terms</b>?`,
+            [
+              {v:"like", t:"Like terms"},
+              {v:"not", t:"Not like terms"}
+            ],
+            p.like ? "like" : "not"
+          )
+        );
+      });
+
+      /***** Section 2: Combine like terms (6) *****/
+      function makeCombineQuestion(){
+        const useTwo = Math.random() < 0.55;
+        const v1 = choice(["x","y","a","b","m","n"]);
+        const v2 = useTwo ? choice(["x","y","a","b","m","n"].filter(v=>v!==v1)) : null;
+
+        const terms = [];
+        function addTerm(coef, v){
+          if(coef===0) return;
+          terms.push({coef, v});
+        }
+
+        const k1 = randInt(-9,9) || 4;
+        const k2 = randInt(-9,9) || -3;
+        addTerm(k1, v1);
+        addTerm(k2, v1);
+
+        if(v2){
+          const k3 = randInt(-9,9) || 5;
+          const k4 = randInt(-9,9) || 2;
+          addTerm(k3, v2);
+          addTerm(k4, v2);
+        }
+
+        let c = 0;
+        if(Math.random() < 0.7){
+          c = randInt(-12, 12);
+          if(c === 0) c = 6;
+        }
+
+        if(Math.random() < 0.6){
+          const extra = randInt(-9,9);
+          if(extra !== 0) addTerm(extra, v1);
+        }
+
+        for(let i=terms.length-1;i>0;i--){
+          const j = randInt(0,i);
+          [terms[i],terms[j]] = [terms[j],terms[i]];
+        }
+
+        let expr = "";
+        terms.forEach((t, i)=>{
+          const k = t.coef;
+          const abs = Math.abs(k);
+          const coefStr = (abs===1) ? "" : String(abs);
+          const chunk = coefStr + t.v;
+
+          if(i===0){
+            expr += (k<0 ? "-" : "") + chunk;
+          }else{
+            expr += (k<0 ? " - " : " + ") + chunk;
+          }
+        });
+        if(c !== 0){
+          expr += (c<0 ? " - " : " + ") + Math.abs(c);
+        }
+
+        const map = {};
+        map[v1] = terms.filter(t=>t.v===v1).reduce((s,t)=>s+t.coef,0);
+        if(v2) map[v2] = terms.filter(t=>t.v===v2).reduce((s,t)=>s+t.coef,0);
+        const expected = buildPolyString(map, c);
+
+        return { expr, expected };
+      }
+
+      for(let i=1;i<=6;i++){
+        const q = makeCombineQuestion();
+        PRACTICE.sec2.push(
+          qExpr(
+            "c" + i,
+            () => `Simplify: <span class="math">${q.expr}</span>`,
+            () => q.expected,
+            "e.g., 7x-3"
+          )
+        );
+      }
+
+      /***** Section 3: Expand brackets (6) *****/
+      function niceInner(varName, k){
+        return (k < 0) ? `${varName} - ${Math.abs(k)}` : `${varName} + ${k}`;
+      }
+      function niceInner2(a, varName, b){
+        const aStr = (a===1) ? varName : (a===-1 ? ("-"+varName) : `${a}${varName}`);
+        if(b === 0) return aStr;
+        return b < 0 ? `${aStr} - ${Math.abs(b)}` : `${aStr} + ${b}`;
+      }
+
+      const expandQs = [];
+
+      // Q1: k(x + c)
+      {
+        const k = choice([-6,-5,-4,-3,-2,2,3,4,5,6]);
+        const c = randInt(2, 9) * (Math.random()<0.3 ? -1 : 1);
+        const v = choice(["x","y","m","n"]);
+        const prompt = `${k}(${niceInner(v,c)})`;
+        const map = {}; map[v]=k;
+        const expected = buildPolyString(map, k*c);
+        expandQs.push({prompt, expected});
+      }
+
+      // Q2: k(x - c)
+      {
+        const k = choice([-6,-5,-4,-3,-2,2,3,4,5,6]);
+        const c = randInt(2, 12);
+        const v = choice(["x","y","a","b"]);
+        const prompt = `${k}(${v} - ${c})`;
+        const map = {}; map[v]=k;
+        const expected = buildPolyString(map, -k*c);
+        expandQs.push({prompt, expected});
+      }
+
+      // Q3: k(ay + b)
+      {
+        const k = choice([-5,-4,-3,-2,2,3,4,5]);
+        const a = randInt(2, 6) * (Math.random()<0.25 ? -1 : 1);
+        const b = randInt(-9, 9);
+        const v = choice(["x","y","m"]);
+        const inner = niceInner2(a, v, b);
+        const prompt = `${k}(${inner})`;
+        const map = {}; map[v]=k*a;
+        const expected = buildPolyString(map, k*b);
+        expandQs.push({prompt, expected});
+      }
+
+      // Q4: k(a + b) - tb
+      {
+        const k = choice([-6,-5,-4,-3,-2,2,3,4,5,6]);
+        const t = choice([1,2,3,4,5]);
+        const prompt = `${k}(a + b) - ${t}b`;
+        const map = {a:k, b:(k - t)};
+        const expected = buildPolyString(map, 0);
+        expandQs.push({prompt, expected});
+      }
+
+      // Q5: 2(m - p) + qm + r
+      {
+        const p = randInt(2, 9);
+        const q = randInt(1, 4);
+        const r = randInt(-6, 8);
+        const prompt = `2(m - ${p}) + ${q}m ${r<0 ? "- "+Math.abs(r) : "+ "+r}`;
+        const map = {m: 2 + q};
+        const expected = buildPolyString(map, -2*p + r);
+        expandQs.push({prompt, expected});
+      }
+
+      // Q6: 3(-x - p) - k(x + q)
+      {
+        const p = randInt(1, 6);
+        const k = choice([2,3,4,5]);
+        const q = randInt(2, 9);
+        const prompt = `3(-x - ${p}) - ${k}(x + ${q})`;
+        const map = {x: -(3+k)};
+        const expected = buildPolyString(map, -(3*p + k*q));
+        expandQs.push({prompt, expected});
+      }
+
+      for(let i=1;i<=6;i++){
+        const q = expandQs[i-1];
+        PRACTICE.sec3.push(
+          qExpr(
+            "e" + i,
+            () => `Expand and simplify: <span class="math">${q.prompt}</span>`,
+            () => q.expected,
+            "e.g., -7x-34"
+          )
+        );
+      }
+
+      /***** Section 4: Substitution (6) *****/
+      const aVal = randInt(2, 6);
+      const bVal = randInt(2, 8);
+      const cVal = randInt(2, 9);
+      SET.sub = {a:aVal, b:bVal, c:cVal};
+
+      const subs = [];
+      subs.push({expr:"ab", val: aVal*bVal});
+      subs.push({expr:"a + b", val: aVal+bVal});
+      subs.push({expr:"b/2", val: ratToFloat(rat(bVal,2))});
+      subs.push({expr:"c - a", val: cVal - aVal});
+      subs.push({expr:"2b - c", val: 2*bVal - cVal});
+      subs.push({expr:"(2b + 4)/a", val: ratToFloat(rat(2*bVal+4, aVal))});
+
+      subs.forEach((s, idx)=>{
+        PRACTICE.sec4.push(
+          qNum(
+            "s" + (idx+1),
+            () => `If <span class="math">a = ${aVal}</span>, <span class="math">b = ${bVal}</span>, <span class="math">c = ${cVal}</span>, evaluate: <span class="math">${s.expr}</span>`,
+            () => s.val,
+            "Type a number (e.g., 3/2)"
+          )
+        );
+      });
+    }
+
+    /***********************
+     * Rendering
+     ***********************/
+    function renderPractice(sectionId, list){
+      const host = document.getElementById("practice-" + sectionId);
+      host.innerHTML = "";
+
+      list.forEach((q, idx) => {
+        const wrap = document.createElement("div");
+        wrap.className = "q";
+        wrap.id = "wrap-" + q.id;
+
+        const top = document.createElement("div");
+        top.className = "q-top";
+
+        const num = document.createElement("div");
+        num.className = "q-num";
+        num.textContent = String(idx + 1);
+
+        const text = document.createElement("div");
+        text.className = "q-text";
+        text.id = "prompt-" + q.id;
+        text.innerHTML = q.promptHtmlFn ? q.promptHtmlFn() : "";
+
+        top.appendChild(num);
+        top.appendChild(text);
+
+        const actions = document.createElement("div");
+        actions.className = "q-actions";
+
+        if(q.type === "select"){
+          const sel = document.createElement("select");
+          sel.id = "in-" + q.id;
+          q.options.forEach(o=>{
+            const opt = document.createElement("option");
+            opt.value = o.v;
+            opt.textContent = o.t;
+            sel.appendChild(opt);
+          });
+          actions.appendChild(sel);
+        }else{
+          const inp = document.createElement("input");
+          inp.type = "text";
+          inp.id = "in-" + q.id;
+          inp.placeholder = q.placeholder || "";
+          actions.appendChild(inp);
+        }
+
+        const check = document.createElement("button");
+        check.className = "check-btn";
+        check.textContent = "Check";
+        check.addEventListener("click", () => checkOne(q));
+        actions.appendChild(check);
+
+        const show = document.createElement("button");
+        show.className = "show-btn";
+        show.textContent = "Show Answer";
+        show.addEventListener("click", () => showAnswer(q));
+        actions.appendChild(show);
+
+        const fb = document.createElement("div");
+        fb.className = "fb";
+        fb.id = "fb-" + q.id;
+
+        wrap.appendChild(top);
+        wrap.appendChild(actions);
+        wrap.appendChild(fb);
+
+        host.appendChild(wrap);
+      });
+    }
+
+    function renderAll(){
+      renderPractice("sec1", PRACTICE.sec1);
+      renderPractice("sec2", PRACTICE.sec2);
+      renderPractice("sec3", PRACTICE.sec3);
+      renderPractice("sec4", PRACTICE.sec4);
+      hideResults();
+    }
+
+    /***********************
+     * Checking
+     ***********************/
+    function checkOne(q){
+      clearFeedback(q.id);
+
+      if(q.type === "select"){
+        const val = readVal(q.id);
+        const ok = (val === q.expected);
+        setFeedback(q.id, ok, ok ? "✅ Correct" : "❌ Not quite. Try again.");
+        return ok;
+      }
+
+      if(q.type === "num"){
+        const parsed = parseRationalInput(readVal(q.id));
+        if(!parsed.ok){
+          setFeedback(q.id, false, "❌ Please enter a valid number (e.g., 6, -3, 3/4, 1 1/2, 0.75).");
+          return false;
+        }
+        const exp = q.expectedValueFn();
+        const ok = almostEqual(parsed.value, exp, 1e-8);
+        const expNice = almostEqual(exp, Math.round(exp), 1e-10) ? String(Math.round(exp)) : String(exp);
+        setFeedback(q.id, ok, ok ? "✅ Correct" : `❌ Not quite. (Expected ${expNice})`);
+        return ok;
+      }
+
+      const user = readVal(q.id);
+      const expected = q.expectedExprFn();
+      const ok = expressionsEquivalent(user, expected);
+      setFeedback(q.id, ok, ok ? "✅ Correct" : "❌ Not quite. Check combining/distribution carefully.");
+      return ok;
+    }
+
+    function showAnswer(q){
+      clearFeedback(q.id);
+
+      if(q.type === "select"){
+        const ans = q.options.find(o => o.v === q.expected);
+        setFeedback(q.id, true, `Answer: ${ans ? ans.t : q.expected}`);
+        return;
+      }
+
+      if(q.type === "num"){
+        const exp = q.expectedValueFn();
+        let ans = "";
+        if(almostEqual(exp, Math.round(exp), 1e-10)){
+          ans = String(Math.round(exp));
+        }else{
+          let best = null;
+          for(let d=2; d<=24; d++){
+            const n = Math.round(exp*d);
+            if(almostEqual(n/d, exp, 1e-8)){
+              best = `${n}/${d}`;
+              break;
+            }
+          }
+          ans = best ? best : exp.toFixed(4).replace(/0+$/,"").replace(/\.$/,"");
+        }
+        setFeedback(q.id, true, `Answer: ${ans}`);
+        return;
+      }
+
+      const expected = q.expectedExprFn();
+      setFeedback(q.id, true, `Answer: ${prettyExpr(expected)}`);
+    }
+
+    function checkAll(){
+      let correct = 0;
+      let total = 0;
+      for(const sec of Object.values(PRACTICE)){
+        sec.forEach(q=>{
+          total++;
+          if(checkOne(q)) correct++;
+        });
+      }
+      showResults(correct, total);
+    }
+
+    function showResults(correct, total){
+      const box = document.getElementById("resultBox");
+      const title = document.getElementById("resultTitle");
+      const text = document.getElementById("resultText");
+
+      box.classList.add("show");
+      title.textContent = `Result: ${correct} / ${total}`;
+      text.textContent = (correct === total)
+        ? "Excellent — everything is correct."
+        : "Review the questions marked incorrect (❌) and try again.";
+      box.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    function hideResults(){
+      const box = document.getElementById("resultBox");
+      box.classList.remove("show");
+      document.getElementById("resultTitle").textContent = "";
+      document.getElementById("resultText").textContent = "";
+    }
+
+    function resetAll(){
+      hideResults();
+      document.querySelectorAll('input[type="text"], input[type="number"]').forEach(i => i.value = "");
+      document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+      document.querySelectorAll(".fb").forEach(fb => { fb.className="fb"; fb.textContent=""; });
+    }
+
+    /***********************
+     * Export Questions PDF (ONLY practice questions)
+     * + Answer Key as ONE extra page
+     ***********************/
+    const printArea = document.getElementById("printArea");
+
+    function getAllPracticeQuestionsFlat(){
+      const order = ["sec1","sec2","sec3","sec4"];
+      const out = [];
+      order.forEach(k => PRACTICE[k].forEach(q => out.push(q)));
+      return out;
+    }
+
+    function makePrintPageHeader(pageEl, subtitle){
+      const header = document.createElement("div");
+      header.className = "print-header";
+
+      const icon = document.createElement("div");
+      icon.className = "icon";
+
+      const textWrap = document.createElement("div");
+      const t1 = document.createElement("p");
+      t1.className = "t1";
+      t1.textContent = "DYAA Education";
+      const t2 = document.createElement("p");
+      t2.className = "t2";
+      t2.textContent = subtitle;
+
+      textWrap.appendChild(t1);
+      textWrap.appendChild(t2);
+
+      header.appendChild(icon);
+      header.appendChild(textWrap);
+      pageEl.appendChild(header);
+    }
+
+    function buildAnswerLines(card){
+      const lines = document.createElement("div");
+      lines.className = "answer-lines";
+
+      const lab = document.createElement("div");
+      lab.className = "mini-label";
+      lab.textContent = "Answer:";
+      lines.appendChild(lab);
+
+      const line1 = document.createElement("div");
+      line1.className = "line";
+      const line2 = document.createElement("div");
+      line2.className = "line";
+      lines.appendChild(line1);
+      lines.appendChild(line2);
+
+      card.appendChild(lines);
+    }
+
+    function formatNumForAnswerKey(exp){
+      if(almostEqual(exp, Math.round(exp), 1e-10)){
+        return String(Math.round(exp));
+      }
+      for(let d=2; d<=24; d++){
+        const n = Math.round(exp*d);
+        if(almostEqual(n/d, exp, 1e-8)){
+          return `${n}/${d}`;
+        }
+      }
+      return exp.toFixed(4).replace(/0+$/,"").replace(/\.$/,"");
+    }
+
+    function answerTextForQuestion(q){
+      if(q.type === "select"){
+        const ans = q.options.find(o => o.v === q.expected);
+        return ans ? ans.t : String(q.expected);
+      }
+      if(q.type === "num"){
+        const exp = q.expectedValueFn();
+        return formatNumForAnswerKey(exp);
+      }
+      const expected = q.expectedExprFn();
+      return prettyExpr(expected);
+    }
+
+    function buildQuestionsPdf(perPage){
+      const allQs = getAllPracticeQuestionsFlat();
+      printArea.innerHTML = "";
+
+      // Question pages
+      let globalIndex = 1;
+      for(let start = 0; start < allQs.length; start += perPage){
+        const page = document.createElement("div");
+        page.className = "print-page";
+        makePrintPageHeader(page, `Like Terms & Simplifying — Practice Questions ( ${perPage} per page )`);
+
+        const slice = allQs.slice(start, start + perPage);
+        slice.forEach(q=>{
+          const card = document.createElement("div");
+          card.className = "pq";
+
+          const row1 = document.createElement("div");
+          row1.className = "row1";
+
+          const n = document.createElement("div");
+          n.className = "n";
+          n.textContent = String(globalIndex++);
+
+          const txt = document.createElement("div");
+          txt.className = "txt";
+          txt.innerHTML = q.promptHtmlFn ? q.promptHtmlFn() : "";
+
+          row1.appendChild(n);
+          row1.appendChild(txt);
+          card.appendChild(row1);
+
+          buildAnswerLines(card);
+          page.appendChild(card);
+        });
+
+        printArea.appendChild(page);
+      }
+
+      // Answer Key page (MUST be ONE page)
+      const ansPage = document.createElement("div");
+      ansPage.className = "print-page answer-key-page";
+      makePrintPageHeader(ansPage, "Answer Key (single page)");
+
+      const note = document.createElement("div");
+      note.className = "ans-note";
+      note.textContent = "Equivalent expressions are accepted in the quiz. Numbers may be shown as fractions.";
+      ansPage.appendChild(note);
+
+      const grid = document.createElement("div");
+      grid.className = "ans-grid";
+
+      allQs.forEach((q, i)=>{
+        const item = document.createElement("div");
+        item.className = "ans-item";
+
+        const b = document.createElement("b");
+        b.textContent = (i+1) + ". ";
+        item.appendChild(b);
+
+        const span = document.createElement("span");
+        span.textContent = answerTextForQuestion(q);
+        item.appendChild(span);
+
+        grid.appendChild(item);
+      });
+
+      ansPage.appendChild(grid);
+      printArea.appendChild(ansPage);
+    }
+
+    let cleanupAfterPrint = null;
+
+    function exportQuestionsPdf(){
+      const perPage = Number(document.getElementById("pdfPerPage").value) || 3;
+      buildQuestionsPdf(perPage);
+
+      document.body.classList.add("printing-questions");
+      cleanupAfterPrint = () => {
+        document.body.classList.remove("printing-questions");
+        printArea.innerHTML = "";
+        cleanupAfterPrint = null;
+      };
+
+      window.print();
+    }
+
+    window.addEventListener("afterprint", () => {
+      if(typeof cleanupAfterPrint === "function") cleanupAfterPrint();
+    });
+
+    /***********************
+     * Modal
+     ***********************/
+    const modal = document.getElementById("modalBackdrop");
+    const modalOk = document.getElementById("modalOk");
+    const modalCancel = document.getElementById("modalCancel");
+
+    function openModal(){
+      modal.style.display = "block";
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    }
+    function closeModal(){
+      modal.style.display = "none";
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    }
+
+    /***********************
+     * Buttons
+     ***********************/
+    document.getElementById("submitBtn").addEventListener("click", checkAll);
+    document.getElementById("resetBtn").addEventListener("click", resetAll);
+    document.getElementById("exportQBtn").addEventListener("click", exportQuestionsPdf);
+
+    document.getElementById("genBtn").addEventListener("click", openModal);
+    modalCancel.addEventListener("click", closeModal);
+    modalOk.addEventListener("click", () => {
+      closeModal();
+      buildNewSet();
+      renderAll();
+      resetAll();
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+    modal.addEventListener("click", (e) => { if(e.target === modal) closeModal(); });
+
+    /***********************
+     * Init
+     ***********************/
+    buildNewSet();
+    renderAll();
+  </script>
+</body>
+</html>

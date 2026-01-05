@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Equation Word Problems — DYAA (Algebra Basics)</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#333;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI',Tahoma,sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    /* subtle DYAA watermark */
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      z-index:0;
+      user-select:none;
+      white-space:nowrap;
+    }
+
+    .quiz-container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:40px auto;
+      background:var(--card);
+      padding:28px;
+      border-radius:14px;
+      box-shadow:0 6px 16px rgba(0,0,0,0.10);
+      overflow:visible; /* iOS clipping */
+    }
+
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:12px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:8px;position:relative;flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px;height:10px;
+      background:var(--orange);
+      top:-6px;left:18px;
+      border-radius:7px;
+    }
+    .logo-text{min-width:220px;}
+    .logo-title{
+      font-size:20px;
+      font-weight:800;
+      color:var(--blue);
+      line-height:1.1;
+      margin:0;
+    }
+    .logo-sub{
+      font-size:13px;
+      color:var(--orange);
+      font-weight:800;
+      margin-top:2px;
+      display:block;
+    }
+
+    .top-bar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 12px;
+      background:#f7f9ff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      margin:14px 0 16px;
+      flex-wrap:wrap;
+    }
+
+    .status{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width:240px;
+    }
+    .status .big{
+      font-weight:800;
+      color:var(--blue);
+      font-size:14px;
+    }
+    .status .small{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+    .student-line{
+      margin-top:2px;
+      font-size:12px;
+      font-weight:900;
+      color:var(--blue);
+    }
+
+    .btns{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+
+    button{
+      border:0;
+      border-radius:10px;
+      padding:10px 12px;
+      font-weight:800;
+      cursor:pointer;
+      background:var(--blue);
+      color:#fff;
+      font-size:13px;
+      white-space:nowrap;
+    }
+    button.secondary{
+      background:#e8eefc;
+      color:var(--blue);
+      border:1px solid #cfe0ff;
+    }
+    button.orange{background:var(--orange);color:#111;}
+    button:active{transform:translateY(1px);}
+
+    .pdf-tools{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 8px;
+      border:1px solid #d8e6ff;
+      background:#fff;
+      border-radius:10px;
+    }
+    .pdf-tools label{
+      font-size:12px;
+      font-weight:900;
+      color:var(--blue);
+    }
+    #pdfPerPage{
+      width:72px;
+      padding:8px 10px;
+      border-radius:10px;
+      font-weight:800;
+      border:1px solid #cfd6ea;
+      background:#fff;
+      outline:none;
+    }
+
+    .nav{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:8px 0 18px;
+    }
+    .chip{
+      text-decoration:none;
+      font-size:12px;
+      font-weight:800;
+      color:var(--blue);
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      padding:7px 10px;
+      border-radius:999px;
+    }
+
+    .lesson{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      margin:14px 0;
+      background:#fff;
+    }
+    .lesson h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+
+    .lesson-grid{
+      display:grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap:14px;
+      align-items:start;
+    }
+    @media (max-width: 860px){
+      .lesson-grid{grid-template-columns:1fr;}
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      background:#fbfcff;
+      overflow:visible;
+    }
+    .panel h3{
+      margin:0 0 8px;
+      font-size:13px;
+      color:#1f2d5c;
+      letter-spacing:0.2px;
+      text-transform:uppercase;
+    }
+
+    .p{
+      margin:6px 0;
+      line-height:1.45;
+      color:#333;
+      font-size:14px;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+
+    .bullets{
+      margin:8px 0 0 18px;
+      padding:0;
+      color:#333;
+      font-size:14px;
+      line-height:1.5;
+    }
+    .bullets li{margin:4px 0;}
+
+    .math{
+      font-family: "Cambria Math","Times New Roman",serif;
+      font-size: 16px;
+    }
+
+    .ex{
+      border-left:4px solid #d8e6ff;
+      padding:8px 10px;
+      background:#fff;
+      border-radius:10px;
+      margin:8px 0;
+    }
+
+    .q{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:12px;
+      padding:10px;
+      margin:10px 0;
+      overflow:visible;
+    }
+    .q-top{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+      overflow:visible;
+    }
+    .q-num{
+      width:30px;height:30px;border-radius:8px;
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      color:var(--blue);
+      font-weight:900;
+      display:flex;align-items:center;justify-content:center;
+      flex:0 0 auto;
+    }
+    .q-text{
+      flex:1 1 260px;
+      min-width:220px;
+      line-height:1.45;
+      font-size:14px;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+
+    .q-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    input[type="text"]{
+      width:min(420px, 100%);
+      padding:10px 10px;
+      border-radius:10px;
+      border:1px solid #cfd6ea;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+
+    .check-btn{
+      padding:9px 12px;
+      border-radius:10px;
+      background:var(--blue);
+      color:#fff;
+      font-weight:900;
+      border:0;
+    }
+    .show-btn{
+      padding:9px 12px;
+      border-radius:10px;
+      background:#eef4ff;
+      color:var(--blue);
+      font-weight:900;
+      border:1px solid #d8e6ff;
+    }
+
+    .fb{
+      font-size:13px;
+      line-height:1.35;
+      color:var(--muted);
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+    .fb.ok{color:var(--ok);font-weight:800;}
+    .fb.bad{color:var(--bad);font-weight:800;}
+
+    .result-box{
+      display:none;
+      margin-top:16px;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#f7fff9;
+    }
+    .result-box.show{display:block;}
+    .result-title{
+      font-weight:900;
+      color:var(--ok);
+      margin:0 0 6px;
+    }
+    .result-text{margin:0;color:#2e3b2f;line-height:1.4;}
+
+    /* Fraction display */
+    .frac{
+      display:inline-block;
+      vertical-align:middle;
+      text-align:center;
+      line-height:1;
+      margin:0 2px;
+      font-family:"Cambria Math","Times New Roman",serif;
+    }
+    .frac sup{display:block;font-size:0.8em; padding:0 2px;}
+    .frac .bar{display:block;border-top:1px solid #111;margin:2px 0;}
+    .frac sub{display:block;font-size:0.8em; padding:0 2px;}
+
+    /* Modal */
+    .modal-backdrop{
+      display:none;
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      z-index:999;
+      padding:18px;
+    }
+    .modal{
+      max-width:520px;
+      margin:12vh auto 0;
+      background:#fff;
+      border-radius:14px;
+      padding:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+    }
+    .modal h3{
+      margin:0 0 6px;
+      color:var(--blue);
+      font-size:16px;
+    }
+    .modal p{margin:0 0 12px;color:#444;line-height:1.45;}
+    .modal .row{
+      display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;
+      align-items:center;
+    }
+    .modal .hint{
+      font-size:12px;
+      color:#666;
+      margin-top:8px;
+      line-height:1.35;
+    }
+    .modal .err{
+      font-size:12px;
+      font-weight:900;
+      color:var(--bad);
+      margin-top:8px;
+      display:none;
+    }
+
+    /***********************
+     * Export Questions: Print-only area
+     ***********************/
+    .print-area{display:none;}
+
+    body.printing-questions:before{display:none;}
+    body.printing-questions .quiz-container{display:none !important;}
+    body.printing-questions .print-area{display:block !important;}
+
+    .print-page{
+      max-width:900px;
+      margin:0 auto;
+      background:#fff;
+      padding:18px 20px;
+      border-radius:0;
+    }
+
+    .print-header{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      padding-bottom:10px;
+      margin-bottom:12px;
+      border-bottom:2px solid #e0e0e0;
+    }
+    .print-header .icon{
+      width:38px;height:38px;background:var(--blue);
+      border-radius:8px;position:relative;flex:0 0 auto;
+      margin-top:2px;
+    }
+    .print-header .icon:before{
+      content:"";
+      position:absolute;width:20px;height:9px;background:var(--orange);
+      top:-6px;left:16px;border-radius:7px;
+    }
+    .print-header .t1{margin:0;font-size:18px;font-weight:900;color:var(--blue);line-height:1.1;}
+    .print-header .t2{margin:2px 0 0;font-size:12px;font-weight:900;color:var(--orange);line-height:1.2;}
+    .print-header .meta{margin:4px 0 0;font-size:12px;font-weight:900;color:#1f2d5c;line-height:1.2;}
+    .print-header .meta span{font-weight:900;}
+
+    .pq{
+      border:1px solid #dfe7fb;
+      border-radius:12px;
+      padding:10px 12px;
+      margin:10px 0;
+    }
+    .pq .row1{
+      display:flex; gap:10px; align-items:flex-start;
+    }
+    .pq .n{
+      width:28px;height:28px;border-radius:8px;
+      background:#eef4ff;border:1px solid #d8e6ff;
+      color:var(--blue);font-weight:900;
+      display:flex;align-items:center;justify-content:center;
+      flex:0 0 auto;
+    }
+    .pq .txt{
+      flex:1 1 auto;
+      font-size:14px;
+      line-height:1.45;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+
+    .answer-lines{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .mini-label{
+      font-size:12px;
+      font-weight:800;
+      color:#1f2d5c;
+      margin-top:6px;
+    }
+    .line{
+      border-bottom:1px solid #999;
+      height:16px;
+    }
+
+    /* Answer key page */
+    .ak-title{
+      margin:12px 0 10px;
+      font-size:14px;
+      font-weight:900;
+      color:#1f2d5c;
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      border-radius:12px;
+      padding:8px 10px;
+    }
+    .ak-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px 18px;
+    }
+    @media print{
+      .ak-grid{grid-template-columns:1fr 1fr;}
+    }
+    .ak-item{
+      font-size:13px;
+      line-height:1.35;
+      color:#111;
+      border:1px solid #e7ecfb;
+      border-radius:10px;
+      padding:8px 10px;
+    }
+    .ak-item b{color:var(--blue);}
+
+    @media print{
+      body{background:#fff;padding:0;}
+      .modal-backdrop{display:none !important;}
+      .print-page{page-break-after:always;}
+      .print-page:last-child{page-break-after:auto;}
+      button, .top-bar, .nav{display:none !important;}
+    }
+  </style>
+</head>
+
+<body>
+  <!-- PRINT AREA (only used for Export Questions PDF) -->
+  <div class="print-area" id="printArea" aria-hidden="true"></div>
+
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="logo-text">
+        <h1 class="logo-title">DYAA Education</h1>
+        <span class="logo-sub">Equation Word Problems (One-step • Two-step • Brackets • Fractions • Decimals)</span>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="status">
+        <div class="big">Practice + Instant Checking</div>
+        <div class="small">
+          You can type answers as integers (<b>12</b>), decimals (<b>3.5</b>), or fractions (<b>7/2</b>, <b>1 1/2</b>).
+        </div>
+        <div class="student-line" id="studentDisplay">Student: —</div>
+      </div>
+
+      <div class="btns">
+        <button class="orange" id="genBtn">Generate New Set</button>
+        <button id="submitBtn">Submit & View Results</button>
+        <button class="secondary" id="resetBtn">Reset</button>
+
+        <div class="pdf-tools">
+          <label for="pdfPerPage">PDF per page</label>
+          <select id="pdfPerPage" aria-label="PDF per page">
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+        </div>
+
+        <button class="orange" id="exportQBtn">Export Questions PDF</button>
+      </div>
+    </div>
+
+    <div class="nav" aria-label="Lesson navigation">
+      <a class="chip" href="#sec1">1. One-step</a>
+      <a class="chip" href="#sec2">2. Two-step</a>
+      <a class="chip" href="#sec3">3. Brackets</a>
+      <a class="chip" href="#sec4">4. Fractions</a>
+      <a class="chip" href="#sec5">5. Decimals</a>
+    </div>
+
+    <!-- Section 1 -->
+    <section class="lesson" id="sec1">
+      <h2>1. One-Step Equation Word Problems</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Example (How to set up & solve)</h3>
+          <div class="ex" id="ex1"></div>
+        </div>
+        <div class="panel">
+          <h3>Practice Questions (4)</h3>
+          <div id="practice-sec1"></div>
+          <div class="p" style="color:var(--muted);font-size:12px;margin-top:6px;">
+            These 4 questions always use: + , − , × , ÷ (one each).
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2 -->
+    <section class="lesson" id="sec2">
+      <h2>2. Two-Step Equation Word Problems</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Example (How to set up & solve)</h3>
+          <div class="ex" id="ex2"></div>
+        </div>
+        <div class="panel">
+          <h3>Practice Questions (4)</h3>
+          <div id="practice-sec2"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3 -->
+    <section class="lesson" id="sec3">
+      <h2>3. Brackets in Equations (Word Problems)</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Example (How to set up & solve)</h3>
+          <div class="ex" id="ex3"></div>
+        </div>
+        <div class="panel">
+          <h3>Practice Questions (4)</h3>
+          <div id="practice-sec3"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4 -->
+    <section class="lesson" id="sec4">
+      <h2>4. Fraction Equations (Word Problems)</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Example (How to set up & solve)</h3>
+          <div class="ex" id="ex4"></div>
+        </div>
+        <div class="panel">
+          <h3>Practice Questions (4)</h3>
+          <div id="practice-sec4"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5 -->
+    <section class="lesson" id="sec5">
+      <h2>5. Decimal Equations (Word Problems)</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Example (How to set up & solve)</h3>
+          <div class="ex" id="ex5"></div>
+        </div>
+        <div class="panel">
+          <h3>Practice Questions (4)</h3>
+          <div id="practice-sec5"></div>
+          <div class="p" style="color:var(--muted);font-size:12px;margin-top:6px;">
+            Tip: If your answer is a decimal, you may write it to 2 decimal places.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="result-box" id="resultBox" aria-live="polite">
+      <p class="result-title" id="resultTitle"></p>
+      <p class="result-text" id="resultText"></p>
+    </div>
+  </div>
+
+  <!-- Name Modal (must enter if URL has no ?name=...) -->
+  <div class="modal-backdrop" id="nameBackdrop" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+    <div class="modal">
+      <h3 id="nameTitle">Enter student name to start</h3>
+      <p>Please enter the student name. (Or open this page with <b>?name=Tiger</b> to auto-fill.)</p>
+      <input type="text" id="nameInput" placeholder="Student name (e.g., Tiger)" />
+      <div class="err" id="nameErr">Please enter a name.</div>
+      <div class="hint">Example URL: <b>mixed_quiz.html?name=Tiger</b></div>
+      <div class="row" style="margin-top:10px;">
+        <button class="orange" id="nameStart">Start</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Modal (Generate New Set) -->
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <h3 id="modalTitle">Generate a new set?</h3>
+      <p>This will change the numbers and clear all your current answers.</p>
+      <div class="row">
+        <button class="secondary" id="modalCancel">Cancel</button>
+        <button class="orange" id="modalOk">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Student name rules:
+     * 1) URL has ?name=... => auto show & can start immediately
+     * 2) No name in URL => must enter name before using the page
+     * 3) Export PDF includes student name on header, and ANSWERS on the last PDF page
+     ***********************/
+    let STUDENT_NAME = "";
+
+    function sanitizeName(s){
+      const t = (s ?? "").toString().trim().replace(/\s+/g," ");
+      // keep it simple & safe for printing
+      return t.slice(0, 40);
+    }
+
+    function setStudentName(name){
+      STUDENT_NAME = sanitizeName(name);
+      document.getElementById("studentDisplay").textContent = "Student: " + (STUDENT_NAME || "—");
+    }
+
+    function getQueryParam(key){
+      try{
+        const sp = new URLSearchParams(window.location.search);
+        const v = sp.get(key);
+        return v;
+      }catch(e){
+        return null;
+      }
+    }
+
+    // Name modal controls
+    const nameBackdrop = document.getElementById("nameBackdrop");
+    const nameInput = document.getElementById("nameInput");
+    const nameStart = document.getElementById("nameStart");
+    const nameErr = document.getElementById("nameErr");
+
+    function openNameModal(){
+      nameErr.style.display = "none";
+      nameBackdrop.style.display = "block";
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+      setTimeout(()=>nameInput.focus(), 30);
+    }
+    function closeNameModal(){
+      nameBackdrop.style.display = "none";
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    }
+    function ensureStudentNameOrPrompt(){
+      if(STUDENT_NAME) return true;
+      openNameModal();
+      return false;
+    }
+
+    function initStudentName(){
+      const urlNameRaw = getQueryParam("name");
+      const urlName = sanitizeName(urlNameRaw ? decodeURIComponent(urlNameRaw) : "");
+      if(urlName){
+        setStudentName(urlName);
+        closeNameModal();
+      }else{
+        setStudentName("");
+        openNameModal();
+      }
+    }
+
+    nameStart.addEventListener("click", () => {
+      const n = sanitizeName(nameInput.value);
+      if(!n){
+        nameErr.style.display = "block";
+        nameInput.focus();
+        return;
+      }
+      setStudentName(n);
+      closeNameModal();
+      // scroll top for a clean start
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+    nameInput.addEventListener("keydown", (e) => {
+      if(e.key === "Enter") nameStart.click();
+    });
+    // prevent closing by clicking backdrop (must enter)
+    nameBackdrop.addEventListener("click", (e) => {
+      if(e.target === nameBackdrop){
+        nameInput.focus();
+      }
+    });
+
+    /***********************
+     * Helpers
+     ***********************/
+    function randInt(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function choice(arr){
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+    function gcd(a,b){
+      a = Math.abs(a); b = Math.abs(b);
+      while(b){ const t=a%b; a=b; b=t; }
+      return a || 1;
+    }
+    function rat(n,d){
+      if(d===0) throw new Error("Zero denominator");
+      if(d<0){ n=-n; d=-d; }
+      const g=gcd(n,d);
+      return {n:n/g, d:d/g};
+    }
+    function ratToNum(r){ return r.n / r.d; }
+
+    function fracHtml(n,d){
+      const r = rat(n,d);
+      return `<span class="frac"><sup>${r.n}</sup><span class="bar"></span><sub>${r.d}</sub></span>`;
+    }
+
+    function parseRationalInput(raw){
+      const s0 = (raw ?? "").toString().trim();
+      if(!s0) return { ok:false };
+      const s = s0.replace(/[−–]/g,"-");
+
+      // mixed number: "-1 1/2"
+      const m = s.match(/^([+-]?\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+      if(m){
+        const whole = parseInt(m[1],10);
+        const num = parseInt(m[2],10);
+        const den = parseInt(m[3],10);
+        if(den===0) return { ok:false };
+        const sign = whole < 0 ? -1 : 1;
+        const absWhole = Math.abs(whole);
+        const r = rat(sign*(absWhole*den + num), den);
+        return { ok:true, value: ratToNum(r) };
+      }
+
+      // fraction: "3/4"
+      const f = s.match(/^([+-]?\d+)\s*\/\s*([+-]?\d+)$/);
+      if(f){
+        const num = parseInt(f[1],10);
+        const den = parseInt(f[2],10);
+        if(den===0) return { ok:false };
+        const r = rat(num, den);
+        return { ok:true, value: ratToNum(r) };
+      }
+
+      // decimal/integer
+      const v = Number(s);
+      if(!Number.isFinite(v)) return { ok:false };
+      return { ok:true, value: v };
+    }
+
+    function almostEqual(a,b,t=1e-7){ return Math.abs(a-b) <= t; }
+
+    function formatAnswer(val, mode="auto"){
+      if(mode === "fixed2"){
+        return (Math.round(val*100)/100).toFixed(2);
+      }
+      if(almostEqual(val, Math.round(val), 1e-10)) return String(Math.round(val));
+
+      // try simple fraction
+      for(let d=2; d<=24; d++){
+        const n = Math.round(val*d);
+        if(almostEqual(n/d, val, 1e-8)){
+          const r = rat(n,d);
+          return `${r.n}/${r.d}`;
+        }
+      }
+      // fallback: trimmed decimal
+      const s = (Math.round(val*1000)/1000).toFixed(3).replace(/0+$/,"").replace(/\.$/,"");
+      return s;
+    }
+
+    function setFeedback(id, ok, msg){
+      const el = document.getElementById("fb-" + id);
+      if(!el) return;
+      el.className = "fb " + (ok ? "ok" : "bad");
+      el.textContent = msg;
+    }
+    function clearFeedback(id){
+      const el = document.getElementById("fb-" + id);
+      if(!el) return;
+      el.className = "fb";
+      el.textContent = "";
+    }
+    function readVal(id){
+      const el = document.getElementById("in-" + id);
+      return el ? (el.value ?? "") : "";
+    }
+
+    function getDateStr(){
+      const d = new Date();
+      return d.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"2-digit"});
+    }
+
+    /***********************
+     * Question factory
+     ***********************/
+    function qNum(id, promptHtmlFn, expectedFn, mode="auto", placeholder="Type your answer"){
+      return { id, type:"num", promptHtmlFn, expectedFn, mode, placeholder };
+    }
+
+    let PRACTICE = { sec1:[], sec2:[], sec3:[], sec4:[], sec5:[] };
+    let EX = {}; // examples data
+
+    /***********************
+     * Build New Set
+     ***********************/
+    function buildNewSet(){
+      PRACTICE = { sec1:[], sec2:[], sec3:[], sec4:[], sec5:[] };
+      EX = {};
+
+      /***************
+       * Section 1: One-step (must be +, -, ×, ÷)
+       ***************/
+      // + : price + fee = total
+      (function(){
+        const fee = randInt(2, 9);
+        const price = randInt(8, 35);
+        const total = price + fee;
+        const item = choice(["movie ticket","skate hire","museum entry","train ticket","swimming pass"]);
+        EX.oneAdd = { fee, total, item, ans: price };
+        PRACTICE.sec1.push(
+          qNum(
+            "os1",
+            () => `A ${item} costs some dollars. After adding a $${fee} booking fee, the total is $${total}. How much is the ${item} (before the fee)?`,
+            () => price
+          )
+        );
+      })();
+
+      // - : final after increase, find before
+      (function(){
+        const inc = randInt(3, 10);
+        const morning = randInt(6, 18);
+        const afternoon = morning + inc;
+        const label = choice(["temperature","water level","score"]);
+        EX.oneSub = { inc, afternoon, label, ans: morning };
+        PRACTICE.sec1.push(
+          qNum(
+            "os2",
+            () => `The ${label} increased by ${inc} from morning to afternoon. The afternoon ${label} is ${afternoon}. What was the morning ${label}?`,
+            () => morning
+          )
+        );
+      })();
+
+      // × : n packs each x items, total T
+      (function(){
+        const n = randInt(3, 9);
+        const each = randInt(4, 18);
+        const total = n * each;
+        const thing = choice(["stickers","toy cars","cookies","pencils","buttons"]);
+        EX.oneMul = { n, total, thing, ans: each };
+        PRACTICE.sec1.push(
+          qNum(
+            "os3",
+            () => `A box has ${n} identical packs of ${thing}. There are ${total} ${thing} in total. How many ${thing} are in <b>one</b> pack?`,
+            () => each
+          )
+        );
+      })();
+
+      // ÷ : total length ÷ n = each piece (ask total)
+      (function(){
+        const n = randInt(3, 8);
+        const each = randInt(4, 20);
+        const total = n * each;
+        const unit = choice(["m","cm"]);
+        EX.oneDiv = { n, each, total, unit };
+        PRACTICE.sec1.push(
+          qNum(
+            "os4",
+            () => `A rope is cut into ${n} equal pieces. Each piece is ${each}${unit}. What was the total length of the rope (in ${unit})?`,
+            () => total
+          )
+        );
+      })();
+
+      /***************
+       * Section 2: Two-step (4)
+       ***************/
+      // Template A: age difference + sum
+      (function(){
+        const diff = randInt(5, 12);
+        const young = randInt(10, 25);
+        const old = young + diff;
+        const sum = young + old;
+        const olderName = choice(["Tom","Jenny","Anna","Ryan","Emma"]);
+        const youngerName = choice(["Kate","Max","Ben","Leo","Mia","Lily"]);
+        EX.twoAge = { diff, sum, olderName, youngerName, ans: young };
+        PRACTICE.sec2.push(
+          qNum(
+            "ts1",
+            () => `${olderName} is ${diff} years older than ${youngerName}. The sum of their ages is ${sum} years. How old is ${youngerName}?`,
+            () => young
+          )
+        );
+      })();
+
+      // Template B: container has k more than twice cup; total known
+      (function(){
+        const cup = randInt(6, 18);
+        const k = randInt(2, 8);
+        const container = 2*cup + k;
+        const total = cup + container;
+        const containerName = choice(["bottle","jug","container"]);
+        const liquid = choice(["water","juice","milk"]);
+        EX.twoLitres = { cup, k, total, containerName, liquid, ans: cup };
+        PRACTICE.sec2.push(
+          qNum(
+            "ts2",
+            () => `A ${containerName} contains ${k} litres more than twice the amount of ${liquid} in a cup. Together they hold ${total} litres. How many litres are in the cup?`,
+            () => cup
+          )
+        );
+      })();
+
+      // Template C: rectangle perimeter, length = width + d
+      (function(){
+        const w = randInt(6, 20);
+        const d = randInt(3, 12);
+        const l = w + d;
+        const per = 2*(l+w);
+        EX.twoRect = { w, d, per, ans: w };
+        PRACTICE.sec2.push(
+          qNum(
+            "ts3",
+            () => `A rectangle’s length is ${d} cm more than its width. The perimeter is ${per} cm. What is the width (in cm)?`,
+            () => w
+          )
+        );
+      })();
+
+      // Template D: number doubled then + k = total
+      (function(){
+        const x = randInt(8, 30);
+        const k = randInt(3, 12);
+        const total = 2*x + k;
+        EX.twoNum = { x, k, total, ans: x };
+        PRACTICE.sec2.push(
+          qNum(
+            "ts4",
+            () => `A number is doubled and then increased by ${k}. The final result is ${total}. What is the number?`,
+            () => x
+          )
+        );
+      })();
+
+      /***************
+       * Section 3: Brackets in equations (4)
+       ***************/
+      // A: k(x + a) = total
+      (function(){
+        const x = randInt(5, 20);
+        const a = randInt(2, 10);
+        const k = randInt(2, 6);
+        const total = k*(x+a);
+        EX.br1 = {x,a,k,total};
+        PRACTICE.sec3.push(
+          qNum(
+            "br1",
+            () => `Use the equation <span class="math">${k}(x + ${a}) = ${total}</span> to find <span class="math">x</span>.`,
+            () => x
+          )
+        );
+      })();
+
+      // B: k(x - a) = total
+      (function(){
+        const a = randInt(2, 9);
+        const x = randInt(a+6, a+25);
+        const k = randInt(2, 6);
+        const total = k*(x-a);
+        EX.br2 = {x,a,k,total};
+        PRACTICE.sec3.push(
+          qNum(
+            "br2",
+            () => `A coach says: “${k} times (a player’s score minus ${a}) equals ${total}.” Find the player’s score.`,
+            () => x
+          )
+        );
+      })();
+
+      // C: k(x + a) + b = total
+      (function(){
+        const x = randInt(6, 22);
+        const a = randInt(2, 9);
+        const k = randInt(2, 6);
+        const b = randInt(3, 15);
+        const total = k*(x+a) + b;
+        EX.br3 = {x,a,k,b,total};
+        PRACTICE.sec3.push(
+          qNum(
+            "br3",
+            () => `A phone plan charges a fixed $${b} plus ${k} times (the number of GB, <span class="math">x</span>, plus ${a}). The total bill is $${total}. Find <span class="math">x</span>.`,
+            () => x
+          )
+        );
+      })();
+
+      // D: k(x - a) - b = total
+      (function(){
+        const a = randInt(2, 8);
+        const x = randInt(a+8, a+28);
+        const k = randInt(2, 6);
+        const b = randInt(3, 15);
+        const total = k*(x-a) - b;
+        EX.br4 = {x,a,k,b,total};
+        PRACTICE.sec3.push(
+          qNum(
+            "br4",
+            () => `A club says: “${k} times (a number minus ${a}) minus ${b} equals ${total}.” What is the number?`,
+            () => x
+          )
+        );
+      })();
+
+      /***************
+       * Section 4: Fractions (4)
+       ***************/
+      // A: p/q of a number is N
+      (function(){
+        const fracs = [{p:2,q:3},{p:3,q:4},{p:3,q:5},{p:4,q:7},{p:5,q:6}];
+        let f = choice(fracs);
+        let x = randInt(12, 60);
+        let N = x * f.p / f.q;
+        let tries = 0;
+        while(!Number.isInteger(N) && tries++ < 60){
+          x = randInt(12, 60);
+          f = choice(fracs);
+          N = x * f.p / f.q;
+        }
+        EX.fr1 = {x, f, N};
+        PRACTICE.sec4.push(
+          qNum(
+            "fr1",
+            () => `${fracHtml(f.p,f.q)} of a number is ${N}. What is the number?`,
+            () => x
+          )
+        );
+      })();
+
+      // B: spent p/q and has L left
+      (function(){
+        const fracs = [{p:3,q:5},{p:2,q:5},{p:3,q:7},{p:4,q:7},{p:5,q:8}];
+        let f = choice(fracs);
+        let total = randInt(40, 140);
+        let left = total * (f.q - f.p) / f.q;
+        let tries = 0;
+        while(!Number.isInteger(left) && tries++ < 120){
+          f = choice(fracs);
+          total = randInt(40, 160);
+          left = total * (f.q - f.p) / f.q;
+        }
+        EX.fr2 = {f, total, left};
+        PRACTICE.sec4.push(
+          qNum(
+            "fr2",
+            () => `A student spent ${fracHtml(f.p,f.q)} of his money and now has $${left} left. How much money did he have at first?`,
+            () => total
+          )
+        );
+      })();
+
+      // C: one part is p/q of total, other part is L
+      (function(){
+        const fracs = [{p:1,q:3},{p:2,q:5},{p:3,q:8},{p:4,q:9}];
+        let f = choice(fracs);
+        let total = randInt(30, 180);
+        let other = total * (f.q - f.p) / f.q;
+        let tries = 0;
+        while(!Number.isInteger(other) && tries++ < 120){
+          f = choice(fracs);
+          total = randInt(30, 180);
+          other = total * (f.q - f.p) / f.q;
+        }
+        EX.fr3 = {f, total, other};
+        PRACTICE.sec4.push(
+          qNum(
+            "fr3",
+            () => `One part of a stick is ${fracHtml(f.p,f.q)} of the total length, and the other part is ${other} cm. What is the total length (in cm)?`,
+            () => total
+          )
+        );
+      })();
+
+      // D: tank was p/q full; add A to become full
+      (function(){
+        const fracs = [{p:2,q:3},{p:3,q:4},{p:5,q:6}];
+        let f = choice(fracs);
+        let cap = randInt(30, 180);
+        let add = cap * (f.q - f.p) / f.q;
+        let tries = 0;
+        while(!Number.isInteger(add) && tries++ < 120){
+          f = choice(fracs);
+          cap = randInt(30, 200);
+          add = cap * (f.q - f.p) / f.q;
+        }
+        EX.fr4 = {f, cap, add};
+        PRACTICE.sec4.push(
+          qNum(
+            "fr4",
+            () => `A tank was ${fracHtml(f.p,f.q)} full. After adding ${add} litres, it becomes full. What is the capacity of the tank (in litres)?`,
+            () => cap
+          )
+        );
+      })();
+
+      /***************
+       * Section 5: Decimals (4)
+       ***************/
+      // A: x + fee = total
+      (function(){
+        const x = randInt(350, 1999)/100; // 3.50 to 19.99
+        const fee = randInt(50, 399)/100; // 0.50 to 3.99
+        const total = Math.round((x + fee)*100)/100;
+        EX.dc1 = {x, fee, total};
+        PRACTICE.sec5.push(
+          qNum(
+            "dc1",
+            () => `A taxi ride costs some dollars. After adding a $${fee.toFixed(2)} airport fee, the total is $${total.toFixed(2)}. What was the ride cost (before the fee)?`,
+            () => x,
+            "fixed2"
+          )
+        );
+      })();
+
+      // B: x - discount = final
+      (function(){
+        const original = randInt(800, 3000)/100; // 8.00 to 30.00
+        const discount = randInt(50, 600)/100;  // 0.50 to 6.00
+        const final = Math.round((original - discount)*100)/100;
+        EX.dc2 = {original, discount, final};
+        PRACTICE.sec5.push(
+          qNum(
+            "dc2",
+            () => `A notebook was on sale. After a discount of $${discount.toFixed(2)}, the final price is $${final.toFixed(2)}. What was the original price?`,
+            () => original,
+            "fixed2"
+          )
+        );
+      })();
+
+      // C: 0.6x = total
+      (function(){
+        const each = randInt(25, 120)/10; // 2.5 to 12.0
+        const total = Math.round((0.6*each)*100)/100;
+        EX.dc3 = {each, total};
+        PRACTICE.sec5.push(
+          qNum(
+            "dc3",
+            () => `A bottle holds <span class="math">0.6x</span> litres of water. It currently holds ${total.toFixed(2)} litres. What is <span class="math">x</span> (in litres)?`,
+            () => each,
+            "auto"
+          )
+        );
+      })();
+
+      // D: 1.2x + 3.5 = total
+      (function(){
+        const x = randInt(50, 200)/10; // 5.0 to 20.0
+        const total = Math.round((1.2*x + 3.5)*100)/100;
+        EX.dc4 = {x, total};
+        PRACTICE.sec5.push(
+          qNum(
+            "dc4",
+            () => `A gym charges $3.50 joining fee plus $1.20 per visit (<span class="math">x</span> visits). The total is $${total.toFixed(2)}. How many visits is that?`,
+            () => x,
+            "auto"
+          )
+        );
+      })();
+    }
+
+    /***********************
+     * Render examples (with steps)
+     ***********************/
+    function renderExamples(){
+      // Section 1 example
+      {
+        const {fee,total,ans} = EX.oneAdd;
+        document.getElementById("ex1").innerHTML = `
+          <div class="p"><b>Let</b> <span class="math">x</span> be the original cost.</div>
+          <div class="p"><b>Equation:</b> <span class="math">x + ${fee} = ${total}</span></div>
+          <div class="p"><b>Solve:</b> <span class="math">x = ${total} − ${fee} = ${ans}</span></div>
+          <div class="p"><b>Answer:</b> <b>$${ans}</b></div>
+        `;
+      }
+
+      // Section 2 example
+      {
+        const {diff,sum,olderName,youngerName,ans} = EX.twoAge;
+        const older = ans + diff;
+        document.getElementById("ex2").innerHTML = `
+          <div class="p"><b>Let</b> <span class="math">x</span> be ${youngerName}’s age.</div>
+          <div class="p">Then ${olderName}’s age is <span class="math">x + ${diff}</span>.</div>
+          <div class="p"><b>Equation:</b> <span class="math">x + (x + ${diff}) = ${sum}</span></div>
+          <div class="p"><b>Solve:</b> <span class="math">2x = ${sum - diff}</span> → <span class="math">x = ${(sum - diff)/2}</span></div>
+          <div class="p"><b>Answer:</b> ${youngerName} is <b>${ans}</b> (and ${olderName} is ${older}).</div>
+        `;
+      }
+
+      // Section 3 example
+      {
+        const x = randInt(6, 18);
+        const a = randInt(2, 8);
+        const k = randInt(2, 6);
+        const total = k*(x+a);
+        document.getElementById("ex3").innerHTML = `
+          <div class="p"><b>Let</b> <span class="math">x</span> be the number.</div>
+          <div class="p"><b>Equation:</b> <span class="math">${k}(x + ${a}) = ${total}</span></div>
+          <div class="p"><b>Solve:</b> <span class="math">x + ${a} = ${total/k}</span> → <span class="math">x = ${total/k - a}</span></div>
+        `;
+      }
+
+      // Section 4 example
+      {
+        const f = choice([{p:2,q:3},{p:3,q:4},{p:3,q:5}]);
+        let x = randInt(12, 60);
+        let N = x * f.p / f.q;
+        let tries=0;
+        while(!Number.isInteger(N) && tries++<60){
+          x = randInt(12, 60);
+          N = x * f.p / f.q;
+        }
+        document.getElementById("ex4").innerHTML = `
+          <div class="p"><b>Let</b> <span class="math">x</span> be the number.</div>
+          <div class="p"><b>Equation:</b> <span class="math">${f.p}/${f.q} × x = ${N}</span></div>
+          <div class="p"><b>Solve:</b> <span class="math">x = ${N} × ${f.q}/${f.p} = ${x}</span></div>
+        `;
+      }
+
+      // Section 5 example
+      {
+        const x = randInt(500, 2000)/100;
+        const fee = randInt(75, 450)/100;
+        const total = Math.round((x+fee)*100)/100;
+        document.getElementById("ex5").innerHTML = `
+          <div class="p"><b>Let</b> <span class="math">x</span> be the ride cost.</div>
+          <div class="p"><b>Equation:</b> <span class="math">x + ${fee.toFixed(2)} = ${total.toFixed(2)}</span></div>
+          <div class="p"><b>Solve:</b> <span class="math">x = ${(total-fee).toFixed(2)}</span></div>
+        `;
+      }
+    }
+
+    /***********************
+     * Rendering questions
+     ***********************/
+    function renderPractice(sectionId, list){
+      const host = document.getElementById("practice-" + sectionId);
+      host.innerHTML = "";
+
+      list.forEach((q, idx) => {
+        const wrap = document.createElement("div");
+        wrap.className = "q";
+
+        const top = document.createElement("div");
+        top.className = "q-top";
+
+        const num = document.createElement("div");
+        num.className = "q-num";
+        num.textContent = String(idx + 1);
+
+        const text = document.createElement("div");
+        text.className = "q-text";
+        text.id = "prompt-" + q.id;
+        text.innerHTML = q.promptHtmlFn();
+
+        top.appendChild(num);
+        top.appendChild(text);
+
+        const actions = document.createElement("div");
+        actions.className = "q-actions";
+
+        const inp = document.createElement("input");
+        inp.type = "text";
+        inp.id = "in-" + q.id;
+        inp.placeholder = q.placeholder || "Type your answer";
+        actions.appendChild(inp);
+
+        const check = document.createElement("button");
+        check.className = "check-btn";
+        check.textContent = "Check";
+        check.addEventListener("click", () => checkOne(q));
+        actions.appendChild(check);
+
+        const show = document.createElement("button");
+        show.className = "show-btn";
+        show.textContent = "Show Answer";
+        show.addEventListener("click", () => showAnswer(q));
+        actions.appendChild(show);
+
+        const fb = document.createElement("div");
+        fb.className = "fb";
+        fb.id = "fb-" + q.id;
+
+        wrap.appendChild(top);
+        wrap.appendChild(actions);
+        wrap.appendChild(fb);
+        host.appendChild(wrap);
+      });
+    }
+
+    function renderAll(){
+      renderExamples();
+      renderPractice("sec1", PRACTICE.sec1);
+      renderPractice("sec2", PRACTICE.sec2);
+      renderPractice("sec3", PRACTICE.sec3);
+      renderPractice("sec4", PRACTICE.sec4);
+      renderPractice("sec5", PRACTICE.sec5);
+      hideResults();
+    }
+
+    /***********************
+     * Checking
+     ***********************/
+    function checkOne(q){
+      clearFeedback(q.id);
+
+      const parsed = parseRationalInput(readVal(q.id));
+      if(!parsed.ok){
+        setFeedback(q.id, false, "❌ Please enter a valid number (e.g., 12, 3.5, 7/2, 1 1/2).");
+        return false;
+      }
+
+      const exp = q.expectedFn();
+      const ok = almostEqual(parsed.value, exp, 1e-6);
+
+      const expText = formatAnswer(exp, q.mode);
+      setFeedback(q.id, ok, ok ? "✅ Correct" : `❌ Not quite. (Expected ${expText})`);
+      return ok;
+    }
+
+    function showAnswer(q){
+      clearFeedback(q.id);
+      const exp = q.expectedFn();
+      const expText = formatAnswer(exp, q.mode);
+      setFeedback(q.id, true, `Answer: ${expText}`);
+    }
+
+    function checkAll(){
+      let correct = 0;
+      let total = 0;
+
+      for(const sec of Object.values(PRACTICE)){
+        sec.forEach(q=>{
+          total++;
+          if(checkOne(q)) correct++;
+        });
+      }
+      showResults(correct, total);
+    }
+
+    function showResults(correct, total){
+      const box = document.getElementById("resultBox");
+      const title = document.getElementById("resultTitle");
+      const text = document.getElementById("resultText");
+
+      box.classList.add("show");
+      title.textContent = `Result: ${correct} / ${total}`;
+      text.textContent = (correct === total)
+        ? "Excellent — everything is correct."
+        : "Review the questions marked incorrect (❌) and try again.";
+      box.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    function hideResults(){
+      const box = document.getElementById("resultBox");
+      box.classList.remove("show");
+      document.getElementById("resultTitle").textContent = "";
+      document.getElementById("resultText").textContent = "";
+    }
+
+    function resetAll(){
+      hideResults();
+      document.querySelectorAll('input[type="text"]').forEach(i => i.value = "");
+      document.querySelectorAll(".fb").forEach(fb => { fb.className="fb"; fb.textContent=""; });
+    }
+
+    /***********************
+     * Export Questions PDF
+     * - Questions pages: blank answer lines
+     * - LAST page: Answer Key (with student name)
+     ***********************/
+    const printArea = document.getElementById("printArea");
+
+    function getAllPracticeQuestionsFlat(){
+      const order = ["sec1","sec2","sec3","sec4","sec5"];
+      const out = [];
+      order.forEach(k => PRACTICE[k].forEach(q => out.push(q)));
+      return out;
+    }
+
+    function makePrintPageHeader(pageEl, perPage, subtitle){
+      const header = document.createElement("div");
+      header.className = "print-header";
+
+      const icon = document.createElement("div");
+      icon.className = "icon";
+
+      const textWrap = document.createElement("div");
+      const t1 = document.createElement("p");
+      t1.className = "t1";
+      t1.textContent = "DYAA Education";
+
+      const t2 = document.createElement("p");
+      t2.className = "t2";
+      t2.textContent = subtitle || `Equation Word Problems — Practice Questions ( ${perPage} per page )`;
+
+      const meta = document.createElement("p");
+      meta.className = "meta";
+      meta.innerHTML = `Student: <span>${STUDENT_NAME || "—"}</span> • Date: <span>${getDateStr()}</span>`;
+
+      textWrap.appendChild(t1);
+      textWrap.appendChild(t2);
+      textWrap.appendChild(meta);
+
+      header.appendChild(icon);
+      header.appendChild(textWrap);
+      pageEl.appendChild(header);
+    }
+
+    function buildAnswerLines(card){
+      const lines = document.createElement("div");
+      lines.className = "answer-lines";
+
+      const lab = document.createElement("div");
+      lab.className = "mini-label";
+      lab.textContent = "Answer:";
+      lines.appendChild(lab);
+
+      const line1 = document.createElement("div");
+      line1.className = "line";
+      const line2 = document.createElement("div");
+      line2.className = "line";
+      lines.appendChild(line1);
+      lines.appendChild(line2);
+
+      card.appendChild(lines);
+    }
+
+    function buildAnswerKeyPage(allQs){
+      const page = document.createElement("div");
+      page.className = "print-page";
+      makePrintPageHeader(page, 0, "Answer Key (Last Page)");
+
+      const title = document.createElement("div");
+      title.className = "ak-title";
+      title.textContent = "Answer Key";
+
+      const grid = document.createElement("div");
+      grid.className = "ak-grid";
+
+      allQs.forEach((q, idx) => {
+        const exp = q.expectedFn();
+        const expText = formatAnswer(exp, q.mode);
+
+        const item = document.createElement("div");
+        item.className = "ak-item";
+        item.innerHTML = `<b>${idx+1}.</b> ${expText}`;
+        grid.appendChild(item);
+      });
+
+      page.appendChild(title);
+      page.appendChild(grid);
+      return page;
+    }
+
+    function buildQuestionsPdf(perPage){
+      const allQs = getAllPracticeQuestionsFlat();
+      printArea.innerHTML = "";
+
+      let globalIndex = 1;
+
+      // Question pages
+      for(let start = 0; start < allQs.length; start += perPage){
+        const page = document.createElement("div");
+        page.className = "print-page";
+        makePrintPageHeader(page, perPage, `Equation Word Problems — Practice Questions ( ${perPage} per page )`);
+
+        const slice = allQs.slice(start, start + perPage);
+        slice.forEach(q=>{
+          const card = document.createElement("div");
+          card.className = "pq";
+
+          const row1 = document.createElement("div");
+          row1.className = "row1";
+
+          const n = document.createElement("div");
+          n.className = "n";
+          n.textContent = String(globalIndex++);
+
+          const txt = document.createElement("div");
+          txt.className = "txt";
+          txt.innerHTML = q.promptHtmlFn();
+
+          row1.appendChild(n);
+          row1.appendChild(txt);
+          card.appendChild(row1);
+
+          buildAnswerLines(card);
+          page.appendChild(card);
+        });
+
+        printArea.appendChild(page);
+      }
+
+      // Last page: Answer key
+      printArea.appendChild(buildAnswerKeyPage(allQs));
+    }
+
+    let cleanupAfterPrint = null;
+
+    function exportQuestionsPdf(){
+      if(!ensureStudentNameOrPrompt()) return;
+
+      const perPage = Number(document.getElementById("pdfPerPage").value) || 3;
+      buildQuestionsPdf(perPage);
+
+      document.body.classList.add("printing-questions");
+      cleanupAfterPrint = () => {
+        document.body.classList.remove("printing-questions");
+        printArea.innerHTML = "";
+        cleanupAfterPrint = null;
+      };
+
+      window.print();
+    }
+
+    window.addEventListener("afterprint", () => {
+      if(typeof cleanupAfterPrint === "function") cleanupAfterPrint();
+    });
+
+    /***********************
+     * Modal (Generate New Set)
+     ***********************/
+    const modal = document.getElementById("modalBackdrop");
+    const modalOk = document.getElementById("modalOk");
+    const modalCancel = document.getElementById("modalCancel");
+
+    function openModal(){
+      if(!ensureStudentNameOrPrompt()) return;
+      modal.style.display = "block";
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    }
+    function closeModal(){
+      modal.style.display = "none";
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    }
+
+    /***********************
+     * Buttons
+     ***********************/
+    document.getElementById("submitBtn").addEventListener("click", () => {
+      if(!ensureStudentNameOrPrompt()) return;
+      checkAll();
+    });
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      if(!ensureStudentNameOrPrompt()) return;
+      resetAll();
+    });
+    document.getElementById("exportQBtn").addEventListener("click", exportQuestionsPdf);
+
+    document.getElementById("genBtn").addEventListener("click", openModal);
+    modalCancel.addEventListener("click", closeModal);
+    modalOk.addEventListener("click", () => {
+      closeModal();
+      buildNewSet();
+      renderAll();
+      resetAll();
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+    modal.addEventListener("click", (e) => { if(e.target === modal) closeModal(); });
+
+    /***********************
+     * Init
+     ***********************/
+    buildNewSet();
+    renderAll();
+    initStudentName();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction to Equations — DYAA (Algebra Basics)</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#333;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI',Tahoma,sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    /* subtle DYAA watermark */
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      z-index:0;
+      user-select:none;
+      white-space:nowrap;
+    }
+
+    .quiz-container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:40px auto;
+      background:var(--card);
+      padding:28px;
+      border-radius:14px;
+      box-shadow:0 6px 16px rgba(0,0,0,0.10);
+      overflow:visible; /* iOS clipping */
+    }
+
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:12px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:8px;position:relative;flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px;height:10px;
+      background:var(--orange);
+      top:-6px;left:18px;
+      border-radius:7px;
+    }
+    .logo-text{min-width:220px;}
+    .logo-title{
+      font-size:20px;
+      font-weight:800;
+      color:var(--blue);
+      line-height:1.1;
+      margin:0;
+    }
+    .logo-sub{
+      font-size:13px;
+      color:var(--orange);
+      font-weight:800;
+      margin-top:2px;
+      display:block;
+    }
+
+    .top-bar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 12px;
+      background:#f7f9ff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      margin:14px 0 16px;
+      flex-wrap:wrap;
+    }
+
+    .status{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width:240px;
+    }
+    .status .big{
+      font-weight:800;
+      color:var(--blue);
+      font-size:14px;
+    }
+    .status .small{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .btns{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+
+    button{
+      border:0;
+      border-radius:10px;
+      padding:10px 12px;
+      font-weight:800;
+      cursor:pointer;
+      background:var(--blue);
+      color:#fff;
+      font-size:13px;
+      white-space:nowrap;
+    }
+    button.secondary{
+      background:#e8eefc;
+      color:var(--blue);
+      border:1px solid #cfe0ff;
+    }
+    button.orange{background:var(--orange);color:#111;}
+    button:active{transform:translateY(1px);}
+
+    .pdf-tools{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 8px;
+      border:1px solid #d8e6ff;
+      background:#fff;
+      border-radius:10px;
+    }
+    .pdf-tools label{
+      font-size:12px;
+      font-weight:900;
+      color:var(--blue);
+    }
+
+    input[type="text"], input[type="number"], select{
+      width:min(420px, 100%);
+      padding:10px 10px;
+      border-radius:10px;
+      border:1px solid #cfd6ea;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+
+    #pdfPerPage{
+      width:72px;
+      padding:8px 10px;
+      border-radius:10px;
+      font-weight:800;
+    }
+
+    /* Student bar */
+    .student-bar{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      padding:8px 10px;
+      border:1px solid #d8e6ff;
+      background:#fff;
+      border-radius:12px;
+      min-width:260px;
+    }
+    .student-line{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .student-label{
+      font-size:12px;
+      font-weight:900;
+      color:var(--blue);
+    }
+    .student-name{
+      font-size:13px;
+      font-weight:900;
+      color:#111;
+    }
+    .student-input{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .student-input input{
+      width:min(260px, 100%);
+    }
+    .student-hint{
+      font-size:12px;
+      color:var(--bad);
+      font-weight:800;
+    }
+
+    .nav{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:8px 0 18px;
+    }
+    .chip{
+      text-decoration:none;
+      font-size:12px;
+      font-weight:800;
+      color:var(--blue);
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      padding:7px 10px;
+      border-radius:999px;
+    }
+
+    .lesson{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      margin:14px 0;
+      background:#fff;
+    }
+    .lesson h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+
+    .lesson-grid{
+      display:grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap:14px;
+      align-items:start;
+    }
+    @media (max-width: 860px){
+      .lesson-grid{grid-template-columns:1fr;}
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      background:#fbfcff;
+      overflow:visible;
+    }
+    .panel h3{
+      margin:0 0 8px;
+      font-size:13px;
+      color:#1f2d5c;
+      letter-spacing:0.2px;
+      text-transform:uppercase;
+    }
+
+    .p{
+      margin:6px 0;
+      line-height:1.45;
+      color:#333;
+      font-size:14px;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+
+    .bullets{
+      margin:8px 0 0 18px;
+      padding:0;
+      color:#333;
+      font-size:14px;
+      line-height:1.5;
+    }
+    .bullets li{margin:4px 0;}
+
+    .math{
+      font-family: "Cambria Math","Times New Roman",serif;
+      font-size: 16px;
+    }
+    .ex{
+      border-left:4px solid #d8e6ff;
+      padding:8px 10px;
+      background:#fff;
+      border-radius:10px;
+      margin:8px 0;
+    }
+
+    .practice-note{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:6px;
+      line-height:1.4;
+    }
+
+    .q{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:12px;
+      padding:10px;
+      margin:10px 0;
+      overflow:visible;
+    }
+    .q-top{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+      overflow:visible;
+    }
+    .q-num{
+      width:30px;height:30px;border-radius:8px;
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      color:var(--blue);
+      font-weight:900;
+      display:flex;align-items:center;justify-content:center;
+      flex:0 0 auto;
+    }
+    .q-text{
+      flex:1 1 260px;
+      min-width:220px;
+      line-height:1.45;
+      font-size:14px;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+
+    .q-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .check-btn{
+      padding:9px 12px;
+      border-radius:10px;
+      background:var(--blue);
+      color:#fff;
+      font-weight:900;
+      border:0;
+    }
+    .show-btn{
+      padding:9px 12px;
+      border-radius:10px;
+      background:#eef4ff;
+      color:var(--blue);
+      font-weight:900;
+      border:1px solid #d8e6ff;
+    }
+
+    .fb{
+      font-size:13px;
+      line-height:1.35;
+      color:var(--muted);
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+    .fb.ok{color:var(--ok);font-weight:800;}
+    .fb.bad{color:var(--bad);font-weight:800;}
+
+    .result-box{
+      display:none;
+      margin-top:16px;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#f7fff9;
+    }
+    .result-box.show{display:block;}
+    .result-title{
+      font-weight:900;
+      color:var(--ok);
+      margin:0 0 6px;
+    }
+    .result-text{margin:0;color:#2e3b2f;line-height:1.4;}
+
+    /* Modal */
+    .modal-backdrop{
+      display:none;
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      z-index:999;
+      padding:18px;
+    }
+    .modal{
+      max-width:520px;
+      margin:12vh auto 0;
+      background:#fff;
+      border-radius:14px;
+      padding:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+    }
+    .modal h3{
+      margin:0 0 6px;
+      color:var(--blue);
+      font-size:16px;
+    }
+    .modal p{margin:0 0 12px;color:#444;line-height:1.45;}
+    .modal .row{
+      display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;
+    }
+
+    /***********************
+     * Export Questions: Print-only area
+     ***********************/
+    .print-area{display:none;}
+
+    body.printing-questions:before{display:none;}
+    body.printing-questions .quiz-container{display:none !important;}
+    body.printing-questions .print-area{display:block !important;}
+
+    .print-page{
+      max-width:900px;
+      margin:0 auto;
+      background:#fff;
+      padding:18px 20px;
+      border-radius:0;
+    }
+
+    .print-header{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding-bottom:10px;
+      margin-bottom:12px;
+      border-bottom:2px solid #e0e0e0;
+    }
+    .print-header .icon{
+      width:38px;height:38px;background:var(--blue);
+      border-radius:8px;position:relative;flex:0 0 auto;
+    }
+    .print-header .icon:before{
+      content:"";
+      position:absolute;width:20px;height:9px;background:var(--orange);
+      top:-6px;left:16px;border-radius:7px;
+    }
+    .print-header .t1{margin:0;font-size:18px;font-weight:900;color:var(--blue);line-height:1.1;}
+    .print-header .t2{margin:0;font-size:12px;font-weight:900;color:var(--orange);}
+    .print-header .t3{margin:2px 0 0;font-size:12px;font-weight:900;color:#111;}
+
+    .pq{
+      border:1px solid #dfe7fb;
+      border-radius:12px;
+      padding:10px 12px;
+      margin:10px 0;
+    }
+    .pq .row1{
+      display:flex; gap:10px; align-items:flex-start;
+    }
+    .pq .n{
+      width:28px;height:28px;border-radius:8px;
+      background:#eef4ff;border:1px solid #d8e6ff;
+      color:var(--blue);font-weight:900;
+      display:flex;align-items:center;justify-content:center;
+      flex:0 0 auto;
+    }
+    .pq .txt{
+      flex:1 1 auto;
+      font-size:14px;
+      line-height:1.45;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+
+    .answer-lines{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .line{
+      border-bottom:1px solid #999;
+      height:16px;
+    }
+    .mini-label{
+      font-size:12px;
+      font-weight:800;
+      color:#1f2d5c;
+      margin-top:6px;
+    }
+
+    /* ✅ Answer key page styles (LAST PAGE) */
+    .answer-key-box{
+      border:1px solid #dfe7fb;
+      border-radius:12px;
+      padding:12px;
+      background:#f7f9ff;
+    }
+    .answer-key-title{
+      font-weight:900;
+      color:var(--blue);
+      margin:0 0 8px;
+      font-size:14px;
+    }
+    .answers-list{
+      margin:0;
+      padding-left:18px;
+      font-size:13px;
+      line-height:1.5;
+      color:#1f2d5c;
+    }
+    .answers-list li{margin:4px 0;}
+    .ak-muted{color:#5b6b93;font-weight:800;}
+
+    /* Actual printing */
+    @media print{
+      body{background:#fff;padding:0;}
+      .modal-backdrop{display:none !important;}
+      .print-page{page-break-after:always;}
+      .print-page:last-child{page-break-after:auto;}
+      button, .top-bar, .nav{display:none !important;}
+    }
+  </style>
+</head>
+
+<body>
+  <!-- PRINT AREA (only used for Export Questions PDF) -->
+  <div class="print-area" id="printArea" aria-hidden="true"></div>
+
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="logo-text">
+        <h1 class="logo-title">DYAA Education</h1>
+        <span class="logo-sub">Introduction to Equations (Algebra Basics)</span>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="status">
+        <div class="big">Practice + Instant Checking</div>
+        <div class="small">
+          Type answers, then click <b>Check</b> (per question) or <b>Submit & View Results</b> (overall).
+          Use <b>Generate New Set</b> to change the numbers (questions stay the same style).
+        </div>
+      </div>
+
+      <!-- ✅ Student name bar (URL ?name=Tiger OR manual input) -->
+      <div class="student-bar" id="studentBar">
+        <div class="student-line">
+          <span class="student-label">Student:</span>
+          <span class="student-name" id="studentNameLabel">—</span>
+        </div>
+
+        <!-- Only shown when URL has no ?name= -->
+        <div class="student-input" id="studentInputWrap" style="display:none;">
+          <input id="studentNameInput" type="text" placeholder="Enter student name to start" />
+          <button class="orange" id="studentStartBtn" type="button">Start</button>
+        </div>
+
+        <div class="student-hint" id="studentHint" style="display:none;">
+          Please enter the student name to begin.
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="orange" id="genBtn">Generate New Set</button>
+        <button id="submitBtn">Submit & View Results</button>
+        <button class="secondary" id="resetBtn">Reset</button>
+
+        <div class="pdf-tools" title="How many questions per PDF page">
+          <label for="pdfPerPage">PDF per page</label>
+          <select id="pdfPerPage" aria-label="PDF per page">
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+        </div>
+
+        <button class="orange" id="exportQBtn">Export Questions PDF</button>
+      </div>
+    </div>
+
+    <div class="nav" aria-label="Lesson navigation">
+      <a class="chip" href="#sec1">1. Letters</a>
+      <a class="chip" href="#sec2">2. Laws</a>
+      <a class="chip" href="#sec3">3. Formulas</a>
+      <a class="chip" href="#sec4">4. Equation vs Expression</a>
+      <a class="chip" href="#sec5">5. Parts of an Equation</a>
+      <a class="chip" href="#sec6">6. Equality Rules</a>
+      <a class="chip" href="#sec7">7. What is a Solution?</a>
+    </div>
+
+    <!-- Section 1 -->
+    <section class="lesson" id="sec1">
+      <h2>1. Using Letters to Represent Numbers</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Explanation</h3>
+          <p class="p">
+            In algebra, we often use letters (such as <span class="math">x</span>, <span class="math">y</span>, or <span class="math">a</span>)
+            to represent numbers. These letters are called <b>variables</b>. Variables help us write general relationships.
+          </p>
+
+          <div class="ex">
+            <div class="p"><b>Examples</b></div>
+            <ul class="bullets">
+              <li><span class="math">“A number plus 5” → x + 5</span> (or <span class="math">5 + x</span>)</li>
+              <li><span class="math">If each apple is $3 and total cost is c, number of apples = c ÷ 3</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Practice Questions</h3>
+          <div id="practice-sec1"></div>
+          <div class="practice-note">
+            Tip: Remove spaces when checking (e.g., <span class="math">2x+6</span> is the same as <span class="math">2x + 6</span>).
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2 -->
+    <section class="lesson" id="sec2">
+      <h2>2. Expressing Laws of Operations with Letters</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Explanation</h3>
+          <p class="p">
+            The laws of operations help us rearrange and simplify expressions. These laws apply to addition and multiplication.
+          </p>
+          <p class="p">
+            In algebra, multiplication between letters can be written as <span class="math">a·b</span>, <span class="math">a×b</span>,
+            or simply <span class="math">ab</span>.
+          </p>
+
+          <div class="ex">
+            <div class="p"><b>Commutative Law</b></div>
+            <ul class="bullets">
+              <li>Addition: <span class="math">a + b = b + a</span></li>
+              <li>Multiplication: <span class="math">ab = ba</span></li>
+            </ul>
+            <div class="p math">Example: 4 + x = x + 4</div>
+          </div>
+
+          <div class="ex">
+            <div class="p"><b>Associative Law</b></div>
+            <ul class="bullets">
+              <li>Addition: <span class="math">(a + b) + c = a + (b + c)</span></li>
+              <li>Multiplication: <span class="math">(ab)c = a(bc)</span></li>
+            </ul>
+            <div class="p math">Example: (2 + 3) + x = 2 + (3 + x)</div>
+          </div>
+
+          <div class="ex">
+            <div class="p"><b>Distributive Law</b></div>
+            <div class="p math">a(b + c) = ab + ac</div>
+            <div class="p math">Example: 3(x + 2) = 3x + 6</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Practice Questions</h3>
+          <div id="practice-sec2"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3 -->
+    <section class="lesson" id="sec3">
+      <h2>3. Expressing a Formula with Letters</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Example</h3>
+          <p class="p">
+            Use letters to represent the <b>area</b> and <b>perimeter</b> of a square.
+            Let the side length be <span class="math">a</span>. Use <span class="math">S</span> for area and <span class="math">C</span> for perimeter.
+          </p>
+
+          <div class="ex">
+            <div class="p math"><b>Area:</b> S = a × a = a<sup>2</sup></div>
+            <div class="p math"><b>Perimeter:</b> C = a × 4 = 4a</div>
+            <div class="p"><span class="math">a<sup>2</sup></span> means multiplying <span class="math">a</span> by itself.</div>
+          </div>
+
+          <div class="ex">
+            <div class="p"><b>When a = <span id="sqSideExample" class="math"></span> cm:</b></div>
+            <div class="p">Area: <span class="math">S = a<sup>2</sup> = <span id="sqAreaWork"></span> cm<sup>2</sup></span></div>
+            <div class="p">Perimeter: <span class="math">C = 4a = <span id="sqPerimWork"></span> cm</span></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Practice Questions</h3>
+          <div id="practice-sec3"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4 -->
+    <section class="lesson" id="sec4">
+      <h2>4. What Is an Equation? Difference from an Expression</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Explanation</h3>
+          <ul class="bullets">
+            <li><b>Expression:</b> numbers/letters with <b>no</b> equal sign (e.g., <span class="math">2x + 1</span>)</li>
+            <li><b>Equation:</b> a sentence that shows equality (e.g., <span class="math">2x + 1 = 5</span>)</li>
+          </ul>
+
+          <div class="ex">
+            <div class="p"><b>Examples</b></div>
+            <ul class="bullets">
+              <li><span class="math">x + 2 = 5</span> → equation</li>
+              <li><span class="math">x + 2</span> → expression</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Practice Questions</h3>
+          <div id="practice-sec4"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5 -->
+    <section class="lesson" id="sec5">
+      <h2>5. Parts of an Equation</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Explanation</h3>
+          <p class="p">An equation has:</p>
+          <ul class="bullets">
+            <li><b>Left-hand side (LHS)</b></li>
+            <li><b>Right-hand side (RHS)</b></li>
+            <li><b>Equal sign</b> (<span class="math">=</span>)</li>
+            <li><b>Unknown (variable)</b></li>
+          </ul>
+
+          <div class="ex">
+            <div class="p"><b>Example</b></div>
+            <div class="p math">In 3x + 1 = 10:</div>
+            <ul class="bullets">
+              <li>LHS = <span class="math">3x + 1</span></li>
+              <li>RHS = <span class="math">10</span></li>
+              <li>Unknown = <span class="math">x</span></li>
+            </ul>
+          </div>
+
+          <div class="ex">
+            <div class="p"><b>Key Vocabulary</b></div>
+            <div class="p math">In 3x + 5 = 11:</div>
+            <ul class="bullets">
+              <li><b>Variable:</b> <span class="math">x</span> (unknown value)</li>
+              <li><b>Coefficient:</b> <span class="math">3</span> (number multiplying the variable)</li>
+              <li><b>Constants:</b> <span class="math">5</span> and <span class="math">11</span> (numbers without variables)</li>
+              <li><b>Terms:</b> parts separated by +/− (e.g., <span class="math">3x</span> and <span class="math">5</span>)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Practice Questions</h3>
+          <div id="practice-sec5"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 6 -->
+    <section class="lesson" id="sec6">
+      <h2>6. Properties of Equations (Equality Rules)</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Rules</h3>
+          <div class="ex">
+            <div class="p"><b>Rule 1</b></div>
+            <div class="p">Add/Subtract the same number on both sides → the equation remains true.</div>
+          </div>
+          <div class="ex">
+            <div class="p"><b>Rule 2</b></div>
+            <div class="p">Multiply/Divide both sides by the same <b>non-zero</b> number → still true.</div>
+          </div>
+          <div class="ex">
+            <div class="p"><b>Balance idea</b></div>
+            <div class="p">Whatever you do to the left side, you must do to the right side.</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Practice Questions</h3>
+          <div id="practice-sec6"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 7 -->
+    <section class="lesson" id="sec7">
+      <h2>7. What Is the Solution of an Equation? What Does It Mean to Solve?</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Explanation</h3>
+          <ul class="bullets">
+            <li><b>Solution:</b> the value of the variable that makes the equation true.</li>
+            <li><b>Solving:</b> finding that value.</li>
+          </ul>
+
+          <div class="ex">
+            <div class="p"><b>Examples</b></div>
+            <ul class="bullets">
+              <li><span class="math">Solve: x + 5 = 12 → x = 7</span></li>
+              <li>
+                <span class="math">Check if x = 4 is a solution of 2x + 1 = 9</span><br/>
+                <span class="math">2(4) + 1 = 9 → Yes</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Practice Questions</h3>
+          <div id="practice-sec7"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="result-box" id="resultBox" aria-live="polite">
+      <p class="result-title" id="resultTitle"></p>
+      <p class="result-text" id="resultText"></p>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <h3 id="modalTitle">Generate a new set?</h3>
+      <p>This will change the numbers in the practice questions and clear all your current answers.</p>
+      <div class="row">
+        <button class="secondary" id="modalCancel">Cancel</button>
+        <button class="orange" id="modalOk">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Student name (URL ?name= or manual input)
+     ***********************/
+    let STUDENT_NAME = "";
+
+    function decodeNameParam(v){
+      return decodeURIComponent(String(v).replace(/\+/g, " ")).trim();
+    }
+
+    function setUiLocked(locked){
+      const idsToLock = ["genBtn", "submitBtn", "resetBtn", "exportQBtn"];
+      idsToLock.forEach(id=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.disabled = !!locked;
+        el.style.opacity = locked ? "0.55" : "";
+        el.style.cursor = locked ? "not-allowed" : "";
+      });
+
+      document.querySelectorAll(".check-btn, .show-btn").forEach(btn=>{
+        btn.disabled = !!locked;
+        btn.style.opacity = locked ? "0.55" : "";
+        btn.style.cursor = locked ? "not-allowed" : "";
+      });
+
+      document.querySelectorAll('input[type="text"], input[type="number"], select').forEach(el=>{
+        if(el.id === "studentNameInput") return;
+        el.disabled = !!locked;
+      });
+    }
+
+    function setStudentName(name){
+      STUDENT_NAME = (name || "").trim();
+      document.getElementById("studentNameLabel").textContent = STUDENT_NAME || "—";
+
+      const wrap = document.getElementById("studentInputWrap");
+      const hint = document.getElementById("studentHint");
+
+      if(STUDENT_NAME){
+        if(wrap) wrap.style.display = "none";
+        if(hint) hint.style.display = "none";
+        setUiLocked(false);
+      }else{
+        if(wrap) wrap.style.display = "flex";
+        if(hint) hint.style.display = "block";
+        setUiLocked(true);
+      }
+    }
+
+    function initStudentNameGate(){
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("name");
+
+      if(raw && decodeNameParam(raw)){
+        setStudentName(decodeNameParam(raw));
+      }else{
+        setStudentName("");
+
+        const btn = document.getElementById("studentStartBtn");
+        const input = document.getElementById("studentNameInput");
+        const hint = document.getElementById("studentHint");
+
+        function tryStart(){
+          const n = (input?.value || "").trim();
+          if(!n){
+            if(hint) hint.style.display = "block";
+            return;
+          }
+          setStudentName(n);
+        }
+
+        if(btn) btn.addEventListener("click", tryStart);
+        if(input){
+          input.addEventListener("keydown", (e)=>{
+            if(e.key === "Enter") tryStart();
+          });
+          setTimeout(()=>input.focus(), 50);
+        }
+      }
+    }
+
+    /***********************
+     * Helpers
+     ***********************/
+    function randInt(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function norm(s){
+      return (s ?? "")
+        .toString()
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g,"")
+        .replace(/×/g,"*")
+        .replace(/·/g,"*");
+    }
+
+    function prettyMath(s){
+      return String(s ?? "").replace(/\*/g, "×");
+    }
+
+    function setFeedback(id, ok, msg){
+      const el = document.getElementById("fb-" + id);
+      if(!el) return;
+      el.className = "fb " + (ok ? "ok" : "bad");
+      el.textContent = msg;
+    }
+
+    function clearFeedback(id){
+      const el = document.getElementById("fb-" + id);
+      if(!el) return;
+      el.className = "fb";
+      el.textContent = "";
+    }
+
+    function readVal(id){
+      const el = document.getElementById("in-" + id);
+      if(!el) return "";
+      return el.value ?? "";
+    }
+
+    function isFiniteNumberString(s){
+      const v = Number(s);
+      return Number.isFinite(v);
+    }
+
+    /***********************
+     * Current random set
+     ***********************/
+    let SET = {};
+
+    function buildNewSet(){
+      // Section 1
+      SET.s1_minus = randInt(6, 12);
+      SET.s1_plus = randInt(4, 9);
+      SET.s1_pencils = randInt(3, 8);
+
+      // Section 2
+      SET.s2_comm_num = randInt(2, 12);
+      SET.s2_assoc_a = randInt(2, 6);
+      SET.s2_assoc_b = randInt(2, 6);
+      SET.s2_dist_k = randInt(2, 9);
+      SET.s2_dist_c = randInt(2, 9);
+
+      // Section 3
+      SET.s3_side = randInt(4, 12);
+
+      // Section 4
+      SET.s4_x = randInt(2, 12);
+      SET.s4_k = randInt(1, 9);
+      SET.s4_total = 2 * SET.s4_x + SET.s4_k;
+
+      SET.s4_expr_k = randInt(1, 9);
+      SET.s4_expr_total = 2 * randInt(2, 12) + SET.s4_expr_k;
+
+      // Section 5
+      SET.s5_var = "x";
+      SET.s5_sub = randInt(2, 12);
+      SET.s5_rhs = randInt(2, 20);
+
+      SET.s5_n_coef = randInt(2, 9);
+      SET.s5_n_const = randInt(1, 9);
+      SET.s5_n_solution = randInt(2, 10);
+      SET.s5_n_total = SET.s5_n_coef * SET.s5_n_solution + SET.s5_n_const;
+
+      SET.s5y_coef = randInt(2, 9);
+      SET.s5y_const_left = randInt(1, 9);
+      SET.s5y_const_right = randInt(2, 20);
+
+      // Section 6
+      SET.s6_a = randInt(3, 15);
+      SET.s6_b = randInt(5, 25);
+      SET.s6_x = SET.s6_b - SET.s6_a;
+
+      SET.s6_mul = randInt(2, 9);
+      SET.s6_y = randInt(2, 12);
+      SET.s6_mul_total = SET.s6_mul * SET.s6_y;
+
+      SET.s6_div = randInt(2, 9);
+      SET.s6_z = randInt(2, 12);
+      SET.s6_div_total = SET.s6_div * SET.s6_z;
+
+      // Section 7
+      SET.s7_add = randInt(2, 12);
+      SET.s7_total = randInt(10, 30);
+      SET.s7_sol = SET.s7_total - SET.s7_add;
+
+      SET.s7_check_coef = randInt(2, 9);
+      SET.s7_check_x = randInt(2, 10);
+      SET.s7_check_total = SET.s7_check_coef * SET.s7_check_x;
+
+      SET.s7_lin_coef = randInt(2, 9);
+      SET.s7_lin_const = randInt(1, 10);
+      SET.s7_lin_x = randInt(2, 12);
+      SET.s7_lin_total = SET.s7_lin_coef * SET.s7_lin_x + SET.s7_lin_const;
+    }
+
+    /***********************
+     * Practice question definitions
+     ***********************/
+    function qExpr(id, promptFn, acceptedFn, placeholder="Type your expression"){
+      return { id, type:"expr", promptFn, acceptedFn, placeholder };
+    }
+    function qEqn(id, promptFn, acceptedFn, placeholder="Type your equation"){
+      return { id, type:"eqn", promptFn, acceptedFn, placeholder };
+    }
+    function qNum(id, promptFn, expectedFn, placeholder="Type a number"){
+      return { id, type:"num", promptFn, expectedFn, placeholder };
+    }
+    function qSelect(id, promptFn, options, expected){
+      return { id, type:"select", promptFn, options, expected };
+    }
+    function qMulti(id, promptFn, fieldsFn, checkFn){
+      return { id, type:"multi", promptFn, fieldsFn, checkFn };
+    }
+
+    const PRACTICE = {
+      sec1: [
+        qExpr("s1q1",
+          () => `Write an expression for “a number minus ${SET.s1_minus}”. (Use x for the number.)`,
+          () => [norm(`x-${SET.s1_minus}`), norm(`${-SET.s1_minus}+x`)],
+          `e.g., x - ${SET.s1_minus}`
+        ),
+        qExpr("s1q2",
+          () => `Use a letter n to express “twice a number plus ${SET.s1_plus}”.`,
+          () => [norm(`2n+${SET.s1_plus}`), norm(`${SET.s1_plus}+2n`)],
+          `e.g., 2n + ${SET.s1_plus}`
+        ),
+        qExpr("s1q3",
+          () => `If a pencil costs p dollars, write an expression for the cost of ${SET.s1_pencils} pencils.`,
+          () => [norm(`${SET.s1_pencils}p`), norm(`p*${SET.s1_pencils}`), norm(`${SET.s1_pencils}*p`)],
+          `e.g., ${SET.s1_pencils}p`
+        )
+      ],
+      sec2: [
+        qExpr("s2q1",
+          () => `Use the commutative law to rewrite: ${SET.s2_comm_num} + x`,
+          () => [norm(`x+${SET.s2_comm_num}`)],
+          `x + ${SET.s2_comm_num}`
+        ),
+        qExpr("s2q2",
+          () => `Use the associative law to simplify: (x × ${SET.s2_assoc_a}) × ${SET.s2_assoc_b}`,
+          () => {
+            const prod = SET.s2_assoc_a * SET.s2_assoc_b;
+            return [norm(`${prod}x`), norm(`x*${prod}`), norm(`${prod}*x`)];
+          },
+          `${SET.s2_assoc_a * SET.s2_assoc_b}x`
+        ),
+        qExpr("s2q3",
+          () => `Use the distributive law to expand: ${SET.s2_dist_k}(y + ${SET.s2_dist_c})`,
+          () => [norm(`${SET.s2_dist_k}y+${SET.s2_dist_k * SET.s2_dist_c}`)],
+          `${SET.s2_dist_k}y + ${SET.s2_dist_k * SET.s2_dist_c}`
+        )
+      ],
+      sec3: [
+        qNum("s3q1",
+          () => `A square has side length a = ${SET.s3_side} cm. What is the area (in cm²)?`,
+          () => SET.s3_side * SET.s3_side,
+          "e.g., 36"
+        ),
+        qNum("s3q2",
+          () => `A square has side length a = ${SET.s3_side} cm. What is the perimeter (in cm)?`,
+          () => 4 * SET.s3_side,
+          "e.g., 24"
+        )
+      ],
+      sec4: [
+        qSelect("s4q1",
+          () => `Is 3y − 4 an equation or an expression?`,
+          [{v:"expression", t:"Expression (no = sign)"},{v:"equation", t:"Equation (= sign)"}],
+          "expression"
+        ),
+        qEqn("s4q2",
+          () => `Write an equation: “twice a number plus ${SET.s4_k} equals ${SET.s4_total}”. (Use x.)`,
+          () => [norm(`2x+${SET.s4_k}=${SET.s4_total}`), norm(`${SET.s4_total}=2x+${SET.s4_k}`)],
+          `2x + ${SET.s4_k} = ${SET.s4_total}`
+        ),
+        qEqn("s4q3",
+          () => `Change the expression 2x + ${SET.s4_expr_k} into an equation that equals ${SET.s4_expr_total}.`,
+          () => [norm(`2x+${SET.s4_expr_k}=${SET.s4_expr_total}`), norm(`${SET.s4_expr_total}=2x+${SET.s4_expr_k}`)],
+          `2x + ${SET.s4_expr_k} = ${SET.s4_expr_total}`
+        )
+      ],
+      sec5: [
+        qMulti("s5q1",
+          () => `Identify the LHS, RHS, and the unknown in the equation: ${SET.s5_var} − ${SET.s5_sub} = ${SET.s5_rhs}`,
+          () => ([
+            { key:"lhs", label:"LHS", placeholder:`${SET.s5_var}-${SET.s5_sub}` },
+            { key:"rhs", label:"RHS", placeholder:`${SET.s5_rhs}` },
+            { key:"unk", label:"Unknown", placeholder:`${SET.s5_var}` }
+          ]),
+          (vals) => {
+            const lhsOk = norm(vals.lhs) === norm(`${SET.s5_var}-${SET.s5_sub}`);
+            const rhsOk = norm(vals.rhs) === norm(`${SET.s5_rhs}`);
+            const unkOk = norm(vals.unk) === norm(`${SET.s5_var}`);
+            return lhsOk && rhsOk && unkOk;
+          }
+        ),
+        qEqn("s5q2",
+          () => `Write an equation with unknown y (any valid equation is accepted). Example: y + 3 = 10`,
+          () => [],
+          "e.g., y + 3 = 10"
+        ),
+        qExpr("s5q3",
+          () => `What is the unknown in ${SET.s5_n_coef}n + ${SET.s5_n_const} = ${SET.s5_n_total}?`,
+          () => [norm("n")],
+          "n"
+        ),
+        qMulti("s5q4",
+          () => `Identify the variable, coefficient, and constants in: ${SET.s5y_coef}y − ${SET.s5y_const_left} = ${SET.s5y_const_right}`,
+          () => ([
+            { key:"var", label:"Variable", placeholder:"y" },
+            { key:"coef", label:"Coefficient", placeholder:String(SET.s5y_coef) },
+            { key:"const", label:"Constants", placeholder:`-${SET.s5y_const_left}, ${SET.s5y_const_right}` }
+          ]),
+          (vals) => {
+            const varOk = norm(vals.var) === "y";
+            const coefOk = norm(vals.coef) === norm(String(SET.s5y_coef));
+            const raw = (vals.const ?? "").toString().toLowerCase().replace(/\s+/g,"");
+            const a = "-" + SET.s5y_const_left;
+            const b = String(SET.s5y_const_right);
+            return varOk && coefOk && raw.includes(a) && raw.includes(b);
+          }
+        )
+      ],
+      sec6: [
+        qNum("s6q1",
+          () => `Solve using equality rules: x + ${SET.s6_a} = ${SET.s6_b}.  What is x?`,
+          () => SET.s6_x,
+          "x = ?"
+        ),
+        qNum("s6q2",
+          () => `Solve: ${SET.s6_mul}y = ${SET.s6_mul_total}.  What is y?`,
+          () => SET.s6_y,
+          "y = ?"
+        ),
+        qNum("s6q3",
+          () => `Solve: a ÷ ${SET.s6_div} = ${SET.s6_z}.  What is a?`,
+          () => SET.s6_div_total,
+          "a = ?"
+        )
+      ],
+      sec7: [
+        qNum("s7q1",
+          () => `Solve: x + ${SET.s7_add} = ${SET.s7_total}.  What is x?`,
+          () => SET.s7_sol,
+          "x = ?"
+        ),
+        qSelect("s7q2",
+          () => `Is x = ${SET.s7_check_x} a solution of ${SET.s7_check_coef}x = ${SET.s7_check_total}?`,
+          [{v:"yes", t:"Yes"},{v:"no", t:"No"}],
+          "yes"
+        ),
+        qNum("s7q3",
+          () => `Find x: ${SET.s7_lin_coef}x + ${SET.s7_lin_const} = ${SET.s7_lin_total}`,
+          () => SET.s7_lin_x,
+          "x = ?"
+        )
+      ]
+    };
+
+    /***********************
+     * Rendering
+     ***********************/
+    function renderPractice(sectionId, list){
+      const host = document.getElementById("practice-" + sectionId);
+      host.innerHTML = "";
+
+      list.forEach((q, idx) => {
+        const wrap = document.createElement("div");
+        wrap.className = "q";
+        wrap.id = "wrap-" + q.id;
+
+        const top = document.createElement("div");
+        top.className = "q-top";
+
+        const num = document.createElement("div");
+        num.className = "q-num";
+        num.textContent = String(idx + 1);
+
+        const text = document.createElement("div");
+        text.className = "q-text";
+        text.id = "prompt-" + q.id;
+        text.textContent = q.promptFn();
+
+        top.appendChild(num);
+        top.appendChild(text);
+
+        const actions = document.createElement("div");
+        actions.className = "q-actions";
+
+        if(q.type === "select"){
+          const sel = document.createElement("select");
+          sel.id = "in-" + q.id;
+          q.options.forEach(o=>{
+            const opt = document.createElement("option");
+            opt.value = o.v;
+            opt.textContent = o.t;
+            sel.appendChild(opt);
+          });
+          actions.appendChild(sel);
+        } else if(q.type === "multi"){
+          const fields = q.fieldsFn();
+          fields.forEach(f=>{
+            const holder = document.createElement("div");
+            holder.style.display = "flex";
+            holder.style.flexDirection = "column";
+            holder.style.gap = "4px";
+            holder.style.minWidth = "160px";
+
+            const lab = document.createElement("div");
+            lab.style.fontSize = "12px";
+            lab.style.fontWeight = "800";
+            lab.style.color = "#1f2d5c";
+            lab.textContent = f.label;
+
+            const inp = document.createElement("input");
+            inp.type = "text";
+            inp.id = "in-" + q.id + "-" + f.key;
+            inp.placeholder = f.placeholder || "";
+
+            holder.appendChild(lab);
+            holder.appendChild(inp);
+            actions.appendChild(holder);
+          });
+        } else {
+          const inp = document.createElement("input");
+          inp.type = (q.type === "num") ? "number" : "text";
+          inp.step = "any";
+          inp.id = "in-" + q.id;
+          inp.placeholder = q.placeholder || "";
+          actions.appendChild(inp);
+        }
+
+        const check = document.createElement("button");
+        check.className = "check-btn";
+        check.textContent = "Check";
+        check.addEventListener("click", () => checkOne(q));
+        actions.appendChild(check);
+
+        const show = document.createElement("button");
+        show.className = "show-btn";
+        show.textContent = "Show Answer";
+        show.addEventListener("click", () => showAnswer(q));
+        actions.appendChild(show);
+
+        const fb = document.createElement("div");
+        fb.className = "fb";
+        fb.id = "fb-" + q.id;
+
+        wrap.appendChild(top);
+        wrap.appendChild(actions);
+        wrap.appendChild(fb);
+
+        host.appendChild(wrap);
+      });
+    }
+
+    function renderAll(){
+      document.getElementById("sqSideExample").textContent = SET.s3_side;
+      document.getElementById("sqAreaWork").textContent = `${SET.s3_side} × ${SET.s3_side} = ${SET.s3_side * SET.s3_side}`;
+      document.getElementById("sqPerimWork").textContent = `4 × ${SET.s3_side} = ${4 * SET.s3_side}`;
+
+      renderPractice("sec1", PRACTICE.sec1);
+      renderPractice("sec2", PRACTICE.sec2);
+      renderPractice("sec3", PRACTICE.sec3);
+      renderPractice("sec4", PRACTICE.sec4);
+      renderPractice("sec5", PRACTICE.sec5);
+      renderPractice("sec6", PRACTICE.sec6);
+      renderPractice("sec7", PRACTICE.sec7);
+
+      hideResults();
+      setUiLocked(!STUDENT_NAME);
+    }
+
+    /***********************
+     * Checking logic
+     ***********************/
+    function checkOne(q){
+      clearFeedback(q.id);
+
+      if(q.type === "select"){
+        const val = readVal(q.id);
+        const ok = (val === q.expected);
+        setFeedback(q.id, ok, ok ? "✅ Correct" : "❌ Not quite. Try again.");
+        return ok;
+      }
+
+      if(q.type === "num"){
+        const raw = readVal(q.id);
+        if(!isFiniteNumberString(raw)){
+          setFeedback(q.id, false, "❌ Please enter a valid number.");
+          return false;
+        }
+        const exp = q.expectedFn();
+        const ok = Math.abs(Number(raw) - exp) < 1e-9;
+        setFeedback(q.id, ok, ok ? "✅ Correct" : `❌ Not quite. (Expected ${exp})`);
+        return ok;
+      }
+
+      if(q.type === "multi"){
+        const fields = q.fieldsFn();
+        const vals = {};
+        fields.forEach(f=>{
+          const el = document.getElementById("in-" + q.id + "-" + f.key);
+          vals[f.key] = el ? el.value : "";
+        });
+        const ok = q.checkFn(vals);
+        setFeedback(q.id, ok, ok ? "✅ Correct" : "❌ Not quite. Check each part carefully.");
+        return ok;
+      }
+
+      if(q.id === "s5q2"){
+        const raw = readVal(q.id);
+        const n = norm(raw);
+        const ok = n.includes("y") && n.includes("=");
+        setFeedback(q.id, ok, ok ? "✅ Accepted (valid equation with y)" : "❌ Include y and an equals sign (=).");
+        return ok;
+      }
+
+      const user = norm(readVal(q.id));
+      const accepted = (q.acceptedFn ? q.acceptedFn() : []).map(norm);
+      const ok = accepted.includes(user);
+      setFeedback(q.id, ok, ok ? "✅ Correct" : "❌ Not quite. Try again.");
+      return ok;
+    }
+
+    function showAnswer(q){
+      clearFeedback(q.id);
+
+      if(q.type === "select"){
+        const ans = q.options.find(o => o.v === q.expected);
+        setFeedback(q.id, true, `Answer: ${ans ? ans.t : q.expected}`);
+        return;
+      }
+
+      if(q.type === "num"){
+        const exp = q.expectedFn();
+        setFeedback(q.id, true, `Answer: ${exp}`);
+        return;
+      }
+
+      if(q.type === "multi"){
+        if(q.id === "s5q1"){
+          setFeedback(q.id, true, `Answer: LHS = ${SET.s5_var}-${SET.s5_sub}, RHS = ${SET.s5_rhs}, Unknown = ${SET.s5_var}`);
+          return;
+        }
+        if(q.id === "s5q4"){
+          setFeedback(q.id, true, `Answer: Variable = y, Coefficient = ${SET.s5y_coef}, Constants = -${SET.s5y_const_left} and ${SET.s5y_const_right}`);
+          return;
+        }
+        setFeedback(q.id, true, "Answer shown.");
+        return;
+      }
+
+      if(q.id === "s5q2"){
+        setFeedback(q.id, true, `Example answer: y + 3 = 10 (many answers are possible)`);
+        return;
+      }
+
+      const accepted = (q.acceptedFn ? q.acceptedFn() : []);
+      const primary = accepted.length ? accepted[0] : "";
+      setFeedback(q.id, true, `Answer: ${primary.replace(/\*/g,"×")}`);
+    }
+
+    function checkAll(){
+      let correct = 0;
+      let total = 0;
+
+      for(const sec of Object.values(PRACTICE)){
+        sec.forEach(q=>{
+          total++;
+          if(checkOne(q)) correct++;
+        });
+      }
+      showResults(correct, total);
+    }
+
+    function showResults(correct, total){
+      const box = document.getElementById("resultBox");
+      const title = document.getElementById("resultTitle");
+      const text = document.getElementById("resultText");
+
+      box.classList.add("show");
+      title.textContent = `Result: ${correct} / ${total}`;
+      text.textContent = (correct === total)
+        ? "Excellent — everything is correct."
+        : "Review the questions marked incorrect (❌) and try again.";
+      box.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    function hideResults(){
+      const box = document.getElementById("resultBox");
+      box.classList.remove("show");
+      document.getElementById("resultTitle").textContent = "";
+      document.getElementById("resultText").textContent = "";
+    }
+
+    function resetAll(){
+      hideResults();
+      document.querySelectorAll('input[type="text"], input[type="number"]').forEach(i => {
+        if(i.id === "studentNameInput") return;
+        i.value = "";
+      });
+      document.querySelectorAll('select').forEach(s => {
+        if(s.id === "pdfPerPage") return;
+        s.selectedIndex = 0;
+      });
+      document.querySelectorAll(".fb").forEach(fb => {
+        fb.className = "fb";
+        fb.textContent = "";
+      });
+    }
+
+    /***********************
+     * Modal
+     ***********************/
+    const modal = document.getElementById("modalBackdrop");
+    const modalOk = document.getElementById("modalOk");
+    const modalCancel = document.getElementById("modalCancel");
+
+    function openModal(){
+      modal.style.display = "block";
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    }
+    function closeModal(){
+      modal.style.display = "none";
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    }
+
+    /***********************
+     * Export Questions PDF
+     * ✅ Answers go to LAST PAGE (not under each question)
+     ***********************/
+    const printArea = document.getElementById("printArea");
+
+    function getAllPracticeQuestionsFlat(){
+      const order = ["sec1","sec2","sec3","sec4","sec5","sec6","sec7"];
+      const out = [];
+      order.forEach(k=>{
+        PRACTICE[k].forEach(q => out.push(q));
+      });
+      return out;
+    }
+
+    function buildAnswerLayoutForPrint(q, holder){
+      // ONLY answer lines (no answers shown here)
+      const lines = document.createElement("div");
+      lines.className = "answer-lines";
+
+      if(q.type === "multi"){
+        const fields = q.fieldsFn();
+        fields.forEach(f=>{
+          const lab = document.createElement("div");
+          lab.className = "mini-label";
+          lab.textContent = f.label + ":";
+          lines.appendChild(lab);
+
+          const line = document.createElement("div");
+          line.className = "line";
+          lines.appendChild(line);
+        });
+      } else if(q.type === "select"){
+        const lab = document.createElement("div");
+        lab.className = "mini-label";
+        lab.textContent = "Answer:";
+        lines.appendChild(lab);
+
+        const line = document.createElement("div");
+        line.className = "line";
+        lines.appendChild(line);
+      } else {
+        const lab = document.createElement("div");
+        lab.className = "mini-label";
+        lab.textContent = "Answer:";
+        lines.appendChild(lab);
+
+        const line1 = document.createElement("div");
+        line1.className = "line";
+        const line2 = document.createElement("div");
+        line2.className = "line";
+        lines.appendChild(line1);
+        lines.appendChild(line2);
+      }
+
+      holder.appendChild(lines);
+    }
+
+    function makePrintPageHeader(pageEl, perPage, subtitle){
+      const header = document.createElement("div");
+      header.className = "print-header";
+
+      const icon = document.createElement("div");
+      icon.className = "icon";
+
+      const textWrap = document.createElement("div");
+      const t1 = document.createElement("p");
+      t1.className = "t1";
+      t1.textContent = "DYAA Education";
+
+      const t2 = document.createElement("p");
+      t2.className = "t2";
+      t2.textContent = subtitle || `Introduction to Equations — Practice Questions ( ${perPage} per page )`;
+
+      const t3 = document.createElement("p");
+      t3.className = "t3";
+      const dateStr = new Date().toLocaleDateString();
+      t3.textContent = `Student: ${STUDENT_NAME || "__________"}    Date: ${dateStr}`;
+
+      textWrap.appendChild(t1);
+      textWrap.appendChild(t2);
+      textWrap.appendChild(t3);
+
+      header.appendChild(icon);
+      header.appendChild(textWrap);
+
+      pageEl.appendChild(header);
+    }
+
+    function getAnswerTextForPdf(q){
+      // Return concise teacher key text (1 line)
+      const byId = {
+        "s1q1": `x - ${SET.s1_minus}`,
+        "s1q2": `2n + ${SET.s1_plus}`,
+        "s1q3": `${SET.s1_pencils}p`,
+        "s2q1": `x + ${SET.s2_comm_num}`,
+        "s2q2": `${SET.s2_assoc_a * SET.s2_assoc_b}x`,
+        "s2q3": `${SET.s2_dist_k}y + ${SET.s2_dist_k * SET.s2_dist_c}`,
+        "s4q2": `2x + ${SET.s4_k} = ${SET.s4_total}`,
+        "s4q3": `2x + ${SET.s4_expr_k} = ${SET.s4_expr_total}`,
+        "s5q3": `n`
+      };
+
+      if(q.type === "select"){
+        const ans = q.options.find(o => o.v === q.expected);
+        return ans ? ans.t : q.expected;
+      }
+
+      if(q.type === "num"){
+        return String(q.expectedFn());
+      }
+
+      if(q.type === "multi"){
+        if(q.id === "s5q1"){
+          return `LHS=${SET.s5_var}-${SET.s5_sub}; RHS=${SET.s5_rhs}; Unknown=${SET.s5_var}`;
+        }
+        if(q.id === "s5q4"){
+          return `Variable=y; Coefficient=${SET.s5y_coef}; Constants=-${SET.s5y_const_left} and ${SET.s5y_const_right}`;
+        }
+        return "(see notes)";
+      }
+
+      if(q.id === "s5q2"){
+        return "Many answers possible (e.g., y + 3 = 10)";
+      }
+
+      if(byId[q.id]) return prettyMath(byId[q.id]);
+
+      const acc = (q.acceptedFn ? q.acceptedFn() : []);
+      return prettyMath(acc.length ? acc[0] : "");
+    }
+
+    function buildAnswerKeyLastPage(allQs){
+      // Single last page (21 answers fits well)
+      const page = document.createElement("div");
+      page.className = "print-page";
+      makePrintPageHeader(page, 0, "Introduction to Equations — Answer Key (Last Page)");
+
+      const box = document.createElement("div");
+      box.className = "answer-key-box";
+
+      const title = document.createElement("div");
+      title.className = "answer-key-title";
+      title.textContent = "Answer Key";
+      box.appendChild(title);
+
+      const ol = document.createElement("ol");
+      ol.className = "answers-list";
+
+      allQs.forEach((q, idx)=>{
+        const li = document.createElement("li");
+        const a = getAnswerTextForPdf(q);
+        li.innerHTML = `<span class="ak-muted">Q${idx+1}:</span> ${escapeHtml(a)}`;
+        ol.appendChild(li);
+      });
+
+      box.appendChild(ol);
+      page.appendChild(box);
+      return page;
+    }
+
+    function escapeHtml(s){
+      return (s ?? "").toString()
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    function buildQuestionsPdf(perPage){
+      const allQs = getAllPracticeQuestionsFlat();
+      printArea.innerHTML = "";
+
+      let globalIndex = 1;
+
+      // Question pages
+      for(let start = 0; start < allQs.length; start += perPage){
+        const page = document.createElement("div");
+        page.className = "print-page";
+        makePrintPageHeader(page, perPage, `Introduction to Equations — Practice Questions ( ${perPage} per page )`);
+
+        const slice = allQs.slice(start, start + perPage);
+        slice.forEach(q=>{
+          const card = document.createElement("div");
+          card.className = "pq";
+
+          const row1 = document.createElement("div");
+          row1.className = "row1";
+
+          const n = document.createElement("div");
+          n.className = "n";
+          n.textContent = String(globalIndex++);
+
+          const txt = document.createElement("div");
+          txt.className = "txt";
+          txt.textContent = q.promptFn();
+
+          row1.appendChild(n);
+          row1.appendChild(txt);
+          card.appendChild(row1);
+
+          buildAnswerLayoutForPrint(q, card);
+          page.appendChild(card);
+        });
+
+        printArea.appendChild(page);
+      }
+
+      // ✅ Add ONE final page: Answer Key
+      printArea.appendChild(buildAnswerKeyLastPage(allQs));
+    }
+
+    let cleanupAfterPrint = null;
+
+    function exportQuestionsPdf(){
+      const perPage = Number(document.getElementById("pdfPerPage").value) || 3;
+      buildQuestionsPdf(perPage);
+
+      document.body.classList.add("printing-questions");
+
+      cleanupAfterPrint = () => {
+        document.body.classList.remove("printing-questions");
+        printArea.innerHTML = "";
+        cleanupAfterPrint = null;
+      };
+
+      window.print();
+    }
+
+    window.addEventListener("afterprint", () => {
+      if(typeof cleanupAfterPrint === "function") cleanupAfterPrint();
+    });
+
+    /***********************
+     * Buttons
+     ***********************/
+    document.getElementById("submitBtn").addEventListener("click", checkAll);
+    document.getElementById("resetBtn").addEventListener("click", resetAll);
+    document.getElementById("exportQBtn").addEventListener("click", exportQuestionsPdf);
+
+    document.getElementById("genBtn").addEventListener("click", openModal);
+    modalCancel.addEventListener("click", closeModal);
+
+    modalOk.addEventListener("click", () => {
+      closeModal();
+      buildNewSet();
+      renderAll();
+      resetAll();
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+
+    modal.addEventListener("click", (e) => {
+      if(e.target === modal) closeModal();
+    });
+
+    /***********************
+     * Init
+     ***********************/
+    buildNewSet();
+    renderAll();
+    initStudentNameGate();
+  </script>
+</body>
+</html>

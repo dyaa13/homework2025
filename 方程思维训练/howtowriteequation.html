@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solving Word Problems with Equations — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#333;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+    }
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI',Tahoma,sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      z-index:0;
+      user-select:none;
+      white-space:nowrap;
+    }
+
+    .quiz-container{
+      position:relative;
+      z-index:1;
+      max-width:1020px;
+      margin:40px auto;
+      background:var(--card);
+      padding:28px;
+      border-radius:14px;
+      box-shadow:0 6px 16px rgba(0,0,0,0.10);
+      overflow:visible;
+    }
+
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:12px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:8px;position:relative;flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px;height:10px;
+      background:var(--orange);
+      top:-6px;left:18px;
+      border-radius:7px;
+    }
+    .logo-text{min-width:260px;}
+    .logo-title{
+      font-size:20px;
+      font-weight:800;
+      color:var(--blue);
+      line-height:1.1;
+      margin:0;
+    }
+    .logo-sub{
+      font-size:13px;
+      color:var(--orange);
+      font-weight:800;
+      margin-top:2px;
+      display:block;
+    }
+
+    .top-bar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 12px;
+      background:#f7f9ff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      margin:14px 0 16px;
+      flex-wrap:wrap;
+    }
+
+    .status{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width:260px;
+      flex:1 1 340px;
+    }
+    .status .big{
+      font-weight:900;
+      color:var(--blue);
+      font-size:14px;
+    }
+    .status .small{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .btns{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+
+    button{
+      border:0;
+      border-radius:10px;
+      padding:10px 12px;
+      font-weight:900;
+      cursor:pointer;
+      background:var(--blue);
+      color:#fff;
+      font-size:13px;
+      white-space:nowrap;
+    }
+    button.secondary{
+      background:#e8eefc;
+      color:var(--blue);
+      border:1px solid #cfe0ff;
+    }
+    button.orange{background:var(--orange);color:#111;}
+    button:active{transform:translateY(1px);}
+
+    .pdf-controls{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 8px;
+      border-radius:10px;
+      border:1px solid #dfe6fb;
+      background:#ffffff;
+    }
+    .pdf-controls .label{
+      font-size:12px;
+      font-weight:900;
+      color:#1f2d5c;
+      white-space:nowrap;
+    }
+    select{
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid #cfd6ea;
+      font-size:13px;
+      outline:none;
+      background:#fff;
+    }
+
+    /* ✅ Student gate */
+    .student-bar{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      padding:8px 10px;
+      border:1px solid #d8e6ff;
+      background:#fff;
+      border-radius:12px;
+      min-width:260px;
+    }
+    .student-line{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .student-label{
+      font-size:12px;
+      font-weight:900;
+      color:var(--blue);
+    }
+    .student-name{
+      font-size:13px;
+      font-weight:900;
+      color:#111;
+    }
+    .student-input{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .student-input input{
+      width:min(240px, 100%);
+      padding:10px 10px;
+      border-radius:10px;
+      border:1px solid #cfd6ea;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+    .student-hint{
+      font-size:12px;
+      color:var(--bad);
+      font-weight:900;
+      display:none;
+    }
+
+    .nav{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:8px 0 18px;
+    }
+    .chip{
+      text-decoration:none;
+      font-size:12px;
+      font-weight:900;
+      color:var(--blue);
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      padding:7px 10px;
+      border-radius:999px;
+    }
+
+    .lesson{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      margin:14px 0;
+      background:#fff;
+      overflow:visible;
+    }
+    .lesson h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+
+    .lesson-grid{
+      display:grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap:14px;
+      align-items:start;
+    }
+    @media (max-width: 900px){
+      .lesson-grid{grid-template-columns:1fr;}
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      background:#fbfcff;
+      overflow:visible;
+    }
+    .panel h3{
+      margin:0 0 8px;
+      font-size:13px;
+      color:#1f2d5c;
+      letter-spacing:0.2px;
+      text-transform:uppercase;
+    }
+    .p{
+      margin:6px 0;
+      line-height:1.45;
+      color:#333;
+      font-size:14px;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+    .muted{color:var(--muted);}
+    .bullets{
+      margin:8px 0 0 18px;
+      padding:0;
+      color:#333;
+      font-size:14px;
+      line-height:1.5;
+    }
+    .bullets li{margin:4px 0;}
+    .math{
+      font-family:"Cambria Math","Times New Roman",serif;
+      font-size:16px;
+    }
+
+    .callout{
+      border-left:4px solid #d8e6ff;
+      padding:10px 10px;
+      background:#fff;
+      border-radius:10px;
+      margin:10px 0;
+    }
+    .callout .title{
+      font-weight:900;
+      color:#1f2d5c;
+      margin-bottom:6px;
+    }
+
+    /* TOPICS */
+    .topic-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      align-items:stretch;
+    }
+    @media (max-width: 900px){
+      .topic-grid{grid-template-columns:1fr;}
+    }
+    .topic{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      background:#fff;
+    }
+    .topic .t{
+      font-weight:900;
+      color:var(--blue);
+      font-size:14px;
+      margin-bottom:6px;
+    }
+    .topic .k{
+      font-size:12px;
+      font-weight:900;
+      color:#1f2d5c;
+      margin-top:6px;
+    }
+    .topic .small{
+      font-size:12.5px;
+      color:#333;
+      line-height:1.35;
+    }
+
+    .group-title{
+      margin:14px 0 8px;
+      font-weight:900;
+      color:#1f2d5c;
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      border-radius:12px;
+      padding:8px 10px;
+    }
+
+    .q{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:12px;
+      padding:10px;
+      margin:10px 0;
+      overflow:visible;
+    }
+    .q-top{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+      overflow:visible;
+    }
+    .q-num{
+      width:34px;height:34px;border-radius:10px;
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      color:var(--blue);
+      font-weight:900;
+      display:flex;align-items:center;justify-content:center;
+      flex:0 0 auto;
+    }
+    .q-text{
+      flex:1 1 360px;
+      min-width:240px;
+      line-height:1.45;
+      font-size:14px;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+    .q-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+    }
+    input[type="text"].ans-input{
+      width:min(560px, 100%);
+      padding:10px 10px;
+      border-radius:10px;
+      border:1px solid #cfd6ea;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+    .check-btn{
+      padding:9px 12px;
+      border-radius:10px;
+      background:var(--blue);
+      color:#fff;
+      font-weight:900;
+      border:0;
+    }
+    .show-btn{
+      padding:9px 12px;
+      border-radius:10px;
+      background:#eef4ff;
+      color:var(--blue);
+      font-weight:900;
+      border:1px solid #d8e6ff;
+    }
+    .fb{
+      font-size:13px;
+      line-height:1.35;
+      color:var(--muted);
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+    .fb.ok{color:var(--ok);font-weight:900;}
+    .fb.bad{color:var(--bad);font-weight:900;}
+
+    .result-box{
+      display:none;
+      margin-top:16px;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#f7fff9;
+    }
+    .result-box.show{display:block;}
+    .result-title{
+      font-weight:900;
+      color:var(--ok);
+      margin:0 0 6px;
+    }
+    .result-text{margin:0;color:#2e3b2f;line-height:1.4;}
+
+    /* Fraction display */
+    .frac{
+      display:inline-block;
+      vertical-align:middle;
+      text-align:center;
+      font-family:"Cambria Math","Times New Roman",serif;
+      line-height:1.05;
+      margin:0 2px;
+    }
+    .frac .top{
+      display:block;
+      padding:0 3px 2px;
+      border-bottom:1px solid #111;
+      font-size:0.95em;
+    }
+    .frac .bottom{
+      display:block;
+      padding:2px 3px 0;
+      font-size:0.95em;
+    }
+    .mix{
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      vertical-align:middle;
+    }
+    .mix .whole{
+      font-family:"Cambria Math","Times New Roman",serif;
+      font-size:1.05em;
+      font-weight:700;
+    }
+
+    .modal-backdrop{
+      display:none;
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      z-index:999;
+      padding:18px;
+    }
+    .modal{
+      max-width:560px;
+      margin:12vh auto 0;
+      background:#fff;
+      border-radius:14px;
+      padding:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+    }
+    .modal h3{
+      margin:0 0 6px;
+      color:var(--blue);
+      font-size:16px;
+    }
+    .modal p{margin:0 0 12px;color:#444;line-height:1.45;}
+    .modal .row{
+      display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;
+    }
+
+    @media print{
+      body{background:#fff;padding:0;}
+      body:before{display:none;}
+      .quiz-container{box-shadow:none;margin:0;border-radius:0;max-width:none;}
+      .top-bar, .nav, .modal-backdrop{display:none !important;}
+      button{display:none !important;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="logo-text">
+        <h1 class="logo-title">DYAA Education</h1>
+        <span class="logo-sub">Solving Word Problems with Equations (Set unknown → Form equation → Solve)</span>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="status">
+        <div class="big">All questions require an equation</div>
+        <div class="small">
+          Please set an unknown (x), write an equation, then solve.
+          Answers can be <b>integers</b>, <b>fractions</b> (a/b), or <b>mixed numbers</b> (a b/c).
+        </div>
+      </div>
+
+      <!-- ✅ Student name gate -->
+      <div class="student-bar" id="studentBar">
+        <div class="student-line">
+          <span class="student-label">Student:</span>
+          <span class="student-name" id="studentNameLabel">—</span>
+        </div>
+
+        <!-- Only shown when URL has no ?name= -->
+        <div class="student-input" id="studentInputWrap" style="display:none;">
+          <input id="studentNameInput" type="text" placeholder="Enter student name to start" />
+          <button class="orange" id="studentStartBtn" type="button">Start</button>
+        </div>
+
+        <div class="student-hint" id="studentHint">Please enter the student name to begin.</div>
+      </div>
+
+      <div class="btns">
+        <button class="orange" id="genBtn">Generate New Set</button>
+        <button id="submitBtn">Submit & View Results</button>
+        <button class="secondary" id="resetBtn">Reset</button>
+
+        <div class="pdf-controls" aria-label="PDF export options">
+          <span class="label">PDF per page</span>
+          <select id="pdfPerPage" aria-label="PDF per page">
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+          <button class="orange" id="exportQuestionsBtn">Export Questions PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" aria-label="Navigation">
+      <a class="chip" href="#guide">Guide</a>
+      <a class="chip" href="#topics">Topics</a>
+      <a class="chip" href="#practice">Practice Questions</a>
+    </div>
+
+    <section class="lesson" id="guide">
+      <h2>Quick Guide (for every word problem)</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Template</h3>
+          <div class="callout">
+            <div class="title">Step 1 — Set an unknown</div>
+            <div class="p">Let the value you want to find be <span class="math">x</span> (include units).</div>
+          </div>
+          <div class="callout">
+            <div class="title">Step 2 — Translate the story into an equation</div>
+            <div class="p">Use key relationships: total = sum, distance = speed × time, etc.</div>
+          </div>
+          <div class="callout">
+            <div class="title">Step 3 — Solve & check</div>
+            <div class="p">Check your result is reasonable (e.g., money/length should not be negative).</div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Answer format</h3>
+          <ul class="bullets">
+            <li>Integer: <span class="math">12</span></li>
+            <li>Fraction: <span class="math">7/3</span></li>
+            <li>Mixed number: <span class="math">2 1/3</span></li>
+          </ul>
+          <div class="p muted">No repeating decimals will be used in answers.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOPICS (keep this, remove Part J) -->
+    <section class="lesson" id="topics">
+      <h2>Common real-life topics (with core formulas)</h2>
+
+      <div class="topic-grid">
+        <div class="topic">
+          <div class="t">A) Speed / Distance / Time</div>
+          <div class="k">Core</div>
+          <div class="small math">Distance = Speed × Time</div>
+          <div class="k">Common scenes</div>
+          <div class="small">meeting problems, return trips, speed changes, train/bridge/tunnel</div>
+        </div>
+
+        <div class="topic">
+          <div class="t">B) Age problems</div>
+          <div class="k">Core</div>
+          <div class="small">Ages change together. <b>Age difference stays the same.</b></div>
+          <div class="k">Common scenes</div>
+          <div class="small">years ago / years later, parent-child multiples, sum/difference</div>
+        </div>
+
+        <div class="topic">
+          <div class="t">C) Money / Shopping</div>
+          <div class="k">Core</div>
+          <div class="small math">Total price = Unit price × Quantity</div>
+          <div class="k">Common scenes</div>
+          <div class="small">different items, discount, change, same money different price</div>
+        </div>
+
+        <div class="topic">
+          <div class="t">D) Work rate / Efficiency</div>
+          <div class="k">Core</div>
+          <div class="small math">Work = Rate × Time</div>
+          <div class="k">Common scenes</div>
+          <div class="small">two workers together, speed-up to finish early, shared tasks</div>
+        </div>
+
+        <div class="topic">
+          <div class="t">E) People / Sharing / Averages</div>
+          <div class="k">Core</div>
+          <div class="small math">Average = Total ÷ Number</div>
+          <div class="k">Common scenes</div>
+          <div class="small">average age/score changes when someone joins/leaves</div>
+        </div>
+
+        <div class="topic">
+          <div class="t">F) Geometry (Perimeter / Area)</div>
+          <div class="k">Core</div>
+          <div class="small">Use formulas + unknown side lengths</div>
+          <div class="k">Common scenes</div>
+          <div class="small">rectangle perimeter/area, fences, tiles, painting walls</div>
+        </div>
+
+        <div class="topic">
+          <div class="t">G) Ratio / Proportion</div>
+          <div class="k">Core</div>
+          <div class="small math">Part : Part = Given ratio</div>
+          <div class="k">Common scenes</div>
+          <div class="small">boys:girls, mixing, sharing money by ratio</div>
+        </div>
+
+        <div class="topic">
+          <div class="t">H) Fractions / Percent</div>
+          <div class="k">Core</div>
+          <div class="small">“fraction of” means multiply; percent is “per 100”.</div>
+          <div class="k">Common scenes</div>
+          <div class="small">discount, increase/decrease %, original value is unknown</div>
+        </div>
+
+        <div class="topic">
+          <div class="t">I) Number relations / Logic</div>
+          <div class="k">Core</div>
+          <div class="small">Turn “times / plus / minus” into algebra.</div>
+          <div class="k">Common scenes</div>
+          <div class="small">one number is 3 times another minus 5, sum/difference</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="lesson" id="practice">
+      <h2>Practice Questions (Auto-generated)</h2>
+      <div class="panel">
+        <h3>Questions</h3>
+        <div id="practiceHost"></div>
+      </div>
+
+      <div class="result-box" id="resultBox" aria-live="polite">
+        <p class="result-title" id="resultTitle"></p>
+        <p class="result-text" id="resultText"></p>
+      </div>
+    </section>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <h3 id="modalTitle">Generate a new set?</h3>
+      <p>This will create a new random set and clear all your current answers.</p>
+      <div class="row">
+        <button class="secondary" id="modalCancel">Cancel</button>
+        <button class="orange" id="modalOk">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Student name gate
+     * - URL ?name=Tiger  -> auto start + show Student: Tiger
+     * - no name          -> must input name then start
+     ***********************/
+    let STUDENT_NAME = "";
+
+    function decodeNameParam(v){
+      return decodeURIComponent(String(v).replace(/\+/g, " ")).trim();
+    }
+
+    function setUiLocked(locked){
+      const idsToLock = ["genBtn","submitBtn","resetBtn","exportQuestionsBtn","pdfPerPage"];
+      idsToLock.forEach(id=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.disabled = !!locked;
+        el.style.opacity = locked ? "0.55" : "";
+        el.style.cursor = locked ? "not-allowed" : "";
+      });
+
+      // lock all answer inputs + per-question buttons
+      document.querySelectorAll('input.ans-input').forEach(inp=>{
+        inp.disabled = !!locked;
+        inp.style.opacity = locked ? "0.6" : "";
+        inp.style.cursor = locked ? "not-allowed" : "";
+      });
+      document.querySelectorAll(".check-btn, .show-btn").forEach(btn=>{
+        btn.disabled = !!locked;
+        btn.style.opacity = locked ? "0.55" : "";
+        btn.style.cursor = locked ? "not-allowed" : "";
+      });
+    }
+
+    function setStudentName(name){
+      STUDENT_NAME = (name || "").trim();
+      document.getElementById("studentNameLabel").textContent = STUDENT_NAME || "—";
+
+      const wrap = document.getElementById("studentInputWrap");
+      const hint = document.getElementById("studentHint");
+
+      if(STUDENT_NAME){
+        if(wrap) wrap.style.display = "none";
+        if(hint) hint.style.display = "none";
+        setUiLocked(false);
+      }else{
+        if(wrap) wrap.style.display = "flex";
+        if(hint) hint.style.display = "none";
+        setUiLocked(true);
+      }
+    }
+
+    function initStudentNameGate(){
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("name");
+
+      if(raw && decodeNameParam(raw)){
+        setStudentName(decodeNameParam(raw));
+      }else{
+        setStudentName("");
+
+        const btn = document.getElementById("studentStartBtn");
+        const input = document.getElementById("studentNameInput");
+        const hint = document.getElementById("studentHint");
+        const wrap = document.getElementById("studentInputWrap");
+
+        if(wrap) wrap.style.display = "flex";
+
+        function tryStart(){
+          const n = (input?.value || "").trim();
+          if(!n){
+            if(hint) hint.style.display = "block";
+            return;
+          }
+          setStudentName(n);
+        }
+
+        if(btn) btn.addEventListener("click", tryStart);
+        if(input){
+          input.addEventListener("keydown", (e)=>{
+            if(e.key === "Enter") tryStart();
+          });
+          setTimeout(()=>input.focus(), 50);
+        }
+      }
+    }
+
+    function escapeHtml(s){
+      return (s ?? "").toString()
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    /***********************
+     * Exact Fraction helper (no repeating decimals)
+     ***********************/
+    function gcd(a,b){
+      a = Math.abs(a); b = Math.abs(b);
+      while(b){ const t=a%b; a=b; b=t; }
+      return a || 1;
+    }
+    function makeFrac(n,d){
+      if(d === 0) return {n:1, d:0};
+      if(d < 0){ n = -n; d = -d; }
+      if(n === 0) return {n:0, d:1};
+      const g = gcd(n,d);
+      return {n:n/g, d:d/g};
+    }
+    function addF(a,b){ return makeFrac(a.n*b.d + b.n*a.d, a.d*b.d); }
+    function subF(a,b){ return makeFrac(a.n*b.d - b.n*a.d, a.d*b.d); }
+    function mulF(a,b){ return makeFrac(a.n*b.n, a.d*b.d); }
+    function divF(a,b){ return makeFrac(a.n*b.d, a.d*b.n); }
+    function eqF(a,b){ return a.n === b.n && a.d === b.d; }
+
+    function fracToText(f){
+      if(f.d === 1) return String(f.n);
+      return `${f.n}/${f.d}`;
+    }
+    function fracToMixedText(f){
+      if(f.d === 1) return String(f.n);
+      const sign = f.n < 0 ? "-" : "";
+      const nn = Math.abs(f.n);
+      const whole = Math.floor(nn / f.d);
+      const rem = nn % f.d;
+      if(whole === 0) return sign + `${rem}/${f.d}`;
+      if(rem === 0) return sign + String(whole);
+      return sign + `${whole} ${rem}/${f.d}`;
+    }
+
+    // Parse user input to Fraction (integer, a/b, mixed "a b/c", decimal exact)
+    function parseRationalInput(raw){
+      const s0 = (raw ?? "").toString().trim();
+      if(!s0) return null;
+
+      // mixed: -?W N/D
+      let m = s0.match(/^([+-]?\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+      if(m){
+        const W = parseInt(m[1],10);
+        const N = parseInt(m[2],10);
+        const D = parseInt(m[3],10);
+        if(D === 0) return null;
+        const sign = W < 0 ? -1 : 1;
+        const absW = Math.abs(W);
+        return makeFrac(sign*(absW*D + N), D);
+      }
+
+      // fraction: -?N/D
+      m = s0.match(/^([+-]?\d+)\s*\/\s*(\d+)$/);
+      if(m){
+        const N = parseInt(m[1],10);
+        const D = parseInt(m[2],10);
+        if(D === 0) return null;
+        return makeFrac(N,D);
+      }
+
+      // integer
+      m = s0.match(/^([+-]?\d+)$/);
+      if(m){
+        return makeFrac(parseInt(m[1],10), 1);
+      }
+
+      // decimal exact
+      m = s0.match(/^([+-])?(\d+)\.(\d+)$/);
+      if(m){
+        const sign = m[1] === "-" ? -1 : 1;
+        const intPart = parseInt(m[2],10);
+        const fracPartStr = m[3];
+        const k = fracPartStr.length;
+        const denom = Math.pow(10,k);
+        const fracPart = parseInt(fracPartStr,10);
+        const num = sign*(intPart*denom + fracPart);
+        return makeFrac(num, denom);
+      }
+
+      return null;
+    }
+
+    /***********************
+     * Small helpers
+     ***********************/
+    function randInt(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function pick(arr){ return arr[randInt(0, arr.length-1)]; }
+    function shuffle(a){
+      const x = a.slice();
+      for(let i=x.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [x[i],x[j]]=[x[j],x[i]];
+      }
+      return x;
+    }
+    function setFeedback(id, ok, msg){
+      const el = document.getElementById("fb-" + id);
+      if(!el) return;
+      el.className = "fb " + (ok ? "ok" : "bad");
+      el.textContent = msg;
+    }
+    function clearFeedback(id){
+      const el = document.getElementById("fb-" + id);
+      if(!el) return;
+      el.className = "fb";
+      el.textContent = "";
+    }
+    function hideResults(){
+      const box = document.getElementById("resultBox");
+      box.classList.remove("show");
+      document.getElementById("resultTitle").textContent = "";
+      document.getElementById("resultText").textContent = "";
+    }
+    function showResults(correct, total){
+      const box = document.getElementById("resultBox");
+      const title = document.getElementById("resultTitle");
+      const text = document.getElementById("resultText");
+
+      box.classList.add("show");
+      title.textContent = `Result: ${correct} / ${total}`;
+      text.textContent = (correct === total)
+        ? "Excellent — everything is correct."
+        : "Review the questions marked incorrect (❌) and try again.";
+      box.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+    function resetAll(){
+      hideResults();
+      document.querySelectorAll('input.ans-input').forEach(i => i.value = "");
+      document.querySelectorAll(".fb").forEach(fb => {
+        fb.className = "fb";
+        fb.textContent = "";
+      });
+    }
+
+    /***********************
+     * QUESTION BANK (No Part J)
+     ***********************/
+
+    /***** A) Speed / Distance / Time (equation required) *****/
+    function qDRT_FindOtherSpeed(){
+      const t = randInt(2, 5); // hours
+      const v1 = randInt(35, 75);
+      const v2 = randInt(25, 70);
+      const dist = (v1 + v2) * t;
+
+      return {
+        cat: "A) Speed / Distance / Time",
+        kind: "rational",
+        promptHTML:
+          `Two cyclists start at the same time from opposite ends of a road and ride toward each other. ` +
+          `They meet after <b>${t}</b> hours. The road is <b>${dist}</b> km long. ` +
+          `One cyclist rides at <b>${v1}</b> km/h. <br/>` +
+          `<b>Let the other cyclist's speed be x km/h.</b> ` +
+          `Write an equation and solve for <b>x</b>.`,
+        expected: makeFrac(v2,1),
+        placeholder: "x (km/h)"
+      };
+    }
+
+    function qDRT_TrainTunnel(){
+      const tunnel = randInt(120, 420); // metres
+      const speed = pick([12, 14, 15, 16, 18, 20]); // m/s
+      const trainLen = randInt(80, 260);
+      const time = makeFrac(trainLen + tunnel, speed); // exact seconds
+      return {
+        cat: "A) Speed / Distance / Time",
+        kind: "rational",
+        promptHTML:
+          `A train travels at a constant speed of <b>${speed}</b> m/s through a tunnel that is <b>${tunnel}</b> m long. ` +
+          `It takes <b>${fracToMixedText(time)}</b> seconds from the moment the front enters the tunnel until the back leaves the tunnel. <br/>` +
+          `<b>Let the length of the train be x metres.</b> Write an equation and solve for <b>x</b>.`,
+        expected: makeFrac(trainLen,1),
+        placeholder: "x (metres)"
+      };
+    }
+
+    function qDRT_SpeedIncreaseTimeLess(){
+      // dist = v(v+k)/k (for 1 hour less)
+      for(let tries=0; tries<60; tries++){
+        const v = randInt(40, 80);
+        const k = randInt(10, 30);
+        const vv = v*(v+k);
+        if(vv % k !== 0) continue;
+        const dist = vv / k;
+        const t1 = makeFrac(dist, v);
+        const t2 = makeFrac(dist, v+k);
+        if(!eqF(subF(t1,t2), makeFrac(1,1))) continue;
+        if(dist < 80 || dist > 500) continue;
+
+        return {
+          cat: "A) Speed / Distance / Time",
+          kind: "rational",
+          promptHTML:
+            `A car travels a distance of <b>${dist}</b> km at a constant speed of <b>x</b> km/h. ` +
+            `If the speed were increased by <b>${k}</b> km/h, the travel time would be exactly <b>1</b> hour less. <br/>` +
+            `<b>Let the original speed be x km/h.</b> Write an equation and solve for <b>x</b>.`,
+          expected: makeFrac(v,1),
+          placeholder: "x (km/h)"
+        };
+      }
+      return qDRT_FindOtherSpeed();
+    }
+
+    /***** B) Age problems (equation required) *****/
+    function qAge_DifferenceSum(){
+      const diff = randInt(5, 12);
+      const young = randInt(12, 25);
+      const old = young + diff;
+      const sum = young + old;
+      const names = [
+        ["Tom","Kate"],["Jenny","Max"],["Ava","Mia"],["Leo","Ryan"],["Anna","Ben"]
+      ];
+      const [A,B] = pick(names);
+      return {
+        cat: "B) Age problems",
+        kind: "rational",
+        promptHTML:
+          `${A} is <b>${diff}</b> years older than ${B}. The sum of their ages is <b>${sum}</b> years. <br/>` +
+          `<b>Let ${B}'s age be x.</b> Write an equation and solve for <b>x</b>.`,
+        expected: makeFrac(young,1),
+        placeholder: "x (years)"
+      };
+    }
+
+    function qAge_MultipleYearsAgoSum(){
+      const m = pick([2,3,4]);
+      const y = randInt(4, 10);
+      const childNow = randInt(12, 20);
+      const fatherNow = m * childNow;
+      if(childNow - y <= 0) return qAge_MultipleYearsAgoSum();
+      const sumPast = (childNow - y) + (fatherNow - y);
+      return {
+        cat: "B) Age problems",
+        kind: "rational",
+        promptHTML:
+          `A father is <b>${m}</b> times as old as his child. <b>${y}</b> years ago, the sum of their ages was <b>${sumPast}</b>. <br/>` +
+          `<b>Let the child's current age be x.</b> Write an equation and solve for <b>x</b>.`,
+        expected: makeFrac(childNow,1),
+        placeholder: "x (years)"
+      };
+    }
+
+    /***** C) Money / Shopping (equation required) *****/
+    function qMoney_PriceDifferenceTotal(){
+      const k = randInt(2, 6);
+      const pens = randInt(2, 6);
+      const books = randInt(1, 5);
+      const penPrice = randInt(3, 12);
+      const bookPrice = penPrice + k;
+      const total = pens*penPrice + books*bookPrice;
+
+      return {
+        cat: "C) Money / Shopping",
+        kind: "rational",
+        promptHTML:
+          `A pen costs $<b>${k}</b> less than a notebook. ` +
+          `Mia buys <b>${pens}</b> pens and <b>${books}</b> notebooks for a total of <b>$${total}</b>. <br/>` +
+          `<b>Let the price of one pen be x dollars.</b> ` +
+          `Write an equation and solve for <b>x</b>.`,
+        expected: makeFrac(penPrice,1),
+        placeholder: "x ($)"
+      };
+    }
+
+    function qMoney_SameMoneyMoreItems(){
+      const x = randInt(4, 12);
+      const n = 4*(x-1);
+      const M = n*x;
+      return {
+        cat: "C) Money / Shopping",
+        kind: "rational",
+        promptHTML:
+          `Liam has <b>$${M}</b>. If each cupcake costs <b>x</b> dollars, he can buy <b>n</b> cupcakes. ` +
+          `If each cupcake were <b>$1 cheaper</b>, he could buy <b>4 more</b> cupcakes with the same money. <br/>` +
+          `<b>Let the price be x dollars.</b> Write an equation and solve for <b>x</b>.`,
+        expected: makeFrac(x,1),
+        placeholder: "x ($)"
+      };
+    }
+
+    function qMoney_DiscountedBundle(){
+      const x = randInt(8, 18);
+      const inc = pick([4,5,6,7,8]);
+      const d = pick([6,8,10,12]);
+      const total = 3*x + 2*(x+inc) - d;
+      return {
+        cat: "C) Money / Shopping",
+        kind: "rational",
+        promptHTML:
+          `A shop sells T-shirts for <b>x</b> dollars each and hats for <b>(x + ${inc})</b> dollars each. ` +
+          `Sam buys <b>3</b> T-shirts and <b>2</b> hats, then gets a discount of <b>$${d}</b>. ` +
+          `He pays <b>$${total}</b> in total. <br/>` +
+          `<b>Let the T-shirt price be x.</b> Write an equation and solve for <b>x</b>.`,
+        expected: makeFrac(x,1),
+        placeholder: "x ($)"
+      };
+    }
+
+    /***** D) Work rate / Efficiency (equation required) *****/
+    function qWork_FindBTimeFromTogether(){
+      const a = pick([6, 8, 10, 12, 15]);
+      const b = pick([4, 5, 6, 8, 10, 12]);
+      if(a === b) return qWork_FindBTimeFromTogether();
+
+      const rate = addF(makeFrac(1,a), makeFrac(1,b));
+      const t = divF(makeFrac(1,1), rate);
+
+      return {
+        cat: "D) Work rate / Efficiency",
+        kind: "rational",
+        promptHTML:
+          `Worker A can finish a job in <b>${a}</b> days. Working together, A and B finish the job in <b>${fracToMixedText(t)}</b> days. <br/>` +
+          `<b>Let B alone take x days.</b> Use the work-rate equation and solve for <b>x</b>.`,
+        expected: makeFrac(b,1),
+        placeholder: "x (days)"
+      };
+    }
+
+    function qWork_BoostFinishEarly(){
+      const p = pick([20, 25, 50]);
+      const factor = makeFrac(100 + p, 100);
+      const x = pick([6, 8, 10, 12, 15, 18]);
+      const newTime = divF(makeFrac(x,1), factor);
+      return {
+        cat: "D) Work rate / Efficiency",
+        kind: "rational",
+        promptHTML:
+          `A team originally needed <b>x</b> hours to complete a task. After improving efficiency by <b>${p}%</b>, ` +
+          `the task takes <b>${fracToMixedText(newTime)}</b> hours. <br/>` +
+          `<b>Let the original time be x hours.</b> Write an equation and solve for <b>x</b>.`,
+        expected: makeFrac(x,1),
+        placeholder: "x (hours)"
+      };
+    }
+
+    /***** E) People / Sharing / Averages (equation required) *****/
+    function qAvg_FindNumberStudents(){
+      const n = randInt(5, 18);
+      const A1 = randInt(55, 85);
+      const s = randInt(70, 100);
+      const total1 = n*A1;
+      const total2 = total1 + s;
+      if(total2 % (n+1) !== 0) return qAvg_FindNumberStudents();
+      const A2 = total2/(n+1);
+      if(A2 <= A1) return qAvg_FindNumberStudents();
+
+      return {
+        cat: "E) People / Sharing / Averages",
+        kind: "rational",
+        promptHTML:
+          `A class has <b>n</b> students with an average score of <b>${A1}</b>. A new student joins and scores <b>${s}</b>. ` +
+          `The new average becomes <b>${A2}</b>. <br/>` +
+          `<b>Let the original number of students be n.</b> Write an equation and solve for <b>n</b>.`,
+        expected: makeFrac(n,1),
+        placeholder: "n"
+      };
+    }
+
+    function qShare_TwoConditionsFindPeople(){
+      const x = randInt(4, 10);
+      const k = pick([1,2,3]);
+      const a = randInt(6, 12);
+      const b = a - pick([1,2]);
+      if(b <= 2) return qShare_TwoConditionsFindPeople();
+
+      const r1 = randInt(0, x-1);
+      const total = x*a + r1;
+      const r2 = total - (x+k)*b;
+      if(r2 < 0 || r2 >= (x+k)) return qShare_TwoConditionsFindPeople();
+
+      return {
+        cat: "E) People / Sharing / Averages",
+        kind: "rational",
+        promptHTML:
+          `A box has some candies. If they are shared equally among <b>x</b> children, each child gets <b>${a}</b> candies and <b>${r1}</b> candies are left. ` +
+          `If <b>${k}</b> more children join (so there are x + ${k} children), each child gets <b>${b}</b> candies and <b>${r2}</b> candies are left. <br/>` +
+          `<b>Let the original number of children be x.</b> Write an equation and solve for <b>x</b>.`,
+        expected: makeFrac(x,1),
+        placeholder: "x"
+      };
+    }
+
+    /***** F) Geometry (equation required) *****/
+    function qGeo_RectPerimeter(){
+      const k = randInt(2, 10);
+      const w = randInt(6, 30);
+      const L = w + k;
+      const P = 2*(w + L);
+      return {
+        cat: "F) Geometry (Perimeter / Area)",
+        kind: "rational",
+        promptHTML:
+          `A rectangle's length is <b>${k}</b> m more than its width. The perimeter is <b>${P}</b> m. ` +
+          `<br/><b>Let the width be x.</b> Write an equation and solve for <b>x</b>.`,
+        expected: makeFrac(w,1),
+        placeholder: "x (m)"
+      };
+    }
+
+    function qGeo_RectLinearRelation(){
+      const w = randInt(6, 18);
+      const c = pick([1,2,3,4,5,6]);
+      const L = 2*w + c;
+      const P = 2*(w + L);
+      return {
+        cat: "F) Geometry (Perimeter / Area)",
+        kind: "rational",
+        promptHTML:
+          `A rectangle has length <b>(2x + ${c})</b> metres and width <b>x</b> metres. ` +
+          `Its perimeter is <b>${P}</b> metres. <br/>` +
+          `<b>Let the width be x.</b> Write an equation and solve for <b>x</b>.`,
+        expected: makeFrac(w,1),
+        placeholder: "x (m)"
+      };
+    }
+
+    /***** G) Ratio / Proportion (equation required) *****/
+    function qRatio_DifferenceFindShare(){
+      const a = randInt(2, 6);
+      const b = randInt(3, 8);
+      if(a === b) return qRatio_DifferenceFindShare();
+      const unit = randInt(3, 15);
+      const A = a*unit;
+      const B = b*unit;
+      const diff = B - A;
+
+      return {
+        cat: "G) Ratio / Proportion",
+        kind: "rational",
+        promptHTML:
+          `Two amounts are in the ratio <b>${a}:${b}</b> (A : B). Also, <b>B is ${diff} more than A</b>. <br/>` +
+          `<b>Let A = x.</b> Write an equation using the ratio relationship and solve for <b>x</b>.`,
+        expected: makeFrac(A,1),
+        placeholder: "x"
+      };
+    }
+
+    function qRatio_MixtureDifferenceTotal(){
+      const a = randInt(1, 5);
+      const b = randInt(2, 7);
+      if(a === b) return qRatio_MixtureDifferenceTotal();
+
+      const unit = randInt(2, 12);
+      const conc = a*unit;
+      const water = b*unit;
+      const diff = water - conc;
+      const total = conc + water;
+
+      return {
+        cat: "G) Ratio / Proportion",
+        kind: "rational",
+        promptHTML:
+          `A juice mix has concentrate : water = <b>${a}:${b}</b>. The amount of water is <b>${diff} L</b> more than the amount of concentrate. <br/>` +
+          `<b>Let the amount of concentrate be x litres.</b> Write an equation and find the <b>total</b> mixture amount (in litres).`,
+        expected: makeFrac(total,1),
+        placeholder: "Total litres"
+      };
+    }
+
+    /***** H) Fractions / Percent (equation required) *****/
+    function qFracPercent_OriginalAfterIncrease(){
+      const p = pick([10, 20, 25, 30, 40]);
+      const factor = makeFrac(100 + p, 100);
+      const original = randInt(30, 150);
+      const final = mulF(makeFrac(original,1), factor);
+      if(final.d !== 1) return qFracPercent_OriginalAfterIncrease();
+      return {
+        cat: "H) Fractions / Percent",
+        kind: "rational",
+        promptHTML:
+          `The original price of a toy was <b>x</b> dollars. After an increase of <b>${p}%</b>, the new price is <b>$${final.n}</b>. ` +
+          `<br/><b>Let the original price be x.</b> Write an equation and solve for <b>x</b>.`,
+        expected: makeFrac(original,1),
+        placeholder: "x ($)"
+      };
+    }
+
+    function qPercent_DiscountFindOriginal(){
+      const p = pick([10, 15, 20, 25, 30]);
+      const factor = makeFrac(100 - p, 100);
+      const original = randInt(40, 200);
+      const after = mulF(makeFrac(original,1), factor);
+      if(after.d !== 1) return qPercent_DiscountFindOriginal();
+      return {
+        cat: "H) Fractions / Percent",
+        kind: "rational",
+        promptHTML:
+          `A jacket was discounted by <b>${p}%</b>. The sale price is <b>$${after.n}</b>. <br/>` +
+          `<b>Let the original price be x dollars.</b> Write an equation and solve for <b>x</b>.`,
+        expected: makeFrac(original,1),
+        placeholder: "x ($)"
+      };
+    }
+
+    /***** I) Number relations / Logic (equation required) *****/
+    function qNumberRelation_Sum(){
+      const a = pick([2,3,4]);
+      const x = randInt(6, 25);
+      const y = a*x - 5;
+      const sum = x + y;
+      if(y <= 0) return qNumberRelation_Sum();
+      return {
+        cat: "I) Number relations / Logic",
+        kind: "rational",
+        promptHTML:
+          `Two numbers have this relationship: the larger number is <b>${a}</b> times the smaller number minus <b>5</b>. ` +
+          `Their sum is <b>${sum}</b>. <br/><b>Let the smaller number be x.</b> Write an equation and solve for <b>x</b>.`,
+        expected: makeFrac(x,1),
+        placeholder: "x"
+      };
+    }
+
+    function qNumberRelation_Difference(){
+      const a = pick([2,3,4,5]);
+      const x = randInt(8, 20);
+      const y = a*x + 7; // larger
+      const diff = y - x;
+      return {
+        cat: "I) Number relations / Logic",
+        kind: "rational",
+        promptHTML:
+          `The larger number is <b>${a}</b> times the smaller number plus <b>7</b>. ` +
+          `The difference between them is <b>${diff}</b>. <br/>` +
+          `<b>Let the smaller number be x.</b> Write an equation and solve for <b>x</b>.`,
+        expected: makeFrac(x,1),
+        placeholder: "x"
+      };
+    }
+
+    /***********************
+     * Build full set (20 questions) — No Part J
+     * A3 + B2 + C3 + D2 + E2 + F2 + G2 + H2 + I2 = 20
+     ***********************/
+    let QUESTIONS = [];
+
+    function pickMany(pool, n){
+      const s = shuffle(pool);
+      const out = [];
+      while(out.length < n){
+        out.push(s[out.length % s.length]);
+      }
+      return out;
+    }
+
+    function buildNewSet(){
+      const A = [qDRT_FindOtherSpeed, qDRT_TrainTunnel, qDRT_SpeedIncreaseTimeLess];
+      const B = [qAge_DifferenceSum, qAge_MultipleYearsAgoSum];
+      const C = [qMoney_PriceDifferenceTotal, qMoney_SameMoneyMoreItems, qMoney_DiscountedBundle];
+      const D = [qWork_FindBTimeFromTogether, qWork_BoostFinishEarly];
+      const E = [qAvg_FindNumberStudents, qShare_TwoConditionsFindPeople];
+      const F = [qGeo_RectPerimeter, qGeo_RectLinearRelation];
+      const G = [qRatio_DifferenceFindShare, qRatio_MixtureDifferenceTotal];
+      const H = [qFracPercent_OriginalAfterIncrease, qPercent_DiscountFindOriginal];
+      const I = [qNumberRelation_Sum, qNumberRelation_Difference];
+
+      const gens = [
+        ...pickMany(A,3),
+        ...pickMany(B,2),
+        ...pickMany(C,3),
+        ...pickMany(D,2),
+        ...pickMany(E,2),
+        ...pickMany(F,2),
+        ...pickMany(G,2),
+        ...pickMany(H,2),
+        ...pickMany(I,2),
+      ];
+
+      const built = gens.map(fn => fn());
+      QUESTIONS = shuffle(built).map((q, idx) => ({
+        ...q,
+        group: q.cat,
+        rid: `q_${idx+1}_${Math.random().toString(16).slice(2)}`
+      }));
+    }
+
+    /***********************
+     * Render
+     ***********************/
+    function renderAll(){
+      const host = document.getElementById("practiceHost");
+      host.innerHTML = "";
+
+      let currentGroup = "";
+
+      QUESTIONS.forEach((q, i) => {
+        if(q.group !== currentGroup){
+          currentGroup = q.group;
+          const gt = document.createElement("div");
+          gt.className = "group-title";
+          gt.textContent = currentGroup;
+          host.appendChild(gt);
+        }
+
+        const wrap = document.createElement("div");
+        wrap.className = "q";
+        wrap.id = "wrap-" + q.rid;
+
+        const top = document.createElement("div");
+        top.className = "q-top";
+
+        const num = document.createElement("div");
+        num.className = "q-num";
+        num.textContent = String(i + 1);
+
+        const text = document.createElement("div");
+        text.className = "q-text";
+        text.innerHTML = q.promptHTML;
+
+        top.appendChild(num);
+        top.appendChild(text);
+
+        const actions = document.createElement("div");
+        actions.className = "q-actions";
+
+        const inp = document.createElement("input");
+        inp.type = "text";
+        inp.className = "ans-input";
+        inp.id = "in-" + q.rid;
+        inp.placeholder = q.placeholder || "Type your answer";
+        actions.appendChild(inp);
+
+        const check = document.createElement("button");
+        check.className = "check-btn";
+        check.textContent = "Check";
+        check.addEventListener("click", () => checkOne(q));
+        actions.appendChild(check);
+
+        const show = document.createElement("button");
+        show.className = "show-btn";
+        show.textContent = "Show Answer";
+        show.addEventListener("click", () => showAnswer(q));
+        actions.appendChild(show);
+
+        const fb = document.createElement("div");
+        fb.className = "fb";
+        fb.id = "fb-" + q.rid;
+
+        wrap.appendChild(top);
+        wrap.appendChild(actions);
+        wrap.appendChild(fb);
+
+        host.appendChild(wrap);
+      });
+
+      hideResults();
+
+      // apply gate lock after render
+      setUiLocked(!STUDENT_NAME);
+    }
+
+    /***********************
+     * Checking / Answers
+     ***********************/
+    function checkOne(q){
+      clearFeedback(q.rid);
+
+      const raw = document.getElementById("in-" + q.rid).value;
+      const f = parseRationalInput(raw);
+      if(!f){
+        setFeedback(q.rid, false, "❌ Please enter a valid number (integer, fraction a/b, or mixed number).");
+        return false;
+      }
+      const ok = eqF(f, q.expected);
+      setFeedback(q.rid, ok,
+        ok ? "✅ Correct"
+           : `❌ Not quite. (Expected ${fracToMixedText(q.expected)} )`
+      );
+      return ok;
+    }
+
+    function showAnswer(q){
+      clearFeedback(q.rid);
+      setFeedback(q.rid, true, `Answer: ${fracToMixedText(q.expected)}  (or ${fracToText(q.expected)})`);
+    }
+
+    function checkAll(){
+      let correct = 0;
+      const total = QUESTIONS.length;
+      QUESTIONS.forEach(q => { if(checkOne(q)) correct++; });
+      showResults(correct, total);
+    }
+
+    /***********************
+     * Export Questions PDF
+     * ✅ Student name included automatically
+     * ✅ Answer KEY goes on the LAST page only
+     ***********************/
+    function exportQuestionsPDF(){
+      if(!STUDENT_NAME){
+        const hint = document.getElementById("studentHint");
+        if(hint) hint.style.display = "block";
+        return;
+      }
+
+      const per = parseInt(document.getElementById("pdfPerPage").value, 10) || 3;
+
+      const w = window.open("", "_blank");
+      if(!w){
+        alert("Popup blocked. Please allow popups for this page to export the PDF.");
+        return;
+      }
+
+      const today = new Date();
+      const dateStr = today.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"2-digit"});
+      const safeStudent = escapeHtml(STUDENT_NAME);
+
+      const styles = `
+        <style>
+          :root{--blue:#0d47a1;--orange:#ff9800;--line:#e6e6ef;}
+          *{box-sizing:border-box;}
+          body{font-family:Segoe UI, Tahoma, sans-serif; margin:22px; color:#111;}
+          .header{display:flex;align-items:center;gap:12px;border-bottom:2px solid #e0e0e0;padding-bottom:10px;margin-bottom:12px;}
+          .logo{width:44px;height:44px;background:var(--blue);border-radius:8px;position:relative;flex:0 0 auto;}
+          .logo:before{content:"";position:absolute;width:22px;height:10px;background:var(--orange);top:-6px;left:18px;border-radius:7px;}
+          .title{margin:0;font-size:18px;color:var(--blue);font-weight:900;line-height:1.1;}
+          .sub{margin:2px 0 0;font-size:12px;color:#555;font-weight:800;line-height:1.35;}
+          .qrow{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;break-inside:avoid;}
+          .qline{display:flex;gap:10px;align-items:flex-start;}
+          .qnum{min-width:30px;font-weight:900;color:var(--blue);}
+          .qtext{flex:1;line-height:1.45;font-size:13.5px;}
+          .work{margin-top:10px;}
+          .blankline{border-bottom:1px solid #111;height:16px;margin:10px 0;}
+          .page-break{page-break-after:always;}
+          .akbox{border:1px solid var(--line);border-radius:12px;padding:12px;background:#f7f9ff;}
+          .ak-title{margin:0 0 8px;font-size:14px;font-weight:900;color:var(--blue);}
+          .aklist{margin:0;padding-left:18px;font-size:13px;line-height:1.5;color:#1f2d5c;}
+          .aklist li{margin:4px 0;}
+          .muted{color:#5b6b93;font-weight:800;}
+          @media print{ body{margin:0;padding:0;} }
+        </style>
+      `;
+
+      let html = `
+        <html>
+          <head>
+            <meta charset="utf-8" />
+            <title>DYAA — Export Questions</title>
+            ${styles}
+          </head>
+          <body>
+            <div class="header">
+              <div class="logo"></div>
+              <div>
+                <div class="title">DYAA Education — Word Problems with Equations</div>
+                <div class="sub">Student: ${safeStudent} • Date: ${dateStr} • ${QUESTIONS.length} questions • ${per} per page</div>
+              </div>
+            </div>
+      `;
+
+      // Questions pages (NO answers shown here)
+      QUESTIONS.forEach((q, i) => {
+        if(i > 0 && i % per === 0){
+          html += `<div class="page-break"></div>`;
+        }
+        html += `
+          <div class="qrow">
+            <div class="qline">
+              <div class="qnum">${i+1}.</div>
+              <div class="qtext">${q.promptHTML}</div>
+            </div>
+            <div class="work">
+              <div class="blankline"></div>
+              <div class="blankline"></div>
+            </div>
+          </div>
+        `;
+      });
+
+      // ✅ Answer key LAST page only
+      html += `<div class="page-break"></div>
+        <div class="header">
+          <div class="logo"></div>
+          <div>
+            <div class="title">DYAA Education — Answer Key</div>
+            <div class="sub">Student: ${safeStudent} • Date: ${dateStr}</div>
+          </div>
+        </div>
+        <div class="akbox">
+          <div class="ak-title">Answer Key (Last Page)</div>
+          <ol class="aklist">
+      `;
+
+      QUESTIONS.forEach((q, i) => {
+        const ans1 = escapeHtml(fracToMixedText(q.expected));
+        const ans2 = escapeHtml(fracToText(q.expected));
+        html += `<li><span class="muted">Q${i+1}:</span> ${ans1} <span class="muted">(or ${ans2})</span></li>`;
+      });
+
+      html += `
+          </ol>
+        </div>
+      </body></html>
+      `;
+
+      w.document.open();
+      w.document.write(html);
+      w.document.close();
+      w.focus();
+      w.print();
+    }
+
+    /***********************
+     * Modal
+     ***********************/
+    const modal = document.getElementById("modalBackdrop");
+    const modalOk = document.getElementById("modalOk");
+    const modalCancel = document.getElementById("modalCancel");
+
+    function openModal(){
+      if(!STUDENT_NAME){
+        const hint = document.getElementById("studentHint");
+        if(hint) hint.style.display = "block";
+        return;
+      }
+      modal.style.display = "block";
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    }
+    function closeModal(){
+      modal.style.display = "none";
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    }
+    modalCancel.addEventListener("click", closeModal);
+    modalOk.addEventListener("click", () => {
+      closeModal();
+      buildNewSet();
+      renderAll();
+      resetAll();
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+    modal.addEventListener("click", (e) => {
+      if(e.target === modal) closeModal();
+    });
+
+    /***********************
+     * Buttons
+     ***********************/
+    document.getElementById("submitBtn").addEventListener("click", () => {
+      if(!STUDENT_NAME){
+        const hint = document.getElementById("studentHint");
+        if(hint) hint.style.display = "block";
+        return;
+      }
+      checkAll();
+    });
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      if(!STUDENT_NAME){
+        const hint = document.getElementById("studentHint");
+        if(hint) hint.style.display = "block";
+        return;
+      }
+      resetAll();
+    });
+    document.getElementById("exportQuestionsBtn").addEventListener("click", exportQuestionsPDF);
+    document.getElementById("genBtn").addEventListener("click", openModal);
+
+    /***********************
+     * Init
+     ***********************/
+    buildNewSet();
+    renderAll();
+    initStudentNameGate();
+  </script>
+</body>
+</html>

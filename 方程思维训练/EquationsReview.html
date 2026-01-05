@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Equations Review — DYAA (Advanced Mixed Practice)</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#333;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI',Tahoma,sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    /* subtle DYAA watermark */
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      z-index:0;
+      user-select:none;
+      white-space:nowrap;
+    }
+
+    .quiz-container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:40px auto;
+      background:var(--card);
+      padding:28px;
+      border-radius:14px;
+      box-shadow:0 6px 16px rgba(0,0,0,0.10);
+      overflow:visible;
+    }
+
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:12px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:8px;position:relative;flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px;height:10px;
+      background:var(--orange);
+      top:-6px;left:18px;
+      border-radius:7px;
+    }
+    .logo-text{min-width:240px;}
+    .logo-title{
+      font-size:20px;
+      font-weight:800;
+      color:var(--blue);
+      line-height:1.1;
+      margin:0;
+    }
+    .logo-sub{
+      font-size:13px;
+      color:var(--orange);
+      font-weight:800;
+      margin-top:2px;
+      display:block;
+    }
+    .logo-student{
+      font-size:12px;
+      color:#555;
+      font-weight:800;
+      margin-top:4px;
+      display:block;
+    }
+
+    .top-bar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 12px;
+      background:#f7f9ff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      margin:14px 0 16px;
+      flex-wrap:wrap;
+    }
+
+    .status{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width:260px;
+      flex:1 1 280px;
+    }
+    .status .big{
+      font-weight:800;
+      color:var(--blue);
+      font-size:14px;
+    }
+    .status .small{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .btns{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+
+    button{
+      border:0;
+      border-radius:10px;
+      padding:10px 12px;
+      font-weight:800;
+      cursor:pointer;
+      background:var(--blue);
+      color:#fff;
+      font-size:13px;
+      white-space:nowrap;
+    }
+    button.secondary{
+      background:#e8eefc;
+      color:var(--blue);
+      border:1px solid #cfe0ff;
+    }
+    button.orange{background:var(--orange);color:#111;}
+    button:active{transform:translateY(1px);}
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      transform:none;
+      filter:saturate(.7);
+    }
+
+    .pdf-controls{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 8px;
+      border-radius:10px;
+      border:1px solid #dfe6fb;
+      background:#ffffff;
+    }
+    .pdf-controls .label{
+      font-size:12px;
+      font-weight:900;
+      color:#1f2d5c;
+      white-space:nowrap;
+    }
+
+    select{
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid #cfd6ea;
+      font-size:13px;
+      outline:none;
+      background:#fff;
+    }
+    select:disabled{opacity:.6;cursor:not-allowed;}
+
+    .nav{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:8px 0 18px;
+    }
+    .chip{
+      text-decoration:none;
+      font-size:12px;
+      font-weight:800;
+      color:var(--blue);
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      padding:7px 10px;
+      border-radius:999px;
+    }
+
+    .lesson{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      margin:14px 0;
+      background:#fff;
+    }
+    .lesson h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+
+    .lesson-grid{
+      display:grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap:14px;
+      align-items:start;
+    }
+    @media (max-width: 860px){
+      .lesson-grid{grid-template-columns:1fr;}
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      background:#fbfcff;
+      overflow:visible;
+    }
+    .panel h3{
+      margin:0 0 8px;
+      font-size:13px;
+      color:#1f2d5c;
+      letter-spacing:0.2px;
+      text-transform:uppercase;
+    }
+    .p{
+      margin:6px 0;
+      line-height:1.45;
+      color:#333;
+      font-size:14px;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+    .bullets{
+      margin:8px 0 0 18px;
+      padding:0;
+      color:#333;
+      font-size:14px;
+      line-height:1.5;
+    }
+    .bullets li{margin:4px 0;}
+
+    .math{
+      font-family: "Cambria Math","Times New Roman",serif;
+      font-size: 16px;
+    }
+
+    .ex{
+      border-left:4px solid #d8e6ff;
+      padding:8px 10px;
+      background:#fff;
+      border-radius:10px;
+      margin:8px 0;
+    }
+
+    .group-title{
+      margin:14px 0 8px;
+      font-weight:900;
+      color:#1f2d5c;
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      border-radius:12px;
+      padding:8px 10px;
+    }
+
+    .q{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:12px;
+      padding:10px;
+      margin:10px 0;
+      overflow:visible;
+    }
+    .q-top{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+      overflow:visible;
+    }
+    .q-num{
+      width:34px;height:34px;border-radius:10px;
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      color:var(--blue);
+      font-weight:900;
+      display:flex;align-items:center;justify-content:center;
+      flex:0 0 auto;
+    }
+    .q-text{
+      flex:1 1 320px;
+      min-width:220px;
+      line-height:1.45;
+      font-size:14px;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+
+    .q-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+    }
+
+    input[type="text"], input[type="number"]{
+      width:min(440px, 100%);
+      padding:10px 10px;
+      border-radius:10px;
+      border:1px solid #cfd6ea;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+
+    .check-btn{
+      padding:9px 12px;
+      border-radius:10px;
+      background:var(--blue);
+      color:#fff;
+      font-weight:900;
+      border:0;
+    }
+    .show-btn{
+      padding:9px 12px;
+      border-radius:10px;
+      background:#eef4ff;
+      color:var(--blue);
+      font-weight:900;
+      border:1px solid #d8e6ff;
+    }
+
+    .fb{
+      font-size:13px;
+      line-height:1.35;
+      color:var(--muted);
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
+    .fb.ok{color:var(--ok);font-weight:800;}
+    .fb.bad{color:var(--bad);font-weight:800;}
+
+    .result-box{
+      display:none;
+      margin-top:16px;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#f7fff9;
+    }
+    .result-box.show{display:block;}
+    .result-title{
+      font-weight:900;
+      color:var(--ok);
+      margin:0 0 6px;
+    }
+    .result-text{margin:0;color:#2e3b2f;line-height:1.4;}
+
+    /* Fraction display */
+    .frac{
+      display:inline-block;
+      vertical-align:middle;
+      text-align:center;
+      font-family:"Cambria Math","Times New Roman",serif;
+      line-height:1.05;
+      margin:0 2px;
+    }
+    .frac .top{
+      display:block;
+      padding:0 3px 2px;
+      border-bottom:1px solid #111;
+      font-size:0.95em;
+    }
+    .frac .bottom{
+      display:block;
+      padding:2px 3px 0;
+      font-size:0.95em;
+    }
+    .mix{
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      vertical-align:middle;
+    }
+    .mix .whole{
+      font-family:"Cambria Math","Times New Roman",serif;
+      font-size:1.05em;
+      font-weight:700;
+    }
+
+    /* Modal */
+    .modal-backdrop{
+      display:none;
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      z-index:999;
+      padding:18px;
+    }
+    .modal{
+      max-width:520px;
+      margin:12vh auto 0;
+      background:#fff;
+      border-radius:14px;
+      padding:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+    }
+    .modal h3{
+      margin:0 0 6px;
+      color:var(--blue);
+      font-size:16px;
+    }
+    .modal p{margin:0 0 12px;color:#444;line-height:1.45;}
+    .modal .row{
+      display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;
+    }
+
+    /* Start modal (higher z-index) */
+    .start-backdrop{
+      display:none;
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.45);
+      z-index:1000;
+      padding:18px;
+    }
+
+    /* Print (this page print is NOT used for export; export opens a new window) */
+    @media print{
+      body{background:#fff;padding:0;}
+      body:before{display:none;}
+      .quiz-container{box-shadow:none;margin:0;border-radius:0;max-width:none;}
+      .top-bar, .nav, .modal-backdrop, .start-backdrop{display:none !important;}
+      button{display:none !important;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="logo-text">
+        <h1 class="logo-title">DYAA Education</h1>
+        <span class="logo-sub">Equations Review (Advanced Mixed Practice)</span>
+        <span class="logo-student" id="studentTag">Student: —</span>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="status">
+        <div class="big">Review + Instant Checking</div>
+        <div class="small" id="studentInfoLine">Student: —</div>
+        <div class="small">
+          Answer each question, then click <b>Check</b>. Some questions may be <b>Not possible</b> — choose that option and give a brief reason.
+          Export includes <b>questions</b> and an <b>Answer Key on the last page</b>.
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="orange" id="genBtn">Generate New Set</button>
+        <button id="submitBtn">Submit & View Results</button>
+        <button class="secondary" id="resetBtn">Reset</button>
+
+        <div class="pdf-controls" aria-label="PDF export options">
+          <span class="label">PDF per page</span>
+          <select id="pdfPerPage" aria-label="PDF per page">
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+          <button class="orange" id="exportQuestionsBtn">Export Questions PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" aria-label="Navigation">
+      <a class="chip" href="#notes">Review Notes</a>
+      <a class="chip" href="#practice">Practice Questions</a>
+    </div>
+
+    <!-- NOTES -->
+    <section class="lesson" id="notes">
+      <h2>Review Notes (Quick Summary)</h2>
+      <div class="lesson-grid">
+        <div class="panel">
+          <h3>Core Ideas</h3>
+          <ul class="bullets">
+            <li><b>Equation</b> = a sentence with an equals sign (<span class="math">=</span>).</li>
+            <li><b>Solution</b> = the value that makes the equation true.</li>
+            <li><b>Balance rule</b>: whatever you do to one side, do to the other side.</li>
+          </ul>
+
+          <div class="ex">
+            <div class="p"><b>One-step rules</b></div>
+            <ul class="bullets">
+              <li><span class="math">x + a = b</span> → <span class="math">x = b − a</span></li>
+              <li><span class="math">x − a = b</span> → <span class="math">x = b + a</span></li>
+              <li><span class="math">ax = b</span> → <span class="math">x = b ÷ a</span></li>
+              <li><span class="math">x ÷ a = b</span> → <span class="math">x = ab</span></li>
+            </ul>
+          </div>
+
+          <div class="ex">
+            <div class="p"><b>Like terms</b></div>
+            <div class="p">Like terms have the same variable part (same letters and powers):</div>
+            <div class="p math">3x and −7x are like terms, but 3x and 3x² are not.</div>
+          </div>
+
+          <div class="ex">
+            <div class="p"><b>Expanding brackets</b></div>
+            <div class="p math">k(a + b) = ka + kb</div>
+            <div class="p">Multiply the coefficient into every term inside the brackets.</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Answer Format</h3>
+          <ul class="bullets">
+            <li>Use <b>fractions</b> (e.g., <span class="math">3/5</span>) instead of long decimals.</li>
+            <li>You may also use <b>mixed numbers</b> (e.g., <span class="math">50 2/5</span>).</li>
+            <li>For “Not possible” questions: choose <b>Not possible</b> and write a short reason.</li>
+          </ul>
+
+          <div class="practice-note p" style="color:var(--muted);font-size:12px;">
+            Tip: When checking, spaces don’t matter. For fractions, <span class="math">-252/5</span> and <span class="math">-50 2/5</span> are both accepted if they are equal.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRACTICE -->
+    <section class="lesson" id="practice">
+      <h2>Practice Questions</h2>
+      <div class="panel">
+        <h3>Answer, Check, and Learn</h3>
+        <div id="practiceHost"></div>
+      </div>
+
+      <div class="result-box" id="resultBox" aria-live="polite">
+        <p class="result-title" id="resultTitle"></p>
+        <p class="result-text" id="resultText"></p>
+      </div>
+    </section>
+  </div>
+
+  <!-- Confirm Modal (Generate new set) -->
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <h3 id="modalTitle">Generate a new set?</h3>
+      <p>This will create a new random set and clear all your current answers.</p>
+      <div class="row">
+        <button class="secondary" id="modalCancel">Cancel</button>
+        <button class="orange" id="modalOk">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Start Modal (Student name required when URL has no ?name=...) -->
+  <div class="start-backdrop" id="startBackdrop" role="dialog" aria-modal="true" aria-labelledby="startTitle">
+    <div class="modal">
+      <h3 id="startTitle">Enter student name to start</h3>
+      <p style="margin-bottom:10px;">This page needs a student name before showing the quiz.</p>
+      <input id="startName" type="text" placeholder="Student name (e.g., Tiger)" autocomplete="name" />
+      <div class="row" style="margin-top:12px;">
+        <button class="orange" id="startOk">Start</button>
+      </div>
+      <p style="margin-top:10px;color:#666;font-size:12px;">
+        Tip: If you open with <b>?name=Tiger</b>, it will auto-fill and start.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Student name: URL (?name=...) or required input
+     ***********************/
+    let studentName = "";
+    let started = false;
+
+    function escapeHtml(s){
+      return (s ?? "").toString()
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#39;");
+    }
+
+    function getNameFromUrl(){
+      try{
+        const sp = new URLSearchParams(window.location.search);
+        const raw = sp.get("name");
+        if(!raw) return "";
+        // handle + as spaces
+        const withSpaces = raw.replace(/\+/g, " ");
+        return decodeURIComponent(withSpaces).trim();
+      }catch(e){
+        return "";
+      }
+    }
+
+    function setStudentUI(name){
+      const safe = name ? escapeHtml(name) : "—";
+      document.getElementById("studentTag").innerHTML = `Student: ${safe}`;
+      document.getElementById("studentInfoLine").innerHTML = `Student: <b>${safe}</b>`;
+    }
+
+    function setUiEnabled(enabled){
+      const ids = ["genBtn","submitBtn","resetBtn","exportQuestionsBtn","pdfPerPage"];
+      ids.forEach(id=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.disabled = !enabled;
+      });
+    }
+
+    function openStartModal(){
+      const b = document.getElementById("startBackdrop");
+      b.style.display = "block";
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+      setUiEnabled(false);
+      setStudentUI("");
+      setTimeout(()=> document.getElementById("startName").focus(), 50);
+    }
+
+    function closeStartModal(){
+      const b = document.getElementById("startBackdrop");
+      b.style.display = "none";
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    }
+
+    function startSession(name){
+      studentName = (name ?? "").trim();
+      if(!studentName){
+        openStartModal();
+        return;
+      }
+      started = true;
+      setStudentUI(studentName);
+      closeStartModal();
+      setUiEnabled(true);
+
+      buildNewSet();
+      renderAll();
+      resetAll();     // clear fields for the new student
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+
+    /***********************
+     * Small Fraction (Rational) helper
+     ***********************/
+    function gcd(a,b){
+      a = Math.abs(a); b = Math.abs(b);
+      while(b){ const t=a%b; a=b; b=t; }
+      return a || 1;
+    }
+    function makeFrac(n,d){
+      if(d === 0) return {n:1, d:0}; // invalid
+      if(d < 0){ n = -n; d = -d; }
+      if(n === 0) return {n:0, d:1};
+      const g = gcd(n,d);
+      return {n:n/g, d:d/g};
+    }
+    function eqF(a,b){ return a.n === b.n && a.d === b.d; }
+
+    function fracToText(f){
+      if(f.d === 1) return String(f.n);
+      return `${f.n}/${f.d}`;
+    }
+    function fracToMixedText(f){
+      if(f.d === 1) return String(f.n);
+      const sign = f.n < 0 ? "-" : "";
+      const nn = Math.abs(f.n);
+      const whole = Math.floor(nn / f.d);
+      const rem = nn % f.d;
+      if(whole === 0) return sign + `${rem}/${f.d}`;
+      if(rem === 0) return sign + String(whole);
+      return sign + `${whole} ${rem}/${f.d}`;
+    }
+
+    function fracHTML(n,d){
+      const f = makeFrac(n,d);
+      if(f.d === 1) return `<span class="math">${f.n}</span>`;
+      return `<span class="frac"><span class="top">${f.n}</span><span class="bottom">${f.d}</span></span>`;
+    }
+    function mixedHTML(n,d){
+      const f = makeFrac(n,d);
+      if(f.d === 1) return `<span class="math">${f.n}</span>`;
+      const sign = f.n < 0 ? "-" : "";
+      const nn = Math.abs(f.n);
+      const whole = Math.floor(nn / f.d);
+      const rem = nn % f.d;
+      if(whole === 0){
+        return `${sign}${fracHTML(rem, f.d)}`;
+      }
+      if(rem === 0){
+        return `<span class="math">${sign}${whole}</span>`;
+      }
+      return `<span class="mix"><span class="whole">${sign}${whole}</span>${fracHTML(rem, f.d)}</span>`;
+    }
+
+    // Parse user input to a Fraction (supports integer, fraction a/b, mixed "a b/c", decimal)
+    function parseRationalInput(raw){
+      const s0 = (raw ?? "").toString().trim();
+      if(!s0) return null;
+
+      // mixed: -?W N/D
+      let m = s0.match(/^([+-]?\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+      if(m){
+        const W = parseInt(m[1],10);
+        const N = parseInt(m[2],10);
+        const D = parseInt(m[3],10);
+        if(D === 0) return null;
+        const sign = W < 0 ? -1 : 1;
+        const absW = Math.abs(W);
+        return makeFrac(sign*(absW*D + N), D);
+      }
+
+      // fraction: -?N/D
+      m = s0.match(/^([+-]?\d+)\s*\/\s*(\d+)$/);
+      if(m){
+        const N = parseInt(m[1],10);
+        const D = parseInt(m[2],10);
+        if(D === 0) return null;
+        return makeFrac(N,D);
+      }
+
+      // integer
+      m = s0.match(/^([+-]?\d+)$/);
+      if(m){
+        return makeFrac(parseInt(m[1],10), 1);
+      }
+
+      // decimal (exact by string)
+      m = s0.match(/^([+-])?(\d+)\.(\d+)$/);
+      if(m){
+        const sign = m[1] === "-" ? -1 : 1;
+        const intPart = parseInt(m[2],10);
+        const fracPartStr = m[3];
+        const k = fracPartStr.length;
+        const denom = Math.pow(10,k);
+        const fracPart = parseInt(fracPartStr,10);
+        const num = sign*(intPart*denom + fracPart);
+        return makeFrac(num, denom);
+      }
+
+      return null;
+    }
+
+    /***********************
+     * Helpers
+     ***********************/
+    function randInt(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function pick(arr){ return arr[randInt(0, arr.length-1)]; }
+    function shuffle(a){
+      const x = a.slice();
+      for(let i=x.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [x[i],x[j]]=[x[j],x[i]];
+      }
+      return x;
+    }
+    function normExpr(s){
+      return (s ?? "")
+        .toString()
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g,"")
+        .replace(/×/g,"*")
+        .replace(/·/g,"*")
+        .replace(/\+\-/g,"-");
+    }
+    function setFeedback(id, ok, msg){
+      const el = document.getElementById("fb-" + id);
+      if(!el) return;
+      el.className = "fb " + (ok ? "ok" : "bad");
+      el.textContent = msg;
+    }
+    function clearFeedback(id){
+      const el = document.getElementById("fb-" + id);
+      if(!el) return;
+      el.className = "fb";
+      el.textContent = "";
+    }
+    function hideResults(){
+      const box = document.getElementById("resultBox");
+      box.classList.remove("show");
+      document.getElementById("resultTitle").textContent = "";
+      document.getElementById("resultText").textContent = "";
+    }
+    function showResults(correct, total){
+      const box = document.getElementById("resultBox");
+      const title = document.getElementById("resultTitle");
+      const text = document.getElementById("resultText");
+
+      box.classList.add("show");
+      title.textContent = `Result: ${correct} / ${total}`;
+      text.textContent = (correct === total)
+        ? "Excellent — everything is correct."
+        : "Review the questions marked incorrect (❌) and try again.";
+      box.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    function resetAll(){
+      hideResults();
+      document.querySelectorAll('input[type="text"], input[type="number"]').forEach(i => i.value = "");
+      // Reset only the per-question selects (NOT the pdfPerPage)
+      document.querySelectorAll('select').forEach(s => {
+        if(s.id === "pdfPerPage") return;
+        s.selectedIndex = 0;
+      });
+      document.querySelectorAll(".fb").forEach(fb => {
+        fb.className = "fb";
+        fb.textContent = "";
+      });
+    }
+
+    /***********************
+     * Build QUESTIONS (Core + Advanced pool)
+     ***********************/
+    let QUESTIONS = [];
+
+    function linearAcceptedForms(varName, coef, constant){
+      const v = varName;
+
+      const coefStr = (coef === 1) ? v : (coef === -1) ? ("-" + v) : (String(coef) + v);
+      const absC = Math.abs(constant);
+
+      if(constant === 0){
+        return [
+          normExpr(coefStr),
+          normExpr(coefStr.replace(v, "*" + v))
+        ];
+      }
+
+      const cStr = (constant > 0) ? ("+" + absC) : ("-" + absC);
+
+      const form1 = coefStr + cStr;          // 6a+6
+      const form2 = (absC + (coef >= 0 ? "+" : "") + coefStr); // 6+6a or 6+-6a
+      const form2b = absC + (constant>0 ? "+" : "-") + (coefStr.startsWith("-") ? ("(" + coefStr + ")") : coefStr);
+
+      return [
+        normExpr(form1),
+        normExpr(form2),
+        normExpr(form2b),
+        normExpr(form1.replace(v, "*" + v)),
+        normExpr(form2.replace(v, "*" + v)),
+      ];
+    }
+
+    function makeCoreQuestions(){
+      const out = [];
+
+      // 4 one-step
+      {
+        const A = randInt(6, 20), X = randInt(5, 30), B = X + A;
+        out.push({
+          id:"core1", group:"Core Skills (Solve & Simplify)",
+          kind:"rational",
+          promptHTML:`Solve: <span class="math">x + ${A} = ${B}</span>. Find <span class="math">x</span>.`,
+          expected: makeFrac(X,1),
+          placeholder:"x = ? (use fraction if needed)"
+        });
+      }
+      {
+        const A = randInt(6, 20), X = randInt(5, 30), B = X - A;
+        out.push({
+          id:"core2", group:"Core Skills (Solve & Simplify)",
+          kind:"rational",
+          promptHTML:`Solve: <span class="math">x - ${A} = ${B}</span>. Find <span class="math">x</span>.`,
+          expected: makeFrac(X,1),
+          placeholder:"x = ?"
+        });
+      }
+      {
+        const k = randInt(2, 9), X = randInt(3, 18), B = k*X;
+        out.push({
+          id:"core3", group:"Core Skills (Solve & Simplify)",
+          kind:"rational",
+          promptHTML:`Solve: <span class="math">${k}x = ${B}</span>. Find <span class="math">x</span>.`,
+          expected: makeFrac(X,1),
+          placeholder:"x = ?"
+        });
+      }
+      {
+        const k = randInt(2, 12), X = randInt(3, 18), B = X;
+        out.push({
+          id:"core4", group:"Core Skills (Solve & Simplify)",
+          kind:"rational",
+          promptHTML:`Solve: <span class="math">x ÷ ${k} = ${B}</span>. Find <span class="math">x</span>.`,
+          expected: makeFrac(k*X,1),
+          placeholder:"x = ?"
+        });
+      }
+
+      // 4 two-step
+      {
+        const a = randInt(2, 9), x = randInt(2, 15), b = randInt(1, 12);
+        const c = a*x + b;
+        out.push({
+          id:"core5", group:"Core Skills (Solve & Simplify)",
+          kind:"rational",
+          promptHTML:`Solve: <span class="math">${a}x + ${b} = ${c}</span>. Find <span class="math">x</span>.`,
+          expected: makeFrac(x,1),
+          placeholder:"x = ?"
+        });
+      }
+      {
+        const a = randInt(2, 9), x = randInt(2, 15), b = randInt(1, 12);
+        const c = a*x - b;
+        out.push({
+          id:"core6", group:"Core Skills (Solve & Simplify)",
+          kind:"rational",
+          promptHTML:`Solve: <span class="math">${a}x - ${b} = ${c}</span>. Find <span class="math">x</span>.`,
+          expected: makeFrac(x,1),
+          placeholder:"x = ?"
+        });
+      }
+      {
+        // x/k + b = c (integer x)
+        const k = randInt(2, 12), x = randInt(2, 20);
+        const b = randInt(1, 10);
+        const x2 = x - (x % k);
+        const c2 = (x2/k) + b;
+        out.push({
+          id:"core7", group:"Core Skills (Solve & Simplify)",
+          kind:"rational",
+          promptHTML:`Solve: <span class="math">x ÷ ${k} + ${b} = ${c2}</span>. Find <span class="math">x</span>.`,
+          expected: makeFrac(x2,1),
+          placeholder:"x = ?"
+        });
+      }
+      {
+        // a - bx = c
+        const b = randInt(2, 9), x = randInt(2, 12), a = randInt(20, 60);
+        const c = a - b*x;
+        out.push({
+          id:"core8", group:"Core Skills (Solve & Simplify)",
+          kind:"rational",
+          promptHTML:`Solve: <span class="math">${a} - ${b}x = ${c}</span>. Find <span class="math">x</span>.`,
+          expected: makeFrac(x,1),
+          placeholder:"x = ?"
+        });
+      }
+
+      // 3 bracket equations
+      {
+        const p = randInt(2, 9), q = randInt(2, 12), x = randInt(3, 15);
+        const r = p*(x + q);
+        out.push({
+          id:"core9", group:"Core Skills (Solve & Simplify)",
+          kind:"rational",
+          promptHTML:`Solve: <span class="math">${p}(x + ${q}) = ${r}</span>. Find <span class="math">x</span>.`,
+          expected: makeFrac(x,1),
+          placeholder:"x = ?"
+        });
+      }
+      {
+        const p = randInt(2, 9), q = randInt(2, 12), x = randInt(3, 15);
+        const r = p*(x - q);
+        out.push({
+          id:"core10", group:"Core Skills (Solve & Simplify)",
+          kind:"rational",
+          promptHTML:`Solve: <span class="math">${p}(x - ${q}) = ${r}</span>. Find <span class="math">x</span>.`,
+          expected: makeFrac(x,1),
+          placeholder:"x = ?"
+        });
+      }
+      {
+        // p(x + q) - s x = t -> integer solution
+        const x = randInt(3, 15);
+        const p = randInt(2, 9);
+        const s = randInt(1, p-1);
+        const q = randInt(2, 12);
+        const t = (p - s)*x + p*q;
+        out.push({
+          id:"core11", group:"Core Skills (Solve & Simplify)",
+          kind:"rational",
+          promptHTML:`Solve: <span class="math">${p}(x + ${q}) - ${s}x = ${t}</span>. Find <span class="math">x</span>.`,
+          expected: makeFrac(x,1),
+          placeholder:"x = ?"
+        });
+      }
+
+      // 2 like terms simplify
+      {
+        const m = randInt(2, 9), n = randInt(2, 9), c = randInt(-12, 12);
+        const coef = m + n;
+        const constV = c;
+        const accepted = linearAcceptedForms("x", coef, constV);
+        const shownC = (c>=0) ? `+ ${c}` : `- ${Math.abs(c)}`;
+        out.push({
+          id:"core12", group:"Core Skills (Solve & Simplify)",
+          kind:"expr",
+          promptHTML:`Simplify: <span class="math">${m}x + ${n}x ${shownC}</span>.`,
+          expectedExpr:{ varName:"x", accepted, display: (constV===0? `${coef}x` : `${coef}x${constV>=0?"+":""}${constV}`) },
+          placeholder:"Type simplified expression (e.g., 7x-3)"
+        });
+      }
+      {
+        const m = randInt(2, 9), n = randInt(2, 9), c = randInt(1, 12), d = randInt(1, 12);
+        const coef = m + n;
+        const constV = c - d;
+        const accepted = linearAcceptedForms("a", coef, constV);
+        out.push({
+          id:"core13", group:"Core Skills (Solve & Simplify)",
+          kind:"expr",
+          promptHTML:`Simplify: <span class="math">${m}a + ${c} + ${n}a - ${d}</span>.`,
+          expectedExpr:{ varName:"a", accepted, display: (constV===0? `${coef}a` : `${coef}a${constV>=0?"+":""}${constV}`) },
+          placeholder:"Type simplified expression"
+        });
+      }
+
+      // 1 substitution evaluate
+      {
+        const a = randInt(2, 6), b = randInt(3, 8), c = randInt(4, 10);
+        const val = c*(b - a);
+        out.push({
+          id:"core14", group:"Core Skills (Solve & Simplify)",
+          kind:"rational",
+          promptHTML:`Substitute <span class="math">a=${a}</span>, <span class="math">b=${b}</span>, <span class="math">c=${c}</span>. Evaluate: <span class="math">c(b-a)</span>.`,
+          expected: makeFrac(val,1),
+          placeholder:"Answer as a number"
+        });
+      }
+
+      return out;
+    }
+
+    // Advanced pool
+    function advancedPool(){
+      const POOL = [];
+
+      function advPossible(id, textHTML, answerFrac){
+        return { id, kind:"rational", promptHTML:textHTML, expected:answerFrac, placeholder:"Answer (use fraction / mixed number)" };
+      }
+      function advImpossible(id, textHTML, reasonSample){
+        return { id, kind:"ynreason", promptHTML:textHTML, expectedPossible:false, reasonSample:reasonSample || "Not possible (conditions contradict / lead to an impossible value)." };
+      }
+
+      POOL.push(advPossible("adv1",
+        `A bottle was ${fracHTML(3,4)} full. After 9 litres were removed and then ${fracHTML(1,6)} of the remaining water was added back, the bottle became ${fracHTML(2,3)} full. What is the bottle’s full capacity?`,
+        makeFrac(252,5)
+      ));
+
+      POOL.push(advImpossible("adv2",
+        `A tank contained ${fracHTML(5,8)} of its capacity. After adding 20 litres, it became ${fracHTML(3,4)} full. Then ${fracHTML(1,10)} of the water was drained out, leaving 42 litres in the tank. What is the tank’s capacity? (If not possible, give the reason.)`,
+        `From “${fracHTML(5,8)} to ${fracHTML(3,4)} after adding 20”, the capacity must be 160 L, but then the later “leaving 42 L” condition cannot match.`
+      ));
+
+      POOL.push(advPossible("adv3",
+        `A rope was cut into two pieces in the ratio 4 : 5. Then ${fracHTML(1,5)} of the longer piece and ${fracHTML(1,4)} of the shorter piece were used. A total of 22 metres were used. What was the original length of the rope?`,
+        makeFrac(99,1)
+      ));
+
+      POOL.push(advPossible("adv4",
+        `A student spent ${fracHTML(1,3)} of her money on books. She then spent $15 more. After these purchases she had ${fracHTML(5,24)} of her money left. How much money did she have at first?`,
+        makeFrac(360,11)
+      ));
+
+      POOL.push(advImpossible("adv5",
+        `A machine completed ${fracHTML(3,10)} of a job in the morning and ${fracHTML(1,4)} of the job in the afternoon. The next day it finished another 18 units, which was the remaining ${fracHTML(1,5)} of the job. How many units were in the entire job? (If not possible, give the reason.)`,
+        `The fractions completed on day 1 do not leave ${fracHTML(1,5)} of the job remaining, so the conditions contradict.`
+      ));
+
+      POOL.push(advPossible("adv6",
+        `A container initially had ${fracHTML(2,5)} as much water as a tank. After 16 litres of water were poured from the tank into the container, the container became half as full as the tank. Together they then held 336 litres. How much water was originally in the tank?`,
+        makeFrac(240,1)
+      ));
+
+      POOL.push(advPossible("adv7",
+        `A number was increased by ${fracHTML(1,2)} of itself, then decreased by 8, and then increased again by ${fracHTML(1,5)} of the new result. The final value was 84. What was the original number?`,
+        makeFrac(52,1)
+      ));
+
+      POOL.push(advPossible("adv8",
+        `A shop sold ${fracHTML(2,5)} of its oranges in the morning. In the afternoon it sold another 36 oranges. At the end of the day ${fracHTML(1,3)} of the oranges remained. How many oranges were there at first?`,
+        makeFrac(135,1)
+      ));
+
+      POOL.push(advPossible("adv9",
+        `A number was multiplied by ${fracHTML(4,7)}. Then 12 was added. The result was then multiplied by ${fracHTML(3,5)}, giving a final answer of 36. What was the original number?`,
+        makeFrac(84,1)
+      ));
+
+      POOL.push(advImpossible("adv10",
+        `A class has ${fracHTML(5,4)} as many girls as boys. After 10 girls joined and 6 boys left, the number of girls became ${fracHTML(4,5)} of the number of boys. Is this possible? If not, give the reason.`,
+        `Solving the equation gives a negative number of boys, which is impossible.`
+      ));
+
+      POOL.push(advPossible("adv11",
+        `A father is three times as old as his daughter. Eight years ago, the sum of their ages was 48. How old is the father now?`,
+        makeFrac(48,1)
+      ));
+
+      POOL.push(advImpossible("adv12",
+        `A factory completed ${fracHTML(1,4)} of a project in week one and ${fracHTML(7,20)} of the project in week two. In week three it produced the remaining 27 units. How many units are in the full project? (If not possible, give the reason.)`,
+        `The total would be ${mixedHTML(135,2)} units, which is not a whole number of units.`
+      ));
+
+      POOL.push(advImpossible("adv13",
+        `A tank was ${fracHTML(3,5)} full. After removing 18 litres and then adding ${fracHTML(1,4)} of the remaining water, the tank became ${fracHTML(5,6)} full. Is this possible? If not, give the reason.`,
+        `Setting up the equation leads to a negative capacity, which is impossible.`
+      ));
+
+      POOL.push(advPossible("adv14",
+        `A student spent ${fracHTML(1,5)} of her money on lunch, then bought a science kit for $14, and then spent ${fracHTML(1,6)} of what she had left. She now has $40. How much money did she originally have?`,
+        makeFrac(155,2)
+      ));
+
+      POOL.push(advPossible("adv15",
+        `A number was decreased by ${fracHTML(3,8)} of itself, then increased by 12, then reduced again by ${fracHTML(1,8)} of the result. The final answer was 60. What was the original number?`,
+        makeFrac(3168,35)
+      ));
+
+      POOL.push(advPossible("adv16",
+        `A cyclist travelled ${fracHTML(2,5)} of a journey on the first day. On the second day he travelled 18 km, which was ${fracHTML(3,10)} of the remaining distance. After that, he still had 42 km left. What was the total distance?`,
+        makeFrac(100,1)
+      ));
+
+      POOL.push(advPossible("adv17",
+        `A tank was ${fracHTML(3,8)} full. After adding 30 litres, it became ${fracHTML(5,8)} full. What is the capacity of the tank?`,
+        makeFrac(120,1)
+      ));
+
+      POOL.push(advImpossible("adv18",
+        `A barrel contained ${fracHTML(2,3)} of its capacity. After removing 20 litres, adding 15 litres, and then removing ${fracHTML(1,6)} of the remaining water, the barrel was left ${fracHTML(3,5)} full. Is this possible? If not, give the reason.`,
+        `Setting up the equation leads to a negative capacity, which is impossible.`
+      ));
+
+      POOL.push(advPossible("adv19",
+        `A number is increased by 18 and then multiplied by ${fracHTML(3,4)}. The result is then decreased by ${fracHTML(1,5)} of the new value and becomes 48. What was the original number?`,
+        makeFrac(62,1)
+      ));
+
+      POOL.push(advImpossible("adv20",
+        `A tank was ${fracHTML(4,7)} full. After removing 28 litres, it became ${fracHTML(1,3)} full. After adding ${fracHTML(1,6)} of the tank’s capacity, it became ${fracHTML(2,3)} full. What is the capacity of the tank? (If not possible, give the reason.)`,
+        `From ${fracHTML(1,3)} full, adding ${fracHTML(1,6)} capacity can only make it ${fracHTML(1,2)} full, not ${fracHTML(2,3)} full.`
+      ));
+
+      return POOL;
+    }
+
+    function makeAdvancedSelection(){
+      const pool = advancedPool();
+
+      const possible = pool.filter(q => q.kind === "rational");
+      const impossible = pool.filter(q => q.kind === "ynreason");
+
+      const pickPossible = shuffle(possible).slice(0, 8);
+      const pickImpossible = shuffle(impossible).slice(0, 2);
+
+      const sel = shuffle(pickPossible.concat(pickImpossible)).slice(0, 10);
+      sel.forEach(q => q.group = "Advanced Word Problems (Make Sense?)");
+      return sel;
+    }
+
+    function buildNewSet(){
+      const core = makeCoreQuestions();
+      const adv = makeAdvancedSelection();
+      QUESTIONS = core.concat(adv);
+
+      // reassign stable ids to avoid duplicates (append index)
+      QUESTIONS = QUESTIONS.map((q, idx) => ({...q, _idx: idx+1, rid: q.id + "_" + (idx+1)}));
+    }
+
+    /***********************
+     * Rendering
+     ***********************/
+    function renderAll(){
+      const host = document.getElementById("practiceHost");
+      host.innerHTML = "";
+
+      let currentGroup = "";
+
+      QUESTIONS.forEach((q, i) => {
+        if(q.group !== currentGroup){
+          currentGroup = q.group;
+          const gt = document.createElement("div");
+          gt.className = "group-title";
+          gt.textContent = currentGroup;
+          host.appendChild(gt);
+        }
+
+        const wrap = document.createElement("div");
+        wrap.className = "q";
+        wrap.id = "wrap-" + q.rid;
+
+        const top = document.createElement("div");
+        top.className = "q-top";
+
+        const num = document.createElement("div");
+        num.className = "q-num";
+        num.textContent = String(i + 1);
+
+        const text = document.createElement("div");
+        text.className = "q-text";
+        text.id = "prompt-" + q.rid;
+        text.innerHTML = q.promptHTML;
+
+        top.appendChild(num);
+        top.appendChild(text);
+
+        const actions = document.createElement("div");
+        actions.className = "q-actions";
+
+        if(q.kind === "ynreason"){
+          const sel = document.createElement("select");
+          sel.id = "in-" + q.rid + "-yn";
+          sel.innerHTML = `
+            <option value="yes">Possible</option>
+            <option value="no">Not possible</option>
+          `;
+          actions.appendChild(sel);
+
+          const reason = document.createElement("input");
+          reason.type = "text";
+          reason.id = "in-" + q.rid + "-reason";
+          reason.placeholder = "If not possible, write a short reason";
+          actions.appendChild(reason);
+        } else {
+          const inp = document.createElement("input");
+          inp.type = "text";
+          inp.id = "in-" + q.rid;
+          inp.placeholder = q.placeholder || "Type your answer";
+          actions.appendChild(inp);
+        }
+
+        const check = document.createElement("button");
+        check.className = "check-btn";
+        check.textContent = "Check";
+        check.addEventListener("click", () => checkOne(q));
+        actions.appendChild(check);
+
+        const show = document.createElement("button");
+        show.className = "show-btn";
+        show.textContent = "Show Answer";
+        show.addEventListener("click", () => showAnswer(q));
+        actions.appendChild(show);
+
+        const fb = document.createElement("div");
+        fb.className = "fb";
+        fb.id = "fb-" + q.rid;
+
+        wrap.appendChild(top);
+        wrap.appendChild(actions);
+        wrap.appendChild(fb);
+
+        host.appendChild(wrap);
+      });
+
+      hideResults();
+    }
+
+    /***********************
+     * Checking / Answers
+     ***********************/
+    function checkOne(q){
+      clearFeedback(q.rid);
+
+      if(q.kind === "ynreason"){
+        const yn = document.getElementById("in-" + q.rid + "-yn").value;
+        const reason = (document.getElementById("in-" + q.rid + "-reason").value || "").trim();
+
+        const ok = (yn === "no") && (reason.length >= 3);
+        setFeedback(q.rid, ok, ok
+          ? "✅ Correct (Not possible + reason given)"
+          : "❌ If it is not possible, choose 'Not possible' and write a brief reason.");
+        return ok;
+      }
+
+      if(q.kind === "expr"){
+        const raw = document.getElementById("in-" + q.rid).value;
+        const u = normExpr(raw);
+
+        const accepted = (q.expectedExpr?.accepted || []).map(normExpr);
+        const ok = accepted.includes(u);
+
+        setFeedback(q.rid, ok, ok ? "✅ Correct" : "❌ Not quite. Check like terms and signs.");
+        return ok;
+      }
+
+      const raw = document.getElementById("in-" + q.rid).value;
+      const f = parseRationalInput(raw);
+      if(!f){
+        setFeedback(q.rid, false, "❌ Please enter a valid number (integer, fraction a/b, or mixed number).");
+        return false;
+      }
+      const ok = eqF(f, q.expected);
+
+      const expText = fracToMixedText(q.expected);
+      setFeedback(q.rid, ok, ok ? "✅ Correct" : `❌ Not quite. (Expected ${expText})`);
+      return ok;
+    }
+
+    function showAnswer(q){
+      clearFeedback(q.rid);
+
+      if(q.kind === "ynreason"){
+        setFeedback(q.rid, true, `Answer: Not possible. Reason: ${q.reasonSample}`);
+        return;
+      }
+      if(q.kind === "expr"){
+        setFeedback(q.rid, true, `Answer: ${q.expectedExpr.display}`);
+        return;
+      }
+      setFeedback(q.rid, true, `Answer: ${fracToMixedText(q.expected)}  (or ${fracToText(q.expected)})`);
+    }
+
+    function checkAll(){
+      let correct = 0;
+      const total = QUESTIONS.length;
+      QUESTIONS.forEach(q => { if(checkOne(q)) correct++; });
+      showResults(correct, total);
+    }
+
+    /***********************
+     * Export PDF (Questions + Answer Key last page)
+     ***********************/
+    function answerKeyText(q){
+      if(q.kind === "ynreason"){
+        return `Not possible — ${q.reasonSample}`;
+      }
+      if(q.kind === "expr"){
+        return q.expectedExpr?.display ?? "";
+      }
+      // rational
+      const mixed = fracToMixedText(q.expected);
+      const imp = fracToText(q.expected);
+      return (mixed === imp) ? mixed : `${mixed} (${imp})`;
+    }
+
+    function exportQuestionsPDF(){
+      if(!started || !studentName){
+        alert("Please enter the student name first.");
+        openStartModal();
+        return;
+      }
+
+      const per = parseInt(document.getElementById("pdfPerPage").value, 10) || 3;
+
+      const w = window.open("", "_blank");
+      if(!w){
+        alert("Popup blocked. Please allow popups for this page to export the PDF.");
+        return;
+      }
+
+      const today = new Date();
+      const dateStr = today.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"2-digit"});
+
+      const safeStudent = escapeHtml(studentName);
+
+      const styles = `
+        <style>
+          :root{--blue:#0d47a1;--orange:#ff9800;--line:#e6e6ef;}
+          *{box-sizing:border-box;}
+          body{font-family:Segoe UI, Tahoma, sans-serif; margin:22px; color:#111;}
+          .header{display:flex;align-items:center;gap:12px;border-bottom:2px solid #e0e0e0;padding-bottom:10px;margin-bottom:12px;}
+          .logo{width:44px;height:44px;background:var(--blue);border-radius:8px;position:relative;flex:0 0 auto;}
+          .logo:before{content:"";position:absolute;width:22px;height:10px;background:var(--orange);top:-6px;left:18px;border-radius:7px;}
+          .title{margin:0;font-size:18px;color:var(--blue);font-weight:900;line-height:1.1;}
+          .sub{margin:2px 0 0;font-size:12px;color:#555;font-weight:700;line-height:1.35;}
+          .qrow{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;break-inside:avoid;}
+          .qline{display:flex;gap:10px;align-items:flex-start;}
+          .qnum{min-width:28px;font-weight:900;color:var(--blue);}
+          .qtext{flex:1;line-height:1.45;font-size:13.5px;}
+          .ans{margin-top:8px;font-size:12px;color:#444;}
+          .blank{display:inline-block;min-width:320px;border-bottom:1px solid #111;height:14px;vertical-align:middle;}
+          .blank-wide{display:inline-block;min-width:520px;border-bottom:1px solid #111;height:14px;vertical-align:middle;}
+          .page-break{page-break-after:always;}
+          /* fraction */
+          .frac{display:inline-block;vertical-align:middle;text-align:center;font-family:"Cambria Math","Times New Roman",serif;line-height:1.05;margin:0 2px;}
+          .frac .top{display:block;padding:0 3px 2px;border-bottom:1px solid #111;font-size:0.95em;}
+          .frac .bottom{display:block;padding:2px 3px 0;font-size:0.95em;}
+          .mix{display:inline-flex;align-items:center;gap:4px;vertical-align:middle;}
+          .mix .whole{font-family:"Cambria Math","Times New Roman",serif;font-size:1.05em;font-weight:700;}
+          .math{font-family:"Cambria Math","Times New Roman",serif;}
+
+          /* Answer key page */
+          .key-title{margin:0;font-size:16px;color:var(--blue);font-weight:900;}
+          .key-wrap{margin-top:10px;}
+          .key-grid{
+            columns:2;
+            column-gap:26px;
+          }
+          .key-item{
+            break-inside:avoid;
+            border:1px solid var(--line);
+            border-radius:10px;
+            padding:8px 10px;
+            margin:8px 0;
+            font-size:12.5px;
+            line-height:1.35;
+          }
+          .key-item b{color:var(--blue);}
+          @media print{
+            body{margin:0;padding:0;}
+          }
+        </style>
+      `;
+
+      let html = `
+        <html>
+          <head>
+            <meta charset="utf-8" />
+            <title>DYAA — Equations Review — ${safeStudent}</title>
+            ${styles}
+          </head>
+          <body>
+            <div class="header">
+              <div class="logo"></div>
+              <div>
+                <div class="title">DYAA Education — Equations Review</div>
+                <div class="sub">Student: <b>${safeStudent}</b><br/>Date: ${dateStr} • ${QUESTIONS.length} questions • ${per} per page</div>
+              </div>
+            </div>
+      `;
+
+      // Questions pages
+      QUESTIONS.forEach((q, i) => {
+        if(i > 0 && i % per === 0){
+          html += `<div class="page-break"></div>`;
+        }
+
+        const isReason = q.kind === "ynreason";
+        html += `
+          <div class="qrow">
+            <div class="qline">
+              <div class="qnum">${i+1}.</div>
+              <div class="qtext">${q.promptHTML}</div>
+            </div>
+            <div class="ans">
+              ${isReason
+                ? `Answer: <span class="blank"></span><br/>
+                   <span style="display:inline-block;margin-top:8px;">Reason: <span class="blank-wide"></span></span>`
+                : `Answer: <span class="blank"></span>`
+              }
+            </div>
+          </div>
+        `;
+      });
+
+      // Always start Answer Key on a new page (last page)
+      html += `<div class="page-break"></div>`;
+
+      // Answer Key
+      html += `
+        <div class="header">
+          <div class="logo"></div>
+          <div>
+            <div class="key-title">Answer Key</div>
+            <div class="sub">Student: <b>${safeStudent}</b> • Date: ${dateStr}</div>
+          </div>
+        </div>
+        <div class="key-wrap">
+          <div class="key-grid">
+      `;
+
+      QUESTIONS.forEach((q, i) => {
+        html += `
+          <div class="key-item">
+            <b>Q${i+1}:</b> ${answerKeyText(q)}
+          </div>
+        `;
+      });
+
+      html += `
+          </div>
+        </div>
+      `;
+
+      html += `</body></html>`;
+      w.document.open();
+      w.document.write(html);
+      w.document.close();
+      w.focus();
+      w.print();
+    }
+
+    /***********************
+     * Modal (Generate new set)
+     ***********************/
+    const modal = document.getElementById("modalBackdrop");
+    const modalOk = document.getElementById("modalOk");
+    const modalCancel = document.getElementById("modalCancel");
+
+    function openModal(){
+      if(!started) return;
+      modal.style.display = "block";
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    }
+    function closeModal(){
+      modal.style.display = "none";
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    }
+
+    /***********************
+     * Buttons
+     ***********************/
+    document.getElementById("submitBtn").addEventListener("click", () => started && checkAll());
+    document.getElementById("resetBtn").addEventListener("click", () => started && resetAll());
+    document.getElementById("exportQuestionsBtn").addEventListener("click", exportQuestionsPDF);
+
+    document.getElementById("genBtn").addEventListener("click", openModal);
+
+    modalCancel.addEventListener("click", closeModal);
+    modalOk.addEventListener("click", () => {
+      closeModal();
+      buildNewSet();
+      renderAll();
+      resetAll();
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+    modal.addEventListener("click", (e) => {
+      if(e.target === modal) closeModal();
+    });
+
+    // Start modal actions
+    document.getElementById("startOk").addEventListener("click", () => {
+      const name = (document.getElementById("startName").value || "").trim();
+      if(!name){
+        alert("Please enter the student name.");
+        document.getElementById("startName").focus();
+        return;
+      }
+      startSession(name);
+    });
+    document.getElementById("startBackdrop").addEventListener("click", (e) => {
+      // no close on backdrop click (must input name)
+      if(e.target === e.currentTarget){
+        document.getElementById("startName").focus();
+      }
+    });
+
+    /***********************
+     * Init
+     ***********************/
+    setUiEnabled(false);
+    setStudentUI("");
+
+    const urlName = getNameFromUrl();
+    if(urlName){
+      startSession(urlName);
+    } else {
+      openStartModal();
+    }
+  </script>
+</body>
+</html>
