@@ -156,15 +156,17 @@ var CONFIG = {
   TOTAL_QUESTIONS: 7,
   SHUFFLE_EACH_SET: false
 };
-var ANSWERS = [“”,
-               910,
-               240,
-               45，
-               120,
-                 513.6,
-                 20，
-                 550
-              ]; // length >= TOTAL_QUESTIONS+1
+var ANSWERS = [
+  "",     // index 0 占位（如果你是从 1 开始编号题目）
+  910,
+  240,
+  45,
+  120,
+  513.6,
+  20,
+  550
+]; // length >= TOTAL_QUESTIONS + 1
+
 
 /* ===================== URL name support ===================== */
 var urlName = "";
@@ -780,6 +782,7 @@ if(AUTO_START_ON_LOAD){
 </script>
 </body>
 </html>
+
 
 
 
