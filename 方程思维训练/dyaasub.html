@@ -1,0 +1,2056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Systems of Linear Equations — Substitution Method — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --purple:#6a1b9a;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --stroke:#111;
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .select{
+      appearance:none;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:10px;
+      padding:7px 10px;
+      font-weight:900;
+      color:var(--ink);
+      cursor:pointer;
+      outline:none;
+    }
+    .select:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:900;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:900;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+    }
+    .btn.orange{
+      background:var(--orange);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(255,152,0,0.20);
+    }
+    .btn.purple{
+      background:var(--purple);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(106,27,154,0.20);
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:1000;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card p{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .learn-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:14px;
+      margin-top:12px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .learn-grid{grid-template-columns:1fr;}
+    }
+
+    .mini-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .mini-table th, .mini-table td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    .mini-table th{
+      background:#f5f8ff;
+      color:var(--blue);
+      font-weight:1000;
+    }
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:1000;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .q-body{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:12px;
+      margin-top:10px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .q-body{grid-template-columns:1fr;}
+    }
+
+    /* IMPORTANT: no cropping on screen */
+    .svg-wrap{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:12px 12px 10px 12px;
+      overflow: hidden;
+    }
+    .svg-wrap svg{
+      display:block;
+      width:100%;
+      height:auto;
+      overflow: hidden;
+    }
+    .svg-note{
+      margin-top:6px;
+      font-size:12px;
+      color:rgba(0,0,0,0.55);
+      font-weight:900;
+    }
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      min-width:240px;
+      max-width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .hint-box{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(13,71,161,0.35);
+      background:#f5f8ff;
+      color:#1a2b55;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .hint-box.show{display:block;}
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+    .feedback.ok{color:var(--ok);font-weight:1000;}
+    .feedback.bad{color:var(--bad);font-weight:1000;}
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    /* =========================
+       PDF Export (offscreen pages)
+       ========================= */
+    .export-root{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:210mm;
+      height:auto;
+      overflow:hidden;
+      background:#fff;
+    }
+    .export-page{
+      width:210mm;
+      height:297mm;
+      background:#fff;
+      padding:12mm;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .export-header{
+      height:20mm;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10mm;
+    }
+    .export-title{
+      font-weight:1000;
+      font-size:16px;
+      color:#111;
+      line-height:1.1;
+    }
+    .export-sub{
+      margin-top:2mm;
+      font-size:11px;
+      color:#555;
+      font-weight:900;
+      line-height:1.25;
+    }
+    .export-content{
+      height: calc(297mm - 12mm - 12mm - 20mm);
+      overflow:hidden;
+    }
+    .export-qgrid{
+      width:100%;
+      height:100%;
+      display:grid;
+      min-height:0;
+    }
+    .export-qgrid.two{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:8mm;
+    }
+    .export-qgrid.three{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:4mm;
+    }
+    .export-qgrid.six{
+      grid-template-columns:1fr 1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:5mm;
+    }
+    .export-q{
+      border:1px solid #ddd;
+      border-radius:10px;
+      padding:6mm;
+      display:flex;
+      flex-direction:column;
+      gap:3mm;
+      min-height:0;
+      overflow:hidden;
+    }
+    .export-q .qprompt{
+      font-weight:900;
+      font-size:12px;
+      color:#111;
+      line-height:1.2;
+    }
+    .export-qgrid.six .qprompt{font-size:11px;}
+
+    .export-diagram{
+      border:1px solid #e6e6e6;
+      border-radius:9px;
+      padding:3mm;
+      flex:1;
+      min-height:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .export-diagram svg{
+      width:100%;
+      height:100%;
+      max-height:100%;
+      display:block;
+      overflow:visible;
+    }
+    .export-diagram .svg-note{ display:none !important; }
+
+    .export-answerline{
+      margin-top:2mm;
+      font-size:12px;
+      font-weight:900;
+      color:#111;
+    }
+    .export-answerline span{
+      display:inline-block;
+      border-bottom:1px solid #111;
+      min-width:62mm;
+      height:0.95em;
+      vertical-align:baseline;
+    }
+    .export-qgrid.six .export-answerline{font-size:11px;}
+    .export-qgrid.six .export-answerline span{min-width:35mm;}
+
+    .answers-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:4mm 10mm;
+      align-content:start;
+      font-size:13px;
+      font-weight:900;
+      color:#111;
+    }
+    .answers-note{
+      margin-top:3mm;
+      font-size:11px;
+      color:#666;
+      font-weight:900;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1 id="pageTitle">Systems of Linear Equations — Substitution</h1>
+        <div class="sub" id="pageSubtitle">Learn • Practice • Timer • PDF export</div>
+      </div>
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="row">
+      <div class="pill">
+        <b>Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <b>Time:</b>
+        <span id="timerValue">00:00</span>
+        <span id="timerStatus" class="muted" style="font-weight:900;"></span>
+        <span class="muted">•</span>
+        <small>URL: <span class="muted">.../your_page.html?name=Tiger</span></small>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <div class="pill">
+          <b>PDF per page</b>
+          <select id="pdfPerPage" class="select" aria-label="PDF per page">
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+
+        <button class="btn orange" id="pauseBtn" type="button">Pause</button>
+        <button class="btn orange" id="newSetBtn" type="button">Generate New Set</button>
+        <button class="btn purple" id="exportQuestionsBtn" type="button">Export Questions PDF</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    <!-- LEARN -->
+    <div class="panel active" id="panel-learn">
+      <div class="learn-card">
+        <h2>Substitution Method — Core Ideas</h2>
+
+        <p>
+          A <b>system of linear equations</b> has two equations with two unknowns (usually <b>x</b> and <b>y</b>).
+          The solution is an <b>ordered pair</b> <b>(x, y)</b> that makes <i>both</i> equations true.
+        </p>
+
+        <p>
+          <b>Substitution</b> means: <b>rewrite one equation</b> so one variable is alone (e.g., <b>x = ...</b> or <b>y = ...</b>),
+          then <b>substitute</b> that expression into the other equation to get a single-variable equation.
+        </p>
+
+        <table class="mini-table" aria-label="Substitution steps">
+          <thead>
+            <tr>
+              <th>Skill</th>
+              <th>Simple method</th>
+              <th>Reminder</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Step 1</b> — Isolate</td>
+              <td>Pick the equation where <b>x</b> or <b>y</b> is easiest to isolate.</td>
+              <td>Try to isolate a variable with coefficient <b>1</b> or <b>-1</b>.</td>
+            </tr>
+            <tr>
+              <td><b>Step 2</b> — Substitute</td>
+              <td>Replace that variable in the other equation.</td>
+              <td>Use brackets if needed: replace the whole expression.</td>
+            </tr>
+            <tr>
+              <td><b>Step 3</b> — Solve</td>
+              <td>Solve the one-variable equation you get.</td>
+              <td>Keep signs careful (especially negatives).</td>
+            </tr>
+            <tr>
+              <td><b>Step 4</b> — Back-substitute</td>
+              <td>Put the value back to find the other variable.</td>
+              <td>Use the isolated equation to make it fast.</td>
+            </tr>
+            <tr>
+              <td><b>Step 5</b> — Check</td>
+              <td>Substitute (x, y) into both original equations.</td>
+              <td>If one fails, there was an algebra mistake.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="note">
+          <b>Worked example</b><br>
+          Solve:
+          <b>x = 2y + 1</b> and <b>x + y = 10</b><br><br>
+          Substitute <b>x = 2y + 1</b> into the second equation:<br>
+          (2y + 1) + y = 10 → 3y = 9 → y = 3<br>
+          Back-substitute: x = 2(3) + 1 = 7<br>
+          So the solution is <b>(x, y) = (7, 3)</b>.
+        </div>
+
+        <div class="learn-grid">
+          <div class="muted">
+            <b>Answer format in this quiz:</b><br>
+            Enter your answer as <b>x,y</b> (example: <b>7,3</b> or <b>x=7, y=3</b>).<br><br>
+            In word problems, the diagram will tell you what x and y mean.
+          </div>
+          <div class="svg-wrap" id="learnSvgWrap"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted" id="instructionsText">Enter your answer as x,y (example: 7,3).</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result (TXT)</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3>Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    /********************
+     * META
+     ********************/
+    const TEMPLATE_META = {
+      title: "Systems of Linear Equations — Substitution Method — DYAA",
+      subtitle: "Learn • Practice • Timer • PDF export",
+      filePrefix: "DYAA_SLE_Substitution",
+      instructions: "Enter your answer as x,y (example: 7,3)."
+    };
+
+    /********************
+     * Helpers
+     ********************/
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function randint(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;");
+    }
+
+    /********************
+     * Answer parsing (x,y)
+     * Accepts: "7,3" "(7,3)" "x=7, y=3" "7 3"
+     ********************/
+    function parsePair(input){
+      if(input == null) return null;
+      let s = String(input).trim();
+      if(!s) return null;
+
+      s = s.replace(/[()]/g,"");
+      s = s.replace(/;/g, ",");
+      s = s.replace(/x\s*=\s*/ig, "");
+      s = s.replace(/y\s*=\s*/ig, "");
+
+      // allow: "7,3" or "7 3"
+      const parts = s.split(/[, ]+/).filter(Boolean);
+      if(parts.length !== 2) return null;
+
+      if(!/^-?\d+$/.test(parts[0]) || !/^-?\d+$/.test(parts[1])) return null;
+      const x = Number(parts[0]);
+      const y = Number(parts[1]);
+      if(!Number.isFinite(x) || !Number.isFinite(y)) return null;
+      return [x,y];
+    }
+
+    function formatPair(p){
+      if(!p) return "(?, ?)";
+      return `(${p[0]}, ${p[1]})`;
+    }
+    function isPairEqual(a,b){
+      return !!a && !!b && a[0]===b[0] && a[1]===b[1];
+    }
+
+    function stripSvgNote(html){
+      return String(html).replace(/<div class="svg-note">[\s\S]*?<\/div>/g, "");
+    }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * Timer + Pause/Resume
+     ********************/
+    const TIMER = { seconds: 0, running: true, id: null };
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function formatTime(sec){
+      sec = Math.max(0, Math.floor(sec));
+      const m = Math.floor(sec/60);
+      const s = sec % 60;
+      return `${pad2(m)}:${pad2(s)}`;
+    }
+    function updateTimerUI(){
+      $("#timerValue").textContent = formatTime(TIMER.seconds);
+      $("#timerStatus").textContent = TIMER.running ? "" : "(Paused)";
+      $("#pauseBtn").textContent = TIMER.running ? "Pause" : "Resume";
+    }
+    function startTimerTick(){
+      if(TIMER.id) clearInterval(TIMER.id);
+      TIMER.id = setInterval(() => {
+        if(TIMER.running){
+          TIMER.seconds += 1;
+          updateTimerUI();
+        }
+      }, 1000);
+    }
+    function resetTimer(){
+      TIMER.seconds = 0;
+      TIMER.running = true;
+      updateTimerUI();
+    }
+    function togglePause(){
+      TIMER.running = !TIMER.running;
+      updateTimerUI();
+    }
+    $("#pauseBtn").addEventListener("click", togglePause);
+
+    /********************
+     * SVG builders
+     ********************/
+    function svgWrap(svg){
+      return `${svg}`;
+    }
+
+    function wrapLines(text, maxLen=34){
+      const words = String(text).split(/\s+/);
+      const lines = [];
+      let cur = "";
+      for(const w of words){
+        if(!cur) { cur = w; continue; }
+        if((cur + " " + w).length <= maxLen){
+          cur += " " + w;
+        }else{
+          lines.push(cur);
+          cur = w;
+        }
+      }
+      if(cur) lines.push(cur);
+      return lines;
+    }
+
+    function textCardSvg(title, lines){
+      const all = [];
+      all.push(...wrapLines(title, 30).map(s=>({t:s, kind:"title"})));
+      all.push({t:"", kind:"spacer"});
+      for(const ln of lines){
+        const ws = wrapLines(ln, 36);
+        ws.forEach(s=>all.push({t:s, kind:"line"}));
+      }
+
+      let y = 26;
+      const dy = 18;
+
+      const textEls = all.map(row=>{
+        if(row.kind==="spacer"){ y += 8; return ""; }
+        let style;
+        if(row.kind==="title"){
+          style = "font: 15px 'Segoe UI', Tahoma, sans-serif; font-weight: 1000; fill: #0d47a1;";
+        }else{
+          const isEq = String(row.t).includes("=");
+          style = isEq
+            ? "font: 16px 'Segoe UI', Tahoma, sans-serif; font-weight: 1000; fill: #111;"
+            : "font: 14px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill: rgba(0,0,0,0.78);";
+        }
+        const t = escapeHtml(row.t);
+        const el = `<text x="14" y="${y}" style="${style}">${t}</text>`;
+        y += dy;
+        return el;
+      }).join("");
+
+      const height = Math.max(160, y + 12);
+
+      const svg = `
+        <svg viewBox="0 0 360 ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Text diagram">
+          <rect x="6" y="6" width="348" height="${height-12}" rx="14" fill="#ffffff" stroke="var(--stroke)" stroke-width="1.5"></rect>
+          <rect x="6" y="6" width="348" height="34" rx="14" fill="rgba(13,71,161,0.06)" stroke="none"></rect>
+          ${textEls}
+        </svg>
+      `;
+      return svgWrap(svg);
+    }
+
+    function systemSvg(eq1, eq2){
+      const title = "Solve the system";
+      const lines = [
+        eq1,
+        eq2,
+        "Find (x, y)."
+      ];
+      return textCardSvg(title, lines);
+    }
+
+    /********************
+     * Question generators
+     ********************/
+    function pickInt(rangeMin, rangeMax, avoid=new Set()){
+      let tries = 0;
+      while(tries++ < 2000){
+        const v = randint(rangeMin, rangeMax);
+        if(!avoid.has(v)) return v;
+      }
+      return randint(rangeMin, rangeMax);
+    }
+
+    function sign(n){
+      return n<0 ? "-" : "+";
+    }
+    function fmtTerm(c, v){
+      // c * v where v is "x" or "y"
+      if(c === 0) return "";
+      if(c === 1) return v;
+      if(c === -1) return `-${v}`;
+      return `${c}${v}`;
+    }
+    function fmtLinear(ax, by, c){
+      // ax + by = c (ax/by can be 0)
+      const terms = [];
+      if(ax!==0) terms.push(fmtTerm(ax,"x"));
+      if(by!==0){
+        const t = fmtTerm(by,"y");
+        if(terms.length===0) terms.push(t);
+        else{
+          if(by>0) terms.push(`+ ${t}`);
+          else terms.push(`- ${fmtTerm(-by,"y")}`);
+        }
+      }
+      if(terms.length===0) terms.push("0");
+      return `${terms.join(" ")} = ${c}`;
+    }
+
+    function makeSubstitutionSystem(difficulty){
+      // Choose solution
+      let x, y, eq1, eq2, hint;
+
+      if(difficulty === "easy"){
+        x = randint(-6, 9);
+        y = randint(-6, 9);
+        if(x===0 && y===0) x = 3;
+
+        // Eq1: x = a y + b  OR y = a x + b
+        const isolateX = Math.random() < 0.6;
+        const a = choice([-3,-2,-1,1,2,3]);
+
+        // helper to avoid "1x" / "1y"
+        const aVarY = (coef, v) => (coef === 1 ? v : (coef === -1 ? `-${v}` : `${coef}${v}`));
+
+        if(isolateX){
+          const b = x - a*y;
+          const ay = aVarY(a, "y");
+          eq1 = `x = ${ay} ${b>=0?"+":"-"} ${Math.abs(b)}`;
+        }else{
+          const b = y - a*x;
+          const ax = aVarY(a, "x");
+          eq1 = `y = ${ax} ${b>=0?"+":"-"} ${Math.abs(b)}`;
+        }
+
+        // Eq2: x + ky = d
+        const k = choice([-4,-3,-2,-1,1,2,3,4]);
+        const d = x + k*y;
+        const ky = (Math.abs(k) === 1) ? "y" : `${Math.abs(k)}y`;
+        eq2 = `x ${k>=0?"+":"-"} ${ky} = ${d}`;
+
+        hint = "Isolate x or y from one equation, substitute into the other, solve, then back-substitute and check.";
+
+      } else if(difficulty === "medium"){
+        x = randint(-10, 12);
+        y = randint(-10, 12);
+        if(x===0 && y===0) y = -4;
+
+        // Eq1: x + ay = c  (easy to isolate x)
+        const a = choice([-5,-4,-3,-2,-1,1,2,3,4,5]);
+        const c = x + a*y;
+        const ay = (Math.abs(a) === 1) ? "y" : `${Math.abs(a)}y`;
+        eq1 = `x ${a>=0?"+":"-"} ${ay} = ${c}`;
+
+        // Eq2: bx + y = e OR bx - y = e (easy to isolate y)
+        const b = choice([-6,-5,-4,-3,-2,-1,1,2,3,4,5,6]);
+        const s = choice([1,-1]); // y sign
+        const e = b*x + s*y;
+        eq2 = `${b===1?"x":b===-1?"-x":b+"x"} ${s===1?"+":"-"} y = ${e}`;
+
+        hint = "From Eq1, write x = ... Then substitute into Eq2. Solve for y, then find x.";
+
+      } else { // hard
+        // wider but still reasonable
+        x = randint(-15, 18);
+        y = randint(-15, 18);
+        if(x===0 && y===0) x = 9;
+
+        // Eq1: 3x + y = r OR 2x - y = r  (isolate y quickly)
+        const form = choice(["3x+y","2x-y","-4x+y","5x-y"]);
+        let r;
+        if(form === "3x+y"){ r = 3*x + y; eq1 = `3x + y = ${r}`; }
+        if(form === "2x-y"){ r = 2*x - y; eq1 = `2x - y = ${r}`; }
+        if(form === "-4x+y"){ r = -4*x + y; eq1 = `-4x + y = ${r}`; }
+        if(form === "5x-y"){ r = 5*x - y; eq1 = `5x - y = ${r}`; }
+
+        // Eq2: ax + by = c with bigger coefficients but solvable
+        let ax = choice([-7,-6,-5,-4,-3,3,4,5,6,7]);
+        let by = choice([-8,-7,-6,-5,-4,4,5,6,7,8]);
+        // avoid parallel-ish with eq1 by
+        if(Math.abs(ax)===Math.abs(by)) ax += (ax>0?1:-1);
+        const c = ax*x + by*y;
+        eq2 = fmtLinear(ax, by, c);
+
+        hint = "Solve Eq1 for y (or x), substitute into Eq2, solve the single-variable equation, then back-substitute. Check both equations.";
+
+      }
+
+      return {
+        eq1, eq2,
+        answer: [x,y],
+        hint
+      };
+    }
+
+    /********************
+     * Application (word problem) bank
+     * Each generator returns: { title, lines, hint, answer:[x,y] }
+     ********************/
+    function money_twoPrices(){
+      // x = price of a notebook (dollars), y = price of a pen (dollars)
+      const x = randint(2, 12);
+      const y = randint(1, 9);
+      const a1 = 1;
+      const b1 = randint(2, 6);
+      const t1 = a1*x + b1*y;
+
+      const a2 = randint(2, 6);
+      const b2 = randint(1, 4);
+      const t2 = a2*x + b2*y;
+
+      return {
+        title: "Money & Shopping — Two Item Prices",
+        lines: [
+          `A stationery store sells notebooks and pens.`,
+          `One notebook and ${b1} pens cost $${t1}.`,
+          `${a2} notebooks and ${b2} pens cost $${t2}.`,
+          `Let x be the price of one notebook and y be the price of one pen. Find x and y.`
+        ],
+        hint: "Form two equations. Isolate one variable (x or y), substitute into the other equation, then solve.",
+        answer:[x,y]
+      };
+    }
+
+    function money_twoPurchases(){
+      // x = drink price (dollars), y = sandwich price (dollars)
+      const x = randint(2, 15);
+      const y = randint(1, 10);
+      const a1 = randint(1, 3);
+      const b1 = randint(2, 6);
+      const t1 = a1*x + b1*y;
+
+      const a2 = a1 + randint(1, 3);
+      const b2 = Math.max(1, b1 - randint(1, 3));
+      const t2 = a2*x + b2*y;
+
+      return {
+        title:"Money & Shopping — Two Purchases",
+        lines:[
+          `At a café, a drink costs x dollars and a sandwich costs y dollars.`,
+          `Purchase 1: ${a1} drinks and ${b1} sandwiches cost $${t1}.`,
+          `Purchase 2: ${a2} drinks and ${b2} sandwiches cost $${t2}.`,
+          `Find x and y.`
+        ],
+        hint:"Write one equation for each purchase. Use substitution to solve the system.",
+        answer:[x,y]
+      };
+    }
+
+    function people_classCount(){
+      const boys = randint(10, 18);
+      const girls = randint(8, 16);
+      const total = boys + girls;
+      const diff = girls - boys;
+      const rel = diff>=0 ? `There are ${diff} more girls than boys.` : `There are ${-diff} more boys than girls.`;
+
+      return {
+        title:"People — Class Numbers",
+        lines:[
+          `In a class, there are x boys and y girls.`,
+          `The total number of students is ${total}.`,
+          rel,
+          `Find x and y.`
+        ],
+        hint:"Use x + y = total and the difference statement. Substitute to solve.",
+        answer:[boys, girls]
+      };
+    }
+
+    function people_age(){
+      const y = randint(8, 15);
+      const k = randint(2, 8);
+      const x = y + k;
+      const sum = x + y;
+
+      return {
+        title:"People — Ages",
+        lines:[
+          `Alice is x years old and Ben is y years old.`,
+          `Alice is ${k} years older than Ben.`,
+          `The sum of their ages is ${sum}.`,
+          `Find x and y.`
+        ],
+        hint:"Write x = y + k and x + y = sum. Substitute to solve.",
+        answer:[x, y]
+      };
+    }
+
+    function speed_meeting(){
+      const x = randint(6, 16);
+      const y = randint(5, 14);
+      const t = randint(2, 5);
+      const D = (x+y)*t;
+
+      const k = x - y;
+      const extra = k>=0 ? `Person A travels ${k} km/h faster than Person B.` : `Person B travels ${-k} km/h faster than Person A.`;
+
+      return {
+        title:"Speed · Time · Distance — Meeting",
+        lines:[
+          `Two people start at the same time from two towns ${D} km apart and travel toward each other.`,
+          `They meet after ${t} hour(s).`,
+          `Person A travels at x km/h and Person B travels at y km/h.`,
+          extra,
+          `Find x and y.`
+        ],
+        hint:"Meeting gives (x + y)·t = distance. Use the 'faster' statement as the second equation, then substitute.",
+        answer:[x,y]
+      };
+    }
+
+    function speed_chase(){
+      const y = randint(6, 14);
+      const k = randint(2, 8);
+      const x = y + k;
+      const t = randint(1, 4);
+      const gap = (x - y) * t;
+
+      return {
+        title:"Speed · Time · Distance — Chase (Catch-up)",
+        lines:[
+          `A runner travels at y km/h. A cyclist travels at x km/h.`,
+          `The runner starts ${gap} km ahead.`,
+          `The cyclist catches up after ${t} hour(s).`,
+          `Find x and y.`
+        ],
+        hint:"Catch-up gives (x − y)·t = gap. Use substitution after expressing one variable in terms of the other.",
+        answer:[x,y]
+      };
+    }
+
+    function share_candies(){
+      const x = randint(10, 30);
+      const y = randint(10, 30);
+      const total = x + y;
+      const diff = x - y;
+      const rel = diff>=0 ? `A has ${diff} more candies than B.` : `B has ${-diff} more candies than A.`;
+
+      return {
+        title:"Distribution / Share — Candies",
+        lines:[
+          `A has x candies and B has y candies.`,
+          `Together they have ${total} candies.`,
+          rel,
+          `Find x and y.`
+        ],
+        hint:"Use x + y = total and the difference statement. Substitute to solve.",
+        answer:[x,y]
+      };
+    }
+
+    function work_amount(){
+      const x = randint(3, 10);
+      const y = randint(2, 9);
+      if(x===y) return work_amount();
+
+      const tTogether = randint(2, 5);
+      const totalJobs = (x+y) * tTogether;
+
+      const tA = randint(4, 9);
+      const jobsByA = x * tA;
+
+      return {
+        title:"Work / Rate — Work Amount",
+        lines:[
+          `Worker A can complete x tasks per hour and Worker B can complete y tasks per hour.`,
+          `Working together, they complete ${totalJobs} tasks in ${tTogether} hour(s).`,
+          `Working alone, Worker A completes ${jobsByA} tasks in ${tA} hour(s).`,
+          `Find x and y.`
+        ],
+        hint:"From the second statement, find x. Use the first statement to find y, then substitute if needed.",
+        answer:[x,y]
+      };
+    }
+
+    function packing_boxes(){
+      const x = randint(8, 20);
+      const y = randint(4, 12);
+      if(x<=y) return packing_boxes();
+
+      const big = randint(2, 6);
+      const small = randint(3, 8);
+      const total = big*x + small*y;
+
+      const big2 = big + 1;
+      const small2 = Math.max(1, small - 1);
+      const total2 = big2*x + small2*y;
+
+      return {
+        title:"Quantity / Capacity — Packing Boxes",
+        lines:[
+          `A big box holds x items and a small box holds y items.`,
+          `${big} big boxes and ${small} small boxes hold ${total} items.`,
+          `${big2} big boxes and ${small2} small boxes hold ${total2} items.`,
+          `Find x and y.`
+        ],
+        hint:"Write a system of two equations in x and y. Use substitution to solve.",
+        answer:[x,y]
+      };
+    }
+
+    function geometry_rectangle(){
+      const y = randint(4, 18);
+      const k = randint(2, 10);
+      const x = y + k;
+      const P = 2*(x+y);
+
+      return {
+        title:"Geometry — Rectangle",
+        lines:[
+          `A rectangle has length x cm and width y cm.`,
+          `Its perimeter is ${P} cm.`,
+          `The length is ${k} cm longer than the width.`,
+          `Find x and y.`
+        ],
+        hint:"Use x = y + k and 2(x + y) = P. Substitute to solve.",
+        answer:[x,y]
+      };
+    }
+
+    function animals_cats_chickens(){
+      const cats = randint(2, 10);
+      const chickens = randint(4, 16);
+      const heads = cats + chickens;
+      const legs = 4*cats + 2*chickens;
+
+      return {
+        title:"Classic Heads & Legs — Cats and Chickens",
+        lines:[
+          `On a farm, there are x cats and y chickens.`,
+          `The total number of animals is ${heads}.`,
+          `The total number of legs is ${legs}.`,
+          `Find x and y.`
+        ],
+        hint:"Use x + y = heads and 4x + 2y = legs. Substitute y = heads − x.",
+        answer:[cats,chickens]
+      };
+    }
+
+    function wheels_bike_trike(){
+      const bikes = randint(2, 12);
+      const trikes = randint(2, 10);
+      const vehicles = bikes + trikes;
+      const wheels = 2*bikes + 3*trikes;
+
+      return {
+        title:"Classic — Bicycles and Tricycles",
+        lines:[
+          `In a yard, there are x bicycles and y tricycles.`,
+          `The total number of vehicles is ${vehicles}.`,
+          `The total number of wheels is ${wheels}.`,
+          `Find x and y.`
+        ],
+        hint:"Use x + y = total and 2x + 3y = wheels. Substitute x = total − y.",
+        answer:[bikes,trikes]
+      };
+    }
+
+    function tables_stools(){
+      const tables = randint(2, 10);
+      const stools = randint(2, 12);
+      const total = tables + stools;
+      const legs = 4*tables + 3*stools;
+
+      return {
+        title:"Classic — Tables and Stools",
+        lines:[
+          `A hall has x tables (4 legs each) and y stools (3 legs each).`,
+          `The total number of items is ${total}.`,
+          `The total number of legs is ${legs}.`,
+          `Find x and y.`
+        ],
+        hint:"Use x + y = total and 4x + 3y = legs. Substitute x = total − y.",
+        answer:[tables,stools]
+      };
+    }
+
+    function boxes_big_small(){
+      const capBig = choice([12, 15, 18, 20]);
+      const capSmall = choice([6, 8, 9, 10]);
+      if(capSmall >= capBig) return boxes_big_small();
+
+      const x = randint(2, 8);
+      const y = randint(3, 12);
+      const boxes = x + y;
+      const items = capBig*x + capSmall*y;
+
+      return {
+        title:"Classic — Big Box and Small Box",
+        lines:[
+          `A warehouse uses big boxes and small boxes.`,
+          `A big box holds ${capBig} items and a small box holds ${capSmall} items.`,
+          `There are ${boxes} boxes in total and ${items} items in total.`,
+          `Let x be the number of big boxes and y be the number of small boxes. Find x and y.`
+        ],
+        hint:"Use x + y = total boxes and capBig·x + capSmall·y = total items. Substitute to solve.",
+        answer:[x,y]
+      };
+    }
+
+    function river_timeEquations(){
+      const y = randint(1, 4);
+      const x = randint(y+4, y+10);
+      const d = choice([12, 15, 18, 20, 24, 30]);
+      const tDown = d / (x+y);
+      const tUp = d / (x-y);
+      if(!Number.isInteger(tDown) || !Number.isInteger(tUp)) return river_timeEquations();
+
+      return {
+        title:"Downstream / Upstream — Using Time",
+        lines:[
+          `A boat travels ${d} km downstream in ${tDown} hour(s).`,
+          `It travels the same ${d} km upstream in ${tUp} hour(s).`,
+          `Let x be the boat's speed in still water (km/h) and y be the current speed (km/h).`,
+          `Find x and y.`
+        ],
+        hint:"Downstream: x + y = d/tDown. Upstream: x − y = d/tUp. Use substitution to solve.",
+        answer:[x,y]
+      };
+    }
+
+    function river_speedEquations(){
+      const y = randint(1, 5);
+      const x = randint(y+5, y+12);
+      const vDown = x + y;
+      const vUp = x - y;
+
+      return {
+        title:"Downstream / Upstream — Using Speed",
+        lines:[
+          `A boat's downstream speed is ${vDown} km/h and its upstream speed is ${vUp} km/h.`,
+          `Let x be the boat's speed in still water (km/h) and y be the current speed (km/h).`,
+          `Find x and y.`
+        ],
+        hint:"Use x + y = downstream speed and x − y = upstream speed. Substitute to solve.",
+        answer:[x,y]
+      };
+    }
+
+    function river_distanceTime(){
+      const y = randint(1, 4);
+      const x = randint(y+5, y+11);
+      const d = choice([10, 12, 15, 18, 20, 24]);
+      const tDown = d/(x+y);
+      const tUp = d/(x-y);
+      if(!Number.isInteger(tDown) || !Number.isInteger(tUp)) return river_distanceTime();
+
+      const totalTime = tDown + tUp;
+      return {
+        title:"Downstream / Upstream — Distance and Time",
+        lines:[
+          `A boat travels ${d} km downstream and then ${d} km upstream.`,
+          `The downstream trip takes ${tDown} hour(s).`,
+          `The total time for both trips is ${totalTime} hour(s).`,
+          `Let x be the boat's speed in still water (km/h) and y be the current speed (km/h). Find x and y.`
+        ],
+        hint:"Use d/(x+y) = tDown and d/(x−y) = tUp, then solve the system using substitution.",
+        answer:[x,y]
+      };
+    }
+
+    function plane_tailwind_headwind(){
+      const wind = randint(20, 60);
+      const air = randint(wind+160, wind+240);
+      const withWind = air + wind;
+      const against = air - wind;
+
+      return {
+        title:"Plane — Tailwind and Headwind",
+        lines:[
+          `A plane's ground speed with a tailwind is ${withWind} km/h.`,
+          `Its ground speed with a headwind is ${against} km/h.`,
+          `Let x be the plane's speed in still air (km/h) and y be the wind speed (km/h).`,
+          `Find x and y.`
+        ],
+        hint:"Use x + y = tailwind speed and x − y = headwind speed. Substitute to solve.",
+        answer:[air, wind]
+      };
+    }
+
+    function fraction_change(){
+      const y = randint(10, 24);
+      const x = randint(2, y-2);
+      const a = randint(1, 4);
+      const b = randint(1, 3);
+      if(y-a <= 1) return fraction_change();
+
+      function simplify(n,d){
+        const g = gcd(Math.abs(n), Math.abs(d));
+        return [n/g, d/g];
+      }
+      function gcd(a,b){ while(b){ [a,b]=[b,a%b]; } return a||1; }
+
+      const [p,q] = simplify(x+a, y+a);
+      const [r,s] = simplify(x-b, y-b);
+      if(p===r && q===s) return fraction_change();
+
+      return {
+        title:"Fraction Change",
+        lines:[
+          `A fraction is x/y.`,
+          `After adding ${a} to both numerator and denominator, the fraction becomes ${p}/${q}.`,
+          `After subtracting ${b} from both numerator and denominator, the fraction becomes ${r}/${s}.`,
+          `Find x and y.`
+        ],
+        hint:"Write two equations by cross-multiplying, then use substitution to solve the system.",
+        answer:[x,y]
+      };
+    }
+
+    function coins_twoTypes(){
+      const x = randint(3, 20);
+      const y = randint(5, 30);
+      const totalCoins = x + y;
+      const totalValue = 2*x + 1*y;
+
+      return {
+        title:"Different Coins",
+        lines:[
+          `A person has x $2 coins and y $1 coins.`,
+          `The total number of coins is ${totalCoins}.`,
+          `The total value of the coins is $${totalValue}.`,
+          `Find x and y.`
+        ],
+        hint:"Use x + y = total coins and 2x + y = total value. Substitute to solve.",
+        answer:[x,y]
+      };
+    }
+
+    // Build the scenario bank requested by user (labels match the list)
+    const APPLICATION_BANK = [
+      { key:"S1", label:"Money — Two item prices", gen: money_twoPrices },
+      { key:"S2", label:"Money — Two purchases", gen: money_twoPurchases },
+      { key:"S3", label:"People — Class numbers", gen: people_classCount },
+      { key:"S4", label:"People — Ages", gen: people_age },
+      { key:"S5", label:"Speed — Meeting", gen: speed_meeting },
+      { key:"S6", label:"Speed — Chase", gen: speed_chase },
+      { key:"S7", label:"Share — Candies", gen: share_candies },
+      { key:"S8", label:"Work — Work amount", gen: work_amount },
+      { key:"S9", label:"Capacity — Packing", gen: packing_boxes },
+      { key:"S10", label:"Geometry — Rectangle", gen: geometry_rectangle },
+      { key:"S11", label:"Classic — Cats & chickens", gen: animals_cats_chickens },
+      { key:"S12", label:"Classic — Bicycle & tricycle", gen: wheels_bike_trike },
+      { key:"S13", label:"Classic — Tables & stools", gen: tables_stools },
+      { key:"S14", label:"Classic — Big & small boxes", gen: boxes_big_small },
+      { key:"S15", label:"River — Use time", gen: river_timeEquations },
+      { key:"S16", label:"River — Use speed", gen: river_speedEquations },
+      { key:"S17", label:"River — Distance + time", gen: river_distanceTime },
+      { key:"Plane", label:"Plane — Tailwind/headwind", gen: plane_tailwind_headwind },
+      { key:"S18", label:"Fraction change", gen: fraction_change },
+      { key:"Coins", label:"Different coins", gen: coins_twoTypes }
+    ];
+
+    function pickTwoDistinctScenarios(){
+      const shuffled = shuffle(APPLICATION_BANK);
+      return [shuffled[0], shuffled[1]];
+    }
+
+    /********************
+     * makeQuestions()
+     * - 2 easy substitution
+     * - 2 medium substitution
+     * - 2 hard substitution
+     * - 2 application problems (random from bank above)
+     ********************/
+    function makeQuestions(){
+      const qs = [];
+      const usedPrompts = new Set();
+
+      function addQ(q){
+        const key = q.prompt + "||" + (q.svg||"");
+        if(usedPrompts.has(key)) return false;
+        usedPrompts.add(key);
+        qs.push(q);
+        return true;
+      }
+
+      // substitution practice
+      const diffs = ["easy","easy","medium","medium","hard","hard"];
+      for(const d of diffs){
+        let tries = 0;
+        while(tries++ < 100){
+          const sys = makeSubstitutionSystem(d);
+          const svg = systemSvg(sys.eq1, sys.eq2);
+          const q = {
+            difficulty: d,
+            prompt: "Solve using substitution. Enter x,y.",
+            hint: sys.hint,
+            answer: sys.answer,
+            svg
+          };
+          if(addQ(q)) break;
+        }
+      }
+
+      // 2 application word problems
+      const [sA, sB] = pickTwoDistinctScenarios();
+      [sA, sB].forEach((s, idx) => {
+        let tries = 0;
+        while(tries++ < 60){
+          const obj = s.gen();
+          const svg = textCardSvg(obj.title, obj.lines);
+          const q = {
+            difficulty: idx===0 ? "medium" : "hard",
+            prompt: "Word problem: form and solve a system (use substitution). Enter x,y.",
+            hint: obj.hint,
+            answer: obj.answer,
+            svg
+          };
+          if(addQ(q)) break;
+        }
+      });
+
+      return qs;
+    }
+
+    /********************
+     * UI state + rendering
+     ********************/
+    let QUESTIONS = [];
+    let STATE = { answers:[], checked:[], correct:[], hintShown:[], submitted:false };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+    function niceDiff(d){
+      if(d==="easy") return "Easy";
+      if(d==="medium") return "Medium";
+      return "Hard";
+    }
+
+    function renderQuestions(){
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const userVal = STATE.answers[idx] ?? "";
+        const checked = !!STATE.checked[idx];
+        const correct = !!STATE.correct[idx];
+        const hintShown = !!STATE.hintShown[idx];
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${escapeHtml(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="q-body">
+            <div class="svg-wrap">${q.svg || ""}</div>
+
+            <div class="answer-area">
+              <div class="input-row">
+                <input type="text" autocomplete="off"
+                  id="ans-${idx}" placeholder="Answer (x,y) e.g., 7,3"
+                  value="${escapeHtml(userVal)}">
+                <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+                <button class="btn ghost" type="button" id="hint-${idx}">${hintShown ? "Hide Hint" : "Hint"}</button>
+              </div>
+
+              <div class="hint-box ${hintShown ? "show" : ""}" id="hintBox-${idx}">
+                ${escapeHtml(q.hint || "")}
+              </div>
+
+              <div class="feedback ${checked ? (correct ? "ok" : "bad") : ""}" id="fb-${idx}">
+                ${checked
+                  ? (correct
+                      ? "Correct ✅"
+                      : `Not correct ❌  (Correct answer: ${escapeHtml(formatPair(q.answer))})`)
+                  : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        const inp = $(`#ans-${idx}`, card);
+        inp.addEventListener("input", () => {
+          STATE.answers[idx] = inp.value;
+          STATE.checked[idx] = false;
+          STATE.correct[idx] = false;
+          if(STATE.submitted){
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+          }
+          const fb = $(`#fb-${idx}`, card);
+          fb.className = "feedback";
+          fb.textContent = "";
+        });
+
+        $(`#check-${idx}`, card).addEventListener("click", () => checkOne(idx));
+        $(`#hint-${idx}`, card).addEventListener("click", () => {
+          STATE.hintShown[idx] = !STATE.hintShown[idx];
+          renderQuestions();
+        });
+      });
+
+      $("#resultsBox").style.display = "none";
+    }
+
+    function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const v = parsePair(STATE.answers[idx]);
+      STATE.checked[idx] = true;
+
+      if(!v){
+        STATE.correct[idx] = false;
+        renderQuestions();
+        const fb = $(`#fb-${idx}`);
+        fb.className = "feedback bad";
+        fb.textContent = "Please enter a valid pair like 7,3.";
+        return;
+      }
+
+      STATE.correct[idx] = isPairEqual(v, q.answer);
+      renderQuestions();
+    }
+
+    function submitAll(){
+      let correctCount = 0;
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const v = parsePair(STATE.answers[i]);
+        STATE.checked[i] = true;
+        STATE.correct[i] = !!v && isPairEqual(v, q.answer);
+        if(STATE.correct[i]) correctCount++;
+      }
+
+      STATE.submitted = true;
+      renderQuestions();
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+
+      const lines = QUESTIONS.map((q,i)=>(
+        `<div style="margin:6px 0;"><b>Q${i+1}:</b> ${escapeHtml(formatPair(q.answer))}</div>`
+      )).join("");
+
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:8px;"><b>Correct Answers (x, y):</b></div>
+        <div style="margin-top:6px;">${lines}</div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+    function resetAnswers(){
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    /********************
+     * Save Current Result as TXT
+     ********************/
+    function saveResult(){
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const when = new Date();
+      const dateStr = when.toLocaleString();
+      const elapsed = formatTime(TIMER.seconds);
+
+      let correctCount = 0;
+      const out = [];
+
+      out.push(`DYAA — Save Current Result`);
+      out.push(`Title: ${title}`);
+      out.push(`Student: ${student}`);
+      out.push(`Date: ${dateStr}`);
+      out.push(`Elapsed Time: ${elapsed}`);
+      out.push(``);
+
+      QUESTIONS.forEach((q, i) => {
+        const raw = (STATE.answers[i] ?? "").toString().trim();
+        const v = parsePair(raw);
+        const valid = !!v;
+        const isCorrect = valid && isPairEqual(v, q.answer);
+        if(isCorrect) correctCount++;
+
+        out.push(`Q${i+1} (${String(q.difficulty||"").toUpperCase()}): ${q.prompt}`);
+        out.push(`Your answer: ${valid ? formatPair(v) : (raw ? raw : "(blank)")}`);
+        out.push(`Correct answer: ${formatPair(q.answer)}`);
+        out.push(`Result: ${isCorrect ? "Correct" : "Not correct"}`);
+        out.push(``);
+      });
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+      out.splice(5, 0, `Score: ${correctCount} / ${total} (${pct}%)`);
+
+      const text = out.join("\r\n");
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_result.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    /********************
+     * Tabs + Student name
+     ********************/
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $(`#panel-${tab}`).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", ""));
+      $("#studentNameValue").textContent = name ? name : "Anonymous";
+    }
+
+    /********************
+     * Generate New Set (resets timer)
+     ********************/
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+
+      resetTimer();
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set? This will clear your current answers and reset the timer.", () => {
+        generateNewSet();
+        // go to practice
+        $$('.tab').forEach(b=>b.classList.remove('active'));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$('.panel').forEach(p=>p.classList.remove('active'));
+        $('#panel-practice').classList.add('active');
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    /********************
+     * Learn diagram
+     ********************/
+    function renderLearnDiagram(){
+      const svg = `
+        <svg viewBox="0 0 360 230" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Substitution flow">
+          <defs>
+            <marker id="arr" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+              <path d="M0,0 L9,3 L0,6 Z" fill="rgba(0,0,0,0.55)"></path>
+            </marker>
+          </defs>
+
+          <rect x="8" y="10" width="344" height="210" rx="16" fill="#fff" stroke="var(--stroke)" stroke-width="1.5"></rect>
+          <rect x="8" y="10" width="344" height="34" rx="16" fill="rgba(13,71,161,0.06)"></rect>
+          <text x="20" y="33" style="font: 15px 'Segoe UI', Tahoma, sans-serif; font-weight: 1000; fill: #0d47a1;">
+            Substitution Flow
+          </text>
+
+          <!-- boxes -->
+          <g>
+            <rect x="20" y="55" width="320" height="28" rx="10" fill="#f5f8ff" stroke="rgba(13,71,161,0.25)"></rect>
+            <text x="30" y="74" style="font: 13px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill:#0d47a1;">
+              1) Isolate x or y in one equation
+            </text>
+
+            <rect x="20" y="92" width="320" height="28" rx="10" fill="#fff7ea" stroke="rgba(255,152,0,0.35)"></rect>
+            <text x="30" y="111" style="font: 13px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill:#7a4a00;">
+              2) Substitute into the other equation
+            </text>
+
+            <rect x="20" y="129" width="320" height="28" rx="10" fill="#f5f8ff" stroke="rgba(13,71,161,0.25)"></rect>
+            <text x="30" y="148" style="font: 13px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill:#0d47a1;">
+              3) Solve the one-variable equation
+            </text>
+
+            <rect x="20" y="166" width="320" height="28" rx="10" fill="#f2fff4" stroke="rgba(27,94,32,0.25)"></rect>
+            <text x="30" y="185" style="font: 13px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill:#1b5e20;">
+              4) Back-substitute to get the other value
+            </text>
+          </g>
+
+          <!-- arrows -->
+          <line x1="180" y1="83" x2="180" y2="92" stroke="rgba(0,0,0,0.55)" stroke-width="1.6" marker-end="url(#arr)"></line>
+          <line x1="180" y1="120" x2="180" y2="129" stroke="rgba(0,0,0,0.55)" stroke-width="1.6" marker-end="url(#arr)"></line>
+          <line x1="180" y1="157" x2="180" y2="166" stroke="rgba(0,0,0,0.55)" stroke-width="1.6" marker-end="url(#arr)"></line>
+
+          <text x="20" y="202" style="font: 12px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill: rgba(0,0,0,0.55);">
+            Finally: check (x, y) in both original equations.
+          </text>
+        </svg>
+      `;
+      $("#learnSvgWrap").innerHTML = svgWrap(svg);
+    }
+
+    /********************
+     * Export Questions PDF
+     * - PDF per page: 2 / 3 / 6 (default 2)
+     * - Answers at the end (separate page(s), auto paged)
+     ********************/
+    function layoutClass(perPage){
+      if(perPage === 6) return "six";
+      if(perPage === 3) return "three";
+      return "two";
+    }
+
+    function buildQuestionPageDOM(indexGroup, perPage, meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">${escapeHtml(meta.title)}</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)} • Time: ${escapeHtml(meta.timeStr)}
+          </div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const grid = document.createElement("div");
+      grid.className = `export-qgrid ${layoutClass(perPage)}`;
+
+      indexGroup.forEach(i => {
+        const q = QUESTIONS[i];
+        const box = document.createElement("div");
+        box.className = "export-q";
+        box.innerHTML = `
+          <div class="qprompt">Q${i+1}. ${escapeHtml(q.prompt)}</div>
+          <div class="export-diagram">${stripSvgNote(q.svg || "")}</div>
+          <div class="export-answerline">Answer (x, y): <span></span></div>
+        `;
+        grid.appendChild(box);
+      });
+
+      content.appendChild(grid);
+      page.appendChild(header);
+      page.appendChild(content);
+      return page;
+    }
+
+    function createAnswerPage(meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">Answers — ${escapeHtml(meta.title)}</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)}
+          </div>
+          <div class="answers-note">These are the correct answers for the exported question set.</div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const list = document.createElement("div");
+      list.className = "answers-list";
+      content.appendChild(list);
+
+      page.appendChild(header);
+      page.appendChild(content);
+
+      return { page, content, list };
+    }
+
+    async function exportQuestionsPdf(){
+      const perPage = Number($("#pdfPerPage").value) || 2;
+
+      const libsOk = (window.html2canvas && window.jspdf && window.jspdf.jsPDF);
+      if(!libsOk){
+        alert("PDF export needs html2canvas + jsPDF. Please check your connection (CDN) or include the libraries locally.");
+        return;
+      }
+
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+      const timeStr = $("#timerValue").textContent;
+
+      const exportRoot = document.createElement("div");
+      exportRoot.className = "export-root";
+      document.body.appendChild(exportRoot);
+
+      // Question pages
+      const idxs = QUESTIONS.map((_,i)=>i);
+      for(let i=0;i<idxs.length;i+=perPage){
+        const group = idxs.slice(i, i+perPage);
+        exportRoot.appendChild(buildQuestionPageDOM(group, perPage, { title, student, dateStr, timeStr }));
+      }
+
+      // Answer pages (auto paged)
+      let ap = createAnswerPage({ title, student, dateStr });
+      exportRoot.appendChild(ap.page);
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const item = document.createElement("div");
+        item.textContent = `Q${i+1}: ${formatPair(QUESTIONS[i].answer)}`;
+        ap.list.appendChild(item);
+
+        if(ap.content.scrollHeight > ap.content.clientHeight){
+          ap.list.removeChild(item);
+          ap = createAnswerPage({ title, student, dateStr });
+          exportRoot.appendChild(ap.page);
+          ap.list.appendChild(item);
+        }
+      }
+
+      // Render to PDF
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+
+      const pages = Array.from(exportRoot.querySelectorAll(".export-page"));
+      const marginMm = 8;
+
+      for(let i=0;i<pages.length;i++){
+        const pageEl = pages[i];
+
+        const canvas = await window.html2canvas(pageEl, {
+          scale: 2,
+          backgroundColor: "#ffffff",
+          useCORS: true
+        });
+
+        const imgData = canvas.toDataURL("image/png", 1.0);
+
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = pdf.internal.pageSize.getHeight();
+        const usableW = pageW - marginMm*2;
+        const usableH = pageH - marginMm*2;
+
+        const imgH = canvas.height * (usableW / canvas.width);
+
+        let drawW = usableW;
+        let drawH = imgH;
+
+        if(drawH > usableH){
+          drawH = usableH;
+          drawW = canvas.width * (drawH / canvas.height);
+        }
+
+        const x = (pageW - drawW) / 2;
+        const y = marginMm;
+
+        if(i > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", x, y, drawW, drawH, undefined, "FAST");
+      }
+
+      pdf.save(`${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_Questions.pdf`);
+      exportRoot.remove();
+    }
+
+    $("#exportQuestionsBtn").addEventListener("click", exportQuestionsPdf);
+
+    /********************
+     * Init
+     ********************/
+    function applyTemplateMeta(){
+      document.title = TEMPLATE_META.title;
+      $("#pageTitle").textContent = TEMPLATE_META.title;
+      $("#pageSubtitle").textContent = TEMPLATE_META.subtitle;
+      $("#instructionsText").textContent = TEMPLATE_META.instructions;
+    }
+
+    applyTemplateMeta();
+    ensureStudentName();
+    renderLearnDiagram();
+    updateTimerUI();
+    startTimerTick();
+    generateNewSet();
+  </script>
+</body>
+</html>

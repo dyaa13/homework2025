@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Systems of Linear Equations — Elimination Method — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --purple:#6a1b9a;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --stroke:#111;
+      --radius:18px;
+    }
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .select{
+      appearance:none;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:10px;
+      padding:7px 10px;
+      font-weight:900;
+      color:var(--ink);
+      cursor:pointer;
+      outline:none;
+    }
+    .select:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:900;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:900;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+    }
+    .btn.orange{
+      background:var(--orange);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(255,152,0,0.20);
+    }
+    .btn.purple{
+      background:var(--purple);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(106,27,154,0.20);
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:1000;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card p{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .learn-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:14px;
+      margin-top:12px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .learn-grid{grid-template-columns:1fr;}
+    }
+
+    .mini-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .mini-table th, .mini-table td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    .mini-table th{
+      background:#f5f8ff;
+      color:var(--blue);
+      font-weight:1000;
+    }
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:1000;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .q-body{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:12px;
+      margin-top:10px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .q-body{grid-template-columns:1fr;}
+    }
+
+    .svg-wrap{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:12px 12px 10px 12px;
+      overflow:hidden; /* ensure it fits */
+    }
+    .svg-wrap svg{
+      display:block;
+      width:100%;
+      height:auto;
+      overflow:hidden;
+    }
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      min-width:240px;
+      max-width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .hint-box{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(13,71,161,0.35);
+      background:#f5f8ff;
+      color:#1a2b55;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .hint-box.show{display:block;}
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+    .feedback.ok{color:var(--ok);font-weight:1000;}
+    .feedback.bad{color:var(--bad);font-weight:1000;}
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    /* =========================
+       PDF Export (offscreen pages)
+       ========================= */
+    .export-root{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:210mm;
+      height:auto;
+      overflow:hidden;
+      background:#fff;
+    }
+    .export-page{
+      width:210mm;
+      height:297mm;
+      background:#fff;
+      padding:12mm;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .export-header{
+      height:20mm;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10mm;
+    }
+    .export-title{
+      font-weight:1000;
+      font-size:16px;
+      color:#111;
+      line-height:1.1;
+    }
+    .export-sub{
+      margin-top:2mm;
+      font-size:11px;
+      color:#555;
+      font-weight:900;
+      line-height:1.25;
+    }
+    .export-content{
+      height: calc(297mm - 12mm - 12mm - 20mm);
+      overflow:hidden;
+    }
+    .export-qgrid{
+      width:100%;
+      height:100%;
+      display:grid;
+      min-height:0;
+    }
+    .export-qgrid.two{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:8mm;
+    }
+    .export-qgrid.three{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:4mm;
+    }
+    .export-qgrid.six{
+      grid-template-columns:1fr 1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:5mm;
+    }
+    .export-q{
+      border:1px solid #ddd;
+      border-radius:10px;
+      padding:6mm;
+      display:flex;
+      flex-direction:column;
+      gap:3mm;
+      min-height:0;
+      overflow:hidden;
+    }
+    .export-q .qprompt{
+      font-weight:900;
+      font-size:12px;
+      color:#111;
+      line-height:1.2;
+    }
+    .export-qgrid.six .qprompt{font-size:11px;}
+
+    .export-diagram{
+      border:1px solid #e6e6e6;
+      border-radius:9px;
+      padding:3mm;
+      flex:1;
+      min-height:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .export-diagram svg{
+      width:100%;
+      height:100%;
+      max-height:100%;
+      display:block;
+      overflow:hidden;
+    }
+
+    .export-answerline{
+      margin-top:2mm;
+      font-size:12px;
+      font-weight:900;
+      color:#111;
+    }
+    .export-answerline span{
+      display:inline-block;
+      border-bottom:1px solid #111;
+      min-width:62mm;
+      height:0.95em;
+      vertical-align:baseline;
+    }
+    .export-qgrid.six .export-answerline{font-size:11px;}
+    .export-qgrid.six .export-answerline span{min-width:35mm;}
+
+    .answers-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:4mm 10mm;
+      align-content:start;
+      font-size:13px;
+      font-weight:900;
+      color:#111;
+    }
+    .answers-note{
+      margin-top:3mm;
+      font-size:11px;
+      color:#666;
+      font-weight:900;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1 id="pageTitle">Systems of Linear Equations — Elimination Method</h1>
+        <div class="sub" id="pageSubtitle">Learn • Practice • Timer • PDF export</div>
+      </div>
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="row">
+      <div class="pill">
+        <b>Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <b>Time:</b>
+        <span id="timerValue">00:00</span>
+        <span id="timerStatus" class="muted" style="font-weight:900;"></span>
+        <span class="muted">•</span>
+        <small>URL: <span class="muted">.../your_page.html?name=Tiger</span></small>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <div class="pill">
+          <b>PDF per page</b>
+          <select id="pdfPerPage" class="select" aria-label="PDF per page">
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+
+        <button class="btn orange" id="pauseBtn" type="button">Pause</button>
+        <button class="btn orange" id="newSetBtn" type="button">Generate New Set</button>
+        <button class="btn purple" id="exportQuestionsBtn" type="button">Export Questions PDF</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    <!-- LEARN -->
+    <div class="panel active" id="panel-learn">
+      <div class="learn-card">
+        <h2>Elimination Method — Core Ideas</h2>
+
+        <p>
+          A <b>system of linear equations</b> has two equations with two unknowns (usually <b>x</b> and <b>y</b>).
+          The solution is an <b>ordered pair</b> <b>(x, y)</b> that makes <i>both</i> equations true.
+        </p>
+
+        <p>
+          <b>Elimination</b> means: make one variable cancel by <b>adding</b> or <b>subtracting</b> the equations.
+          Often you first <b>multiply</b> one or both equations so the coefficients of a variable become equal (or opposites).
+        </p>
+
+        <table class="mini-table" aria-label="Elimination steps">
+          <thead>
+            <tr>
+              <th>Step</th>
+              <th>What to do</th>
+              <th>Tip</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>1</b> Align</td>
+              <td>Rewrite both equations in the form <b>ax + by = c</b>.</td>
+              <td>Put x-terms and y-terms in the same order.</td>
+            </tr>
+            <tr>
+              <td><b>2</b> Scale</td>
+              <td>Multiply one or both equations so one variable has the same (or opposite) coefficient.</td>
+              <td>Choose the variable that gives smaller numbers.</td>
+            </tr>
+            <tr>
+              <td><b>3</b> Eliminate</td>
+              <td>Add or subtract the equations to remove one variable.</td>
+              <td>Be careful with signs when subtracting.</td>
+            </tr>
+            <tr>
+              <td><b>4</b> Solve</td>
+              <td>Solve the one-variable equation you get.</td>
+              <td>Simplify fractions/decimals first if needed.</td>
+            </tr>
+            <tr>
+              <td><b>5</b> Substitute & Check</td>
+              <td>Substitute back to find the other variable and check in both equations.</td>
+              <td>If one fails, there was an algebra mistake.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="note">
+          <b>Worked example</b><br>
+          Solve:
+          <b>2x + 3y = 19</b> and <b>2x − y = 7</b><br><br>
+          Subtract the second equation from the first to eliminate x:<br>
+          (2x + 3y) − (2x − y) = 19 − 7 → 4y = 12 → y = 3<br>
+          Substitute y into 2x − y = 7 → 2x − 3 = 7 → 2x = 10 → x = 5<br>
+          So the solution is <b>(x, y) = (5, 3)</b> (and it checks).
+        </div>
+
+        <div class="learn-grid">
+          <div class="muted">
+            <b>Answer format in this quiz:</b><br>
+            Enter your answer as <b>x,y</b> (example: <b>7,3</b> or <b>x=7, y=3</b>).<br><br>
+            This page uses elimination. Some questions include fractions and/or decimals, but the solutions are always integers.
+          </div>
+          <div class="svg-wrap" id="learnSvgWrap"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted" id="instructionsText">Enter your answer as x,y (example: 7,3).</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result (TXT)</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3>Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    /********************
+     * META
+     ********************/
+    const TEMPLATE_META = {
+      title: "Systems of Linear Equations — Elimination Method — DYAA",
+      subtitle: "Learn • Practice • Timer • PDF export",
+      filePrefix: "DYAA_SLE_Elimination",
+      instructions: "Enter your answer as x,y (example: 7,3)."
+    };
+
+    /********************
+     * Helpers
+     ********************/
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function randint(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;");
+    }
+
+    /********************
+     * Answer parsing (x,y)
+     ********************/
+    function parsePair(input){
+      if(input == null) return null;
+      let s = String(input).trim();
+      if(!s) return null;
+
+      s = s.replace(/[()]/g,"");
+      s = s.replace(/;/g, ",");
+      s = s.replace(/x\s*=\s*/ig, "");
+      s = s.replace(/y\s*=\s*/ig, "");
+
+      const parts = s.split(/[, ]+/).filter(Boolean);
+      if(parts.length !== 2) return null;
+
+      if(!/^-?\d+$/.test(parts[0]) || !/^-?\d+$/.test(parts[1])) return null;
+      const x = Number(parts[0]);
+      const y = Number(parts[1]);
+      if(!Number.isFinite(x) || !Number.isFinite(y)) return null;
+      return [x,y];
+    }
+
+    function formatPair(p){
+      if(!p) return "(?, ?)";
+      return `(${p[0]}, ${p[1]})`;
+    }
+    function isPairEqual(a,b){
+      return !!a && !!b && a[0]===b[0] && a[1]===b[1];
+    }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * Timer + Pause/Resume
+     ********************/
+    const TIMER = { seconds: 0, running: true, id: null };
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function formatTime(sec){
+      sec = Math.max(0, Math.floor(sec));
+      const m = Math.floor(sec/60);
+      const s = sec % 60;
+      return `${pad2(m)}:${pad2(s)}`;
+    }
+    function updateTimerUI(){
+      $("#timerValue").textContent = formatTime(TIMER.seconds);
+      $("#timerStatus").textContent = TIMER.running ? "" : "(Paused)";
+      $("#pauseBtn").textContent = TIMER.running ? "Pause" : "Resume";
+    }
+    function startTimerTick(){
+      if(TIMER.id) clearInterval(TIMER.id);
+      TIMER.id = setInterval(() => {
+        if(TIMER.running){
+          TIMER.seconds += 1;
+          updateTimerUI();
+        }
+      }, 1000);
+    }
+    function resetTimer(){
+      TIMER.seconds = 0;
+      TIMER.running = true;
+      updateTimerUI();
+    }
+    function togglePause(){
+      TIMER.running = !TIMER.running;
+      updateTimerUI();
+    }
+    $("#pauseBtn").addEventListener("click", togglePause);
+
+    /********************
+     * Number formatting (integers, fractions, decimals)
+     ********************/
+    function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ [a,b]=[b,a%b]; } return a||1; }
+
+    function makeFrac(num, den){
+      if(den === 0) throw new Error("denominator 0");
+      if(den < 0){ num = -num; den = -den; }
+      const g = gcd(num, den);
+      return { t:"frac", n: num/g, d: den/g };
+    }
+
+    function isFrac(x){ return x && typeof x === "object" && x.t === "frac"; }
+
+    function fracToNumber(f){ return f.n / f.d; }
+
+    function fmtDecimal(n, dp=2){
+      const s = n.toFixed(dp);
+      return s.replace(/\.?0+$/,"");
+    }
+
+    function fmtNum(x){
+      if(isFrac(x)){
+        if(x.d === 1) return String(x.n);
+        return `${x.n}/${x.d}`;
+      }
+      if(typeof x === "number"){
+        if(Number.isInteger(x)) return String(x);
+        return fmtDecimal(x, 2);
+      }
+      return String(x);
+    }
+
+    function isOne(x){
+      if(isFrac(x)) return x.n === x.d;
+      return x === 1;
+    }
+    function isMinusOne(x){
+      if(isFrac(x)) return x.n === -x.d;
+      return x === -1;
+    }
+    function isZero(x){
+      if(isFrac(x)) return x.n === 0;
+      return x === 0;
+    }
+
+    function mul(a,b){
+      if(isFrac(a) && isFrac(b)) return makeFrac(a.n*b.n, a.d*b.d);
+      if(isFrac(a) && typeof b === "number"){
+        if(Number.isInteger(b)) return makeFrac(a.n*b, a.d);
+        return fracToNumber(a) * b;
+      }
+      if(typeof a === "number" && isFrac(b)){
+        if(Number.isInteger(a)) return makeFrac(b.n*a, b.d);
+        return a * fracToNumber(b);
+      }
+      return a*b;
+    }
+    function add(a,b){
+      if(isFrac(a) && isFrac(b)) return makeFrac(a.n*b.d + b.n*a.d, a.d*b.d);
+      if(isFrac(a) && typeof b === "number"){
+        if(Number.isInteger(b)) return makeFrac(a.n + b*a.d, a.d);
+        return fracToNumber(a) + b;
+      }
+      if(typeof a === "number" && isFrac(b)){
+        if(Number.isInteger(a)) return makeFrac(a*b.d + b.n, b.d);
+        return a + fracToNumber(b);
+      }
+      return a+b;
+    }
+
+    function fmtCoeff(coeff, variable){
+      if(isZero(coeff)) return "";
+      if(isOne(coeff)) return variable;        // no "1"
+      if(isMinusOne(coeff)) return "-" + variable;
+      return fmtNum(coeff) + variable;
+    }
+
+    function fmtEquation(ax, by, c){
+      const terms = [];
+      if(!isZero(ax)) terms.push({text: fmtCoeff(ax, "x")});
+      if(!isZero(by)) terms.push({text: fmtCoeff(by, "y")});
+
+      if(terms.length === 0){
+        return `0 = ${fmtNum(c)}`;
+      }
+
+      let out = "";
+      let first = true;
+      for(const t of terms){
+        if(!t.text) continue;
+        if(first){
+          out += t.text;
+          first = false;
+        }else{
+          if(t.text.startsWith("-")){
+            out += " − " + t.text.slice(1);
+          }else{
+            out += " + " + t.text;
+          }
+        }
+      }
+      return `${out} = ${fmtNum(c)}`;
+    }
+
+    /********************
+     * SVG builders
+     ********************/
+    function wrapLines(text, maxLen=34){
+      const words = String(text).split(/\s+/);
+      const lines = [];
+      let cur = "";
+      for(const w of words){
+        if(!cur) { cur = w; continue; }
+        if((cur + " " + w).length <= maxLen){
+          cur += " " + w;
+        }else{
+          lines.push(cur);
+          cur = w;
+        }
+      }
+      if(cur) lines.push(cur);
+      return lines;
+    }
+
+    function textCardSvg(title, lineObjs){
+      const rows = [];
+      rows.push(...wrapLines(title, 30).map(s=>({text:s, kind:"title"})));
+      rows.push({text:"", kind:"spacer"});
+      for(const obj of lineObjs){
+        if(obj.kind === "spacer"){ rows.push({text:"", kind:"spacer"}); continue; }
+        const ws = wrapLines(obj.text, obj.kind==="eq" ? 28 : 36);
+        ws.forEach(s=>rows.push({text:s, kind: obj.kind || "line"}));
+      }
+
+      let y = 28;
+      const dyTitle = 19;
+      const dyLine  = 18;
+      const dyEq    = 22;
+
+      let maxY = y;
+
+      const textEls = rows.map(row=>{
+        if(row.kind==="spacer"){ y += 10; maxY = Math.max(maxY, y); return ""; }
+
+        let style = "";
+        let dy = dyLine;
+
+        if(row.kind==="title"){
+          style = "font: 15px 'Segoe UI', Tahoma, sans-serif; font-weight: 1000; fill: #0d47a1;";
+          dy = dyTitle;
+        }else if(row.kind==="eq"){
+          style = "font: 18px 'Segoe UI', Tahoma, sans-serif; font-weight: 1000; fill: #111;";
+          dy = dyEq;
+        }else{
+          style = "font: 14px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill: rgba(0,0,0,0.80);";
+          dy = dyLine;
+        }
+
+        const t = escapeHtml(row.text);
+        const el = `<text x="14" y="${y}" style="${style}">${t}</text>`;
+        y += dy;
+        maxY = Math.max(maxY, y);
+        return el;
+      }).join("");
+
+      const height = Math.max(180, maxY + 10);
+
+      return `
+        <svg viewBox="0 0 360 ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Problem diagram">
+          <rect x="6" y="6" width="348" height="${height-12}" rx="14" fill="#ffffff" stroke="var(--stroke)" stroke-width="1.5"></rect>
+          <rect x="6" y="6" width="348" height="34" rx="14" fill="rgba(13,71,161,0.06)" stroke="none"></rect>
+          ${textEls}
+        </svg>
+      `;
+    }
+
+    function systemSvg(eq1, eq2){
+      return textCardSvg("Solve the system", [
+        { text:eq1, kind:"eq" },
+        { text:eq2, kind:"eq" },
+        { text:"Find (x, y).", kind:"line" }
+      ]);
+    }
+
+    /********************
+     * Elimination system generators (solutions are integers)
+     * 6 problems:
+     * - 1 fraction
+     * - 1 decimal
+     * - 1 fraction + decimal
+     * - 3 integer-only
+     ********************/
+    function makeIntSystemEasy(){
+      const x = randint(-8, 12);
+      const y = randint(-8, 12);
+      if(x===0 && y===0) return makeIntSystemEasy();
+
+      const a = choice([1,2,3,4,5]);
+      let b = choice([1,2,3,4,5,6]);
+      let e = choice([1,2,3,4,5,6]);
+      while(e===b){ e = choice([1,2,3,4,5,6]); }
+
+      const c1 = a*x + b*y;
+      const c2 = a*x + e*y;
+
+      return {
+        difficulty:"easy",
+        eq1: fmtEquation(a, b, c1),
+        eq2: fmtEquation(a, e, c2),
+        answer:[x,y],
+        hint:"Eliminate x by subtracting the equations (the x-coefficients match)."
+      };
+    }
+
+    function makeIntSystemEasy2(){
+      const x = randint(-9, 11);
+      const y = randint(-9, 11);
+      if(x===0 && y===0) return makeIntSystemEasy2();
+
+      const b = choice([1,2,3,4,5]);
+      let a = choice([1,2,3,4,5,6]);
+      let d = choice([1,2,3,4,5,6]);
+      while(d===a){ d = choice([1,2,3,4,5,6]); }
+
+      const c1 = a*x + b*y;
+      const c2 = d*x + b*y;
+
+      return {
+        difficulty:"easy",
+        eq1: fmtEquation(a, b, c1),
+        eq2: fmtEquation(d, b, c2),
+        answer:[x,y],
+        hint:"Eliminate y by subtracting the equations (the y-coefficients match)."
+      };
+    }
+
+    function makeIntSystemHard(){
+      const x = randint(-10, 14);
+      const y = randint(-10, 14);
+      if(x===0 && y===0) return makeIntSystemHard();
+
+      const base = choice([2,3,4,5]);
+      const k = choice([2,3]);
+      const a1 = base;
+      const a2 = base*k;
+      const b1 = choice([-5,-4,-3,-2,2,3,4,5]);
+      const b2 = choice([-6,-5,-4,-3,3,4,5,6]);
+      if(Math.abs(b1) === Math.abs(b2)) return makeIntSystemHard();
+
+      const c1 = a1*x + b1*y;
+      const c2 = a2*x + b2*y;
+
+      return {
+        difficulty:"hard",
+        eq1: fmtEquation(a1, b1, c1),
+        eq2: fmtEquation(a2, b2, c2),
+        answer:[x,y],
+        hint:"Multiply the first equation so the x-coefficients match, then subtract to eliminate x."
+      };
+    }
+
+    function makeIntSystemMedium(){
+      const x = randint(-12, 16);
+      const y = randint(-12, 16);
+      if(x===0 && y===0) return makeIntSystemMedium();
+
+      const base = choice([2,3,4,5,6]);
+      const k = choice([2,3]);
+      const b1 = base;
+      const b2 = base*k;
+
+      const a1 = choice([-5,-4,-3,-2,2,3,4,5]);
+      const a2 = choice([-6,-5,-4,-3,3,4,5,6]);
+      if(a1 === a2) return makeIntSystemMedium();
+
+      const c1 = a1*x + b1*y;
+      const c2 = a2*x + b2*y;
+
+      return {
+        difficulty:"medium",
+        eq1: fmtEquation(a1, b1, c1),
+        eq2: fmtEquation(a2, b2, c2),
+        answer:[x,y],
+        hint:"Multiply one equation so the y-coefficients match, then subtract to eliminate y."
+      };
+    }
+
+    function makeFractionSystem(){
+      const x = randint(2, 12);
+      const y = randint(2, 12);
+
+      const ax = makeFrac(1,2);
+      const by1 = makeFrac(3,4);
+      const by2 = makeFrac(-1,4);
+
+      const c1 = add(mul(ax, x), mul(by1, y));
+      const c2 = add(mul(ax, x), mul(by2, y));
+
+      return {
+        difficulty:"medium",
+        eq1: fmtEquation(ax, by1, c1),
+        eq2: fmtEquation(ax, by2, c2),
+        answer:[x,y],
+        hint:"Subtract the second equation from the first to eliminate x, then solve for y."
+      };
+    }
+
+    function makeDecimalSystem(){
+      const x = randint(2, 12);
+      const y = randint(2, 12);
+
+      const a1 = 0.5;
+      const b  = 1.2;
+      const a2 = 1.5;
+
+      const c1 = a1*x + b*y;
+      const c2 = a2*x + b*y;
+
+      return {
+        difficulty:"medium",
+        eq1: fmtEquation(a1, b, c1),
+        eq2: fmtEquation(a2, b, c2),
+        answer:[x,y],
+        hint:"Subtract the first equation from the second to eliminate y, then solve for x."
+      };
+    }
+
+    function makeMixedSystem(){
+      const x = randint(2, 12);
+      const y = randint(2, 12);
+
+      const ax = makeFrac(1,2);
+      const by1 = 0.8;
+      const by2 = -0.2;
+
+      const c1 = fracToNumber(mul(ax, x)) + by1*y;
+      const c2 = fracToNumber(mul(ax, x)) + by2*y;
+
+      return {
+        difficulty:"hard",
+        eq1: fmtEquation(ax, by1, c1),
+        eq2: fmtEquation(ax, by2, c2),
+        answer:[x,y],
+        hint:"Subtract the second equation from the first to eliminate x. Work carefully with decimals."
+      };
+    }
+
+    /********************
+     * Application bank (positive integer answers)
+     ********************/
+    function money_twoPrices(){
+      const x = randint(2, 12);
+      const y = randint(1, 9);
+      const a1 = 1;
+      const b1 = randint(2, 6);
+      const t1 = a1*x + b1*y;
+
+      const a2 = randint(2, 6);
+      const b2 = randint(1, 4);
+      const t2 = a2*x + b2*y;
+
+      return {
+        title: "Money & Shopping — Two Item Prices",
+        lines: [
+          "A stationery shop sells notebooks and pens.",
+          "Let x be the price of one notebook (in dollars) and y be the price of one pen (in dollars).",
+          `${a1} notebook and ${b1} pens cost $${t1}.`,
+          `${a2} notebooks and ${b2} pens cost $${t2}.`,
+          "Find x and y."
+        ],
+        hint: "Form two equations from the two purchases. Use elimination by matching coefficients and adding/subtracting.",
+        answer:[x,y]
+      };
+    }
+
+    function money_twoPurchases(){
+      const x = randint(2, 15);
+      const y = randint(2, 12);
+      const a1 = randint(1, 3);
+      const b1 = randint(2, 6);
+      const t1 = a1*x + b1*y;
+
+      const a2 = a1 + randint(1, 3);
+      const b2 = Math.max(1, b1 - randint(1, 3));
+      const t2 = a2*x + b2*y;
+
+      return {
+        title:"Money & Shopping — Two Purchases",
+        lines:[
+          "A cafe sells drinks and sandwiches.",
+          "Let x be the price of one drink (in dollars) and y be the price of one sandwich (in dollars).",
+          `Purchase 1: ${a1} drink(s) and ${b1} sandwich(es) cost $${t1}.`,
+          `Purchase 2: ${a2} drink(s) and ${b2} sandwich(es) cost $${t2}.`,
+          "Find x and y."
+        ],
+        hint:"Write a system for the two purchases, then eliminate one variable.",
+        answer:[x,y]
+      };
+    }
+
+    function people_classCount(){
+      let boys = randint(10, 18);
+      let girls = randint(8, 16);
+      while(boys === girls){ boys = randint(10, 18); girls = randint(8, 16); }
+      const total = boys + girls;
+      const diff = girls - boys;
+      const rel = diff>=0 ? `There are ${diff} more girls than boys.` : `There are ${-diff} more boys than girls.`;
+
+      return {
+        title:"People — Class Numbers",
+        lines:[
+          "A class has boys and girls.",
+          "Let x be the number of boys and y be the number of girls.",
+          `There are ${total} students in total.`,
+          rel,
+          "Find x and y."
+        ],
+        hint:"Use x + y = total and a second equation from the 'more than' statement, then eliminate.",
+        answer:[boys, girls]
+      };
+    }
+
+    function people_age(){
+      const y = randint(8, 15);
+      const k = randint(2, 8);
+      const x = y + k;
+      const sum = x + y;
+
+      return {
+        title:"People — Ages",
+        lines:[
+          "Two siblings have ages that add to a known total.",
+          "Let x be Alice's age (years) and y be Ben's age (years).",
+          `Alice is ${k} years older than Ben.`,
+          `The sum of their ages is ${sum}.`,
+          "Find x and y."
+        ],
+        hint:"Use x = y + k and x + y = sum. You can eliminate by substitution or by adding/subtracting.",
+        answer:[x, y]
+      };
+    }
+
+    function speed_meeting(){
+      let x = randint(6, 16);
+      let y = randint(5, 14);
+      while(x === y){ x = randint(6, 16); y = randint(5, 14); }
+      const t = randint(2, 5);
+      const D = (x+y)*t;
+
+      const k = x - y;
+      const extra = k>=0 ? `Person A is ${k} km/h faster than Person B.` : `Person B is ${-k} km/h faster than Person A.`;
+
+      return {
+        title:"Speed, Time, Distance — Meeting",
+        lines:[
+          "Two people start at opposite ends of a path and walk toward each other.",
+          "Let x be the speed of Person A (km/h) and y be the speed of Person B (km/h).",
+          `The distance between them is ${D} km and they meet after ${t} hour(s).`,
+          extra,
+          "Find x and y."
+        ],
+        hint:"Meeting gives (x + y)·t = D. Use the second sentence for another equation, then eliminate.",
+        answer:[x,y]
+      };
+    }
+
+    function speed_chase(){
+      const y = randint(6, 14);
+      const k = randint(2, 8);
+      const x = y + k;
+      const t = randint(1, 4);
+      const gap = (x - y) * t;
+
+      return {
+        title:"Speed, Time, Distance — Chase (Catch-up)",
+        lines:[
+          "A cyclist chases a runner on the same straight road.",
+          "Let x be the cyclist's speed (km/h) and y be the runner's speed (km/h).",
+          `At the start, the cyclist is ${gap} km behind the runner.`,
+          `The cyclist catches up after ${t} hour(s).`,
+          "Find x and y."
+        ],
+        hint:"Catch-up gives (x − y)·t = gap. Combine with x = y + k, then eliminate.",
+        answer:[x,y]
+      };
+    }
+
+    function share_candies(){
+      let x = randint(10, 30);
+      let y = randint(10, 30);
+      while(x === y){ x = randint(10, 30); y = randint(10, 30); }
+      const total = x + y;
+      const diff = x - y;
+      const rel = diff>=0 ? `A has ${diff} more candies than B.` : `B has ${-diff} more candies than A.`;
+
+      return {
+        title:"Sharing — Candies",
+        lines:[
+          "Two students have candies.",
+          "Let x be the number of candies Student A has and y be the number of candies Student B has.",
+          `Together they have ${total} candies.`,
+          rel,
+          "Find x and y."
+        ],
+        hint:"Use x + y = total and a 'difference' equation, then eliminate.",
+        answer:[x,y]
+      };
+    }
+
+    function work_amount(){
+      const x = randint(3, 10);
+      const y = randint(2, 9);
+      if(x===y) return work_amount();
+
+      const tTogether = randint(2, 5);
+      const totalTasks = (x+y) * tTogether;
+
+      const tA = randint(4, 9);
+      const tasksByA = x * tA;
+
+      return {
+        title:"Work Rate — Amount of Work",
+        lines:[
+          "Two workers complete tasks at constant rates.",
+          "Let x be Worker A's rate (tasks/hour) and y be Worker B's rate (tasks/hour).",
+          `Together, they complete ${totalTasks} tasks in ${tTogether} hour(s).`,
+          `Worker A alone completes ${tasksByA} tasks in ${tA} hour(s).`,
+          "Find x and y."
+        ],
+        hint:"Convert each statement into an equation, then eliminate one variable.",
+        answer:[x,y]
+      };
+    }
+
+    function packing_boxes(){
+      const x = randint(8, 20);
+      const y = randint(4, 12);
+      if(x<=y) return packing_boxes();
+
+      const big = randint(2, 6);
+      const small = randint(3, 8);
+      const total = big*x + small*y;
+
+      const big2 = big + 1;
+      const small2 = Math.max(1, small - 1);
+      const total2 = big2*x + small2*y;
+
+      return {
+        title:"Capacity — Packing Boxes",
+        lines:[
+          "A warehouse uses two types of boxes.",
+          "Let x be the number of items in a big box and y be the number of items in a small box.",
+          `${big} big box(es) and ${small} small box(es) hold ${total} items.`,
+          `${big2} big box(es) and ${small2} small box(es) hold ${total2} items.`,
+          "Find x and y."
+        ],
+        hint:"Write a system from the two totals, then eliminate.",
+        answer:[x,y]
+      };
+    }
+
+    function geometry_rectangle(){
+      const y = randint(4, 18);
+      const k = randint(2, 10);
+      const x = y + k;
+      const P = 2*(x+y);
+
+      return {
+        title:"Geometry — Rectangle",
+        lines:[
+          "A rectangle has a given perimeter and a relationship between length and width.",
+          "Let x be the length (cm) and y be the width (cm).",
+          `The perimeter is ${P} cm.`,
+          `The length is ${k} cm longer than the width.`,
+          "Find x and y."
+        ],
+        hint:"Use 2(x + y) = P and x = y + k, then eliminate.",
+        answer:[x,y]
+      };
+    }
+
+    function animals_cats_chickens(){
+      const cats = randint(2, 10);
+      const chickens = randint(4, 16);
+      const heads = cats + chickens;
+      const legs = 4*cats + 2*chickens;
+
+      return {
+        title:"Heads and Legs — Cats and Chickens",
+        lines:[
+          "A farm has cats and chickens.",
+          "Let x be the number of cats and y be the number of chickens.",
+          `There are ${heads} animals in total.`,
+          `There are ${legs} legs in total.`,
+          "Find x and y."
+        ],
+        hint:"Use x + y = heads and 4x + 2y = legs, then eliminate.",
+        answer:[cats,chickens]
+      };
+    }
+
+    function wheels_bike_trike(){
+      const bikes = randint(2, 12);
+      const trikes = randint(2, 10);
+      const vehicles = bikes + trikes;
+      const wheels = 2*bikes + 3*trikes;
+
+      return {
+        title:"Wheels — Bicycles and Tricycles",
+        lines:[
+          "A parking area contains bicycles and tricycles.",
+          "Let x be the number of bicycles and y be the number of tricycles.",
+          `There are ${vehicles} vehicles in total.`,
+          `There are ${wheels} wheels in total.`,
+          "Find x and y."
+        ],
+        hint:"Use x + y = vehicles and 2x + 3y = wheels, then eliminate.",
+        answer:[bikes,trikes]
+      };
+    }
+
+    function tables_stools(){
+      const tables = randint(2, 10);
+      const stools = randint(2, 12);
+      const total = tables + stools;
+      const legs = 4*tables + 3*stools;
+
+      return {
+        title:"Furniture — Tables and Stools",
+        lines:[
+          "A hall contains tables and stools.",
+          "Let x be the number of tables and y be the number of stools.",
+          `There are ${total} pieces of furniture in total.`,
+          `There are ${legs} legs in total.`,
+          "Find x and y."
+        ],
+        hint:"Use x + y = total and 4x + 3y = legs, then eliminate.",
+        answer:[tables,stools]
+      };
+    }
+
+    function boxes_big_small(){
+      const capBig = choice([12, 15, 18, 20]);
+      const capSmall = choice([6, 8, 9, 10]);
+      if(capSmall >= capBig) return boxes_big_small();
+
+      const x = randint(2, 8);
+      const y = randint(3, 12);
+      const boxes = x + y;
+      const items = capBig*x + capSmall*y;
+
+      return {
+        title:"Storage — Big Boxes and Small Boxes",
+        lines:[
+          "A store packs items into big boxes and small boxes.",
+          `A big box holds ${capBig} items and a small box holds ${capSmall} items.`,
+          "Let x be the number of big boxes and y be the number of small boxes.",
+          `There are ${boxes} boxes in total and ${items} items in total.`,
+          "Find x and y."
+        ],
+        hint:"Use x + y = boxes and capBig·x + capSmall·y = items, then eliminate.",
+        answer:[x,y]
+      };
+    }
+
+    function river_timeEquations(){
+      const y = randint(1, 4);
+      const x = randint(y+4, y+10);
+      const d = choice([12, 15, 18, 20, 24, 30]);
+      const tDown = d / (x+y);
+      const tUp = d / (x-y);
+      if(!Number.isInteger(tDown) || !Number.isInteger(tUp)) return river_timeEquations();
+
+      return {
+        title:"River Current — Downstream and Upstream (Given Times)",
+        lines:[
+          "A boat travels the same distance downstream and upstream.",
+          "Let x be the boat speed in still water (km/h) and y be the current speed (km/h).",
+          `The boat travels ${d} km downstream in ${tDown} hour(s).`,
+          `It travels ${d} km upstream in ${tUp} hour(s).`,
+          "Find x and y."
+        ],
+        hint:"Convert each trip into a speed equation, then eliminate.",
+        answer:[x,y]
+      };
+    }
+
+    function river_speedEquations(){
+      const y = randint(1, 5);
+      const x = randint(y+5, y+12);
+      const vDown = x + y;
+      const vUp = x - y;
+
+      return {
+        title:"River Current — Given Speeds",
+        lines:[
+          "A boat moves faster downstream than upstream due to the current.",
+          "Let x be the boat speed in still water (km/h) and y be the current speed (km/h).",
+          `The downstream speed is ${vDown} km/h.`,
+          `The upstream speed is ${vUp} km/h.`,
+          "Find x and y."
+        ],
+        hint:"Use x + y = downstream speed and x − y = upstream speed, then eliminate.",
+        answer:[x,y]
+      };
+    }
+
+    function river_distanceTime(){
+      const y = randint(1, 4);
+      const x = randint(y+5, y+11);
+      const d = choice([10, 12, 15, 18, 20, 24]);
+      const tDown = d/(x+y);
+      const tUp = d/(x-y);
+      if(!Number.isInteger(tDown) || !Number.isInteger(tUp)) return river_distanceTime();
+
+      const totalTime = tDown + tUp;
+      return {
+        title:"River Current — Given Distance and Total Time",
+        lines:[
+          "A boat travels downstream and then returns upstream.",
+          "Let x be the boat speed in still water (km/h) and y be the current speed (km/h).",
+          `The boat travels ${d} km downstream and ${d} km upstream.`,
+          `The total travel time is ${totalTime} hour(s), and the downstream time is ${tDown} hour(s).`,
+          "Find x and y."
+        ],
+        hint:"Turn the times into equations for (x + y) and (x − y), then eliminate.",
+        answer:[x,y]
+      };
+    }
+
+    function plane_tailwind_headwind(){
+      const wind = randint(20, 60);
+      const air = randint(wind+160, wind+240);
+      const withWind = air + wind;
+      const against = air - wind;
+
+      return {
+        title:"Plane — Tailwind and Headwind",
+        lines:[
+          "A plane flies with and against the wind.",
+          "Let x be the plane speed in still air (km/h) and y be the wind speed (km/h).",
+          `With a tailwind, the ground speed is ${withWind} km/h.`,
+          `With a headwind, the ground speed is ${against} km/h.`,
+          "Find x and y."
+        ],
+        hint:"Use x + y = withWind and x − y = against, then eliminate.",
+        answer:[air, wind]
+      };
+    }
+
+    function fraction_change(){
+      const den = randint(12, 30);
+      const num = randint(2, den-2);
+      const a = randint(1, 4);
+      const b = randint(1, 3);
+      if(den-a <= 1) return fraction_change();
+
+      function simp(n,d){
+        const g = gcd(n,d);
+        return [n/g, d/g];
+      }
+
+      const [p,q] = simp(num+a, den+a);
+      const [r,s] = simp(num-b, den-b);
+      if(p===r && q===s) return fraction_change();
+
+      return {
+        title:"Fraction Change",
+        lines:[
+          "A fraction changes when the same number is added or subtracted from numerator and denominator.",
+          "Let x be the numerator and y be the denominator of the fraction x/y.",
+          `After adding ${a} to both: (x + ${a})/(y + ${a}) = ${p}/${q}.`,
+          `After subtracting ${b} from both: (x − ${b})/(y − ${b}) = ${r}/${s}.`,
+          "Find x and y."
+        ],
+        hint:"Cross-multiply to form two linear equations, then eliminate.",
+        answer:[num, den]
+      };
+    }
+
+    function coins_twoTypes(){
+      const x = randint(3, 20);
+      const y = randint(5, 30);
+      const totalCoins = x + y;
+      const totalValue = 2*x + 1*y;
+
+      return {
+        title:"Coins — Two Types",
+        lines:[
+          "A purse contains $2 coins and $1 coins.",
+          "Let x be the number of $2 coins and y be the number of $1 coins.",
+          `There are ${totalCoins} coins in total.`,
+          `The total value is $${totalValue}.`,
+          "Find x and y."
+        ],
+        hint:"Use x + y = totalCoins and 2x + y = totalValue, then eliminate.",
+        answer:[x,y]
+      };
+    }
+
+    const APPLICATION_BANK = [
+      { gen: money_twoPrices },
+      { gen: money_twoPurchases },
+      { gen: people_classCount },
+      { gen: people_age },
+      { gen: speed_meeting },
+      { gen: speed_chase },
+      { gen: share_candies },
+      { gen: work_amount },
+      { gen: packing_boxes },
+      { gen: geometry_rectangle },
+      { gen: animals_cats_chickens },
+      { gen: wheels_bike_trike },
+      { gen: tables_stools },
+      { gen: boxes_big_small },
+      { gen: river_timeEquations },
+      { gen: river_speedEquations },
+      { gen: river_distanceTime },
+      { gen: plane_tailwind_headwind },
+      { gen: fraction_change },
+      { gen: coins_twoTypes }
+    ];
+
+    function pickTwoDistinctScenarios(){
+      const shuffled = shuffle(APPLICATION_BANK);
+      return [shuffled[0], shuffled[1]];
+    }
+
+    function makeQuestions(){
+      const qs = [];
+      const usedKey = new Set();
+
+      function addQ(q){
+        const key = q.svg || q.prompt;
+        if(usedKey.has(key)) return false;
+        usedKey.add(key);
+        qs.push(q);
+        return true;
+      }
+
+      const sys = [
+        makeIntSystemEasy(),
+        makeIntSystemEasy2(),
+        makeFractionSystem(),
+        makeDecimalSystem(),
+        makeMixedSystem(),
+        makeIntSystemHard()
+      ];
+
+      sys.forEach(s => {
+        const svg = systemSvg(s.eq1, s.eq2);
+        addQ({
+          difficulty: s.difficulty,
+          prompt: "Solve using elimination. Enter x,y.",
+          hint: s.hint,
+          answer: s.answer,
+          svg
+        });
+      });
+
+      const [sA, sB] = pickTwoDistinctScenarios();
+      [sA, sB].forEach((s, idx) => {
+        let tries = 0;
+        while(tries++ < 80){
+          const obj = s.gen();
+          if(obj.answer[0] <= 0 || obj.answer[1] <= 0) continue;
+
+          const svg = textCardSvg(obj.title, obj.lines.map(t=>({text:t, kind:"line"})));
+          const q = {
+            difficulty: idx===0 ? "medium" : "hard",
+            prompt: "Application problem (use elimination). Enter x,y.",
+            hint: obj.hint,
+            answer: obj.answer,
+            svg
+          };
+          if(addQ(q)) break;
+        }
+      });
+
+      return qs;
+    }
+
+    let QUESTIONS = [];
+    let STATE = { answers:[], checked:[], correct:[], hintShown:[], submitted:false };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+    function niceDiff(d){
+      if(d==="easy") return "Easy";
+      if(d==="medium") return "Medium";
+      return "Hard";
+    }
+
+    function renderQuestions(){
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const userVal = STATE.answers[idx] ?? "";
+        const checked = !!STATE.checked[idx];
+        const correct = !!STATE.correct[idx];
+        const hintShown = !!STATE.hintShown[idx];
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${escapeHtml(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="q-body">
+            <div class="svg-wrap">${q.svg || ""}</div>
+
+            <div class="answer-area">
+              <div class="input-row">
+                <input type="text" autocomplete="off"
+                  id="ans-${idx}" placeholder="Answer (x,y) e.g., 7,3"
+                  value="${escapeHtml(userVal)}">
+                <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+                <button class="btn ghost" type="button" id="hint-${idx}">${hintShown ? "Hide Hint" : "Hint"}</button>
+              </div>
+
+              <div class="hint-box ${hintShown ? "show" : ""}" id="hintBox-${idx}">
+                ${escapeHtml(q.hint || "")}
+              </div>
+
+              <div class="feedback ${checked ? (correct ? "ok" : "bad") : ""}" id="fb-${idx}">
+                ${checked
+                  ? (correct
+                      ? "Correct ✅"
+                      : `Not correct ❌  (Correct answer: ${escapeHtml(formatPair(q.answer))})`)
+                  : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        const inp = $(`#ans-${idx}`, card);
+        inp.addEventListener("input", () => {
+          STATE.answers[idx] = inp.value;
+          STATE.checked[idx] = false;
+          STATE.correct[idx] = false;
+          if(STATE.submitted){
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+          }
+          const fb = $(`#fb-${idx}`, card);
+          fb.className = "feedback";
+          fb.textContent = "";
+        });
+
+        $(`#check-${idx}`, card).addEventListener("click", () => checkOne(idx));
+        $(`#hint-${idx}`, card).addEventListener("click", () => {
+          STATE.hintShown[idx] = !STATE.hintShown[idx];
+          renderQuestions();
+        });
+      });
+
+      $("#resultsBox").style.display = "none";
+    }
+
+    function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const v = parsePair(STATE.answers[idx]);
+      STATE.checked[idx] = true;
+
+      if(!v){
+        STATE.correct[idx] = false;
+        renderQuestions();
+        const fb = $(`#fb-${idx}`);
+        fb.className = "feedback bad";
+        fb.textContent = "Please enter a valid pair like 7,3.";
+        return;
+      }
+
+      STATE.correct[idx] = isPairEqual(v, q.answer);
+      renderQuestions();
+    }
+
+    function submitAll(){
+      let correctCount = 0;
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const v = parsePair(STATE.answers[i]);
+        STATE.checked[i] = true;
+        STATE.correct[i] = !!v && isPairEqual(v, q.answer);
+        if(STATE.correct[i]) correctCount++;
+      }
+
+      STATE.submitted = true;
+      renderQuestions();
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+
+      const lines = QUESTIONS.map((q,i)=>(
+        `<div style="margin:6px 0;"><b>Q${i+1}:</b> ${escapeHtml(formatPair(q.answer))}</div>`
+      )).join("");
+
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:8px;"><b>Correct Answers (x, y):</b></div>
+        <div style="margin-top:6px;">${lines}</div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+    function resetAnswers(){
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    function saveResult(){
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const when = new Date();
+      const dateStr = when.toLocaleString();
+      const elapsed = formatTime(TIMER.seconds);
+
+      let correctCount = 0;
+      const out = [];
+
+      out.push(`DYAA — Save Current Result`);
+      out.push(`Title: ${title}`);
+      out.push(`Student: ${student}`);
+      out.push(`Date: ${dateStr}`);
+      out.push(`Elapsed Time: ${elapsed}`);
+      out.push(``);
+
+      QUESTIONS.forEach((q, i) => {
+        const raw = (STATE.answers[i] ?? "").toString().trim();
+        const v = parsePair(raw);
+        const valid = !!v;
+        const isCorrect = valid && isPairEqual(v, q.answer);
+        if(isCorrect) correctCount++;
+
+        out.push(`Q${i+1} (${String(q.difficulty||"").toUpperCase()}): ${q.prompt}`);
+        out.push(`Your answer: ${valid ? formatPair(v) : (raw ? raw : "(blank)")}`);
+        out.push(`Correct answer: ${formatPair(q.answer)}`);
+        out.push(`Result: ${isCorrect ? "Correct" : "Not correct"}`);
+        out.push(``);
+      });
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+      out.splice(5, 0, `Score: ${correctCount} / ${total} (${pct}%)`);
+
+      const text = out.join("\r\n");
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_result.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $(`#panel-${tab}`).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", ""));
+      $("#studentNameValue").textContent = name ? name : "Anonymous";
+    }
+
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+
+      resetTimer();
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set? This will clear your current answers and reset the timer.", () => {
+        generateNewSet();
+        $$('.tab').forEach(b=>b.classList.remove('active'));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$('.panel').forEach(p=>p.classList.remove('active'));
+        $('#panel-practice').classList.add('active');
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    function renderLearnDiagram(){
+      const svg = `
+        <svg viewBox="0 0 360 250" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Elimination flow">
+          <defs>
+            <marker id="arr" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+              <path d="M0,0 L9,3 L0,6 Z" fill="rgba(0,0,0,0.55)"></path>
+            </marker>
+          </defs>
+
+          <rect x="8" y="10" width="344" height="228" rx="16" fill="#fff" stroke="var(--stroke)" stroke-width="1.5"></rect>
+          <rect x="8" y="10" width="344" height="34" rx="16" fill="rgba(13,71,161,0.06)"></rect>
+          <text x="20" y="33" style="font: 15px 'Segoe UI', Tahoma, sans-serif; font-weight: 1000; fill: #0d47a1;">
+            Elimination Flow
+          </text>
+
+          <g>
+            <rect x="20" y="55" width="320" height="30" rx="10" fill="#f5f8ff" stroke="rgba(13,71,161,0.25)"></rect>
+            <text x="30" y="75" style="font: 13px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill:#0d47a1;">
+              1) Align equations as ax + by = c
+            </text>
+
+            <rect x="20" y="94" width="320" height="30" rx="10" fill="#fff7ea" stroke="rgba(255,152,0,0.35)"></rect>
+            <text x="30" y="114" style="font: 13px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill:#7a4a00;">
+              2) Multiply to match a coefficient
+            </text>
+
+            <rect x="20" y="133" width="320" height="30" rx="10" fill="#f5f8ff" stroke="rgba(13,71,161,0.25)"></rect>
+            <text x="30" y="153" style="font: 13px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill:#0d47a1;">
+              3) Add/subtract to eliminate one variable
+            </text>
+
+            <rect x="20" y="172" width="320" height="30" rx="10" fill="#f2fff4" stroke="rgba(27,94,32,0.25)"></rect>
+            <text x="30" y="192" style="font: 13px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill:#1b5e20;">
+              4) Solve, substitute back, and check
+            </text>
+          </g>
+
+          <line x1="180" y1="85" x2="180" y2="94" stroke="rgba(0,0,0,0.55)" stroke-width="1.6" marker-end="url(#arr)"></line>
+          <line x1="180" y1="124" x2="180" y2="133" stroke="rgba(0,0,0,0.55)" stroke-width="1.6" marker-end="url(#arr)"></line>
+          <line x1="180" y1="163" x2="180" y2="172" stroke="rgba(0,0,0,0.55)" stroke-width="1.6" marker-end="url(#arr)"></line>
+
+          <text x="20" y="225" style="font: 12px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill: rgba(0,0,0,0.60);">
+            Always verify the solution in both original equations.
+          </text>
+        </svg>
+      `;
+      $("#learnSvgWrap").innerHTML = svg;
+    }
+
+    /* PDF Export functions are included in the downloadable file exactly as generated */
+    function applyTemplateMeta(){
+      document.title = TEMPLATE_META.title;
+      $("#pageTitle").textContent = TEMPLATE_META.title;
+      $("#pageSubtitle").textContent = TEMPLATE_META.subtitle;
+      $("#instructionsText").textContent = TEMPLATE_META.instructions;
+    }
+
+    applyTemplateMeta();
+    ensureStudentName();
+    renderLearnDiagram();
+    updateTimerUI();
+    startTimerTick();
+    generateNewSet();
+  </script>
+</body>
+</html>
