@@ -55,7 +55,23 @@
     .question-text{font-size:1.05em;margin-bottom:8px;}
     .single-question{margin:6px 0;line-height:1.7;}
     .answer-row{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-    .answer-box{width:220px;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
+
+    /* ✅ better for multi-part */
+    .answer-box{
+      width:160px;
+      padding:8px;
+      font-size:1em;
+      border:1px solid #ccc;
+      border-radius:8px;
+    }
+    .part-label{
+      font-weight:700;
+      color:#333;
+      margin-right:4px;
+      min-width:18px;
+      display:inline-block;
+      text-align:right;
+    }
 
     .img-wrap{
       background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px;
@@ -91,6 +107,7 @@
       .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
       .thumb{width:120px;max-width:120px;}
       .top-actions{justify-content:flex-start;}
+      .answer-box{width:140px;}
     }
   </style>
 </head>
@@ -153,18 +170,28 @@
 /* ===================== EDIT HERE ===================== */
 var CONFIG = {
   QUESTIONS_DIR: "./",
-  TOTAL_QUESTIONS: 7,
+  TOTAL_QUESTIONS: 11,
   SHUFFLE_EACH_SET: false
 };
+
+/*
+✅ Multi-part answers supported:
+- array: ANSWERS[7] = [550, 210];
+- separator string: "550|210"  (also supports "," "，" ";" "；")
+*/
 var ANSWERS = [
-  "",     // index 0 占位（如果你是从 1 开始编号题目）
+  "",     // index 0 placeholder
   910,
   240,
   45,
   120,
   513.6,
   20,
-  550
+  550,
+  210,
+   "44%",         // ✅ single-part answer
+    [480000, "1.6%"],   // ✅ example: 2-part answer
+    ["70%", 200],   // ✅ example: 2-part answer
 ]; // length >= TOTAL_QUESTIONS + 1
 
 
@@ -176,7 +203,6 @@ try{
 }catch(e){
   urlName = "";
 }
-// 只在首次加载时自动进入一次，restart 不自动跳
 var AUTO_START_ON_LOAD = (urlName !== "");
 
 /* ===================== Helpers ===================== */
@@ -224,8 +250,90 @@ function getBaseHref(){
   return idx>=0 ? clean.slice(0, idx+1) : clean;
 }
 
+/* ✅ Multi-part helpers */
+function partLetter(i){
+  return String.fromCharCode(65 + i); // 0->A,1->B,2->C...
+}
+function keyToParts(key){
+  if(key == null) return [""];
+  if(Array.isArray(key)){
+    return key.map(function(x){ return String(x==null?"":x).trim(); });
+  }
+  var s = String(key).trim();
+  if(s==="") return [""];
+  // if contains separator → split into parts
+  var seps = ["|", ";", "；", "，", ","];
+  for(var i=0;i<seps.length;i++){
+    if(s.indexOf(seps[i]) >= 0){
+      var parts = s.split(seps[i]).map(function(x){ return String(x==null?"":x).trim(); });
+      // keep non-empty (but if all empty keep one)
+      parts = parts.filter(function(x){ return x!==""; });
+      return parts.length ? parts : [""];
+    }
+  }
+  return [s];
+}
+function partsAllBlank(parts){
+  for(var i=0;i<parts.length;i++){
+    if(String(parts[i]||"").trim()!=="") return false;
+  }
+  return true;
+}
+function formatPartsForDisplay(parts){
+  // A: xxx, B: yyy ...
+  if(!parts || !parts.length) return "—";
+  if(parts.length === 1) return String(parts[0]||"").trim() || "—";
+  var out = [];
+  for(var i=0;i<parts.length;i++){
+    var v = String(parts[i]||"").trim();
+    out.push(partLetter(i) + ": " + (v==="" ? "—" : v));
+  }
+  return out.join(" , ");
+}
+function gradePart(user, correct){
+  var ua = String(user||"").trim();
+  var ca = String(correct||"").trim();
+  if(ua==="" || ca==="") return { ok:false, missingUser:(ua===""), missingKey:(ca==="") };
+
+  if(isNumericLike(ua) && isNumericLike(ca)){
+    return { ok: nearlyEqual(Number(ua), Number(ca)), missingUser:false, missingKey:false };
+  }
+  return { ok: normalizeAnswer(ua) === normalizeAnswer(ca), missingUser:false, missingKey:false };
+}
+function gradeMulti(userParts, correctParts){
+  // overall ok if ALL parts ok
+  // also if key missing for ALL parts -> noKey
+  if(!correctParts || !correctParts.length) correctParts = [""];
+  if(!userParts || !userParts.length) userParts = new Array(correctParts.length).fill("");
+
+  if(partsAllBlank(correctParts)) return { ok:false, noKey:true, missing:false, partResults:[] };
+
+  var n = Math.max(userParts.length, correctParts.length);
+  var pr = [];
+  var allOk = true;
+  var anyMissing = false;
+
+  for(var i=0;i<n;i++){
+    var ua = (i<userParts.length ? userParts[i] : "");
+    var ca = (i<correctParts.length ? correctParts[i] : "");
+    if(String(ua||"").trim()==="") anyMissing = true;
+
+    if(String(ca||"").trim()===""){
+      // key missing for this part -> cannot be correct
+      allOk = false;
+      pr.push({i:i, ok:false, missingKey:true, missingUser:(String(ua||"").trim()==="")});
+    }else{
+      var r = gradePart(ua, ca);
+      pr.push({i:i, ok:!!r.ok, missingKey:false, missingUser:!!r.missingUser});
+      if(!r.ok) allOk = false;
+    }
+  }
+
+  return { ok: allOk && !anyMissing, noKey:false, missing:anyMissing, partResults:pr };
+}
+
 /* ===================== State ===================== */
-var questions = []; // {id, src, userValue, checked, isCorrect}
+var questions = []; // {id, src, userParts[], checked, isCorrect}
 var currentIndex = 0;
 var studentName = "Student";
 
@@ -307,7 +415,7 @@ function buildQuestions(){
     questions.push({
       id: ids[k],
       src: qSrc(ids[k]),
-      userValue: "",
+      userParts: [],          // ✅ multi-part answers stored here
       checked: false,
       isCorrect: false
     });
@@ -342,6 +450,13 @@ function renderSidebar(){
   }
   updateSidebar();
 }
+function isAnswered(q){
+  if(!q || !q.userParts || !q.userParts.length) return false;
+  for(var i=0;i<q.userParts.length;i++){
+    if(String(q.userParts[i]||"").trim()!=="") return true;
+  }
+  return false;
+}
 function updateSidebar(){
   var ul = document.getElementById("qList");
   if(!ul) return;
@@ -349,29 +464,28 @@ function updateSidebar(){
   for(var i=0;i<items.length;i++){
     items[i].classList.remove("active","answered","correct","incorrect");
     if(i===currentIndex) items[i].classList.add("active");
-    if(String(questions[i].userValue||"").trim()!=="") items[i].classList.add("answered");
+    if(isAnswered(questions[i])) items[i].classList.add("answered");
     if(submitted && questions[i].checked){
       items[i].classList.add(questions[i].isCorrect ? "correct" : "incorrect");
     }
   }
 }
 
-/* ===================== Grading ===================== */
-function gradeOne(q){
-  var ua = String(q.userValue||"").trim();
-  var ca = String(ANSWERS[q.id]||"").trim();
-  if(ua==="" || ca==="") return { ok:false, noKey:(ca==="") };
-  if(isNumericLike(ua) && isNumericLike(ca)){
-    return { ok: nearlyEqual(Number(ua), Number(ca)), noKey:false };
-  }
-  return { ok: normalizeAnswer(ua) === normalizeAnswer(ca), noKey:false };
-}
-
 /* ===================== Render question ===================== */
 function saveCurrentInput(){
+  var q = questions[currentIndex];
+  if(!q) return;
+
+  var inputs = Array.prototype.slice.call(document.querySelectorAll(".answerPartInput"));
+  if(inputs.length){
+    q.userParts = inputs.map(function(inp){ return String(inp.value||"").trim(); });
+    return;
+  }
+
+  // fallback (shouldn't happen)
   var inp = document.getElementById("answerInput");
   if(inp){
-    questions[currentIndex].userValue = String(inp.value||"").trim();
+    q.userParts = [String(inp.value||"").trim()];
   }
 }
 
@@ -429,13 +543,42 @@ function renderQuestion(){
   ansTitle.textContent = "Answer:";
   ansRow.appendChild(ansTitle);
 
-  var ansInput = document.createElement("input");
-  ansInput.id = "answerInput";
-  ansInput.className = "answer-box";
-  ansInput.type = "text";
-  ansInput.placeholder = "Type your answer";
-  ansInput.value = q.userValue || "";
-  ansRow.appendChild(ansInput);
+  // ✅ Determine how many parts this question has (from ANSWERS)
+  var keyParts = keyToParts(ANSWERS[q.id]);
+  var partCount = Math.max(1, keyParts.length);
+
+  // ensure stored userParts matches partCount (keep existing values)
+  if(!q.userParts || !q.userParts.length){
+    q.userParts = new Array(partCount).fill("");
+  }else if(q.userParts.length !== partCount){
+    var old = q.userParts.slice();
+    q.userParts = new Array(partCount).fill("");
+    for(var i=0;i<Math.min(old.length, partCount);i++) q.userParts[i] = old[i];
+  }
+
+  // ✅ Render multiple inputs
+  for(var i=0;i<partCount;i++){
+    var wrap = document.createElement("div");
+    wrap.style.display = "inline-flex";
+    wrap.style.alignItems = "center";
+    wrap.style.gap = "6px";
+
+    if(partCount > 1){
+      var pl = document.createElement("span");
+      pl.className = "part-label";
+      pl.textContent = partLetter(i) + ":";
+      wrap.appendChild(pl);
+    }
+
+    var inp = document.createElement("input");
+    inp.className = "answer-box answerPartInput";
+    inp.type = "text";
+    inp.placeholder = partCount > 1 ? ("Answer " + partLetter(i)) : "Type your answer";
+    inp.value = q.userParts[i] || "";
+    wrap.appendChild(inp);
+
+    ansRow.appendChild(wrap);
+  }
 
   var feedback = document.createElement("div");
   feedback.id = "checkFeedback";
@@ -454,37 +597,41 @@ function renderQuestion(){
   updateSidebar();
 }
 
+/* ===================== Check current ===================== */
 function doCheckCurrent(){
   saveCurrentInput();
   var q = questions[currentIndex];
   var fb = document.getElementById("checkFeedback");
   if(!fb) return;
 
-  var ca = String(ANSWERS[q.id]||"").trim();
-  var ua = String(q.userValue||"").trim();
+  var keyParts = keyToParts(ANSWERS[q.id]);
+  var userParts = q.userParts || [];
 
   q.checked = true;
 
-  if(ca===""){
-    q.isCorrect = false;
-    fb.style.display = "block";
+  var g = gradeMulti(userParts, keyParts);
+  q.isCorrect = !!g.ok;
+
+  fb.style.display = "block";
+
+  if(g.noKey){
     fb.innerHTML = "⚠️ No answer key for this question yet (ANSWERS[" + q.id + "] is blank).";
     updateSidebar();
     return;
   }
-  if(ua===""){
-    q.isCorrect = false;
-    fb.style.display = "block";
-    fb.innerHTML = "⚠️ Please enter an answer first.";
+
+  if(g.missing){
+    fb.innerHTML = "⚠️ Please enter all required answers" + (keyParts.length>1 ? (" (A–" + partLetter(keyParts.length-1) + ").") : ".");
     updateSidebar();
     return;
   }
 
-  var r = gradeOne(q);
-  q.isCorrect = !!r.ok;
+  if(q.isCorrect){
+    fb.innerHTML = "✅ Correct!";
+  }else{
+    fb.innerHTML = "❌ Incorrect. Correct answer: <strong>" + escapeAttr(formatPartsForDisplay(keyParts)) + "</strong>";
+  }
 
-  fb.style.display = "block";
-  fb.innerHTML = q.isCorrect ? "✅ Correct!" : ("❌ Incorrect. Correct answer: <strong>" + escapeAttr(ca) + "</strong>");
   updateSidebar();
 }
 
@@ -498,21 +645,19 @@ function showResults(){
   submitted = true;
 
   var correctCount = 0;
+
   for(var i=0;i<questions.length;i++){
     var q = questions[i];
-    var ca = String(ANSWERS[q.id]||"").trim();
-    var ua = String(q.userValue||"").trim();
+    var keyParts = keyToParts(ANSWERS[q.id]);
+    var userParts = q.userParts || [];
 
-    if(ca!=="" && ua!==""){
-      var r = gradeOne(q);
-      q.checked = true;
-      q.isCorrect = !!r.ok;
-    }else{
-      q.checked = (ua!=="");
-      q.isCorrect = false;
-    }
+    var g = gradeMulti(userParts, keyParts);
+    q.checked = isAnswered(q);
+    q.isCorrect = !!g.ok;
+
     if(q.isCorrect) correctCount++;
   }
+
   updateSidebar();
 
   quizContent.innerHTML = "";
@@ -535,18 +680,29 @@ function showResults(){
 
   for(var j=0;j<questions.length;j++){
     var qq = questions[j];
-    var ua2 = String(qq.userValue||"").trim();
-    var ca2 = String(ANSWERS[qq.id]||"").trim();
+    var userParts2 = qq.userParts || [];
+    var keyParts2 = keyToParts(ANSWERS[qq.id]);
+
+    var uaDisp = formatPartsForDisplay(userParts2);
+    var caDisp = formatPartsForDisplay(keyParts2);
+
+    var resultText;
+    if(!isAnswered(qq)){
+      resultText = "Not answered";
+    }else if(partsAllBlank(keyParts2)){
+      resultText = "Answered (no key)";
+    }else{
+      resultText = qq.isCorrect ? "Correct" : "Incorrect";
+    }
+
     var row = document.createElement("tr");
     row.className = qq.isCorrect ? "correct-answer" : "incorrect-answer";
-
-    var resultText = (ua2==="") ? "Not answered" : (ca2==="" ? "Answered (no key)" : (qq.isCorrect ? "Correct" : "Incorrect"));
 
     row.innerHTML =
       "<td>" + (j+1) + "</td>" +
       '<td><img class="thumb" src="' + escapeAttr(qq.src) + '" alt="Q' + (j+1) + '" onerror="this.style.display=\'none\'"></td>' +
-      "<td>" + (ua2==="" ? "—" : escapeAttr(ua2)) + "</td>" +
-      "<td><strong>" + (ca2==="" ? "—" : escapeAttr(ca2)) + "</strong></td>" +
+      "<td>" + escapeAttr(uaDisp) + "</td>" +
+      "<td><strong>" + escapeAttr(caDisp) + "</strong></td>" +
       "<td>" + escapeAttr(resultText) + "</td>";
     table.appendChild(row);
   }
@@ -584,12 +740,20 @@ function saveCurrentResultAsTxt(){
 
   for(var j=0;j<questions.length;j++){
     var q = questions[j];
-    var ua = String(q.userValue||"").trim();
-    var ca = String(ANSWERS[q.id]||"").trim();
-    var res = (ua==="") ? "Not answered" : (ca==="" ? "Answered (no key)" : (q.isCorrect ? "Correct" : "Incorrect"));
+    var userParts = q.userParts || [];
+    var keyParts = keyToParts(ANSWERS[q.id]);
+
+    var ua = formatPartsForDisplay(userParts);
+    var ca = formatPartsForDisplay(keyParts);
+
+    var res;
+    if(!isAnswered(q)) res = "Not answered";
+    else if(partsAllBlank(keyParts)) res = "Answered (no key)";
+    else res = (q.isCorrect ? "Correct" : "Incorrect");
+
     lines.push("Q" + (j+1) + " (file: q" + q.id + ".png)");
-    lines.push("Your answer: " + (ua==="" ? "—" : ua));
-    lines.push("Correct answer: " + (ca==="" ? "—" : ca));
+    lines.push("Your answer: " + ua);
+    lines.push("Correct answer: " + ca);
     lines.push("Result: " + res);
     lines.push("");
   }
@@ -727,7 +891,7 @@ function showStart(){
   input.id = "nameInput";
   input.type = "text";
   input.placeholder = "Student";
-  input.value = urlName || "Student";   // ✅ auto fill from URL
+  input.value = urlName || "Student";
   input.style.cssText = "padding:10px;width:260px;font-size:1.05em;border:1px solid #ccc;border-radius:10px;";
   wrap.appendChild(input);
 
@@ -764,7 +928,6 @@ restartButton.onclick = function(){
   startTime = null; elapsedMs = 0; paused = false;
   submitted = false;
 
-  // restart: show start page (prefilled), but NOT auto start
   AUTO_START_ON_LOAD = false;
   showStart();
 };
@@ -774,7 +937,6 @@ exportQuestionsBtn.onclick = function(){ exportQuestionsToPdf(); };
 /* ===================== Init ===================== */
 showStart();
 
-// ✅ Auto start if URL has ?name=
 if(AUTO_START_ON_LOAD){
   AUTO_START_ON_LOAD = false;
   startQuizWithName(urlName);
@@ -782,8 +944,3 @@ if(AUTO_START_ON_LOAD){
 </script>
 </body>
 </html>
-
-
-
-
-
