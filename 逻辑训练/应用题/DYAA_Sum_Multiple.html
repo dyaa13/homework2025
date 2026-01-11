@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sum & Multiple Problems — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --purple:#6a1b9a;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .select{
+      appearance:none;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:10px;
+      padding:7px 10px;
+      font-weight:900;
+      color:var(--ink);
+      cursor:pointer;
+      outline:none;
+    }
+    .select:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:900;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:900;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+    }
+    .btn.orange{
+      background:var(--orange);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(255,152,0,0.20);
+    }
+    .btn.purple{
+      background:var(--purple);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(106,27,154,0.20);
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:1000;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card h3{
+      margin:14px 0 6px 0;
+      font-size:15px;
+      color:#0b2f6d;
+    }
+    .learn-card p, .learn-card li{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+    .learn-card ul{margin:8px 0 8px 18px;}
+
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .mini-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .mini-table th, .mini-table td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    .mini-table th{
+      background:#f5f8ff;
+      color:var(--blue);
+      font-weight:1000;
+    }
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    .example{
+      margin-top:12px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+    }
+    .example .ex-title{
+      font-weight:1000;
+      color:var(--blue);
+      margin:0 0 6px 0;
+    }
+    .example .ex-q{margin:0 0 8px 0; font-weight:900;}
+    .example .ex-work{margin:0; color:#2a2a2a; line-height:1.55;}
+    .example code{background:#f3f6ff;padding:2px 6px;border-radius:8px;}
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:1000;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .q-body{margin-top:10px;}
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      min-width:220px;
+      max-width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .hint-box{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(13,71,161,0.35);
+      background:#f5f8ff;
+      color:#1a2b55;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .hint-box.show{display:block;}
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+    .feedback.ok{color:var(--ok);font-weight:1000;}
+    .feedback.bad{color:var(--bad);font-weight:1000;}
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    /* =========================
+       PDF Export (offscreen pages)
+       ========================= */
+    .export-root{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:210mm;
+      height:auto;
+      overflow:hidden;
+      background:#fff;
+    }
+    .export-page{
+      width:210mm;
+      height:297mm;
+      background:#fff;
+      padding:12mm;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .export-header{
+      height:20mm;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10mm;
+    }
+    .export-title{
+      font-weight:1000;
+      font-size:16px;
+      color:#111;
+      line-height:1.1;
+    }
+    .export-sub{
+      margin-top:2mm;
+      font-size:11px;
+      color:#555;
+      font-weight:900;
+      line-height:1.25;
+    }
+    .export-content{
+      height: calc(297mm - 12mm - 12mm - 20mm);
+      overflow:hidden;
+    }
+    .export-qgrid{
+      width:100%;
+      height:100%;
+      display:grid;
+      min-height:0;
+    }
+    .export-qgrid.two{grid-template-columns:1fr;grid-auto-rows:minmax(0, 1fr);gap:8mm;}
+    .export-qgrid.three{grid-template-columns:1fr;grid-auto-rows:minmax(0, 1fr);gap:4mm;}
+    .export-qgrid.six{grid-template-columns:1fr 1fr;grid-auto-rows:minmax(0, 1fr);gap:5mm;}
+
+    .export-q{
+      border:1px solid #ddd;
+      border-radius:10px;
+      padding:6mm;
+      display:flex;
+      flex-direction:column;
+      gap:3mm;
+      min-height:0;
+      overflow:hidden;
+    }
+    .export-q .qprompt{
+      font-weight:900;
+      font-size:12px;
+      color:#111;
+      line-height:1.2;
+    }
+    .export-qgrid.six .qprompt{font-size:11px;}
+
+    .export-answerline{
+      margin-top:auto;
+      font-size:12px;
+      font-weight:900;
+      color:#111;
+    }
+    .export-answerline span{
+      display:inline-block;
+      border-bottom:1px solid #111;
+      min-width:62mm;
+      height:0.95em;
+      vertical-align:baseline;
+    }
+    .export-qgrid.six .export-answerline{font-size:11px;}
+    .export-qgrid.six .export-answerline span{min-width:35mm;}
+
+    .answers-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:4mm 10mm;
+      align-content:start;
+      font-size:13px;
+      font-weight:900;
+      color:#111;
+    }
+    .answers-note{
+      margin-top:3mm;
+      font-size:11px;
+      color:#666;
+      font-weight:900;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1 id="pageTitle">Sum &amp; Multiple Problems</h1>
+        <div class="sub" id="pageSubtitle">Learn • Practice • Timer • PDF export</div>
+      </div>
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="row">
+      <div class="pill">
+        <b>Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <b>Time:</b>
+        <span id="timerValue">00:00</span>
+        <span id="timerStatus" class="muted" style="font-weight:900;"></span>
+        <span class="muted">•</span>
+        <small>URL: <span class="muted">.../DYAA_Sum_Multiple.html?name=Tiger</span></small>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <div class="pill">
+          <b>PDF per page</b>
+          <select id="pdfPerPage" class="select" aria-label="PDF per page">
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+
+        <button class="btn orange" id="pauseBtn" type="button">Pause</button>
+        <button class="btn orange" id="newSetBtn" type="button">Generate New Set</button>
+        <button class="btn secondary" id="exportLearnBtn" type="button">Export Learn PDF</button>
+        <button class="btn purple" id="exportQuestionsBtn" type="button">Export Questions PDF</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    <!-- LEARN -->
+    <div class="panel active" id="panel-learn">
+      <div class="learn-card" id="learnContent">
+        <h2>Core Idea</h2>
+        <p>
+          <b>Sum &amp; Multiple problems</b> describe two related quantities:
+          their <b>sum</b> and a <b>times (multiple)</b> relationship.
+          The key is to turn the relationship into <b>equal “units”</b>.
+        </p>
+
+        <h3>Part 1 — The “Unit” Thinking</h3>
+        <ul>
+          <li>Let the smaller quantity be <b>1 unit</b>.</li>
+          <li>If the larger quantity is <b>k times</b> the smaller, then the total is <b>(k+1) units</b>.</li>
+          <li>So the smaller quantity = <code>Sum ÷ (k+1)</code>.</li>
+        </ul>
+
+        <h3>Part 2 — Useful Formulas</h3>
+        <table class="mini-table" aria-label="Key formulas">
+          <thead>
+            <tr>
+              <th>Relationship</th>
+              <th>Find the smaller</th>
+              <th>Then the larger</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>A = kB</b> and A + B = S</td>
+              <td>B = S ÷ (k + 1)</td>
+              <td>A = k × B</td>
+            </tr>
+            <tr>
+              <td><b>A = kB − d</b> and A + B = S</td>
+              <td>B = (S + d) ÷ (k + 1)</td>
+              <td>A = S − B</td>
+            </tr>
+            <tr>
+              <td><b>A = kB + d</b> and A + B = S</td>
+              <td>B = (S − d) ÷ (k + 1)</td>
+              <td>A = S − B</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="note">
+          <b>Quick check:</b> The larger quantity should really be larger. If not, you likely swapped A and B.
+        </div>
+
+        <h2 style="margin-top:14px;">Worked Examples</h2>
+
+        <div class="example">
+          <div class="ex-title">Example 1</div>
+          <p class="ex-q">Two warehouses have <b>540 tonnes</b> of grain in total. Warehouse East has <b>2 times</b> as much as Warehouse West. How many tonnes are in each warehouse?</p>
+          <p class="ex-work">
+            Let West = 1 unit, East = 2 units → total = 3 units.<br>
+            West = 540 ÷ 3 = 180 (tonnes).<br>
+            East = 2 × 180 = 360 (tonnes).
+          </p>
+        </div>
+
+        <div class="example">
+          <div class="ex-title">Example 2</div>
+          <p class="ex-q">A factory produced <b>600 machines</b> in January and February. January’s output is <b>54 less than 5 times</b> February’s output. How many machines were produced in each month?</p>
+          <p class="ex-work">
+            Let February = 1 unit. Then 5 × February is 5 units.<br>
+            Since January is 54 less than 5 × February, add 54 to the total:<br>
+            February = (600 + 54) ÷ (5 + 1) = 109.<br>
+            January = 600 − 109 = 491.
+          </p>
+        </div>
+
+        <div class="example">
+          <div class="ex-title">Example 3</div>
+          <p class="ex-q">Two friends deposited a total of <b>$1000</b> in a bank. After the holiday, Alex withdrew <b>$240</b> and Bella deposited <b>$80</b>. Now Alex has <b>3 times</b> as much as Bella. How much did each person deposit originally?</p>
+          <p class="ex-work">
+            Current total = 1000 − 240 + 80 = 840.<br>
+            Let Bella now = 1 unit, Alex now = 3 units → total = 4 units.<br>
+            Bella now = 840 ÷ 4 = 210; Alex now = 630.<br>
+            Originally: Bella = 210 − 80 = 130; Alex = 630 + 240 = 870.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted" id="instructionsText">Enter an integer. (No units needed.)</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit &amp; View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result (TXT)</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3>Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    /********************
+     * META
+     ********************/
+    const TEMPLATE_META = {
+      title: "Sum & Multiple Problems — DYAA",
+      subtitle: "Learn • Practice • Timer • PDF export",
+      filePrefix: "DYAA_Sum_Multiple",
+      instructions: "Enter an integer. (No units needed.)"
+    };
+
+    /********************
+     * Helpers
+     ********************/
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+    function randint(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/\"/g,"&quot;");
+    }
+
+    /********************
+     * Answer parsing
+     ********************/
+    function parseAnswer(input){
+      if(input == null) return NaN;
+      const s = String(input).trim().replace(/,/g, "");
+      if(!s) return NaN;
+      if(!/^-?\d+(?:\.\d+)?$/.test(s)) return NaN;
+      const v = Number(s);
+      return Number.isFinite(v) ? v : NaN;
+    }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * Timer + Pause/Resume
+     ********************/
+    const TIMER = { seconds: 0, running: true, id: null };
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function formatTime(sec){
+      sec = Math.max(0, Math.floor(sec));
+      const m = Math.floor(sec/60);
+      const s = sec % 60;
+      return `${pad2(m)}:${pad2(s)}`;
+    }
+    function updateTimerUI(){
+      $("#timerValue").textContent = formatTime(TIMER.seconds);
+      $("#timerStatus").textContent = TIMER.running ? "" : "(Paused)";
+      $("#pauseBtn").textContent = TIMER.running ? "Pause" : "Resume";
+    }
+    function startTimerTick(){
+      if(TIMER.id) clearInterval(TIMER.id);
+      TIMER.id = setInterval(() => {
+        if(TIMER.running){
+          TIMER.seconds += 1;
+          updateTimerUI();
+        }
+      }, 1000);
+    }
+    function resetTimer(){
+      TIMER.seconds = 0;
+      TIMER.running = true;
+      updateTimerUI();
+    }
+    function togglePause(){
+      TIMER.running = !TIMER.running;
+      updateTimerUI();
+    }
+    $("#pauseBtn").addEventListener("click", togglePause);
+
+    /********************
+     * Question Bank (based on the textbook items)
+     ********************/
+    function q1_warehouses(){
+      const k = choice([2,3,4]);
+      const west = randint(60, 240);
+      const east = k * west;
+      const total = east + west;
+      return {
+        difficulty: "easy",
+        prompt: `Two warehouses hold a total of ${total} tonnes of grain. Warehouse East has ${k} times as much as Warehouse West. How many tonnes are in Warehouse West?`,
+        hint: `Let West = 1 unit. East = ${k} units. Total = ${k+1} units.`,
+        answer: west
+      };
+    }
+
+    function q2_rectangle(){
+      const ratio = choice([2,3,4]);
+      const w = randint(5, 18);
+      const l = ratio * w;
+      const P = 2*(l+w);
+      return {
+        difficulty: "medium",
+        prompt: `A rectangle has a perimeter of ${P} cm. Its length is ${ratio} times its width. What is the area of the rectangle (in cm²)?`,
+        hint: `Perimeter: 2(L+W) = ${P} → L+W = ${P/2}. With L = ${ratio}W.`,
+        answer: l*w
+      };
+    }
+
+    function q3_transfer(){
+      const m = choice([2,3]);
+      const b2 = randint(30, 120);          // after transfer, warehouse B
+      const a2 = m * b2;                    // after transfer, warehouse A
+      const move = randint(10, 60);
+      const a1 = a2 - move;
+      const b1 = b2 + move;
+      return {
+        difficulty:"medium",
+        prompt:`Warehouse A has ${a1} tonnes of grain and Warehouse B has ${b1} tonnes. Some grain is moved from B to A. After the move, A will have ${m} times as much grain as B. How many tonnes are moved from B to A?`,
+        hint:`Let x be the tonnes moved. Then A+x = ${m}(B−x).`,
+        answer: move
+      };
+    }
+
+    function q4_animals(){
+      const goats = randint(40, 120);
+      const d = choice([5,7,9,11]);
+      const sheep = 2*goats - d;
+      const total = sheep + goats;
+      return {
+        difficulty:"easy",
+        prompt:`A farm has ${total} sheep and goats in total. The number of sheep is ${d} less than 2 times the number of goats. How many goats are there?`,
+        hint:`Sheep = 2×Goats − ${d}. Add goats to both sides and use the total.`,
+        answer: goats
+      };
+    }
+
+    function q5_twoWarehousesPlus(){
+      const B = randint(40, 160);
+      const d = choice([24, 28, 32, 36, 40]);
+      const A = 4*B + d;
+      const total = A + B;
+      return {
+        difficulty:"medium",
+        prompt:`Two grain stores hold ${total} tonnes of grain in total. Store A has ${d} tonnes more than 4 times Store B. How many tonnes are in Store B?`,
+        hint:`A = 4B + ${d}. So total = 5B + ${d}.`,
+        answer: B
+      };
+    }
+
+    function q6_workers(){
+      const hire = choice([40, 50, 60, 70]);
+      const femaleAfter = randint(400, 800);
+      const totalAfter = 3*femaleAfter;
+      const totalBefore = totalAfter - hire;
+      const maleAfter = 2*femaleAfter;
+      const maleBefore = maleAfter - hire;
+      // ensure sensible totals
+      if(totalBefore <= 0 || maleBefore <= 0) return q6_workers();
+      return {
+        difficulty:"hard",
+        prompt:`A factory has ${totalBefore} workers. It hires ${hire} more male workers. After hiring, the number of male workers becomes twice the number of female workers. How many female workers are there after hiring?`,
+        hint:`After hiring: (Male) = 2×(Female) and total = Male + Female.`,
+        answer: femaleAfter
+      };
+    }
+
+    function q7_piles_add_remove(){
+      const addA = choice([15,20,25,30]);
+      const subB = choice([4,5,6,7]);
+      const a = randint(1, 10);
+      const b = 2*(a+addA) + subB;
+      const total = a + b;
+      return {
+        difficulty:"hard",
+        prompt:`Two piles have ${total} blocks in total. If ${addA} blocks are added to the first pile and ${subB} blocks are removed from the second pile, the second pile will have twice as many blocks as the first pile. How many blocks were in the first pile originally?`,
+        hint:`Let first = x, second = ${total}−x. Use: (second−${subB}) = 2(first+${addA}).`,
+        answer: a
+      };
+    }
+
+    function q8_piles_both_decrease(){
+      const total = 51;
+      const decA = choice([8,10,12]);
+      const decB = choice([4,5,6]);
+      const k = choice([4,5]);
+      const b = randint(8, 20);
+      const a = k*(b - decB) + decA;
+      if(a <= 0 || a+b !== total) return q8_piles_both_decrease();
+      return {
+        difficulty:"medium",
+        prompt:`Two piles have ${total} blocks in total. If the first pile loses ${decA} blocks and the second pile loses ${decB} blocks, then the first pile will have ${k} times as many blocks as the second pile. How many blocks were in the first pile originally?`,
+        hint:`Let first = x, second = ${total}−x. Use: (x−${decA}) = ${k}((total−x)−${decB}).`,
+        answer: a
+      };
+    }
+
+    function q9_piles_both_increase(){
+      const total = 51;
+      const incA = choice([20, 29, 33]);
+      const incB = choice([8, 10, 12]);
+      const b = randint(12, 25);
+      const a = 2*(b + incB) - incA;
+      if(a <= 0 || a+b !== total) return q9_piles_both_increase();
+      return {
+        difficulty:"medium",
+        prompt:`Two piles have ${total} blocks in total. If ${incA} blocks are added to the first pile and ${incB} blocks are added to the second pile, then the first pile will have twice as many blocks as the second pile. How many blocks were in the first pile originally?`,
+        hint:`Use: (first+${incA}) = 2(second+${incB}) and first+second = ${total}.`,
+        answer: a
+      };
+    }
+
+    /********************
+     * Added from the new images (fixed-number classics)
+     ********************/
+
+    function q10_grain_96_ratio3(){
+      const total = 96;
+      const k = 3;
+      const b = total/(k+1);
+      const a = total - b;
+      return {
+        difficulty:"easy",
+        prompt:`Two storage sheds hold a total of ${total} tons of grain. Shed A has ${k} times as much grain as Shed B. How many tons of grain are in Shed A?`,
+        hint:`If A = ${k}×B, then total = A + B = (${k}+1)×B.`,
+        answer: a
+      };
+    }
+
+    function q11_books_84_ratio2(){
+      const total = 84;
+      const k = 2;
+      const b = total/(k+1);
+      const a = total - b;
+      return {
+        difficulty:"easy",
+        prompt:`Ethan and Noah have ${total} books in total. Ethan has ${k} times as many books as Noah. How many books does Ethan have?`,
+        hint:`Total = (${k}+1)×Noah.`,
+        answer: a
+      };
+    }
+
+    function q12_teachers_students_500_ratio9(){
+      const total = 500;
+      const k = 9; // students = 9×teachers
+      const teachers = total/(k+1);
+      const students = total - teachers;
+      return {
+        difficulty:"easy",
+        prompt:`A school has ${total} people in total (teachers and students). The number of students is ${k} times the number of teachers. How many teachers are there?`,
+        hint:`Students = ${k}×Teachers, so total = (${k}+1)×Teachers.`,
+        answer: teachers
+      };
+    }
+
+    function q13_remove_zero_sum(){
+      const sum = 352;
+      const n = sum/11; // 10n + n
+      const big = 10*n;
+      const small = n;
+      return {
+        difficulty:"medium",
+        prompt:`Two numbers add up to ${sum}. One number ends in 0. If you remove the 0, it becomes exactly the other number. What are the two numbers? (Give the larger number.)`,
+        hint:`If the smaller number is x, the larger is 10x. So 10x + x = ${sum}.`,
+        answer: big
+      };
+    }
+
+    function q14_fabric_value(){
+      const totalMeters = 420;
+      const floralToWhite = 4;
+      const floralPrice = 6;
+      const whitePrice = 5;
+      const white = totalMeters/(floralToWhite+1);
+      const floral = totalMeters - white;
+      const value = floral*floralPrice + white*whitePrice;
+      return {
+        difficulty:"medium",
+        prompt:`A store sold ${totalMeters} meters of fabric in total: floral fabric and plain white fabric. The floral fabric length was ${floralToWhite} times the white fabric length. Floral fabric costs $${floralPrice} per meter and white fabric costs $${whitePrice} per meter. What is the total value of the fabrics sold (in dollars)?`,
+        hint:`Find the two lengths first using the ratio, then multiply by the prices.`,
+        answer: value
+      };
+    }
+
+    function q15_class_45_boys(){
+      const total = 45;
+      const newBoys = 3;
+      // After: (boys+3) = 2×girls
+      const girls = 16;
+      const boys = total - girls;
+      return {
+        difficulty:"medium",
+        prompt:`A class has ${total} students. Then ${newBoys} new boys join the class. After that, the number of boys becomes twice the number of girls. How many boys were in the class originally?`,
+        hint:`Let girls = g. Then boys = ${total}−g and (${total}−g)+${newBoys} = 2g.`,
+        answer: boys
+      };
+    }
+
+    function q16_basketball_football_money(){
+      const total = 700;
+      const extra = 40;
+      // basketball = 2×football + 40
+      const football = (total - extra)/3;
+      const basketball = total - football;
+      return {
+        difficulty:"medium",
+        prompt:`A school bought basketballs and soccer balls for a total of $${total}. The money spent on basketballs was $${extra} more than twice the money spent on soccer balls. How much was spent on basketballs?`,
+        hint:`Let soccer = x. Then basketball = 2x + ${extra}, and x + (2x+${extra}) = ${total}.`,
+        answer: basketball
+      };
+    }
+
+    function q17_balls_count(){
+      const total = 60;
+      const less = 3;
+      // soccer = 2×basketball − 3
+      const basketball = (total + less)/3;
+      const soccer = total - basketball;
+      return {
+        difficulty:"easy",
+        prompt:`A school bought ${total} balls in total: basketballs and soccer balls. The number of soccer balls is ${less} less than twice the number of basketballs. How many basketballs were bought?`,
+        hint:`Let basketballs = b, soccer balls = 2b−${less}. Then b + (2b−${less}) = ${total}.`,
+        answer: basketball
+      };
+    }
+
+    function q18_candies_transfer(){
+      const total = 64;
+      const transfer = 9;
+      // (M+9) = 3(L-9), M+L=64
+      const L = 25;
+      const M = total - L;
+      return {
+        difficulty:"hard",
+        prompt:`Mia and Lily have ${total} candies in total. If Lily gives ${transfer} candies to Mia, then Mia will have 3 times as many candies as Lily. How many candies did Mia have at first?`,
+        hint:`Let Mia = x, Lily = ${total}−x. Use: (x+${transfer}) = 3((${total}−x)−${transfer}).`,
+        answer: M
+      };
+    }
+
+    function q19_transfer_parts(){
+      const a0 = 520;
+      const b0 = 280;
+      // transfer t from B to A so that A becomes 4×B
+      const t = 120;
+      return {
+        difficulty:"hard",
+        prompt:`Two workshops planned to make ${a0} and ${b0} parts. Later, the requirement changes so that Workshop A must make 4 times as many parts as Workshop B, while the total number of parts stays the same. How many parts should be transferred from Workshop B to Workshop A?`,
+        hint:`Let transfer = t. Then (A+t) = 4(B−t).`,
+        answer: t
+      };
+    }
+
+    function q20_bus_stations_days(){
+      const east0 = 57;
+      const west0 = 42;
+      const eToW = 28;
+      const wToE = 24;
+      const d = 6;
+      return {
+        difficulty:"hard",
+        prompt:`A city has two bus depots: East has ${east0} buses and West has ${west0} buses. Each day, ${eToW} buses go from East to West and ${wToE} buses go from West to East. After how many days will West have twice as many buses as East?`,
+        hint:`Each day East changes by (${wToE}−${eToW}) and West changes by (${eToW}−${wToE}). Set West = 2×East.`,
+        answer: d
+      };
+    }
+
+    function q21_shelves_269(){
+      const total = 269;
+      const addUpper = 15;
+      const takeLower = 9;
+      const lower = 64;
+      const upper = total - lower;
+      return {
+        difficulty:"hard",
+        prompt:`An upper and a lower bookshelf have ${total} books in total. If ${addUpper} new books are added to the upper shelf and ${takeLower} books are taken from the lower shelf and placed on the upper shelf, then the upper shelf will have 4 times as many books as the lower shelf. How many books were on the upper shelf at first?`,
+        hint:`Let upper = x, lower = ${total}−x. After changes: (x+${addUpper}+${takeLower}) = 4((${total}−x)−${takeLower}).`,
+        answer: upper
+      };
+    }
+
+    function q22_class_50_transfer(){
+      const originalTotal = 50;
+      const girlsIn = 6;
+      const boysIn = 1;
+      const total = originalTotal + girlsIn + boysIn;
+      const boys = total/3;
+      const girls = total - boys;
+      return {
+        difficulty:"medium",
+        prompt:`A class originally has ${originalTotal} students. Then ${girlsIn} girls and ${boysIn} boy transfer into the class. After that, the number of girls is exactly twice the number of boys. How many girls are there after the transfer?`,
+        hint:`After transfer, total = ${total} and girls = 2×boys.`,
+        answer: girls
+      };
+    }
+
+    function q23_division_sum_143(){
+      const sum = 143;
+      const q = 8;
+      const divisor = (sum - q)/9;
+      const dividend = divisor*q;
+      return {
+        difficulty:"medium",
+        prompt:`A number divided by another number gives a quotient of ${q} with no remainder. The sum of the dividend, the divisor, and the quotient is ${sum}. What is the dividend?`,
+        hint:`Dividend = ${q}×Divisor. So ${q}d + d + ${q} = ${sum}.`,
+        answer: dividend
+      };
+    }
+
+    function makeQuestions(){
+      // Output 9 questions each time, chosen from a larger pool.
+      const pool = [
+        // original 9 generators
+        q1_warehouses,
+        q2_rectangle,
+        q3_transfer,
+        q4_animals,
+        q5_twoWarehousesPlus,
+        q6_workers,
+        q7_piles_add_remove,
+        q8_piles_both_decrease,
+        q9_piles_both_increase,
+
+        // added (from images)
+        q10_grain_96_ratio3,
+        q11_books_84_ratio2,
+        q12_teachers_students_500_ratio9,
+        q13_remove_zero_sum,
+        q14_fabric_value,
+        q15_class_45_boys,
+        q16_basketball_football_money,
+        q17_balls_count,
+        q18_candies_transfer,
+        q19_transfer_parts,
+        q20_bus_stations_days,
+        q21_shelves_269,
+        q22_class_50_transfer,
+        q23_division_sum_143
+      ];
+      return shuffle(pool).slice(0, 9).map(fn => fn());
+    }
+
+    /********************
+     * UI state + rendering
+     ********************/
+    let QUESTIONS = [];
+    let STATE = { answers:[], checked:[], correct:[], hintShown:[], submitted:false };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+    function niceDiff(d){
+      if(d==="easy") return "Easy";
+      if(d==="medium") return "Medium";
+      return "Hard";
+    }
+
+    function renderQuestions(){
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const userVal = STATE.answers[idx] ?? "";
+        const checked = !!STATE.checked[idx];
+        const correct = !!STATE.correct[idx];
+        const hintShown = !!STATE.hintShown[idx];
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${escapeHtml(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="q-body">
+            <div class="answer-area">
+              <div class="input-row">
+                <input type="text" inputmode="numeric" autocomplete="off"
+                  id="ans-${idx}" placeholder="Answer"
+                  value="${escapeHtml(userVal)}">
+                <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+                <button class="btn ghost" type="button" id="hint-${idx}">${hintShown ? "Hide Hint" : "Hint"}</button>
+              </div>
+
+              <div class="hint-box ${hintShown ? "show" : ""}" id="hintBox-${idx}">
+                ${escapeHtml(q.hint || "")}
+              </div>
+
+              <div class="feedback ${checked ? (correct ? "ok" : "bad") : ""}" id="fb-${idx}">
+                ${checked
+                  ? (correct
+                      ? "Correct ✅"
+                      : `Not correct ❌  (Correct answer: ${q.answer})`)
+                  : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        const inp = $("#ans-"+idx, card);
+        inp.addEventListener("input", () => {
+          STATE.answers[idx] = inp.value;
+          STATE.checked[idx] = false;
+          STATE.correct[idx] = false;
+          if(STATE.submitted){
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+          }
+          const fb = $("#fb-"+idx, card);
+          fb.className = "feedback";
+          fb.textContent = "";
+        });
+
+        $("#check-"+idx, card).addEventListener("click", () => checkOne(idx));
+        $("#hint-"+idx, card).addEventListener("click", () => {
+          STATE.hintShown[idx] = !STATE.hintShown[idx];
+          renderQuestions();
+        });
+      });
+
+      $("#resultsBox").style.display = "none";
+    }
+
+    function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const v = parseAnswer(STATE.answers[idx]);
+      STATE.checked[idx] = true;
+
+      if(!Number.isFinite(v)){
+        STATE.correct[idx] = false;
+        renderQuestions();
+        const fb = $("#fb-"+idx);
+        fb.className = "feedback bad";
+        fb.textContent = "Please enter a valid number.";
+        return;
+      }
+
+      // allow exact integer check
+      STATE.correct[idx] = (v === q.answer);
+      renderQuestions();
+    }
+
+    function submitAll(){
+      let correctCount = 0;
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const v = parseAnswer(STATE.answers[i]);
+        STATE.checked[i] = true;
+        STATE.correct[i] = Number.isFinite(v) && (v === q.answer);
+        if(STATE.correct[i]) correctCount++;
+      }
+
+      STATE.submitted = true;
+      renderQuestions();
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+
+      const lines = QUESTIONS.map((q,i)=>(
+        `<div style="margin:6px 0;"><b>Q${i+1}:</b> ${q.answer}</div>`
+      )).join("");
+
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:8px;"><b>Correct Answers:</b></div>
+        <div style="margin-top:6px;">${lines}</div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+    function resetAnswers(){
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    /********************
+     * Save Current Result as TXT
+     ********************/
+    function saveResult(){
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const when = new Date();
+      const dateStr = when.toLocaleString();
+      const elapsed = formatTime(TIMER.seconds);
+
+      let correctCount = 0;
+      const out = [];
+
+      out.push(`DYAA — Save Current Result`);
+      out.push(`Title: ${title}`);
+      out.push(`Student: ${student}`);
+      out.push(`Date: ${dateStr}`);
+      out.push(`Elapsed Time: ${elapsed}`);
+      out.push(``);
+
+      QUESTIONS.forEach((q, i) => {
+        const raw = (STATE.answers[i] ?? "").toString().trim();
+        const v = parseAnswer(raw);
+        const valid = Number.isFinite(v);
+        const isCorrect = valid && (v === q.answer);
+        if(isCorrect) correctCount++;
+
+        out.push(`Q${i+1} (${String(q.difficulty||"").toUpperCase()}): ${q.prompt}`);
+        out.push(`Your answer: ${valid ? v : (raw ? raw : "(blank)")}`);
+        out.push(`Correct answer: ${q.answer}`);
+        out.push(`Result: ${isCorrect ? "Correct" : "Not correct"}`);
+        out.push(``);
+      });
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+      out.splice(5, 0, `Score: ${correctCount} / ${total} (${pct}%)`);
+
+      const text = out.join("\r\n");
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_result.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    /********************
+     * Tabs + Student name
+     ********************/
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $("#panel-"+tab).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", ""));
+      $("#studentNameValue").textContent = name ? name : "Anonymous";
+    }
+
+    /********************
+     * Generate New Set
+     ********************/
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+
+      resetTimer();
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set? This will clear your current answers and reset the timer.", () => {
+        generateNewSet();
+        // go to practice
+        $$('.tab').forEach(b=>b.classList.remove('active'));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$('.panel').forEach(p=>p.classList.remove('active'));
+        $('#panel-practice').classList.add('active');
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    /********************
+     * Export helpers
+     ********************/
+    function waitForImages(container){
+      const imgs = Array.from(container.querySelectorAll("img"));
+      return Promise.all(imgs.map(img => {
+        if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+        return new Promise(resolve => {
+          img.onload = () => resolve();
+          img.onerror = () => resolve();
+        });
+      }));
+    }
+
+    function addCanvasAutoPagedToPdf(pdf, canvas, marginMm = 10){
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const usableW = pageWidth - marginMm * 2;
+      const usableH = pageHeight - marginMm * 2;
+
+      const ratio = usableW / canvas.width;
+      const scaledH = canvas.height * ratio;
+
+      const imgData = canvas.toDataURL("image/png", 1.0);
+
+      if(scaledH <= usableH){
+        pdf.addImage(imgData, "PNG", marginMm, marginMm, usableW, scaledH);
+        return;
+      }
+
+      // multi-page: slice
+      const pxPerMm = canvas.width / usableW;
+      const pagePxH = usableH * pxPerMm;
+      let rendered = 0;
+
+      const tmp = document.createElement('canvas');
+      const tctx = tmp.getContext('2d');
+
+      while(rendered < canvas.height){
+        const sliceH = Math.min(pagePxH, canvas.height - rendered);
+        tmp.width = canvas.width;
+        tmp.height = sliceH;
+        tctx.clearRect(0,0,tmp.width,tmp.height);
+        tctx.drawImage(canvas, 0, rendered, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
+
+        const sliceData = tmp.toDataURL('image/png', 1.0);
+        const sliceScaledH = (sliceH / canvas.width) * usableW;
+        pdf.addImage(sliceData, 'PNG', marginMm, marginMm, usableW, sliceScaledH);
+
+        rendered += sliceH;
+        if(rendered < canvas.height) pdf.addPage();
+      }
+    }
+
+    /********************
+     * Export Learn PDF
+     ********************/
+    async function exportLearnPdf(){
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
+
+      // clone learn content to avoid UI buttons
+      const learn = $("#panel-learn");
+      const clone = learn.cloneNode(true);
+      clone.style.width = "210mm";
+      clone.style.background = "#fff";
+      clone.style.padding = "0";
+
+      const wrap = document.createElement('div');
+      wrap.className = 'export-root';
+      wrap.appendChild(clone);
+      document.body.appendChild(wrap);
+
+      await waitForImages(wrap);
+
+      const canvas = await html2canvas(clone, {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        useCORS: true
+      });
+
+      addCanvasAutoPagedToPdf(pdf, canvas, 10);
+
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      pdf.save(`${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,'_')}_Learn.pdf`);
+      wrap.remove();
+    }
+
+    $("#exportLearnBtn").addEventListener('click', exportLearnPdf);
+
+    /********************
+     * Export Questions PDF
+     ********************/
+    function layoutClass(perPage){
+      if(perPage === 6) return 'six';
+      if(perPage === 3) return 'three';
+      return 'two';
+    }
+
+    function buildQuestionPageDOM(indexGroup, perPage, meta){
+      const page = document.createElement('div');
+      page.className = 'export-page';
+
+      const header = document.createElement('div');
+      header.className = 'export-header';
+      header.innerHTML = `
+        <div>
+          <div class="export-title">${escapeHtml(meta.title)}</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)} • Time: ${escapeHtml(meta.timeStr)}
+          </div>
+        </div>
+      `;
+
+      const content = document.createElement('div');
+      content.className = 'export-content';
+
+      const grid = document.createElement('div');
+      grid.className = `export-qgrid ${layoutClass(perPage)}`;
+
+      indexGroup.forEach(i => {
+        const q = QUESTIONS[i];
+        const box = document.createElement('div');
+        box.className = 'export-q';
+        box.innerHTML = `
+          <div class="qprompt">Q${i+1}. ${escapeHtml(q.prompt)}</div>
+          <div class="export-answerline">Answer: <span></span></div>
+        `;
+        grid.appendChild(box);
+      });
+
+      content.appendChild(grid);
+      page.appendChild(header);
+      page.appendChild(content);
+      return page;
+    }
+
+    function buildAnswersPageDOM(meta, startIndex){
+      const page = document.createElement('div');
+      page.className = 'export-page';
+
+      const header = document.createElement('div');
+      header.className = 'export-header';
+      header.innerHTML = `
+        <div>
+          <div class="export-title">${escapeHtml(meta.title)} — Answers</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)}
+          </div>
+        </div>
+      `;
+
+      const content = document.createElement('div');
+      content.className = 'export-content';
+
+      const list = document.createElement('div');
+      list.className = 'answers-list';
+      list.innerHTML = QUESTIONS.map((q,i)=>`<div>Q${i+1}: ${q.answer}</div>`).join('');
+
+      const note = document.createElement('div');
+      note.className = 'answers-note';
+      note.textContent = 'Note: Answers are based on the generated set.';
+
+      content.appendChild(list);
+      content.appendChild(note);
+
+      page.appendChild(header);
+      page.appendChild(content);
+      return page;
+    }
+
+    async function exportQuestionsPdf(){
+      const perPage = Number($("#pdfPerPage").value || 2);
+      const { jsPDF } = window.jspdf;
+
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const now = new Date();
+      const meta = {
+        title: TEMPLATE_META.title,
+        student,
+        dateStr: now.toLocaleDateString(),
+        timeStr: formatTime(TIMER.seconds)
+      };
+
+      const root = document.createElement('div');
+      root.className = 'export-root';
+      document.body.appendChild(root);
+
+      const indices = QUESTIONS.map((_,i)=>i);
+      const groups = [];
+      for(let i=0;i<indices.length;i+=perPage){
+        groups.push(indices.slice(i, i+perPage));
+      }
+
+      const pages = groups.map(g => buildQuestionPageDOM(g, perPage, meta));
+      pages.push(buildAnswersPageDOM(meta));
+
+      pages.forEach(p => root.appendChild(p));
+
+      await waitForImages(root);
+
+      const pdf = new jsPDF({ unit:'mm', format:'a4' });
+      for(let i=0;i<pages.length;i++){
+        const pageEl = pages[i];
+        // eslint-disable-next-line no-await-in-loop
+        const canvas = await html2canvas(pageEl, { scale: 2, backgroundColor:'#ffffff', useCORS:true });
+        const imgData = canvas.toDataURL('image/png', 1.0);
+        const w = pdf.internal.pageSize.getWidth();
+        const h = pdf.internal.pageSize.getHeight();
+        pdf.addImage(imgData, 'PNG', 0, 0, w, h);
+        if(i < pages.length-1) pdf.addPage();
+      }
+
+      pdf.save(`${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,'_')}_Questions.pdf`);
+      root.remove();
+    }
+
+    $("#exportQuestionsBtn").addEventListener('click', exportQuestionsPdf);
+
+    /********************
+     * Init
+     ********************/
+    function init(){
+      // Title / subtitle
+      $("#pageTitle").textContent = TEMPLATE_META.title;
+      $("#pageSubtitle").textContent = TEMPLATE_META.subtitle;
+      $("#instructionsText").textContent = TEMPLATE_META.instructions;
+
+      ensureStudentName();
+      updateTimerUI();
+      startTimerTick();
+      generateNewSet();
+    }
+
+    window.addEventListener('load', init);
+  </script>
+</body>
+</html>

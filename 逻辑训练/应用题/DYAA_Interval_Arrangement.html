@@ -1,0 +1,1929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interval Arrangement Problems — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --purple:#6a1b9a;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --stroke:#111;
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .select{
+      appearance:none;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:10px;
+      padding:7px 10px;
+      font-weight:900;
+      color:var(--ink);
+      cursor:pointer;
+      outline:none;
+    }
+    .select:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:900;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:900;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+    }
+    .btn.orange{
+      background:var(--orange);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(255,152,0,0.20);
+    }
+    .btn.purple{
+      background:var(--purple);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(106,27,154,0.20);
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:1000;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card p{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .learn-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:14px;
+      margin-top:12px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .learn-grid{grid-template-columns:1fr;}
+    }
+
+    .mini-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .mini-table th, .mini-table td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    .mini-table th{
+      background:#f5f8ff;
+      color:var(--blue);
+      font-weight:1000;
+    }
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:1000;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .q-body{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:12px;
+      margin-top:10px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .q-body{grid-template-columns:1fr;}
+    }
+
+    /* IMPORTANT: no cropping on screen */
+    .svg-wrap{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:12px 12px 10px 12px;
+      overflow: visible;
+    }
+    .svg-wrap svg{
+      display:block;
+      width:100%;
+      height:auto;
+      overflow: visible;
+    }
+    .svg-note{
+      margin-top:6px;
+      font-size:12px;
+      color:rgba(0,0,0,0.55);
+      font-weight:900;
+    }
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      min-width:220px;
+      max-width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .hint-box{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(13,71,161,0.35);
+      background:#f5f8ff;
+      color:#1a2b55;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .hint-box.show{display:block;}
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+    .feedback.ok{color:var(--ok);font-weight:1000;}
+    .feedback.bad{color:var(--bad);font-weight:1000;}
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    /* =========================
+       PDF Export (offscreen pages)
+       ========================= */
+    .export-root{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:210mm;
+      height:auto;
+      overflow:hidden;
+      background:#fff;
+    }
+
+    /* Export Learn (single long sheet, auto paged) */
+    .export-learn-sheet{
+      width:210mm;
+      background:#fff;
+      padding:12mm;
+      box-sizing:border-box;
+    }
+    .export-learn-sheet .export-header{
+      height:auto;
+      margin-bottom:6mm;
+    }
+    .export-learn-sheet .export-content{
+      height:auto;
+      overflow:visible;
+    }
+    .export-learn-sheet .panel{ display:block !important; }
+    .export-learn-sheet .tabs, 
+    .export-learn-sheet .row{ display:none !important; }
+
+    .export-page{
+      width:210mm;
+      height:297mm;
+      background:#fff;
+      padding:12mm;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .export-header{
+      height:20mm;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10mm;
+    }
+    .export-title{
+      font-weight:1000;
+      font-size:16px;
+      color:#111;
+      line-height:1.1;
+    }
+    .export-sub{
+      margin-top:2mm;
+      font-size:11px;
+      color:#555;
+      font-weight:900;
+      line-height:1.25;
+    }
+    .export-content{
+      height: calc(297mm - 12mm - 12mm - 20mm);
+      overflow:hidden;
+    }
+    .export-qgrid{
+      width:100%;
+      height:100%;
+      display:grid;
+      min-height:0;
+    }
+    .export-qgrid.two{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:8mm;
+    }
+    .export-qgrid.three{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:4mm;
+    }
+    .export-qgrid.six{
+      grid-template-columns:1fr 1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:5mm;
+    }
+    .export-q{
+      border:1px solid #ddd;
+      border-radius:10px;
+      padding:6mm;
+      display:flex;
+      flex-direction:column;
+      gap:3mm;
+      min-height:0;
+      overflow:hidden;
+    }
+    .export-q .qprompt{
+      font-weight:900;
+      font-size:12px;
+      color:#111;
+      line-height:1.2;
+    }
+    .export-qgrid.six .qprompt{font-size:11px;}
+
+    .export-diagram{
+      border:1px solid #e6e6e6;
+      border-radius:9px;
+      padding:3mm;
+      flex:1;
+      min-height:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .export-diagram svg{
+      width:100%;
+      height:100%;
+      max-height:100%;
+      display:block;
+      overflow:visible;
+    }
+    .export-diagram .svg-note{ display:none !important; }
+
+    .export-answerline{
+      margin-top:2mm;
+      font-size:12px;
+      font-weight:900;
+      color:#111;
+    }
+    .export-answerline span{
+      display:inline-block;
+      border-bottom:1px solid #111;
+      min-width:62mm;
+      height:0.95em;
+      vertical-align:baseline;
+    }
+    .export-qgrid.six .export-answerline{font-size:11px;}
+    .export-qgrid.six .export-answerline span{min-width:35mm;}
+
+    .answers-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:4mm 10mm;
+      align-content:start;
+      font-size:13px;
+      font-weight:900;
+      color:#111;
+    }
+    .answers-note{
+      margin-top:3mm;
+      font-size:11px;
+      color:#666;
+      font-weight:900;
+    }
+      .svg-wrap{display:none;}
+    .svg-note{display:none;}
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1 id="pageTitle">DYAA Quiz Template</h1>
+        <div class="sub" id="pageSubtitle">Learn • Practice • Timer • PDF export</div>
+      </div>
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="row">
+      <div class="pill">
+        <b>Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <b>Time:</b>
+        <span id="timerValue">00:00</span>
+        <span id="timerStatus" class="muted" style="font-weight:900;"></span>
+        <span class="muted">•</span>
+        <small>URL: <span class="muted">.../your_page.html?name=Tiger</span></small>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <div class="pill">
+          <b>PDF per page</b>
+          <select id="pdfPerPage" class="select" aria-label="PDF per page">
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+
+        <button class="btn orange" id="pauseBtn" type="button">Pause</button>
+        <button class="btn orange" id="newSetBtn" type="button">Generate New Set</button>
+        <button class="btn ghost" id="exportLearnBtn" type="button">Export Learn PDF</button>
+        <button class="btn purple" id="exportQuestionsBtn" type="button">Export Questions PDF</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    <!-- LEARN (Template placeholders) -->
+    <div class="panel active" id="panel-learn">
+
+      <div class="learn-card">
+        <h2>Part 1 — What Are Interval Arrangement Problems?</h2>
+        <p>
+          An <b>interval arrangement</b> problem is about placing items at <b>equal gaps</b> (equal distance or equal time)
+          in a line or around a loop. The key is to work out the relationship between <b>items</b> and <b>gaps (intervals)</b>.
+        </p>
+        <p class="muted">
+          Common keywords: <b>every</b>, <b>each</b>, <b>alternating</b>, <b>between</b>, <b>first and last</b>, <b>around</b>, <b>perimeter</b>.
+        </p>
+
+        <h2>Part 2 — Items vs Gaps</h2>
+        <table class="mini-table" aria-label="Items and gaps">
+          <thead>
+            <tr>
+              <th>Situation</th>
+              <th>Number of gaps</th>
+              <th>Quick note</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>In a straight line</b></td>
+              <td>If there are <b>n</b> items, gaps = <b>n − 1</b></td>
+              <td>Between items only (no wrap-around).</td>
+            </tr>
+            <tr>
+              <td><b>Around a loop</b> (circle / perimeter)</td>
+              <td>If there are <b>n</b> items, gaps = <b>n</b></td>
+              <td>The last item connects back to the first.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Part 3 — Alternating A and B</h2>
+        <p>
+          If two kinds of items alternate (A, B, A, B, …), the counts depend on what happens at the ends.
+        </p>
+        <table class="mini-table" aria-label="Alternating patterns">
+          <thead>
+            <tr>
+              <th>First / Last</th>
+              <th>Relationship</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>First and last are <b>different</b></td>
+              <td>A = B</td>
+              <td>Red, Blue, Red, Blue (ends differ)</td>
+            </tr>
+            <tr>
+              <td>First and last are both <b>A</b></td>
+              <td>A = B + 1</td>
+              <td>Blue … Blue (Blue is one more)</td>
+            </tr>
+            <tr>
+              <td>First and last are both <b>B</b></td>
+              <td>B = A + 1</td>
+              <td>Red … Red (Red is one more)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Part 4 — Spacing Formulas</h2>
+        <table class="mini-table" aria-label="Spacing formulas">
+          <thead>
+            <tr>
+              <th>Layout</th>
+              <th>Formula</th>
+              <th>When to use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Line segment</b> length L, spacing s<br>(both ends included)</td>
+              <td>Number of items = L ÷ s + 1</td>
+              <td>Example: trees along a road from point A to point B, including both ends.</td>
+            </tr>
+            <tr>
+              <td><b>Loop</b> perimeter P, spacing s</td>
+              <td>Number of items = P ÷ s</td>
+              <td>Example: trees around a pond / flags around a circular track.</td>
+            </tr>
+            <tr>
+              <td>Insert k items <b>between</b> each pair of main items</td>
+              <td>Inserted items = k × (number of gaps)</td>
+              <td>Gaps = main − 1 (line) or main (loop).</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="note">
+          <b>Fast checklist:</b> (1) Line or loop? (2) Are both ends included? (3) Count gaps. (4) Apply the correct relationship/formula.
+        </div>
+
+        <h2>Worked Examples</h2>
+
+        <details class="example">
+          <summary>Example 1 (Alternating flower pots)</summary>
+          <div class="box">
+            <b>Problem:</b> A row of flower pots alternates red and blue. The first pot and the last pot are blue.
+            There are 30 blue pots. How many red pots are there?<br><br>
+            <b>Key idea:</b> If the first and last are blue, then Blue = Red + 1.<br>
+            <b>So:</b> Red = 30 − 1 = <b>29</b>.
+          </div>
+        </details>
+
+        <details class="example">
+          <summary>Example 2 (Repeating pattern: RRYY)</summary>
+          <div class="box">
+            <b>Problem:</b> Flags are hung in a repeating pattern: Red, Red, Yellow, Yellow, … .
+            If there are 20 yellow flags, how many red flags are there?<br><br>
+            <b>Key idea:</b> In each full group (RRYY), red and yellow appear the same number of times.<br>
+            <b>So:</b> Red = <b>20</b>.
+          </div>
+        </details>
+
+        <details class="example">
+          <summary>Example 3 (Around a circle)</summary>
+          <div class="box">
+            <b>Problem:</b> A circular flower bed has a perimeter of 36 m. A red flag is placed every 3 m.
+            Then 1 yellow flag is placed between each pair of adjacent red flags. How many red and yellow flags are there?<br><br>
+            <b>Step 1:</b> Red flags = 36 ÷ 3 = <b>12</b> (loop).<br>
+            <b>Step 2:</b> There are 12 gaps between the red flags (because it is a loop), so yellow flags = <b>12</b>.<br>
+            <b>Answer:</b> <b>12</b> red and <b>12</b> yellow.
+          </div>
+        </details>
+
+        <details class="example">
+          <summary>Example 4 (Time between floors)</summary>
+          <div class="box">
+            <b>Problem:</b> A staff member takes 54 seconds to walk from the 1st floor to the 4th floor. If the speed stays the same, how many seconds does it take to walk from the 1st floor to the 6th floor?<br><br>
+            <b>Key idea:</b> Time depends on the number of <i>flights</i> (gaps between floors).<br>
+            From 1st to 4th floor is 3 flights, so each flight takes 54 ÷ 3 = <b>18</b> seconds.<br>
+            From 1st to 6th floor is 5 flights, so time = 18 × 5 = <b>90</b> seconds.<br>
+            <b>Answer:</b> <b>90 seconds</b>.
+          </div>
+        </details>
+      </div>
+
+    </div>
+
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted" id="instructionsText">Enter a whole number (no units). If two answers are required, use "a, b".</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result (TXT)</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3>Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    /********************
+     * TEMPLATE META (EDIT THIS)
+     ********************/
+    const TEMPLATE_META = {
+  title: "Interval Arrangement Problems — DYAA",
+  subtitle: "Learn • Practice • Patterns • PDF export",
+  filePrefix: "DYAA_Interval_Arrangement",
+  instructions: "Enter a whole number (no units). If two answers are required, use \"a, b\"."
+};
+
+    /********************
+     * Helpers
+     ********************/
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function randint(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;");
+    }
+
+    /********************
+     * Answer parsing (EDIT IF NEEDED)
+     * Default: strict integer
+     ********************/
+    function parseAnswer(input){
+  if(input == null) return NaN;
+
+  // Keep a single space for mixed numbers like "2 1/3"
+  let s = String(input).trim();
+  if(!s) return NaN;
+
+  // Remove commas, normalize spaces
+  s = s.replace(/,/g,"").replace(/\s+/g," ");
+
+  // Plain integer / decimal
+  if(/^-?\d+(?:\.\d+)?$/.test(s)){
+    const v = Number(s);
+    return Number.isFinite(v) ? v : NaN;
+  }
+
+  // Simple fraction: a/b
+  if(/^-?\d+\/\d+$/.test(s)){
+    const neg = s.startsWith("-");
+    const parts = (neg ? s.slice(1) : s).split("/");
+    const a = Number(parts[0]), b = Number(parts[1]);
+    if(!Number.isFinite(a) || !Number.isFinite(b) || b === 0) return NaN;
+    return (neg ? -1 : 1) * (a / b);
+  }
+
+  // Mixed number: w n/d  (e.g., "2 1/3" or "-2 1/3")
+  if(/^-?\d+\s+\d+\/\d+$/.test(s)){
+    const neg = s.startsWith("-");
+    const body = neg ? s.slice(1) : s;
+    const [wholeStr, fracStr] = body.split(" ");
+    const [nStr, dStr] = fracStr.split("/");
+    const w = Number(wholeStr), n = Number(nStr), d = Number(dStr);
+    if(!Number.isFinite(w) || !Number.isFinite(n) || !Number.isFinite(d) || d === 0) return NaN;
+    const v = w + (n / d);
+    return (neg ? -1 : 1) * v;
+  }
+
+  return NaN;
+}
+
+    function toFixedSmart(x){
+  // show integers without decimals; otherwise show up to 2 decimals (no trailing zeros)
+  if(!Number.isFinite(x)) return String(x);
+  const r = Math.round(x * 100) / 100;
+  if(Math.abs(r - Math.round(r)) < 1e-9) return String(Math.round(r));
+  return r.toFixed(2).replace(/0+$/,"").replace(/\.$/,"");
+}
+
+function isClose(a,b){
+  if(!Number.isFinite(a) || !Number.isFinite(b)) return false;
+  return Math.abs(a - b) <= 1e-6;
+}
+
+
+function normalizeMultiAnswer(s){
+  return String(s ?? "")
+    .toLowerCase()
+    .replace(/，/g, ",")
+    .replace(/;/g, ",")
+    .replace(/\band\b/g, ",")
+    .replace(/\s+/g, "")
+    .replace(/,+/g, ",")
+    .replace(/^,|,$/g, "");
+}
+
+function checkUserAnswer(q, rawInput){
+  if(typeof q.answer === "number"){
+    const user = parseAnswer(rawInput);
+    if(!Number.isFinite(user)) return { valid:false, correct:false, user:null };
+    const correct = isClose(user, q.answer);
+    return { valid:true, correct, user };
+  }
+
+  // multi / string answers: compare normalized strings
+  const userNorm = normalizeMultiAnswer(rawInput);
+  if(!userNorm) return { valid:false, correct:false, user:null };
+
+  const expectedNorm = (q.answerNorm != null) ? q.answerNorm : normalizeMultiAnswer(q.answer);
+  const correct = userNorm === expectedNorm;
+  return { valid:true, correct, user:userNorm };
+}
+
+function answerText(q){
+  return (q && q.answerText != null) ? String(q.answerText) : toFixedSmart(q.answer);
+}
+
+function stripSvgNote(html){
+      return String(html).replace(/<div class="svg-note">[\s\S]*?<\/div>/g, "");
+    }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * Timer + Pause/Resume
+     ********************/
+    const TIMER = { seconds: 0, running: true, id: null };
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function formatTime(sec){
+      sec = Math.max(0, Math.floor(sec));
+      const m = Math.floor(sec/60);
+      const s = sec % 60;
+      return `${pad2(m)}:${pad2(s)}`;
+    }
+    function updateTimerUI(){
+      $("#timerValue").textContent = formatTime(TIMER.seconds);
+      $("#timerStatus").textContent = TIMER.running ? "" : "(Paused)";
+      $("#pauseBtn").textContent = TIMER.running ? "Pause" : "Resume";
+    }
+    function startTimerTick(){
+      if(TIMER.id) clearInterval(TIMER.id);
+      TIMER.id = setInterval(() => {
+        if(TIMER.running){
+          TIMER.seconds += 1;
+          updateTimerUI();
+        }
+      }, 1000);
+    }
+    function resetTimer(){
+      TIMER.seconds = 0;
+      TIMER.running = true;
+      updateTimerUI();
+    }
+    function togglePause(){
+      TIMER.running = !TIMER.running;
+      updateTimerUI();
+    }
+    $("#pauseBtn").addEventListener("click", togglePause);
+
+    /********************
+     * SVG Placeholder (EDIT / REPLACE)
+     ********************/
+    function svgWrap(svg){
+      return `${svg}<div class="svg-note">Not to scale</div>`;
+    }
+    function diagramPlaceholder(label="Diagram"){
+      const svg = `
+        <svg viewBox="-10 -10 280 200" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Diagram placeholder">
+          <rect x="0" y="0" width="260" height="180" fill="none" stroke="var(--stroke)" stroke-width="2" rx="10"></rect>
+          <text x="130" y="95" text-anchor="middle"
+            style="font: 16px 'Segoe UI', Tahoma, sans-serif; fill: rgba(0,0,0,0.65); font-weight: 900;">
+            ${escapeHtml(label)}
+          </text>
+        </svg>
+      `;
+      return svgWrap(svg);
+    }
+
+    /********************
+     * Question generator (EDIT THIS)
+     * Return array of:
+     * { difficulty:"easy|medium|hard", prompt:"...", hint:"...", answer:<number>, svg:"<html>" }
+     ********************/
+            function makeQuestions(){
+  // Interval Arrangement (Line vs Loop) — larger bank, each set randomly selects 9 questions.
+  const names = ["Emma","Olivia","Ava","Mia","Sophia","Liam","Noah","Ethan","Lucas","Jack","Leo","Mason","Ella","Grace","Chloe","James","Henry","Amelia","Isla","Harper","Aiden","Ben","Tom","Alex","Ruby","Lucy"];
+
+  const pickName = () => choice(names);
+
+  // Fisher–Yates (returns a new array)
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  function buildQ(difficulty, prompt, answer, hint="", answerTextOverride=null){
+    const diff = String(difficulty||"").toLowerCase();
+    const q = {
+      type: "interval",
+      difficulty: (diff==="easy"||diff==="medium"||diff==="hard") ? diff : "medium",
+      prompt,
+      hint,
+      answer,
+      answerText: (answerTextOverride != null) ? answerTextOverride : (typeof answer === "number" ? String(answer) : String(answer)),
+      svg: ""
+    };
+    if(typeof answer !== "number"){
+      q.answerNorm = normalizeMultiAnswer(answer);
+    }
+    return q;
+  }
+
+  /********************
+   * Original base questions (randomised)
+   ********************/
+
+  // Q1 — Alternating flower pots (ends the same)
+  function q1(){
+    const blue = randint(14, 40);
+    const red = blue - 1;
+    const school = choice(["Riverdale Primary","Hillview School","Sunnybank Primary","Maple Grove School"]);
+    const prompt = `At ${school}, a row of flower pots alternates red and blue. The first pot and the last pot are blue. If there are ${blue} blue pots, how many red pots are there?`;
+    const hint = "In an alternating row, if the first and last are the same colour, that colour is 1 more than the other.";
+    return buildQ("easy", prompt, red, hint);
+  }
+
+  // Q2 — Alternating trees (ends the same)
+  function q2(){
+    const pine = randint(18, 32);
+    const cypress = pine - 1;
+    const total = pine + cypress;
+    const name = pickName();
+    const prompt = `${name} walks along a road where pine trees and cypress trees are planted alternately. The first tree and the last tree are pine trees. If there are ${pine} pine trees, how many trees are there in total?`;
+    const hint = "If the first and last are pine, then Pine = Cypress + 1, so total = Pine + Cypress.";
+    return buildQ("easy", prompt, total, hint);
+  }
+
+  // Q3 — Cutting into equal pieces (cuts = pieces − 1)
+  function q3(){
+    const lengthM = choice([3,4,5,6]);
+    const totalCm = lengthM * 100;
+    const pieceCmOptions = [5,10,20,25,50];
+    let pieceCm = choice(pieceCmOptions);
+    // ensure divisible
+    for(let k=0;k<20;k++){
+      if(totalCm % pieceCm === 0) break;
+      pieceCm = choice(pieceCmOptions);
+    }
+    const pieces = totalCm / pieceCm;
+    const cuts = pieces - 1;
+    const prompt = `A ${lengthM} m wooden stick is cut into pieces that are ${pieceCm} cm long. (Ignore any waste.) How many cuts are needed?`;
+    const hint = "If you want N pieces in a line, you need N − 1 cuts.";
+    return buildQ("easy", prompt, cuts, hint);
+  }
+
+  // Q4 — Line arrangement (include both ends)
+  function q4(){
+    const spacing = choice([3,4,5,6,8,10,12]);
+    const posts = randint(16, 45);
+    const length = spacing * (posts - 1);
+    const prompt = `Street lights are placed every ${spacing} m along a straight road of length ${length} m. If there is a light at both ends of the road, how many street lights are there?`;
+    const hint = "Line with both ends included: number = length ÷ spacing + 1.";
+    return buildQ("medium", prompt, posts, hint);
+  }
+
+  // Q5 — Insert k items between each pair (line)
+  function q5(){
+    const roses = randint(12, 20);
+    const k = randint(2, 4);
+    const inserted = (roses - 1) * k;
+    const prompt = `A school places ${roses} rose pots in a straight row. Then ${k} chrysanthemum pots are placed between every two rose pots. How many chrysanthemum pots are placed?`;
+    const hint = "In a line, gaps = (main items − 1). Inserted = k × gaps.";
+    return buildQ("medium", prompt, inserted, hint);
+  }
+
+  // Q6 — Stairs / floors (flights = floors − 1)
+  function q6(){
+    const floors = randint(5, 10);
+    const stepsPerFlight = randint(10, 18);
+    const flights = floors - 1;
+    const steps = flights * stepsPerFlight;
+    const name = pickName();
+    const prompt = `${name} lives in a ${floors}-storey building. There are ${stepsPerFlight} steps from one floor to the next. How many steps does ${name} climb from the ground floor to the ${floors}th floor?`;
+    const hint = "You climb (floors − 1) flights.";
+    return buildQ("easy", prompt, steps, hint);
+  }
+
+  // Q7 — Around a loop (perimeter ÷ spacing)
+  function q7(){
+    const spacing = choice([3,4,5,6,8,10]);
+    const count = randint(80, 240);
+    const perimeter = spacing * count;
+    const prompt = `A pond has a perimeter of ${perimeter} m. Willow trees are planted every ${spacing} m all the way around. How many willow trees are planted?`;
+    const hint = "Around a loop: number of trees = perimeter ÷ spacing.";
+    return buildQ("medium", prompt, count, hint);
+  }
+
+  // Q8 — Loop with extra items between (two answers)
+  function q8(){
+    const spacing = choice([4,5,6,8,10]);
+    const red = randint(40, 90);
+    const perimeter = red * spacing;
+    const between = choice([1,2,2,3]); // slightly prefer 2
+    const pink = red * between;
+    const prompt = `On a circular track of length ${perimeter} m, a red flag is placed every ${spacing} m. Between each pair of adjacent red flags, ${between} pink flag(s) are placed. How many red flags and how many pink flags are there? (Answer format: red, pink)`;
+    const hint = "Loop: red flags = perimeter ÷ spacing. The number of gaps equals the number of red flags.";
+    const ans = `${red},${pink}`;
+    const ansText = `Red: ${red}, Pink: ${pink}`;
+    return buildQ("hard", prompt, ans, hint, ansText);
+  }
+
+  // Q9 — Rectangle perimeter (corners included) + one inserted between each pair
+  function q9(){
+    const spacing = choice([5,10]);
+    const Lmul = randint(16, 40);
+    const Wmul = randint(10, 28);
+    const L = Lmul * spacing;
+    const W = Wmul * spacing;
+
+    const peach = 2 * (Lmul + Wmul); // perimeter/spacing
+    const willow = peach; // one between each pair on a loop
+
+    const prompt = `A rectangular community garden is ${L} m long and ${W} m wide. Peach trees are planted every ${spacing} m around the edge (all four corners have trees). Between each pair of adjacent peach trees, 1 willow tree is planted. How many peach trees and how many willow trees are planted? (Answer format: peach, willow)`;
+    const hint = "Perimeter is a loop: peach = perimeter ÷ spacing. The number of gaps equals the number of peach trees.";
+    const ans = `${peach},${willow}`;
+    const ansText = `Peach: ${peach}, Willow: ${willow}`;
+    return buildQ("hard", prompt, ans, hint, ansText);
+  }
+
+  /********************
+   * Added textbook-style questions (mostly fixed numbers)
+   ********************/
+
+  // Q10 — Notebook: insert a leaf every 4 pages (starting after page 4)
+  function q10(){
+    const pages = 32;
+    const every = 4;
+    const leaves = pages / every; // 8
+    const name = "Jack";
+    const prompt = `${name} binds ${pages} pages into a notebook. Starting from the first page, after every ${every} pages he inserts one leaf marker. How many leaf markers are inserted in total?`;
+    const hint = "If you insert 1 after every k pages, the number is total pages ÷ k.";
+    return buildQ("easy", prompt, leaves, hint);
+  }
+
+  // Q11 — Sawing: two-part question (pieces and cuts)
+  function q11(){
+    const cuts1 = 4;
+    const pieces1 = cuts1 + 1; // 5
+    const pieces2 = 7;
+    const cuts2 = pieces2 - 1; // 6
+    const prompt = `A log is cut ${cuts1} times in a straight line. How many pieces does it become? If someone wants to make ${pieces2} equal pieces, how many cuts are needed? (Answer format: pieces, cuts)`;
+    const hint = "In a line: pieces = cuts + 1, and cuts = pieces − 1.";
+    const ans = `${pieces1},${cuts2}`;
+    const ansText = `Pieces: ${pieces1}, Cuts: ${cuts2}`;
+    return buildQ("easy", prompt, ans, hint, ansText);
+  }
+
+  // Q12 — Cutting time (pieces − 1 cuts)
+  function q12(){
+    const length = 20;   // m
+    const piece = 5;     // m
+    const minPerCut = 4; // minutes
+    const pieces = length / piece; // 4
+    const cuts = pieces - 1;       // 3
+    const totalMin = cuts * minPerCut; // 12
+    const prompt = `A ${length} m wooden pole is cut into ${piece} m pieces. Each cut takes ${minPerCut} minutes. How many minutes does it take in total?`;
+    const hint = "Pieces = total length ÷ piece length. Cuts = pieces − 1.";
+    return buildQ("easy", prompt, totalMin, hint);
+  }
+
+  // Q13 — Carpenter: cut off 1 m, then 6 cuts to make equal pieces
+  function q13(){
+    const total = 15;
+    const cutOff = 1;
+    const remaining = total - cutOff; // 14
+    const extraCuts = 6;              // makes 7 pieces
+    const pieces = extraCuts + 1;     // 7
+    const each = remaining / pieces;  // 2
+    const prompt = `A carpenter has a ${total} m plank. First, he cuts off ${cutOff} m from one end. Then he makes ${extraCuts} more cuts to divide the remaining part into equal pieces. How long is each equal piece (in metres)?`;
+    const hint = "After n cuts, you get n+1 pieces.";
+    return buildQ("medium", prompt, each, hint);
+  }
+
+  // Q14 — Corridor pots: two situations
+  function q14(){
+    const L = 36;
+    const spacing = 2;
+    const bothEnds = L / spacing + 1; // 19
+    const startOnly = L / spacing;    // 18
+    const prompt = `Along one side of a ${L} m corridor, flower pots are placed every ${spacing} m.\n(A) If there is a pot at BOTH ends, how many pots are there?\n(B) If there is a pot at the START end but NOT at the other end, how many pots are there?\n(Answer format: A, B)`;
+    const hint = "Line arrangement: with both ends → length ÷ spacing + 1; with one end only → length ÷ spacing.";
+    const ans = `${bothEnds},${startOnly}`;
+    const ansText = `A: ${bothEnds}, B: ${startOnly}`;
+    return buildQ("hard", prompt, ans, hint, ansText);
+  }
+
+  // Q15 — Circular flower bed: red every 3 m, 1 yellow between each red
+  function q15(){
+    const C = 36;
+    const spacing = 3;
+    const red = C / spacing; // 12
+    const yellow = red;      // 12
+    const prompt = `A circular flower bed has circumference ${C} m. A red flag is placed every ${spacing} m. Between each pair of adjacent red flags, 1 yellow flag is placed. How many red flags and how many yellow flags are there? (Answer format: red, yellow)`;
+    const hint = "On a loop: number of red flags = circumference ÷ spacing. Gaps between reds = number of red flags.";
+    const ans = `${red},${yellow}`;
+    const ansText = `Red: ${red}, Yellow: ${yellow}`;
+    return buildQ("medium", prompt, ans, hint, ansText);
+  }
+
+  // Q16 — Square pond: poplar every 6 m, 2 willows between poplars
+  function q16(){
+    const side = 120;
+    const spacing = 6;
+    const perimeter = 4 * side;    // 480
+    const poplar = perimeter / spacing; // 80
+    const willowsPerGap = 2;
+    const willow = poplar * willowsPerGap; // 160
+    const prompt = `A square fish pond has side length ${side} m. Poplar trees are planted every ${spacing} m around the edge (including all four corners). Between each pair of adjacent poplars, ${willowsPerGap} willow trees are planted. How many poplars and how many willows are planted? (Answer format: poplar, willow)`;
+    const hint = "Loop: poplars = perimeter ÷ spacing. Number of gaps equals number of poplars.";
+    const ans = `${poplar},${willow}`;
+    const ansText = `Poplar: ${poplar}, Willow: ${willow}`;
+    return buildQ("hard", prompt, ans, hint, ansText);
+  }
+
+  // Q17 — Add trees between existing trees
+  function q17(){
+    const oldSpacing = 8;
+    const oldCount = 800;
+    const newSpacing = 2;
+    const gapLen = oldSpacing; // between adjacent old trees
+    const intervalsInGap = gapLen / newSpacing; // 4
+    const newTreesBetween = intervalsInGap - 1; // 3 (between the endpoints)
+    const added = oldCount * newTreesBetween;
+    const total = oldCount + added; // 3200
+    const prompt = `Around a pond, trees were planted every ${oldSpacing} m, and there are ${oldCount} trees in total. Now more trees will be added so that between each pair of adjacent trees, there is a tree every ${newSpacing} m. How many trees will there be in total after adding the new trees?`;
+    const hint = "In each old gap, the endpoints are already trees. New trees inside the gap = (gap ÷ newSpacing) − 1.";
+    return buildQ("hard", prompt, total, hint);
+  }
+
+  // Q18 — Bins equally spaced from start to end
+  function q18(){
+    const length = 900;
+    const bins = 19;
+    const gaps = bins - 1; // 18
+    const d = length / gaps; // 50
+    const prompt = `Along one side of a ${length} m avenue, ${bins} rubbish bins are placed equally spaced from the start to the end. What is the distance (in metres) between adjacent bins?`;
+    const hint = "If both ends are included, gaps = bins − 1.";
+    return buildQ("easy", prompt, d, hint);
+  }
+
+  // Q19 — Poles count includes both ends
+  function q19(){
+    const poles = 62;
+    const spacing = 50;
+    const length = (poles - 1) * spacing; // 3050
+    const prompt = `There are ${poles} power poles from a power station to a factory (including a pole at each end). The distance between adjacent poles is ${spacing} m. How far is it from the power station to the factory (in metres)?`;
+    const hint = "If both ends are included: distance = (poles − 1) × spacing.";
+    return buildQ("easy", prompt, length, hint);
+  }
+
+  // Q20 — Clock chimes: time is intervals, not strikes
+  function q20(){
+    const strikes6 = 6;
+    const time6 = 10;
+    const interval = time6 / (strikes6 - 1); // 2 seconds per interval
+    const strikes9 = 9;
+    const time9 = (strikes9 - 1) * interval; // 16
+    const prompt = `A clock strikes ${strikes6} times at 6:00 and finishes in ${time6} seconds. Assuming equal time between strikes, how many seconds does it take to finish striking at 9:00?`;
+    const hint = "For n strikes, there are (n − 1) equal time intervals.";
+    return buildQ("medium", prompt, time9, hint);
+  }
+
+  // Q21 — Adult vs child speed on stairs (adult is twice as fast)
+  function q21(){
+    const adultTime1to3 = 30; // seconds
+    const adultFlights = 2;   // 1->2->3
+    const adultPerFlight = adultTime1to3 / adultFlights; // 15
+    const childPerFlight = adultPerFlight * 2; // child takes twice the time
+    const childFlights = 4; // 1->5
+    const childTime = childPerFlight * childFlights; // 120
+    const prompt = `An adult climbs stairs twice as fast as a child. The adult takes ${adultTime1to3} seconds to go from the 1st floor to the 3rd floor. How many seconds does the child take to go from the 1st floor to the 5th floor?`;
+    const hint = "Floors to floors = flights. Speed twice means time is half (or reverse: child time is double).";
+    return buildQ("medium", prompt, childTime, hint);
+  }
+
+  // Q22 — Poles on BOTH sides of a road
+  function q22(){
+    const length = 1000;
+    const spacing = 50;
+    const perSide = length / spacing + 1; // 21
+    const total = perSide * 2; // 42
+    const prompt = `A ${length} m road has power poles on BOTH sides. Poles are placed every ${spacing} m, and poles are also placed at both ends. How many poles are needed in total?`;
+    const hint = "Per side: length ÷ spacing + 1. Then multiply by 2 sides.";
+    return buildQ("easy", prompt, total, hint);
+  }
+
+  // Q23 — Two-column line length
+  function q23(){
+    const students = 80;
+    const columns = 2;
+    const perCol = students / columns; // 40
+    const spacing = 1;
+    const length = (perCol - 1) * spacing; // 39
+    const prompt = `${students} students walk in two columns (two lines). Each column has ${perCol} students, and the distance between two consecutive students in a column is ${spacing} m. What is the length of the group from the first student to the last student (in metres)?`;
+    const hint = "Length in a line = (number in one column − 1) × spacing.";
+    return buildQ("easy", prompt, length, hint);
+  }
+
+  // Q24 — Trees on both sides total 42, ends included: find spacing
+  function q24(){
+    const road = 100;
+    const totalTrees = 42;
+    const perSide = totalTrees / 2; // 21
+    const gaps = perSide - 1;       // 20
+    const spacing = road / gaps;    // 5
+    const prompt = `Trees will be planted in one row on EACH side of a ${road} m road. There are ${totalTrees} trees in total, and trees are planted at BOTH ends. What is the average distance (in metres) between adjacent trees in one row?`;
+    const hint = "Per side = total ÷ 2. In a line with both ends: gaps = trees per side − 1.";
+    return buildQ("medium", prompt, spacing, hint);
+  }
+
+  
+
+  // Q25 — Floor walking time (flights as intervals)
+  function q25(){
+    const t1to4 = 54;
+    const flights1to4 = 3;
+    const perFlight = t1to4 / flights1to4; // 18
+    const flights1to6 = 5;
+    const t1to6 = perFlight * flights1to6; // 90
+    const prompt = `A staff member takes ${t1to4} seconds to walk from the 1st floor to the 4th floor. At the same speed, how many seconds does it take to walk from the 1st floor to the 6th floor?`;
+    const hint = "Count flights (gaps between floors): 1→4 is 3 flights, 1→6 is 5 flights.";
+    return buildQ("easy", prompt, t1to6, hint);
+  }
+
+/********************
+   * Select 9 questions
+   ********************/
+  const bankFns = [q1,q2,q3,q4,q5,q6,q7,q8,q9,q10,q11,q12,q13,q14,q15,q16,q17,q18,q19,q20,q21,q22,q23,q24,q25];
+
+  const selectedFns = shuffle(bankFns).slice(0, 9);
+  const questions = selectedFns.map(fn => fn());
+
+  // Keep the experience fresh
+  return questions;
+}
+
+/********************
+     * UI state + rendering
+     ********************/
+    let QUESTIONS = [];
+    let STATE = { answers:[], checked:[], correct:[], hintShown:[], submitted:false };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+    function niceDiff(d){
+      if(d==="easy") return "Easy";
+      if(d==="medium") return "Medium";
+      return "Hard";
+    }
+
+    function renderQuestions(){
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const userVal = STATE.answers[idx] ?? "";
+        const checked = !!STATE.checked[idx];
+        const correct = !!STATE.correct[idx];
+        const hintShown = !!STATE.hintShown[idx];
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${escapeHtml(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="q-body">
+            <div class="svg-wrap">${q.svg || ""}</div>
+
+            <div class="answer-area">
+              <div class="input-row">
+                <input type="text" inputmode="text" autocomplete="off"
+                  id="ans-${idx}" placeholder="Answer"
+                  value="${escapeHtml(userVal)}">
+                <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+                <button class="btn ghost" type="button" id="hint-${idx}">${hintShown ? "Hide Hint" : "Hint"}</button>
+              </div>
+
+              <div class="hint-box ${hintShown ? "show" : ""}" id="hintBox-${idx}">
+                ${escapeHtml(q.hint || "")}
+              </div>
+
+              <div class="feedback ${checked ? (correct ? "ok" : "bad") : ""}" id="fb-${idx}">
+                ${checked
+                  ? (correct
+                      ? "Correct ✅"
+                      : `Not correct ❌  (Correct answer: ${answerText(q)})`)
+                  : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        const inp = $(`#ans-${idx}`, card);
+        inp.addEventListener("input", () => {
+          STATE.answers[idx] = inp.value;
+          STATE.checked[idx] = false;
+          STATE.correct[idx] = false;
+          if(STATE.submitted){
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+          }
+          const fb = $(`#fb-${idx}`, card);
+          fb.className = "feedback";
+          fb.textContent = "";
+        });
+
+        $(`#check-${idx}`, card).addEventListener("click", () => checkOne(idx));
+        $(`#hint-${idx}`, card).addEventListener("click", () => {
+          STATE.hintShown[idx] = !STATE.hintShown[idx];
+          renderQuestions();
+        });
+      });
+
+      $("#resultsBox").style.display = "none";
+    }
+
+    function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const res = checkUserAnswer(q, STATE.answers[idx]);
+      STATE.checked[idx] = true;
+
+      if(!res.valid){
+        STATE.correct[idx] = false;
+        renderQuestions();
+        const fb = $(`#fb-${idx}`);
+        fb.className = "feedback bad";
+        fb.textContent = (typeof q.answer === "number")
+          ? "Please enter a valid number."
+          : "Please enter your answers like: a, b";
+        return;
+      }
+
+      STATE.correct[idx] = res.correct;
+      renderQuestions();
+    }
+
+    function submitAll(){
+      let correctCount = 0;
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const res = checkUserAnswer(q, STATE.answers[i]);
+        STATE.checked[i] = true;
+        STATE.correct[i] = res.valid && res.correct;
+        if(STATE.correct[i]) correctCount++;
+      }
+
+      STATE.submitted = true;
+      renderQuestions();
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+
+      const lines = QUESTIONS.map((q,i)=>(
+        `<div style="margin:6px 0;"><b>Q${i+1}:</b> ${answerText(q)}</div>`
+      )).join("");
+
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:8px;"><b>Correct Answers:</b></div>
+        <div style="margin-top:6px;">${lines}</div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+    function resetAnswers(){
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    /********************
+     * Save Current Result as TXT
+     ********************/
+    function saveResult(){
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const when = new Date();
+      const dateStr = when.toLocaleString();
+      const elapsed = formatTime(TIMER.seconds);
+
+      let correctCount = 0;
+      const out = [];
+
+      out.push(`DYAA — Save Current Result`);
+      out.push(`Title: ${title}`);
+      out.push(`Student: ${student}`);
+      out.push(`Date: ${dateStr}`);
+      out.push(`Elapsed Time: ${elapsed}`);
+      out.push(``);
+
+      QUESTIONS.forEach((q, i) => {
+        const raw = (STATE.answers[i] ?? "").toString().trim();
+        const v = parseAnswer(raw);
+        const valid = Number.isFinite(v);
+        const isCorrect = valid && isClose(v, q.answer);
+        if(isCorrect) correctCount++;
+
+        out.push(`Q${i+1} (${String(q.difficulty||"").toUpperCase()}): ${q.prompt}`);
+        out.push(`Your answer: ${valid ? v : (raw ? raw : "(blank)")}`);
+        out.push(`Correct answer: ${answerText(q)}`);
+        out.push(`Result: ${isCorrect ? "Correct" : "Not correct"}`);
+        out.push(``);
+      });
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+      out.splice(5, 0, `Score: ${correctCount} / ${total} (${pct}%)`);
+
+      const text = out.join("\r\n");
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_result.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    /********************
+     * Tabs + Student name
+     ********************/
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $(`#panel-${tab}`).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", ""));
+      $("#studentNameValue").textContent = name ? name : "Anonymous";
+    }
+
+    /********************
+     * Generate New Set (resets timer)
+     ********************/
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+
+      // If any answers are not finite integers, your generator should ensure integer answers
+      // or you should adjust parseAnswer + correctness logic accordingly.
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+
+      resetTimer();
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set? This will clear your current answers and reset the timer.", () => {
+        generateNewSet();
+        // go to practice
+        $$('.tab').forEach(b=>b.classList.remove('active'));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$('.panel').forEach(p=>p.classList.remove('active'));
+        $('#panel-practice').classList.add('active');
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    /********************
+     * Learn diagram (EDIT / REPLACE)
+     ********************/
+    function renderLearnDiagram(){ /* No diagram for this topic */ }
+
+    /********************
+     * Export Learn PDF
+     * - Exports everything in the Learn tab
+     * - Auto splits into multiple A4 pages
+     ********************/
+    function stripIdsDeep(root){
+      if(!root) return;
+      if(root.removeAttribute) root.removeAttribute("id");
+      const els = root.querySelectorAll ? root.querySelectorAll("[id]") : [];
+      els.forEach(el => el.removeAttribute("id"));
+    }
+
+    function addCanvasAutoPagedToPdf(pdf, canvas, marginMm = 8){
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const usableW = pageW - marginMm * 2;
+      const usableH = pageH - marginMm * 2;
+
+      // scale to fit page width
+      const scale = usableW / canvas.width;
+      const sliceHpx = Math.floor(usableH / scale);
+
+      let y = 0;
+      let pageIndex = 0;
+
+      while(y < canvas.height){
+        const h = Math.min(sliceHpx, canvas.height - y);
+
+        const slice = document.createElement("canvas");
+        slice.width = canvas.width;
+        slice.height = h;
+
+        const ctx = slice.getContext("2d");
+        ctx.drawImage(canvas, 0, y, canvas.width, h, 0, 0, canvas.width, h);
+
+        const imgData = slice.toDataURL("image/png", 1.0);
+
+        if(pageIndex > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", marginMm, marginMm, usableW, h * scale, undefined, "FAST");
+
+        y += h;
+        pageIndex++;
+      }
+    }
+
+    async function exportLearnPdf(){
+      const libsOk = (window.html2canvas && window.jspdf && window.jspdf.jsPDF);
+      if(!libsOk){
+        alert("PDF export needs html2canvas + jsPDF. Please check your connection (CDN) or include the libraries locally.");
+        return;
+      }
+
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+
+      const exportRoot = document.createElement("div");
+      exportRoot.className = "export-root";
+      document.body.appendChild(exportRoot);
+
+      const sheet = document.createElement("div");
+      sheet.className = "export-learn-sheet";
+      sheet.innerHTML = `
+        <div class="export-header">
+          <div>
+            <div class="export-title">${escapeHtml(title)} — Learn</div>
+            <div class="export-sub">Student: ${escapeHtml(student)} • Date: ${escapeHtml(dateStr)}</div>
+          </div>
+        </div>
+        <div class="export-content"></div>
+      `;
+
+      const content = sheet.querySelector(".export-content");
+      const learnPanel = $("#panel-learn").cloneNode(true);
+      stripIdsDeep(learnPanel);
+      learnPanel.classList.add("active");
+      content.appendChild(learnPanel);
+
+      exportRoot.appendChild(sheet);
+
+      // allow layout to settle
+      await new Promise(r => requestAnimationFrame(()=>requestAnimationFrame(r)));
+
+      const canvas = await window.html2canvas(sheet, {
+        scale: 2,
+        backgroundColor: "#ffffff",
+        useCORS: true
+      });
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+
+      addCanvasAutoPagedToPdf(pdf, canvas, 8);
+
+      pdf.save(`${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_Learn.pdf`);
+      exportRoot.remove();
+    }
+
+    $("#exportLearnBtn")?.addEventListener("click", exportLearnPdf);
+
+
+    /********************
+     * Export Questions PDF
+     * - PDF per page: 2 / 3 / 6 (default 2)
+     * - Answers at the end (separate page(s), auto paged)
+     ********************/
+    function layoutClass(perPage){
+      if(perPage === 6) return "six";
+      if(perPage === 3) return "three";
+      return "two";
+    }
+
+    function buildQuestionPageDOM(indexGroup, perPage, meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">${escapeHtml(meta.title)}</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)} • Time: ${escapeHtml(meta.timeStr)}
+          </div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const grid = document.createElement("div");
+      grid.className = `export-qgrid ${layoutClass(perPage)}`;
+
+      indexGroup.forEach(i => {
+        const q = QUESTIONS[i];
+        const box = document.createElement("div");
+        box.className = "export-q";
+        box.innerHTML = `
+          <div class="qprompt">Q${i+1}. ${escapeHtml(q.prompt)}</div>
+          <div class="export-diagram">${stripSvgNote(q.svg || "")}</div>
+          <div class="export-answerline">Answer: <span></span></div>
+        `;
+        grid.appendChild(box);
+      });
+
+      content.appendChild(grid);
+      page.appendChild(header);
+      page.appendChild(content);
+      return page;
+    }
+
+    function createAnswerPage(meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">Answers — ${escapeHtml(meta.title)}</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)}
+          </div>
+          <div class="answers-note">These are the correct answers for the exported question set.</div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const list = document.createElement("div");
+      list.className = "answers-list";
+      content.appendChild(list);
+
+      page.appendChild(header);
+      page.appendChild(content);
+
+      return { page, content, list };
+    }
+
+    async function exportQuestionsPdf(){
+      const perPage = Number($("#pdfPerPage").value) || 2;
+
+      const libsOk = (window.html2canvas && window.jspdf && window.jspdf.jsPDF);
+      if(!libsOk){
+        alert("PDF export needs html2canvas + jsPDF. Please check your connection (CDN) or include the libraries locally.");
+        return;
+      }
+
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+      const timeStr = $("#timerValue").textContent;
+
+      const exportRoot = document.createElement("div");
+      exportRoot.className = "export-root";
+      document.body.appendChild(exportRoot);
+
+      // Question pages
+      const idxs = QUESTIONS.map((_,i)=>i);
+      for(let i=0;i<idxs.length;i+=perPage){
+        const group = idxs.slice(i, i+perPage);
+        exportRoot.appendChild(buildQuestionPageDOM(group, perPage, { title, student, dateStr, timeStr }));
+      }
+
+      // Answer pages (auto paged)
+      let ap = createAnswerPage({ title, student, dateStr });
+      exportRoot.appendChild(ap.page);
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const item = document.createElement("div");
+        item.textContent = `Q${i+1}: ${answerText(QUESTIONS[i])}`;
+        ap.list.appendChild(item);
+
+        if(ap.content.scrollHeight > ap.content.clientHeight){
+          ap.list.removeChild(item);
+          ap = createAnswerPage({ title, student, dateStr });
+          exportRoot.appendChild(ap.page);
+          ap.list.appendChild(item);
+        }
+      }
+
+      // Render to PDF
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+
+      const pages = Array.from(exportRoot.querySelectorAll(".export-page"));
+      const marginMm = 8;
+
+      for(let i=0;i<pages.length;i++){
+        const pageEl = pages[i];
+
+        const canvas = await window.html2canvas(pageEl, {
+          scale: 2,
+          backgroundColor: "#ffffff",
+          useCORS: true
+        });
+
+        const imgData = canvas.toDataURL("image/png", 1.0);
+
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = pdf.internal.pageSize.getHeight();
+        const usableW = pageW - marginMm*2;
+        const usableH = pageH - marginMm*2;
+
+        const imgH = canvas.height * (usableW / canvas.width);
+
+        let drawW = usableW;
+        let drawH = imgH;
+
+        if(drawH > usableH){
+          drawH = usableH;
+          drawW = canvas.width * (drawH / canvas.height);
+        }
+
+        const x = (pageW - drawW) / 2;
+        const y = marginMm;
+
+        if(i > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", x, y, drawW, drawH, undefined, "FAST");
+      }
+
+      pdf.save(`${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_Questions.pdf`);
+      exportRoot.remove();
+    }
+
+    $("#exportQuestionsBtn").addEventListener("click", exportQuestionsPdf);
+
+    /********************
+     * Init
+     ********************/
+    function applyTemplateMeta(){
+      document.title = TEMPLATE_META.title;
+      $("#pageTitle").textContent = TEMPLATE_META.title;
+      $("#pageSubtitle").textContent = TEMPLATE_META.subtitle;
+      $("#instructionsText").textContent = TEMPLATE_META.instructions;
+    }
+
+    applyTemplateMeta();
+    ensureStudentName();
+        updateTimerUI();
+    startTimerTick();
+    generateNewSet();
+  </script>
+</body>
+</html>

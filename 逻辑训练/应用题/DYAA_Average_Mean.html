@@ -1,0 +1,2098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Average (Mean) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --purple:#6a1b9a;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .select{
+      appearance:none;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:10px;
+      padding:7px 10px;
+      font-weight:900;
+      color:var(--ink);
+      cursor:pointer;
+      outline:none;
+    }
+    .select:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:900;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:900;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+    }
+    .btn.orange{
+      background:var(--orange);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(255,152,0,0.20);
+    }
+    .btn.purple{
+      background:var(--purple);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(106,27,154,0.20);
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:1000;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card p{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+    .muted{color:var(--muted);}
+
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .mini-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .mini-table th, .mini-table td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    .mini-table th{
+      background:#f5f8ff;
+      color:var(--blue);
+      font-weight:1000;
+    }
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    .example{
+      margin-top:12px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      overflow:hidden;
+    }
+    .example summary{
+      cursor:pointer;
+      padding:12px 12px;
+      font-weight:1000;
+      color:var(--ink);
+      background:#ffffff;
+      list-style:none;
+    }
+    .example summary::-webkit-details-marker{display:none;}
+    .example summary:after{
+      content:"▾";
+      float:right;
+      color:rgba(0,0,0,0.55);
+      font-weight:900;
+    }
+    .example[open] summary:after{content:"▴";}
+    .example .box{
+      padding:12px;
+      border-top:1px solid var(--line);
+      line-height:1.55;
+      color:#2a2a2a;
+      font-size:13px;
+    }
+    .math{
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-weight:900;
+    }
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:1000;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:10px;
+      min-width:0;
+    }
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      min-width:220px;
+      max-width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .hint-box{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(13,71,161,0.35);
+      background:#f5f8ff;
+      color:#1a2b55;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .hint-box.show{display:block;}
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+    .feedback.ok{color:var(--ok);font-weight:1000;}
+    .feedback.bad{color:var(--bad);font-weight:1000;}
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    /* =========================
+       PDF Export (offscreen pages)
+       ========================= */
+    .export-root{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:210mm;
+      height:auto;
+      overflow:hidden;
+      background:#fff;
+    }
+    .export-page{
+      width:210mm;
+      height:297mm;
+      background:#fff;
+      padding:12mm;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .export-header{
+      height:20mm;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10mm;
+    }
+    .export-title{
+      font-weight:1000;
+      font-size:16px;
+      color:#111;
+      line-height:1.1;
+    }
+    .export-sub{
+      margin-top:2mm;
+      font-size:11px;
+      color:#555;
+      font-weight:900;
+      line-height:1.25;
+    }
+    .export-content{
+      height: calc(297mm - 12mm - 12mm - 20mm);
+      overflow:hidden;
+    }
+
+    .export-qgrid{
+      width:100%;
+      height:100%;
+      display:grid;
+      min-height:0;
+    }
+    .export-qgrid.two{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:8mm;
+    }
+    .export-qgrid.three{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:4mm;
+    }
+    .export-qgrid.six{
+      grid-template-columns:1fr 1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:5mm;
+    }
+
+    .export-q{
+      border:1px solid #ddd;
+      border-radius:10px;
+      padding:6mm;
+      display:flex;
+      flex-direction:column;
+      gap:4mm;
+      min-height:0;
+      overflow:hidden;
+    }
+    .export-q .qprompt{
+      font-weight:900;
+      font-size:12px;
+      color:#111;
+      line-height:1.25;
+    }
+    .export-qgrid.six .qprompt{font-size:11px;}
+
+    .export-answerline{
+      margin-top:auto;
+      font-size:12px;
+      font-weight:900;
+      color:#111;
+    }
+    .export-answerline span{
+      display:inline-block;
+      border-bottom:1px solid #111;
+      min-width:62mm;
+      height:0.95em;
+      vertical-align:baseline;
+    }
+    .export-qgrid.six .export-answerline{font-size:11px;}
+    .export-qgrid.six .export-answerline span{min-width:35mm;}
+
+    .answers-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:4mm 10mm;
+      align-content:start;
+      font-size:13px;
+      font-weight:900;
+      color:#111;
+    }
+    .answers-note{
+      margin-top:3mm;
+      font-size:11px;
+      color:#666;
+      font-weight:900;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1 id="pageTitle">DYAA Quiz Template</h1>
+        <div class="sub" id="pageSubtitle">Learn • Practice • Timer • PDF export</div>
+      </div>
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="row">
+      <div class="pill">
+        <b>Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <b>Time:</b>
+        <span id="timerValue">00:00</span>
+        <span id="timerStatus" class="muted" style="font-weight:900;"></span>
+        <span class="muted">•</span>
+        <small>URL: <span class="muted">.../your_page.html?name=Tiger</span></small>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <div class="pill">
+          <b>PDF per page</b>
+          <select id="pdfPerPage" class="select" aria-label="PDF per page">
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+
+        <button class="btn orange" id="pauseBtn" type="button">Pause</button>
+        <button class="btn orange" id="newSetBtn" type="button">Generate New Set</button>
+        <button class="btn secondary" id="exportLearnBtn" type="button">Export Learn PDF</button>
+        <button class="btn purple" id="exportQuestionsBtn" type="button">Export Questions PDF</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    <!-- LEARN -->
+    <div class="panel active" id="panel-learn">
+      <div class="learn-card" id="learnCard">
+        <h2>Part 1 — What is the Average (Mean)?</h2>
+        <p>
+          The <b>average</b> (also called the <b>mean</b>) is one number that represents a set of data.
+          It tells us the “typical” value.
+        </p>
+        <p class="math">Average = Total ÷ Number of items</p>
+
+        <h2>Part 2 — The “Total First” Method</h2>
+        <p class="muted" style="margin-top:-6px;">
+          Identify the <b>Total</b> and the <b>Number of items</b> first.
+        </p>
+
+        <table class="mini-table" aria-label="Average formulas">
+          <thead>
+            <tr>
+              <th>What you want</th>
+              <th>Formula</th>
+              <th>Tip</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Average</b></td>
+              <td>Average = Total ÷ Number of items</td>
+              <td>Compute the total first, then divide.</td>
+            </tr>
+            <tr>
+              <td><b>Total</b></td>
+              <td>Total = Average × Number of items</td>
+              <td>Useful when you know an average and a count.</td>
+            </tr>
+            <tr>
+              <td><b>Number of items</b></td>
+              <td>Number of items = Total ÷ Average</td>
+              <td>Useful when you know a total and an average.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Part 3 — “Move Many to Few” (Balancing Idea)</h2>
+        <p>
+          Imagine you want all values to become equal by <b>moving</b> some amount from larger values to smaller values.
+          When everything is balanced, that equal value is the average.
+          This is very helpful for <b>missing number</b> and <b>changed average</b> questions.
+        </p>
+
+        <div class="note">
+          <b>Quick reminder:</b><br>
+          The average is always between the smallest and the largest value.
+        </div>
+
+        <h2 style="margin-top:14px;">Worked Examples (3)</h2>
+
+        <details class="example" open>
+          <summary>Example 1 — Average of 4 bags</summary>
+          <div class="box">
+            <b>Question:</b> Four bags weigh 180 kg, 175 kg, 181 kg, and 176 kg. What is the average weight per bag?<br><br>
+            <b>Solution:</b><br>
+            Total = 180 + 175 + 181 + 176 = 712 (kg)<br>
+            Average = 712 ÷ 4 = <b>178 kg</b>
+          </div>
+        </details>
+
+        <details class="example">
+          <summary>Example 2 — Combined average (two stages)</summary>
+          <div class="box">
+            <b>Question:</b> A road was repaired for 6 days at an average of 450 m per day. The remaining work took 3 more days at an average of 480 m per day. What was the average metres per day for the whole project?<br><br>
+            <b>Solution:</b><br>
+            Total metres = 6×450 + 3×480 = 2700 + 1440 = 4140 (m)<br>
+            Total days = 6 + 3 = 9<br>
+            Average = 4140 ÷ 9 = <b>460 m/day</b>
+          </div>
+        </details>
+
+        <details class="example">
+          <summary>Example 3 — Missing score from two averages</summary>
+          <div class="box">
+            <b>Question:</b> The average score of Chinese, Math, and English is 90. The average of Chinese and English is 93. What is the Math score?<br><br>
+            <b>Method 1 (Totals):</b><br>
+            Total of 3 subjects = 90×3 = 270<br>
+            Total of (Chinese + English) = 93×2 = 186<br>
+            Math = 270 − 186 = <b>84</b><br><br>
+            <b>Method 2 (Move many to few):</b><br>
+            Chinese+English average is 3 higher than the 3-subject average (93 − 90 = 3).<br>
+            That extra “3” happens for 2 subjects, so extra total = 3×2 = 6.<br>
+            Math must be 6 below 90: 90 − 6 = <b>84</b>.
+          </div>
+        </details>
+
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted" id="instructionsText">Enter an integer. (No units needed.)</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result (TXT)</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3>Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    /********************
+     * TEMPLATE META (EDIT THIS)
+     ********************/
+    const TEMPLATE_META = {
+      title: "Average (Mean) — 3 Key Methods — DYAA",
+      subtitle: "Learn (3 parts + examples) • Practice • Timer • PDF export",
+      filePrefix: "DYAA_Average_Mean",
+      instructions: "Enter an integer, decimal, fraction (e.g., 3/4), or mixed number (e.g., 2 1/3). Units are not required."
+    };
+
+    /********************
+     * Helpers
+     ********************/
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function randint(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+    
+    function shuffleCopy(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        const t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    }
+    function sampleNoRepeat(arr, k){
+      return shuffleCopy(arr).slice(0, Math.min(k, arr.length));
+    }
+function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/\"/g,"&quot;");
+    }
+
+    /********************
+     * Answer parsing
+     ********************/
+    function parseAnswer(input){
+      if(input == null) return NaN;
+      let s = String(input).trim();
+      if(!s) return NaN;
+
+      // Remove commas, normalize spaces
+      s = s.replace(/,/g,"").replace(/\s+/g," ");
+
+      // integer / decimal
+      if(/^-?\d+(?:\.\d+)?$/.test(s)){
+        const v = Number(s);
+        return Number.isFinite(v) ? v : NaN;
+      }
+
+      // fraction a/b
+      if(/^-?\d+\/\d+$/.test(s)){
+        const neg = s.startsWith("-");
+        const parts = (neg ? s.slice(1) : s).split("/");
+        const a = Number(parts[0]), b = Number(parts[1]);
+        if(!Number.isFinite(a) || !Number.isFinite(b) || b === 0) return NaN;
+        return (neg ? -1 : 1) * (a / b);
+      }
+
+      // mixed number: w n/d
+      if(/^-?\d+\s+\d+\/\d+$/.test(s)){
+        const neg = s.startsWith("-");
+        const body = neg ? s.slice(1) : s;
+        const [wholeStr, fracStr] = body.split(" ");
+        const [nStr, dStr] = fracStr.split("/");
+        const w = Number(wholeStr), n = Number(nStr), d = Number(dStr);
+        if(!Number.isFinite(w) || !Number.isFinite(n) || !Number.isFinite(d) || d === 0) return NaN;
+        const v = w + (n / d);
+        return (neg ? -1 : 1) * v;
+      }
+
+      return NaN;
+    }
+
+    function splitAnswerTokens(input){
+      if(input == null) return [];
+      let s = String(input).trim();
+      if(!s) return [];
+      s = s.replace(/，/g, ",");
+      s = s.replace(/,/g, ",").replace(/\s+/g, " ");
+      return s.split(/[, ]+/).filter(Boolean);
+    }
+
+    function isValidInput(input, expected){
+      if(Array.isArray(expected)){
+        const parts = splitAnswerTokens(input);
+        if(parts.length !== expected.length) return false;
+        for(const p of parts){
+          const v = parseAnswer(p);
+          if(!Number.isFinite(v)) return false;
+        }
+        return true;
+      }else{
+        const v = parseAnswer(input);
+        return Number.isFinite(v);
+      }
+    }
+
+    function isCorrectInput(input, expected){
+      if(Array.isArray(expected)){
+        const parts = splitAnswerTokens(input);
+        if(parts.length !== expected.length) return false;
+        for(let i=0;i<expected.length;i++){
+          const v = parseAnswer(parts[i]);
+          if(!Number.isFinite(v) || !isClose(v, expected[i])) return false;
+        }
+        return true;
+      }else{
+        const v = parseAnswer(input);
+        return Number.isFinite(v) && isClose(v, expected);
+      }
+    }
+
+    function toFixedSmart(x){
+      if(!Number.isFinite(x)) return String(x);
+      const r = Math.round(x * 100) / 100;
+      if(Math.abs(r - Math.round(r)) < 1e-9) return String(Math.round(r));
+      return r.toFixed(2).replace(/0+$/ ,"").replace(/\.$/,"");
+    }
+
+    function isClose(a,b){
+      if(!Number.isFinite(a) || !Number.isFinite(b)) return false;
+      return Math.abs(a - b) <= 1e-6;
+    }
+
+    function answerText(q){
+      return (q && q.answerText != null) ? String(q.answerText) : toFixedSmart(q.answer);
+    }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * Timer + Pause/Resume
+     ********************/
+    const TIMER = { seconds: 0, running: true, id: null };
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function formatTime(sec){
+      sec = Math.max(0, Math.floor(sec));
+      const m = Math.floor(sec/60);
+      const s = sec % 60;
+      return `${pad2(m)}:${pad2(s)}`;
+    }
+    function updateTimerUI(){
+      $("#timerValue").textContent = formatTime(TIMER.seconds);
+      $("#timerStatus").textContent = TIMER.running ? "" : "(Paused)";
+      $("#pauseBtn").textContent = TIMER.running ? "Pause" : "Resume";
+    }
+    function startTimerTick(){
+      if(TIMER.id) clearInterval(TIMER.id);
+      TIMER.id = setInterval(() => {
+        if(TIMER.running){
+          TIMER.seconds += 1;
+          updateTimerUI();
+        }
+      }, 1000);
+    }
+    function resetTimer(){
+      TIMER.seconds = 0;
+      TIMER.running = true;
+      updateTimerUI();
+    }
+    function togglePause(){
+      TIMER.running = !TIMER.running;
+      updateTimerUI();
+    }
+    $("#pauseBtn").addEventListener("click", togglePause);
+
+    /********************
+     * Question generator
+     ********************/
+        function makeQuestions(){
+      const qs = [];
+
+      function makeListWithAverage(n, avg, spread, minV, maxV){
+        for(let tries=0; tries<40; tries++){
+          const arr = [];
+          let sum = avg * n;
+
+          for(let i=0;i<n-1;i++){
+            let v = randint(avg-spread, avg+spread);
+            v = Math.max(minV, Math.min(maxV, v));
+            arr.push(v);
+            sum -= v;
+          }
+          arr.push(sum);
+
+          const last = arr[arr.length-1];
+          if(last >= minV && last <= maxV) return arr;
+        }
+        return null;
+      }
+
+      /********************
+       * Template banks
+       ********************/
+      const EASY = [
+        () => {
+          const ages = [70, 64, 83, 68, 75];
+          const ans = (ages.reduce((a,b)=>a+b,0))/5;
+          return {
+            difficulty:"easy",
+            prompt:`Five retired workers are aged 70, 64, 83, 68, and 75 years. Find their average age.`,
+            hint:`Average = (sum of values) ÷ (number of values).`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+        () => {
+          const total5 = 1750, m6 = 374;
+          const ans = (total5 + m6) / 6;
+          return {
+            difficulty:"easy",
+            prompt:`From January to May, Red Star Machine Tool Factory produced 1750 machines. In June it produced 374 machines. What was the average number of machines produced per month in the first half of the year (Jan–Jun)?`,
+            hint:`The first half-year is 6 months. Average per month = (total produced from Jan to Jun) ÷ 6.`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+        () => {
+          const a = 39, b = 90;
+          const ans = (a + a + b) / 4;
+          return {
+            difficulty:"easy",
+            prompt:`During a 4-day training march: Day 1 and Day 2 were 39 km each. Day 3 and Day 4 totalled 90 km. What was the average distance marched per day?`,
+            hint:`Find the total distance for 4 days, then divide by 4.`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+
+        // (New) Q — Average age of 5 retired workers
+        () => {
+          const n = 5;
+          const avg = randint(60, 85);
+          const ages = makeListWithAverage(n, avg, 15, 50, 95) || [70,64,83,68,75];
+          const sum = ages.reduce((a,b)=>a+b,0);
+          const a = sum / n;
+          return {
+            difficulty:"easy",
+            prompt:`Five retired workers are aged ${ages.join(", ")} years. Find their average age.`,
+            hint:`Average = (sum of values) ÷ (number of values). Add the 5 ages, then ÷ 5.`,
+            answer:a,
+            answerText: toFixedSmart(a)
+          };
+        },
+
+        // Q — Average weight of 7 students (kept)
+        () => {
+          const n = 7;
+          const avg = randint(35, 55);
+          const weights = makeListWithAverage(n, avg, 6, 20, 90) || [39,38,42,38,40,42,41];
+          const sum = weights.reduce((a,b)=>a+b,0);
+          const a = sum / n;
+          return {
+            difficulty:"easy",
+            prompt:`Seven students weigh ${weights.join(", ")} kg. What is their average weight (in kg)?`,
+            hint:`Average weight = (total weight) ÷ 7.`,
+            answer:a,
+            answerText: toFixedSmart(a)
+          };
+        },
+
+        // Q — Average of 3 subject scores
+        () => {
+          const a = randint(70, 100);
+          const b = randint(70, 100);
+          const c = randint(70, 100);
+          const avg = (a+b+c)/3;
+          return {
+            difficulty:"easy",
+            prompt:`A student scored ${a} in English, ${b} in Maths, and ${c} in Science. What is the average score?`,
+            hint:`Average = (English + Maths + Science) ÷ 3.`,
+            answer: avg,
+            answerText: toFixedSmart(avg)
+          };
+        },
+
+        // (New) Q — 4-day hike average (day1&2 each same, day3&4 total)
+        () => {
+          let a, avg, b;
+          for(let t=0;t<60;t++){
+            a = randint(25, 55);
+            avg = randint(30, 60);
+            b = 4*avg - 2*a; // day3+day4 total
+            if(b >= 40 && b <= 140) break;
+          }
+          const total = 2*a + b;
+          const ans = total/4;
+          return {
+            difficulty:"easy",
+            prompt:`During a 4-day training march: Day 1 and Day 2 were ${a} km each. Day 3 and Day 4 totalled ${b} km. What was the average distance marched per day?`,
+            hint:`Total distance = ${a} + ${a} + ${b}. Average per day = total ÷ 4.`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+        // (New) Q — Production average for first half-year
+        () => {
+          // ensure integer monthly average
+          let total5, m6, total, avg;
+          for(let t=0;t<80;t++){
+            avg = randint(250, 500);
+            // choose avg that makes sense and try to make total/6 integer
+            total5 = randint(1300, 2300);
+            m6 = randint(250, 600);
+            total = total5 + m6;
+            if(total % 6 === 0){
+              avg = total/6;
+              break;
+            }
+          }
+          avg = total/6;
+          return {
+            difficulty:"easy",
+            prompt:`From January to May, the factory produced ${total5} machines in total. In June it produced ${m6} machines. What was the average number of machines produced per month in the first half of the year (Jan–Jun)?`,
+            hint:`The first half-year is 6 months. Average per month = (total produced from Jan to Jun) ÷ 6.`,
+            answer: avg,
+            answerText: toFixedSmart(avg)
+          };
+        },
+
+        // Q — Average temperature of 4 readings
+        () => {
+          const temps = [randint(5, 20), randint(8, 25), randint(10, 28), randint(6, 24)];
+          const avg = temps.reduce((a,b)=>a+b,0)/4;
+          return {
+            difficulty:"easy",
+            prompt:`A weather station recorded temperatures at 1am, 7am, 1pm, and 7pm: ${temps.join("°C, ")}°C. What is the average temperature for the day?`,
+            hint:`Average = (sum of 4 temperatures) ÷ 4.`,
+            answer: avg,
+            answerText: toFixedSmart(avg)
+          };
+        },
+      ];
+
+      const MEDIUM = [
+        () => {
+          const d1=10800, d2=12500, d3=12700;
+          const ans = (d1+d2+d3)/3;
+          return {
+            difficulty:"medium",
+            prompt:`Two typing teams worked for 3 days on a manuscript: Day 1 typed 10,800 words, Day 2 typed 12,500 words, Day 3 typed 12,700 words. What was the average number of words typed per day (by both teams together)?`,
+            hint:`Average per day = (total words over 3 days) ÷ 3.`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+        () => {
+          const d1=10800, d2=12500, d3=12700;
+          const ans = (d1+d2+d3)/2;
+          return {
+            difficulty:"medium",
+            prompt:`Two typing teams worked for 3 days on a manuscript: Day 1 typed 10,800 words, Day 2 typed 12,500 words, Day 3 typed 12,700 words. What was the average number of words typed per team (over the 3 days)?`,
+            hint:`Find the total words for 3 days, then divide by 2 teams.`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+        () => {
+          const ans = (40*2 + 36*3)/2;
+          return {
+            difficulty:"medium",
+            prompt:`On Tree Planting Day: Class 5A has 40 students and each planted 2 trees on average. Class 5B has 36 students and each planted 3 trees on average. What is the average number of trees planted per class?`,
+            hint:`Find total trees for each class, add them, then ÷ 2.`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+        () => {
+          const total = 3*48 + 4*50 + 2*53;
+          const ans = total / (3+4+2);
+          return {
+            difficulty:"medium",
+            prompt:`A school has 3 classes with 48 students each, 4 classes with 50 students each, and 2 classes with 53 students each. What is the average number of students per class in Year 4?`,
+            hint:`Average per class = total students ÷ total classes.`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+        () => {
+          const ans = (18 + 17 + 19)/3;
+          return {
+            difficulty:"medium",
+            prompt:`Three groups (A, B, C) planted trees. The average per group for A+B is 18 trees, for A+C is 17 trees, and for B+C is 19 trees. What is the average number of trees planted per group across A, B, and C?`,
+            hint:`Total trees for A+B+C = 18 + 17 + 19. Then average per group = that total ÷ 3.`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+
+        // Q — Reading pages split averages (3 days & 4 days)
+        () => {
+          const a = randint(8, 16);   // first 3 days average
+          const b = randint(12, 22);  // last 4 days average
+          const overall = (3*a + 4*b) / 7;
+          return {
+            difficulty:"medium",
+            prompt:`Sophie read a book. For the first 3 days she read ${a} pages per day on average; for the next 4 days she read ${b} pages per day on average. What was her average pages per day over the 7 days?`,
+            hint:`Total pages = 3×${a} + 4×${b}. Average per day = total ÷ 7.`,
+            answer: overall,
+            answerText: toFixedSmart(overall)
+          };
+        },
+
+        // Q — Pipeline project average (3 days total + 4 days avg)
+        () => {
+          const firstDays = 3;
+          const lastDays = 4;
+          const firstTotal = randint(360, 720); // meters
+          const lastAvg = randint(120, 260);    // meters/day
+          const overall = (firstTotal + lastDays*lastAvg) / (firstDays + lastDays);
+          return {
+            difficulty:"medium",
+            prompt:`A crew laid a pipeline. In the first ${firstDays} days, they laid ${firstTotal} m in total. In the next ${lastDays} days, they laid ${lastAvg} m per day on average. What was the average metres per day for the whole project?`,
+            hint:`Average per day = total metres ÷ total days. Total metres = ${firstTotal} + ${lastDays}×${lastAvg}.`,
+            answer: overall,
+            answerText: toFixedSmart(overall)
+          };
+        },
+
+        // (New) Q — Typing groups (average per day)
+        () => {
+          const d1 = randint(9000, 13000);
+          const d2 = randint(10000, 15000);
+          const d3 = randint(10500, 16000);
+          const total = d1 + d2 + d3;
+          const avgDay = total/3;
+          return {
+            difficulty:"medium",
+            prompt:`Two typing teams worked for 3 days on a manuscript: Day 1 typed ${d1} words, Day 2 typed ${d2} words, Day 3 typed ${d3} words. What was the average number of words typed per day (by both teams together)?`,
+            hint:`Average per day = (Day1 + Day2 + Day3) ÷ 3.`,
+            answer: avgDay,
+            answerText: toFixedSmart(avgDay)
+          };
+        },
+
+        // (New) Q — Typing groups (average per group total)
+        () => {
+          const d1 = randint(9000, 13000);
+          const d2 = randint(10000, 15000);
+          const d3 = randint(10500, 16000);
+          const total = d1 + d2 + d3;
+          const avgGroup = total/2;
+          return {
+            difficulty:"medium",
+            prompt:`Two typing teams worked for 3 days on a manuscript: Day 1 typed ${d1} words, Day 2 typed ${d2} words, Day 3 typed ${d3} words. What was the average number of words typed per team (over the 3 days)?`,
+            hint:`Find total words first, then divide by 2 teams. Total words = ${d1}+${d2}+${d3}.`,
+            answer: avgGroup,
+            answerText: toFixedSmart(avgGroup)
+          };
+        },
+
+        // (New) Q — Average trees per class (two classes, different sizes & per-person avg)
+        () => {
+          const n1 = randint(32, 45);
+          const n2 = randint(30, 42);
+          const a1 = randint(1, 3);
+          const a2 = randint(2, 4);
+          const total = n1*a1 + n2*a2;
+          const ans = total/2;
+          return {
+            difficulty:"medium",
+            prompt:`On Tree Planting Day: Class 5A has ${n1} students and each planted ${a1} trees on average. Class 5B has ${n2} students and each planted ${a2} trees on average. What is the average number of trees planted per class?`,
+            hint:`Find total trees for each class, add them, then ÷ 2.`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+        // (New) Q — Weighted average class size from a small table (counts of classes)
+        () => {
+          // create 3 categories
+          const c1 = randint(2, 4), c2 = randint(2, 5), c3 = randint(1, 3);
+          const s1 = randint(45, 52), s2 = randint(47, 55), s3 = randint(48, 56);
+          const totalClasses = c1+c2+c3;
+          const totalStudents = c1*s1 + c2*s2 + c3*s3;
+          const avg = totalStudents/totalClasses;
+
+          return {
+            difficulty:"medium",
+            prompt:`A school has ${c1} classes with ${s1} students each, ${c2} classes with ${s2} students each, and ${c3} classes with ${s3} students each. What is the average number of students per class?`,
+            hint:`Average per class = total students ÷ total classes. Total students = ${c1}×${s1}+${c2}×${s2}+${c3}×${s3}.`,
+            answer: avg,
+            answerText: toFixedSmart(avg)
+          };
+        },
+
+        // (New) Q — Pair averages of 3 groups, find overall average
+        () => {
+          const x = randint(15, 25);
+          const y = randint(15, 25);
+          const z = randint(15, 25);
+          const avg = (x+y+z)/3;
+          return {
+            difficulty:"medium",
+            prompt:`Three groups (A, B, C) planted trees. The average per group for A+B is ${x} trees, for A+C is ${y} trees, and for B+C is ${z} trees. What is the average number of trees planted per group across A, B, and C?`,
+            hint:`Convert pair-averages to pair-totals: A+B = 2×${x}, A+C = 2×${y}, B+C = 2×${z}. Add them to get 2×(A+B+C).`,
+            answer: avg,
+            answerText: toFixedSmart(avg)
+          };
+        },
+      ];
+
+      const HARD = [
+        () => {
+          const overall=90, chinese=92, english=88;
+          const ans = overall*3 - (chinese+english);
+          return {
+            difficulty:"hard",
+            prompt:`Emma’s average score in English, Maths and Science is 90. She scored 92 in English and 88 in Science. What is her Maths score?`,
+            hint:`Total for 3 subjects = 90×3. Maths = total − (English + Science).`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+        () => {
+          const ans = [92, 96, 80]; 
+          return {
+            difficulty:"hard",
+            prompt:`The average of English and Maths is 94. The average of Maths and Science is 88. The average of Science and English is 86. What are the three scores? (Enter: English, Maths, Science — separated by commas.)`,
+            hint:`(English+Maths) + (Maths+Science) + (Science+English) = 2×(sum of all 3 scores). Find the total, then subtract to get each score.`,
+            answer: ans,
+            answerText: `92, 96, 80`
+          };
+        },
+
+        () => {
+          const ans = 160;
+          return {
+            difficulty:"hard",
+            prompt:`A library’s first shelf has 248 books. If 8 books are moved from the first shelf to the second shelf, the two shelves will have the same number of books. If all these books are then shared equally across 3 shelves, how many books should each shelf have?`,
+            hint:`After moving 8 books: first shelf becomes 248−8, second shelf becomes (original + 8), and they are equal. Find the original second shelf, then total books, then ÷ 3.`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+        () => {
+          const ans = 96;
+          return {
+            difficulty:"hard",
+            prompt:`Tom’s average score over his first 3 Maths unit tests is 88. If he wants his average after the 4th test to be 90, what score must he get on the 4th test?`,
+            hint:`Total for first 3 tests = 88×3. Total for 4 tests = 90×4. Subtract to get the 4th test score.`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+        () => {
+          const ans = 99;
+          return {
+            difficulty:"hard",
+            prompt:`Lucy’s average score in English and Maths is 90. If Science is included, her average across 3 subjects is 3 points higher than the 2-subject average. What is her Science score?`,
+            hint:`English+Maths = 90×2. Three-subject average is 90+3 = 93, so total for 3 subjects = 93×3. Subtract to get Science.`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+        () => {
+          const ans = 12;
+          return {
+            difficulty:"hard",
+            prompt:`The distance from Town A to Town B is 60 km. On the way there, Jack cycles at 15 km/h. On the way back, it rains and he cycles at 10 km/h. What is his average speed for the whole round trip (km/h)?`,
+            hint:`Total distance = 120 km. Total time = 60/15 + 60/10 hours. Average speed = total distance ÷ total time.`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+        () => {
+          const ans = 48;
+          return {
+            difficulty:"hard",
+            prompt:`In a hill race, Lily walked uphill at 40 m/min and took 18 minutes to reach the top. She returned downhill along the same path at 60 m/min. What is her average speed for the whole round trip (m/min)?`,
+            hint:`Uphill distance = 40×18. Downhill time = distance ÷ 60. Average speed = (total distance) ÷ (total time).`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+        () => {
+          const ans = 4;
+          return {
+            difficulty:"hard",
+            prompt:`Jack and Lucy each brought the same amount of money to buy notebooks together. Jack took 12 notebooks and Lucy took 8 notebooks. After they got home, Jack paid Lucy $8 to balance the cost. What is the average price per notebook (in dollars)?`,
+            hint:`Since they paid the same amount originally, the fair share is 20 ÷ 2 = 10 notebooks each. Jack has 2 extra, so 2×(price) = $8.`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+        () => {
+          const ans = 22;
+          return {
+            difficulty:"hard",
+            prompt:`In Class 4, four students (Alex, Ben, Chloe, Dana) were weighed. The average of Alex, Ben and Chloe is 24 kg. The average of Ben, Chloe and Dana is 26 kg. Dana weighs 28 kg. What is Alex’s weight (kg)?`,
+            hint:`First find (Ben+Chloe) from the second average and Dana’s weight, then find (Alex+Ben+Chloe) from the first average, then subtract.`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+        () => {
+          const ans = 42;
+          return {
+            difficulty:"hard",
+            prompt:`Four students (Alex, Ben, Chloe, Dana) were weighed. Ben + Chloe + Dana = 120 kg. Alex + Chloe + Dana = 128 kg. The average of Chloe and Dana is 40 kg. What is the average weight of all four students (kg)?`,
+            hint:`Use (Chloe + Dana) from their average, then solve for Alex and Ben, then average all four.`,
+            answer: ans,
+            answerText: toFixedSmart(ans)
+          };
+        },
+
+
+        // Q — Round trip average speed (A->B and back)
+        () => {
+          const d = choice([40, 50, 60, 80]); // km each way
+          const v1 = choice([12, 15, 18, 20]); // km/h
+          const v2 = choice([8, 10, 12, 15]);  // km/h
+          const t = (d/v1) + (d/v2);
+          const avg = (2*d)/t;
+          return {
+            difficulty:"hard",
+            prompt:`The distance from Town A to Town B is ${d} km. Speed going there: ${v1} km/h. Speed returning: ${v2} km/h. What is the average speed for the whole round trip (km/h)?`,
+            hint:`Average speed = total distance ÷ total time. Total distance = ${2*d} km. Total time = ${d}÷${v1} + ${d}÷${v2}.`,
+            answer: avg,
+            answerText: toFixedSmart(avg)
+          };
+        },
+
+        // Q — Remove one number changes average (classic)
+        () => {
+          const n = 9;
+          const avg1 = randint(60, 90);
+          const avg2 = randint(60, 90);
+          const removed = n*avg1 - (n-1)*avg2;
+          return {
+            difficulty:"hard",
+            prompt:`The average of ${n} numbers is ${avg1}. After removing one number, the remaining ${n-1} numbers have an average of ${avg2}. What number was removed?`,
+            hint:`Sum = average × count. Removed number = ${n}×${avg1} − ${n-1}×${avg2}.`,
+            answer: removed,
+            answerText: toFixedSmart(removed)
+          };
+        },
+
+        // Q — Missing subject score from overall and 2-subject average (kept)
+        () => {
+          const overall = randint(85, 95);
+          const twoAvg = randint(overall+1, overall+6);
+          const total3 = overall*3;
+          const total2 = twoAvg*2;
+          const missing = total3 - total2;
+          return {
+            difficulty:"hard",
+            prompt:`Jack’s average score in English, Maths and Science is ${overall}. The average of English and Science is ${twoAvg}. What is his Maths score?`,
+            hint:`Total for 3 subjects = ${overall}×3. Total for English+Science = ${twoAvg}×2. Subtract to get Maths.`,
+            answer: missing,
+            answerText: toFixedSmart(missing)
+          };
+        },
+
+        // (New) Q — 3-subject average with two known scores (from workbook #4)
+        () => {
+          const overall = 90;
+          const chinese = 92;
+          const english = 88;
+          const math = overall*3 - (chinese+english);
+          return {
+            difficulty:"hard",
+            prompt:`Emma’s average score in English, Maths and Science is ${overall}. She scored ${chinese} in English and ${english} in Science. What is her Maths score?`,
+            hint:`Total for 3 subjects = ${overall}×3. Maths = total − (English + Science).`,
+            answer: math,
+            answerText: toFixedSmart(math)
+          };
+        },
+
+        // (New) Q — Book shelves then average into 3 shelves (workbook #10 style)
+        () => {
+          const avg3 = choice([140, 150, 160, 170, 180, 190, 200]); // even-ish
+          const m = randint(6, 12);
+          const a = (3*avg3 + 2*m)/2;
+          const b = a - 2*m;
+          return {
+            difficulty:"hard",
+            prompt:`A library’s first shelf has ${a} books. If ${m} books are moved from the first shelf to the second shelf, the two shelves will have the same number of books. If all these books are then shared equally across 3 shelves, how many books should each shelf have?`,
+            hint:`After moving books, the two shelves are equal: original second shelf = ${b}. Total books = ${a}+${b}. Then share equally across 3 shelves.`,
+            answer: avg3,
+            answerText: toFixedSmart(avg3)
+          };
+        },
+
+        // (New) Q — 4th test score given average change (workbook #11)
+        () => {
+          const a3 = randint(75, 92);
+          const a4 = randint(a3+1, a3+6);
+          const s4 = 4*a4 - 3*a3;
+          return {
+            difficulty:"hard",
+            prompt:`Tom’s average score over his first 3 Maths unit tests is ${a3}. If he wants his average after the 4th test to be ${a4}, what score must he get on the 4th test?`,
+            hint:`Total for first 3 tests = ${a3}×3. Total for 4 tests = ${a4}×4. 4th test = total4 − total3.`,
+            answer: s4,
+            answerText: toFixedSmart(s4)
+          };
+        },
+
+        // (New) Q — Add English so average increases by 3 (workbook #12)
+        () => {
+          const twoAvg = randint(75, 95);
+          const threeAvg = twoAvg + 3;
+          const english = threeAvg*3 - twoAvg*2; // = twoAvg+9
+          return {
+            difficulty:"hard",
+            prompt:`Lucy’s average score in English and Maths is ${twoAvg}. If Science is included, her 3-subject average is 3 points higher than the 2-subject average. What is her Science score?`,
+            hint:`English+Maths = ${twoAvg}×2. Three-subject average is ${twoAvg}+3, so total for 3 subjects = (${twoAvg}+3)×3. Subtract to get Science.`,
+            answer: english,
+            answerText: toFixedSmart(english)
+          };
+        },
+
+        // (New) Q — Average speed up/down mountain (workbook #14 or olympiad #3)
+        () => {
+          const up = choice([30, 40, 45]);
+          const down = choice([50, 60, 75]);
+          // ensure down > up
+          const u = Math.min(up, down-5);
+          const d = Math.max(down, u+10);
+          // assume same distance x
+          const avg = (2) / (1/u + 1/d); // harmonic mean
+          return {
+            difficulty:"hard",
+            prompt:`In a hill race, uphill speed is ${u} m/min and downhill speed is ${d} m/min along the same route. What is the average speed for the whole round trip (m/min)?`,
+            hint:`The two distances are equal, so average speed = 2 ÷ (1/uphill + 1/downhill).`,
+            answer: avg,
+            answerText: toFixedSmart(avg)
+          };
+        },
+
+        // (New) Q — Equal money, notebooks price (workbook #15)
+        () => {
+          const total = choice([18, 20, 22, 24]);
+          const diff = choice([4, 6, 8]); // m-n
+          const m = (total + diff)/2;
+          const n = (total - diff)/2;
+          const price = randint(2, 6);
+          const pay = price * (diff/2);
+          return {
+            difficulty:"hard",
+            prompt:`Jack and Lucy each brought the same amount of money to buy notebooks together. Jack took ${m} notebooks and Lucy took ${n} notebooks. After they got home, Jack paid Lucy $${pay}. What is the price per notebook (in dollars)?`,
+            hint:`They paid the same amount originally, so the fair share is (total notebooks ÷ 2). Jack took ${diff/2} extra, so extra cost = ${diff/2}×price = $${pay}.`,
+            answer: price,
+            answerText: toFixedSmart(price)
+          };
+        },
+
+        // (New) Q — Pairwise subject averages, find each (workbook #9)
+        () => {
+          // choose integer scores
+          const C = randint(70, 100);
+          const M = randint(70, 100);
+          const E = randint(70, 100);
+          const avgCM = (C+M)/2;
+          const avgME = (M+E)/2;
+          const avgEC = (E+C)/2;
+          return {
+            difficulty:"hard",
+            prompt:`For three subjects (English, Maths, Science): the average of English & Maths is ${toFixedSmart(avgCM)}, the average of Maths & Science is ${toFixedSmart(avgME)}, and the average of Science & English is ${toFixedSmart(avgEC)}. What are the three scores? (Enter: English, Maths, Science — separated by commas.)`,
+            hint:`Add the three pair-totals to get 2×(English+Maths+Science). Then find each score by subtraction.`,
+            answer: [C, M, E],
+            answerText: `${toFixedSmart(C)}, ${toFixedSmart(M)}, ${toFixedSmart(E)}`
+          };
+        },
+
+        // (New) Olympiad — Missing weight A
+        () => {
+          const BC = randint(20, 32); // B+C average-ish baseline
+          const B = randint(20, 32);
+          const C = randint(20, 32);
+          const A = randint(18, 30);
+          const D = randint(22, 34);
+          // rebuild averages
+          const avgABC = (A+B+C)/3;
+          const avgBCD = (B+C+D)/3;
+          return {
+            difficulty:"hard",
+            prompt:`In a class, four students (Alex, Ben, Chloe, Dana) were weighed. The average of Alex, Ben and Chloe is ${toFixedSmart(avgABC)} kg. The average of Ben, Chloe and Dana is ${toFixedSmart(avgBCD)} kg. Dana weighs ${D} kg. What is Alex’s weight (kg)?`,
+            hint:`From avg(Ben,Chloe,Dana) get Ben+Chloe+Dana, subtract Dana to get Ben+Chloe. From avg(Alex,Ben,Chloe) get Alex+Ben+Chloe. Subtract to get Alex.`,
+            answer: A,
+            answerText: toFixedSmart(A)
+          };
+        },
+
+        // (New) Olympiad — Average of 4 weights
+        () => {
+          const C = randint(30, 50);
+          const D = randint(30, 50);
+          const CDsum = C + D;
+          const B = randint(30, 50);
+          const A = randint(30, 55);
+          const sumBCD = B + CDsum;
+          const sumACD = A + CDsum;
+          const avg4 = (A+B+CDsum)/4;
+          return {
+            difficulty:"hard",
+            prompt:`Four students (Alex, Ben, Chloe, Dana) were weighed. Ben + Chloe + Dana = ${sumBCD} kg. Alex + Chloe + Dana = ${sumACD} kg. The average of Chloe and Dana is ${toFixedSmart(CDsum/2)} kg. What is the average weight of all four students (kg)?`,
+            hint:`From avg(Chloe,Dana) get Chloe+Dana. Then solve for Alex and Ben using the two given sums. Finally, (Alex+Ben+Chloe+Dana) ÷ 4.`,
+            answer: avg4,
+            answerText: toFixedSmart(avg4)
+          };
+        },
+      ];
+
+      // pick 3 easy + 3 medium + 3 hard
+      sampleNoRepeat(EASY, 3).forEach(fn => qs.push(fn()));
+      sampleNoRepeat(MEDIUM, 3).forEach(fn => qs.push(fn()));
+      sampleNoRepeat(HARD, 3).forEach(fn => qs.push(fn()));
+
+      
+      // Normalize numeric answers to 2 decimal places (if needed)
+      for(const q of qs){
+        if(q && !Array.isArray(q.answer) && typeof q.answer === "number"){
+          q.answer = Math.round(q.answer * 100) / 100;
+          if(q.answerText == null) q.answerText = toFixedSmart(q.answer);
+        }
+      }
+
+return qs;
+    }
+
+    /********************
+     * UI state + rendering
+     ********************/
+    let QUESTIONS = [];
+    let STATE = { answers:[], checked:[], correct:[], hintShown:[], submitted:false };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+    function niceDiff(d){
+      if(d==="easy") return "Easy";
+      if(d==="medium") return "Medium";
+      return "Hard";
+    }
+
+    function renderQuestions(){
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const userVal = STATE.answers[idx] ?? "";
+        const checked = !!STATE.checked[idx];
+        const correct = !!STATE.correct[idx];
+        const hintShown = !!STATE.hintShown[idx];
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${escapeHtml(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="answer-area">
+            <div class="input-row">
+              <input type="text" inputmode="text" autocomplete="off"
+                id="ans-${idx}" placeholder="Answer"
+                value="${escapeHtml(userVal)}">
+              <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+              <button class="btn ghost" type="button" id="hint-${idx}">${hintShown ? "Hide Hint" : "Hint"}</button>
+            </div>
+
+            <div class="hint-box ${hintShown ? "show" : ""}" id="hintBox-${idx}">
+              ${escapeHtml(q.hint || "")}
+            </div>
+
+            <div class="feedback ${checked ? (correct ? "ok" : "bad") : ""}" id="fb-${idx}">
+              ${checked
+                ? (correct
+                    ? "Correct ✅"
+                    : `Not correct ❌  (Correct answer: ${escapeHtml(answerText(q))})`)
+                : ""}
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        const inp = $("#ans-"+idx, card);
+        inp.addEventListener("input", () => {
+          STATE.answers[idx] = inp.value;
+          STATE.checked[idx] = false;
+          STATE.correct[idx] = false;
+          if(STATE.submitted){
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+          }
+          const fb = $("#fb-"+idx, card);
+          fb.className = "feedback";
+          fb.textContent = "";
+        });
+
+        $("#check-"+idx, card).addEventListener("click", () => checkOne(idx));
+        $("#hint-"+idx, card).addEventListener("click", () => {
+          STATE.hintShown[idx] = !STATE.hintShown[idx];
+          renderQuestions();
+        });
+      });
+
+      $("#resultsBox").style.display = "none";
+    }
+
+        function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const input = STATE.answers[idx];
+
+      STATE.checked[idx] = true;
+
+      if(!isValidInput(input, q.answer)){
+        STATE.correct[idx] = false;
+        renderQuestions();
+        const fb = $("#fb-"+idx);
+        fb.className = "feedback bad";
+        fb.textContent = Array.isArray(q.answer)
+          ? "Please enter answers separated by commas (e.g., 92,96,80)."
+          : "Please enter a valid answer.";
+        return;
+      }
+
+      STATE.correct[idx] = isCorrectInput(input, q.answer);
+      renderQuestions();
+    }
+
+        function submitAll(){
+      let correctCount = 0;
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const input = STATE.answers[i];
+        STATE.checked[i] = true;
+
+        // valid + correct
+        const valid = isValidInput(input, q.answer);
+        STATE.correct[i] = valid && isCorrectInput(input, q.answer);
+        if(STATE.correct[i]) correctCount++;
+      }
+
+      STATE.submitted = true;
+      renderQuestions();
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+
+      const lines = QUESTIONS.map((q,i)=>(
+        `<div style="margin:6px 0;"><b>Q${i+1}:</b> ${escapeHtml(answerText(q))}</div>`
+      )).join("");
+
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:8px;"><b>Correct Answers:</b></div>
+        <div style="margin-top:6px;">${lines}</div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+
+
+    function resetAnswers(){
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    /********************
+     * Save Current Result as TXT
+     ********************/
+    function saveResult(){
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const when = new Date();
+      const dateStr = when.toLocaleString();
+      const elapsed = formatTime(TIMER.seconds);
+
+      let correctCount = 0;
+      const out = [];
+
+      out.push(`DYAA — Save Current Result`);
+      out.push(`Title: ${title}`);
+      out.push(`Student: ${student}`);
+      out.push(`Date: ${dateStr}`);
+      out.push(`Elapsed Time: ${elapsed}`);
+      out.push(``);
+
+      QUESTIONS.forEach((q, i) => {
+        const raw = (STATE.answers[i] ?? "").toString().trim();
+        const v = parseAnswer(raw);
+        const valid = Number.isFinite(v);
+        const isCorrect = valid && isClose(v, q.answer);
+        if(isCorrect) correctCount++;
+
+        out.push(`Q${i+1} (${String(q.difficulty||"").toUpperCase()}): ${q.prompt}`);
+        out.push(`Your answer: ${valid ? v : (raw ? raw : "(blank)")}`);
+        out.push(`Correct answer: ${answerText(q)}`);
+        out.push(`Result: ${isCorrect ? "Correct" : "Not correct"}`);
+        out.push(``);
+      });
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+      out.splice(5, 0, `Score: ${correctCount} / ${total} (${pct}%)`);
+
+      const text = out.join("\r\n");
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_result.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    /********************
+     * Tabs + Student name
+     ********************/
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $("#panel-"+tab).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", ""));
+      $("#studentNameValue").textContent = name ? name : "Anonymous";
+    }
+
+    /********************
+     * Generate New Set
+     ********************/
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+
+      resetTimer();
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set? This will clear your current answers and reset the timer.", () => {
+        generateNewSet();
+        // go to practice
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $("#panel-practice").classList.add("active");
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    /********************
+     * PDF Export helpers
+     ********************/
+    function layoutClass(perPage){
+      if(perPage === 6) return "six";
+      if(perPage === 3) return "three";
+      return "two";
+    }
+
+    function buildQuestionPageDOM(indexGroup, perPage, meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">${escapeHtml(meta.title)}</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)} • Time: ${escapeHtml(meta.timeStr)}
+          </div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const grid = document.createElement("div");
+      grid.className = `export-qgrid ${layoutClass(perPage)}`;
+
+      indexGroup.forEach(i => {
+        const q = QUESTIONS[i];
+        const box = document.createElement("div");
+        box.className = "export-q";
+        box.innerHTML = `
+          <div class="qprompt">Q${i+1}. ${escapeHtml(q.prompt)}</div>
+          <div class="export-answerline">Answer: <span></span></div>
+        `;
+        grid.appendChild(box);
+      });
+
+      content.appendChild(grid);
+      page.appendChild(header);
+      page.appendChild(content);
+      return page;
+    }
+
+    function createAnswerPage(meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">Answers — ${escapeHtml(meta.title)}</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)}
+          </div>
+          <div class="answers-note">These are the correct answers for the exported question set.</div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const list = document.createElement("div");
+      list.className = "answers-list";
+      content.appendChild(list);
+
+      page.appendChild(header);
+      page.appendChild(content);
+
+      return { page, content, list };
+    }
+
+    async function addCanvasAutoPagedToPdf(pdf, canvas, marginMm = 8){
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const usableW = pageW - marginMm*2;
+      const usableH = pageH - marginMm*2;
+
+      const ratio = usableW / canvas.width; // mm per px (scaled)
+      const sliceHeightPx = Math.floor(usableH / ratio);
+
+      // fits on one page
+      if(canvas.height <= sliceHeightPx){
+        const imgData = canvas.toDataURL("image/png", 1.0);
+        const drawH = canvas.height * ratio;
+        pdf.addImage(imgData, "PNG", marginMm, marginMm, usableW, drawH, undefined, "FAST");
+        return;
+      }
+
+      let y = 0;
+      let pageIndex = 0;
+      while(y < canvas.height){
+        const h = Math.min(sliceHeightPx, canvas.height - y);
+        const slice = document.createElement("canvas");
+        slice.width = canvas.width;
+        slice.height = h;
+        const ctx = slice.getContext("2d");
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0,0,slice.width,slice.height);
+        ctx.drawImage(canvas, 0, y, canvas.width, h, 0, 0, canvas.width, h);
+
+        const imgData = slice.toDataURL("image/png", 1.0);
+        const drawH = h * ratio;
+
+        if(pageIndex > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", marginMm, marginMm, usableW, drawH, undefined, "FAST");
+
+        y += h;
+        pageIndex++;
+      }
+    }
+
+    /********************
+     * Export Questions PDF
+     ********************/
+    async function exportQuestionsPdf(){
+      const perPage = Number($("#pdfPerPage").value) || 2;
+
+      const libsOk = (window.html2canvas && window.jspdf && window.jspdf.jsPDF);
+      if(!libsOk){
+        alert("PDF export needs html2canvas + jsPDF. Please check your connection (CDN) or include the libraries locally.");
+        return;
+      }
+
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+      const timeStr = $("#timerValue").textContent;
+
+      const exportRoot = document.createElement("div");
+      exportRoot.className = "export-root";
+      document.body.appendChild(exportRoot);
+
+      const idxs = QUESTIONS.map((_,i)=>i);
+      for(let i=0;i<idxs.length;i+=perPage){
+        const group = idxs.slice(i, i+perPage);
+        exportRoot.appendChild(buildQuestionPageDOM(group, perPage, { title, student, dateStr, timeStr }));
+      }
+
+      // answer pages (auto paged)
+      let ap = createAnswerPage({ title, student, dateStr });
+      exportRoot.appendChild(ap.page);
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const item = document.createElement("div");
+        item.textContent = `Q${i+1}: ${answerText(QUESTIONS[i])}`;
+        ap.list.appendChild(item);
+
+        if(ap.content.scrollHeight > ap.content.clientHeight){
+          ap.list.removeChild(item);
+          ap = createAnswerPage({ title, student, dateStr });
+          exportRoot.appendChild(ap.page);
+          ap.list.appendChild(item);
+        }
+      }
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+
+      const pages = Array.from(exportRoot.querySelectorAll(".export-page"));
+
+      for(let i=0;i<pages.length;i++){
+        const pageEl = pages[i];
+        const canvas = await window.html2canvas(pageEl, {
+          scale: 2,
+          backgroundColor: "#ffffff",
+          useCORS: true
+        });
+
+        if(i > 0) pdf.addPage();
+        await addCanvasAutoPagedToPdf(pdf, canvas, 8);
+      }
+
+      pdf.save(`${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_Questions.pdf`);
+      exportRoot.remove();
+    }
+
+    $("#exportQuestionsBtn").addEventListener("click", exportQuestionsPdf);
+
+    /********************
+     * Export Learn PDF
+     ********************/
+    async function exportLearnPdf(){
+      const libsOk = (window.html2canvas && window.jspdf && window.jspdf.jsPDF);
+      if(!libsOk){
+        alert("PDF export needs html2canvas + jsPDF. Please check your connection (CDN) or include the libraries locally.");
+        return;
+      }
+
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+      const timeStr = $("#timerValue").textContent;
+
+      // Build an offscreen export block for Learn
+      const exportRoot = document.createElement("div");
+      exportRoot.className = "export-root";
+      document.body.appendChild(exportRoot);
+
+      const wrap = document.createElement("div");
+      wrap.style.width = "210mm";
+      wrap.style.background = "#ffffff";
+      wrap.style.padding = "12mm";
+      wrap.style.boxSizing = "border-box";
+
+      const header = document.createElement("div");
+      header.innerHTML = `
+        <div style="display:flex; justify-content:space-between; gap:10mm; align-items:flex-start; margin-bottom:10mm;">
+          <div>
+            <div style="font-weight:1000; font-size:16px; color:#111; line-height:1.1;">${escapeHtml(title)} — Learn</div>
+            <div style="margin-top:3mm; font-size:11px; color:#555; font-weight:900; line-height:1.25;">
+              Student: ${escapeHtml(student)} • Date: ${escapeHtml(dateStr)} • Time: ${escapeHtml(timeStr)}
+            </div>
+          </div>
+        </div>
+      `;
+
+      const learnClone = $("#learnCard").cloneNode(true);
+      // make sure examples are expanded in PDF for full content
+      Array.from(learnClone.querySelectorAll("details")).forEach(d => d.open = true);
+
+      wrap.appendChild(header);
+      wrap.appendChild(learnClone);
+      exportRoot.appendChild(wrap);
+
+      const canvas = await window.html2canvas(wrap, {
+        scale: 2,
+        backgroundColor: "#ffffff",
+        useCORS: true
+      });
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+      await addCanvasAutoPagedToPdf(pdf, canvas, 8);
+
+      pdf.save(`${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_Learn.pdf`);
+      exportRoot.remove();
+    }
+
+    $("#exportLearnBtn").addEventListener("click", exportLearnPdf);
+
+    /********************
+     * Init
+     ********************/
+    function applyTemplateMeta(){
+      document.title = TEMPLATE_META.title;
+      $("#pageTitle").textContent = TEMPLATE_META.title;
+      $("#pageSubtitle").textContent = TEMPLATE_META.subtitle;
+      $("#instructionsText").textContent = TEMPLATE_META.instructions;
+    }
+
+    applyTemplateMeta();
+    ensureStudentName();
+    updateTimerUI();
+    startTimerTick();
+    generateNewSet();
+  </script>
+</body>
+</html>

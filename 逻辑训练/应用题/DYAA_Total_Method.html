@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Total Method (Constant Total) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --purple:#6a1b9a;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --stroke:#111;
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .select{
+      appearance:none;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:10px;
+      padding:7px 10px;
+      font-weight:900;
+      color:var(--ink);
+      cursor:pointer;
+      outline:none;
+    }
+    .select:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:900;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:900;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+    }
+    .btn.orange{
+      background:var(--orange);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(255,152,0,0.20);
+    }
+    .btn.purple{
+      background:var(--purple);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(106,27,154,0.20);
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:1000;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card p{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .learn-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:14px;
+      margin-top:12px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .learn-grid{grid-template-columns:1fr;}
+    }
+
+    .mini-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .mini-table th, .mini-table td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    .mini-table th{
+      background:#f5f8ff;
+      color:var(--blue);
+      font-weight:1000;
+    }
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:1000;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .q-body{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:12px;
+      margin-top:10px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .q-body{grid-template-columns:1fr;}
+    }
+
+    /* IMPORTANT: no cropping on screen */
+    .svg-wrap{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:12px 12px 10px 12px;
+      overflow: visible;
+    }
+    .svg-wrap svg{
+      display:block;
+      width:100%;
+      height:auto;
+      overflow: visible;
+    }
+    .svg-note{
+      margin-top:6px;
+      font-size:12px;
+      color:rgba(0,0,0,0.55);
+      font-weight:900;
+    }
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      min-width:220px;
+      max-width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .hint-box{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(13,71,161,0.35);
+      background:#f5f8ff;
+      color:#1a2b55;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .hint-box.show{display:block;}
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+    .feedback.ok{color:var(--ok);font-weight:1000;}
+    .feedback.bad{color:var(--bad);font-weight:1000;}
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    /* =========================
+       PDF Export (offscreen pages)
+       ========================= */
+    .export-root{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:210mm;
+      height:auto;
+      overflow:hidden;
+      background:#fff;
+    }
+
+    /* Export Learn (single long sheet, auto paged) */
+    .export-learn-sheet{
+      width:210mm;
+      background:#fff;
+      padding:12mm;
+      box-sizing:border-box;
+    }
+    .export-learn-sheet .export-header{
+      height:auto;
+      margin-bottom:6mm;
+    }
+    .export-learn-sheet .export-content{
+      height:auto;
+      overflow:visible;
+    }
+    .export-learn-sheet .panel{ display:block !important; }
+    .export-learn-sheet .tabs, 
+    .export-learn-sheet .row{ display:none !important; }
+
+    .export-page{
+      width:210mm;
+      height:297mm;
+      background:#fff;
+      padding:12mm;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .export-header{
+      height:20mm;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10mm;
+    }
+    .export-title{
+      font-weight:1000;
+      font-size:16px;
+      color:#111;
+      line-height:1.1;
+    }
+    .export-sub{
+      margin-top:2mm;
+      font-size:11px;
+      color:#555;
+      font-weight:900;
+      line-height:1.25;
+    }
+    .export-content{
+      height: calc(297mm - 12mm - 12mm - 20mm);
+      overflow:hidden;
+    }
+    .export-qgrid{
+      width:100%;
+      height:100%;
+      display:grid;
+      min-height:0;
+    }
+    .export-qgrid.two{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:8mm;
+    }
+    .export-qgrid.three{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:4mm;
+    }
+    .export-qgrid.six{
+      grid-template-columns:1fr 1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:5mm;
+    }
+    .export-q{
+      border:1px solid #ddd;
+      border-radius:10px;
+      padding:6mm;
+      display:flex;
+      flex-direction:column;
+      gap:3mm;
+      min-height:0;
+      overflow:hidden;
+    }
+    .export-q .qprompt{
+      font-weight:900;
+      font-size:12px;
+      color:#111;
+      line-height:1.2;
+    }
+    .export-qgrid.six .qprompt{font-size:11px;}
+
+    .export-diagram{
+      border:1px solid #e6e6e6;
+      border-radius:9px;
+      padding:3mm;
+      flex:1;
+      min-height:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .export-diagram svg{
+      width:100%;
+      height:100%;
+      max-height:100%;
+      display:block;
+      overflow:visible;
+    }
+    .export-diagram .svg-note{ display:none !important; }
+
+    .export-answerline{
+      margin-top:2mm;
+      font-size:12px;
+      font-weight:900;
+      color:#111;
+    }
+    .export-answerline span{
+      display:inline-block;
+      border-bottom:1px solid #111;
+      min-width:62mm;
+      height:0.95em;
+      vertical-align:baseline;
+    }
+    .export-qgrid.six .export-answerline{font-size:11px;}
+    .export-qgrid.six .export-answerline span{min-width:35mm;}
+
+    .answers-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:4mm 10mm;
+      align-content:start;
+      font-size:13px;
+      font-weight:900;
+      color:#111;
+    }
+    .answers-note{
+      margin-top:3mm;
+      font-size:11px;
+      color:#666;
+      font-weight:900;
+    }
+      .svg-wrap{display:none;}
+    .svg-note{display:none;}
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1 id="pageTitle">DYAA Quiz Template</h1>
+        <div class="sub" id="pageSubtitle">Learn • Practice • Timer • PDF export</div>
+      </div>
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="row">
+      <div class="pill">
+        <b>Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <b>Time:</b>
+        <span id="timerValue">00:00</span>
+        <span id="timerStatus" class="muted" style="font-weight:900;"></span>
+        <span class="muted">•</span>
+        <small>URL: <span class="muted">.../your_page.html?name=Tiger</span></small>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <div class="pill">
+          <b>PDF per page</b>
+          <select id="pdfPerPage" class="select" aria-label="PDF per page">
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+
+        <button class="btn orange" id="pauseBtn" type="button">Pause</button>
+        <button class="btn orange" id="newSetBtn" type="button">Generate New Set</button>
+        <button class="btn ghost" id="exportLearnBtn" type="button">Export Learn PDF</button>
+        <button class="btn purple" id="exportQuestionsBtn" type="button">Export Questions PDF</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    
+    <!-- LEARN (Template placeholders) -->
+    <div class="panel active" id="panel-learn">
+
+      <div class="learn-card">
+        <h2>Part 1 — What are “Constant-Total” (Total Method) Problems?</h2>
+        <p>
+          In these problems, the <b>total amount stays the same</b> (total work, total items, total words, etc.),
+          but the <b>rate</b>, <b>time</b>, or <b>number of workers/machines</b> changes.
+          The key is to <b>find the total first</b>, then use the new condition.
+        </p>
+        <p class="muted">
+          Common phrases: <b>at this rate</b>, <b>with the same total</b>, <b>still the same job</b>,
+          <b>using the same materials</b>, <b>the total does not change</b>.
+        </p>
+
+        <h2>Part 2 — Key Relationships</h2>
+        <table class="mini-table" aria-label="Constant total formulas">
+          <thead>
+            <tr>
+              <th>What you want</th>
+              <th>Formula</th>
+              <th>Meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Total</b></td>
+              <td>Total = Unit amount × Number of units</td>
+              <td>Example: total metres = metres/day × days.</td>
+            </tr>
+            <tr>
+              <td><b>Unit amount</b></td>
+              <td>Unit amount = Total ÷ Number of units</td>
+              <td>Example: metres/day = total metres ÷ days.</td>
+            </tr>
+            <tr>
+              <td><b>Number of units</b></td>
+              <td>Number of units = Total ÷ Unit amount</td>
+              <td>Example: days = total metres ÷ metres/day.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Part 3 — Strategy</h2>
+        <div class="note">
+          <b>Step 1:</b> Work out the <b>total</b> from the original information.<br>
+          <b>Step 2:</b> Use the new condition to find what is asked (new rate / new time / new number of workers).<br>
+          <b>Tip:</b> If it is the <b>same job</b> or the <b>same total items/words/material</b>, then the <b>total is constant</b>.
+        </div>
+
+        <h2>Worked Examples</h2>
+
+        <details class="example">
+          <summary>Example 1 (Same road, different days)</summary>
+          <div class="box">
+            <b>Problem:</b> A road-repair team planned to fix <b>450 m per day</b> and finish in <b>80 days</b>.
+            Now they must finish in <b>60 days</b>. How many metres per day must they fix now?<br><br>
+            <b>Step 1 (Total):</b> Total distance = 450 × 80 = <b>36,000 m</b>.<br>
+            <b>Step 2 (New daily):</b> 36,000 ÷ 60 = <b>600 m per day</b>.
+          </div>
+        </details>
+
+        <details class="example">
+          <summary>Example 2 (Same job, different number of workers)</summary>
+          <div class="box">
+            <b>Problem:</b> A job can be finished by <b>8 people</b> working <b>15 hours</b>.
+            If <b>12 people</b> work at the same efficiency, how many hours are needed?<br><br>
+            <b>Step 1 (Total):</b> Total person-hours = 8 × 15 = <b>120</b> person-hours.<br>
+            <b>Step 2 (New time):</b> 120 ÷ 12 = <b>10 hours</b>.
+          </div>
+        </details>
+
+        <details class="example">
+          <summary>Example 3 (Same total, change trucks and load)</summary>
+          <div class="box">
+            <b>Problem:</b> A batch of steel can be transported using <b>4 trucks</b>, each carrying <b>6 tonnes</b>,
+            making <b>25 trips</b>.
+            If the steel is transported using <b>5 trucks</b>, each carrying <b>8 tonnes</b>, how many trips are needed?<br><br>
+            <b>Step 1 (Total):</b> Total steel = 6 × 4 × 25 = <b>600 tonnes</b>.<br>
+            <b>Step 2 (Per trip now):</b> 5 trucks × 8 tonnes = <b>40 tonnes per trip</b>.<br>
+            <b>Step 3 (Trips):</b> 600 ÷ 40 = <b>15 trips</b>.
+          </div>
+        </details>
+      </div>
+
+    </div>
+
+
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted" id="instructionsText">Enter a whole number (no units).</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result (TXT)</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3>Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    /********************
+     * TEMPLATE META (EDIT THIS)
+     ********************/
+    const TEMPLATE_META = {
+  title: "Total Method (Constant Total) — DYAA",
+  subtitle: "Learn • Practice • Timer • PDF export",
+  filePrefix: "DYAA_Total_Method",
+  instructions: "Enter a whole number (no units)."
+};
+
+    /********************
+     * Helpers
+     ********************/
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function randint(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+    // Fisher–Yates shuffle (returns a NEW shuffled array)
+    function shuffle(arr){
+      const a = Array.isArray(arr) ? arr.slice() : [];
+      for(let i = a.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;");
+    }
+
+    /********************
+     * Answer parsing (EDIT IF NEEDED)
+     * Default: strict integer
+     ********************/
+    function parseAnswer(input){
+  if(input == null) return NaN;
+
+  // Keep a single space for mixed numbers like "2 1/3"
+  let s = String(input).trim();
+  if(!s) return NaN;
+
+  // Remove commas, normalize spaces
+  s = s.replace(/,/g,"").replace(/\s+/g," ");
+
+  // Plain integer / decimal
+  if(/^-?\d+(?:\.\d+)?$/.test(s)){
+    const v = Number(s);
+    return Number.isFinite(v) ? v : NaN;
+  }
+
+  // Simple fraction: a/b
+  if(/^-?\d+\/\d+$/.test(s)){
+    const neg = s.startsWith("-");
+    const parts = (neg ? s.slice(1) : s).split("/");
+    const a = Number(parts[0]), b = Number(parts[1]);
+    if(!Number.isFinite(a) || !Number.isFinite(b) || b === 0) return NaN;
+    return (neg ? -1 : 1) * (a / b);
+  }
+
+  // Mixed number: w n/d  (e.g., "2 1/3" or "-2 1/3")
+  if(/^-?\d+\s+\d+\/\d+$/.test(s)){
+    const neg = s.startsWith("-");
+    const body = neg ? s.slice(1) : s;
+    const [wholeStr, fracStr] = body.split(" ");
+    const [nStr, dStr] = fracStr.split("/");
+    const w = Number(wholeStr), n = Number(nStr), d = Number(dStr);
+    if(!Number.isFinite(w) || !Number.isFinite(n) || !Number.isFinite(d) || d === 0) return NaN;
+    const v = w + (n / d);
+    return (neg ? -1 : 1) * v;
+  }
+
+  return NaN;
+}
+
+    function toFixedSmart(x){
+  // show integers without decimals; otherwise show up to 2 decimals (no trailing zeros)
+  if(!Number.isFinite(x)) return String(x);
+  const r = Math.round(x * 100) / 100;
+  if(Math.abs(r - Math.round(r)) < 1e-9) return String(Math.round(r));
+  return r.toFixed(2).replace(/0+$/,"").replace(/\.$/,"");
+}
+
+function isClose(a,b){
+  if(!Number.isFinite(a) || !Number.isFinite(b)) return false;
+  return Math.abs(a - b) <= 1e-6;
+}
+
+function answerText(q){
+  return (q && q.answerText != null) ? String(q.answerText) : toFixedSmart(q.answer);
+}
+
+function stripSvgNote(html){
+      return String(html).replace(/<div class="svg-note">[\s\S]*?<\/div>/g, "");
+    }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * Timer + Pause/Resume
+     ********************/
+    const TIMER = { seconds: 0, running: true, id: null };
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function formatTime(sec){
+      sec = Math.max(0, Math.floor(sec));
+      const m = Math.floor(sec/60);
+      const s = sec % 60;
+      return `${pad2(m)}:${pad2(s)}`;
+    }
+    function updateTimerUI(){
+      $("#timerValue").textContent = formatTime(TIMER.seconds);
+      $("#timerStatus").textContent = TIMER.running ? "" : "(Paused)";
+      $("#pauseBtn").textContent = TIMER.running ? "Pause" : "Resume";
+    }
+    function startTimerTick(){
+      if(TIMER.id) clearInterval(TIMER.id);
+      TIMER.id = setInterval(() => {
+        if(TIMER.running){
+          TIMER.seconds += 1;
+          updateTimerUI();
+        }
+      }, 1000);
+    }
+    function resetTimer(){
+      TIMER.seconds = 0;
+      TIMER.running = true;
+      updateTimerUI();
+    }
+    function togglePause(){
+      TIMER.running = !TIMER.running;
+      updateTimerUI();
+    }
+    $("#pauseBtn").addEventListener("click", togglePause);
+
+    /********************
+     * SVG Placeholder (EDIT / REPLACE)
+     ********************/
+    function svgWrap(svg){
+      return `${svg}<div class="svg-note">Not to scale</div>`;
+    }
+    function diagramPlaceholder(label="Diagram"){
+      const svg = `
+        <svg viewBox="-10 -10 280 200" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Diagram placeholder">
+          <rect x="0" y="0" width="260" height="180" fill="none" stroke="var(--stroke)" stroke-width="2" rx="10"></rect>
+          <text x="130" y="95" text-anchor="middle"
+            style="font: 16px 'Segoe UI', Tahoma, sans-serif; fill: rgba(0,0,0,0.65); font-weight: 900;">
+            ${escapeHtml(label)}
+          </text>
+        </svg>
+      `;
+      return svgWrap(svg);
+    }
+
+    /********************
+     * Question generator (EDIT THIS)
+     * Return array of:
+     * { difficulty:"easy|medium|hard", prompt:"...", hint:"...", answer:<number>, svg:"<html>" }
+     ********************/
+            function makeQuestions(){
+      const names = ["Emma","Jack","Liam","Olivia","Noah","Ava","Mia","Lucas","Sophie","Ethan","Grace","Henry","Chloe","Ben","Ella","Leo","Zoe","Alex","Ruby","Tom","Lucy","Daniel","Emily","James","Sarah"];
+      const pickName = (exclude=null) => {
+        let n = choice(names);
+        if(exclude){
+          let guard = 0;
+          while(n === exclude && guard++ < 50) n = choice(names);
+        }
+        return n;
+      };
+
+      // helpers
+      const gcd = (a,b) => { a=Math.abs(a); b=Math.abs(b); while(b){ [a,b]=[b,a%b]; } return a; };
+      const lcm = (a,b) => Math.abs(a*b) / gcd(a,b);
+
+      /********************
+       * Build one full set (9 questions)
+       * Each set includes the 9 “basic” types from the workbook.
+       ********************/
+
+      // Q1 Reading speed (same total pages)
+      const q1 = (() => {
+        const student = pickName();
+        const m = randint(2,3);
+        const plannedDays = m * randint(4,7); // divisible by m
+        const plannedPerDay = randint(18,30);
+        const actualPerDay = plannedPerDay * m;
+        const totalPages = plannedPerDay * plannedDays;
+        const ansDays = totalPages / actualPerDay;
+        return {
+          difficulty:"easy",
+          prompt:`${student} planned to read ${plannedPerDay} pages per day and finish a storybook in ${plannedDays} days. In fact, ${student} reads ${actualPerDay} pages per day. How many days will it take to finish the book?`,
+          hint:`Total pages = ${plannedPerDay} × ${plannedDays}. Days = total ÷ ${actualPerDay}.`,
+          answer: ansDays,
+          answerText: String(ansDays),
+          svg: ""
+        };
+      })();
+
+      // Q2 Fabric per suit (same total fabric)
+      const q2 = (() => {
+        const factory = "a clothing factory";
+        const oldCloth = randint(3,6);
+        const newCloth = randint(2, oldCloth-1);
+        const base = randint(150, 400);
+        const oldSuits = base * newCloth; // ensures divisibility
+        const totalCloth = oldCloth * oldSuits;
+        const ans = totalCloth / newCloth;
+        return {
+          difficulty:"easy",
+          prompt:`In ${factory}, one suit used to require ${oldCloth} m of fabric. After an improved cutting method, each suit uses ${newCloth} m. If there was enough fabric to make ${oldSuits} suits before, how many suits can be made now?`,
+          hint:`Total fabric = ${oldCloth} × ${oldSuits}. New number of suits = total ÷ ${newCloth}.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      })();
+
+      // Q3 Finish in half the time (same total output)
+      const q3 = (() => {
+        const plannedPerDay = randint(6,12);
+        const plannedDays = 2 * randint(15,30);
+        const actualDays = plannedDays / 2;
+        const ans = (plannedPerDay * plannedDays) / actualDays;
+        return {
+          difficulty:"easy",
+          prompt:`A factory planned to produce ${plannedPerDay} machines per day and finish the order in ${plannedDays} days. In reality, it finished the order in half the time. How many machines did it actually produce per day?`,
+          hint:`Total machines = ${plannedPerDay} × ${plannedDays}. Actual days = ${actualDays}. Actual per day = total ÷ actual days.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      })();
+
+      // Q4 Same project, must finish in a new number of hours (find workers)
+      const q4 = (() => {
+        let people = randint(6,12);
+        let hours = randint(12,18);
+        let total = people * hours;
+        let newHours;
+        let guard = 0;
+        while(true && guard++ < 200){
+          newHours = randint(8, Math.min(14, hours-1));
+          if(total % newHours === 0) break;
+        }
+        const ansPeople = total / newHours;
+        return {
+          difficulty:"medium",
+          prompt:`A project can be completed by ${people} workers in ${hours} hours. Due to an urgent request, it must be finished in ${newHours} hours. How many workers are needed (same efficiency)?`,
+          hint:`Total worker-hours = ${people} × ${hours}. Workers = total ÷ ${newHours}.`,
+          answer: ansPeople,
+          answerText: String(ansPeople),
+          svg: ""
+        };
+      })();
+
+      // Q5 Same project, finish 3 hours earlier (find workers)
+      const q5 = (() => {
+        let people = randint(6,12);
+        let hours = randint(12,18);
+        let total = people * hours;
+        const newHours = hours - 3;
+        // ensure divisible; if not, adjust hours/people a bit
+        let guard = 0;
+        while(total % newHours !== 0 && guard < 200){
+          people = randint(6,12);
+          hours = randint(12,18);
+          total = people * hours;
+          if(hours <= 11) continue;
+          if((hours-3) <= 0) continue;
+          if(total % (hours-3) === 0) break;
+          guard++
+        }
+        const ansPeople = total / (hours - 3);
+        return {
+          difficulty:"medium",
+          prompt:`A project can be completed by ${people} workers in ${hours} hours. It must be finished 3 hours earlier. How many workers are needed (same efficiency)?`,
+          hint:`New time = ${hours} − 3 = ${hours-3}. Total worker-hours = ${people} × ${hours}. Workers = total ÷ new time.`,
+          answer: ansPeople,
+          answerText: String(ansPeople),
+          svg: ""
+        };
+      })();
+
+      // Q6 Toy factory: produce more per day (find days earlier)
+      const q6 = (() => {
+        let plannedDays, plannedPerDay, extra, actualPerDay, total, actualDays, earlier;
+        let guard = 0;
+        while(true && guard++ < 400){
+          plannedDays = randint(20,35);
+          plannedPerDay = randint(8,16) * 10;
+          extra = randint(1,4) * 10;
+          actualPerDay = plannedPerDay + extra;
+          total = plannedPerDay * plannedDays;
+          if(total % actualPerDay !== 0) continue;
+          actualDays = total / actualPerDay;
+          earlier = plannedDays - actualDays;
+          if(earlier > 0 && earlier <= 10) break;
+        }
+        return {
+          difficulty:"medium",
+          prompt:`A toy factory planned to produce ${plannedPerDay} boxes per day and finish the order in ${plannedDays} days. In fact, it produced ${actualPerDay} boxes per day. How many days earlier did it finish?`,
+          hint:`Total boxes = ${plannedPerDay} × ${plannedDays}. Actual days = total ÷ ${actualPerDay}. Earlier = ${plannedDays} − actual days.`,
+          answer: earlier,
+          answerText: String(earlier),
+          svg: ""
+        };
+      })();
+
+      // Q7 Trucks: find capacity with a new trucks/trips plan
+      const q7 = (() => {
+        let cap1, trucks1, trips1, total, trucks2, trips2, cap2;
+        let guard = 0;
+        while(true && guard++ < 500){
+          cap1 = randint(4,10); // tonnes
+          trucks1 = randint(3,6);
+          trips1 = randint(10,30);
+          total = cap1 * trucks1 * trips1;
+          trucks2 = randint(4,7);
+          trips2 = randint(6,15);
+          if(total % (trucks2 * trips2) !== 0) continue;
+          cap2 = total / (trucks2 * trips2);
+          if(cap2 >= 4 && cap2 <= 20) break;
+        }
+        return {
+          difficulty:"hard",
+          prompt:`A batch of steel can be transported using ${trucks1} trucks, each carrying ${cap1} tonnes, making ${trips1} trips. If it is transported using ${trucks2} trucks making ${trips2} trips, what is the load capacity (tonnes) of each truck?`,
+          hint:`Total steel = ${cap1} × ${trucks1} × ${trips1}. Capacity = total ÷ (${trucks2} × ${trips2}).`,
+          answer: cap2,
+          answerText: String(cap2),
+          svg: ""
+        };
+      })();
+
+      // Shared book scenario for Q8 + Q9
+      let P1,L1,C1,L2,C2,P2;
+      {
+        let guard = 0;
+        while(true && guard++ < 800){
+          P1 = randint(18,30) * 10; // 180..300
+          L1 = randint(20,28);
+          C1 = randint(25,35);
+          L2 = randint(26,36);
+          C2 = randint(30,45);
+          const totalWords = P1 * L1 * C1;
+          const perPage2 = L2 * C2;
+          if(totalWords % perPage2 !== 0) continue;
+          P2 = totalWords / perPage2;
+          if(P2 > 0 && P2 < P1) break;
+        }
+      }
+
+      // Q8 Printing: new pages
+      const q8 = {
+        difficulty:"hard",
+        prompt:`A book was originally planned to have ${P1} pages. Each page had ${L1} lines, and each line had ${C1} words. Later the layout was changed to ${L2} lines per page and ${C2} words per line. How many pages does the book have with the new layout?`,
+        hint:`Total words stay the same. Total = ${P1} × ${L1} × ${C1}. New pages = total ÷ (${L2} × ${C2}).`,
+        answer: P2,
+        answerText: String(P2),
+        svg: ""
+      };
+
+      // Q9 Printing: pages fewer
+      const q9 = {
+        difficulty:"hard",
+        prompt:`Using the same information as the previous question, how many fewer pages is the new layout compared with the original plan?`,
+        hint:`Fewer pages = original pages − new pages = ${P1} − ${P2}.`,
+        answer: P1 - P2,
+        answerText: String(P1 - P2),
+        svg: ""
+      };
+
+      return shuffle([q1,q2,q3,q4,q5,q6,q7,q8]);
+    }
+
+    /********************
+     * UI state + rendering
+     ********************/
+    let QUESTIONS = [];
+    let STATE = { answers:[], checked:[], correct:[], hintShown:[], submitted:false };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+    function niceDiff(d){
+      if(d==="easy") return "Easy";
+      if(d==="medium") return "Medium";
+      return "Hard";
+    }
+
+    function renderQuestions(){
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const userVal = STATE.answers[idx] ?? "";
+        const checked = !!STATE.checked[idx];
+        const correct = !!STATE.correct[idx];
+        const hintShown = !!STATE.hintShown[idx];
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${escapeHtml(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="q-body">
+            <div class="svg-wrap">${q.svg || ""}</div>
+
+            <div class="answer-area">
+              <div class="input-row">
+                <input type="text" inputmode="text" autocomplete="off"
+                  id="ans-${idx}" placeholder="Answer"
+                  value="${escapeHtml(userVal)}">
+                <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+                <button class="btn ghost" type="button" id="hint-${idx}">${hintShown ? "Hide Hint" : "Hint"}</button>
+              </div>
+
+              <div class="hint-box ${hintShown ? "show" : ""}" id="hintBox-${idx}">
+                ${escapeHtml(q.hint || "")}
+              </div>
+
+              <div class="feedback ${checked ? (correct ? "ok" : "bad") : ""}" id="fb-${idx}">
+                ${checked
+                  ? (correct
+                      ? "Correct ✅"
+                      : `Not correct ❌  (Correct answer: ${answerText(q)})`)
+                  : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        const inp = $(`#ans-${idx}`, card);
+        inp.addEventListener("input", () => {
+          STATE.answers[idx] = inp.value;
+          STATE.checked[idx] = false;
+          STATE.correct[idx] = false;
+          if(STATE.submitted){
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+          }
+          const fb = $(`#fb-${idx}`, card);
+          fb.className = "feedback";
+          fb.textContent = "";
+        });
+
+        $(`#check-${idx}`, card).addEventListener("click", () => checkOne(idx));
+        $(`#hint-${idx}`, card).addEventListener("click", () => {
+          STATE.hintShown[idx] = !STATE.hintShown[idx];
+          renderQuestions();
+        });
+      });
+
+      $("#resultsBox").style.display = "none";
+    }
+
+    function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const v = parseAnswer(STATE.answers[idx]);
+      STATE.checked[idx] = true;
+
+      if(!Number.isFinite(v)){
+        STATE.correct[idx] = false;
+        renderQuestions();
+        const fb = $(`#fb-${idx}`);
+        fb.className = "feedback bad";
+        fb.textContent = "Please enter a valid answer.";
+        return;
+      }
+
+      STATE.correct[idx] = isClose(v, q.answer);
+      renderQuestions();
+    }
+
+    function submitAll(){
+      let correctCount = 0;
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const v = parseAnswer(STATE.answers[i]);
+        STATE.checked[i] = true;
+        STATE.correct[i] = Number.isFinite(v) && isClose(v, q.answer);
+        if(STATE.correct[i]) correctCount++;
+      }
+
+      STATE.submitted = true;
+      renderQuestions();
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+
+      const lines = QUESTIONS.map((q,i)=>(
+        `<div style="margin:6px 0;"><b>Q${i+1}:</b> ${answerText(q)}</div>`
+      )).join("");
+
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:8px;"><b>Correct Answers:</b></div>
+        <div style="margin-top:6px;">${lines}</div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+    function resetAnswers(){
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    /********************
+     * Save Current Result as TXT
+     ********************/
+    function saveResult(){
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const when = new Date();
+      const dateStr = when.toLocaleString();
+      const elapsed = formatTime(TIMER.seconds);
+
+      let correctCount = 0;
+      const out = [];
+
+      out.push(`DYAA — Save Current Result`);
+      out.push(`Title: ${title}`);
+      out.push(`Student: ${student}`);
+      out.push(`Date: ${dateStr}`);
+      out.push(`Elapsed Time: ${elapsed}`);
+      out.push(``);
+
+      QUESTIONS.forEach((q, i) => {
+        const raw = (STATE.answers[i] ?? "").toString().trim();
+        const v = parseAnswer(raw);
+        const valid = Number.isFinite(v);
+        const isCorrect = valid && isClose(v, q.answer);
+        if(isCorrect) correctCount++;
+
+        out.push(`Q${i+1} (${String(q.difficulty||"").toUpperCase()}): ${q.prompt}`);
+        out.push(`Your answer: ${valid ? v : (raw ? raw : "(blank)")}`);
+        out.push(`Correct answer: ${answerText(q)}`);
+        out.push(`Result: ${isCorrect ? "Correct" : "Not correct"}`);
+        out.push(``);
+      });
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+      out.splice(5, 0, `Score: ${correctCount} / ${total} (${pct}%)`);
+
+      const text = out.join("\r\n");
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_result.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    /********************
+     * Tabs + Student name
+     ********************/
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $(`#panel-${tab}`).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", ""));
+      $("#studentNameValue").textContent = name ? name : "Anonymous";
+    }
+
+    /********************
+     * Generate New Set (resets timer)
+     ********************/
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+
+      // If any answers are not finite integers, your generator should ensure integer answers
+      // or you should adjust parseAnswer + correctness logic accordingly.
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+
+      resetTimer();
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set? This will clear your current answers and reset the timer.", () => {
+        generateNewSet();
+        // go to practice
+        $$('.tab').forEach(b=>b.classList.remove('active'));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$('.panel').forEach(p=>p.classList.remove('active'));
+        $('#panel-practice').classList.add('active');
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    /********************
+     * Learn diagram (EDIT / REPLACE)
+     ********************/
+    function renderLearnDiagram(){ /* No diagram for this topic */ }
+
+    /********************
+     * Export Learn PDF
+     * - Exports everything in the Learn tab
+     * - Auto splits into multiple A4 pages
+     ********************/
+    function stripIdsDeep(root){
+      if(!root) return;
+      if(root.removeAttribute) root.removeAttribute("id");
+      const els = root.querySelectorAll ? root.querySelectorAll("[id]") : [];
+      els.forEach(el => el.removeAttribute("id"));
+    }
+
+    function addCanvasAutoPagedToPdf(pdf, canvas, marginMm = 8){
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const usableW = pageW - marginMm * 2;
+      const usableH = pageH - marginMm * 2;
+
+      // scale to fit page width
+      const scale = usableW / canvas.width;
+      const sliceHpx = Math.floor(usableH / scale);
+
+      let y = 0;
+      let pageIndex = 0;
+
+      while(y < canvas.height){
+        const h = Math.min(sliceHpx, canvas.height - y);
+
+        const slice = document.createElement("canvas");
+        slice.width = canvas.width;
+        slice.height = h;
+
+        const ctx = slice.getContext("2d");
+        ctx.drawImage(canvas, 0, y, canvas.width, h, 0, 0, canvas.width, h);
+
+        const imgData = slice.toDataURL("image/png", 1.0);
+
+        if(pageIndex > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", marginMm, marginMm, usableW, h * scale, undefined, "FAST");
+
+        y += h;
+        pageIndex++;
+      }
+    }
+
+    async function exportLearnPdf(){
+      const libsOk = (window.html2canvas && window.jspdf && window.jspdf.jsPDF);
+      if(!libsOk){
+        alert("PDF export needs html2canvas + jsPDF. Please check your connection (CDN) or include the libraries locally.");
+        return;
+      }
+
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+
+      const exportRoot = document.createElement("div");
+      exportRoot.className = "export-root";
+      document.body.appendChild(exportRoot);
+
+      const sheet = document.createElement("div");
+      sheet.className = "export-learn-sheet";
+      sheet.innerHTML = `
+        <div class="export-header">
+          <div>
+            <div class="export-title">${escapeHtml(title)} — Learn</div>
+            <div class="export-sub">Student: ${escapeHtml(student)} • Date: ${escapeHtml(dateStr)}</div>
+          </div>
+        </div>
+        <div class="export-content"></div>
+      `;
+
+      const content = sheet.querySelector(".export-content");
+      const learnPanel = $("#panel-learn").cloneNode(true);
+      stripIdsDeep(learnPanel);
+      // Expand all worked-example panels for the PDF
+      learnPanel.querySelectorAll("details").forEach(d => d.open = true);
+      learnPanel.classList.add("active");
+      content.appendChild(learnPanel);
+
+      exportRoot.appendChild(sheet);
+
+      // allow layout to settle
+      await new Promise(r => requestAnimationFrame(()=>requestAnimationFrame(r)));
+
+      const canvas = await window.html2canvas(sheet, {
+        scale: 2,
+        backgroundColor: "#ffffff",
+        useCORS: true
+      });
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+
+      addCanvasAutoPagedToPdf(pdf, canvas, 8);
+
+      pdf.save(`${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_Learn.pdf`);
+      exportRoot.remove();
+    }
+
+    $("#exportLearnBtn")?.addEventListener("click", exportLearnPdf);
+
+
+    /********************
+     * Export Questions PDF
+     * - PDF per page: 2 / 3 / 6 (default 2)
+     * - Answers at the end (separate page(s), auto paged)
+     ********************/
+    function layoutClass(perPage){
+      if(perPage === 6) return "six";
+      if(perPage === 3) return "three";
+      return "two";
+    }
+
+    function buildQuestionPageDOM(indexGroup, perPage, meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">${escapeHtml(meta.title)}</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)} • Time: ${escapeHtml(meta.timeStr)}
+          </div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const grid = document.createElement("div");
+      grid.className = `export-qgrid ${layoutClass(perPage)}`;
+
+      indexGroup.forEach(i => {
+        const q = QUESTIONS[i];
+        const box = document.createElement("div");
+        box.className = "export-q";
+        box.innerHTML = `
+          <div class="qprompt">Q${i+1}. ${escapeHtml(q.prompt)}</div>
+          <div class="export-diagram">${stripSvgNote(q.svg || "")}</div>
+          <div class="export-answerline">Answer: <span></span></div>
+        `;
+        grid.appendChild(box);
+      });
+
+      content.appendChild(grid);
+      page.appendChild(header);
+      page.appendChild(content);
+      return page;
+    }
+
+    function createAnswerPage(meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">Answers — ${escapeHtml(meta.title)}</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)}
+          </div>
+          <div class="answers-note">These are the correct answers for the exported question set.</div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const list = document.createElement("div");
+      list.className = "answers-list";
+      content.appendChild(list);
+
+      page.appendChild(header);
+      page.appendChild(content);
+
+      return { page, content, list };
+    }
+
+    async function exportQuestionsPdf(){
+      const perPage = Number($("#pdfPerPage").value) || 2;
+
+      const libsOk = (window.html2canvas && window.jspdf && window.jspdf.jsPDF);
+      if(!libsOk){
+        alert("PDF export needs html2canvas + jsPDF. Please check your connection (CDN) or include the libraries locally.");
+        return;
+      }
+
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+      const timeStr = $("#timerValue").textContent;
+
+      const exportRoot = document.createElement("div");
+      exportRoot.className = "export-root";
+      document.body.appendChild(exportRoot);
+
+      // Question pages
+      const idxs = QUESTIONS.map((_,i)=>i);
+      for(let i=0;i<idxs.length;i+=perPage){
+        const group = idxs.slice(i, i+perPage);
+        exportRoot.appendChild(buildQuestionPageDOM(group, perPage, { title, student, dateStr, timeStr }));
+      }
+
+      // Answer pages (auto paged)
+      let ap = createAnswerPage({ title, student, dateStr });
+      exportRoot.appendChild(ap.page);
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const item = document.createElement("div");
+        item.textContent = `Q${i+1}: ${answerText(QUESTIONS[i])}`;
+        ap.list.appendChild(item);
+
+        if(ap.content.scrollHeight > ap.content.clientHeight){
+          ap.list.removeChild(item);
+          ap = createAnswerPage({ title, student, dateStr });
+          exportRoot.appendChild(ap.page);
+          ap.list.appendChild(item);
+        }
+      }
+
+      // Render to PDF
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+
+      const pages = Array.from(exportRoot.querySelectorAll(".export-page"));
+      const marginMm = 8;
+
+      for(let i=0;i<pages.length;i++){
+        const pageEl = pages[i];
+
+        const canvas = await window.html2canvas(pageEl, {
+          scale: 2,
+          backgroundColor: "#ffffff",
+          useCORS: true
+        });
+
+        const imgData = canvas.toDataURL("image/png", 1.0);
+
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = pdf.internal.pageSize.getHeight();
+        const usableW = pageW - marginMm*2;
+        const usableH = pageH - marginMm*2;
+
+        const imgH = canvas.height * (usableW / canvas.width);
+
+        let drawW = usableW;
+        let drawH = imgH;
+
+        if(drawH > usableH){
+          drawH = usableH;
+          drawW = canvas.width * (drawH / canvas.height);
+        }
+
+        const x = (pageW - drawW) / 2;
+        const y = marginMm;
+
+        if(i > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", x, y, drawW, drawH, undefined, "FAST");
+      }
+
+      pdf.save(`${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_Questions.pdf`);
+      exportRoot.remove();
+    }
+
+    $("#exportQuestionsBtn").addEventListener("click", exportQuestionsPdf);
+
+    /********************
+     * Init
+     ********************/
+    function applyTemplateMeta(){
+      document.title = TEMPLATE_META.title;
+      $("#pageTitle").textContent = TEMPLATE_META.title;
+      $("#pageSubtitle").textContent = TEMPLATE_META.subtitle;
+      $("#instructionsText").textContent = TEMPLATE_META.instructions;
+    }
+
+    applyTemplateMeta();
+    ensureStudentName();
+        updateTimerUI();
+    startTimerTick();
+    generateNewSet();
+  </script>
+</body>
+</html>

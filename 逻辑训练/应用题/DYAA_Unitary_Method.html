@@ -1,0 +1,1934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unitary Method (Unit Rate) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --purple:#6a1b9a;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --stroke:#111;
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .select{
+      appearance:none;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:10px;
+      padding:7px 10px;
+      font-weight:900;
+      color:var(--ink);
+      cursor:pointer;
+      outline:none;
+    }
+    .select:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:900;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:900;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+    }
+    .btn.orange{
+      background:var(--orange);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(255,152,0,0.20);
+    }
+    .btn.purple{
+      background:var(--purple);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(106,27,154,0.20);
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:1000;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card p{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .learn-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:14px;
+      margin-top:12px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .learn-grid{grid-template-columns:1fr;}
+    }
+
+    .mini-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .mini-table th, .mini-table td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    .mini-table th{
+      background:#f5f8ff;
+      color:var(--blue);
+      font-weight:1000;
+    }
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:1000;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .q-body{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:12px;
+      margin-top:10px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .q-body{grid-template-columns:1fr;}
+    }
+
+    /* IMPORTANT: no cropping on screen */
+    .svg-wrap{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:12px 12px 10px 12px;
+      overflow: visible;
+    }
+    .svg-wrap svg{
+      display:block;
+      width:100%;
+      height:auto;
+      overflow: visible;
+    }
+    .svg-note{
+      margin-top:6px;
+      font-size:12px;
+      color:rgba(0,0,0,0.55);
+      font-weight:900;
+    }
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      min-width:220px;
+      max-width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .hint-box{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(13,71,161,0.35);
+      background:#f5f8ff;
+      color:#1a2b55;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .hint-box.show{display:block;}
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+    .feedback.ok{color:var(--ok);font-weight:1000;}
+    .feedback.bad{color:var(--bad);font-weight:1000;}
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    /* =========================
+       PDF Export (offscreen pages)
+       ========================= */
+    .export-root{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:210mm;
+      height:auto;
+      overflow:hidden;
+      background:#fff;
+    }
+
+    /* Export Learn (single long sheet, auto paged) */
+    .export-learn-sheet{
+      width:210mm;
+      background:#fff;
+      padding:12mm;
+      box-sizing:border-box;
+    }
+    .export-learn-sheet .export-header{
+      height:auto;
+      margin-bottom:6mm;
+    }
+    .export-learn-sheet .export-content{
+      height:auto;
+      overflow:visible;
+    }
+    .export-learn-sheet .panel{ display:block !important; }
+    .export-learn-sheet .tabs, 
+    .export-learn-sheet .row{ display:none !important; }
+
+    .export-page{
+      width:210mm;
+      height:297mm;
+      background:#fff;
+      padding:12mm;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .export-header{
+      height:20mm;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10mm;
+    }
+    .export-title{
+      font-weight:1000;
+      font-size:16px;
+      color:#111;
+      line-height:1.1;
+    }
+    .export-sub{
+      margin-top:2mm;
+      font-size:11px;
+      color:#555;
+      font-weight:900;
+      line-height:1.25;
+    }
+    .export-content{
+      height: calc(297mm - 12mm - 12mm - 20mm);
+      overflow:hidden;
+    }
+    .export-qgrid{
+      width:100%;
+      height:100%;
+      display:grid;
+      min-height:0;
+    }
+    .export-qgrid.two{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:8mm;
+    }
+    .export-qgrid.three{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:4mm;
+    }
+    .export-qgrid.six{
+      grid-template-columns:1fr 1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:5mm;
+    }
+    .export-q{
+      border:1px solid #ddd;
+      border-radius:10px;
+      padding:6mm;
+      display:flex;
+      flex-direction:column;
+      gap:3mm;
+      min-height:0;
+      overflow:hidden;
+    }
+    .export-q .qprompt{
+      font-weight:900;
+      font-size:12px;
+      color:#111;
+      line-height:1.2;
+    }
+    .export-qgrid.six .qprompt{font-size:11px;}
+
+    .export-diagram{
+      border:1px solid #e6e6e6;
+      border-radius:9px;
+      padding:3mm;
+      flex:1;
+      min-height:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .export-diagram svg{
+      width:100%;
+      height:100%;
+      max-height:100%;
+      display:block;
+      overflow:visible;
+    }
+    .export-diagram .svg-note{ display:none !important; }
+
+    .export-answerline{
+      margin-top:2mm;
+      font-size:12px;
+      font-weight:900;
+      color:#111;
+    }
+    .export-answerline span{
+      display:inline-block;
+      border-bottom:1px solid #111;
+      min-width:62mm;
+      height:0.95em;
+      vertical-align:baseline;
+    }
+    .export-qgrid.six .export-answerline{font-size:11px;}
+    .export-qgrid.six .export-answerline span{min-width:35mm;}
+
+    .answers-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:4mm 10mm;
+      align-content:start;
+      font-size:13px;
+      font-weight:900;
+      color:#111;
+    }
+    .answers-note{
+      margin-top:3mm;
+      font-size:11px;
+      color:#666;
+      font-weight:900;
+    }
+      .svg-wrap{display:none;}
+    .svg-note{display:none;}
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1 id="pageTitle">DYAA Quiz Template</h1>
+        <div class="sub" id="pageSubtitle">Learn • Practice • Timer • PDF export</div>
+      </div>
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="row">
+      <div class="pill">
+        <b>Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <b>Time:</b>
+        <span id="timerValue">00:00</span>
+        <span id="timerStatus" class="muted" style="font-weight:900;"></span>
+        <span class="muted">•</span>
+        <small>URL: <span class="muted">.../your_page.html?name=Tiger</span></small>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <div class="pill">
+          <b>PDF per page</b>
+          <select id="pdfPerPage" class="select" aria-label="PDF per page">
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+
+        <button class="btn orange" id="pauseBtn" type="button">Pause</button>
+        <button class="btn orange" id="newSetBtn" type="button">Generate New Set</button>
+        <button class="btn ghost" id="exportLearnBtn" type="button">Export Learn PDF</button>
+        <button class="btn purple" id="exportQuestionsBtn" type="button">Export Questions PDF</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    <!-- LEARN (Template placeholders) -->
+    <div class="panel active" id="panel-learn">
+
+      <div class="learn-card">
+        <h2>Part 1 — What is the Unitary Method (Unit Rate)?</h2>
+        <p>
+          <b>Unitary method</b> problems involve <b>two related quantities</b> that change at a constant rate.
+          The key idea is to first find the value for <b>1 unit</b> (the “unit rate”), then scale up or down.
+        </p>
+        <p class="muted">
+          Common phrases: <b>at this rate</b>, <b>per</b>, <b>for each</b>, <b>in the same way</b>.
+        </p>
+
+        <h2>Part 2 — Core Relationships</h2>
+        <table class="mini-table" aria-label="Unitary method formulas">
+          <thead>
+            <tr>
+              <th>What you want</th>
+              <th>Formula</th>
+              <th>Meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Unit amount</b></td>
+              <td>Unit amount = Total amount ÷ Number of units</td>
+              <td>Find the value for <b>1</b> unit (per 1).</td>
+            </tr>
+            <tr>
+              <td><b>Total amount</b></td>
+              <td>Total amount = Unit amount × Number of units</td>
+              <td>Scale up from the unit rate.</td>
+            </tr>
+            <tr>
+              <td><b>Number of units</b></td>
+              <td>Number of units = Total amount ÷ Unit amount</td>
+              <td>Scale down / find how many “1 unit” groups.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Part 3 — Multi-Step Unit Rate (e.g., people-hours, machine-hours)</h2>
+        <p>
+          Sometimes the “unit” is a <b>combined unit</b>, like <b>person-hour</b> or <b>machine-hour</b>.
+          Example: if 5 people working 3 hours make 30 items, the unit rate is:
+          <span class="math">30 ÷ (5 × 3)</span> items per person-hour.
+        </p>
+
+        <div class="note">
+          <b>Strategy:</b> (1) Find the unit rate (per 1 unit), (2) multiply or divide to answer the question.
+        </div>
+
+        <h2>Worked Examples</h2>
+
+        <details class="example">
+          <summary>Example 1 (Find total output)</summary>
+          <div class="box">
+            <b>Problem:</b> Ms. Taylor can produce 30 identical parts in 5 hours. At this rate, how many parts can she produce in 9 hours?<br><br>
+            <b>Step 1:</b> Unit rate = 30 ÷ 5 = 6 parts per hour.<br>
+            <b>Step 2:</b> In 9 hours: 6 × 9 = <b>54</b> parts.
+          </div>
+        </details>
+
+        <details class="example">
+          <summary>Example 2 (Find required time)</summary>
+          <div class="box">
+            <b>Problem:</b> A production team makes 300 parts in 5 hours. At this rate, how many hours are needed to make 960 parts?<br><br>
+            <b>Step 1:</b> Unit rate = 300 ÷ 5 = 60 parts per hour.<br>
+            <b>Step 2:</b> Time = 960 ÷ 60 = <b>16</b> hours.
+          </div>
+        </details>
+
+        <details class="example">
+          <summary>Example 3 (People/machines style: tractors × days)</summary>
+          <div class="box">
+            <b>Problem:</b> 2 tractors plough 24 hectares in 3 days. At the same rate, how many hectares can 8 tractors plough in 5 days?<br><br>
+            <b>Step 1:</b> Unit rate per tractor-day = 24 ÷ (2 × 3) = 4 hectares per tractor-day.<br>
+            <b>Step 2:</b> Total tractor-days = 8 × 5 = 40.<br>
+            <b>Step 3:</b> Area = 4 × 40 = <b>160</b> hectares.
+          </div>
+        </details>
+
+        <details class="example">
+          <summary>Example 4 (Find required time: tractors × days)</summary>
+          <div class="box">
+            <b>Problem:</b> 2 tractors plough 24 hectares in 3 days. At the same rate, how many days will 5 tractors need to plough 200 hectares?<br><br>
+            <b>Step 1:</b> Unit rate per tractor-day = 24 ÷ (2 × 3) = 4 hectares per tractor-day.<br>
+            <b>Step 2:</b> 5 tractors plough 5 × 4 = 20 hectares per day.<br>
+            <b>Step 3:</b> Days = 200 ÷ 20 = <b>10</b> days.
+          </div>
+        </details>
+      </div>
+
+    </div>
+
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted" id="instructionsText">Enter an integer. (No units needed.)</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result (TXT)</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3>Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    /********************
+     * TEMPLATE META (EDIT THIS)
+     ********************/
+    const TEMPLATE_META = {
+  title: "Unitary Method (Unit Rate) — DYAA",
+  subtitle: "Learn • Practice • Timer • PDF export",
+  filePrefix: "DYAA_Unitary_Method",
+  instructions: "Enter a whole number (no units)."
+};
+
+    /********************
+     * Helpers
+     ********************/
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function randint(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;");
+    }
+
+    /********************
+     * Answer parsing (EDIT IF NEEDED)
+     * Default: strict integer
+     ********************/
+    function parseAnswer(input){
+  if(input == null) return NaN;
+
+  // Keep a single space for mixed numbers like "2 1/3"
+  let s = String(input).trim();
+  if(!s) return NaN;
+
+  // Remove commas, normalize spaces
+  s = s.replace(/,/g,"").replace(/\s+/g," ");
+
+  // Plain integer / decimal
+  if(/^-?\d+(?:\.\d+)?$/.test(s)){
+    const v = Number(s);
+    return Number.isFinite(v) ? v : NaN;
+  }
+
+  // Simple fraction: a/b
+  if(/^-?\d+\/\d+$/.test(s)){
+    const neg = s.startsWith("-");
+    const parts = (neg ? s.slice(1) : s).split("/");
+    const a = Number(parts[0]), b = Number(parts[1]);
+    if(!Number.isFinite(a) || !Number.isFinite(b) || b === 0) return NaN;
+    return (neg ? -1 : 1) * (a / b);
+  }
+
+  // Mixed number: w n/d  (e.g., "2 1/3" or "-2 1/3")
+  if(/^-?\d+\s+\d+\/\d+$/.test(s)){
+    const neg = s.startsWith("-");
+    const body = neg ? s.slice(1) : s;
+    const [wholeStr, fracStr] = body.split(" ");
+    const [nStr, dStr] = fracStr.split("/");
+    const w = Number(wholeStr), n = Number(nStr), d = Number(dStr);
+    if(!Number.isFinite(w) || !Number.isFinite(n) || !Number.isFinite(d) || d === 0) return NaN;
+    const v = w + (n / d);
+    return (neg ? -1 : 1) * v;
+  }
+
+  return NaN;
+}
+
+    function toFixedSmart(x){
+  // show integers without decimals; otherwise show up to 2 decimals (no trailing zeros)
+  if(!Number.isFinite(x)) return String(x);
+  const r = Math.round(x * 100) / 100;
+  if(Math.abs(r - Math.round(r)) < 1e-9) return String(Math.round(r));
+  return r.toFixed(2).replace(/0+$/,"").replace(/\.$/,"");
+}
+
+function isClose(a,b){
+  if(!Number.isFinite(a) || !Number.isFinite(b)) return false;
+  return Math.abs(a - b) <= 1e-6;
+}
+
+function answerText(q){
+  return (q && q.answerText != null) ? String(q.answerText) : toFixedSmart(q.answer);
+}
+
+function stripSvgNote(html){
+      return String(html).replace(/<div class="svg-note">[\s\S]*?<\/div>/g, "");
+    }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * Timer + Pause/Resume
+     ********************/
+    const TIMER = { seconds: 0, running: true, id: null };
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function formatTime(sec){
+      sec = Math.max(0, Math.floor(sec));
+      const m = Math.floor(sec/60);
+      const s = sec % 60;
+      return `${pad2(m)}:${pad2(s)}`;
+    }
+    function updateTimerUI(){
+      $("#timerValue").textContent = formatTime(TIMER.seconds);
+      $("#timerStatus").textContent = TIMER.running ? "" : "(Paused)";
+      $("#pauseBtn").textContent = TIMER.running ? "Pause" : "Resume";
+    }
+    function startTimerTick(){
+      if(TIMER.id) clearInterval(TIMER.id);
+      TIMER.id = setInterval(() => {
+        if(TIMER.running){
+          TIMER.seconds += 1;
+          updateTimerUI();
+        }
+      }, 1000);
+    }
+    function resetTimer(){
+      TIMER.seconds = 0;
+      TIMER.running = true;
+      updateTimerUI();
+    }
+    function togglePause(){
+      TIMER.running = !TIMER.running;
+      updateTimerUI();
+    }
+    $("#pauseBtn").addEventListener("click", togglePause);
+
+    /********************
+     * SVG Placeholder (EDIT / REPLACE)
+     ********************/
+    function svgWrap(svg){
+      return `${svg}<div class="svg-note">Not to scale</div>`;
+    }
+    function diagramPlaceholder(label="Diagram"){
+      const svg = `
+        <svg viewBox="-10 -10 280 200" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Diagram placeholder">
+          <rect x="0" y="0" width="260" height="180" fill="none" stroke="var(--stroke)" stroke-width="2" rx="10"></rect>
+          <text x="130" y="95" text-anchor="middle"
+            style="font: 16px 'Segoe UI', Tahoma, sans-serif; fill: rgba(0,0,0,0.65); font-weight: 900;">
+            ${escapeHtml(label)}
+          </text>
+        </svg>
+      `;
+      return svgWrap(svg);
+    }
+
+    /********************
+     * Question generator (EDIT THIS)
+     * Return array of:
+     * { difficulty:"easy|medium|hard", prompt:"...", hint:"...", answer:<number>, svg:"<html>" }
+     ********************/
+            function makeQuestions(){
+      const names = ["Emma","Jack","Liam","Olivia","Noah","Ava","Mia","Lucas","Sophie","Ethan","Grace","Henry","Chloe","Ben","Ella","Leo","Zoe","Alex","Ruby","Tom","Lucy"];
+      const pickName = (exclude=null) => {
+        let n = choice(names);
+        if(exclude){
+          let guard = 0;
+          while(n === exclude && guard++ < 50) n = choice(names);
+        }
+        return n;
+      };
+      const pickTwo = () => {
+        const a = pickName();
+        const b = pickName(a);
+        return [a,b];
+      };
+      const shuffle = (arr) => {
+        const a = arr.slice();
+        for(let i=a.length-1;i>0;i--){
+          const j = Math.floor(Math.random()*(i+1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      };
+      const take = (arr, k) => shuffle(arr).slice(0, Math.min(k, arr.length)).map(fn => fn());
+
+      const EASY = [];
+      const MED = [];
+      const HARD = [];
+
+      /********************
+       * Existing question types (randomised)
+       ********************/
+
+      // Reading pages (days -> week)
+      EASY.push(() => {
+        const [n1] = pickTwo();
+        const days = randint(2,5);
+        const pagesPerDay = randint(12,35);
+        const pages = days * pagesPerDay;
+        const ans = 7 * pagesPerDay;
+        return {
+          difficulty:"easy",
+          prompt:`${n1} read ${pages} pages of a storybook in ${days} days. At the same rate, how many pages can ${n1} read in 1 week (7 days)?`,
+          hint:`Find pages per day: ${pages} ÷ ${days}. Then multiply by 7.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // Soybeans -> soybean oil (find required soybeans)
+      EASY.push(() => {
+        const soybeanPerOil = randint(8,14); // kg soybeans per 1 kg oil
+        const oilGiven = randint(4,8);
+        const soyGiven = soybeanPerOil * oilGiven;
+        const targetOil = randint(18,30);
+        const ans = soybeanPerOil * targetOil;
+        return {
+          difficulty:"easy",
+          prompt:`${soyGiven} kg of soybeans can produce ${oilGiven} kg of soybean oil. At the same rate, how many kilograms of soybeans are needed to produce ${targetOil} kg of oil?`,
+          hint:`Find soybeans per 1 kg oil: ${soyGiven} ÷ ${oilGiven}. Then multiply by ${targetOil}.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // Squirrel nuts (time -> total)
+      EASY.push(() => {
+        const nutsPerMin = randint(6,12);
+        const m1 = randint(2,5);
+        const nuts1 = nutsPerMin * m1;
+        const extra = randint(3,7);
+        const ans = nutsPerMin * (m1 + extra);
+        return {
+          difficulty:"easy",
+          prompt:`A squirrel shelled ${nuts1} nuts in ${m1} minutes. If it keeps the same speed and shells nuts for another ${extra} minutes, how many nuts will it have shelled in total?`,
+          hint:`Find nuts per minute: ${nuts1} ÷ ${m1}. Then multiply by (${m1}+${extra}).`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // Car travel (distance/time -> time)
+      EASY.push(() => {
+        const speed = randint(50,90); // km/h
+        const t1 = randint(3,6);
+        const d1 = speed * t1;
+        const t2 = randint(7,11);
+        const d2 = speed * t2;
+        return {
+          difficulty:"easy",
+          prompt:`A car travels ${d1} km in ${t1} hours. At the same speed, how many hours will it take to travel ${d2} km?`,
+          hint:`Find speed: ${d1} ÷ ${t1}. Then time = ${d2} ÷ speed.`,
+          answer: t2,
+          answerText: String(t2),
+          svg: ""
+        };
+      });
+
+      // Soybeans -> tofu (find required soybeans)
+      EASY.push(() => {
+        const soy = randint(4,10);
+        const ratio = randint(2,4); // tofu = ratio * soy
+        const tofu = soy * ratio;
+        const targetTofu = ratio * randint(18,35); // divisible by ratio
+        const ans = targetTofu / ratio;
+        return {
+          difficulty:"easy",
+          prompt:`A cook uses ${soy} kg of soybeans to make ${tofu} kg of tofu. At the same rate, how many kilograms of soybeans are needed to make ${targetTofu} kg of tofu?`,
+          hint:`Since ${tofu} ÷ ${soy} = ${ratio}, the soybeans needed are ${targetTofu} ÷ ${ratio}.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // Typing (find remaining minutes)
+      MED.push(() => {
+        const speed = choice([60,70,80,90,100,110,120]); // words per minute
+        const totalMinutes = randint(30,50);
+        const totalWords = speed * totalMinutes;
+        const doneMinutes = randint(2,6);
+        const doneWords = speed * doneMinutes;
+        const ans = totalMinutes - doneMinutes;
+        return {
+          difficulty:"medium",
+          prompt:`A typist needs to type a ${totalWords}-word document. After ${doneMinutes} minutes, they have typed ${doneWords} words. At the same speed, how many more minutes are needed to finish the document?`,
+          hint:`Find speed: ${doneWords} ÷ ${doneMinutes}. Total time = ${totalWords} ÷ speed. Subtract ${doneMinutes}.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // Tree planting (people-hours)
+      MED.push(() => {
+        const unit = randint(1,4); // trees per person-hour
+        const p1 = randint(4,6);
+        const h = randint(2,4);
+        const trees1 = p1 * h * unit;
+        const p2 = p1 + randint(1,3);
+        const ans = p2 * h * unit;
+        return {
+          difficulty:"medium",
+          prompt:`During a tree-planting event, Group A planted ${trees1} trees using ${p1} people working for ${h} hours. At the same rate, how many trees can Group B plant with ${p2} people working for ${h} hours?`,
+          hint:`Find trees per person-hour: ${trees1} ÷ (${p1}×${h}). Then multiply by ${p2}×${h}.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // Machines (machine-hours)
+      MED.push(() => {
+        const unit = choice([20,25,30,35,40,45,50,55,60]); // parts per machine-hour
+        const m1 = randint(3,5);
+        const h1 = randint(4,6);
+        const out1 = m1 * h1 * unit;
+        const m2 = m1 + randint(2,4);
+        const h2 = randint(3,5);
+        const ans = m2 * h2 * unit;
+        return {
+          difficulty:"medium",
+          prompt:`A workshop uses ${m1} identical machines for ${h1} hours to produce ${out1} parts. At the same rate, how many parts can ${m2} machines produce in ${h2} hours?`,
+          hint:`Find parts per machine-hour: ${out1} ÷ (${m1}×${h1}). Then multiply by ${m2}×${h2}.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // Workers: people halved, time increased (worker-hours)
+      HARD.push(() => {
+        const unit = randint(8,15); // parts per worker-hour
+        const people1 = choice([8,10,12]); // even
+        const hours1 = randint(2,4);
+        const out1 = people1 * hours1 * unit;
+        const people2 = people1 / 2;
+        const extra = randint(2,5);
+        const hours2 = hours1 + extra;
+        const ans = people2 * hours2 * unit;
+        return {
+          difficulty:"hard",
+          prompt:`A factory produces ${out1} parts using ${people1} workers working for ${hours1} hours. If the number of workers is reduced by half and the working time increases by ${extra} hours, how many parts can be produced at the same rate?`,
+          hint:`Find parts per worker-hour: ${out1} ÷ (${people1}×${hours1}). Then compute ${people2}×${hours2} worker-hours.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      /********************
+       * Previously added practice (coal / bakery)
+       ********************/
+      MED.push(() => {
+        const trucks1 = 3, trips1 = 5, total1 = 90, trucks2 = 4, total2 = 168;
+        const perTripForAllTrucks = total1 / trips1;          // 18
+        const perTruckPerTrip = perTripForAllTrucks / trucks1; // 6
+        const perTripWithTrucks2 = perTruckPerTrip * trucks2;  // 24
+        const ans = total2 / perTripWithTrucks2;               // 7
+        return {
+          difficulty:"medium",
+          prompt:`A factory used ${trucks1} trucks for ${trips1} trips to transport ${total1} tonnes of coal (each trip uses all the trucks once). At this rate, how many trips are needed to transport ${total2} tonnes of coal using ${trucks2} trucks?`,
+          hint:`Find tonnes per trip for all trucks: ${total1} ÷ ${trips1}. Then convert to tonnes per truck per trip, then tonnes per trip with ${trucks2} trucks.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      HARD.push(() => {
+        const totalNeed = 162, trucksA = 3, tripsA = 5, movedA = 90, trucksB = 4;
+        const perTripAllA = movedA / tripsA;          // 18
+        const perTruckPerTrip = perTripAllA / trucksA; // 6
+        const perTripAllB = perTruckPerTrip * trucksB; // 24
+        const remaining = totalNeed - movedA;          // 72
+        const ans = remaining / perTripAllB;           // 3
+        return {
+          difficulty:"hard",
+          prompt:`A factory needs to transport ${totalNeed} tonnes of coal. First, ${trucksA} trucks made ${tripsA} trips and transported ${movedA} tonnes (each trip uses all the trucks once). At the same rate, if ${trucksB} trucks are used next, how many more trips are needed to transport the remaining coal?`,
+          hint:`Tonnes per trip (all trucks together) = ${movedA} ÷ ${tripsA}. Convert to per truck per trip, then to per trip with ${trucksB} trucks. Remaining = ${totalNeed} − ${movedA}.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      HARD.push(() => {
+        const bakers1 = 5, hours1 = 2, boxes1 = 90, targetBoxes = 270, targetHours = 3;
+        const boxesPerBakerHour = boxes1 / (bakers1 * hours1); // 9
+        const bakersNeeded = targetBoxes / (boxesPerBakerHour * targetHours); // 10
+        const ans = bakersNeeded - bakers1; // 5
+        return {
+          difficulty:"hard",
+          prompt:`A bakery has ${bakers1} bakers who can make ${boxes1} cake boxes in ${hours1} hours. At the same rate, the school orders ${targetBoxes} boxes and wants them ready in ${targetHours} hours. How many more bakers must be added?`,
+          hint:`Find boxes per baker-hour: ${boxes1} ÷ (${bakers1}×${hours1}). Then bakers needed = ${targetBoxes} ÷ (rate × ${targetHours}).`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      /********************
+       * NEW: Add the 14 problems from your images (English + common names)
+       ********************/
+
+      // 1) Road crew: 10 days -> 800 m; 30 days -> ?
+      EASY.push(() => {
+        const ans = 2400;
+        return {
+          difficulty:"easy",
+          prompt:`A road crew repaired 800 metres of road in 10 days. At the same rate, how many metres can they repair in 30 days?`,
+          hint:`Find metres per day: 800 ÷ 10. Then multiply by 30.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // 2) Steel plant: 5 hours -> 30 tonnes; 24 hours -> ?
+      EASY.push(() => {
+        const ans = 144;
+        return {
+          difficulty:"easy",
+          prompt:`A steel plant produces 30 tonnes of iron in 5 hours. At the same rate, how many tonnes can it produce in 1 day (24 hours)?`,
+          hint:`Find tonnes per hour: 30 ÷ 5. Then multiply by 24.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // 3) Notebooks: $10 buys 5; buys 3 more notebooks than Jack
+      EASY.push(() => {
+        const [jack, lucy] = pickTwo();
+        const ans = 16;
+        return {
+          difficulty:"easy",
+          prompt:`${jack} spent $10 to buy 5 exercise books. ${lucy} bought 3 more exercise books than ${jack} at the same price. How much did ${lucy} spend?`,
+          hint:`Find the unit price: 10 ÷ 5 dollars per book. Then multiply by 8 books.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // 4) Seedlings: 3 days -> 270; 810 -> ? days
+      EASY.push(() => {
+        const ans = 9;
+        return {
+          difficulty:"easy",
+          prompt:`Student volunteers planted 270 seedlings in 3 days. At the same rate, how many days are needed to plant 810 seedlings?`,
+          hint:`Find seedlings per day: 270 ÷ 3. Then 810 ÷ (seedlings per day).`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // 5) Tunnel: 4 days -> 100 m; 3 km -> ? days
+      MED.push(() => {
+        const ans = 120;
+        return {
+          difficulty:"medium",
+          prompt:`A construction team drilled 100 metres of a tunnel in 4 days. At the same rate, how many days will it take to drill a 3 km (3000 m) tunnel?`,
+          hint:`Find metres per day: 100 ÷ 4. Then 3000 ÷ (metres per day).`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // 6) Floors: 1st -> 3rd in 30 s; from 3rd to 6th needs ?
+      MED.push(() => {
+        const [tom] = pickTwo();
+        const ans = 45;
+        return {
+          difficulty:"medium",
+          prompt:`${tom} took 30 seconds to go from the 1st floor to the 3rd floor. At the same speed, how many more seconds will it take to reach the 6th floor (from the 3rd floor)?`,
+          hint:`1st to 3rd is 2 floors. Time per floor = 30 ÷ 2. From 3rd to 6th is 3 floors.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // 7) Road: 3 days -> 6000 m; remaining is 2× repaired; total days?
+      MED.push(() => {
+        const ans = 9;
+        return {
+          difficulty:"medium",
+          prompt:`A road crew repaired 6000 metres of road in 3 days. The remaining unrepaired road is twice the repaired part. How many days in total will it take to finish the whole road at the same rate?`,
+          hint:`Remaining = 2×6000. Total distance = 6000 + remaining. Find metres per day, then total ÷ rate.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // 8) Telephone poles: pole 1 -> pole 12 is 22 min; total 40 min; which pole?
+      HARD.push(() => {
+        const ans = 21;
+        return {
+          difficulty:"hard",
+          prompt:`An old man walked from pole #1 to pole #12 in 22 minutes. The distance between each pair of neighbouring poles is the same and his walking speed is constant. If he walked for 40 minutes in total starting from pole #1, which pole number did he reach?`,
+          hint:`Pole 1 to 12 is 11 equal intervals. Time per interval = 22 ÷ 11. Then find how many intervals in 40 minutes.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // 9) Knitting: 5 people 2 days -> 80; 12 people 5 days -> ?
+      MED.push(() => {
+        const ans = 480;
+        return {
+          difficulty:"medium",
+          prompt:`A knitting group made 80 sweaters using 5 people working for 2 days. At the same rate, how many sweaters can be made by 12 people working for 5 days?`,
+          hint:`Find sweaters per person-day: 80 ÷ (5×2). Then multiply by 12×5.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // 10) Machines: 5 machines 8 hours -> 2000 kg; 7 machines 15 hours -> ?
+      MED.push(() => {
+        const ans = 5250;
+        return {
+          difficulty:"medium",
+          prompt:`A factory produced 2000 kg of nails using 5 identical machines for 8 hours. At the same rate, how many kilograms of nails can 7 machines produce in 15 hours?`,
+          hint:`Find kg per machine-hour: 2000 ÷ (5×8). Then multiply by 7×15.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // 11) Clothing: 15 people 4 days -> 180 sets; now 20 people 5 days; increase?
+      HARD.push(() => {
+        const ans = 120;
+        return {
+          difficulty:"hard",
+          prompt:`A clothing factory planned to make 180 uniform sets using 15 people in 4 days. Later the task increased. If everyone keeps the same efficiency and it will take 20 people 5 days to finish the new task, how many more uniform sets were added?`,
+          hint:`Find sets per person-day from 180 ÷ (15×4). Then compute the new total = rate × (20×5).`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // 12) Rice unloading: 2400 bags total; 4 workers 2 hours -> 400 bags; 10 workers finish remaining?
+      HARD.push(() => {
+        const ans = 4;
+        return {
+          difficulty:"hard",
+          prompt:`A store received 2400 bags of rice. 4 workers unloaded 400 bags in 2 hours. At the same rate, how many hours will 10 workers need to unload the remaining bags?`,
+          hint:`Find bags per worker-hour: 400 ÷ (4×2). Remaining = 2400 − 400. Then time = remaining ÷ (10 × rate).`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // 13) Cement: plan 24 days for 1200 tonnes; now +10 tonnes/day; finish earlier by ?
+      MED.push(() => {
+        const ans = 4;
+        return {
+          difficulty:"medium",
+          prompt:`A cement factory planned to produce 1200 tonnes of cement in 24 days. After a technical improvement, it produces 10 tonnes more per day than planned. How many days earlier can it finish?`,
+          hint:`Planned daily = 1200 ÷ 24. New daily = planned + 10. Find new time and compare.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      // 14) Water channel: total 520 m; first 4 days 320 m; remaining done in 2 days; daily difference?
+      HARD.push(() => {
+        const ans = 20;
+        return {
+          difficulty:"hard",
+          prompt:`A team must build a 520 m water channel. They built 320 m in the first 4 days. The remaining part must be finished in 2 days. How many metres per day more must they build in the last 2 days compared with the first 4 days?`,
+          hint:`First daily rate = 320 ÷ 4. Remaining = 520 − 320. Last daily rate = remaining ÷ 2. Subtract.`,
+          answer: ans,
+          answerText: String(ans),
+          svg: ""
+        };
+      });
+
+      /********************
+       * Build one set
+       ********************/
+      const needEasy = 4, needMed = 5, needHard = 3;
+      let selected = [];
+      selected = selected.concat(take(EASY, needEasy));
+      selected = selected.concat(take(MED, needMed));
+      selected = selected.concat(take(HARD, needHard));
+
+      // If any category is short, fill from the rest
+      const TOTAL = 12;
+      const all = shuffle(EASY.concat(MED).concat(HARD));
+      let guard = 0;
+      while(selected.length < TOTAL && guard++ < 200){
+        const q = all[guard % all.length]();
+        selected.push(q);
+      }
+
+      // Final shuffle so questions don't always group by difficulty
+      return shuffle(selected).slice(0, TOTAL);
+    }
+
+    /********************
+     * UI state + rendering
+     ********************/
+    let QUESTIONS = [];
+    let STATE = { answers:[], checked:[], correct:[], hintShown:[], submitted:false };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+    function niceDiff(d){
+      if(d==="easy") return "Easy";
+      if(d==="medium") return "Medium";
+      return "Hard";
+    }
+
+    function renderQuestions(){
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const userVal = STATE.answers[idx] ?? "";
+        const checked = !!STATE.checked[idx];
+        const correct = !!STATE.correct[idx];
+        const hintShown = !!STATE.hintShown[idx];
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${escapeHtml(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="q-body">
+            <div class="svg-wrap">${q.svg || ""}</div>
+
+            <div class="answer-area">
+              <div class="input-row">
+                <input type="text" inputmode="text" autocomplete="off"
+                  id="ans-${idx}" placeholder="Answer"
+                  value="${escapeHtml(userVal)}">
+                <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+                <button class="btn ghost" type="button" id="hint-${idx}">${hintShown ? "Hide Hint" : "Hint"}</button>
+              </div>
+
+              <div class="hint-box ${hintShown ? "show" : ""}" id="hintBox-${idx}">
+                ${escapeHtml(q.hint || "")}
+              </div>
+
+              <div class="feedback ${checked ? (correct ? "ok" : "bad") : ""}" id="fb-${idx}">
+                ${checked
+                  ? (correct
+                      ? "Correct ✅"
+                      : `Not correct ❌  (Correct answer: ${answerText(q)})`)
+                  : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        const inp = $(`#ans-${idx}`, card);
+        inp.addEventListener("input", () => {
+          STATE.answers[idx] = inp.value;
+          STATE.checked[idx] = false;
+          STATE.correct[idx] = false;
+          if(STATE.submitted){
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+          }
+          const fb = $(`#fb-${idx}`, card);
+          fb.className = "feedback";
+          fb.textContent = "";
+        });
+
+        $(`#check-${idx}`, card).addEventListener("click", () => checkOne(idx));
+        $(`#hint-${idx}`, card).addEventListener("click", () => {
+          STATE.hintShown[idx] = !STATE.hintShown[idx];
+          renderQuestions();
+        });
+      });
+
+      $("#resultsBox").style.display = "none";
+    }
+
+    function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const v = parseAnswer(STATE.answers[idx]);
+      STATE.checked[idx] = true;
+
+      if(!Number.isFinite(v)){
+        STATE.correct[idx] = false;
+        renderQuestions();
+        const fb = $(`#fb-${idx}`);
+        fb.className = "feedback bad";
+        fb.textContent = "Please enter a valid answer.";
+        return;
+      }
+
+      STATE.correct[idx] = isClose(v, q.answer);
+      renderQuestions();
+    }
+
+    function submitAll(){
+      let correctCount = 0;
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const v = parseAnswer(STATE.answers[i]);
+        STATE.checked[i] = true;
+        STATE.correct[i] = Number.isFinite(v) && isClose(v, q.answer);
+        if(STATE.correct[i]) correctCount++;
+      }
+
+      STATE.submitted = true;
+      renderQuestions();
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+
+      const lines = QUESTIONS.map((q,i)=>(
+        `<div style="margin:6px 0;"><b>Q${i+1}:</b> ${answerText(q)}</div>`
+      )).join("");
+
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:8px;"><b>Correct Answers:</b></div>
+        <div style="margin-top:6px;">${lines}</div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+    function resetAnswers(){
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    /********************
+     * Save Current Result as TXT
+     ********************/
+    function saveResult(){
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const when = new Date();
+      const dateStr = when.toLocaleString();
+      const elapsed = formatTime(TIMER.seconds);
+
+      let correctCount = 0;
+      const out = [];
+
+      out.push(`DYAA — Save Current Result`);
+      out.push(`Title: ${title}`);
+      out.push(`Student: ${student}`);
+      out.push(`Date: ${dateStr}`);
+      out.push(`Elapsed Time: ${elapsed}`);
+      out.push(``);
+
+      QUESTIONS.forEach((q, i) => {
+        const raw = (STATE.answers[i] ?? "").toString().trim();
+        const v = parseAnswer(raw);
+        const valid = Number.isFinite(v);
+        const isCorrect = valid && isClose(v, q.answer);
+        if(isCorrect) correctCount++;
+
+        out.push(`Q${i+1} (${String(q.difficulty||"").toUpperCase()}): ${q.prompt}`);
+        out.push(`Your answer: ${valid ? v : (raw ? raw : "(blank)")}`);
+        out.push(`Correct answer: ${answerText(q)}`);
+        out.push(`Result: ${isCorrect ? "Correct" : "Not correct"}`);
+        out.push(``);
+      });
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+      out.splice(5, 0, `Score: ${correctCount} / ${total} (${pct}%)`);
+
+      const text = out.join("\r\n");
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_result.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    /********************
+     * Tabs + Student name
+     ********************/
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $(`#panel-${tab}`).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", ""));
+      $("#studentNameValue").textContent = name ? name : "Anonymous";
+    }
+
+    /********************
+     * Generate New Set (resets timer)
+     ********************/
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+
+      // If any answers are not finite integers, your generator should ensure integer answers
+      // or you should adjust parseAnswer + correctness logic accordingly.
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+
+      resetTimer();
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set? This will clear your current answers and reset the timer.", () => {
+        generateNewSet();
+        // go to practice
+        $$('.tab').forEach(b=>b.classList.remove('active'));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$('.panel').forEach(p=>p.classList.remove('active'));
+        $('#panel-practice').classList.add('active');
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    /********************
+     * Learn diagram (EDIT / REPLACE)
+     ********************/
+    function renderLearnDiagram(){ /* No diagram for this topic */ }
+
+    /********************
+     * Export Learn PDF
+     * - Exports everything in the Learn tab
+     * - Auto splits into multiple A4 pages
+     ********************/
+    function stripIdsDeep(root){
+      if(!root) return;
+      if(root.removeAttribute) root.removeAttribute("id");
+      const els = root.querySelectorAll ? root.querySelectorAll("[id]") : [];
+      els.forEach(el => el.removeAttribute("id"));
+    }
+
+    function addCanvasAutoPagedToPdf(pdf, canvas, marginMm = 8){
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const usableW = pageW - marginMm * 2;
+      const usableH = pageH - marginMm * 2;
+
+      // scale to fit page width
+      const scale = usableW / canvas.width;
+      const sliceHpx = Math.floor(usableH / scale);
+
+      let y = 0;
+      let pageIndex = 0;
+
+      while(y < canvas.height){
+        const h = Math.min(sliceHpx, canvas.height - y);
+
+        const slice = document.createElement("canvas");
+        slice.width = canvas.width;
+        slice.height = h;
+
+        const ctx = slice.getContext("2d");
+        ctx.drawImage(canvas, 0, y, canvas.width, h, 0, 0, canvas.width, h);
+
+        const imgData = slice.toDataURL("image/png", 1.0);
+
+        if(pageIndex > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", marginMm, marginMm, usableW, h * scale, undefined, "FAST");
+
+        y += h;
+        pageIndex++;
+      }
+    }
+
+    async function exportLearnPdf(){
+      const libsOk = (window.html2canvas && window.jspdf && window.jspdf.jsPDF);
+      if(!libsOk){
+        alert("PDF export needs html2canvas + jsPDF. Please check your connection (CDN) or include the libraries locally.");
+        return;
+      }
+
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+
+      const exportRoot = document.createElement("div");
+      exportRoot.className = "export-root";
+      document.body.appendChild(exportRoot);
+
+      const sheet = document.createElement("div");
+      sheet.className = "export-learn-sheet";
+      sheet.innerHTML = `
+        <div class="export-header">
+          <div>
+            <div class="export-title">${escapeHtml(title)} — Learn</div>
+            <div class="export-sub">Student: ${escapeHtml(student)} • Date: ${escapeHtml(dateStr)}</div>
+          </div>
+        </div>
+        <div class="export-content"></div>
+      `;
+
+      const content = sheet.querySelector(".export-content");
+      const learnPanel = $("#panel-learn").cloneNode(true);
+      stripIdsDeep(learnPanel);
+      learnPanel.classList.add("active");
+      content.appendChild(learnPanel);
+
+      exportRoot.appendChild(sheet);
+
+      // allow layout to settle
+      await new Promise(r => requestAnimationFrame(()=>requestAnimationFrame(r)));
+
+      const canvas = await window.html2canvas(sheet, {
+        scale: 2,
+        backgroundColor: "#ffffff",
+        useCORS: true
+      });
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+
+      addCanvasAutoPagedToPdf(pdf, canvas, 8);
+
+      pdf.save(`${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_Learn.pdf`);
+      exportRoot.remove();
+    }
+
+    $("#exportLearnBtn")?.addEventListener("click", exportLearnPdf);
+
+
+    /********************
+     * Export Questions PDF
+     * - PDF per page: 2 / 3 / 6 (default 2)
+     * - Answers at the end (separate page(s), auto paged)
+     ********************/
+    function layoutClass(perPage){
+      if(perPage === 6) return "six";
+      if(perPage === 3) return "three";
+      return "two";
+    }
+
+    function buildQuestionPageDOM(indexGroup, perPage, meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">${escapeHtml(meta.title)}</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)} • Time: ${escapeHtml(meta.timeStr)}
+          </div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const grid = document.createElement("div");
+      grid.className = `export-qgrid ${layoutClass(perPage)}`;
+
+      indexGroup.forEach(i => {
+        const q = QUESTIONS[i];
+        const box = document.createElement("div");
+        box.className = "export-q";
+        box.innerHTML = `
+          <div class="qprompt">Q${i+1}. ${escapeHtml(q.prompt)}</div>
+          <div class="export-diagram">${stripSvgNote(q.svg || "")}</div>
+          <div class="export-answerline">Answer: <span></span></div>
+        `;
+        grid.appendChild(box);
+      });
+
+      content.appendChild(grid);
+      page.appendChild(header);
+      page.appendChild(content);
+      return page;
+    }
+
+    function createAnswerPage(meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">Answers — ${escapeHtml(meta.title)}</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)}
+          </div>
+          <div class="answers-note">These are the correct answers for the exported question set.</div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const list = document.createElement("div");
+      list.className = "answers-list";
+      content.appendChild(list);
+
+      page.appendChild(header);
+      page.appendChild(content);
+
+      return { page, content, list };
+    }
+
+    async function exportQuestionsPdf(){
+      const perPage = Number($("#pdfPerPage").value) || 2;
+
+      const libsOk = (window.html2canvas && window.jspdf && window.jspdf.jsPDF);
+      if(!libsOk){
+        alert("PDF export needs html2canvas + jsPDF. Please check your connection (CDN) or include the libraries locally.");
+        return;
+      }
+
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+      const timeStr = $("#timerValue").textContent;
+
+      const exportRoot = document.createElement("div");
+      exportRoot.className = "export-root";
+      document.body.appendChild(exportRoot);
+
+      // Question pages
+      const idxs = QUESTIONS.map((_,i)=>i);
+      for(let i=0;i<idxs.length;i+=perPage){
+        const group = idxs.slice(i, i+perPage);
+        exportRoot.appendChild(buildQuestionPageDOM(group, perPage, { title, student, dateStr, timeStr }));
+      }
+
+      // Answer pages (auto paged)
+      let ap = createAnswerPage({ title, student, dateStr });
+      exportRoot.appendChild(ap.page);
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const item = document.createElement("div");
+        item.textContent = `Q${i+1}: ${answerText(QUESTIONS[i])}`;
+        ap.list.appendChild(item);
+
+        if(ap.content.scrollHeight > ap.content.clientHeight){
+          ap.list.removeChild(item);
+          ap = createAnswerPage({ title, student, dateStr });
+          exportRoot.appendChild(ap.page);
+          ap.list.appendChild(item);
+        }
+      }
+
+      // Render to PDF
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+
+      const pages = Array.from(exportRoot.querySelectorAll(".export-page"));
+      const marginMm = 8;
+
+      for(let i=0;i<pages.length;i++){
+        const pageEl = pages[i];
+
+        const canvas = await window.html2canvas(pageEl, {
+          scale: 2,
+          backgroundColor: "#ffffff",
+          useCORS: true
+        });
+
+        const imgData = canvas.toDataURL("image/png", 1.0);
+
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = pdf.internal.pageSize.getHeight();
+        const usableW = pageW - marginMm*2;
+        const usableH = pageH - marginMm*2;
+
+        const imgH = canvas.height * (usableW / canvas.width);
+
+        let drawW = usableW;
+        let drawH = imgH;
+
+        if(drawH > usableH){
+          drawH = usableH;
+          drawW = canvas.width * (drawH / canvas.height);
+        }
+
+        const x = (pageW - drawW) / 2;
+        const y = marginMm;
+
+        if(i > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", x, y, drawW, drawH, undefined, "FAST");
+      }
+
+      pdf.save(`${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_Questions.pdf`);
+      exportRoot.remove();
+    }
+
+    $("#exportQuestionsBtn").addEventListener("click", exportQuestionsPdf);
+
+    /********************
+     * Init
+     ********************/
+    function applyTemplateMeta(){
+      document.title = TEMPLATE_META.title;
+      $("#pageTitle").textContent = TEMPLATE_META.title;
+      $("#pageSubtitle").textContent = TEMPLATE_META.subtitle;
+      $("#instructionsText").textContent = TEMPLATE_META.instructions;
+    }
+
+    applyTemplateMeta();
+    ensureStudentName();
+        updateTimerUI();
+    startTimerTick();
+    generateNewSet();
+  </script>
+</body>
+</html>
