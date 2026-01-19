@@ -1,0 +1,2961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NZ Year 7 Maths Test (Practice / Exam)</title>
+
+  <style>
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:#f4f4f9;
+      margin:0; padding:20px;
+      color:#333;
+    }
+    .quiz-container{
+      max-width:980px;
+      margin:40px auto;
+      background:#fff;
+      padding:30px;
+      border-radius:12px;
+      box-shadow:0 6px 15px rgba(0,0,0,0.1);
+      position:relative;
+    }
+    #headerLogo{
+      display:flex; align-items:center;
+      margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:10px;
+      gap:12px;
+    }
+    .logo-icon{
+      width:40px; height:40px;
+      background:#0d47a1; border-radius:6px;
+      position:relative;
+      flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:20px;height:9px;
+      background:#ff9800;
+      top:-6px; left:22px;
+      border-radius:3px;
+    }
+    .logo-text{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      line-height:1.05;
+    }
+    .logo-text .brand{
+      font-weight:900;
+      letter-spacing:1px;
+      color:#0d47a1;
+      font-size:1.05em;
+    }
+    .logo-text .edu{
+      font-size:0.9em;
+      color:#ff9800;
+      font-weight:900;
+      letter-spacing:0.6px;
+    }
+
+    .top-bar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin:10px 0 6px;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .top-left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .mode-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#eef2ff;
+      border:1px solid #dfe5ff;
+      font-weight:800;
+      font-size:0.9em;
+      color:#222;
+      display:none;
+    }
+    .timer-box{
+      padding:8px 12px;
+      border:1px solid #e0e0e0;
+      border-radius:10px;
+      background:#fafafa;
+      font-weight:800;
+      font-size:0.95em;
+      display:none;
+    }
+    .timer-box .paused-tag{
+      display:inline-block;
+      margin-left:8px;
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid #ffd0d0;
+      background:#fff2f2;
+      color:#b00020;
+      font-weight:900;
+      font-size:0.85em;
+      display:none;
+    }
+
+    .top-right{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .top-right button{
+      padding:10px 16px;
+      border:none;
+      color:#fff;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:0.98em;
+      font-weight:800;
+    }
+    #generateButton{ background:#ff9800; display:none; }
+    #pauseResumeButton{ background:#607d8b; display:none; }
+    #resetButton{ background:#455a64; display:none; }
+    #exportPdfButton{ background:#6a1b9a; display:none; }
+
+    .quiz-main{
+      display:flex; gap:20px;
+      margin-top:10px;
+    }
+    .sidebar{
+      width:250px;
+      border-right:1px solid #ddd;
+      padding-right:10px;
+      display:none;
+    }
+    .sidebar h4{
+      margin:0 0 8px;
+      font-size:0.95em;
+      border-bottom:1px solid #eee;
+      padding-bottom:4px;
+    }
+    .sidebar .sub{
+      font-size:0.86em;
+      color:#666;
+      margin:4px 0 10px;
+      line-height:1.35;
+    }
+    .sidebar ul{ list-style:none; padding:0; margin:0; }
+    .sidebar li{
+      padding:6px;
+      cursor:pointer;
+      border-radius:6px;
+      font-size:0.9em;
+      user-select:none;
+      margin-bottom:6px;
+      border:1px solid transparent;
+      background:#fafafa;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+    }
+    .sidebar li:hover{ border-color:#e6e6e6; }
+    .sidebar li.active{ outline:2px solid #1976d2; font-weight:800; background:#fff; }
+    .sidebar li.correct{ background:#d4edda; border-left:4px solid #28a745; }
+    .sidebar li.incorrect{ background:#f8d7da; border-left:4px solid #f44336; }
+    .sidebar li.answered{ border-left:4px solid #4caf50; background:#fdfdfd; }
+    .pts-badge{
+      font-size:0.78em;
+      font-weight:900;
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid #e0e0e0;
+      background:#fff;
+      color:#444;
+      flex:0 0 auto;
+    }
+
+    #quizContent{ flex:1; min-width:0; }
+
+    h2{
+      margin:10px 0 6px;
+      font-size:1.5em;
+      color:#111;
+    }
+    .meta-line{
+      margin:0 0 6px;
+      color:#555;
+      font-size:0.95em;
+    }
+    .question-text{
+      font-size:1.05em;
+      margin:10px 0 8px;
+      font-weight:800;
+    }
+    .instructions{
+      font-size:0.92em;
+      color:#555;
+      margin:0 0 12px;
+      line-height:1.45;
+    }
+    .part-title{
+      font-weight:900;
+      margin:10px 0 8px;
+      color:#0d47a1;
+    }
+    .points-line{
+      margin:0 0 10px;
+      color:#444;
+      font-size:0.92em;
+      font-weight:900;
+    }
+    .single-question{
+      margin-top:8px;
+      line-height:1.55;
+      font-size:1.02em;
+    }
+
+    .answer-box{
+      width:min(560px, 96%);
+      padding:8px 10px;
+      font-size:1em;
+      margin-top:8px;
+      border:1px solid #cfcfcf;
+      border-radius:10px;
+      outline:none;
+    }
+    .answer-box:focus{ border-color:#1976d2; box-shadow:0 0 0 3px rgba(25,118,210,0.12); }
+
+    .hint-toggle{
+      margin-top:12px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:10px;
+      border:1px solid #e0e0e0;
+      background:#fafafa;
+      cursor:pointer;
+      font-weight:900;
+      user-select:none;
+    }
+    .hint-toggle:disabled{
+      cursor:not-allowed;
+      opacity:0.6;
+    }
+    .hint-box{
+      margin-top:10px;
+      padding:10px 12px;
+      background:#f7f7ff;
+      border:1px solid #e6e6ff;
+      border-radius:10px;
+      font-size:0.92em;
+      color:#444;
+      line-height:1.45;
+      display:none;
+    }
+    .hint-box b{ color:#111; }
+
+    .check-feedback{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid #e0e0e0;
+      background:#fafafa;
+      font-size:0.95em;
+      display:none;
+      white-space:pre-wrap;
+      line-height:1.45;
+    }
+    .check-feedback.neutral{ display:block; background:#f6f7fb; border-color:#e2e6ff; }
+    .check-feedback.correct{ display:block; background:#d4edda; border-color:#28a745; }
+    .check-feedback.incorrect{ display:block; background:#f8d7da; border-color:#f44336; }
+
+    .question-buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+      align-items:center;
+    }
+    .question-buttons button{
+      padding:10px 18px;
+      border:none;
+      color:#fff;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:1em;
+      font-weight:900;
+    }
+    #nextButton{ background:#4caf50; }
+    #backButton{ background:#039be5; }
+    #submitButton{ background:#9c27b0; }
+    #checkButton{ background:#00897b; }
+    #submitPracticeButton{ background:#455a64; }
+    #saveButton{ background:#607d8b; }
+
+    table.review-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:18px;
+    }
+    .review-table th, .review-table td{
+      border:1px solid #ccc;
+      padding:6px;
+      font-size:0.85em;
+      text-align:center;
+      vertical-align:top;
+    }
+    .review-table th{ background:#f2f2f2; }
+    .correct-answer{ background:#d4edda; }
+    .incorrect-answer{ background:#f8d7da; }
+
+    @media (max-width:760px){
+      .quiz-main{ flex-direction:column; }
+      .sidebar{
+        width:100%;
+        border-right:none;
+        border-bottom:1px solid #ddd;
+        margin-bottom:10px;
+        padding-bottom:10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text">
+      <div class="brand">DYAA</div>
+      <div class="edu">EDUCATION</div>
+    </div>
+  </div>
+
+  <div class="top-bar">
+    <div class="top-left">
+      <span id="modePill" class="mode-pill"></span>
+      <div id="timerBox" class="timer-box">
+        <span id="timerLabel">Time: 00:00</span>
+        <span id="pausedTag" class="paused-tag">PAUSED</span>
+      </div>
+    </div>
+    <div class="top-right">
+      <button id="pauseResumeButton">Pause</button>
+      <button id="exportPdfButton">Export PDF</button>
+      <button id="generateButton">Generate New Set</button>
+      <button id="resetButton">Back to Start</button>
+    </div>
+  </div>
+
+  <h2>NZ Year 7 Maths Test</h2>
+  <p class="meta-line" id="metaLine"></p>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+</div>
+
+<script>
+/* ==========================================================
+   NZ Year 7 Maths Test (Practice / Exam)
+   ✅ 30 questions per set, total 100 points
+   ✅ No repeated question TYPES within one set (unique templates)
+   ✅ TEXT-ONLY (no diagrams / images)
+   ✅ NO mixed numbers anywhere: if a value > 1 is a fraction, it must be an improper fraction
+========================================================== */
+
+/* ---------------- URL name ---------------- */
+function getStudentNameFromURL(){
+  try{
+    const params = new URLSearchParams(window.location.search || "");
+    const raw = params.get("name");
+    if (!raw) return "";
+    return decodeURIComponent(raw.replace(/\+/g, "%20")).trim();
+  }catch(e){ return ""; }
+}
+const URL_STUDENT_NAME = getStudentNameFromURL();
+
+/* ---------------- Utilities ---------------- */
+function randInt(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+function choice(arr){ return arr[randInt(0, arr.length - 1)]; }
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i=a.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function gcd(a,b){
+  a = Math.abs(a); b = Math.abs(b);
+  while(b){ const t=a%b; a=b; b=t; }
+  return a || 1;
+}
+function gcd3(a,b,c){ return gcd(gcd(a,b),c); }
+function lcm(a,b){ return Math.abs(a / gcd(a,b) * b); }
+function stripHTML(html){
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return (tmp.textContent || tmp.innerText || "").trim();
+}
+function pad2(n){ return String(n).padStart(2,"0"); }
+function roundToDp(x, dp){
+  const p = Math.pow(10, dp);
+  return Math.round(x*p)/p;
+}
+
+/* ---------------- Random names / contexts ---------------- */
+const NAMES = ["Samantha","Cynthia","Natalie","Ally","Peter","Wayne","Rita","Fernando","Donna","Jacob","Clifford",
+              "Melissa","Claire","Eliza","Harry","William","Charlie","Lenny","Frank","Marie","Eric","Jordan","Ava",
+              "Noah","Mia","Lucas","Grace","Ethan","Olivia","Zoe","Oscar","Amelia"];
+function randName(){ return choice(NAMES); }
+
+const ITEMS = ["storybook","comic book","notebook","water bottle","pencil case","set of pens","math workbook","sandwich","movie ticket"];
+const PLACES = ["a local shop","a school canteen","a weekend market","a bookstore","a stationery store","a small café"];
+
+/* ---------------- Fraction helpers (NO mixed numbers) ---------------- */
+function parseFraction(s){
+  const raw = String(s || "").trim().replace(/−/g,"-");
+  if (!raw) return null;
+
+  if (/^-?\d+$/.test(raw)){
+    return { a: Number(raw), b: 1 };
+  }
+
+  const t = raw.replace(/\s+/g, "");
+  const m = t.match(/^(-?\d+)\/(\d+)$/);
+  if (!m) return null;
+
+  const a = Number(m[1]), b = Number(m[2]);
+  if (!Number.isInteger(a) || !Number.isInteger(b) || b === 0) return null;
+  return { a, b };
+}
+function reduceFraction(a,b){
+  const g = gcd(a,b);
+  const sign = (a<0) ? -1 : 1;
+  a = Math.abs(a);
+  return { a: sign*(a/g), b: b/g };
+}
+function fracToString(a,b){
+  const r = reduceFraction(a,b);
+  if (r.b === 1) return String(r.a);
+  return `${r.a}/${r.b}`;
+}
+function isIntegerLike(x){ return Number.isFinite(x) && Math.abs(x - Math.round(x)) < 1e-9; }
+
+/* ---------------- Other parsers ---------------- */
+function parseIntStrict(str){
+  let s = (str || "").trim();
+  if (!s) return NaN;
+  s = s.replace(/−/g,"-").replace(/,/g,"");
+  if (!/^-?\d+$/.test(s)) return NaN;
+  const v = Number(s);
+  return Number.isFinite(v) ? v : NaN;
+}
+function parseDecimalStrict(str){
+  let s = (str || "").trim();
+  if (!s) return NaN;
+  s = s.replace(/,/g,"");
+  if (!/^-?\d+(\.\d+)?$/.test(s)) return NaN;
+  const v = Number(s);
+  return Number.isFinite(v) ? v : NaN;
+}
+
+/* ---- Money ---- */
+function parseMoneyToCents(s){
+  let t = String(s||"").trim();
+  if (!t) return NaN;
+  t = t.replace(/\$/g,"").replace(/,/g,"").trim();
+  if (!/^\-?\d+(\.\d{1,2})?$/.test(t)) return NaN;
+  const neg = t.startsWith("-");
+  if (neg) t = t.slice(1);
+  const parts = t.split(".");
+  const dollars = Number(parts[0]);
+  const cents = parts.length === 2 ? Number((parts[1] + "00").slice(0,2)) : 0;
+  const v = dollars*100 + cents;
+  return neg ? -v : v;
+}
+function centsToMoney(c){ return `$${(c/100).toFixed(2)}`; }
+
+/* ---- Ratio ---- */
+function parseRatioN(s, count){
+  const t = String(s||"").toLowerCase().trim();
+  if (!t) return null;
+  const nums = t.match(/\-?\d+/g);
+  if (!nums || nums.length < count) return null;
+  const vals = nums.slice(0,count).map(x=>Number(x));
+  if (vals.some(v => !Number.isInteger(v))) return null;
+  if (vals.some(v => v === 0)) return null;
+  if (count === 2){
+    const g = gcd(vals[0], vals[1]);
+    return [vals[0]/g, vals[1]/g];
+  }
+  if (count === 3){
+    const g = gcd3(vals[0], vals[1], vals[2]);
+    return [vals[0]/g, vals[1]/g, vals[2]/g];
+  }
+  return vals;
+}
+
+/* ---- Time ---- */
+function parseTimeToMinutes(str){
+  let s = String(str||"").toLowerCase().trim();
+  if (!s) return NaN;
+
+  s = s.replace(/\./g,":").replace(/\s+/g," ").trim();
+
+  let m24 = s.match(/^(\d{1,2}):(\d{2})$/);
+  if (m24){
+    const hh = Number(m24[1]), mm = Number(m24[2]);
+    if (hh>=0 && hh<=23 && mm>=0 && mm<=59) return hh*60+mm;
+  }
+  const m12 = s.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)$/);
+  if (!m12) return NaN;
+  let hh = Number(m12[1]);
+  let mm = m12[2] ? Number(m12[2]) : 0;
+  const ap = m12[3];
+  if (!(hh>=1 && hh<=12 && mm>=0 && mm<=59)) return NaN;
+  if (hh === 12) hh = 0;
+  let mins = hh*60 + mm;
+  if (ap === "pm") mins += 12*60;
+  return mins;
+}
+function minutesToTime12(mins){
+  mins = ((mins%1440)+1440)%1440;
+  let hh24 = Math.floor(mins/60);
+  const mm = mins%60;
+  const ap = hh24 >= 12 ? "pm" : "am";
+  let hh12 = hh24 % 12;
+  if (hh12 === 0) hh12 = 12;
+  return `${hh12}:${pad2(mm)} ${ap}`;
+}
+
+/* ---------------- Answer compare ---------------- */
+function compareByType(userStr, correct){
+  const ans = String(userStr||"").trim();
+  if (ans === "") return { ok:false, empty:true };
+
+  if (correct.type === "integer"){
+    const u = parseIntStrict(ans);
+    if (!Number.isInteger(u)) return { ok:false, empty:false };
+    return { ok: u === correct.value, empty:false };
+  }
+
+  if (correct.type === "decimal"){
+    const u = parseDecimalStrict(ans);
+    if (!Number.isFinite(u)) return { ok:false, empty:false };
+    if (Number.isInteger(correct.dp)){
+      const uu = roundToDp(u, correct.dp);
+      const cc = roundToDp(correct.value, correct.dp);
+      return { ok: uu === cc, empty:false };
+    }
+    return { ok: Math.abs(u - correct.value) < 1e-9, empty:false };
+  }
+
+  if (correct.type === "money"){
+    const u = parseMoneyToCents(ans);
+    if (!Number.isFinite(u)) return { ok:false, empty:false };
+    return { ok: u === correct.cents, empty:false };
+  }
+
+  if (correct.type === "fraction"){
+    const f = parseFraction(ans);
+    if (!f) return { ok:false, empty:false };
+    const r = reduceFraction(f.a,f.b);
+    return { ok: (r.a === correct.a && r.b === correct.b), empty:false };
+  }
+
+  if (correct.type === "ratio2"){
+    const r = parseRatioN(ans, 2);
+    if (!r) return { ok:false, empty:false };
+    return { ok: (r[0] === correct.values[0] && r[1] === correct.values[1]), empty:false };
+  }
+
+  if (correct.type === "ratio3"){
+    const r = parseRatioN(ans, 3);
+    if (!r) return { ok:false, empty:false };
+    return { ok: (r[0] === correct.values[0] && r[1] === correct.values[1] && r[2] === correct.values[2]), empty:false };
+  }
+
+  if (correct.type === "time"){
+    const u = parseTimeToMinutes(ans);
+    if (!Number.isFinite(u)) return { ok:false, empty:false };
+    return { ok: u === correct.mins, empty:false };
+  }
+
+  if (correct.type === "choiceWord"){
+    const u = String(ans||"").toLowerCase().replace(/\s+/g," ").trim();
+    return { ok: correct.allowed.includes(u), empty:false };
+  }
+
+  return { ok:false, empty:false };
+}
+
+/* ---------------- Question model ---------------- */
+function makeQ(index, partIndex, partName, points, html, correct, displayCorrect, answerHint, hint){
+  return {
+    index,
+    partIndex,
+    partName,
+    points,
+    html,
+    plain: stripHTML(html),
+    correct,
+    displayCorrect,
+    answerHint,
+    hint,
+    userValue:"",
+    checked:false,
+    isCorrect:false,
+    hintShown:false
+  };
+}
+
+/* ---------------- Points: 30 questions, total 100 ---------------- */
+function buildPointsArray(){
+  const pts = [];
+  for (let i=0;i<5;i++) pts.push(2);   // 10
+  for (let i=0;i<10;i++) pts.push(3);  // 30 -> 40
+  for (let i=0;i<15;i++) pts.push(4);  // 60 -> 100
+  return pts;
+}
+const POINTS = buildPointsArray();
+const TOTAL_POINTS = POINTS.reduce((a,b)=>a+b,0);
+
+/* ==========================================================
+   Parts (Year 7)
+========================================================== */
+const PARTS = [
+  "Number (Integers & Indices)",
+  "Fractions & Decimals",
+  "Percentages & Financial Maths",
+  "Ratio, Rate & Proportion",
+  "Algebra",
+  "Measurement",
+  "Geometry",
+  "Statistics & Probability"
+];
+
+function T(id, partIndex, html, correct, displayCorrect, answerHint, hint){
+  return { id, partIndex, partName: PARTS[partIndex], html, correct, displayCorrect, answerHint, hint };
+}
+
+/* ==========================================================
+   YEAR 7 TEMPLATE BANK
+========================================================== */
+
+/* ---------------- EASY (2 pts) ---------------- */
+function tplE_integerCompare(){
+  const a = randInt(-30, 30);
+  let b = randInt(-30, 30);
+  while (b === a) b = randInt(-30, 30);
+  const correct = (a > b) ? ">" : "<";
+  return T("E_intCompare", 0,
+    `Fill in the blank with <b>&lt;</b> or <b>&gt;</b>:<br><br><b>${a}</b> ____ <b>${b}</b>`,
+    {type:"choiceWord", allowed:[correct]},
+    correct,
+    `Type < or >`,
+    `On a number line, the number further to the right is greater.`
+  );
+}
+function tplE_orderOps(){
+  const a = randInt(6, 30);
+  const b = randInt(2, 12);
+  const c = randInt(2, 9);
+  const d = randInt(1, 15);
+  const ans = a + b*c - d;
+  return T("E_orderOps", 0,
+    `Calculate: <b>${a} + ${b} × ${c} − ${d}</b>.`,
+    {type:"integer", value:ans},
+    String(ans),
+    `Enter an integer.`,
+    `Do multiplication first, then add/subtract.`
+  );
+}
+function tplE_squareAndSubtract(){
+  const x = randInt(5, 15);
+  const y = randInt(2, 12);
+  const ans = x*x - y*y;
+  return T("E_squares", 0,
+    `Calculate: <b>${x}² − ${y}²</b>.`,
+    {type:"integer", value:ans},
+    String(ans),
+    `Enter an integer.`,
+    `Square each number first, then subtract.`
+  );
+}
+function tplE_roundNearest100(){
+  let n = randInt(150, 9950);
+  while (n % 100 === 0) n = randInt(150, 9950);
+  const rounded = Math.round(n/100)*100;
+  return T("E_round100", 0,
+    `Round <b>${n.toLocaleString("en-NZ")}</b> to the nearest <b>100</b>.`,
+    {type:"integer", value:rounded},
+    rounded.toLocaleString("en-NZ"),
+    `Enter an integer.`,
+    `Look at the last two digits.`
+  );
+}
+function tplE_simplifyFraction(){
+  const base = choice([[2,3],[3,4],[3,5],[4,5],[5,6],[5,8],[7,9]]);
+  const k = randInt(2, 9);
+  const n = base[0]*k, d = base[1]*k;
+  const r = reduceFraction(n,d);
+  return T("E_simplifyFrac", 1,
+    `Express this fraction in simplest form: <b>${n}/${d}</b>`,
+    {type:"fraction", a:r.a, b:r.b},
+    `${r.a}/${r.b}`,
+    `Answer as a/b in simplest form (no mixed numbers).`,
+    `Divide top and bottom by the greatest common factor.`
+  );
+}
+function tplE_unitConvert_mm_cm(){
+  const cm = randInt(12, 95);
+  const mm = cm*10;
+  return T("E_mmToCm", 5,
+    `Convert <b>${mm} mm</b> to <b>centimetres</b>.`,
+    {type:"integer", value:cm},
+    `${cm} cm`,
+    `Enter an integer (cm).`,
+    `10 mm = 1 cm, so divide by 10.`
+  );
+}
+function tplE_decimalAdd(){
+  const a = randInt(12, 98)/10;
+  const b = randInt(12, 98)/10;
+  const ans = a + b;
+  return T("E_decAdd1dp", 1,
+    `Calculate: <b>${a.toFixed(1)} + ${b.toFixed(1)}</b>. Give your answer to <b>1 decimal place</b>.`,
+    {type:"decimal", value:ans, dp:1},
+    roundToDp(ans,1).toFixed(1),
+    `Enter a decimal (1 dp).`,
+    `Line up the decimal points, then add.`
+  );
+}
+function tplE_ratioSimplify_reducible(){
+  let u = randInt(2, 15);
+  let v = randInt(2, 15);
+  while (gcd(u,v) !== 1){
+    u = randInt(2, 15);
+    v = randInt(2, 15);
+  }
+  const k = randInt(2, 9);
+  const a = u*k, b = v*k;
+  return T("E_ratioSimplify", 3,
+    `Simplify this ratio: <b>${a}:${b}</b>.`,
+    {type:"ratio2", values:[u,v]},
+    `${u}:${v}`,
+    `Answer as a:b in simplest form.`,
+    `Divide both parts by the highest common factor.`
+  );
+}
+
+/* ---- EASY expansions: more unit conversions ---- */
+function tplE_unitConvert_cm_mm(){
+  const cm = randInt(5, 90);
+  const mm = cm*10;
+  return T("E_cmToMm", 5,
+    `Convert <b>${cm} cm</b> to <b>millimetres</b>.`,
+    {type:"integer", value:mm},
+    `${mm} mm`,
+    `Enter an integer (mm).`,
+    `1 cm = 10 mm, so multiply by 10.`
+  );
+}
+function tplE_unitConvert_m_cm_to_cm(){
+  const m = randInt(1, 9);
+  const cm = randInt(5, 95);
+  const total = m*100 + cm;
+  return T("E_mCmToCm", 5,
+    `Convert <b>${m} m ${cm} cm</b> to <b>centimetres</b>.`,
+    {type:"integer", value:total},
+    `${total} cm`,
+    `Enter an integer (cm).`,
+    `1 m = 100 cm. Convert metres to cm, then add.`
+  );
+}
+function tplE_unitConvert_L_mL(){
+  const L = randInt(1, 6);
+  const mL = choice([100,150,200,250,300,350,400,450,500,600,750,900]);
+  const total = L*1000 + mL;
+  return T("E_LmLToMl", 5,
+    `A bottle contains <b>${L} L</b> and <b>${mL} mL</b> of water. What is the total in <b>mL</b>?`,
+    {type:"integer", value:total},
+    `${total} mL`,
+    `Enter an integer (mL).`,
+    `1 L = 1000 mL.`
+  );
+}
+function tplE_unitConvert_kg_g(){
+  const kg = randInt(1, 9);
+  const g = choice([100,200,300,400,500,600,700,800,900]);
+  const total = kg*1000 + g;
+  return T("E_kgGToG", 5,
+    `A bag has a mass of <b>${kg} kg</b> and <b>${g} g</b>. What is the total mass in <b>grams</b>?`,
+    {type:"integer", value:total},
+    `${total} g`,
+    `Enter an integer (g).`,
+    `1 kg = 1000 g.`
+  );
+}
+function tplE_unitConvert_min_sec(){
+  const mins = randInt(2, 18);
+  const secs = choice([10,15,20,25,30,35,40,45,50]);
+  const total = mins*60 + secs;
+  return T("E_minSecToSec", 5,
+    `Convert <b>${mins} min ${secs} s</b> to <b>seconds</b>.`,
+    {type:"integer", value:total},
+    `${total} s`,
+    `Enter an integer (seconds).`,
+    `1 minute = 60 seconds.`
+  );
+}
+
+/* ---- EASY expansions: fraction/decimal/percent interchange ---- */
+function tplE_fracToPercent(){
+  const opts = [
+    {a:1,b:2},{a:1,b:4},{a:3,b:4},{a:2,b:5},{a:3,b:5},{a:1,b:5},{a:4,b:5},{a:3,b:8},{a:5,b:8}
+  ];
+  const f = choice(opts);
+  const pct = Math.round((f.a/f.b)*100);
+  return T("E_fracToPct", 1,
+    `Convert <b>${f.a}/${f.b}</b> to a <b>percentage</b>. (Enter a whole number, no % sign.)`,
+    {type:"integer", value:pct},
+    `${pct}%`,
+    `Enter a whole number (no % sign).`,
+    `Multiply the fraction by 100 to get a percentage.`
+  );
+}
+function tplE_percentToFraction(){
+  const opts = [
+    {pct:25, a:1,b:4},
+    {pct:20, a:1,b:5},
+    {pct:40, a:2,b:5},
+    {pct:50, a:1,b:2},
+    {pct:75, a:3,b:4},
+    {pct:60, a:3,b:5},
+    {pct:12, a:3,b:25},
+    {pct:30, a:3,b:10}
+  ];
+  const o = choice(opts);
+  return T("E_pctToFrac", 1,
+    `Convert <b>${o.pct}%</b> to a fraction in simplest form.`,
+    {type:"fraction", a:o.a, b:o.b},
+    `${o.a}/${o.b}`,
+    `Answer as a/b in simplest form (no mixed numbers).`,
+    `Write ${o.pct}% as ${o.pct}/100, then simplify.`
+  );
+}
+function tplE_decimalToPercent(){
+  const opts = [0.12,0.35,0.4,0.07,0.18,0.5,0.25,0.6,0.75,0.09];
+  const d = choice(opts);
+  const pct = Math.round(d*100);
+  return T("E_decToPct", 1,
+    `Convert <b>${d.toFixed(2)}</b> to a percentage. (Enter a whole number, no % sign.)`,
+    {type:"integer", value:pct},
+    `${pct}%`,
+    `Enter a whole number (no % sign).`,
+    `Multiply the decimal by 100.`
+  );
+}
+function tplE_percentToDecimal(){
+  const pct = choice([5,10,12,15,20,25,30,35,40,50,60,75,80,90]);
+  const d = pct/100;
+  return T("E_pctToDec", 1,
+    `Convert <b>${pct}%</b> to a decimal. Give your answer to <b>2 decimal places</b>.`,
+    {type:"decimal", value:d, dp:2},
+    d.toFixed(2),
+    `Enter a decimal (2 dp).`,
+    `Divide by 100.`
+  );
+}
+function tplE_decimalToFractionSimple(){
+  const opts = [
+    {d:0.75,a:3,b:4},
+    {d:0.2,a:1,b:5},
+    {d:0.6,a:3,b:5},
+    {d:0.5,a:1,b:2},
+    {d:0.25,a:1,b:4},
+    {d:0.4,a:2,b:5},
+    {d:0.8,a:4,b:5}
+  ];
+  const o = choice(opts);
+  return T("E_decToFracSimple", 1,
+    `Write <b>${o.d}</b> as a fraction in simplest form.`,
+    {type:"fraction", a:o.a, b:o.b},
+    `${o.a}/${o.b}`,
+    `Answer as a/b in simplest form (no mixed numbers).`,
+    `Write as a fraction over 10, 100, etc., then simplify.`
+  );
+}
+
+/* ---- EASY expansions: place value & x100 (from your simple paper) ---- */
+function tplE_placeValueDigit(){
+  // build a number with unique digit d at a specific place
+  const d = randInt(1,9);
+  const places = [
+    {name:"hundreds", k:2},
+    {name:"tens", k:1},
+    {name:"ones", k:0},
+    {name:"tenths", k:-1},
+    {name:"hundredths", k:-2},
+    {name:"thousandths", k:-3}
+  ];
+  const pos = choice(places);
+
+  // create digits ensuring d appears only once
+  const intDigits = [randInt(1,9), randInt(0,9), randInt(0,9)];
+  const decDigits = [randInt(0,9), randInt(0,9), randInt(0,9)];
+  for (let i=0;i<3;i++){
+    while (intDigits[i] === d) intDigits[i] = randInt(i===0?1:0,9);
+    while (decDigits[i] === d) decDigits[i] = randInt(0,9);
+  }
+
+  // place target digit
+  if (pos.k === 2) intDigits[0] = d;
+  if (pos.k === 1) intDigits[1] = d;
+  if (pos.k === 0) intDigits[2] = d;
+  if (pos.k === -1) decDigits[0] = d;
+  if (pos.k === -2) decDigits[1] = d;
+  if (pos.k === -3) decDigits[2] = d;
+
+  const numStr = `${intDigits[0]}${intDigits[1]}${intDigits[2]}.${decDigits[0]}${decDigits[1]}${decDigits[2]}`;
+  const value = d * Math.pow(10, pos.k);
+
+  if (pos.k >= 0){
+    return T("E_placeValueInt", 1,
+      `In <b>${numStr}</b>, what is the value of the digit <b>${d}</b>?`,
+      {type:"integer", value:Math.round(value)},
+      String(Math.round(value)),
+      `Enter an integer.`,
+      `The digit's value depends on its place (ones, tens, hundreds, etc.).`
+    );
+  }
+  return T("E_placeValueDec", 1,
+    `In <b>${numStr}</b>, what is the value of the digit <b>${d}</b>? (Write your answer as a decimal.)`,
+    {type:"decimal", value:value, dp:3},
+    value.toFixed(3).replace(/0+$/,"").replace(/\.$/,""),
+    `Enter a decimal.`,
+    `For example, in 0.047 the digit 4 has value 0.04 (four hundredths).`
+  );
+}
+function tplE_times100(){
+  const a = randInt(10, 99)/100; // 0.10 to 0.99
+  const mul = choice([10,100,1000]);
+  const ans = a*mul;
+  const isInt = isIntegerLike(ans);
+  return T("E_timesPow10", 1,
+    `Calculate: <b>${a.toFixed(2)} × ${mul}</b>.`,
+    isInt ? {type:"integer", value:Math.round(ans)} : {type:"decimal", value:ans, dp:2},
+    isInt ? String(Math.round(ans)) : roundToDp(ans,2).toFixed(2),
+    isInt ? `Enter an integer.` : `Enter a decimal (2 dp).`,
+    `Multiplying by ${mul} shifts the decimal point to the right.`
+  );
+}
+function tplE_roundMetresToNearestCm(){
+  // like 0.811 m -> 81.1 cm -> 81 cm
+  const metres = randInt(200, 1200) / 1000; // 0.200 .. 1.200
+  const cmExact = metres * 100;
+  const cmRounded = Math.round(cmExact);
+  return T("E_mRoundToCm", 5,
+    `<b>${metres.toFixed(3)} m</b> rounded to the nearest <b>centimetre</b> is ________ cm.`,
+    {type:"integer", value:cmRounded},
+    `${cmRounded} cm`,
+    `Enter an integer (cm).`,
+    `Convert metres to cm (×100), then round to the nearest whole cm.`
+  );
+}
+
+/* ---------------- MEDIUM (3 pts) ---------------- */
+function tplM_evalSubstitution(){
+  const x = randInt(-6, 8);
+  const a = choice([2,3,4,5,6]);
+  const b = randInt(-12, 15);
+  const val = a*x + b;
+  const sign = b>=0 ? "+" : "−";
+  const bb = Math.abs(b);
+  return T("M_evalSub", 4,
+    `If <b>x = ${x}</b>, find the value of <b>${a}x ${sign} ${bb}</b>.`,
+    {type:"integer", value:val},
+    String(val),
+    `Enter an integer.`,
+    `Substitute x, then calculate.`
+  );
+}
+function tplM_twoStepEquation(){
+  const x = randInt(-8, 12);
+  const a = choice([2,3,4,5,6,7,8,9]);
+  const b = randInt(-20, 20);
+  const rhs = a*x + b;
+  const sign = b>=0 ? "+" : "−";
+  const bb = Math.abs(b);
+  return T("M_twoStepEq", 4,
+    `Solve for <b>x</b>: <b>${a}x ${sign} ${bb} = ${rhs}</b>.`,
+    {type:"integer", value:x},
+    String(x),
+    `Enter an integer.`,
+    `Undo addition/subtraction, then divide by ${a}.`
+  );
+}
+function tplM_fracAddUnlike(){
+  const d1 = choice([6,8,9,10,12,15]);
+  const d2 = choice([6,8,9,10,12,15]);
+  let a = randInt(1, d1-1);
+  let b = randInt(1, d2-1);
+  const L = lcm(d1,d2);
+  const sumN = a*(L/d1) + b*(L/d2);
+  const r = reduceFraction(sumN, L);
+  return T("M_fracAddUnlike", 1,
+    `Find: <b>${a}/${d1} + ${b}/${d2}</b> in simplest form.`,
+    {type:"fraction", a:r.a, b:r.b},
+    `${r.a}/${r.b}`,
+    `Answer as a/b in simplest form (no mixed numbers).`,
+    `Use a common denominator, then simplify.`
+  );
+}
+function tplM_fracMultiply(){
+  const b = choice([6,8,9,10,12,15]);
+  const d = choice([6,8,9,10,12,15]);
+  const a = randInt(1, b-1);
+  const c = randInt(1, d-1);
+  const num = a*c;
+  const den = b*d;
+  const r = reduceFraction(num, den);
+  return T("M_fracMul", 1,
+    `Calculate: <b>${a}/${b} × ${c}/${d}</b> in simplest form.`,
+    {type:"fraction", a:r.a, b:r.b},
+    `${r.a}/${r.b}`,
+    `Answer as a/b in simplest form (no mixed numbers).`,
+    `Multiply numerators and denominators, then simplify.`
+  );
+}
+function tplM_decimalToFraction(){
+  const denom = choice([10, 100, 1000]);
+  const num = randInt(1, denom-1);
+  const value = num/denom;
+  const r = reduceFraction(num, denom);
+  return T("M_decToFrac", 1,
+    `Write <b>${value}</b> as a fraction in simplest form.`,
+    {type:"fraction", a:r.a, b:r.b},
+    `${r.a}/${r.b}`,
+    `Answer as a/b in simplest form (no mixed numbers).`,
+    `Write as ${num}/${denom}, then simplify.`
+  );
+}
+function tplM_percentIncrease(){
+  const original = choice([40,60,80,120,150,200,240,300]);
+  const pct = choice([10,12,15,20,25]);
+  const newVal = original*(1+pct/100);
+  if (!isIntegerLike(newVal)) return tplM_percentIncrease();
+  return T("M_pctIncrease", 2,
+    `A hoodie costs <b>$${original}</b>. The price increases by <b>${pct}%</b>.<br>What is the new price?`,
+    {type:"integer", value:Math.round(newVal)},
+    `$${Math.round(newVal)}`,
+    `Enter an integer (dollars).`,
+    `New = original × (1 + pct/100).`
+  );
+}
+function tplM_percentDecrease(){
+  const original = choice([50,80,100,120,160,200,240,300]);
+  const pct = choice([10,15,20,25,30]);
+  const newVal = original*(1-pct/100);
+  if (!isIntegerLike(newVal)) return tplM_percentDecrease();
+  return T("M_pctDecrease", 2,
+    `A game costs <b>$${original}</b>. It is discounted by <b>${pct}%</b>.<br>What is the sale price?`,
+    {type:"integer", value:Math.round(newVal)},
+    `$${Math.round(newVal)}`,
+    `Enter an integer (dollars).`,
+    `Sale = original × (1 − pct/100).`
+  );
+}
+function tplM_ratioEquivalentBlank(){
+  const a = randInt(2, 9);
+  const b = randInt(2, 9);
+  const k = randInt(2, 7);
+  const A = a*k;
+  const B = b*k;
+  const ask = choice(["second","first"]);
+  if (ask === "second"){
+    return T("M_ratioEqBlank2", 3,
+      `Complete the equivalent ratio: <b>${a}:${b} = ${A}:□</b>.`,
+      {type:"integer", value:B},
+      String(B),
+      `Enter an integer.`,
+      `Find the scale factor from ${a} to ${A}, then apply it to ${b}.`
+    );
+  }
+  return T("M_ratioEqBlank1", 3,
+    `Complete the equivalent ratio: <b>${a}:${b} = □:${B}</b>.`,
+    {type:"integer", value:A},
+    String(A),
+    `Enter an integer.`,
+    `Find the scale factor from ${b} to ${B}, then apply it to ${a}.`
+  );
+}
+function tplM_speedDistanceTime(){
+  const speed = choice([40,50,60,70,80,90,100]);
+  const timeH = choice([1,1.5,2,2.5,3]);
+  const dist = speed*timeH;
+  if (!isIntegerLike(dist)) return tplM_speedDistanceTime();
+  return T("M_speedDist", 3,
+    `A car travels at <b>${speed} km/h</b> for <b>${timeH}</b> hours.<br>How far does it travel (in km)?`,
+    {type:"integer", value:Math.round(dist)},
+    `${Math.round(dist)} km`,
+    `Enter an integer (km).`,
+    `Distance = speed × time.`
+  );
+}
+function tplM_meanOfData(){
+  const a = randInt(6, 18);
+  const b = randInt(6, 18);
+  const c = randInt(6, 18);
+  const d = randInt(6, 18);
+  const mean = (a+b+c+d)/4;
+  return T("M_mean4", 7,
+    `Find the mean of these numbers: <b>${a}, ${b}, ${c}, ${d}</b>.<br>Give your answer to <b>1 decimal place</b>.`,
+    {type:"decimal", value:mean, dp:1},
+    roundToDp(mean,1).toFixed(1),
+    `Enter a decimal (1 dp).`,
+    `Mean = (sum of values) ÷ (number of values).`
+  );
+}
+function tplM_simpleProbability(){
+  const total = 8;
+  const fav = choice([
+    {colour:"red", count:2},
+    {colour:"blue", count:3},
+    {colour:"green", count:1},
+    {colour:"yellow", count:2}
+  ]);
+  const r = reduceFraction(fav.count, total);
+  return T("M_probSpinner", 7,
+    `A spinner has <b>${total}</b> equal sections: ${fav.count} are <b>${fav.colour}</b> and the rest are other colours.<br>
+     What is the probability of landing on <b>${fav.colour}</b>? Give your answer as a fraction in simplest form.`,
+    {type:"fraction", a:r.a, b:r.b},
+    `${r.a}/${r.b}`,
+    `Answer as a/b in simplest form (no mixed numbers).`,
+    `Probability = favourable outcomes ÷ total outcomes.`
+  );
+}
+function tplM_unitConvert_km_m(){
+  const km = randInt(2, 12);
+  const m = randInt(50, 950);
+  const totalM = km*1000 + m;
+  return T("M_kmToM", 5,
+    `A walk is <b>${km} km</b> and <b>${m} m</b>. What is the total distance in <b>metres</b>?`,
+    {type:"integer", value:totalM},
+    `${totalM} m`,
+    `Enter an integer (m).`,
+    `Convert km to m (×1000), then add.`
+  );
+}
+
+/* ---- MEDIUM additions from your screenshots (randomised, answers make sense) ---- */
+function tplM_pocketMoney(){
+  const name = randName();
+  const item1 = choice(ITEMS);
+  const place = choice(PLACES);
+
+  let spent1 = randInt(250, 980);     // $2.50 - $9.80
+  spent1 = Math.round(spent1/10)*10;
+
+  let earned = randInt(200, 900);     // $2.00 - $9.00
+  earned = Math.round(earned/50)*50;
+
+  let spent2 = randInt(50, 350);      // $0.50 - $3.50
+  spent2 = Math.round(spent2/5)*5;
+
+  let left = randInt(300, 2500);      // $3.00 - $25.00
+  left = Math.round(left/25)*25;
+
+  let initial = left + spent1 + spent2 - earned;
+  let tries = 0;
+  while ((initial <= 0 || initial > 6000) && tries < 80){
+    spent1 = Math.round(randInt(250, 980)/10)*10;
+    earned = Math.round(randInt(200, 900)/50)*50;
+    spent2 = Math.round(randInt(50, 350)/5)*5;
+    left   = Math.round(randInt(300, 2500)/25)*25;
+    initial = left + spent1 + spent2 - earned;
+    tries++;
+  }
+  return T("M_pocketMoney", 2,
+    `<b>${name}</b> was given some pocket money on Monday. On Tuesday, ${name} spent <b>${centsToMoney(spent1)}</b> at ${place}.<br>
+     On Wednesday, ${name} ran an errand and was given <b>${centsToMoney(earned)}</b>.<br>
+     On Thursday, ${name} spent <b>${centsToMoney(spent2)}</b> on a ${item1}.<br>
+     If ${name} has <b>${centsToMoney(left)}</b> left, how much pocket money was ${name} given on Monday?`,
+    {type:"money", cents:initial},
+    centsToMoney(initial),
+    `Enter money like 12.05`,
+    `Work backwards: initial = left + spending − earning.`
+  );
+}
+function tplM_busPassTrips(){
+  const name = randName();
+  const balance = choice([6,8,9,10,12,15,16,18,20]); // dollars
+  const costs = [
+    {a:4,b:5}, // 0.8
+    {a:3,b:4}, // 0.75
+    {a:2,b:3}, // 0.666...
+    {a:5,b:6}  // 0.833...
+  ];
+  let c = choice(costs);
+  let trips = balance*c.b/c.a;
+  let tries = 0;
+  while (!Number.isInteger(trips) && tries < 80){
+    c = choice(costs);
+    trips = balance*c.b/c.a;
+    tries++;
+  }
+  return T("M_busPass", 3,
+    `<b>${name}</b> has <b>$${balance}</b> on a travel card. Each bus trip uses up <b>${c.a}/${c.b}</b> of a dollar.<br>
+     How many <b>full</b> bus trips can ${name} take?`,
+    {type:"integer", value:trips},
+    String(trips),
+    `Enter an integer.`,
+    `Number of trips = balance ÷ (cost per trip).`
+  );
+}
+function tplM_shopThreeItems(){
+  const name = randName();
+  const shop = choice(PLACES);
+
+  const delta = choice([90,120,150,190,220,250,280]); // cents
+  const diff = choice([200,300,400,500]); // cents
+
+  const pen = choice([110,140,160,180,210,240,260,290,310,340,360,390,420]); // cents
+  const book = pen + delta;
+  const caseCost = pen + diff;
+  const total = book + pen + caseCost;
+
+  return T("M_shopBookPenCase", 2,
+    `At ${shop}, a book costs <b>${centsToMoney(delta)}</b> more than a pen.<br>
+     A pen costs <b>${centsToMoney(diff)}</b> less than a pencil case.<br>
+     If the total cost of the three items is <b>${centsToMoney(total)}</b>, how much does the <b>book</b> cost?`,
+    {type:"money", cents:book},
+    centsToMoney(book),
+    `Enter money like 4.90`,
+    `Let pen = p. Then book = p + delta, case = p + diff. Total = 3p + delta + diff.`
+  );
+}
+function tplM_percentSpentRest(){
+  const name = randName();
+  const itemA = choice(["shoes","a backpack","a jacket","a calculator"]);
+  const itemB = choice(["clothes","books","stationery","sports gear"]);
+
+  const pct = choice([10,20,25,30,40]);
+  let denom;
+  if (pct === 10) denom = 9;
+  else if (pct === 20) denom = 4;
+  else if (pct === 25) denom = 3;
+  else if (pct === 30) denom = 7;
+  else denom = 3; // 40%
+
+  const spentB = denom * randInt(10, 45); // dollars, chosen to make itemA integer
+  const spentA = (spentB * (pct/100)) / (1 - pct/100);
+  const spentAInt = Math.round(spentA);
+
+  return T("M_percentSplit", 2,
+    `${name} spent <b>${pct}%</b> of their money on ${itemA} and the rest on ${itemB}.<br>
+     If ${name} spent <b>$${spentB}</b> on ${itemB}, how much did ${name} spend on ${itemA}?`,
+    {type:"integer", value:spentAInt},
+    `$${spentAInt}`,
+    `Enter an integer (dollars).`,
+    `If ${pct}% was on item A, then ${(100-pct)}% was on item B. Use the ratio A:B = ${pct}:${100-pct}.`
+  );
+}
+function tplM_fracSubImproper(){
+  // generate positive result
+  let tries = 0;
+  while (tries < 120){
+    const b1 = choice([4,8,10,12,16]);
+    const b2 = choice([4,8,10,12,16]);
+    const a1 = randInt(b1+1, 3*b1); // improper
+    const a2 = randInt(1, 2*b2);
+
+    const v1 = a1/b1, v2 = a2/b2;
+    if (v1 <= v2) { tries++; continue; }
+
+    const num = a1*b2 - a2*b1;
+    const den = b1*b2;
+    const r = reduceFraction(num, den);
+
+    return T("M_fracSubImp", 1,
+      `Calculate: <b>${a1}/${b1} − ${a2}/${b2}</b> in simplest form.`,
+      {type:"fraction", a:r.a, b:r.b},
+      `${r.a}/${r.b}`,
+      `Answer as a/b in simplest form (no mixed numbers).`,
+      `Use a common denominator, subtract, then simplify.`
+    );
+  }
+  return tplM_fracSubImproper();
+}
+function tplM_discountMoney(){
+  const name = randName();
+  const item = choice(["digital camera","headphones","tablet case","pair of sneakers","game controller"]);
+  const price = choice([120,150,180,200,240,300,360,420]);
+  const pct = choice([10,15,20,25]);
+  const saleCents = Math.round(price*(1-pct/100)*100);
+  return T("M_discountMoney", 2,
+    `${name} bought a ${item} priced at <b>$${price}</b> and received a <b>${pct}%</b> discount.<br>
+     How much did ${name} pay? (Give dollars and cents.)`,
+    {type:"money", cents:saleCents},
+    centsToMoney(saleCents),
+    `Enter money like 255.00`,
+    `Sale price = original × (1 − pct/100).`
+  );
+}
+function tplM_simulSkirtsDresses(){
+  const name = randName();
+  const a = choice([3,4,5,6]); // skirts
+  const b = choice([4,5,6,7,8]); // dresses (ensure not equal to a)
+  if (a === b) return tplM_simulSkirtsDresses();
+
+  const dress = randInt(40, 90);
+  const skirt = randInt(20, 80);
+  const sumSD = skirt + dress;
+  const total = a*skirt + b*dress;
+
+  // keep totals reasonable
+  if (total > 1200) return tplM_simulSkirtsDresses();
+
+  const shop = choice(PLACES);
+  return T("M_simulSkirtDress", 4,
+    `At ${shop}, ${name} bought <b>${a}</b> similar skirts and <b>${b}</b> similar dresses for <b>$${total}</b> in total.<br>
+     One skirt and one dress together cost <b>$${sumSD}</b>.<br>
+     Find the cost of <b>one dress</b>.`,
+    {type:"integer", value:dress},
+    `$${dress}`,
+    `Enter an integer (dollars).`,
+    `Let skirt = s and dress = d. Use: s + d = ${sumSD} and ${a}s + ${b}d = ${total}.`
+  );
+}
+function tplM_weekRental(){
+  const name = randName();
+  const weekRate = choice([38,42,48,52,55,60]);
+  const weekendRate = choice([65,70,75,80,85]);
+  const total = 5*weekRate + 2*weekendRate;
+  return T("M_weekRental", 2,
+    `${name} rented a holiday cabin for <b>7 days</b>.<br>
+     Weekdays cost <b>$${weekRate}</b> per day and Saturdays/Sundays cost <b>$${weekendRate}</b> per day.<br>
+     How much did ${name} pay in total?`,
+    {type:"integer", value:total},
+    `$${total}`,
+    `Enter an integer (dollars).`,
+    `Total = 5×weekday rate + 2×weekend rate.`
+  );
+}
+function tplM_newAverageAddNumber(){
+  const n = 4;
+  const avg = randInt(5, 12);
+  const add = randInt(8, 20);
+  const total = n*avg + add;
+  const newAvg = total/(n+1);
+  if (!isIntegerLike(newAvg)) return tplM_newAverageAddNumber();
+  return T("M_newAvgAdd", 7,
+    `The average of <b>${n}</b> numbers is <b>${avg}</b>. If <b>${add}</b> is added to the set of numbers, what is the new average?`,
+    {type:"integer", value:Math.round(newAvg)},
+    String(Math.round(newAvg)),
+    `Enter an integer.`,
+    `Sum = average × number of values. Then add the new value and divide by ${n+1}.`
+  );
+}
+function tplM_percentMoreThan(){
+  const nameA = randName();
+  let nameB = randName();
+  while (nameB === nameA) nameB = randName();
+  const pct = choice([10,15,20,25,30]);
+  const B = choice([500,800,1000,1200,1500,2000,2500,3000,3500,4000]);
+  const A = Math.round(B*(1+pct/100));
+  return T("M_pctMoreThan", 2,
+    `${nameA} saved <b>${pct}%</b> more money than ${nameB}. If ${nameA} saved <b>$${A}</b>, how much did ${nameB} save?`,
+    {type:"integer", value:B},
+    `$${B}`,
+    `Enter an integer (dollars).`,
+    `${nameA} = ${nameB} × (1 + ${pct}/100). So ${nameB} = ${nameA} ÷ (1 + ${pct}/100).`
+  );
+}
+
+/* ---------------- HARD (4 pts) ---------------- */
+function tplH_discountThenGST(){
+  const marked = choice([80,120,160,200,240,300,360]);
+  const discount = choice([10,15,20,25]);
+  const sale = marked*(1-discount/100);
+  const gst = sale*0.15;
+  const total = sale + gst;
+  const cents = Math.round(total*100);
+  return T("H_discountGST", 2,
+    `A jacket is marked at <b>$${marked}</b>. It is discounted by <b>${discount}%</b>, then <b>15% GST</b> is added to the sale price.<br>
+     What is the final price? (Give dollars and cents.)`,
+    {type:"money", cents:cents},
+    centsToMoney(cents),
+    `Enter money like 123.45`,
+    `Find sale price first, then add 15% GST.`
+  );
+}
+function tplH_ratioGivenTotal(){
+  const r1 = choice([2,3,4,5,6]);
+  const r2 = choice([3,4,5,7,8,9]);
+  const unit = choice([6,8,10,12,15,18,20]);
+  const total = (r1+r2)*unit;
+  const A = r1*unit;
+  return T("H_ratioTotalFindA", 3,
+    `Two amounts are in the ratio <b>${r1}:${r2}</b>. Their total is <b>${total}</b>.<br>
+     What is the first amount?`,
+    {type:"integer", value:A},
+    String(A),
+    `Enter an integer.`,
+    `One unit = total ÷ (${r1}+${r2}), then ×${r1}.`
+  );
+}
+function tplH_ratioDifference(){
+  const r1 = choice([2,3,4,5]);
+  const r2 = choice([5,6,7,8,9]);
+  const diffUnits = r2 - r1;
+  const unit = choice([6,8,10,12,15,18,20]);
+  const diff = diffUnits*unit;
+  const B = r2*unit;
+  return T("H_ratioDiff", 3,
+    `Two numbers are in the ratio <b>${r1}:${r2}</b>. The difference between them is <b>${diff}</b>.<br>
+     Find the larger number.`,
+    {type:"integer", value:B},
+    String(B),
+    `Enter an integer.`,
+    `Difference = (${r2}-${r1}) units. Find 1 unit, then find the larger number.`
+  );
+}
+function tplH_linearAngles(){
+  const x = randInt(8, 25);
+  const a1 = choice([2,3,4,5]);
+  const a2 = choice([4,5,6,7,8]);
+  const b1 = randInt(5, 35);
+  const b2 = randInt(5, 35);
+  const angle1 = a1*x + b1;
+  const angle2 = a2*x + b2;
+  const sum = angle1 + angle2;
+  const k = 180 - sum;
+  const newB2 = b2 + k;
+  const newAngle2 = a2*x + newB2;
+  if (newB2 <= 0 || newAngle2 <= 0) return tplH_linearAngles();
+  return T("H_linearAngles", 6,
+    `Two angles form a straight line, so they add up to <b>180°</b>.<br>
+     One angle is <b>${a1}x + ${b1}</b> degrees and the other is <b>${a2}x + ${newB2}</b> degrees.<br>
+     Find <b>x</b>.`,
+    {type:"integer", value:x},
+    String(x),
+    `Enter an integer.`,
+    `Set (angle1) + (angle2) = 180, then solve.`
+  );
+}
+function tplH_areaComposite(){
+  const a = randInt(6, 18);
+  const b = randInt(4, 12);
+  const c = randInt(4, 16);
+  const d = randInt(3, 10);
+  const area = a*b + c*d;
+  return T("H_areaComposite", 5,
+    `A shape is made by joining two rectangles (no overlap):<br>
+     • Rectangle 1: <b>${a} cm</b> by <b>${b} cm</b><br>
+     • Rectangle 2: <b>${c} cm</b> by <b>${d} cm</b><br>
+     Find the total area.`,
+    {type:"integer", value:area},
+    `${area} cm²`,
+    `Enter an integer (cm²).`,
+    `Total area = area1 + area2.`
+  );
+}
+function tplH_volumeTankFraction(){
+  const L = choice([30,40,45,50,60]);
+  const W = choice([20,24,25,30,32]);
+  const H = choice([25,30,35,40]);
+  const frac = choice([[1,2],[1,3],[2,5],[3,4]]);
+  const vol = L*W*H;
+  const taken = vol * (frac[0]/frac[1]);
+  if (!isIntegerLike(taken)) return tplH_volumeTankFraction();
+  const litres = taken/1000;
+  const centsLitres = Math.round(litres*100);
+  return T("H_tankFraction", 5,
+    `A rectangular tank is <b>${L} cm</b> long, <b>${W} cm</b> wide and <b>${H} cm</b> high, filled to the brim.<br>
+     <b>${frac[0]}/${frac[1]}</b> of the water is poured out. How much water is poured out in <b>litres</b>? (1 L = 1000 cm³)<br>
+     Give your answer to <b>2 decimal places</b>.`,
+    {type:"decimal", value:litres, dp:2},
+    (centsLitres/100).toFixed(2) + " L",
+    `Enter a decimal (2 dp).`,
+    `Volume = L×W×H, take the fraction, then ÷1000.`
+  );
+}
+function tplH_chickenRabbit(){
+  const rabbits = randInt(6, 18);
+  const chickens = randInt(8, 25);
+  const animals = rabbits + chickens;
+  const legs = 4*rabbits + 2*chickens;
+  return T("H_chickenRabbit", 4,
+    `In a farm pen there are <b>${animals}</b> animals, all chickens and rabbits.<br>
+     There are <b>${legs}</b> legs altogether.<br>
+     How many <b>rabbits</b> are there?`,
+    {type:"integer", value:rabbits},
+    String(rabbits),
+    `Enter an integer.`,
+    `Let rabbits = r. Chickens = ${animals} − r. Total legs = 4r + 2(${animals} − r).`
+  );
+}
+function tplH_meanMissingValue(){
+  const n = 5;
+  const a = randInt(6, 18);
+  const b = randInt(6, 18);
+  const c = randInt(6, 18);
+  const d = randInt(6, 18);
+  const mean = randInt(10, 18);
+  const total = mean*n;
+  const x = total - (a+b+c+d);
+  if (x < 0 || x > 30) return tplH_meanMissingValue();
+  return T("H_meanMissing", 7,
+    `The mean of <b>${n}</b> numbers is <b>${mean}</b>.<br>
+     Four of the numbers are <b>${a}, ${b}, ${c}, ${d}</b>.<br>
+     What is the 5th number?`,
+    {type:"integer", value:x},
+    String(x),
+    `Enter an integer.`,
+    `Total = mean × ${n}. Subtract the four known numbers.`
+  );
+}
+function tplH_probabilityWithoutReplacement(){
+  const R = randInt(3, 8);
+  const B = randInt(3, 9);
+  const total = R + B;
+  const num = R * B;
+  const den = total * (total-1);
+  const r = reduceFraction(num, den);
+  return T("H_probNoReplace", 7,
+    `A bag has <b>${R}</b> red counters and <b>${B}</b> blue counters.<br>
+     Two counters are drawn <b>without replacement</b>.<br>
+     What is the probability of drawing <b>red then blue</b>? Give your answer as a fraction in simplest form.`,
+    {type:"fraction", a:r.a, b:r.b},
+    `${r.a}/${r.b}`,
+    `Answer as a/b in simplest form (no mixed numbers).`,
+    `P(red then blue) = (${R}/${total}) × (${B}/${total-1}).`
+  );
+}
+function tplH_fractionEquation(){
+  const denom = choice([2,3,4,5,6,8,9]);
+  const x = denom * randInt(4, 20);
+  const c = randInt(2, 10);
+  const rhs = x/denom + c;
+  return T("H_fracEquation", 4,
+    `Solve for <b>x</b>: <b>x/${denom} + ${c} = ${rhs}</b>.`,
+    {type:"integer", value:x},
+    String(x),
+    `Enter an integer.`,
+    `Subtract ${c}, then multiply by ${denom}.`
+  );
+}
+function tplH_proportionScale(){
+  const cm = randInt(2, 12);
+  const scale = 50000;
+  const realCm = cm*scale;
+  const realKm = realCm / 100000;
+  return T("H_scaleMap", 3,
+    `On a map, the scale is <b>1 : ${scale.toLocaleString("en-NZ")}</b> (1 cm represents ${scale.toLocaleString("en-NZ")} cm in real life).<br>
+     Two towns are <b>${cm} cm</b> apart on the map. How far apart are they in <b>kilometres</b>? (Give your answer to 1 decimal place.)`,
+    {type:"decimal", value:realKm, dp:1},
+    roundToDp(realKm,1).toFixed(1) + " km",
+    `Enter a decimal (1 dp).`,
+    `Real distance (cm) = map cm × ${scale}, then convert cm → km.`
+  );
+}
+function tplH_timeAcrossMidnight(){
+  const startMins = randInt(20*60, 23*60 + 40);
+  const dur = choice([45,60,75,90,110,125,140]);
+  const end = startMins + dur;
+  return T("H_timeMidnight", 5,
+    `A movie starts at <b>${minutesToTime12(startMins)}</b> and lasts <b>${dur}</b> minutes.<br>
+     What time does it finish? (Answer like 1:05 am)`,
+    {type:"time", mins:end},
+    minutesToTime12(end),
+    `Enter a time like 1:05 am.`,
+    `Add minutes; if you pass 12:00 am, you go into the next day.`
+  );
+}
+function tplH_rateUnitPrice(){
+  const pack = choice([
+    {a:3, cost:2},
+    {a:4, cost:3},
+    {a:5, cost:4}
+  ]);
+  const qty = pack.a * choice([4,5,6,7,8]);
+  const total = (qty/pack.a)*pack.cost;
+  return T("H_unitPrice", 2,
+    `A snack is sold at <b>${pack.a} for $${pack.cost}</b>.<br>
+     How much would <b>${qty}</b> snacks cost?`,
+    {type:"integer", value:total},
+    `$${total}`,
+    `Enter an integer (dollars).`,
+    `Find number of packs, then multiply by the pack cost.`
+  );
+}
+function tplH_percentChangeWord(){
+  const oldV = choice([40,50,60,80,100,120,150]);
+  const pct = choice([10,15,20,25,30]);
+  const newV = oldV*(1+pct/100);
+  if (!isIntegerLike(newV)) return tplH_percentChangeWord();
+  return T("H_pctChange", 2,
+    `A price increased from <b>$${oldV}</b> to <b>$${Math.round(newV)}</b>.<br>
+     What was the percentage increase?`,
+    {type:"integer", value:pct},
+    `${pct}%`,
+    `Enter an integer (%).`,
+    `Percentage change = (increase ÷ original) × 100%.`
+  );
+}
+function tplH_threeTermRatio(){
+  const u = choice([2,3,4,5,6,7]);
+  const v = choice([3,4,5,6,7,8]);
+  const w = choice([4,5,6,7,8,9]);
+  const k = randInt(2, 6);
+  const A = u*k, B = v*k, C = w*k;
+  const rr = reduceFraction(u,v); // not used, but ok
+  const g = gcd3(u,v,w);
+  const simp = [u/g, v/g, w/g];
+  return T("H_ratio3", 3,
+    `Simplify this ratio: <b>${A}:${B}:${C}</b>.`,
+    {type:"ratio3", values:simp},
+    `${simp[0]}:${simp[1]}:${simp[2]}`,
+    `Answer as a:b:c in simplest form.`,
+    `Divide all three numbers by the greatest common factor.`
+  );
+}
+
+/* ---- HARD additions from your screenshots (randomised, text-only, answers make sense) ---- */
+function tplH_taxiFare(){
+  const name = randName();
+
+  const baseDist = choice([200,240,260,300,320,360,400]); // metres
+  const baseFare = choice([280,300,320,350,380,400,420]); // cents
+
+  const step1 = choice([80,100,120,150]); // metres
+  const rate1 = choice([18,20,22,25,28,30]); // cents per step1
+  const cap1  = choice([600,700,800,900,1000,1100,1200]); // metres after base
+
+  const step2 = choice([100,120,150,180,200]);
+  const rate2 = choice([10,12,15,18,20,22,25]);
+
+  // total distance
+  const totalDist = baseDist + randInt(800, 2600);
+  const km = totalDist/1000;
+
+  let fare = baseFare;
+  let rem = totalDist - baseDist;
+
+  const tier1Dist = Math.min(rem, cap1);
+  const units1 = Math.ceil(tier1Dist / step1);
+  fare += units1 * rate1;
+  rem -= tier1Dist;
+
+  if (rem > 0){
+    const units2 = Math.ceil(rem / step2);
+    fare += units2 * rate2;
+  }
+
+  return T("H_taxiFare", 2,
+    `A taxi fare is charged like this:<br>
+     • First <b>${baseDist} m</b>: <b>${centsToMoney(baseFare)}</b><br>
+     • Every <b>${step1} m</b> thereafter (or part thereof) for the next <b>${cap1} m</b>: <b>${centsToMoney(rate1)}</b><br>
+     • Every <b>${step2} m</b> thereafter (or part thereof): <b>${centsToMoney(rate2)}</b><br><br>
+     ${name} travelled <b>${km.toFixed(1)} km</b>.<br>
+     How much did ${name} pay?`,
+    {type:"money", cents:fare},
+    centsToMoney(fare),
+    `Enter money like 12.34`,
+    `Use step charging with “or part thereof” (use rounding up).`
+  );
+}
+function tplH_seminarPercentMix(){
+  const group1 = choice(["Malaysians","Australians","New Zealanders","Canadians","students from Group A"]);
+  const group2 = choice(["Singaporeans","British","students from Group B","visitors from Group B"]);
+  const group3 = choice(["Indonesians","students from Group C","others"]);
+
+  // pick percentages
+  const p1 = randInt(20, 35);
+  const delta = choice([5,6,7,8,9,10]);
+  const p2 = p1 + delta;
+  const p3 = 100 - p1 - p2;
+  if (p3 < 15) return tplH_seminarPercentMix();
+
+  // pick a total so the difference is a nice integer
+  const total = choice([2000,2500,3000,3500,4000,4500,5000]);
+  const combined = (p1+p2)/100 * total;
+  const g3 = p3/100 * total;
+  const diff = Math.round(combined - g3);
+
+  return T("H_percentGroups", 7,
+    `At a seminar, <b>${p1}%</b> of the participants were ${group1}. There were <b>${delta}%</b> more ${group2} than ${group1}. The rest were ${group3}.<br>
+     If the number of ${group3} was <b>${diff}</b> fewer than the total number of ${group1} and ${group2}, how many ${group3} attended the seminar?`,
+    {type:"integer", value:Math.round(g3)},
+    String(Math.round(g3)),
+    `Enter an integer.`,
+    `Let total = T. Use percentages and the given difference to solve for T.`
+  );
+}
+function tplH_applesWithY(){
+  const name = randName();
+  const boxes = randInt(6, 10);
+  const per = randInt(10, 18); // apples per "y"
+  const sold = randInt(3, 12); // sold "y"
+  const rotten = randInt(10, 40);
+  const y = randInt(10, 30);
+
+  const total = boxes*per*y;
+  const remain = total - sold*y - rotten;
+  if (remain <= 0) return tplH_applesWithY();
+
+  return T("H_applesY", 4,
+    `${name} bought <b>${boxes}</b> boxes of apples. There were <b>${per}y</b> apples in each box.<br>
+     ${name} sold <b>${sold}y</b> apples and threw away <b>${rotten}</b> rotten apples.<br>
+     If <b>y = ${y}</b>, how many apples did ${name} have left?`,
+    {type:"integer", value:remain},
+    String(remain),
+    `Enter an integer.`,
+    `Substitute y, then calculate total − sold − rotten.`
+  );
+}
+function tplH_marblesSameAdded(){
+  const nameA = randName();
+  let nameB = randName();
+  while (nameB === nameA) nameB = randName();
+  const m = choice([2,3]); // multiplier
+  const b = randInt(15, 60);
+  const n = randInt(10, 50);
+  const a = m*(b+n) - n; // ensures solution is n
+
+  return T("H_marblesSameAdd", 7,
+    `${nameA} had <b>${a}</b> marbles and ${nameB} had <b>${b}</b> marbles.<br>
+     After each of them received the same number of marbles, ${nameA} had <b>${m}</b> times as many marbles as ${nameB}.<br>
+     How many marbles did each person receive?`,
+    {type:"integer", value:n},
+    String(n),
+    `Enter an integer.`,
+    `Solve: ${a}+x = ${m}(${b}+x).`
+  );
+}
+function tplH_moneyShareFractions(){
+  const people = shuffle(["Claire","Eliza","Melissa","Noah","Ava","Lucas","Zoe","Ethan","Mia","Oscar"]).slice(0,3);
+  const A = people[0], B = people[1], C = people[2];
+
+  const total = choice([96,120,144,168,192,216,240]);
+  const f1 = choice([{a:5,b:8},{a:3,b:4},{a:2,b:3},{a:3,b:5}]); // A's share
+  const f2 = choice([{a:2,b:3},{a:3,b:4},{a:1,b:2}]); // B of remainder
+
+  const aShare = total * f1.a / f1.b;
+  const rem = total - aShare;
+  const bShare = rem * f2.a / f2.b;
+  const cShare = rem - bShare;
+
+  if (!isIntegerLike(aShare) || !isIntegerLike(bShare) || !isIntegerLike(cShare)) return tplH_moneyShareFractions();
+
+  const diff = Math.round(aShare - cShare);
+  return T("H_moneyShare", 2,
+    `<b>$${total}</b> is shared between ${A}, ${B} and ${C}. ${A} receives <b>${f1.a}/${f1.b}</b> of the money and ${B} receives <b>${f2.a}/${f2.b}</b> of the remainder.<br>
+     How much more does ${A} receive than ${C}?`,
+    {type:"integer", value:diff},
+    `$${diff}`,
+    `Enter an integer (dollars).`,
+    `Find ${A}'s share, then split the remainder for ${B} and ${C}.`
+  );
+}
+function tplH_perimeterRatioWidth(){
+  const ratio = choice([{a:3,b:2},{a:4,b:3},{a:5,b:4}]); // square : rectangle
+  let side = randInt(6, 24);
+  // ensure rectangle perimeter integer: pRect = pSquare * b/a
+  while ((4*side*ratio.b) % ratio.a !== 0) side++;
+
+  const pSquare = 4*side;
+  const pRect = (pSquare*ratio.b)/ratio.a;
+
+  const length = randInt(6, Math.floor(pRect/2) - 2);
+  const width = pRect/2 - length;
+  if (width <= 0 || !Number.isInteger(width)) return tplH_perimeterRatioWidth();
+
+  return T("H_perimeterRatio", 5,
+    `The ratio of the perimeter of a square field to that of a rectangular field is <b>${ratio.a} : ${ratio.b}</b>.<br>
+     Each side of the square field is <b>${side} m</b>. If the length of the rectangular field is <b>${length} m</b>, find the <b>width</b> of the rectangular field.`,
+    {type:"integer", value:width},
+    `${width} m`,
+    `Enter an integer (m).`,
+    `Find square perimeter, use the ratio to get rectangle perimeter, then use P = 2(L+W).`
+  );
+}
+function tplH_coinMixTotalMoney(){
+  const name = randName();
+
+  const fA = choice([{a:3,b:5},{a:2,b:5},{a:1,b:2}]); // fraction of 20c coins
+  const pctB = choice([20,25,30]); // percent of 50c coins
+  const fB = {a:pctB, b:100};
+
+  // rest are $1 coins
+  const fAVal = fA.a/fA.b;
+  const fBVal = fB.a/fB.b;
+  const fCVal = 1 - fAVal - fBVal;
+  if (fCVal <= 0.05) return tplH_coinMixTotalMoney();
+
+  // choose total coin count N so all counts are integers
+  const l = lcm(fA.b, fB.b); // 5 & 100 -> 100
+  const N = l * randInt(10, 30); // 1000..3000 coins, ok
+  const c20 = N*fAVal;
+  const c50 = N*fBVal;
+  const c100 = N*fCVal;
+
+  if (!isIntegerLike(c20) || !isIntegerLike(c50) || !isIntegerLike(c100)) return tplH_coinMixTotalMoney();
+
+  const fiftyDollars = (c50 * 0.5);
+  if (!isIntegerLike(fiftyDollars) || fiftyDollars < 10 || fiftyDollars > 120) return tplH_coinMixTotalMoney();
+
+  const totalMoney = c20*0.2 + c50*0.5 + c100*1.0;
+  const cents = Math.round(totalMoney*100);
+
+  return T("H_coinMix", 2,
+    `${fA.a}/${fA.b} of ${name}'s coins were <b>20-cent</b> coins, <b>${pctB}%</b> were <b>50-cent</b> coins and the rest were <b>$1</b> coins.<br>
+     If there were <b>$${Math.round(fiftyDollars)}</b> worth of 50-cent coins, find the total amount of money ${name} had.`,
+    {type:"money", cents:cents},
+    centsToMoney(cents),
+    `Enter money like 123.45`,
+    `Use the 50-cent value to find total number of coins, then find total value.`
+  );
+}
+function tplH_mobileBills(){
+  const mr = randName();
+  let mrs = randName();
+  while (mrs === mr) mrs = randName();
+
+  const mrBill = choice([25000,30000,35000,37500,42000,48000,52000,60000]); // cents
+  const frac = choice([{a:2,b:5},{a:3,b:4},{a:4,b:5},{a:1,b:2}]); // Mrs as fraction of Mr
+  const mrsBill = Math.round(mrBill * frac.a / frac.b);
+
+  const redMr = choice([{a:1,b:5},{a:1,b:6},{a:1,b:4}]);
+  const redMrs = choice([{a:1,b:6},{a:1,b:8},{a:1,b:5}]);
+
+  const mrNext = Math.round(mrBill * (1 - redMr.a/redMr.b));
+  const mrsNext = Math.round(mrsBill * (1 - redMrs.a/redMrs.b));
+  const totalNext = mrNext + mrsNext;
+
+  const shop = choice(["mobile bill","internet plan","phone plan"]);
+  return T("H_mobileBills", 2,
+    `${mr} pays <b>${centsToMoney(mrBill)}</b> for a ${shop} every month. ${mrs} pays <b>${frac.a}/${frac.b}</b> as much as ${mr}.<br>
+     Next month, ${mr}'s bill is reduced by <b>${redMr.a}/${redMr.b}</b> and ${mrs}'s bill is reduced by <b>${redMrs.a}/${redMrs.b}</b>.<br>
+     How much do they pay altogether next month? (Give dollars and cents.)`,
+    {type:"money", cents:totalNext},
+    centsToMoney(totalNext),
+    `Enter money like 123.45`,
+    `Find each new bill after reduction, then add.`
+  );
+}
+function tplH_beachSwimmers(){
+  const total = choice([300,450,600,750,900,1050,1200]); // multiple of 150
+  const menFrac = {a:2,b:3}; // keep as original style
+  const men = total*menFrac.a/menFrac.b;
+  const rest = total - men; // women+children
+
+  // women:children = 3:2
+  const unit = rest/5;
+  const women = 3*unit;
+  const children = 2*unit;
+
+  if (!isIntegerLike(women) || !isIntegerLike(children)) return tplH_beachSwimmers();
+
+  // fractions cannot swim
+  const cantW = women/10;     // 1/10
+  const cantC = children/4;   // 1/4
+  if (!isIntegerLike(cantW) || !isIntegerLike(cantC)) return tplH_beachSwimmers();
+
+  const canSwim = (women - cantW) + (children - cantC);
+
+  return T("H_beachSwim", 7,
+    `There are <b>${total}</b> people at a beach. <b>${menFrac.a}/${menFrac.b}</b> of them are men while the rest are women and children.<br>
+     One third of the number of women equals one half of the number of children (so women : children = 3 : 2).<br>
+     If <b>1/10</b> of the women and <b>1/4</b> of the children cannot swim, how many women and children <b>can</b> swim?`,
+    {type:"integer", value:Math.round(canSwim)},
+    String(Math.round(canSwim)),
+    `Enter an integer.`,
+    `Find women and children first, then subtract those who cannot swim.`
+  );
+}
+function tplH_ropeAverage(){
+  // keep same structure, but ensure integer outcome (no mixed numbers)
+  let r = randInt(1, 25);
+  let total = 3*(60 + 5*r); // total length
+  // C = total * 4/13 (from relationships) -> make total multiple of 13
+  let tries = 0;
+  while ((total % 13) !== 0 && tries < 120){
+    r = randInt(1, 25);
+    total = 3*(60 + 5*r);
+    tries++;
+  }
+  if ((total % 13) !== 0) return tplH_ropeAverage();
+
+  const C = total * 4 / 13; // integer
+  const avgStr = `(${60} + ${5}r)`;
+
+  return T("H_ropeAverage", 5,
+    `The average length of rope A, rope B and rope C is <b>${avgStr} m</b>.<br>
+     Rope A is <b>twice</b> as long as rope B and rope A is <b>3/2</b> times as long as rope C.<br>
+     If <b>r = ${r}</b>, find the length of <b>rope C</b> (in metres).`,
+    {type:"integer", value:Math.round(C)},
+    `${Math.round(C)} m`,
+    `Enter an integer (m).`,
+    `Use the average to get total length, then use the ratios between A, B, and C.`
+  );
+}
+function tplH_albumsFrames(){
+  const name = randName();
+  const albumCost = randInt(14, 24);
+  const diff = choice([2,3,4,5]);
+  const frameCost = albumCost - diff;
+  if (frameCost <= 0) return tplH_albumsFrames();
+
+  const ratio = choice([{f:4,a:3},{f:5,a:2},{f:3,a:2}]); // frames : albums
+  const k = randInt(6, 25);
+  const albums = ratio.a * k;
+  const frames = ratio.f * k;
+  const totalCost = albums*albumCost + frames*frameCost;
+
+  return T("H_albumsFrames", 2,
+    `${name} bought some albums and picture frames as gifts. Each album cost <b>$${albumCost}</b> and each picture frame cost <b>$${diff}</b> less.<br>
+     The ratio of the number of picture frames to the number of albums was <b>${ratio.f} : ${ratio.a}</b>.<br>
+     ${name} paid a total of <b>$${totalCost}</b>.<br>
+     How many <b>albums</b> did ${name} buy?`,
+    {type:"integer", value:albums},
+    String(albums),
+    `Enter an integer.`,
+    `Let albums = ${ratio.a}k and frames = ${ratio.f}k, then use the total cost to find k.`
+  );
+}
+function tplH_averageMass(){
+  const W = roundToDp(randInt(480, 780)/10, 1); // 48.0..78.0
+  const H = roundToDp(randInt(520, 900)/10, 1);
+  const C = roundToDp(randInt(420, 850)/10, 1);
+
+  const avgHW = roundToDp((H+W)/2, 1);
+  const avgWC = roundToDp((W+C)/2, 1);
+
+  const total = roundToDp(H+W+C, 1);
+
+  return T("H_averageMass", 7,
+    `The average mass of Harry and William is <b>${avgHW.toFixed(1)} kg</b>. The average mass of William and Charlie is <b>${avgWC.toFixed(1)} kg</b>.<br>
+     If William has a mass of <b>${W.toFixed(1)} kg</b>, find the <b>total mass</b> of the three boys. Give your answer to <b>1 decimal place</b>.`,
+    {type:"decimal", value:total, dp:1},
+    total.toFixed(1) + " kg",
+    `Enter a decimal (1 dp).`,
+    `Use averages to find Harry and Charlie, then add all three masses.`
+  );
+}
+
+/* ==========================================================
+   Build banks
+========================================================== */
+const EASY_BANK = [
+  tplE_integerCompare,
+  tplE_orderOps,
+  tplE_squareAndSubtract,
+  tplE_roundNearest100,
+  tplE_simplifyFraction,
+  tplE_unitConvert_mm_cm,
+  tplE_decimalAdd,
+  tplE_ratioSimplify_reducible,
+
+  // expansions
+  tplE_unitConvert_cm_mm,
+  tplE_unitConvert_m_cm_to_cm,
+  tplE_unitConvert_L_mL,
+  tplE_unitConvert_kg_g,
+  tplE_unitConvert_min_sec,
+  tplE_fracToPercent,
+  tplE_percentToFraction,
+  tplE_decimalToPercent,
+  tplE_percentToDecimal,
+  tplE_decimalToFractionSimple,
+  tplE_placeValueDigit,
+  tplE_times100,
+  tplE_roundMetresToNearestCm
+];
+
+const MED_BANK = [
+  tplM_evalSubstitution,
+  tplM_twoStepEquation,
+  tplM_fracAddUnlike,
+  tplM_fracMultiply,
+  tplM_decimalToFraction,
+  tplM_percentIncrease,
+  tplM_percentDecrease,
+  tplM_ratioEquivalentBlank,
+  tplM_speedDistanceTime,
+  tplM_meanOfData,
+  tplM_simpleProbability,
+  tplM_unitConvert_km_m,
+
+  // additions (your screenshots, randomised)
+  tplM_pocketMoney,
+  tplM_busPassTrips,
+  tplM_shopThreeItems,
+  tplM_percentSpentRest,
+  tplM_fracSubImproper,
+  tplM_discountMoney,
+  tplM_simulSkirtsDresses,
+  tplM_weekRental,
+  tplM_newAverageAddNumber,
+  tplM_percentMoreThan
+];
+
+const HARD_BANK = [
+  tplH_discountThenGST,
+  tplH_ratioGivenTotal,
+  tplH_ratioDifference,
+  tplH_linearAngles,
+  tplH_areaComposite,
+  tplH_volumeTankFraction,
+  tplH_chickenRabbit,
+  tplH_meanMissingValue,
+  tplH_probabilityWithoutReplacement,
+  tplH_fractionEquation,
+  tplH_proportionScale,
+  tplH_timeAcrossMidnight,
+  tplH_rateUnitPrice,
+  tplH_percentChangeWord,
+  tplH_threeTermRatio,
+
+  // additions (your hard screenshots, randomised)
+  tplH_taxiFare,
+  tplH_seminarPercentMix,
+  tplH_applesWithY,
+  tplH_marblesSameAdded,
+  tplH_moneyShareFractions,
+  tplH_perimeterRatioWidth,
+  tplH_coinMixTotalMoney,
+  tplH_mobileBills,
+  tplH_beachSwimmers,
+  tplH_ropeAverage,
+  tplH_albumsFrames,
+  tplH_averageMass
+];
+
+/* Uniqueness: pick WITHOUT replacement per bank */
+function pickUnique(bank, count){
+  if (bank.length < count){
+    throw new Error("Question bank too small for uniqueness requirement.");
+  }
+  return shuffle(bank).slice(0, count);
+}
+
+/* ---------------- Generate Questions (30 unique templates) ---------------- */
+function generateQuestions(){
+  const easyFns = pickUnique(EASY_BANK, 5);
+  const medFns  = pickUnique(MED_BANK, 10);
+  const hardFns = pickUnique(HARD_BANK, 15);
+
+  const qFns = [];
+  let e=0,m=0,h=0;
+  for (let i=0;i<30;i++){
+    const pts = POINTS[i];
+    if (pts === 2) qFns.push(easyFns[e++]);
+    else if (pts === 3) qFns.push(medFns[m++]);
+    else qFns.push(hardFns[h++]);
+  }
+
+  // shuffle within each point group
+  const idx2 = [], idx3 = [], idx4 = [];
+  for (let i=0;i<30;i++){
+    if (POINTS[i]===2) idx2.push(i);
+    else if (POINTS[i]===3) idx3.push(i);
+    else idx4.push(i);
+  }
+  const f2 = shuffle(idx2.map(i=>qFns[i]));
+  const f3 = shuffle(idx3.map(i=>qFns[i]));
+  const f4 = shuffle(idx4.map(i=>qFns[i]));
+
+  const finalFns = qFns.slice();
+  idx2.forEach((i,k)=>finalFns[i]=f2[k]);
+  idx3.forEach((i,k)=>finalFns[i]=f3[k]);
+  idx4.forEach((i,k)=>finalFns[i]=f4[k]);
+
+  const Q = [];
+  const usedIds = new Set();
+
+  for (let i=0;i<30;i++){
+    const fn = finalFns[i];
+    let t = fn();
+
+    let tries = 0;
+    while (usedIds.has(t.id) && tries < 80){
+      t = fn();
+      tries++;
+    }
+
+    usedIds.add(t.id);
+    Q.push(makeQ(i, t.partIndex, t.partName, POINTS[i], t.html, t.correct, t.displayCorrect, t.answerHint, t.hint));
+  }
+  return Q;
+}
+
+/* ---------------- UI + State ---------------- */
+const quizContent = document.getElementById("quizContent");
+const sidebarEl   = document.getElementById("sidebar");
+const generateBtn = document.getElementById("generateButton");
+const resetBtn    = document.getElementById("resetButton");
+const pauseBtn    = document.getElementById("pauseResumeButton");
+const exportBtn   = document.getElementById("exportPdfButton");
+const modePill    = document.getElementById("modePill");
+const metaLine    = document.getElementById("metaLine");
+
+const timerBox    = document.getElementById("timerBox");
+const timerLabel  = document.getElementById("timerLabel");
+const pausedTag   = document.getElementById("pausedTag");
+
+let MODE = "practice";
+let studentName = "Student";
+let questions = [];
+let currentIndex = 0;
+let examSubmitted = false;
+let practiceSubmitted = false;
+
+/* ---------------- Timer ---------------- */
+let timerInterval = null;
+let elapsedMs = 0;
+let lastTickMs = 0;
+let timerRunning = false;
+let timerPaused = false;
+
+function formatElapsed(ms){
+  const totalSec = Math.floor(ms / 1000);
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${pad2(m)}:${pad2(s)}`;
+}
+function updateTimerUI(){
+  timerLabel.textContent = `Time: ${formatElapsed(elapsedMs)}`;
+  pausedTag.style.display = timerPaused ? "inline-block" : "none";
+}
+function startQuizTimer(){
+  stopQuizTimer();
+  elapsedMs = 0;
+  timerRunning = true;
+  timerPaused = false;
+  lastTickMs = Date.now();
+  timerBox.style.display = "inline-flex";
+  pauseBtn.style.display = "inline-block";
+  pauseBtn.textContent = "Pause";
+  updateTimerUI();
+
+  timerInterval = setInterval(() => {
+    if (!timerRunning || timerPaused) return;
+    const now = Date.now();
+    elapsedMs += (now - lastTickMs);
+    lastTickMs = now;
+    updateTimerUI();
+  }, 250);
+}
+function stopQuizTimer(){
+  timerRunning = false;
+  timerPaused = false;
+  if (timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  updateTimerUI();
+}
+function setPausedUI(isPaused){
+  const input = document.getElementById("answerInput");
+  if (input) input.disabled = isPaused || practiceSubmitted || examSubmitted;
+
+  ["nextButton","backButton","submitButton","checkButton","submitPracticeButton","saveButton","hintButton"].forEach(id=>{
+    const b = document.getElementById(id);
+    if (b) b.disabled = isPaused;
+  });
+
+  generateBtn.disabled = isPaused;
+  resetBtn.disabled = isPaused;
+  exportBtn.disabled = isPaused;
+
+  sidebarEl.style.pointerEvents = isPaused ? "none" : "auto";
+  sidebarEl.style.opacity = isPaused ? "0.6" : "1";
+}
+function togglePause(){
+  if (!timerRunning) return;
+  timerPaused = !timerPaused;
+  lastTickMs = Date.now();
+  pauseBtn.textContent = timerPaused ? "Resume" : "Pause";
+  updateTimerUI();
+  setPausedUI(timerPaused);
+}
+
+/* ---------------- Sidebar ---------------- */
+function renderSidebar(){
+  sidebarEl.style.display = "block";
+  const total = questions.length;
+
+  let sub = "";
+  if (MODE === "practice"){
+    const answered = questions.filter(q => (q.userValue||"").trim() !== "").length;
+    const correctCount = questions.filter(q => q.isCorrect).length;
+    sub = practiceSubmitted
+      ? `<div class="sub">Submitted. Answered: <b>${answered}</b> / <b>${total}</b><br>Correct: <b>${correctCount}</b> / <b>${total}</b></div>`
+      : `<div class="sub">Answered: <b>${answered}</b> / <b>${total}</b><br>(Use <b>Check Answer</b>, then submit on Q${total}.)</div>`;
+  } else {
+    sub = `<div class="sub">Total: <b>${TOTAL_POINTS}</b> points. Submit on Q${total}.</div>`;
+  }
+
+  sidebarEl.innerHTML = `<h4>Questions</h4>${sub}<ul id="qList"></ul>`;
+  const ul = document.getElementById("qList");
+
+  for (let i=0;i<total;i++){
+    const li = document.createElement("li");
+    li.dataset.index = String(i);
+
+    const left = document.createElement("span");
+    left.textContent = `Q${i+1}`;
+
+    const badge = document.createElement("span");
+    badge.className = "pts-badge";
+    badge.textContent = `${questions[i].points} pts`;
+
+    li.appendChild(left);
+    li.appendChild(badge);
+
+    li.addEventListener("click", () => {
+      if (timerPaused) return;
+      saveCurrentInput();
+      currentIndex = i;
+      renderQuestion();
+    });
+
+    ul.appendChild(li);
+  }
+
+  updateSidebarStatus();
+}
+function updateSidebarStatus(){
+  const items = document.querySelectorAll("#qList li");
+  items.forEach(li => {
+    li.classList.remove("active","answered","correct","incorrect");
+    const idx = Number(li.dataset.index);
+    const q = questions[idx];
+
+    li.classList.toggle("active", idx === currentIndex);
+
+    const hasAns = (q.userValue || "").trim() !== "";
+
+    if (MODE === "practice"){
+      if (practiceSubmitted){
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      } else {
+        if (q.checked){
+          li.classList.add(q.isCorrect ? "correct" : "incorrect");
+        } else if (hasAns){
+          li.classList.add("answered");
+        }
+      }
+    } else {
+      if (!examSubmitted){
+        if (hasAns) li.classList.add("answered");
+      } else {
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ---------------- Save input ---------------- */
+function saveCurrentInput(){
+  if (practiceSubmitted || examSubmitted) return;
+  const input = document.getElementById("answerInput");
+  if (!input) return;
+  questions[currentIndex].userValue = input.value.trim();
+}
+
+/* ---------------- Check (Practice only) ---------------- */
+function checkCurrentAnswer(){
+  if (timerPaused) return;
+  if (practiceSubmitted) return;
+  if (MODE !== "practice") return;
+
+  saveCurrentInput();
+  const q = questions[currentIndex];
+  const fb = document.getElementById("checkFeedback");
+  if (!fb) return;
+
+  const ans = (q.userValue || "").trim();
+  if (!ans){
+    fb.textContent = "Please enter an answer first.";
+    fb.className = "check-feedback neutral";
+    return;
+  }
+
+  if (/\d+\s+\d+\/\d+/.test(ans)){
+    fb.textContent = "Please do NOT use mixed numbers. Use an improper fraction like 17/5 (or an integer).";
+    fb.className = "check-feedback neutral";
+    return;
+  }
+
+  const res = compareByType(ans, q.correct);
+  q.isCorrect = !!res.ok;
+  q.checked = true;
+
+  if (q.isCorrect){
+    fb.textContent = "✅ Correct!";
+    fb.className = "check-feedback correct";
+  } else {
+    fb.textContent = `❌ Not quite. Try again.\n(Answer format reminder: ${q.answerHint})`;
+    fb.className = "check-feedback incorrect";
+  }
+
+  renderSidebar();
+}
+
+/* ---------------- Hint button ---------------- */
+function toggleHint(){
+  const q = questions[currentIndex];
+  q.hintShown = !q.hintShown;
+  const hb = document.getElementById("hintBox");
+  const btn = document.getElementById("hintButton");
+  if (hb) hb.style.display = q.hintShown ? "block" : "none";
+  if (btn) btn.textContent = q.hintShown ? "Hide Hint" : "Show Hint";
+}
+function hintBlock(q){
+  return `
+    <button id="hintButton" class="hint-toggle" type="button">${q.hintShown ? "Hide Hint" : "Show Hint"}</button>
+    <div id="hintBox" class="hint-box" style="display:${q.hintShown ? "block" : "none"};">
+      <b>Hint:</b> ${q.hint || "Work step-by-step."}
+    </div>
+  `;
+}
+
+/* ---------------- Render answer input ---------------- */
+function renderAnswerInput(q){
+  const locked = practiceSubmitted || examSubmitted;
+  return `
+    <input id="answerInput" class="answer-box" type="text"
+      ${locked ? "disabled" : ""}
+      value="${(q.userValue||"").replace(/"/g,'&quot;')}" />
+  `;
+}
+
+/* ---------------- Render question ---------------- */
+function renderQuestion(){
+  const total = questions.length;
+  const q = questions[currentIndex];
+  const isLast = (currentIndex === total - 1);
+
+  const topLine = (MODE === "practice")
+    ? `Practice Mode — Question ${currentIndex+1} of ${total}`
+    : `Exam Mode — Question ${currentIndex+1} of ${total}`;
+
+  const showPrev = currentIndex > 0;
+  const showNext = currentIndex < total - 1;
+
+  const showCheck = (MODE === "practice" && !practiceSubmitted);
+  const showSubmitExam = (MODE === "exam" && !examSubmitted && isLast);
+  const showSubmitPractice = (MODE === "practice" && !practiceSubmitted && isLast);
+
+  const feedbackBox = showCheck ? `<div id="checkFeedback" class="check-feedback"></div>` : ``;
+
+  const pointsLine = (MODE === "exam")
+    ? `<div class="points-line">This question is worth <b>${q.points}</b> points.</div>`
+    : ``;
+
+  const lockedNote = (examSubmitted)
+    ? `<div class="hint-box" style="display:block;background:#fff8e1;border-color:#ffe0b2;">
+         <b>Exam submitted.</b> Answers are locked. Use the sidebar to review.
+       </div>`
+    : (MODE === "practice" && practiceSubmitted)
+      ? `<div class="hint-box" style="display:block;background:#fff8e1;border-color:#ffe0b2;">
+           <b>Practice submitted.</b> Answers are locked. Use the sidebar to review.
+         </div>`
+      : ``;
+
+  quizContent.innerHTML = `
+    <p class="question-text">${topLine}</p>
+    ${pointsLine}
+    <p class="instructions">${q.answerHint}</p>
+
+    <div class="part-title">${q.partName}</div>
+
+    <div class="single-question">
+      <div><b>Q${currentIndex+1}.</b> ${q.html}</div>
+      ${renderAnswerInput(q)}
+    </div>
+
+    ${hintBlock(q)}
+    ${feedbackBox}
+    ${lockedNote}
+
+    <div class="question-buttons">
+      <button id="backButton" style="${showPrev ? "" : "display:none;"}">Previous</button>
+      ${showCheck ? `<button id="checkButton">Check Answer</button>` : ``}
+      ${showSubmitPractice ? `<button id="submitPracticeButton">Submit (Practice)</button>` : ``}
+      ${showSubmitExam ? `<button id="submitButton">Submit (Exam)</button>` : ``}
+      <button id="nextButton" style="${showNext ? "" : "display:none;"}">Next</button>
+    </div>
+  `;
+
+  document.getElementById("nextButton")?.addEventListener("click", onNext);
+  document.getElementById("backButton")?.addEventListener("click", onPrev);
+  document.getElementById("checkButton")?.addEventListener("click", checkCurrentAnswer);
+  document.getElementById("submitButton")?.addEventListener("click", onSubmitExam);
+  document.getElementById("submitPracticeButton")?.addEventListener("click", onSubmitPractice);
+  document.getElementById("hintButton")?.addEventListener("click", () => {
+    if (timerPaused) return;
+    toggleHint();
+  });
+
+  updateSidebarStatus();
+  setPausedUI(timerPaused);
+}
+
+/* ---------------- Navigation ---------------- */
+function onNext(){
+  if (timerPaused) return;
+  saveCurrentInput();
+  if (currentIndex < questions.length - 1){
+    currentIndex++;
+    renderQuestion();
+  }
+}
+function onPrev(){
+  if (timerPaused) return;
+  saveCurrentInput();
+  if (currentIndex > 0){
+    currentIndex--;
+    renderQuestion();
+  }
+}
+
+/* ---------------- Grading ---------------- */
+function gradeExamAll(){
+  let pointsEarned = 0;
+  questions.forEach(q => {
+    const res = compareByType(q.userValue || "", q.correct);
+    q.isCorrect = !!res.ok;
+    if (q.isCorrect) pointsEarned += q.points;
+  });
+  return pointsEarned;
+}
+function gradePracticeAll(){
+  let correctCount = 0;
+  questions.forEach(q => {
+    const res = compareByType(q.userValue || "", q.correct);
+    q.isCorrect = !!res.ok;
+    if (q.isCorrect) correctCount++;
+  });
+  return correctCount;
+}
+function onSubmitExam(){
+  if (timerPaused) return;
+  if (examSubmitted) return;
+  saveCurrentInput();
+
+  examSubmitted = true;
+
+  timerRunning = false;
+  if (timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  pauseBtn.style.display = "none";
+  pausedTag.style.display = "none";
+
+  const pts = gradeExamAll();
+  renderSidebar();
+  renderExamResults(pts);
+}
+function onSubmitPractice(){
+  if (timerPaused) return;
+  if (practiceSubmitted) return;
+  saveCurrentInput();
+
+  practiceSubmitted = true;
+
+  timerRunning = false;
+  if (timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  pauseBtn.style.display = "none";
+  pausedTag.style.display = "none";
+
+  const correctCount = gradePracticeAll();
+  renderSidebar();
+  renderPracticeResults(correctCount);
+}
+
+/* ---------------- Results (Exam) ---------------- */
+function renderExamResults(pointsEarned){
+  const total = questions.length;
+  const timeText = formatElapsed(elapsedMs);
+  const correctCount = questions.filter(q => q.isCorrect).length;
+
+  let html = `
+    <h3>Exam Results</h3>
+    <p><b>Student:</b> ${studentName}</p>
+    <p><b>Score:</b> ${pointsEarned} / ${TOTAL_POINTS} points</p>
+    <p><b>Correct:</b> ${correctCount} / ${total} questions</p>
+    <p><b>Time:</b> ${timeText}</p>
+
+    <div class="question-buttons">
+      <button id="saveButton">Save Result (TXT)</button>
+    </div>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th>
+        <th>Pts</th>
+        <th>Earned</th>
+        <th>Topic</th>
+        <th>Question</th>
+        <th>Your Answer</th>
+        <th>Correct Answer</th>
+        <th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q, i) => {
+    const yourAns = (q.userValue || "").trim() === "" ? "—" : q.userValue;
+    const earned = q.isCorrect ? q.points : 0;
+    const isAnswered = (q.userValue||"").trim() !== "";
+    html += `
+      <tr class="${q.isCorrect ? "correct-answer" : "incorrect-answer"}">
+        <td>${i+1}</td>
+        <td>${q.points}</td>
+        <td>${earned}</td>
+        <td>${q.partName}</td>
+        <td style="text-align:left;">${q.html}</td>
+        <td>${yourAns}</td>
+        <td>${q.displayCorrect}</td>
+        <td>${!isAnswered ? "Not answered" : (q.isCorrect ? "Correct" : "Incorrect")}</td>
+      </tr>
+    `;
+  });
+  html += `</table>`;
+
+  quizContent.innerHTML = html;
+  document.getElementById("saveButton")?.addEventListener("click", saveExamResultAsTxt);
+
+  updateSidebarStatus();
+}
+
+/* ---------------- Results (Practice) ---------------- */
+function renderPracticeResults(correctCount){
+  const total = questions.length;
+  const timeText = formatElapsed(elapsedMs);
+  const answered = questions.filter(q => (q.userValue||"").trim() !== "").length;
+
+  let html = `
+    <h3>Practice Summary</h3>
+    <p><b>Student:</b> ${studentName}</p>
+    <p><b>Answered:</b> ${answered} / ${total} questions</p>
+    <p><b>Correct:</b> ${correctCount} / ${total} questions</p>
+    <p><b>Time:</b> ${timeText}</p>
+
+    <div class="hint-box" style="display:block;background:#e8fff0;border-color:#b7f0c8;">
+      <b>Tip:</b> Fractions must be entered as <b>a/b</b> in simplest form (no mixed numbers).
+      You can still click questions in the sidebar to review.
+    </div>
+
+    <div class="question-buttons">
+      <button id="saveButton">Save Practice Result (TXT)</button>
+    </div>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th>
+        <th>Topic</th>
+        <th>Question</th>
+        <th>Your Answer</th>
+        <th>Correct Answer</th>
+        <th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q, i) => {
+    const yourAns = (q.userValue || "").trim() === "" ? "—" : q.userValue;
+    html += `
+      <tr class="${q.isCorrect ? "correct-answer" : "incorrect-answer"}">
+        <td>${i+1}</td>
+        <td>${q.partName}</td>
+        <td style="text-align:left;">${q.html}</td>
+        <td>${yourAns}</td>
+        <td>${q.displayCorrect}</td>
+        <td>${(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect ? "Correct" : "Incorrect")}</td>
+      </tr>
+    `;
+  });
+  html += `</table>`;
+
+  quizContent.innerHTML = html;
+  document.getElementById("saveButton")?.addEventListener("click", savePracticeResultAsTxt);
+
+  updateSidebarStatus();
+}
+
+/* ---------------- Save result (TXT) ---------------- */
+function formatDateForFilename(date){
+  const pad = n => String(n).padStart(2,"0");
+  return (
+    date.getFullYear() +
+    pad(date.getMonth() + 1) +
+    pad(date.getDate()) + "_" +
+    pad(date.getHours()) +
+    pad(date.getMinutes()) +
+    pad(date.getSeconds())
+  );
+}
+function saveExamResultAsTxt(){
+  const pointsEarned = questions.reduce((sum,q)=>sum+(q.isCorrect?q.points:0),0);
+  const correctCount = questions.filter(q=>q.isCorrect).length;
+
+  const lines = [];
+  lines.push("NZ Year 7 Maths Test - Exam Result");
+  lines.push("Student: " + studentName);
+  lines.push("Mode: Exam");
+  lines.push("Time: " + formatElapsed(elapsedMs));
+  lines.push("Score: " + pointsEarned + " / " + TOTAL_POINTS + " points");
+  lines.push("Correct: " + correctCount + " / " + questions.length);
+  lines.push("");
+  lines.push("Details:");
+  lines.push("--------");
+
+  questions.forEach((q, i) => {
+    const userAns = (q.userValue || "").trim() === "" ? "Not answered" : q.userValue;
+    const earned = q.isCorrect ? q.points : 0;
+    const resultText = (q.userValue || "").trim() === ""
+      ? "Not answered"
+      : (q.isCorrect ? "Correct" : "Incorrect");
+
+    lines.push(
+      `Q${i+1} (${q.partName}) [${earned}/${q.points} pts]` +
+      "\nQuestion: " + q.plain +
+      "\nYour answer: " + userAns +
+      "\nCorrect answer: " + stripHTML(q.displayCorrect) +
+      "\nResult: " + resultText
+    );
+    lines.push("");
+  });
+
+  const content = lines.join("\n");
+  const blob = new Blob([content], { type:"text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const safeName = studentName.replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  a.href = url;
+  a.download = `NZ_Y7_Exam_${safeName}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function savePracticeResultAsTxt(){
+  const correctCount = questions.filter(q=>q.isCorrect).length;
+  const answered = questions.filter(q => (q.userValue||"").trim() !== "").length;
+
+  const lines = [];
+  lines.push("NZ Year 7 Maths Test - Practice Result");
+  lines.push("Student: " + studentName);
+  lines.push("Mode: Practice");
+  lines.push("Time: " + formatElapsed(elapsedMs));
+  lines.push("Answered: " + answered + " / " + questions.length);
+  lines.push("Correct: " + correctCount + " / " + questions.length);
+  lines.push("");
+  lines.push("Details:");
+  lines.push("--------");
+
+  questions.forEach((q, i) => {
+    const userAns = (q.userValue || "").trim() === "" ? "Not answered" : q.userValue;
+    const resultText = (q.userValue || "").trim() === ""
+      ? "Not answered"
+      : (q.isCorrect ? "Correct" : "Incorrect");
+
+    lines.push(
+      `Q${i+1} (${q.partName})` +
+      "\nQuestion: " + q.plain +
+      "\nYour answer: " + userAns +
+      "\nCorrect answer: " + stripHTML(q.displayCorrect) +
+      "\nResult: " + resultText
+    );
+    lines.push("");
+  });
+
+  const content = lines.join("\n");
+  const blob = new Blob([content], { type:"text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const safeName = studentName.replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  a.href = url;
+  a.download = `NZ_Y7_Practice_${safeName}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ---------------- Export to PDF (Print) ---------------- */
+/* ---------------- Export to PDF (Print) ---------------- */
+function exportToPDF(){
+  if (!questions.length) return;
+
+  const w = window.open("", "_blank");
+  if (!w) return;
+
+  const now = new Date();
+  const ts = `${now.getFullYear()}-${pad2(now.getMonth()+1)}-${pad2(now.getDate())}`;
+
+  const titleText = (MODE === "practice")
+    ? "NZ Year 7 Maths — Practice Set"
+    : "NZ Year 7 Maths — Exam Paper";
+
+  const noteText = (MODE === "practice")
+    ? "Write your answers in the spaces provided. Fractions must be written as a/b (no mixed numbers)."
+    : "Answer all questions. Fractions must be written as a/b (no mixed numbers).";
+
+  const printStyles = `
+    <style>
+      body{ font-family: 'Segoe UI', Tahoma, sans-serif; color:#111; margin:24px; }
+      .hdr{ display:flex; align-items:center; gap:12px; border-bottom:2px solid #ddd; padding-bottom:10px; margin-bottom:16px; }
+      .logo{ width:34px; height:34px; background:#0d47a1; border-radius:6px; position:relative; }
+      .logo:before{ content:""; position:absolute; width:18px; height:8px; background:#ff9800; top:-6px; left:18px; border-radius:3px; }
+      .brand{ font-weight:900; letter-spacing:1px; color:#0d47a1; }
+      .edu{ font-weight:900; letter-spacing:0.6px; color:#ff9800; font-size:0.9em; }
+      h1{ font-size:1.25em; margin:0 0 6px; }
+      .meta{ color:#444; font-size:0.95em; margin:0 0 10px; }
+      .small{ color:#555; font-size:0.9em; margin:0 0 12px; }
+      .q{ margin:10px 0 14px; page-break-inside: avoid; }
+      .q .qt{ margin-bottom:8px; }
+      .ansbox{ margin-top:8px; border:1px solid #aaa; border-radius:8px; height:44px; }
+      .pts{ font-size:0.9em; color:#444; font-weight:800; margin-left:8px; }
+      .topic{ font-size:0.92em; color:#0d47a1; font-weight:900; margin:16px 0 6px; }
+      .page-break{ page-break-before: always; }
+
+      table.ans-table{ width:100%; border-collapse:collapse; margin-top:10px; }
+      .ans-table th, .ans-table td{
+        border:1px solid #bbb;
+        padding:6px 8px;
+        font-size:0.9em;
+        text-align:left;
+        vertical-align:top;
+      }
+      .ans-table th{ background:#f2f2f2; }
+
+      @media print{ .noprint{ display:none; } }
+    </style>
+  `;
+
+  // ---------- Header ----------
+  let body = `
+    <div class="hdr">
+      <div class="logo"></div>
+      <div>
+        <div class="brand">DYAA</div>
+        <div class="edu">EDUCATION</div>
+      </div>
+    </div>
+
+    <h1>${titleText}</h1>
+    <p class="meta"><b>Student:</b> ${studentName} &nbsp; | &nbsp; <b>Date:</b> ${ts} &nbsp; | &nbsp; <b>Mode:</b> ${MODE.toUpperCase()}</p>
+    <p class="small">${noteText}</p>
+
+    <div class="noprint" style="margin:12px 0;">
+      <button onclick="window.print()" style="padding:10px 16px;border:none;border-radius:10px;background:#6a1b9a;color:#fff;font-weight:900;cursor:pointer;">
+        Print / Save as PDF
+      </button>
+    </div>
+  `;
+
+  // ---------- Questions in ORDER Q1..Q30 ----------
+  let lastTopic = "";
+  questions.forEach((q) => {
+    if (q.partName !== lastTopic){
+      body += `<div class="topic">${q.partName}</div>`;
+      lastTopic = q.partName;
+    }
+
+    const ptsText = (MODE === "exam") ? `<span class="pts">(${q.points} pts)</span>` : "";
+    body += `
+      <div class="q">
+        <div class="qt"><b>Q${q.index+1}.</b> ${q.html} ${ptsText}</div>
+        <div class="ansbox"></div>
+      </div>
+    `;
+  });
+
+  // ---------- Answers on a SEPARATE page ----------
+  body += `
+    <div class="page-break"></div>
+    <h1>Answer Sheet</h1>
+    <p class="small">Do not use mixed numbers. Fractions are shown as a/b in simplest form.</p>
+
+    <table class="ans-table">
+      <tr>
+        <th style="width:70px;">Q#</th>
+        <th style="width:180px;">Answer</th>
+        <th>Topic</th>
+      </tr>
+  `;
+
+  questions.forEach((q) => {
+    const ansText = stripHTML(q.displayCorrect || "");
+    body += `
+      <tr>
+        <td><b>Q${q.index+1}</b></td>
+        <td>${ansText}</td>
+        <td>${q.partName}</td>
+      </tr>
+    `;
+  });
+
+  body += `</table>`;
+
+  // ---------- Write to new window ----------
+  w.document.open();
+  w.document.write(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>${titleText}</title>
+        ${printStyles}
+      </head>
+      <body>${body}</body>
+    </html>
+  `);
+  w.document.close();
+
+  setTimeout(() => { try{ w.focus(); }catch(e){} }, 200);
+}
+
+/* ---------------- Start / Reset ---------------- */
+function startNewSet(){
+  questions = generateQuestions();
+  currentIndex = 0;
+  examSubmitted = false;
+  practiceSubmitted = false;
+
+  questions.forEach(q => {
+    q.userValue = "";
+    q.checked = false;
+    q.isCorrect = false;
+    q.hintShown = false;
+  });
+
+  renderSidebar();
+  renderQuestion();
+
+  generateBtn.style.display = "inline-block";
+  resetBtn.style.display = "inline-block";
+  pauseBtn.style.display = "inline-block";
+  timerBox.style.display = "inline-flex";
+  exportBtn.style.display = "inline-block";
+
+  setPausedUI(false);
+  startQuizTimer();
+  updateMetaLine();
+}
+function updateMetaLine(){
+  const modeText = (MODE === "practice")
+    ? "Practice Mode (timed, Check Answer + Export PDF + Submit Summary)"
+    : `Exam Mode (timed, total ${TOTAL_POINTS} points)`;
+  metaLine.textContent = `Student: ${studentName} • ${modeText} • 30 questions • NZ Year 7 • Fractions as a/b only`;
+}
+function showStartScreen(){
+  sidebarEl.style.display = "none";
+  generateBtn.style.display = "none";
+  pauseBtn.style.display = "none";
+  resetBtn.style.display = "none";
+  exportBtn.style.display = "none";
+  timerBox.style.display = "none";
+  modePill.style.display = "none";
+  metaLine.textContent = "";
+
+  quizContent.innerHTML = `
+    <div class="hint-box" style="display:block;">
+      <b>Choose a mode:</b><br>
+      • <b>Practice</b>: timed + every question has <b>Check Answer</b>. Submit on the last question to get a <b>summary</b> and <b>save result</b>.<br>
+      • <b>Exam</b>: timed, total <b>${TOTAL_POINTS}</b> points. Only <b>Submit</b> on the last question.<br><br>
+
+      <b>Rule:</b> Do <b>NOT</b> use mixed numbers. If your answer is a fraction, write it as <b>a/b</b> in simplest form.
+      <br><b>Note:</b> All questions are <b>text-only</b>. Each set contains <b>30 different question types</b> (no repeats).
+    </div>
+
+    <div style="margin-top:14px;">
+      <div style="font-weight:900; margin-bottom:6px;">Student Name</div>
+      <input id="nameInput" class="answer-box" type="text" placeholder="Your name" style="margin-top:0;">
+    </div>
+
+    <div style="margin-top:12px;">
+      <div style="font-weight:900; margin-bottom:6px;">Mode</div>
+      <label style="display:block; margin:6px 0;">
+        <input type="radio" name="modeChoice" value="practice" checked>
+        Practice Mode
+      </label>
+      <label style="display:block; margin:6px 0;">
+        <input type="radio" name="modeChoice" value="exam">
+        Exam Mode
+      </label>
+    </div>
+
+    <div class="question-buttons" style="margin-top:18px;">
+      <button id="startButton" style="background:#4caf50;">Start</button>
+    </div>
+  `;
+
+  const nameInput = document.getElementById("nameInput");
+  if (nameInput && URL_STUDENT_NAME) nameInput.value = URL_STUDENT_NAME;
+
+  document.getElementById("startButton")?.addEventListener("click", () => {
+    const name = (document.getElementById("nameInput")?.value || "Student").trim();
+    studentName = name || "Student";
+
+    const picked = document.querySelector('input[name="modeChoice"]:checked');
+    MODE = picked ? picked.value : "practice";
+
+    modePill.style.display = "inline-flex";
+    modePill.textContent = (MODE === "practice") ? "Practice Mode" : "Exam Mode";
+
+    startNewSet();
+  });
+}
+
+/* ---------------- Buttons ---------------- */
+generateBtn.addEventListener("click", () => {
+  if (timerPaused) return;
+  const msg =
+    MODE === "practice"
+      ? "Generate a new practice set?\n\nYour current answers and progress will be cleared."
+      : "Generate a new exam set?\n\nYour current answers and progress will be cleared.";
+  const ok = window.confirm(msg);
+  if (!ok) return;
+  startNewSet();
+});
+resetBtn.addEventListener("click", () => {
+  stopQuizTimer();
+  timerPaused = false;
+  setPausedUI(false);
+  showStartScreen();
+});
+pauseBtn.addEventListener("click", () => togglePause());
+exportBtn.addEventListener("click", () => {
+  if (timerPaused) return;
+  exportToPDF();
+});
+
+/* Init */
+showStartScreen();
+</script>
+</body>
+</html>

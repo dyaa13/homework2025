@@ -1,0 +1,2469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NZ Year 5 Maths Test (Practice / Exam)</title>
+
+  <style>
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:#f4f4f9;
+      margin:0; padding:20px;
+      color:#333;
+    }
+    .quiz-container{
+      max-width:980px;
+      margin:40px auto;
+      background:#fff;
+      padding:30px;
+      border-radius:12px;
+      box-shadow:0 6px 15px rgba(0,0,0,0.1);
+      position:relative;
+    }
+    #headerLogo{
+      display:flex; align-items:center;
+      margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:10px;
+      gap:12px;
+    }
+    .logo-icon{
+      width:40px; height:40px;
+      background:#0d47a1; border-radius:6px;
+      position:relative;
+      flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:20px;height:9px;
+      background:#ff9800;
+      top:-6px; left:22px;
+      border-radius:3px;
+    }
+    .logo-text{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      line-height:1.05;
+    }
+    .logo-text .brand{
+      font-weight:900;
+      letter-spacing:1px;
+      color:#0d47a1;
+      font-size:1.05em;
+    }
+    .logo-text .edu{
+      font-size:0.9em;
+      color:#ff9800;
+      font-weight:900;
+      letter-spacing:0.6px;
+    }
+
+    .top-bar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin:10px 0 6px;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .top-left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .mode-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#eef2ff;
+      border:1px solid #dfe5ff;
+      font-weight:800;
+      font-size:0.9em;
+      color:#222;
+      display:none;
+    }
+    .timer-box{
+      padding:8px 12px;
+      border:1px solid #e0e0e0;
+      border-radius:10px;
+      background:#fafafa;
+      font-weight:800;
+      font-size:0.95em;
+      display:none;
+    }
+    .timer-box .paused-tag{
+      display:inline-block;
+      margin-left:8px;
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid #ffd0d0;
+      background:#fff2f2;
+      color:#b00020;
+      font-weight:900;
+      font-size:0.85em;
+      display:none;
+    }
+
+    .top-right{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .top-right button{
+      padding:10px 16px;
+      border:none;
+      color:#fff;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:0.98em;
+      font-weight:800;
+    }
+    #generateButton{ background:#ff9800; display:none; }
+    #pauseResumeButton{ background:#607d8b; display:none; }
+    #resetButton{ background:#455a64; display:none; }
+    #exportPdfButton{ background:#6a1b9a; display:none; }
+
+    .quiz-main{
+      display:flex; gap:20px;
+      margin-top:10px;
+    }
+    .sidebar{
+      width:250px;
+      border-right:1px solid #ddd;
+      padding-right:10px;
+      display:none;
+    }
+    .sidebar h4{
+      margin:0 0 8px;
+      font-size:0.95em;
+      border-bottom:1px solid #eee;
+      padding-bottom:4px;
+    }
+    .sidebar .sub{
+      font-size:0.86em;
+      color:#666;
+      margin:4px 0 10px;
+      line-height:1.35;
+    }
+    .sidebar ul{ list-style:none; padding:0; margin:0; }
+    .sidebar li{
+      padding:6px;
+      cursor:pointer;
+      border-radius:6px;
+      font-size:0.9em;
+      user-select:none;
+      margin-bottom:6px;
+      border:1px solid transparent;
+      background:#fafafa;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+    }
+    .sidebar li:hover{ border-color:#e6e6e6; }
+    .sidebar li.active{ outline:2px solid #1976d2; font-weight:800; background:#fff; }
+    .sidebar li.correct{ background:#d4edda; border-left:4px solid #28a745; }
+    .sidebar li.incorrect{ background:#f8d7da; border-left:4px solid #f44336; }
+    .sidebar li.answered{ border-left:4px solid #4caf50; background:#fdfdfd; }
+    .pts-badge{
+      font-size:0.78em;
+      font-weight:900;
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid #e0e0e0;
+      background:#fff;
+      color:#444;
+      flex:0 0 auto;
+    }
+
+    #quizContent{ flex:1; min-width:0; }
+
+    h2{
+      margin:10px 0 6px;
+      font-size:1.5em;
+      color:#111;
+    }
+    .meta-line{
+      margin:0 0 6px;
+      color:#555;
+      font-size:0.95em;
+    }
+    .question-text{
+      font-size:1.05em;
+      margin:10px 0 8px;
+      font-weight:800;
+    }
+    .instructions{
+      font-size:0.92em;
+      color:#555;
+      margin:0 0 12px;
+      line-height:1.45;
+    }
+    .part-title{
+      font-weight:900;
+      margin:10px 0 8px;
+      color:#0d47a1;
+    }
+    .points-line{
+      margin:0 0 10px;
+      color:#444;
+      font-size:0.92em;
+      font-weight:900;
+    }
+    .single-question{
+      margin-top:8px;
+      line-height:1.55;
+      font-size:1.02em;
+    }
+    .answer-box{
+      width:min(520px, 96%);
+      padding:8px 10px;
+      font-size:1em;
+      margin-top:8px;
+      border:1px solid #cfcfcf;
+      border-radius:10px;
+      outline:none;
+    }
+    .answer-box:focus{ border-color:#1976d2; box-shadow:0 0 0 3px rgba(25,118,210,0.12); }
+
+    .hint-toggle{
+      margin-top:12px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:10px;
+      border:1px solid #e0e0e0;
+      background:#fafafa;
+      cursor:pointer;
+      font-weight:900;
+      user-select:none;
+    }
+    .hint-toggle:disabled{
+      cursor:not-allowed;
+      opacity:0.6;
+    }
+    .hint-box{
+      margin-top:10px;
+      padding:10px 12px;
+      background:#f7f7ff;
+      border:1px solid #e6e6ff;
+      border-radius:10px;
+      font-size:0.92em;
+      color:#444;
+      line-height:1.45;
+      display:none;
+    }
+    .hint-box b{ color:#111; }
+
+    .check-feedback{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid #e0e0e0;
+      background:#fafafa;
+      font-size:0.95em;
+      display:none;
+      white-space:pre-wrap;
+      line-height:1.45;
+    }
+    .check-feedback.neutral{ display:block; background:#f6f7fb; border-color:#e2e6ff; }
+    .check-feedback.correct{ display:block; background:#d4edda; border-color:#28a745; }
+    .check-feedback.incorrect{ display:block; background:#f8d7da; border-color:#f44336; }
+
+    .question-buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+      align-items:center;
+    }
+    .question-buttons button{
+      padding:10px 18px;
+      border:none;
+      color:#fff;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:1em;
+      font-weight:900;
+    }
+    #nextButton{ background:#4caf50; }
+    #backButton{ background:#039be5; }
+    #submitButton{ background:#9c27b0; }
+    #checkButton{ background:#00897b; }
+    #submitPracticeButton{ background:#455a64; }
+    #saveButton{ background:#607d8b; }
+
+    .pic-box{
+      margin-top:10px;
+      border:1px dashed #cfcfcf;
+      background:#fcfcff;
+      border-radius:12px;
+      padding:10px;
+      overflow:auto;
+    }
+
+    table.review-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:18px;
+    }
+    .review-table th, .review-table td{
+      border:1px solid #ccc;
+      padding:6px;
+      font-size:0.85em;
+      text-align:center;
+      vertical-align:top;
+    }
+    .review-table th{ background:#f2f2f2; }
+    .correct-answer{ background:#d4edda; }
+    .incorrect-answer{ background:#f8d7da; }
+
+    @media (max-width:760px){
+      .quiz-main{ flex-direction:column; }
+      .sidebar{
+        width:100%;
+        border-right:none;
+        border-bottom:1px solid #ddd;
+        margin-bottom:10px;
+        padding-bottom:10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text">
+      <div class="brand">DYAA</div>
+      <div class="edu">EDUCATION</div>
+    </div>
+  </div>
+
+  <div class="top-bar">
+    <div class="top-left">
+      <span id="modePill" class="mode-pill"></span>
+      <div id="timerBox" class="timer-box">
+        <span id="timerLabel">Time: 00:00</span>
+        <span id="pausedTag" class="paused-tag">PAUSED</span>
+      </div>
+    </div>
+    <div class="top-right">
+      <button id="pauseResumeButton">Pause</button>
+      <button id="exportPdfButton">Export PDF</button>
+      <button id="generateButton">Generate New Set</button>
+      <button id="resetButton">Back to Start</button>
+    </div>
+  </div>
+
+  <h2>NZ Year 5 Maths Test</h2>
+  <p class="meta-line" id="metaLine"></p>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+</div>
+
+<script>
+/* ==========================================================
+   NZ Year 5 version (expanded bank)
+   ✅ 30 questions per set, total 100 points
+   ✅ In each set: NO repeated template types
+   ✅ Geometry mostly word-based
+   ✅ Richer NZ-style scenarios
+   ✅ Added the question styles you provided (estimate, patterns, money, time,
+      fraction/decimal place value, composite area, 24-hour time, etc.)
+========================================================== */
+
+/* ---------------- URL name ---------------- */
+function getStudentNameFromURL(){
+  try{
+    const params = new URLSearchParams(window.location.search || "");
+    const raw = params.get("name");
+    if (!raw) return "";
+    return decodeURIComponent(raw.replace(/\+/g, "%20")).trim();
+  }catch(e){ return ""; }
+}
+const URL_STUDENT_NAME = getStudentNameFromURL();
+
+/* ---------------- Utilities ---------------- */
+function randInt(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+function choice(arr){ return arr[randInt(0, arr.length - 1)]; }
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i=a.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function gcd(a,b){
+  a = Math.abs(a); b = Math.abs(b);
+  while(b){ const t=a%b; a=b; b=t; }
+  return a || 1;
+}
+function lcm(a,b){
+  a = Math.abs(a); b = Math.abs(b);
+  return (a / gcd(a,b)) * b;
+}
+function stripHTML(html){
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return (tmp.textContent || tmp.innerText || "").trim();
+}
+function pad2(n){ return String(n).padStart(2,"0"); }
+function roundTo(n, place){ // place = 1,10,100,1000...
+  return Math.round(n / place) * place;
+}
+
+/* ---------------- Points: 30 questions, total 100 ---------------- */
+function buildPointsArray(){
+  const pts = [];
+  for (let i=0;i<5;i++) pts.push(2);   // 10
+  for (let i=0;i<10;i++) pts.push(3);  // 30 -> 40
+  for (let i=0;i<15;i++) pts.push(4);  // 60 -> 100
+  return pts;
+}
+const POINTS = buildPointsArray();
+const TOTAL_POINTS = POINTS.reduce((a,b)=>a+b,0);
+
+/* ---------------- Number words (0..9999) ---------------- */
+const ONES = ["zero","one","two","three","four","five","six","seven","eight","nine"];
+const TEENS = ["ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"];
+const TENS  = ["","","twenty","thirty","forty","fifty","sixty","seventy","eighty","ninety"];
+function numberToWords(n){
+  n = Math.floor(Number(n));
+  if (!Number.isFinite(n) || n < 0 || n > 9999) return "";
+  if (n < 10) return ONES[n];
+  if (n < 20) return TEENS[n-10];
+  if (n < 100){
+    const t = Math.floor(n/10);
+    const u = n%10;
+    if (u === 0) return TENS[t];
+    return TENS[t] + "-" + ONES[u];
+  }
+  if (n < 1000){
+    const h = Math.floor(n/100);
+    const rest = n%100;
+    if (rest === 0) return ONES[h] + " hundred";
+    return ONES[h] + " hundred and " + numberToWords(rest);
+  }
+  const th = Math.floor(n/1000);
+  const rest = n%1000;
+  const thPart = ONES[th] + " thousand";
+  if (rest === 0) return thPart;
+  if (rest < 100) return thPart + " and " + numberToWords(rest);
+  return thPart + " " + numberToWords(rest);
+}
+function normalizeWords(s){
+  s = String(s || "").toLowerCase().trim();
+  s = s.replace(/[,]/g," ");
+  s = s.replace(/-/g," ");
+  s = s.replace(/\s+/g," ").trim();
+  return s;
+}
+function normalizeWordsNoAnd(s){
+  return normalizeWords(s).replace(/\band\b/g," ").replace(/\s+/g," ").trim();
+}
+
+/* ---------------- Parsers ---------------- */
+function parseIntStrict(str){
+  let s = (str || "").trim();
+  if (!s) return NaN;
+  s = s.replace(/−/g,"-").replace(/,/g,"");
+  if (!/^-?\d+$/.test(s)) return NaN;
+  const v = Number(s);
+  return Number.isFinite(v) ? v : NaN;
+}
+function parseDecimalStrict(str){
+  let s = (str || "").trim();
+  if (!s) return NaN;
+  s = s.replace(/,/g,"");
+  if (!/^-?\d+(\.\d+)?$/.test(s)) return NaN;
+  const v = Number(s);
+  return Number.isFinite(v) ? v : NaN;
+}
+function roundToDp(x, dp){
+  const p = Math.pow(10, dp);
+  return Math.round(x*p)/p;
+}
+function parseListIntegers(str, count){
+  const s = (str || "").trim();
+  if (!s) return null;
+  const nums = s.match(/-?\d+/g);
+  if (!nums || nums.length < count) return null;
+  const out = nums.slice(0,count).map(x => Number(x));
+  if (out.some(x => !Number.isInteger(x))) return null;
+  return out;
+}
+function parseListDecimals(str, count){
+  const s = (str || "").trim();
+  if (!s) return null;
+  const parts = s.split(/[, ]+/g).filter(Boolean);
+  const out = [];
+  for (const p of parts){
+    const v = parseDecimalStrict(p);
+    if (!Number.isFinite(v)) continue;
+    out.push(v);
+    if (out.length === count) break;
+  }
+  if (out.length < count) return null;
+  return out;
+}
+
+/* ---- Money ---- */
+function parseMoneyToCents(s){
+  let t = String(s||"").trim();
+  if (!t) return NaN;
+  t = t.replace(/\$/g,"").replace(/,/g,"").trim();
+  if (!/^\d+(\.\d{1,2})?$/.test(t)) return NaN;
+  const parts = t.split(".");
+  const dollars = Number(parts[0]);
+  const cents = parts.length === 2 ? Number((parts[1] + "00").slice(0,2)) : 0;
+  return dollars*100 + cents;
+}
+
+/* ---- Fractions ---- */
+function parseFraction(s){
+  const t = String(s||"").trim().replace(/\s+/g,"");
+  const m = t.match(/^(\d+)\/(\d+)$/);
+  if (!m) return null;
+  const a = Number(m[1]), b = Number(m[2]);
+  if (!Number.isInteger(a) || !Number.isInteger(b) || b === 0) return null;
+  return {a,b};
+}
+function reduceFraction(a,b){
+  const g = gcd(a,b);
+  return {a: a/g, b: b/g};
+}
+function parseFractionList(s, count){
+  const t = String(s||"").trim();
+  if (!t) return null;
+  const parts = t.split(/[, ]+/g).filter(Boolean);
+  const frs = [];
+  for (const p of parts){
+    const f = parseFraction(p);
+    if (f) frs.push(f);
+    if (frs.length === count) break;
+  }
+  if (frs.length < count) return null;
+  return frs;
+}
+
+/* ---- Time ---- */
+function parseTimeToMinutes(str){
+  let s = String(str||"").toLowerCase().trim();
+  if (!s) return NaN;
+
+  s = s.replace(/\./g,":").replace(/\s+/g," ").trim();
+
+  // 24-hour formats: 19:05 or 1905
+  let m24 = s.match(/^(\d{1,2}):(\d{2})$/);
+  if (m24){
+    const hh = Number(m24[1]), mm = Number(m24[2]);
+    if (hh>=0 && hh<=23 && mm>=0 && mm<=59) return hh*60+mm;
+  }
+  let m24b = s.match(/^(\d{2})(\d{2})$/);
+  if (m24b){
+    const hh = Number(m24b[1]), mm = Number(m24b[2]);
+    if (hh>=0 && hh<=23 && mm>=0 && mm<=59) return hh*60+mm;
+  }
+
+  // 12-hour formats
+  const m12 = s.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)$/);
+  if (!m12) return NaN;
+  let hh = Number(m12[1]);
+  let mm = m12[2] ? Number(m12[2]) : 0;
+  const ap = m12[3];
+  if (!(hh>=1 && hh<=12 && mm>=0 && mm<=59)) return NaN;
+  if (hh === 12) hh = 0;
+  let mins = hh*60 + mm;
+  if (ap === "pm") mins += 12*60;
+  return mins;
+}
+function minutesToTime12(mins){
+  mins = ((mins%1440)+1440)%1440;
+  let hh24 = Math.floor(mins/60);
+  const mm = mins%60;
+  const ap = hh24 >= 12 ? "pm" : "am";
+  let hh12 = hh24 % 12;
+  if (hh12 === 0) hh12 = 12;
+  return `${hh12}:${pad2(mm)} ${ap}`;
+}
+function minutesToTime24(mins){
+  mins = ((mins%1440)+1440)%1440;
+  const hh = Math.floor(mins/60);
+  const mm = mins%60;
+  return `${pad2(hh)}:${pad2(mm)}`;
+}
+
+/* ---------------- Answer compare ---------------- */
+function compareByType(userStr, correct){
+  const ans = String(userStr||"").trim();
+  if (ans === "") return { ok:false, empty:true };
+
+  if (correct.type === "integer"){
+    const u = parseIntStrict(ans);
+    if (!Number.isInteger(u)) return { ok:false, empty:false };
+    return { ok: u === correct.value, empty:false };
+  }
+
+  if (correct.type === "decimal"){
+    const u = parseDecimalStrict(ans);
+    if (!Number.isFinite(u)) return { ok:false, empty:false };
+    if (Number.isInteger(correct.dp)){
+      const uu = roundToDp(u, correct.dp);
+      const cc = roundToDp(correct.value, correct.dp);
+      return { ok: uu === cc, empty:false };
+    }
+    return { ok: Math.abs(u - correct.value) < 1e-9, empty:false };
+  }
+
+  if (correct.type === "decList2"){
+    const u = parseListDecimals(ans, 2);
+    if (!u) return { ok:false, empty:false };
+    const dp = Number.isInteger(correct.dp) ? correct.dp : 2;
+    return {
+      ok: (roundToDp(u[0],dp) === roundToDp(correct.values[0],dp)) &&
+          (roundToDp(u[1],dp) === roundToDp(correct.values[1],dp)),
+      empty:false
+    };
+  }
+
+  if (correct.type === "words"){
+    const u1 = normalizeWords(ans);
+    const u2 = normalizeWordsNoAnd(ans);
+    const c1 = normalizeWords(correct.value);
+    const c2 = normalizeWordsNoAnd(correct.value);
+    return { ok: (u1 === c1) || (u2 === c2), empty:false };
+  }
+
+  if (correct.type === "choiceWord"){
+    const u = normalizeWords(ans);
+    return { ok: correct.allowed.includes(u), empty:false };
+  }
+
+  if (correct.type === "list2"){
+    const u = parseListIntegers(ans, 2);
+    if (!u) return { ok:false, empty:false };
+    return { ok: (u[0] === correct.values[0] && u[1] === correct.values[1]), empty:false };
+  }
+
+  if (correct.type === "money"){
+    const u = parseMoneyToCents(ans);
+    if (!Number.isFinite(u)) return { ok:false, empty:false };
+    return { ok: u === correct.cents, empty:false };
+  }
+
+  if (correct.type === "fraction"){
+    const f = parseFraction(ans);
+    if (!f) return { ok:false, empty:false };
+    const r = reduceFraction(f.a,f.b);
+    return { ok: (r.a === correct.a && r.b === correct.b), empty:false };
+  }
+
+  if (correct.type === "fracList3"){
+    const frs = parseFractionList(ans, 3);
+    if (!frs) return { ok:false, empty:false };
+    const norm = frs.map(x => {
+      const rr = reduceFraction(x.a,x.b);
+      return `${rr.a}/${rr.b}`;
+    }).join(",");
+    return { ok: norm === correct.values.join(","), empty:false };
+  }
+
+  if (correct.type === "time"){
+    const u = parseTimeToMinutes(ans);
+    if (!Number.isFinite(u)) return { ok:false, empty:false };
+    return { ok: u === correct.mins, empty:false };
+  }
+
+  if (correct.type === "time24"){
+    // accept 24-hour HH:MM or HHMM
+    const u = parseTimeToMinutes(ans);
+    if (!Number.isFinite(u)) return { ok:false, empty:false };
+    return { ok: u === correct.mins, empty:false };
+  }
+
+  return { ok:false, empty:false };
+}
+
+/* ---------------- Question model ---------------- */
+function makeQ(index, partIndex, partName, points, html, correct, displayCorrect, answerHint, hint){
+  return {
+    index,
+    partIndex,
+    partName,
+    points,
+    html,
+    plain: stripHTML(html),
+    correct,
+    displayCorrect,
+    answerHint,
+    hint,
+    userValue:"",
+    checked:false,
+    isCorrect:false,
+    hintShown:false
+  };
+}
+
+/* ---------------- Beaker SVG (kept) ---------------- */
+function svgBeaker(maxMl, fillMl){
+  const w=220, h=220;
+  const top=20, bottom=190, left=70, right=150;
+  const height = bottom-top;
+  const waterH = Math.max(0, Math.min(1, fillMl/maxMl))*height;
+  const waterY = bottom - waterH;
+
+  const step = (maxMl===500) ? 50 : 10;
+  let ticks="";
+  for(let v=0; v<=maxMl; v+=step){
+    const y = bottom - (v/maxMl)*height;
+    const len = (v%(step*2)===0) ? 14 : 8;
+    ticks += `<line x1="${left-2}" y1="${y}" x2="${left-2+len}" y2="${y}" stroke="#111" stroke-width="2"/>`;
+    if (v%(step*2)===0){
+      ticks += `<text x="${left-10}" y="${y+4}" text-anchor="end" font-size="12" font-weight="800">${v}</text>`;
+    }
+  }
+
+  return `
+  <div class="pic-box">
+    <div style="font-weight:900;margin-bottom:8px;">Measuring beaker:</div>
+    <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+      <path d="M${left},${top} L${right},${top} L${right-10},${bottom} L${left+10},${bottom} Z"
+            fill="none" stroke="#111" stroke-width="3" />
+      <rect x="${left+10}" y="${waterY}" width="${(right-left)-20}" height="${bottom-waterY}"
+            fill="#bbdefb" stroke="none" opacity="0.9"/>
+      ${ticks}
+      <text x="${w/2}" y="${h-10}" text-anchor="middle" font-size="12" font-weight="800">max ${maxMl} ml</text>
+    </svg>
+  </div>`;
+}
+
+/* ---------------- Decimal number line SVG (for your Q38-style) ---------------- */
+function svgDecimalLine(min, max, majorStep, minorStep, arrows){
+  // arrows: [{value:15.02},{value:15.13}]
+  const w = 520, h = 120;
+  const padL = 30, padR = 20;
+  const y = 70;
+  const scale = (w - padL - padR) / (max - min);
+
+  function xOf(v){ return padL + (v - min) * scale; }
+
+  let ticks = "";
+  for (let v=min; v<=max+1e-12; v+=minorStep){
+    const x = xOf(v);
+    const isMajor = Math.abs((v - min) % majorStep) < 1e-9 || Math.abs(majorStep - ((v - min) % majorStep)) < 1e-9;
+    const len = isMajor ? 14 : 8;
+    ticks += `<line x1="${x}" y1="${y}" x2="${x}" y2="${y-len}" stroke="#111" stroke-width="2"/>`;
+    if (isMajor){
+      const label = (Math.abs(v - Math.round(v)) < 1e-9) ? String(Math.round(v)) : v.toFixed(2).replace(/0$/,"").replace(/\.$/,"");
+      ticks += `<text x="${x}" y="${y+24}" text-anchor="middle" font-size="12" font-weight="800">${label}</text>`;
+    }
+  }
+
+  let arr = "";
+  arrows.forEach((a, i) => {
+    const x = xOf(a.value);
+    const boxW = 90, boxH = 26;
+    const bx = x - boxW/2;
+    const by = 12;
+    arr += `
+      <rect x="${bx}" y="${by}" width="${boxW}" height="${boxH}" rx="6" ry="6"
+            fill="#fff" stroke="#1976d2" stroke-width="2"/>
+      <text x="${x}" y="${by+18}" text-anchor="middle" font-size="13" font-weight="900" fill="#1976d2">?</text>
+      <path d="M${x},${by+boxH} L${x-6},${by+boxH+12} L${x+6},${by+boxH+12} Z" fill="#1976d2"/>
+      <line x1="${x}" y1="${by+boxH+12}" x2="${x}" y2="${y-16}" stroke="#1976d2" stroke-width="3"/>
+    `;
+  });
+
+  return `
+  <div class="pic-box">
+    <div style="font-weight:900;margin-bottom:8px;">Decimal number line:</div>
+    <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+      <line x1="${padL}" y1="${y}" x2="${w-padR}" y2="${y}" stroke="#111" stroke-width="3"/>
+      ${ticks}
+      ${arr}
+    </svg>
+  </div>`;
+}
+
+/* ==========================================================
+   Parts (Year 5)
+========================================================== */
+const PARTS = [
+  "Number & Place Value",
+  "Operations",
+  "Fractions & Decimals",
+  "Measurement",
+  "Geometry",
+  "Word Problems"
+];
+
+function T(id, partIndex, html, correct, displayCorrect, answerHint, hint){
+  return { id, partIndex, partName: PARTS[partIndex], html, correct, displayCorrect, answerHint, hint };
+}
+
+/* ==========================================================
+   Template helpers
+========================================================== */
+function ensureEvenProductForHalf(){
+  let a = randInt(6, 24);
+  let b = randInt(6, 24);
+  if ((a*b)%2===1) a++;
+  return [a,b];
+}
+function oneOfStems(stems){ return choice(stems); }
+
+/* ==========================================================
+   EASY bank (2 pts) — choose 5 each set (bank is larger)
+========================================================== */
+function tplE_digitsToWordsY5(){
+  let n = randInt(1000, 9999);
+  const w = numberToWords(n);
+  return T("E_digitsToWordsY5", 0,
+    `Write this number in words: <b>${n}</b>.`,
+    {type:"words", value:w},
+    `${w}`,
+    `Type the number in words (hyphens optional; “and” optional).`,
+    `Use NZ/UK style: 127 = one hundred and twenty-seven.`
+  );
+}
+function tplE_wordsToDigitsY5(){
+  const n = randInt(1000, 9999);
+  const w = numberToWords(n);
+  return T("E_wordsToDigitsY5", 0,
+    `Write the number in digits: <b>${w}</b>.`,
+    {type:"integer", value:n},
+    `${n}`,
+    `Type the number (digits only).`,
+    `Break into thousands, hundreds, tens, ones.`
+  );
+}
+function tplE_roundNearest10Y5(){
+  let n = randInt(101, 9999);
+  while (n % 10 === 0) n = randInt(101, 9999);
+  const rounded = Math.round(n/10)*10;
+  return T("E_round10Y5", 0,
+    `Round <b>${n}</b> to the nearest <b>10</b>.`,
+    {type:"integer", value:rounded},
+    `${rounded}`,
+    `Enter an integer.`,
+    `Look at the ones digit.`
+  );
+}
+function tplE_roundNearest100Y5(){
+  let n = randInt(200, 9800);
+  while (n % 100 === 0) n = randInt(200, 9800);
+  const rounded = Math.round(n/100)*100;
+  return T("E_round100Y5", 0,
+    `Round <b>${n}</b> to the nearest <b>100</b>.`,
+    {type:"integer", value:rounded},
+    `${rounded}`,
+    `Enter an integer.`,
+    `Look at the last two digits.`
+  );
+}
+function tplE_compareNumbersY5(){
+  const a = randInt(1000, 9999);
+  let b = randInt(1000, 9999);
+  while (b === a) b = randInt(1000, 9999);
+  const correct = (a > b) ? ">" : "<";
+  return T("E_compareY5", 0,
+    `Fill in the blank with <b>&lt;</b> or <b>&gt;</b>:<br><br>
+     <b>${a}</b> ____ <b>${b}</b>`,
+    {type:"choiceWord", allowed:[correct]},
+    `${correct}`,
+    `Type < or >`,
+    `Compare from the thousands place.`
+  );
+}
+function tplE_patternStepY5(){
+  const step = choice([5,10,20,25,50,80,100,120]);
+  const start = randInt(1000, 9000);
+  const a = start;
+  const b = start + step;
+  const c = start + step*2;
+  const d = start + step*3;
+  const e = start + step*4;
+  // missing second term (your Q22 style)
+  return T("E_patternMissing", 0,
+    `Complete the number pattern:<br><br>
+     <b>${a.toLocaleString("en-NZ")}, _____, ${c.toLocaleString("en-NZ")}, ${d.toLocaleString("en-NZ")}, ${e.toLocaleString("en-NZ")}</b>`,
+    {type:"integer", value:b},
+    `${b}`,
+    `Enter an integer.`,
+    `Find the constant difference.`
+  );
+}
+function tplE_placeValueDigitY5(){
+  const n = randInt(1000, 9999);
+  const digits = String(n).split("").map(x=>Number(x));
+  const pos = choice([0,1,2,3]);
+  const placeValues = [1000,100,10,1];
+  const labels = ["thousands","hundreds","tens","ones"];
+  const value = digits[pos] * placeValues[pos];
+  return T("E_digitValueY5", 0,
+    `In <b>${n}</b>, what is the value of the digit <b>${digits[pos]}</b> in the <b>${labels[pos]}</b> place?`,
+    {type:"integer", value:value},
+    `${value}`,
+    `Enter an integer.`,
+    `Value = digit × place value.`
+  );
+}
+function tplE_basicFractionSimplify(){
+  const pairs = [[6,8],[8,12],[9,12],[10,15],[12,18],[14,21],[15,25],[16,24]];
+  const [n,d] = choice(pairs);
+  const r = reduceFraction(n,d);
+  return T("E_simplifyFrac", 2,
+    `Express this fraction in its simplest form: <b>${n}/${d}</b>`,
+    {type:"fraction", a:r.a, b:r.b},
+    `${r.a}/${r.b}`,
+    `Enter as a fraction like 2/3.`,
+    `Divide top and bottom by the highest common factor.`
+  );
+}
+
+/* ==========================================================
+   MEDIUM bank (3 pts) — choose 10 each set
+   (includes many of your screenshot question styles)
+========================================================== */
+function tplM_add3or4(){
+  const a = randInt(300, 4999);
+  const b = randInt(200, 4999);
+  return T("M_add", 1,
+    `${oneOfStems(["Calculate","Find","Work out"])}: <b>${a} + ${b}</b>.`,
+    {type:"integer", value:a+b},
+    `${a+b}`,
+    `Enter an integer.`,
+    `Add by place value.`
+  );
+}
+function tplM_sub3or4(){
+  let a = randInt(1200, 9999);
+  let b = randInt(200, 7000);
+  if (b > a) [a,b] = [b,a];
+  return T("M_sub", 1,
+    `${oneOfStems(["Calculate","Find","Work out"])}: <b>${a} − ${b}</b>.`,
+    {type:"integer", value:a-b},
+    `${a-b}`,
+    `Enter an integer.`,
+    `Borrow if needed.`
+  );
+}
+function tplM_mult2d1d(){
+  const a = randInt(12, 99);
+  const b = randInt(2, 9);
+  return T("M_mult2d1d", 1,
+    `Calculate: <b>${a} × ${b}</b>.`,
+    {type:"integer", value:a*b},
+    `${a*b}`,
+    `Enter an integer.`,
+    `Use partition: (tens + ones) × b.`
+  );
+}
+function tplM_divExact(){
+  const b = randInt(2, 9);
+  const q = randInt(12, 90);
+  const a = b*q;
+  return T("M_divExact", 1,
+    `Calculate: <b>${a} ÷ ${b}</b>.`,
+    {type:"integer", value:q},
+    `${q}`,
+    `Enter an integer.`,
+    `Think: what × ${b} = ${a}?`
+  );
+}
+function tplM_moneyChangeSimple(){
+  const price = choice([24.50, 38.75, 46.20, 57.90, 63.40, 78.65]);
+  const paid = choice([100, 80, 150]);
+  if (paid*1.0 < price) return tplM_moneyChangeSimple();
+  const cents = Math.round((paid - price)*100);
+  return T("M_moneyChangeSimple", 1,
+    `A shop item costs <b>$${price.toFixed(2)}</b>. Sam pays with <b>$${paid}</b>.<br>
+     How much change does Sam receive?`,
+    {type:"money", cents},
+    `$${(cents/100).toFixed(2)}`,
+    `Enter the change in dollars (e.g., 12.50).`,
+    `Change = amount paid − cost.`
+  );
+}
+function tplM_equivFractionMissing(){
+  const base = choice([[3,7,3],[2,4,4],[4,9,3],[5,8,2],[7,10,3],[3,5,4]]);
+  const a=base[0], b=base[1], k=base[2];
+  const top = a*k, bottom = b*k;
+  if (Math.random()<0.5){
+    return T("M_equivDen", 2,
+      `Make the fractions equivalent:<br><br>
+       <b>${a}/${b} = ${top}/_____</b>`,
+      {type:"integer", value:bottom},
+      `${bottom}`,
+      `Enter the missing number (an integer).`,
+      `Multiply top and bottom by the same number.`
+    );
+  }
+  return T("M_equivNum", 2,
+    `Make the fractions equivalent:<br><br>
+     <b>${a}/${b} = _____/${bottom}</b>`,
+    {type:"integer", value:top},
+    `${top}`,
+    `Enter the missing number (an integer).`,
+    `Multiply top and bottom by the same number.`
+  );
+}
+function tplM_fractionAddLikeDen(){
+  const d = choice([6,8,10,12]);
+  let a = randInt(1,d-2);
+  let b = randInt(1,d-2);
+  while (a+b >= d) b = randInt(1,d-2);
+  const r = reduceFraction(a+b, d);
+  return T("M_fracAddLike", 2,
+    `Find: <b>${a}/${d} + ${b}/${d}</b> (simplest form).`,
+    {type:"fraction", a:r.a, b:r.b},
+    `${r.a}/${r.b}`,
+    `Enter as a fraction like 5/6.`,
+    `Same denominator → add numerators, then simplify.`
+  );
+}
+function tplM_decimalDivideLitres(){
+  // your Q34 style: 9 L into 5 bottles = 1.8 L
+  const total = choice([6,7.5,8,9,10,12]);
+  const n = choice([3,4,5,6]);
+  const each = total / n;
+  if (Math.abs(each - roundToDp(each,2)) > 1e-9) return tplM_decimalDivideLitres();
+  return T("M_syrupBottles", 3,
+    `Rudy poured <b>${total}</b> litres of syrup into <b>${n}</b> bottles equally.<br>
+     How much syrup was in each bottle? Express your answer in litres.`,
+    {type:"decimal", value:each, dp:2},
+    `${roundToDp(each,2)}`,
+    `Enter a decimal (litres).`,
+    `Divide total litres by number of bottles.`
+  );
+}
+function tplM_decimalPlaceValue(){
+  // your Q37 style
+  const a = randInt(10, 999);
+  const tenths = randInt(0,9);
+  const hundredths = randInt(0,9);
+  const num = Number(`${a}.${tenths}${hundredths}`);
+  const which = choice(["tenths","hundredths"]);
+  const digit = (which==="tenths") ? tenths : hundredths;
+  return T("M_decimalPlaceValue", 2,
+    `In <b>${num.toFixed(2)}</b>, the digit <b>${digit}</b> is in the <b>_____</b> place.`,
+    {type:"choiceWord", allowed:[which]},
+    `${which}`,
+    `Type: tenths or hundredths`,
+    `First digit after the decimal is tenths; second is hundredths.`
+  );
+}
+function tplM_fractionNumberLineBoxes(){
+  // your Q35 style: three missing fractions
+  // fixed to tenths
+  const missing = ["2/5","7/10","9/10"];
+  return T("M_fractionLineBoxes", 2,
+    `Fill in each box with the correct fraction:<br><br>
+     <b>0, 1/10, 1/5, 3/10, [ ], 1/2, 3/5, [ ], 4/5, [ ], 1</b><br><br>
+     <span style="color:#555;font-size:0.92em;">Answer format: 3 fractions separated by commas.</span>`,
+    {type:"fracList3", values:missing},
+    `${missing.join(", ")}`,
+    `Enter like: 2/5, 7/10, 9/10`,
+    `These are tenths on a number line from 0 to 1.`
+  );
+}
+function tplM_quartersInMixed(){
+  // your Q29 style
+  const whole = randInt(2, 8);
+  const q = choice([1,2,3]);
+  const totalQuarters = whole*4 + q;
+  return T("M_quartersInMixed", 2,
+    `How many quarters are there in <b>${whole} ${q}/4</b>?`,
+    {type:"integer", value:totalQuarters},
+    `${totalQuarters}`,
+    `Enter an integer.`,
+    `1 whole = 4 quarters.`
+  );
+}
+function tplM_mixedFromImproper(){
+  // your Q33 style
+  const d = choice([3,4,5,6,8,10]);
+  const whole = randInt(5, 12);
+  const r = randInt(1, d-1);
+  const n = whole*d + r;
+  const rr = reduceFraction(r,d);
+  return T("M_improperToMixed", 2,
+    `Express <b>${n}/${d}</b> as a mixed number in its simplest form.<br>
+     <span style="color:#555;font-size:0.92em;">Answer format: write like 3 1/2</span>`,
+    {type:"choiceWord", allowed:[normalizeWords(`${whole} ${rr.a}/${rr.b}`)]},
+    `${whole} ${rr.a}/${rr.b}`,
+    `Type like: ${whole} ${rr.a}/${rr.b}`,
+    `Divide ${n} by ${d}, then simplify the remainder fraction.`
+  );
+}
+function tplM_estimateDivision(){
+  // your Q35/30 style
+  const a = randInt(300, 900);
+  const b = choice([6,7,8,9]);
+  const roundedA = roundTo(a, 100);
+  const est = Math.round(roundedA / b); // keep integer estimate
+  return T("M_estDiv", 1,
+    `Estimate the value of <b>${a} ÷ ${b}</b> by rounding <b>${a}</b> to the nearest <b>100</b>.`,
+    {type:"integer", value:est},
+    `${est}`,
+    `Enter an integer estimate.`,
+    `Round first, then divide.`
+  );
+}
+function tplM_estimateMultiply(){
+  // your Q39 style
+  const a = randInt(4000, 9999);
+  const b = randInt(2, 9);
+  const roundedA = roundTo(a, 100);
+  const est = roundedA * b;
+  return T("M_estMult", 1,
+    `Estimate <b>${a} × ${b}</b> by rounding <b>${a}</b> to the nearest <b>100</b>.`,
+    {type:"integer", value:est},
+    `${est}`,
+    `Enter an integer estimate.`,
+    `Round first, then multiply.`
+  );
+}
+function tplM_timeBackSimple(){
+  // your bus boarded style (but shorter, still Year5 friendly)
+  const end = choice([12*60+50, 15*60+20, 10*60+15, 14*60+5]); // 12:50, 3:20, 10:15, 2:05
+  const dur = choice([45,55,65,75,90]); // minutes
+  const start = end - dur;
+  return T("M_timeBack", 5,
+    `Chantal got off the bus at <b>${minutesToTime12(end)}</b>.<br>
+     The journey took <b>${dur} minutes</b>. What time did she board the bus?`,
+    {type:"time", mins: ((start%1440)+1440)%1440 },
+    `${minutesToTime12(start)}`,
+    `Enter the time (e.g., 11:35 am).`,
+    `Subtract the minutes from the end time.`
+  );
+}
+
+/* ==========================================================
+   HARD bank (4 pts) — choose 15 each set
+   (multi-step, richer scenarios, worded geometry)
+========================================================== */
+function tplH_cmTo_m_cm(){
+  const cm = randInt(205, 995);
+  const m = Math.floor(cm/100);
+  const r = cm%100;
+  return T("H_cmTo_m_cm", 3,
+    `Convert: <b>${cm} cm</b> into metres and centimetres.<br>
+     <span style="color:#555;font-size:0.92em;">Answer format: m, cm</span>`,
+    {type:"list2", values:[m,r]},
+    `${m}, ${r}`,
+    `Enter two integers: metres, centimetres (e.g., 3, 7).`,
+    `100 cm = 1 m.`
+  );
+}
+function tplH_km_m_to_m(){
+  const km = randInt(1, 9);
+  const m = choice([40,110,210,312,450,650,770,939]);
+  const total = km*1000 + m;
+  return T("H_kmTo_m", 3,
+    `Convert: <b>${km} km ${m} m</b> into metres.`,
+    {type:"integer", value:total},
+    `${total}`,
+    `Enter an integer (metres).`,
+    `1 km = 1000 m.`
+  );
+}
+function tplH_beakerRead(){
+  const maxMl = choice([100,500]);
+  const possible = (maxMl===100) ? [20,30,40,50,60,70,80,90] : [150,200,250,300,350,400,450];
+  const fill = choice(possible);
+  const pic = svgBeaker(maxMl, fill);
+  return T("H_beakerRead", 3,
+    `Look at the measuring beaker. What is the volume of liquid? (in ml)<br>${pic}`,
+    {type:"integer", value:fill},
+    `${fill}`,
+    `Enter an integer (ml).`,
+    `Read the scale carefully.`
+  );
+}
+function tplH_decimalLineFill2(){
+  // your Q38 style (two missing decimals)
+  const min = 15.0;
+  const max = 15.2;
+  const a = choice([15.01,15.02,15.03,15.04,15.06,15.07,15.08,15.09]);
+  const b = choice([15.11,15.12,15.13,15.14,15.15,15.16,15.17,15.18]);
+  const pic = svgDecimalLine(min,max,0.05,0.01,[{value:a},{value:b}]);
+  return T("H_decimalLine2", 2,
+    `Fill in each box with the correct decimal (2 decimal places).<br>${pic}
+     <span style="color:#555;font-size:0.92em;">Answer format: two decimals separated by a comma.</span>`,
+    {type:"decList2", values:[a,b], dp:2},
+    `${a.toFixed(2)}, ${b.toFixed(2)}`,
+    `Enter like: 15.02, 15.13`,
+    `Each small tick is 0.01.`
+  );
+}
+function tplH_areaRectangleWord(){
+  const L = randInt(6, 18);
+  const W = randInt(5, 14);
+  const area = L*W;
+  return T("H_areaRectWord", 4,
+    `A rectangular garden is <b>${L} m</b> long and <b>${W} m</b> wide.<br>
+     What is its <b>area</b>?`,
+    {type:"integer", value:area},
+    `${area}`,
+    `Enter an integer (m²).`,
+    `Area = length × width.`
+  );
+}
+function tplH_areaRightTriangleWord(){
+  const [b,h] = ensureEvenProductForHalf();
+  const area = (b*h)/2;
+  return T("H_areaRightTri", 4,
+    `A right triangle has a base of <b>${b} cm</b> and a height of <b>${h} cm</b>.<br>
+     What is its <b>area</b>?`,
+    {type:"integer", value:area},
+    `${area}`,
+    `Enter an integer (cm²).`,
+    `Area = (base × height) ÷ 2.`
+  );
+}
+function tplH_perimeterFromAreaBreadth(){
+  // your Q36 style: area known, breadth known
+  const breadth = choice([4,5,6,8,10,12]);
+  const length = choice([12,14,16,18,20,24]);
+  const area = breadth*length;
+  const perim = 2*(breadth+length);
+  return T("H_perimFromArea", 4,
+    `A rectangular garden has an area of <b>${area} m²</b>. Its breadth is <b>${breadth} m</b>.<br>
+     Find its <b>perimeter</b>.`,
+    {type:"integer", value:perim},
+    `${perim}`,
+    `Enter an integer (m).`,
+    `Length = area ÷ breadth, then perimeter = 2(length + breadth).`
+  );
+}
+function tplH_anglesTriangle(){
+  const a = choice([30,35,40,45,50,55,60]);
+  const b = choice([40,45,50,55,60,65,70]);
+  const c = 180 - a - b;
+  return T("H_triangleAngle", 4,
+    `In a triangle, two angles are <b>${a}°</b> and <b>${b}°</b>.<br>
+     What is the third angle?`,
+    {type:"integer", value:c},
+    `${c}`,
+    `Enter an integer (degrees).`,
+    `Angles in a triangle add up to 180°.`
+  );
+}
+function tplH_anglesStraightLine(){
+  const a = choice([105,110,115,120,125,130,135,140,145,150]);
+  const b = 180 - a;
+  return T("H_angleStraight", 4,
+    `Two angles lie on a straight line. One angle is <b>${a}°</b>.<br>
+     What is the other angle?`,
+    {type:"integer", value:b},
+    `${b}`,
+    `Enter an integer (degrees).`,
+    `Angles on a straight line add up to 180°.`
+  );
+}
+function tplH_compositeAreaThreeRect_Fshape(){
+  // your Q28 style: three rectangles
+  const barH = choice([21,24,27,30]);
+  const thickness = choice([4,5,6]);
+  const armLen = choice([10,12,14]);
+  const armThk = thickness; // keep consistent like screenshot
+  const area = barH*thickness + armLen*armThk + armLen*armThk;
+  return T("H_area3Rect", 4,
+    `A shape is made from <b>three rectangles</b> (an “F-shape”):<br>
+     • One vertical rectangle: <b>${barH} cm</b> tall and <b>${thickness} cm</b> wide<br>
+     • Two horizontal rectangles (arms): each is <b>${armLen} cm</b> long and <b>${armThk} cm</b> wide<br>
+     The two arms attach to the side of the vertical rectangle (they do not overlap in area).<br>
+     Find the <b>total area</b> of the shape.`,
+    {type:"integer", value:area},
+    `${area}`,
+    `Enter an integer (cm²).`,
+    `Total area = area(vertical) + area(arm1) + area(arm2).`
+  );
+}
+function tplH_areaFiveSquares(){
+  // your Q32 style
+  const side = choice([6,7,8,9,10]);
+  const totalHeight = side*2; // match screenshot idea (height spans 2 squares)
+  const area = 5*side*side;
+  return T("H_area5Squares", 4,
+    `A figure is made up of <b>5 equal squares</b>.<br>
+     The total height of the figure is <b>${totalHeight} cm</b> and it spans exactly <b>2</b> square sides in height.<br>
+     Find the <b>area</b> of the figure.`,
+    {type:"integer", value:area},
+    `${area}`,
+    `Enter an integer (cm²).`,
+    `Square side = total height ÷ 2, then area = 5 × side².`
+  );
+}
+function tplH_pensRepack(){
+  // your Q44 style
+  const boxes = randInt(12, 24);
+  const perBox = choice([10,12,15]);
+  const packSize = choice([5,6,8,9]);
+  const total = boxes*perBox;
+  if (total % packSize !== 0) return tplH_pensRepack();
+  const packs = total/packSize;
+  return T("H_pensRepack", 5,
+    `Steven bought <b>${boxes}</b> boxes of pens. There were <b>${perBox}</b> pens in each box.<br>
+     He repacked all the pens into packs of <b>${packSize}</b>.<br>
+     How many packs of pens were there?`,
+    {type:"integer", value:packs},
+    `${packs}`,
+    `Enter an integer.`,
+    `Total pens = boxes × pens per box, then divide by pens per pack.`
+  );
+}
+function tplH_ageFiveTimes(){
+  // your Q45 style (keep integer answer)
+  const grand = randInt(9, 13);
+  const mr = randInt(55, 85);
+  // solve mr + x = 5(grand + x) => x = (mr - 5*grand)/4 must be positive integer
+  const xNum = mr - 5*grand;
+  if (xNum <= 0 || xNum % 4 !== 0) return tplH_ageFiveTimes();
+  const x = xNum/4;
+  return T("H_ageFiveTimes", 5,
+    `Mr Reeves is <b>${mr}</b> years old and his granddaughter is <b>${grand}</b> years old this year.<br>
+     In how many years will Mr Reeves be <b>five times</b> as old as his granddaughter?`,
+    {type:"integer", value:x},
+    `${x}`,
+    `Enter an integer (years).`,
+    `Set up: mr + x = 5(grand + x).`
+  );
+}
+function tplH_savingsTV(){
+  // your Q41 style
+  const monthly = choice([250,300,420,500,630]);
+  const months = choice([6,8,10,12]);
+  const total = monthly*months;
+  const radio = choice([195,245,295,340,420]);
+  const left = choice([650,853,1230,1853,2100]);
+  const tv = total - radio - left;
+  if (tv <= 100) return tplH_savingsTV();
+  return T("H_savingsTV", 5,
+    `Mr Fay saved <b>$${monthly}</b> a month for <b>${months}</b> months. He then bought a television set and a radio.<br>
+     After paying <b>$${radio}</b> for the radio, he had <b>$${left}</b> left.<br>
+     What was the cost of the television set?`,
+    {type:"integer", value:tv},
+    `${tv}`,
+    `Enter an integer (dollars).`,
+    `Total saved − radio − left = TV cost.`
+  );
+}
+function tplH_twoStepPriceChain(){
+  // your Q42 style
+  const book = randInt(10, 60);
+  const ballMore = choice([10,15,18,20]);
+  const carMore = choice([150,198,210,175]);
+  const car = book + ballMore + carMore;
+  return T("H_priceChain", 5,
+    `A soccer ball costs <b>$${ballMore}</b> more than a book. A remote-controlled car costs <b>$${carMore}</b> more than the soccer ball.<br>
+     If the remote-controlled car costs <b>$${car}</b>, what is the cost of the book?`,
+    {type:"integer", value:book},
+    `${book}`,
+    `Enter an integer (dollars).`,
+    `Work backwards from the car price.`
+  );
+}
+function tplH_stadiumSpectators(){
+  // your Q43 style
+  const male = randInt(200, 900);
+  const female = randInt(200, 900);
+  const left = randInt(50, 250);
+  const remain = male + female - left;
+  return T("H_stadium", 5,
+    `There were <b>${male}</b> male spectators and <b>${female}</b> female spectators at a football match.<br>
+     During half-time, <b>${left}</b> of them left the stadium.<br>
+     How many spectators remained in the stadium?`,
+    {type:"integer", value:remain},
+    `${remain}`,
+    `Enter an integer.`,
+    `Total spectators − left = remained.`
+  );
+}
+function tplH_flourFractionLeft(){
+  // your Q40 style
+  const total = choice([6,8,10,12,15,18]);
+  const frac = choice([[1,2],[2,3],[3,4],[5,6]]);
+  const used = total * (frac[0]/frac[1]);
+  const left = total - used;
+  if (Math.abs(left - roundToDp(left,2)) > 1e-9) return tplH_flourFractionLeft();
+  return T("H_flourLeft", 5,
+    `Mrs Parker bought <b>${total} kg</b> of flour. She used <b>${frac[0]}/${frac[1]}</b> of it to bake some pies.<br>
+     How much flour did she have left? Express your answer in kilograms.`,
+    {type:"decimal", value:left, dp:2},
+    `${roundToDp(left,2)}`,
+    `Enter a number (kg).`,
+    `Left = total × (1 − fraction used).`
+  );
+}
+function tplH_clockSlow24h(){
+  // your Q31 style
+  const shown = choice([16*60+40, 9*60+25, 14*60+10, 11*60+50]); // 4:40pm, 9:25am, ...
+  const slow = choice([35,45,50]);
+  const actual = shown + slow;
+  return T("H_clockSlow24", 5,
+    `A clock shows <b>${minutesToTime12(shown)}</b>. If the clock is <b>${slow} minutes slower</b>, express the correct time using the <b>24-hour</b> clock.`,
+    {type:"time24", mins: ((actual%1440)+1440)%1440 },
+    `${minutesToTime24(actual)}`,
+    `Enter time like 17:25 (or 1725).`,
+    `If the clock is slower, the real time is later: add minutes.`
+  );
+}
+function tplH_meatCostChange(){
+  // your Q41 meat style
+  const kg = randInt(6, 18);
+  const price = choice([7.85,8.40,9.65,10.20,11.50]);
+  const cost = kg*price;
+  const paid = choice([100,150,200,250,300]);
+  if (paid < cost) return tplH_meatCostChange();
+  const change = paid - cost;
+  const cents = Math.round(change*100);
+  return T("H_meatChange", 5,
+    `Mrs Brown bought <b>${kg} kg</b> of meat. Each kilogram cost <b>$${price.toFixed(2)}</b>.<br>
+     She gave the cashier <b>$${paid}</b>. How much change did she receive?`,
+    {type:"money", cents},
+    `$${(cents/100).toFixed(2)}`,
+    `Enter the change in dollars (e.g., 24.55).`,
+    `Total cost = kg × price, then change = paid − cost.`
+  );
+}
+function tplH_coachRestTime(){
+  // your Q42 coach style (multi-step, overnight)
+  const depart = choice([18*60+40, 19*60+5, 20*60+15]); // 18:40 / 19:05 / 20:15
+  const first = choice([3*60+20, 3*60+40, 2*60+55, 4*60+10]);
+  const second = choice([3*60+50, 4*60+10, 4*60+25, 3*60+35]);
+  // choose arrival next day early
+  const arrival = choice([2*60+45, 3*60+30, 4*60+10, 1*60+55]);
+  // total time from depart to arrival (assume arrival next day)
+  let totalTrip = (24*60 - depart) + arrival;
+  const rest = totalTrip - (first + second);
+  if (rest <= 10 || rest >= 180) return tplH_coachRestTime();
+  return T("H_coachRest", 5,
+    `A coach left Townsville at <b>${minutesToTime24(depart)}</b>. It travelled for <b>${Math.floor(first/60)} h ${pad2(first%60)} min</b> and stopped for a rest.<br>
+     The coach then continued the journey and reached Garden Town at <b>${minutesToTime24(arrival)}</b> (the next day).<br>
+     If the second part of the journey was <b>${Math.floor(second/60)} h ${pad2(second%60)} min</b>, how long did it stop for a rest?`,
+    {type:"integer", value:rest},
+    `${rest} minutes`,
+    `Enter an integer (minutes).`,
+    `Total trip time − travel times = rest time.`
+  );
+}
+function tplH_fruitPunchDozen(){
+  // your Q43 style
+  const a = choice([0.84,0.75,0.65,0.90]);
+  const b = choice([0.47,0.40,0.55,0.35]);
+  const c = choice([0.65,0.60,0.50,0.70]);
+  const per = a+b+c;
+  const total = per*12;
+  if (Math.abs(total - roundToDp(total,2)) > 1e-9) return tplH_fruitPunchDozen();
+  return T("H_fruitPunch", 5,
+    `To make one bottle of fruit punch, <b>${a.toFixed(2)} L</b> of orange juice, <b>${b.toFixed(2)} L</b> of mango juice and <b>${c.toFixed(2)} L</b> of watermelon juice are needed.<br>
+     How many litres of fruit punch are there in a <b>dozen</b> bottles?`,
+    {type:"decimal", value:total, dp:2},
+    `${roundToDp(total,2)}`,
+    `Enter a decimal (litres).`,
+    `Add litres per bottle, then multiply by 12.`
+  );
+}
+function tplH_ribbonLeft(){
+  // your Q44 style
+  const start = choice([4,5,6,8]);
+  const usedM = choice([1.2,1.4,1.6,1.8,2.1]);
+  const usedCm = choice([35,50,65,80,95]);
+  const used = usedM + usedCm/100;
+  const left = start - used;
+  if (left <= 0) return tplH_ribbonLeft();
+  return T("H_ribbonLeft", 5,
+    `Charlene had <b>${start} m</b> of ribbon at first. She used <b>${usedM.toFixed(1)} m</b> to tie a large present.<br>
+     She used another <b>${usedCm} cm</b> of ribbon to tie a small present.<br>
+     How many metres of ribbon did she have left?`,
+    {type:"decimal", value:left, dp:2},
+    `${roundToDp(left,2)}`,
+    `Enter a decimal (metres).`,
+    `Convert cm to metres, add used, then subtract from the start.`
+  );
+}
+
+/* ==========================================================
+   Build banks (BIG, so each set varies)
+========================================================== */
+const EASY_BANK = [
+  tplE_digitsToWordsY5,
+  tplE_wordsToDigitsY5,
+  tplE_roundNearest10Y5,
+  tplE_roundNearest100Y5,
+  tplE_compareNumbersY5,
+  tplE_patternStepY5,
+  tplE_placeValueDigitY5,
+  tplE_basicFractionSimplify
+];
+
+const MED_BANK = [
+  tplM_add3or4,
+  tplM_sub3or4,
+  tplM_mult2d1d,
+  tplM_divExact,
+  tplM_moneyChangeSimple,
+  tplM_equivFractionMissing,
+  tplM_fractionAddLikeDen,
+  tplM_decimalDivideLitres,
+  tplM_decimalPlaceValue,
+  tplM_fractionNumberLineBoxes,
+  tplM_quartersInMixed,
+  tplM_mixedFromImproper,
+  tplM_estimateDivision,
+  tplM_estimateMultiply,
+  tplM_timeBackSimple
+];
+
+const HARD_BANK = [
+  tplH_cmTo_m_cm,
+  tplH_km_m_to_m,
+  tplH_beakerRead,
+  tplH_decimalLineFill2,
+  tplH_areaRectangleWord,
+  tplH_areaRightTriangleWord,
+  tplH_perimeterFromAreaBreadth,
+  tplH_anglesTriangle,
+  tplH_anglesStraightLine,
+  tplH_compositeAreaThreeRect_Fshape,
+  tplH_areaFiveSquares,
+  tplH_pensRepack,
+  tplH_ageFiveTimes,
+  tplH_savingsTV,
+  tplH_twoStepPriceChain,
+  tplH_stadiumSpectators,
+  tplH_flourFractionLeft,
+  tplH_clockSlow24h,
+  tplH_meatCostChange,
+  tplH_coachRestTime,
+  tplH_fruitPunchDozen,
+  tplH_ribbonLeft
+];
+
+/* Uniqueness: pick WITHOUT replacement per bank */
+function pickUnique(bank, count){
+  if (bank.length < count){
+    throw new Error("Question bank too small for uniqueness requirement.");
+  }
+  return shuffle(bank).slice(0, count);
+}
+
+/* ---------------- Generate Questions (30 unique templates) ---------------- */
+function generateQuestions(){
+  const easyFns = pickUnique(EASY_BANK, 5);
+  const medFns  = pickUnique(MED_BANK, 10);
+  const hardFns = pickUnique(HARD_BANK, 15);
+
+  // slots based on points
+  const qFns = [];
+  let e=0,m=0,h=0;
+  for (let i=0;i<30;i++){
+    const pts = POINTS[i];
+    if (pts === 2) qFns.push(easyFns[e++]);
+    else if (pts === 3) qFns.push(medFns[m++]);
+    else qFns.push(hardFns[h++]);
+  }
+
+  // shuffle within each point group (order varies)
+  const idx2 = [], idx3 = [], idx4 = [];
+  for (let i=0;i<30;i++){
+    if (POINTS[i]===2) idx2.push(i);
+    else if (POINTS[i]===3) idx3.push(i);
+    else idx4.push(i);
+  }
+  const f2 = shuffle(idx2.map(i=>qFns[i]));
+  const f3 = shuffle(idx3.map(i=>qFns[i]));
+  const f4 = shuffle(idx4.map(i=>qFns[i]));
+
+  const finalFns = qFns.slice();
+  idx2.forEach((i,k)=>finalFns[i]=f2[k]);
+  idx3.forEach((i,k)=>finalFns[i]=f3[k]);
+  idx4.forEach((i,k)=>finalFns[i]=f4[k]);
+
+  const Q = [];
+  const usedIds = new Set();
+
+  for (let i=0;i<30;i++){
+    const fn = finalFns[i];
+    let t = fn();
+
+    // Guard: if any accidental duplicate id (shouldn't happen), retry a few times
+    let tries = 0;
+    while (usedIds.has(t.id) && tries < 50){
+      t = fn();
+      tries++;
+    }
+    if (usedIds.has(t.id)){
+      // fallback: take another template from same tier
+      const tier = (POINTS[i]===2) ? EASY_BANK : (POINTS[i]===3 ? MED_BANK : HARD_BANK);
+      for (const alt of shuffle(tier)){
+        const altT = alt();
+        if (!usedIds.has(altT.id)){
+          t = altT;
+          break;
+        }
+      }
+    }
+
+    usedIds.add(t.id);
+    Q.push(makeQ(i, t.partIndex, t.partName, POINTS[i], t.html, t.correct, t.displayCorrect, t.answerHint, t.hint));
+  }
+  return Q;
+}
+
+/* ---------------- UI + State ---------------- */
+const quizContent = document.getElementById("quizContent");
+const sidebarEl   = document.getElementById("sidebar");
+const generateBtn = document.getElementById("generateButton");
+const resetBtn    = document.getElementById("resetButton");
+const pauseBtn    = document.getElementById("pauseResumeButton");
+const exportBtn   = document.getElementById("exportPdfButton");
+const modePill    = document.getElementById("modePill");
+const metaLine    = document.getElementById("metaLine");
+
+const timerBox    = document.getElementById("timerBox");
+const timerLabel  = document.getElementById("timerLabel");
+const pausedTag   = document.getElementById("pausedTag");
+
+let MODE = "practice";
+let studentName = "Student";
+let questions = [];
+let currentIndex = 0;
+let examSubmitted = false;
+let practiceSubmitted = false;
+
+/* ---------------- Timer ---------------- */
+let timerInterval = null;
+let elapsedMs = 0;
+let lastTickMs = 0;
+let timerRunning = false;
+let timerPaused = false;
+
+function formatElapsed(ms){
+  const totalSec = Math.floor(ms / 1000);
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${pad2(m)}:${pad2(s)}`;
+}
+function updateTimerUI(){
+  timerLabel.textContent = `Time: ${formatElapsed(elapsedMs)}`;
+  pausedTag.style.display = timerPaused ? "inline-block" : "none";
+}
+function startQuizTimer(){
+  stopQuizTimer();
+  elapsedMs = 0;
+  timerRunning = true;
+  timerPaused = false;
+  lastTickMs = Date.now();
+  timerBox.style.display = "inline-flex";
+  pauseBtn.style.display = "inline-block";
+  pauseBtn.textContent = "Pause";
+  updateTimerUI();
+
+  timerInterval = setInterval(() => {
+    if (!timerRunning || timerPaused) return;
+    const now = Date.now();
+    elapsedMs += (now - lastTickMs);
+    lastTickMs = now;
+    updateTimerUI();
+  }, 250);
+}
+function stopQuizTimer(){
+  timerRunning = false;
+  timerPaused = false;
+  if (timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  updateTimerUI();
+}
+function setPausedUI(isPaused){
+  const input = document.getElementById("answerInput");
+  if (input) input.disabled = isPaused || practiceSubmitted || examSubmitted;
+
+  ["nextButton","backButton","submitButton","checkButton","submitPracticeButton","saveButton","hintButton"].forEach(id=>{
+    const b = document.getElementById(id);
+    if (b) b.disabled = isPaused;
+  });
+
+  generateBtn.disabled = isPaused;
+  resetBtn.disabled = isPaused;
+  exportBtn.disabled = isPaused;
+
+  sidebarEl.style.pointerEvents = isPaused ? "none" : "auto";
+  sidebarEl.style.opacity = isPaused ? "0.6" : "1";
+}
+function togglePause(){
+  if (!timerRunning) return;
+  timerPaused = !timerPaused;
+  lastTickMs = Date.now();
+  pauseBtn.textContent = timerPaused ? "Resume" : "Pause";
+  updateTimerUI();
+  setPausedUI(timerPaused);
+}
+
+/* ---------------- Sidebar ---------------- */
+function renderSidebar(){
+  sidebarEl.style.display = "block";
+  const total = questions.length;
+
+  let sub = "";
+  if (MODE === "practice"){
+    const answered = questions.filter(q => (q.userValue||"").trim() !== "").length;
+    const correctCount = questions.filter(q => q.isCorrect).length;
+    sub = practiceSubmitted
+      ? `<div class="sub">Submitted. Answered: <b>${answered}</b> / <b>${total}</b><br>Correct: <b>${correctCount}</b> / <b>${total}</b></div>`
+      : `<div class="sub">Answered: <b>${answered}</b> / <b>${total}</b><br>(Use <b>Check Answer</b>, then submit on Q${total}.)</div>`;
+  } else {
+    sub = `<div class="sub">Total: <b>${TOTAL_POINTS}</b> points. Submit on Q${total}.</div>`;
+  }
+
+  sidebarEl.innerHTML = `<h4>Questions</h4>${sub}<ul id="qList"></ul>`;
+  const ul = document.getElementById("qList");
+
+  for (let i=0;i<total;i++){
+    const li = document.createElement("li");
+    li.dataset.index = String(i);
+
+    const left = document.createElement("span");
+    left.textContent = `Q${i+1}`;
+
+    const badge = document.createElement("span");
+    badge.className = "pts-badge";
+    badge.textContent = `${questions[i].points} pts`;
+
+    li.appendChild(left);
+    li.appendChild(badge);
+
+    li.addEventListener("click", () => {
+      if (timerPaused) return;
+      saveCurrentInput();
+      currentIndex = i;
+      renderQuestion();
+    });
+
+    ul.appendChild(li);
+  }
+
+  updateSidebarStatus();
+}
+function updateSidebarStatus(){
+  const items = document.querySelectorAll("#qList li");
+  items.forEach(li => {
+    li.classList.remove("active","answered","correct","incorrect");
+    const idx = Number(li.dataset.index);
+    const q = questions[idx];
+
+    li.classList.toggle("active", idx === currentIndex);
+
+    const hasAns = (q.userValue || "").trim() !== "";
+
+    if (MODE === "practice"){
+      if (practiceSubmitted){
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      } else {
+        if (q.checked){
+          li.classList.add(q.isCorrect ? "correct" : "incorrect");
+        } else if (hasAns){
+          li.classList.add("answered");
+        }
+      }
+    } else {
+      if (!examSubmitted){
+        if (hasAns) li.classList.add("answered");
+      } else {
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ---------------- Save input ---------------- */
+function saveCurrentInput(){
+  const input = document.getElementById("answerInput");
+  if (!input) return;
+  if (practiceSubmitted || examSubmitted) return;
+  questions[currentIndex].userValue = input.value.trim();
+}
+
+/* ---------------- Check (Practice only) ---------------- */
+function checkCurrentAnswer(){
+  if (timerPaused) return;
+  if (practiceSubmitted) return;
+  if (MODE !== "practice") return;
+
+  saveCurrentInput();
+  const q = questions[currentIndex];
+  const fb = document.getElementById("checkFeedback");
+  if (!fb) return;
+
+  const ans = (q.userValue || "").trim();
+  if (!ans){
+    fb.textContent = "Please enter an answer first.";
+    fb.className = "check-feedback neutral";
+    return;
+  }
+
+  const res = compareByType(ans, q.correct);
+  q.isCorrect = !!res.ok;
+  q.checked = true;
+
+  if (q.isCorrect){
+    fb.textContent = "✅ Correct!";
+    fb.className = "check-feedback correct";
+  } else {
+    fb.textContent = `❌ Not quite. Try again.\n(Answer format reminder: ${q.answerHint})`;
+    fb.className = "check-feedback incorrect";
+  }
+
+  renderSidebar();
+}
+
+/* ---------------- Hint button ---------------- */
+function toggleHint(){
+  const q = questions[currentIndex];
+  q.hintShown = !q.hintShown;
+  const hb = document.getElementById("hintBox");
+  const btn = document.getElementById("hintButton");
+  if (hb) hb.style.display = q.hintShown ? "block" : "none";
+  if (btn) btn.textContent = q.hintShown ? "Hide Hint" : "Show Hint";
+}
+function hintBlock(q){
+  return `
+    <button id="hintButton" class="hint-toggle" type="button">${q.hintShown ? "Hide Hint" : "Show Hint"}</button>
+    <div id="hintBox" class="hint-box" style="display:${q.hintShown ? "block" : "none"};">
+      <b>Hint:</b> ${q.hint || "Work step-by-step."}
+    </div>
+  `;
+}
+
+/* ---------------- Render question ---------------- */
+function renderQuestion(){
+  const total = questions.length;
+  const q = questions[currentIndex];
+  const isLast = (currentIndex === total - 1);
+
+  const topLine = (MODE === "practice")
+    ? `Practice Mode — Question ${currentIndex+1} of ${total}`
+    : `Exam Mode — Question ${currentIndex+1} of ${total}`;
+
+  const showPrev = currentIndex > 0;
+  const showNext = currentIndex < total - 1;
+
+  const showCheck = (MODE === "practice" && !practiceSubmitted);
+  const showSubmitExam = (MODE === "exam" && !examSubmitted && isLast);
+  const showSubmitPractice = (MODE === "practice" && !practiceSubmitted && isLast);
+
+  const feedbackBox = showCheck ? `<div id="checkFeedback" class="check-feedback"></div>` : ``;
+
+  const pointsLine = (MODE === "exam")
+    ? `<div class="points-line">This question is worth <b>${q.points}</b> points.</div>`
+    : ``;
+
+  const lockedNote = (examSubmitted)
+    ? `<div class="hint-box" style="display:block;background:#fff8e1;border-color:#ffe0b2;">
+         <b>Exam submitted.</b> Answers are locked. Use the sidebar to review.
+       </div>`
+    : (MODE === "practice" && practiceSubmitted)
+      ? `<div class="hint-box" style="display:block;background:#fff8e1;border-color:#ffe0b2;">
+           <b>Practice submitted.</b> Answers are locked. Use the sidebar to review.
+         </div>`
+      : ``;
+
+  quizContent.innerHTML = `
+    <p class="question-text">${topLine}</p>
+    ${pointsLine}
+    <p class="instructions">${q.answerHint}</p>
+
+    <div class="part-title">${q.partName}</div>
+
+    <div class="single-question">
+      <div><b>Q${currentIndex+1}.</b> ${q.html}</div>
+      <input id="answerInput" class="answer-box" type="text"
+             ${practiceSubmitted || examSubmitted ? "disabled" : ""}
+             value="${(q.userValue||"").replace(/"/g,'&quot;')}" />
+    </div>
+
+    ${hintBlock(q)}
+    ${feedbackBox}
+    ${lockedNote}
+
+    <div class="question-buttons">
+      <button id="backButton" style="${showPrev ? "" : "display:none;"}">Previous</button>
+      ${showCheck ? `<button id="checkButton">Check Answer</button>` : ``}
+      ${showSubmitPractice ? `<button id="submitPracticeButton">Submit (Practice)</button>` : ``}
+      ${showSubmitExam ? `<button id="submitButton">Submit (Exam)</button>` : ``}
+      <button id="nextButton" style="${showNext ? "" : "display:none;"}">Next</button>
+    </div>
+  `;
+
+  document.getElementById("nextButton")?.addEventListener("click", onNext);
+  document.getElementById("backButton")?.addEventListener("click", onPrev);
+  document.getElementById("checkButton")?.addEventListener("click", checkCurrentAnswer);
+  document.getElementById("submitButton")?.addEventListener("click", onSubmitExam);
+  document.getElementById("submitPracticeButton")?.addEventListener("click", onSubmitPractice);
+  document.getElementById("hintButton")?.addEventListener("click", () => {
+    if (timerPaused) return;
+    toggleHint();
+  });
+
+  updateSidebarStatus();
+  setPausedUI(timerPaused);
+}
+
+/* ---------------- Navigation ---------------- */
+function onNext(){
+  if (timerPaused) return;
+  saveCurrentInput();
+  if (currentIndex < questions.length - 1){
+    currentIndex++;
+    renderQuestion();
+  }
+}
+function onPrev(){
+  if (timerPaused) return;
+  saveCurrentInput();
+  if (currentIndex > 0){
+    currentIndex--;
+    renderQuestion();
+  }
+}
+
+/* ---------------- Grading ---------------- */
+function gradeExamAll(){
+  let pointsEarned = 0;
+  questions.forEach(q => {
+    const res = compareByType(q.userValue || "", q.correct);
+    q.isCorrect = !!res.ok;
+    if (q.isCorrect) pointsEarned += q.points;
+  });
+  return pointsEarned;
+}
+function gradePracticeAll(){
+  let correctCount = 0;
+  questions.forEach(q => {
+    const res = compareByType(q.userValue || "", q.correct);
+    q.isCorrect = !!res.ok;
+    if (q.isCorrect) correctCount++;
+  });
+  return correctCount;
+}
+function onSubmitExam(){
+  if (timerPaused) return;
+  if (examSubmitted) return;
+  saveCurrentInput();
+
+  examSubmitted = true;
+
+  timerRunning = false;
+  if (timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  pauseBtn.style.display = "none";
+  pausedTag.style.display = "none";
+
+  const pts = gradeExamAll();
+  renderSidebar();
+  renderExamResults(pts);
+}
+function onSubmitPractice(){
+  if (timerPaused) return;
+  if (practiceSubmitted) return;
+  saveCurrentInput();
+
+  practiceSubmitted = true;
+
+  timerRunning = false;
+  if (timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  pauseBtn.style.display = "none";
+  pausedTag.style.display = "none";
+
+  const correctCount = gradePracticeAll();
+  renderSidebar();
+  renderPracticeResults(correctCount);
+}
+
+/* ---------------- Results (Exam) ---------------- */
+function renderExamResults(pointsEarned){
+  const total = questions.length;
+  const timeText = formatElapsed(elapsedMs);
+  const correctCount = questions.filter(q => q.isCorrect).length;
+
+  let html = `
+    <h3>Exam Results</h3>
+    <p><b>Student:</b> ${studentName}</p>
+    <p><b>Score:</b> ${pointsEarned} / ${TOTAL_POINTS} points</p>
+    <p><b>Correct:</b> ${correctCount} / ${total} questions</p>
+    <p><b>Time:</b> ${timeText}</p>
+
+    <div class="question-buttons">
+      <button id="saveButton">Save Result (TXT)</button>
+    </div>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th>
+        <th>Pts</th>
+        <th>Earned</th>
+        <th>Topic</th>
+        <th>Question</th>
+        <th>Your Answer</th>
+        <th>Correct Answer</th>
+        <th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q, i) => {
+    const yourAns = (q.userValue || "").trim() === "" ? "—" : q.userValue;
+    const earned = q.isCorrect ? q.points : 0;
+    const isAnswered = (q.userValue||"").trim() !== "";
+    html += `
+      <tr class="${q.isCorrect ? "correct-answer" : "incorrect-answer"}">
+        <td>${i+1}</td>
+        <td>${q.points}</td>
+        <td>${earned}</td>
+        <td>${q.partName}</td>
+        <td style="text-align:left;">${q.html}</td>
+        <td>${yourAns}</td>
+        <td>${q.displayCorrect}</td>
+        <td>${!isAnswered ? "Not answered" : (q.isCorrect ? "Correct" : "Incorrect")}</td>
+      </tr>
+    `;
+  });
+  html += `</table>`;
+
+  quizContent.innerHTML = html;
+  document.getElementById("saveButton")?.addEventListener("click", saveExamResultAsTxt);
+
+  updateSidebarStatus();
+}
+
+/* ---------------- Results (Practice) ---------------- */
+function renderPracticeResults(correctCount){
+  const total = questions.length;
+  const timeText = formatElapsed(elapsedMs);
+  const answered = questions.filter(q => (q.userValue||"").trim() !== "").length;
+
+  let html = `
+    <h3>Practice Summary</h3>
+    <p><b>Student:</b> ${studentName}</p>
+    <p><b>Answered:</b> ${answered} / ${total} questions</p>
+    <p><b>Correct:</b> ${correctCount} / ${total} questions</p>
+    <p><b>Time:</b> ${timeText}</p>
+
+    <div class="hint-box" style="display:block;background:#e8fff0;border-color:#b7f0c8;">
+      <b>Tip:</b> You can still click questions in the sidebar to review.
+      Generate a new set anytime to practise again.
+    </div>
+
+    <div class="question-buttons">
+      <button id="saveButton">Save Practice Result (TXT)</button>
+    </div>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th>
+        <th>Topic</th>
+        <th>Question</th>
+        <th>Your Answer</th>
+        <th>Correct Answer</th>
+        <th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q, i) => {
+    const yourAns = (q.userValue || "").trim() === "" ? "—" : q.userValue;
+    html += `
+      <tr class="${q.isCorrect ? "correct-answer" : "incorrect-answer"}">
+        <td>${i+1}</td>
+        <td>${q.partName}</td>
+        <td style="text-align:left;">${q.html}</td>
+        <td>${yourAns}</td>
+        <td>${q.displayCorrect}</td>
+        <td>${(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect ? "Correct" : "Incorrect")}</td>
+      </tr>
+    `;
+  });
+  html += `</table>`;
+
+  quizContent.innerHTML = html;
+  document.getElementById("saveButton")?.addEventListener("click", savePracticeResultAsTxt);
+
+  updateSidebarStatus();
+}
+
+/* ---------------- Save result (TXT) ---------------- */
+function formatDateForFilename(date){
+  const pad = n => String(n).padStart(2,"0");
+  return (
+    date.getFullYear() +
+    pad(date.getMonth() + 1) +
+    pad(date.getDate()) + "_" +
+    pad(date.getHours()) +
+    pad(date.getMinutes()) +
+    pad(date.getSeconds())
+  );
+}
+function saveExamResultAsTxt(){
+  const pointsEarned = questions.reduce((sum,q)=>sum+(q.isCorrect?q.points:0),0);
+  const correctCount = questions.filter(q=>q.isCorrect).length;
+
+  const lines = [];
+  lines.push("NZ Year 5 Maths Test - Exam Result");
+  lines.push("Student: " + studentName);
+  lines.push("Mode: Exam");
+  lines.push("Time: " + formatElapsed(elapsedMs));
+  lines.push("Score: " + pointsEarned + " / " + TOTAL_POINTS + " points");
+  lines.push("Correct: " + correctCount + " / " + questions.length);
+  lines.push("");
+  lines.push("Details:");
+  lines.push("--------");
+
+  questions.forEach((q, i) => {
+    const userAns = (q.userValue || "").trim() === "" ? "Not answered" : q.userValue;
+    const earned = q.isCorrect ? q.points : 0;
+    const resultText = (q.userValue || "").trim() === ""
+      ? "Not answered"
+      : (q.isCorrect ? "Correct" : "Incorrect");
+
+    lines.push(
+      `Q${i+1} (${q.partName}) [${earned}/${q.points} pts]` +
+      "\nQuestion: " + q.plain +
+      "\nYour answer: " + userAns +
+      "\nCorrect answer: " + stripHTML(q.displayCorrect) +
+      "\nResult: " + resultText
+    );
+    lines.push("");
+  });
+
+  const content = lines.join("\n");
+  const blob = new Blob([content], { type:"text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const safeName = studentName.replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  a.href = url;
+  a.download = `NZ_Y5_Exam_${safeName}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function savePracticeResultAsTxt(){
+  const correctCount = questions.filter(q=>q.isCorrect).length;
+  const answered = questions.filter(q => (q.userValue||"").trim() !== "").length;
+
+  const lines = [];
+  lines.push("NZ Year 5 Maths Test - Practice Result");
+  lines.push("Student: " + studentName);
+  lines.push("Mode: Practice");
+  lines.push("Time: " + formatElapsed(elapsedMs));
+  lines.push("Answered: " + answered + " / " + questions.length);
+  lines.push("Correct: " + correctCount + " / " + questions.length);
+  lines.push("");
+  lines.push("Details:");
+  lines.push("--------");
+
+  questions.forEach((q, i) => {
+    const userAns = (q.userValue || "").trim() === "" ? "Not answered" : q.userValue;
+    const resultText = (q.userValue || "").trim() === ""
+      ? "Not answered"
+      : (q.isCorrect ? "Correct" : "Incorrect");
+
+    lines.push(
+      `Q${i+1} (${q.partName})` +
+      "\nQuestion: " + q.plain +
+      "\nYour answer: " + userAns +
+      "\nCorrect answer: " + stripHTML(q.displayCorrect) +
+      "\nResult: " + resultText
+    );
+    lines.push("");
+  });
+
+  const content = lines.join("\n");
+  const blob = new Blob([content], { type:"text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const safeName = studentName.replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  a.href = url;
+  a.download = `NZ_Y5_Practice_${safeName}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ---------------- Export to PDF (Print) ---------------- */
+/* ---------------- Export to PDF (Print) ---------------- */
+function exportToPDF(){
+  if (!questions.length) return;
+
+  const w = window.open("", "_blank");
+  if (!w) return;
+
+  const now = new Date();
+  const ts = `${now.getFullYear()}-${pad2(now.getMonth()+1)}-${pad2(now.getDate())}`;
+
+  const titleText = (MODE === "practice")
+    ? "NZ Year 5 Maths — Practice Set"
+    : "NZ Year 5 Maths — Exam Paper";
+
+  const noteText = (MODE === "practice")
+    ? "Write your answers in the spaces provided. Fractions must be written as a/b (no mixed numbers)."
+    : "Answer all questions. Fractions must be written as a/b (no mixed numbers).";
+
+  const printStyles = `
+    <style>
+      body{ font-family: 'Segoe UI', Tahoma, sans-serif; color:#111; margin:24px; }
+      .hdr{ display:flex; align-items:center; gap:12px; border-bottom:2px solid #ddd; padding-bottom:10px; margin-bottom:16px; }
+      .logo{ width:34px; height:34px; background:#0d47a1; border-radius:6px; position:relative; }
+      .logo:before{ content:""; position:absolute; width:18px; height:8px; background:#ff9800; top:-6px; left:18px; border-radius:3px; }
+      .brand{ font-weight:900; letter-spacing:1px; color:#0d47a1; }
+      .edu{ font-weight:900; letter-spacing:0.6px; color:#ff9800; font-size:0.9em; }
+      h1{ font-size:1.25em; margin:0 0 6px; }
+      .meta{ color:#444; font-size:0.95em; margin:0 0 10px; }
+      .small{ color:#555; font-size:0.9em; margin:0 0 12px; }
+      .q{ margin:10px 0 14px; page-break-inside: avoid; }
+      .q .qt{ margin-bottom:8px; }
+      .ansbox{ margin-top:8px; border:1px solid #aaa; border-radius:8px; height:44px; }
+      .pts{ font-size:0.9em; color:#444; font-weight:800; margin-left:8px; }
+      .topic{ font-size:0.92em; color:#0d47a1; font-weight:900; margin:16px 0 6px; }
+      .page-break{ page-break-before: always; }
+
+      table.ans-table{ width:100%; border-collapse:collapse; margin-top:10px; }
+      .ans-table th, .ans-table td{
+        border:1px solid #bbb;
+        padding:6px 8px;
+        font-size:0.9em;
+        text-align:left;
+        vertical-align:top;
+      }
+      .ans-table th{ background:#f2f2f2; }
+
+      @media print{ .noprint{ display:none; } }
+    </style>
+  `;
+
+  // ---------- Header ----------
+  let body = `
+    <div class="hdr">
+      <div class="logo"></div>
+      <div>
+        <div class="brand">DYAA</div>
+        <div class="edu">EDUCATION</div>
+      </div>
+    </div>
+
+    <h1>${titleText}</h1>
+    <p class="meta"><b>Student:</b> ${studentName} &nbsp; | &nbsp; <b>Date:</b> ${ts} &nbsp; | &nbsp; <b>Mode:</b> ${MODE.toUpperCase()}</p>
+    <p class="small">${noteText}</p>
+
+    <div class="noprint" style="margin:12px 0;">
+      <button onclick="window.print()" style="padding:10px 16px;border:none;border-radius:10px;background:#6a1b9a;color:#fff;font-weight:900;cursor:pointer;">
+        Print / Save as PDF
+      </button>
+    </div>
+  `;
+
+  // ---------- Questions in ORDER Q1..Q30 ----------
+  let lastTopic = "";
+  questions.forEach((q) => {
+    if (q.partName !== lastTopic){
+      body += `<div class="topic">${q.partName}</div>`;
+      lastTopic = q.partName;
+    }
+
+    const ptsText = (MODE === "exam") ? `<span class="pts">(${q.points} pts)</span>` : "";
+    body += `
+      <div class="q">
+        <div class="qt"><b>Q${q.index+1}.</b> ${q.html} ${ptsText}</div>
+        <div class="ansbox"></div>
+      </div>
+    `;
+  });
+
+  // ---------- Answers on a SEPARATE page ----------
+  body += `
+    <div class="page-break"></div>
+    <h1>Answer Sheet</h1>
+    <p class="small">Do not use mixed numbers. Fractions are shown as a/b in simplest form.</p>
+
+    <table class="ans-table">
+      <tr>
+        <th style="width:70px;">Q#</th>
+        <th style="width:180px;">Answer</th>
+        <th>Topic</th>
+      </tr>
+  `;
+
+  questions.forEach((q) => {
+    const ansText = stripHTML(q.displayCorrect || "");
+    body += `
+      <tr>
+        <td><b>Q${q.index+1}</b></td>
+        <td>${ansText}</td>
+        <td>${q.partName}</td>
+      </tr>
+    `;
+  });
+
+  body += `</table>`;
+
+  // ---------- Write to new window ----------
+  w.document.open();
+  w.document.write(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>${titleText}</title>
+        ${printStyles}
+      </head>
+      <body>${body}</body>
+    </html>
+  `);
+  w.document.close();
+
+  setTimeout(() => { try{ w.focus(); }catch(e){} }, 200);
+}
+
+/* ---------------- Start / Reset ---------------- */
+function startNewSet(){
+  questions = generateQuestions();
+  currentIndex = 0;
+  examSubmitted = false;
+  practiceSubmitted = false;
+
+  questions.forEach(q => {
+    q.userValue = "";
+    q.checked = false;
+    q.isCorrect = false;
+    q.hintShown = false;
+  });
+
+  renderSidebar();
+  renderQuestion();
+
+  generateBtn.style.display = "inline-block";
+  resetBtn.style.display = "inline-block";
+  pauseBtn.style.display = "inline-block";
+  timerBox.style.display = "inline-flex";
+  exportBtn.style.display = "inline-block";
+
+  setPausedUI(false);
+  startQuizTimer();
+  updateMetaLine();
+}
+function updateMetaLine(){
+  const modeText = (MODE === "practice")
+    ? "Practice Mode (timed, Check Answer + Export PDF + Submit Summary)"
+    : `Exam Mode (timed, total ${TOTAL_POINTS} points)`;
+  metaLine.textContent = `Student: ${studentName} • ${modeText} • 30 questions • NZ Year 5`;
+}
+function showStartScreen(){
+  sidebarEl.style.display = "none";
+  generateBtn.style.display = "none";
+  pauseBtn.style.display = "none";
+  resetBtn.style.display = "none";
+  exportBtn.style.display = "none";
+  timerBox.style.display = "none";
+  modePill.style.display = "none";
+  metaLine.textContent = "";
+
+  quizContent.innerHTML = `
+    <div class="hint-box" style="display:block;">
+      <b>Choose a mode:</b><br>
+      • <b>Practice</b>: timed + every question has <b>Check Answer</b>. Submit on the last question to get a <b>summary</b> and <b>save result</b>.<br>
+      • <b>Exam</b>: timed, total <b>${TOTAL_POINTS}</b> points. Only <b>Submit</b> on the last question.<br><br>
+      <b>Year 5 focus:</b> place value, rounding/estimating, basic operations, fractions & decimals, measurement, worded geometry, and real-life problems.<br>
+      <b>Random rule:</b> each set contains <b>30 different question types</b> (no repeats). Over many sets, all knowledge points are covered.
+    </div>
+
+    <div style="margin-top:14px;">
+      <div style="font-weight:900; margin-bottom:6px;">Student Name</div>
+      <input id="nameInput" class="answer-box" type="text" placeholder="Your name" style="margin-top:0;">
+    </div>
+
+    <div style="margin-top:12px;">
+      <div style="font-weight:900; margin-bottom:6px;">Mode</div>
+      <label style="display:block; margin:6px 0;">
+        <input type="radio" name="modeChoice" value="practice" checked>
+        Practice Mode
+      </label>
+      <label style="display:block; margin:6px 0;">
+        <input type="radio" name="modeChoice" value="exam">
+        Exam Mode
+      </label>
+    </div>
+
+    <div class="question-buttons" style="margin-top:18px;">
+      <button id="startButton" style="background:#4caf50;">Start</button>
+    </div>
+  `;
+
+  const nameInput = document.getElementById("nameInput");
+  if (nameInput && URL_STUDENT_NAME) nameInput.value = URL_STUDENT_NAME;
+
+  document.getElementById("startButton")?.addEventListener("click", () => {
+    const name = (document.getElementById("nameInput")?.value || "Student").trim();
+    studentName = name || "Student";
+
+    const picked = document.querySelector('input[name="modeChoice"]:checked');
+    MODE = picked ? picked.value : "practice";
+
+    modePill.style.display = "inline-flex";
+    modePill.textContent = (MODE === "practice") ? "Practice Mode" : "Exam Mode";
+
+    startNewSet();
+  });
+}
+
+/* ---------------- Buttons ---------------- */
+generateBtn.addEventListener("click", () => {
+  if (timerPaused) return;
+  const msg =
+    MODE === "practice"
+      ? "Generate a new practice set?\n\nYour current answers and progress will be cleared."
+      : "Generate a new exam set?\n\nYour current answers and progress will be cleared.";
+  const ok = window.confirm(msg);
+  if (!ok) return;
+  startNewSet();
+});
+resetBtn.addEventListener("click", () => {
+  stopQuizTimer();
+  timerPaused = false;
+  setPausedUI(false);
+  showStartScreen();
+});
+pauseBtn.addEventListener("click", () => togglePause());
+exportBtn.addEventListener("click", () => {
+  if (timerPaused) return;
+  exportToPDF();
+});
+
+/* Init */
+showStartScreen();
+</script>
+</body>
+</html>
