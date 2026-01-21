@@ -1499,17 +1499,600 @@ function tplH_ribbonLeft(){
   );
 }
 
+
+/* ==========================================================
+   Added templates (expanded bank)
+   NOTE: Banks below are ordered roughly from easier → harder.
+========================================================== */
+
+/* ---------- EASY (2 pts) additions ---------- */
+function tplE_missingAddY5(){
+  const b = randInt(20, 250);
+  const x = randInt(30, 600);
+  const c = x + b;
+  return T("E_missingAddY5", 1,
+    `Find the missing number: <b>____ + ${b} = ${c}</b>.`,
+    {type:"integer", value:x},
+    `${x}`,
+    `Enter an integer.`,
+    `Subtract: ${c} − ${b}.`
+  );
+}
+function tplE_missingSubY5(){
+  const a = randInt(200, 1200);
+  const x = randInt(20, a-20);
+  const b = a - x;
+  return T("E_missingSubY5", 1,
+    `Find the missing number: <b>${a} − ____ = ${b}</b>.`,
+    {type:"integer", value:x},
+    `${x}`,
+    `Enter an integer.`,
+    `Think: what must be subtracted from ${a} to get ${b}?`
+  );
+}
+function tplE_multBy10or100Y5(){
+  const base = randInt(12, 98);
+  const factor = choice([10, 100]);
+  const ans = base * factor;
+  return T("E_multBy10or100Y5", 1,
+    `Calculate: <b>${base} × ${factor}</b>.`,
+    {type:"integer", value:ans},
+    `${ans}`,
+    `Enter an integer.`,
+    `Multiplying by 10 or 100 shifts digits left.`
+  );
+}
+function tplE_unitFractionOfNumberY5(){
+  const denom = choice([2,3,4,5,6,8,10]);
+  const k = randInt(3, 20);
+  const total = denom * k;
+  const ans = total / denom;
+  return T("E_unitFractionOfNumberY5", 2,
+    `Find <b>1/${denom}</b> of <b>${total}</b>.`,
+    {type:"integer", value:ans},
+    `${ans}`,
+    `Enter an integer.`,
+    `Divide ${total} by ${denom}.`
+  );
+}
+function tplE_minutesFromHoursMinutesY5(){
+  const h = randInt(1, 4);
+  const m = choice([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]);
+  const ans = h*60 + m;
+  return T("E_minutesFromHoursMinutesY5", 3,
+    `Convert to minutes: <b>${h} hours ${m} minutes</b>.`,
+    {type:"integer", value:ans},
+    `${ans}`,
+    `Enter an integer (minutes).`,
+    `1 hour = 60 minutes.`
+  );
+}
+function tplE_smallestOfFourY5(){
+  const nums = shuffle([randInt(1200, 9999), randInt(1200, 9999), randInt(1200, 9999), randInt(1200, 9999)]);
+  const smallest = Math.min(...nums);
+  return T("E_smallestOfFourY5", 0,
+    `Which number is the smallest?<br><br><b>${nums[0]}</b>, <b>${nums[1]}</b>, <b>${nums[2]}</b>, <b>${nums[3]}</b>`,
+    {type:"choiceWord", allowed:[String(smallest)]},
+    `${smallest}`,
+    `Type the smallest number.`,
+    `Compare thousands, then hundreds, tens, ones.`
+  );
+}
+
+/* ---------- MEDIUM (3 pts) additions ---------- */
+function tplM_divQuotientRemainderY5(){
+  const divisor = choice([4,5,6,7,8,9]);
+  const quotient = randInt(20, 120);
+  const remainder = randInt(1, divisor-1);
+  const dividend = divisor*quotient + remainder;
+  return T("M_divQR_Y5", 1,
+    `Calculate <b>${dividend} ÷ ${divisor}</b>.<br>
+     Give your answer as <b>quotient, remainder</b>.`,
+    {type:"list2", values:[quotient, remainder]},
+    `${quotient}, ${remainder}`,
+    `Enter two integers: quotient, remainder (e.g., 12, 3).`,
+    `Divide to get the quotient, then the leftover is the remainder.`
+  );
+}
+function tplM_decimalAddY5(){
+  const a = randInt(10, 99) + choice([0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]);
+  const b = randInt(1, 40) + choice([0.05,0.15,0.25,0.35,0.45,0.55,0.65,0.75,0.85,0.95]);
+  const ans = roundToDp(a+b, 2);
+  return T("M_decAddY5", 2,
+    `Calculate: <b>${a.toFixed(1)} + ${b.toFixed(2)}</b>. Give your answer to <b>2</b> decimal places.`,
+    {type:"decimal", value:ans, dp:2},
+    `${ans.toFixed(2)}`,
+    `Enter a decimal to 2 decimal places.`,
+    `Line up decimal points when adding.`
+  );
+}
+function tplM_decimalSubY5(){
+  const a = randInt(30, 120) + choice([0.2,0.4,0.6,0.8]);
+  const b = randInt(5, 29) + choice([0.05,0.15,0.25,0.35,0.45,0.55,0.65,0.75,0.85,0.95]);
+  if (b > a) return tplM_decimalSubY5();
+  const ans = roundToDp(a-b, 2);
+  return T("M_decSubY5", 2,
+    `Calculate: <b>${a.toFixed(1)} − ${b.toFixed(2)}</b>. Give your answer to <b>2</b> decimal places.`,
+    {type:"decimal", value:ans, dp:2},
+    `${ans.toFixed(2)}`,
+    `Enter a decimal to 2 decimal places.`,
+    `Line up decimal points when subtracting.`
+  );
+}
+function tplM_fractionOfQuantityY5(){
+  const denom = choice([4,5,6,8,10,12]);
+  const numer = choice([2,3,4,5]);
+  if (numer >= denom) return tplM_fractionOfQuantityY5();
+  const k = randInt(4, 20);
+  const total = denom * k;
+  const ans = (total * numer) / denom;
+  return T("M_fracOfQtyY5", 2,
+    `Find <b>${numer}/${denom}</b> of <b>${total}</b>.`,
+    {type:"integer", value:ans},
+    `${ans}`,
+    `Enter an integer.`,
+    `Divide by ${denom}, then multiply by ${numer}.`
+  );
+}
+function tplM_perimeterRectangleY5(){
+  const L = randInt(6, 24);
+  const W = randInt(4, 18);
+  const p = 2*(L+W);
+  return T("M_perimRectY5", 3,
+    `A rectangle is <b>${L} m</b> long and <b>${W} m</b> wide.<br>
+     Find its <b>perimeter</b>.`,
+    {type:"integer", value:p},
+    `${p}`,
+    `Enter an integer (m).`,
+    `Perimeter = 2(length + width).`
+  );
+}
+function tplM_timeAddDurationY5(){
+  const start = choice([8*60+15, 9*60+40, 11*60+5, 13*60+25, 14*60+50, 16*60+10]);
+  const dur = choice([25,35,45,55,65,75,85,95,110]);
+  const end = (start + dur) % 1440;
+  return T("M_timeAddY5", 4,
+    `A lesson starts at <b>${minutesToTime12(start)}</b> and lasts <b>${dur} minutes</b>.<br>
+     What time does the lesson end?`,
+    {type:"time", mins:end},
+    `${minutesToTime12(end)}`,
+    `Enter the time (e.g., 2:15 pm).`,
+    `Add the minutes to the start time.`
+  );
+}
+function tplM_averageOfThreeY5(){
+  const a = randInt(10, 80);
+  const b = randInt(10, 80);
+  const c = randInt(10, 80);
+  const sum = a+b+c;
+  if (sum % 3 !== 0) return tplM_averageOfThreeY5();
+  const avg = sum/3;
+  return T("M_avg3Y5", 5,
+    `The scores are <b>${a}</b>, <b>${b}</b>, and <b>${c}</b>.<br>
+     What is the <b>average</b> score?`,
+    {type:"integer", value:avg},
+    `${avg}`,
+    `Enter an integer.`,
+    `Average = (sum of scores) ÷ 3.`
+  );
+}
+function tplM_probabilitySimpleY5(){
+  const red = randInt(2, 8);
+  const blue = randInt(2, 8);
+  const green = randInt(1, 6);
+  const total = red+blue+green;
+  const r = reduceFraction(red, total);
+  return T("M_probRedY5", 5,
+    `A bag has <b>${red}</b> red counters, <b>${blue}</b> blue counters and <b>${green}</b> green counters.<br>
+     What is the probability of picking a <b>red</b> counter at random? Give your answer in simplest form.`,
+    {type:"fraction", a:r.a, b:r.b},
+    `${r.a}/${r.b}`,
+    `Enter a fraction like 3/10.`,
+    `Probability = favourable ÷ total.`
+  );
+}
+function tplM_tempDifferenceY5(){
+  const morning = randInt(-2, 12);
+  const afternoon = morning + randInt(3, 15);
+  const diff = afternoon - morning
+  return T("M_tempDiffY5", 5,
+    `In Christchurch, the temperature was <b>${morning}°C</b> in the morning and <b>${afternoon}°C</b> in the afternoon.<br>
+     How many degrees did the temperature increase by?`,
+    {type:"integer", value:diff},
+    `${diff}`,
+    `Enter an integer (°C).`,
+    `Increase = afternoon − morning.`
+  );
+}
+
+/* ---------- HARD (4 pts) additions ---------- */
+function tplH_multiItemChangeY5(){
+  const item1 = choice([12.50, 8.75, 15.20, 6.40, 9.90, 18.30]);
+  const item2 = choice([7.60, 5.35, 11.25, 14.80, 3.90, 9.15]);
+  const item3 = choice([2.40, 4.60, 1.75, 3.25, 5.10, 6.80]);
+  const total = roundToDp(item1 + item2 + item3, 2);
+  const paid = choice([50, 80, 100]);
+  if (paid < total) return tplH_multiItemChangeY5();
+  const changeCents = Math.round((paid - total) * 100);
+  return T("H_multiItemChangeY5", 5,
+    `At a dairy, Mei buys three items that cost <b>$${item1.toFixed(2)}</b>, <b>$${item2.toFixed(2)}</b> and <b>$${item3.toFixed(2)}</b>.<br>
+     She pays with <b>$${paid}</b>. How much change does she get?`,
+    {type:"money", cents:changeCents},
+    `$${(changeCents/100).toFixed(2)}`,
+    `Enter the change in dollars (e.g., 12.50).`,
+    `Add the costs, then subtract from the amount paid.`
+  );
+}
+function tplH_speedTimeDistanceY5(){
+  // keep integers
+  const speed = choice([30, 36, 40, 45, 48, 50, 60]);
+  const timeH = choice([2,3,4,5]);
+  const distance = speed * timeH;
+  const ask = choice(["distance","speed","time"]);
+  if (ask === "distance"){
+    return T("H_STD_distanceY5", 5,
+      `A car travels at a constant speed of <b>${speed} km/h</b> for <b>${timeH} hours</b>.<br>
+       How far does it travel?`,
+      {type:"integer", value:distance},
+      `${distance}`,
+      `Enter an integer (km).`,
+      `Distance = speed × time.`
+    );
+  }
+  if (ask === "speed"){
+    return T("H_STD_speedY5", 5,
+      `A car travels <b>${distance} km</b> in <b>${timeH} hours</b> at a constant speed.<br>
+       What is its speed?`,
+      {type:"integer", value:speed},
+      `${speed}`,
+      `Enter an integer (km/h).`,
+      `Speed = distance ÷ time.`
+    );
+  }
+  return T("H_STD_timeY5", 5,
+    `A car travels <b>${distance} km</b> at a constant speed of <b>${speed} km/h</b>.<br>
+     How long does the trip take? (in hours)`,
+    {type:"integer", value:timeH},
+    `${timeH} hours`,
+    `Enter an integer (hours).`,
+    `Time = distance ÷ speed.`
+  );
+}
+function tplH_meanWithMissingY5(){
+  const a = randInt(20, 80);
+  const b = randInt(20, 80);
+  const mean = randInt(30, 85);
+  const total = mean * 3;
+  const x = total - a - b;
+  if (x < 10 || x > 120) return tplH_meanWithMissingY5();
+  return T("H_meanMissingY5", 5,
+    `Three numbers have an average (mean) of <b>${mean}</b>.<br>
+     Two of the numbers are <b>${a}</b> and <b>${b}</b>.<br>
+     Find the third number.`,
+    {type:"integer", value:x},
+    `${x}`,
+    `Enter an integer.`,
+    `Total = mean × 3, then subtract the known numbers.`
+  );
+}
+function tplH_lcmBusMeetTimeY5(){
+  const a = choice([12, 15, 18, 20]);
+  const b = choice([10, 14, 16, 21, 24]);
+  if (a === b) return tplH_lcmBusMeetTimeY5();
+  const meet = lcm(a,b);
+  const start = choice([7*60, 8*60+30, 9*60+15, 14*60]); // 7:00, 8:30, 9:15, 2:00pm
+  const next = (start + meet) % 1440;
+  return T("H_lcmBusesY5", 4,
+    `Bus A arrives every <b>${a} minutes</b> and Bus B arrives every <b>${b} minutes</b>.<br>
+     They both arrive together at <b>${minutesToTime12(start)}</b>.<br>
+     What time will they next arrive together?`,
+    {type:"time", mins:next},
+    `${minutesToTime12(next)}`,
+    `Enter the time (e.g., 9:42 am).`,
+    `Find the LCM of ${a} and ${b} minutes, then add it to the start time.`
+  );
+}
+function tplH_volumeRectPrismY5(){
+  const L = randInt(6, 20);
+  const W = randInt(4, 15);
+  const H = randInt(3, 12);
+  const V = L*W*H;
+  return T("H_volumePrismY5", 3,
+    `A rectangular box is <b>${L} cm</b> long, <b>${W} cm</b> wide and <b>${H} cm</b> high.<br>
+     Find its <b>volume</b> in <b>cm³</b>.`,
+    {type:"integer", value:V},
+    `${V}`,
+    `Enter an integer (cm³).`,
+    `Volume = length × width × height.`
+  );
+}
+function tplH_probabilityNotBlueY5(){
+  const blue = randInt(2, 10);
+  const red = randInt(2, 10);
+  const yellow = randInt(1, 8);
+  const total = blue+red+yellow;
+  const notBlue = total - blue;
+  const r = reduceFraction(notBlue, total);
+  return T("H_probNotBlueY5", 5,
+    `A bag has <b>${blue}</b> blue tokens, <b>${red}</b> red tokens and <b>${yellow}</b> yellow tokens.<br>
+     If one token is picked at random, what is the probability it is <b>not blue</b>? Give your answer in simplest form.`,
+    {type:"fraction", a:r.a, b:r.b},
+    `${r.a}/${r.b}`,
+    `Enter a fraction like 7/12.`,
+    `Not blue = total − blue.`
+  );
+}
+function tplH_fractionLeftAfterTwoUsesY5(){
+  const total = choice([8,10,12,15,18,20]); // kg
+  const f1 = choice([[1,3],[1,4],[2,5],[3,8]]);
+  const f2 = choice([[1,6],[1,5],[1,8],[3,10]]);
+  const used = total*(f1[0]/f1[1]) + total*(f2[0]/f2[1]);
+  const left = total - used;
+  if (left <= 0) return tplH_fractionLeftAfterTwoUsesY5();
+  const ans = roundToDp(left, 2);
+  return T("H_fracLeftTwoUsesY5", 5,
+    `A bag contains <b>${total} kg</b> of rice.<br>
+     First, <b>${f1[0]}/${f1[1]}</b> of the rice is used. Later, <b>${f2[0]}/${f2[1]}</b> of the <b>original</b> amount is used.<br>
+     How many kilograms of rice are left?`,
+    {type:"decimal", value:ans, dp:2},
+    `${ans.toFixed(2)}`,
+    `Enter a number (kg) to 2 decimal places.`,
+    `Left = total × (1 − fraction1 − fraction2).`
+  );
+}
+
+
 /* ==========================================================
    Build banks (BIG, so each set varies)
 ========================================================== */
+
+/* ==========================================================
+   Added (fix): missing MED templates referenced by MED_BANK
+   These were causing: ReferenceError: tplM_* is not defined
+========================================================== */
+
+// Compare two fractions: answer A / B / Equal
+function tplM_fractionCompare(){
+  const d = choice([6,8,10,12]);
+  let a = randInt(1, d-1);
+  let b = (Math.random() < 0.15) ? a : randInt(1, d-1);
+  while (b === a && Math.random() >= 0.15) b = randInt(1, d-1);
+
+  let ans = "equal";
+  if (a > b) ans = "a";
+  else if (b > a) ans = "b";
+
+  return T("M_fractionCompare", 3,
+    `Fraction <b>A</b> is <b>${a}/${d}</b> and fraction <b>B</b> is <b>${b}/${d}</b>.<br>
+     Which fraction is greater? Type <b>A</b>, <b>B</b>, or <b>Equal</b>.`,
+    {type:"choiceWord", allowed:[ans]},
+    (ans==="a" ? "A" : (ans==="b" ? "B" : "Equal")),
+    `Type A, B, or Equal.`,
+    `Same denominator → compare numerators.`
+  );
+}
+
+// Alias/wrapper to existing equivalent-fraction question
+function tplM_equivFractionFill(){
+  return tplM_equivFractionMissing();
+}
+
+// Alias/wrapper to existing same-denominator fraction addition question
+function tplM_fractionAddSameDen(){
+  return tplM_fractionAddLikeDen();
+}
+
+// Compare two decimals: answer A / B / Equal
+function tplM_decimalCompare(){
+  const base = randInt(1, 99);
+  const x = base + randInt(0,99)/100;
+  let y = (Math.random() < 0.12) ? x : (base + randInt(0,99)/100);
+  // ensure not too close if not equal
+  if (y !== x){
+    let tries=0;
+    while (Math.abs(y-x) < 0.02 && tries<20){
+      y = base + randInt(0,99)/100;
+      tries++;
+    }
+  }
+
+  let ans = "equal";
+  if (x > y) ans = "a";
+  else if (y > x) ans = "b";
+
+  return T("M_decimalCompare", 3,
+    `Decimal <b>A</b> is <b>${x.toFixed(2)}</b> and decimal <b>B</b> is <b>${y.toFixed(2)}</b>.<br>
+     Which number is greater? Type <b>A</b>, <b>B</b>, or <b>Equal</b>.`,
+    {type:"choiceWord", allowed:[ans]},
+    (ans==="a" ? "A" : (ans==="b" ? "B" : "Equal")),
+    `Type A, B, or Equal.`,
+    `Compare whole numbers first, then tenths, then hundredths.`
+  );
+}
+
+// Minutes since midnight from a 12-hour time
+function tplM_timeToMinutes(){
+  const hh = randInt(1, 12);
+  const mm = choice([0,5,10,15,20,25,30,35,40,45,50,55]);
+  const ap = choice(["am","pm"]);
+  const timeStr = `${hh}:${pad2(mm)} ${ap}`;
+  const mins = parseTimeToMinutes(timeStr);
+  return T("M_timeToMinutes", 3,
+    `A digital clock shows <b>${timeStr}</b>.<br>
+     How many minutes have passed since <b>12:00 am</b> (midnight)?`,
+    {type:"integer", value:mins},
+    `${mins}`,
+    `Enter an integer (minutes).`,
+    `Convert hours to minutes, then add the extra minutes.`
+  );
+}
+
+// Angles on a straight line
+function tplM_angleStraightLine(){
+  const a = choice([25,30,35,40,45,50,55,60,65,70,75,80,85,95,100,105,110,115,120,125,130,135,140,145,150,155]);
+  const b = 180 - a;
+  return T("M_angleStraightLine", 3,
+    `Two angles lie on a straight line. One angle is <b>${a}°</b>.<br>
+     What is the other angle?`,
+    {type:"integer", value:b},
+    `${b}`,
+    `Enter an integer (degrees).`,
+    `Angles on a straight line add to 180°.`
+  );
+}
+
+// Angles in a triangle
+function tplM_angleTriangle(){
+  let a = randInt(20, 80);
+  let b = randInt(20, 80);
+  while (a + b >= 170){
+    a = randInt(20, 80);
+    b = randInt(20, 80);
+  }
+  const c = 180 - a - b;
+  return T("M_angleTriangle", 3,
+    `In a triangle, two angles are <b>${a}°</b> and <b>${b}°</b>.<br>
+     What is the third angle?`,
+    {type:"integer", value:c},
+    `${c}`,
+    `Enter an integer (degrees).`,
+    `Angles in a triangle add to 180°.`
+  );
+}
+
+// Simple ratio: find one part given total
+function tplM_simpleRatioFindPart(){
+  const a = randInt(2, 6);
+  const b = randInt(2, 7);
+  const k = randInt(3, 12);
+  const total = (a+b)*k;
+
+  const ask = choice(["a","b"]);
+  const want = (ask==="a") ? a*k : b*k;
+  const labelA = choice(["boys","red marbles","apples","dogs"]);
+  const labelB = choice(["girls","blue marbles","oranges","cats"]);
+
+  return T("M_ratioFindPart", 3,
+    `The ratio of <b>${labelA}</b> to <b>${labelB}</b> is <b>${a}:${b}</b>.<br>
+     There are <b>${total}</b> in total. How many <b>${ask==="a" ? labelA : labelB}</b> are there?`,
+    {type:"integer", value:want},
+    `${want}`,
+    `Enter an integer.`,
+    `Total parts = ${a}+${b}. One part = total ÷ (total parts).`
+  );
+}
+
+// Read a tally chart
+function tplM_readTallyChart(){
+  const cats = ["Apples","Bananas","Oranges","Pears","Grapes","Mangoes"];
+  const labels = shuffle(cats).slice(0,4);
+  const counts = labels.map(()=>randInt(3,18));
+
+  function tally(n){
+    const fives = Math.floor(n/5);
+    const rem = n%5;
+    let s = "";
+    for(let i=0;i<fives;i++) s += "||||/ ";
+    s += "|".repeat(rem);
+    return s.trim();
+  }
+
+  const rows = labels.map((lab,i)=>`<tr><td style="text-align:left;"><b>${lab}</b></td><td style="font-family:ui-monospace,Consolas,monospace;font-weight:900;">${tally(counts[i])}</td></tr>`).join("");
+
+  const mode = choice(["one","total","diff"]);
+  let qhtml="", ans=0;
+  if (mode==="one"){
+    const i = randInt(0,3);
+    qhtml = `How many votes are there for <b>${labels[i]}</b>?`;
+    ans = counts[i];
+  } else if (mode==="diff"){
+    const i = randInt(0,3);
+    let j = randInt(0,3);
+    while (j===i) j = randInt(0,3);
+    qhtml = `How many more votes are there for <b>${labels[i]}</b> than for <b>${labels[j]}</b>?`;
+    ans = Math.abs(counts[i]-counts[j]);
+  } else {
+    qhtml = `How many votes are there in total?`;
+    ans = counts.reduce((s,x)=>s+x,0);
+  }
+
+  return T("M_tallyRead", 3,
+    `This table shows votes for a class snack:<br><br>
+     <table class="mini-table" style="width:100%;max-width:520px;">
+       <thead><tr><th style="text-align:left;">Snack</th><th style="text-align:left;">Tally</th></tr></thead>
+       <tbody>${rows}</tbody>
+     </table>
+     <br>${qhtml}`,
+    {type:"integer", value:ans},
+    `${ans}`,
+    `Enter an integer.`,
+    `Count each tally mark (groups of 5 are shown as ||||/).`
+  );
+}
+
+// Mean from a frequency table (mean guaranteed to be an integer)
+
+function tplM_meanFromTable(){
+  const pool = [10,12,14,15,16,18,20,22,24,25,26,28,30];
+  let values=[], freqs=[], totalN=0, totalS=0, mean=NaN;
+
+  for(let tries=0; tries<300; tries++){
+    const m = choice([3,4]); // number of distinct values
+    values = shuffle(pool).slice(0,m).sort((x,y)=>x-y);
+    freqs  = Array.from({length:m}, ()=>randInt(1,4));
+    totalN = freqs.reduce((s,x)=>s+x,0);
+    if (totalN < 6 || totalN > 14) continue;
+
+    totalS = values.reduce((s,v,i)=>s + v*freqs[i], 0);
+    const raw = totalS / totalN;
+    if (Math.abs(raw - Math.round(raw)) < 1e-9){
+      mean = Math.round(raw);
+      break;
+    }
+  }
+
+  // Guaranteed fallback (mean = 20)
+  if (!Number.isFinite(mean)){
+    values = [10, 20, 30];
+    freqs  = [2, 2, 2];
+    totalN = 6;
+    totalS = 10*2 + 20*2 + 30*2;
+    mean = 20;
+  }
+
+  const rows = values.map((v,i)=>`<tr><td><b>${v}</b></td><td>${freqs[i]}</td></tr>`).join("");
+
+  return T("M_meanFromTable", 3,
+    `The table shows the number of books read by students in a group:<br><br>
+     <table class="mini-table" style="width:100%;max-width:380px;">
+       <thead><tr><th>Books read</th><th>Number of students</th></tr></thead>
+       <tbody>${rows}</tbody>
+     </table>
+     <br>Find the <b>mean</b> number of books read.`,
+    {type:"integer", value:mean},
+    `${mean}`,
+    `Enter an integer.`,
+    `Mean = (total books) ÷ (total students).`
+  );
+}
+
+
+
+
 const EASY_BANK = [
   tplE_digitsToWordsY5,
   tplE_wordsToDigitsY5,
+  tplE_compareNumbersY5,
+  tplE_placeValueDigitY5,
   tplE_roundNearest10Y5,
   tplE_roundNearest100Y5,
-  tplE_compareNumbersY5,
   tplE_patternStepY5,
-  tplE_placeValueDigitY5,
+  tplE_multBy10or100Y5,
+  tplE_missingAddY5,
+  tplE_missingSubY5,
+  tplE_smallestOfFourY5,
+  tplE_unitFractionOfNumberY5,
+  tplE_minutesFromHoursMinutesY5,
   tplE_basicFractionSimplify
 ];
 
@@ -1519,16 +2102,25 @@ const MED_BANK = [
   tplM_mult2d1d,
   tplM_divExact,
   tplM_moneyChangeSimple,
-  tplM_equivFractionMissing,
-  tplM_fractionAddLikeDen,
-  tplM_decimalDivideLitres,
-  tplM_decimalPlaceValue,
-  tplM_fractionNumberLineBoxes,
-  tplM_quartersInMixed,
-  tplM_mixedFromImproper,
-  tplM_estimateDivision,
-  tplM_estimateMultiply,
-  tplM_timeBackSimple
+  tplM_timeAddDurationY5,
+  tplM_decimalAddY5,
+  tplM_decimalSubY5,
+  tplM_fractionOfQuantityY5,
+  tplM_perimeterRectangleY5,
+  tplM_averageOfThreeY5,
+  tplM_probabilitySimpleY5,
+  tplM_tempDifferenceY5,
+  tplM_fractionCompare,
+  tplM_equivFractionFill,
+  tplM_fractionAddSameDen,
+  tplM_decimalCompare,
+  tplM_timeToMinutes,
+  tplM_angleStraightLine,
+  tplM_angleTriangle,
+  tplM_simpleRatioFindPart,
+  tplM_readTallyChart,
+  tplM_meanFromTable,
+  tplM_divQuotientRemainderY5
 ];
 
 const HARD_BANK = [
@@ -1538,6 +2130,7 @@ const HARD_BANK = [
   tplH_decimalLineFill2,
   tplH_areaRectangleWord,
   tplH_areaRightTriangleWord,
+  tplH_volumeRectPrismY5,
   tplH_perimeterFromAreaBreadth,
   tplH_anglesTriangle,
   tplH_anglesStraightLine,
@@ -1545,23 +2138,32 @@ const HARD_BANK = [
   tplH_areaFiveSquares,
   tplH_pensRepack,
   tplH_ageFiveTimes,
+  tplH_meanWithMissingY5,
   tplH_savingsTV,
   tplH_twoStepPriceChain,
-  tplH_stadiumSpectators,
-  tplH_flourFractionLeft,
-  tplH_clockSlow24h,
+  tplH_multiItemChangeY5,
   tplH_meatCostChange,
-  tplH_coachRestTime,
+  tplH_stadiumSpectators,
+  tplH_fractionLeftAfterTwoUsesY5,
+  tplH_flourFractionLeft,
   tplH_fruitPunchDozen,
-  tplH_ribbonLeft
+  tplH_ribbonLeft,
+  tplH_speedTimeDistanceY5,
+  tplH_probabilityNotBlueY5,
+  tplH_lcmBusMeetTimeY5,
+  tplH_coachRestTime,
+  tplH_clockSlow24h
 ];
 
 /* Uniqueness: pick WITHOUT replacement per bank */
 function pickUnique(bank, count){
   if (bank.length < count){
-    throw new Error("Question bank too small for uniqueness requirement.");
+    throw new Error("Bank does not contain enough unique templates for this set size. Expand the bank to meet the no-repeat requirement.");
   }
-  return shuffle(bank).slice(0, count);
+  // Randomly pick, then sort by the bank order (roughly easier → harder)
+  const picked = shuffle(bank).slice(0, count);
+  picked.sort((a,b)=> bank.indexOf(a) - bank.indexOf(b));
+  return picked;
 }
 
 /* ---------------- Generate Questions (30 unique templates) ---------------- */
@@ -1570,7 +2172,7 @@ function generateQuestions(){
   const medFns  = pickUnique(MED_BANK, 10);
   const hardFns = pickUnique(HARD_BANK, 15);
 
-  // slots based on points
+  // Build slots based on POINTS order (easy → medium → hard)
   const qFns = [];
   let e=0,m=0,h=0;
   for (let i=0;i<30;i++){
@@ -1580,43 +2182,41 @@ function generateQuestions(){
     else qFns.push(hardFns[h++]);
   }
 
-  // shuffle within each point group (order varies)
-  const idx2 = [], idx3 = [], idx4 = [];
-  for (let i=0;i<30;i++){
-    if (POINTS[i]===2) idx2.push(i);
-    else if (POINTS[i]===3) idx3.push(i);
-    else idx4.push(i);
-  }
-  const f2 = shuffle(idx2.map(i=>qFns[i]));
-  const f3 = shuffle(idx3.map(i=>qFns[i]));
-  const f4 = shuffle(idx4.map(i=>qFns[i]));
-
-  const finalFns = qFns.slice();
-  idx2.forEach((i,k)=>finalFns[i]=f2[k]);
-  idx3.forEach((i,k)=>finalFns[i]=f3[k]);
-  idx4.forEach((i,k)=>finalFns[i]=f4[k]);
-
-  const Q = [];
   const usedIds = new Set();
+  const Q = [];
 
   for (let i=0;i<30;i++){
-    const fn = finalFns[i];
+    const fn = qFns[i];
     let t = fn();
 
-    // Guard: if any accidental duplicate id (shouldn't happen), retry a few times
+    // regen a few times in case the random branch inside a template
+    // produces an ID already used in this set
     let tries = 0;
-    while (usedIds.has(t.id) && tries < 50){
+    while (usedIds.has(t.id) && tries < 8){
       t = fn();
       tries++;
     }
+
     if (usedIds.has(t.id)){
-      // fallback: take another template from same tier
-      const tier = (POINTS[i]===2) ? EASY_BANK : (POINTS[i]===3 ? MED_BANK : HARD_BANK);
-      for (const alt of shuffle(tier)){
+      // fallback: try other templates from the same tier (prefer bank order)
+      const tierBank = (POINTS[i]===2) ? EASY_BANK : (POINTS[i]===3 ? MED_BANK : HARD_BANK);
+
+      for (const alt of tierBank){
         const altT = alt();
         if (!usedIds.has(altT.id)){
           t = altT;
           break;
+        }
+      }
+
+      // last resort: random scan
+      if (usedIds.has(t.id)){
+        for (const alt of shuffle(tierBank)){
+          const altT = alt();
+          if (!usedIds.has(altT.id)){
+            t = altT;
+            break;
+          }
         }
       }
     }
@@ -1624,8 +2224,10 @@ function generateQuestions(){
     usedIds.add(t.id);
     Q.push(makeQ(i, t.partIndex, t.partName, POINTS[i], t.html, t.correct, t.displayCorrect, t.answerHint, t.hint));
   }
+
   return Q;
 }
+
 
 /* ---------------- UI + State ---------------- */
 const quizContent = document.getElementById("quizContent");
@@ -2287,13 +2889,7 @@ function exportToPDF(){
   `;
 
   // ---------- Questions in ORDER Q1..Q30 ----------
-  let lastTopic = "";
   questions.forEach((q) => {
-    if (q.partName !== lastTopic){
-      body += `<div class="topic">${q.partName}</div>`;
-      lastTopic = q.partName;
-    }
-
     const ptsText = (MODE === "exam") ? `<span class="pts">(${q.points} pts)</span>` : "";
     body += `
       <div class="q">
@@ -2313,8 +2909,7 @@ function exportToPDF(){
       <tr>
         <th style="width:70px;">Q#</th>
         <th style="width:180px;">Answer</th>
-        <th>Topic</th>
-      </tr>
+</tr>
   `;
 
   questions.forEach((q) => {
@@ -2323,8 +2918,7 @@ function exportToPDF(){
       <tr>
         <td><b>Q${q.index+1}</b></td>
         <td>${ansText}</td>
-        <td>${q.partName}</td>
-      </tr>
+</tr>
     `;
   });
 
