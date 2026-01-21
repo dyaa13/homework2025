@@ -778,6 +778,82 @@ function tplE_compareNumbers(){
   );
 }
 
+
+function tplE_roundNearest100(){
+  let n = randInt(150, 9950);
+  while (n % 100 === 0) n = randInt(150, 9950);
+  const rounded = Math.round(n/100)*100;
+  return T("E_round100", 0,
+    `Round <b>${n}</b> to the nearest <b>100</b>.`,
+    {type:"integer", value:rounded},
+    `${rounded}`,
+    `Enter an integer.`,
+    `Look at the tens digit to decide.`
+  );
+}
+function tplE_evenOdd(){
+  const n = randInt(100, 9999);
+  const ans = (n % 2 === 0) ? "even" : "odd";
+  return T("E_evenOdd", 0,
+    `Is <b>${n}</b> <b>even</b> or <b>odd</b>?`,
+    {type:"choiceWord", allowed:[ans]},
+    `${ans}`,
+    `Type <b>even</b> or <b>odd</b>.`,
+    `Even numbers end in 0, 2, 4, 6, or 8.`
+  );
+}
+function tplE_skipCount(){
+  const step = choice([2,5,10,20,25]);
+  const start = randInt(5, 80);
+  const seq = [start, start+step, start+2*step, start+3*step, start+4*step];
+  const blankIndex = choice([1,2,3]);
+  const answer = seq[blankIndex];
+  const shown = seq.map((v,i)=> i===blankIndex ? "____" : String(v)).join(", ");
+  return T("E_skipCount", 0,
+    `Fill in the missing number:<br><br><b>${shown}</b>`,
+    {type:"integer", value:answer},
+    `${answer}`,
+    `Enter an integer.`,
+    `Look for the constant step between terms.`
+  );
+}
+function tplE_add2dEasy(){
+  // keep it easy: avoid large carrying
+  let a = randInt(12, 79);
+  let b = randInt(11, 79);
+  while ((a%10)+(b%10) >= 10) b = randInt(11, 79);
+  return T("E_add2dEasy", 1,
+    `Calculate: <b>${a} + ${b}</b>.`,
+    {type:"integer", value:a+b},
+    `${a+b}`,
+    `Enter an integer.`,
+    `Add tens and ones.`
+  );
+}
+function tplE_fractionOutOf(){
+  const d = choice([4,5,6,8,10,12]);
+  let n = randInt(1, d-1);
+  while (gcd(n,d) !== 1) n = randInt(1, d-1);
+  return T("E_fractionOutOf", 2,
+    `Write the fraction for <b>${n}</b> out of <b>${d}</b> (simplest form).`,
+    {type:"fraction", a:n, b:d},
+    `${n}/${d}`,
+    `Enter as a fraction like 3/8.`,
+    `Fraction = part/whole, then simplify if needed.`
+  );
+}
+function tplE_hoursToMinutes(){
+  const h = randInt(1, 6);
+  const mins = h * 60;
+  return T("E_hoursToMinutes", 3,
+    `How many minutes are there in <b>${h}</b> hour(s)?`,
+    {type:"integer", value:mins},
+    `${mins}`,
+    `Enter an integer.`,
+    `1 hour = 60 minutes.`
+  );
+}
+
 /* ==========================================================
    MEDIUM (3 pts) — need 10 unique per set
 ========================================================== */
@@ -916,6 +992,100 @@ function tplM_fractionCompare(){
     `${correct}`,
     `Type < or >`,
     `Same denominator → compare numerators.`
+  );
+}
+
+
+function tplM_add3digits(){
+  const a = randInt(120, 980);
+  const b = randInt(110, 975);
+  return T("M_add3", 1,
+    `Find the sum: <b>${a} + ${b}</b>.`,
+    {type:"integer", value:a+b},
+    `${a+b}`,
+    `Enter an integer.`,
+    `Add by place value (hundreds, tens, ones).`
+  );
+}
+function tplM_sub3digits(){
+  let a = randInt(300, 999);
+  let b = randInt(100, 899);
+  if (b > a) [a,b] = [b,a];
+  return T("M_sub3", 1,
+    `Find the difference: <b>${a} − ${b}</b>.`,
+    {type:"integer", value:a-b},
+    `${a-b}`,
+    `Enter an integer.`,
+    `Subtract by place value; borrow if needed.`
+  );
+}
+function tplM_divQuoRem(){
+  const d = randInt(3, 9);
+  const q = randInt(12, 99);
+  const r = randInt(1, d-1);
+  const n = d*q + r;
+  return T("M_divQuoRem", 1,
+    `Calculate: <b>${n} ÷ ${d}</b>.<br>
+     Give your answer as <b>quotient, remainder</b>.` ,
+    {type:"list2", values:[q,r]},
+    `${q}, ${r}`,
+    `Answer format: quotient, remainder (e.g., 17, 2).`,
+    `Divide to get the quotient; what is left is the remainder.`
+  );
+}
+function tplM_perimeterRectangle(){
+  const L = randInt(6, 28);
+  const W = randInt(4, 22);
+  const P = 2*(L+W);
+  return T("M_perimRect", 4,
+    `A rectangle is <b>${L} cm</b> long and <b>${W} cm</b> wide.<br>
+     What is its <b>perimeter</b>?`,
+    {type:"integer", value:P},
+    `${P}`,
+    `Enter an integer (cm).`,
+    `Perimeter of a rectangle = 2 × (length + width).`
+  );
+}
+function tplM_fractionOfNumber(){
+  const d = choice([2,3,4,5,6,8,10,12]);
+  const n = randInt(1, d-1);
+  const base = randInt(3, 20);
+  const whole = d * base; // ensures divisible
+  const ans = (whole * n) / d;
+  return T("M_fracOfNumber", 2,
+    `Find <b>${n}/${d}</b> of <b>${whole}</b>.`,
+    {type:"integer", value:ans},
+    `${ans}`,
+    `Enter an integer.`,
+    `Divide by the denominator, then multiply by the numerator.`
+  );
+}
+function tplM_timeElapsedMinutes(){
+  // keep within same half-day to avoid crossing noon/midnight confusion
+  const start = choice([8*60+10, 8*60+25, 9*60+5, 10*60+15, 13*60+20, 14*60+5, 15*60+10]);
+  const dur = choice([20,25,30,35,40,45,50,55,60,65,70]);
+  const end = start + dur;
+  return T("M_timeElapsed", 3,
+    `A lesson starts at <b>${minutesToTime12(start)}</b> and ends at <b>${minutesToTime12(end)}</b>.<br>
+     How many minutes long is the lesson?`,
+    {type:"integer", value:dur},
+    `${dur}`,
+    `Enter an integer (minutes).`,
+    `Find the difference between the end time and the start time.`
+  );
+}
+function tplM_moneyChange(){
+  const price = choice([3.50, 4.20, 5.80, 6.75, 7.40, 8.25, 9.60]);
+  const paid  = choice([10.00, 20.00]);
+  if (paid <= price) return tplM_moneyChange();
+  const changeCents = Math.round((paid - price)*100);
+  return T("M_moneyChange", 5,
+    `A drink costs <b>$${price.toFixed(2)}</b>. You pay with <b>$${paid.toFixed(2)}</b>.<br>
+     How much change do you get?`,
+    {type:"money", cents: changeCents},
+    `$${(changeCents/100).toFixed(2)}`,
+    `Enter the change in dollars (e.g., 2.50).`,
+    `Change = amount paid − cost.`
   );
 }
 
@@ -1356,29 +1526,117 @@ function tplH_shipDistance(){
   );
 }
 
+
+function tplH_multiStepShopping(){
+  const item1 = choice([{name:"sandwich", price:6.50},{name:"salad",price:7.20},{name:"noodles",price:5.80},{name:"wrap",price:6.75}]);
+  const item2 = choice([{name:"juice", price:3.40},{name:"water",price:2.60},{name:"milk",price:3.10},{name:"smoothie",price:4.50}]);
+  const n1 = randInt(2,4);
+  const n2 = randInt(1,3);
+  const paid = choice([30.00, 40.00, 50.00]);
+  const totalCents = Math.round((item1.price*n1 + item2.price*n2)*100);
+  const changeCents = Math.round(paid*100) - totalCents;
+  if (changeCents < 0) return tplH_multiStepShopping();
+  return T("H_multiShop", 5,
+    `A group buys <b>${n1}</b> ${item1.name}(s) at <b>$${item1.price.toFixed(2)}</b> each and <b>${n2}</b> ${item2.name}(s) at <b>$${item2.price.toFixed(2)}</b> each.<br>
+     They pay <b>$${paid.toFixed(2)}</b>. How much change do they receive?`,
+    {type:"money", cents: changeCents},
+    `$${(changeCents/100).toFixed(2)}`,
+    `Enter the change in dollars.`,
+    `Find the total cost first, then subtract from the amount paid.`
+  );
+}
+function tplH_missingSideFromPerimeter(){
+  const a = randInt(6, 18);
+  const b = randInt(6, 18);
+  const c = randInt(6, 18);
+  const d = randInt(6, 18);
+  const perim = a+b+c+d;
+  return T("H_missingSide", 4,
+    `A quadrilateral has side lengths <b>${a} cm</b>, <b>${b} cm</b>, <b>${c} cm</b>, and <b>x cm</b>.<br>
+     Its perimeter is <b>${perim} cm</b>. Find <b>x</b>.`,
+    {type:"integer", value:d},
+    `${d}`,
+    `Enter an integer (cm).`,
+    `Perimeter = sum of side lengths.`
+  );
+}
+function tplH_areaFromTiling(){
+  const L = randInt(8, 20);
+  const W = randInt(6, 16);
+  const tile = choice([1,2,4]); // cm^2 tile area (simplify)
+  const area = L*W;
+  const tiles = area / tile;
+  if (!Number.isInteger(tiles)) return tplH_areaFromTiling();
+  return T("H_areaTiling", 4,
+    `A rectangle is <b>${L} cm</b> by <b>${W} cm</b>.<br>
+     It is covered with square tiles of area <b>${tile} cm²</b> each. How many tiles are needed?`,
+    {type:"integer", value:tiles},
+    `${tiles}`,
+    `Enter an integer (tiles).`,
+    `Find the rectangle area, then divide by the tile area.`
+  );
+}
+function tplH_timeAcrossHour(){
+  const start = choice([9*60+35, 10*60+45, 13*60+50, 14*60+40, 15*60+55]);
+  const dur = choice([35,40,45,50,55,65,75,85]);
+  const end = start + dur;
+  return T("H_timeAcross", 5,
+    `A bus leaves at <b>${minutesToTime12(start)}</b> and the trip takes <b>${dur}</b> minutes.<br>
+     What time does the bus arrive?`,
+    {type:"time", mins:end},
+    `${minutesToTime12(end)}`,
+    `Enter the time (e.g., 2:15 pm).`,
+    `Add the minutes carefully across the hour.`
+  );
+}
+
 /* ==========================================================
    Build BIG banks (enough unique templates)
 ========================================================== */
 const EASY_BANK = [
+  // number & place value (easiest first)
   tplE_wordsToDigits,
   tplE_digitsToWords,
-  tplE_roundNearest10,
+  tplE_evenOdd,
+  tplE_skipCount,
+  tplE_hoursToMinutes,
+  tplE_add2dEasy,
   tplE_placeValueDigit,
-  tplE_compareNumbers
+  tplE_compareNumbers,
+  tplE_roundNearest10,
+  tplE_roundNearest100,
+  // fractions
+  tplE_fractionOutOf
 ];
 
+
 const MED_BANK = [
+  // operations
+  tplM_add3digits,
+  tplM_sub3digits,
   tplM_add4digits,
   tplM_sub4digits,
   tplM_mult2d1d,
   tplM_divExact,
+  tplM_divQuoRem,
+
+  // money / time / measurement
   tplM_moneyAdd,
   tplM_moneySub,
+  tplM_moneyChange,
+  tplM_timeElapsedMinutes,
+
+  // fractions
   tplM_equivFractionMissing,
   tplM_simplifyFraction,
+  tplM_fractionOfNumber,
   tplM_fractionAddLikeDen,
-  tplM_fractionCompare
+  tplM_fractionCompare,
+
+  // geometry
+  tplM_perimeterRectangle
 ];
+
 
 const HARD_BANK = [
   // measurement
@@ -1413,7 +1671,13 @@ const HARD_BANK = [
   tplH_averageWord,
   tplH_massAnimals,
   tplH_furnitureCost,
-  tplH_shipDistance
+  tplH_shipDistance,
+
+  // extra (expanded bank)
+  tplH_multiStepShopping,
+  tplH_missingSideFromPerimeter,
+  tplH_areaFromTiling,
+  tplH_timeAcrossHour,
 ];
 
 /* We guarantee uniqueness by picking WITHOUT replacement.
@@ -1428,36 +1692,20 @@ function pickUnique(bank, count){
 
 /* ---------------- Generate Questions (30 unique) ---------------- */
 function generateQuestions(){
-  const easyFns = pickUnique(EASY_BANK, 5);
-  const medFns  = pickUnique(MED_BANK, 10);
-  const hardFns = pickUnique(HARD_BANK, 15);
+  // Pick unique templates, then order them from easier → harder based on bank order.
+  const easyFns = pickUnique(EASY_BANK, 5).sort((a,b)=>EASY_BANK.indexOf(a)-EASY_BANK.indexOf(b));
+  const medFns  = pickUnique(MED_BANK, 10).sort((a,b)=>MED_BANK.indexOf(a)-MED_BANK.indexOf(b));
+  const hardFns = pickUnique(HARD_BANK, 15).sort((a,b)=>HARD_BANK.indexOf(a)-HARD_BANK.indexOf(b));
 
-  // Build slots based on points array
-  const qFns = [];
+  // Build slots based on points array (easy first, then medium, then hard)
+  const finalFns = [];
   let e=0,m=0,h=0;
   for (let i=0;i<30;i++){
     const pts = POINTS[i];
-    if (pts === 2) qFns.push(easyFns[e++]);
-    else if (pts === 3) qFns.push(medFns[m++]);
-    else qFns.push(hardFns[h++]);
+    if (pts === 2) finalFns.push(easyFns[e++]);
+    else if (pts === 3) finalFns.push(medFns[m++]);
+    else finalFns.push(hardFns[h++]);
   }
-
-  // Within each point-group, shuffle the templates so the order varies,
-  // but still keep point distribution by index.
-  const idx2 = []; const idx3 = []; const idx4 = [];
-  for (let i=0;i<30;i++){
-    if (POINTS[i]===2) idx2.push(i);
-    else if (POINTS[i]===3) idx3.push(i);
-    else idx4.push(i);
-  }
-  const f2 = shuffle(idx2.map(i=>qFns[i]));
-  const f3 = shuffle(idx3.map(i=>qFns[i]));
-  const f4 = shuffle(idx4.map(i=>qFns[i]));
-
-  const finalFns = qFns.slice();
-  idx2.forEach((i,k)=>finalFns[i]=f2[k]);
-  idx3.forEach((i,k)=>finalFns[i]=f3[k]);
-  idx4.forEach((i,k)=>finalFns[i]=f4[k]);
 
   // Create question objects
   const Q = [];
@@ -2159,13 +2407,8 @@ function exportToPDF(){
   `;
 
   // ---------- Questions in ORDER Q1..Q30 ----------
-  let lastTopic = "";
+  // Questions (no topic labels in PDF)
   questions.forEach((q) => {
-    if (q.partName !== lastTopic){
-      body += `<div class="topic">${q.partName}</div>`;
-      lastTopic = q.partName;
-    }
-
     const ptsText = (MODE === "exam") ? `<span class="pts">(${q.points} pts)</span>` : "";
     body += `
       <div class="q">
@@ -2184,8 +2427,7 @@ function exportToPDF(){
     <table class="ans-table">
       <tr>
         <th style="width:70px;">Q#</th>
-        <th style="width:180px;">Answer</th>
-        <th>Topic</th>
+        <th>Answer</th>
       </tr>
   `;
 
@@ -2195,7 +2437,6 @@ function exportToPDF(){
       <tr>
         <td><b>Q${q.index+1}</b></td>
         <td>${ansText}</td>
-        <td>${q.partName}</td>
       </tr>
     `;
   });

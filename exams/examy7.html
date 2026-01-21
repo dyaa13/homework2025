@@ -977,6 +977,89 @@ function tplE_roundMetresToNearestCm(){
   );
 }
 
+
+// --- Added EASY templates (expanded bank) ---
+function tplE_power10Shift(){
+  // multiply a decimal by 10, 100 or 1000
+  const k = choice([10,100,1000]);
+  // create a decimal with up to 2 dp so the shifted result is tidy
+  const dp = choice([1,2]);
+  const nInt = randInt(12, 980);
+  const n = nInt / Math.pow(10, dp);
+  const val = n * k;
+  // format (trim trailing zeros)
+  const dispN = n.toFixed(dp).replace(/0+$/,"").replace(/\.$/,"");
+  const dispVal = String(val).includes(".") ? (val.toFixed(6).replace(/0+$/,"").replace(/\.$/,"")) : String(val);
+  return T("E_power10Shift", 1,
+    `Calculate: <b>${dispN}</b> × <b>${k}</b>`,
+    {type:"decimal", value: val},
+    dispVal,
+    `Enter a number (no commas).`,
+    `Multiplying by 10/100/1000 shifts the decimal point right by 1/2/3 places.`
+  );
+}
+
+function tplE_fractionOfWholeInt(){
+  const den = choice([2,3,4,5,6,8,10,12]);
+  const num = randInt(1, den-1);
+  const whole = den * randInt(4, 18);
+  const ans = whole * num / den;
+  return T("E_fracOfWholeInt", 1,
+    `Find <b>${num}/${den}</b> of <b>${whole}</b>.`,
+    {type:"integer", value: ans},
+    String(ans),
+    `Enter an integer.`,
+    `To find a fraction of a number: divide by the denominator, then multiply by the numerator.`
+  );
+}
+
+function tplE_perimeterRectangle(){
+  const L = randInt(6, 28);
+  const W = randInt(4, 20);
+  const P = 2*(L+W);
+  return T("E_perimRect", 6,
+    `A rectangle has length <b>${L} cm</b> and width <b>${W} cm</b>. Find its perimeter (in cm).`,
+    {type:"integer", value: P},
+    String(P),
+    `Enter an integer (cm).`,
+    `Perimeter of a rectangle = 2 × (length + width).`
+  );
+}
+
+function tplE_negAddSub(){
+  const a = randInt(5, 30);
+  const b = randInt(5, 30);
+  const op = choice(["+", "-"]);
+  const expr = (op === "+") ? (-a + b) : (-a - b);
+  const html = (op === "+")
+    ? `Calculate: <b>−${a}</b> + <b>${b}</b>`
+    : `Calculate: <b>−${a}</b> − <b>${b}</b>`;
+  return T("E_negAddSub", 0,
+    html,
+    {type:"integer", value: expr},
+    String(expr),
+    `Enter an integer.`,
+    `Work with negatives carefully: subtracting a positive makes it more negative.`
+  );
+}
+
+function tplE_meanThree(){
+  const x = randInt(4, 30);
+  const y = randInt(4, 30);
+  const mean = randInt(6, 26);
+  const z = 3*mean - x - y;
+  // keep positive and reasonable
+  if (z < 0 || z > 40) return tplE_meanThree();
+  return T("E_meanThree", 7,
+    `Find the mean of: <b>${x}</b>, <b>${y}</b>, <b>${z}</b>.`,
+    {type:"integer", value: mean},
+    String(mean),
+    `Enter an integer.`,
+    `Mean = (sum of values) ÷ (number of values).`
+  );
+}
+
+
 /* ---------------- MEDIUM (3 pts) ---------------- */
 function tplM_evalSubstitution(){
   const x = randInt(-6, 8);
@@ -1386,6 +1469,98 @@ function tplM_percentMoreThan(){
   );
 }
 
+
+// --- Added MEDIUM templates (expanded bank) ---
+function tplM_areaTriangle(){
+  const b = randInt(8, 30);
+  const h = randInt(6, 26);
+  // ensure area is integer: if b*h is odd, make b even
+  const bb = (b*h)%2===0 ? b : (b%2===0 ? b : b+1);
+  const area = (bb * h)/2;
+  return T("M_areaTriangle", 6,
+    `A triangle has base <b>${bb} cm</b> and height <b>${h} cm</b>. Find its area (cm²).`,
+    {type:"integer", value: area},
+    String(area),
+    `Enter an integer.`,
+    `Area of triangle = (base × height) ÷ 2.`
+  );
+}
+
+function tplM_discountMoneyAlt(){
+  const original = randInt(18, 90);
+  const pct = choice([10,15,20,25,30]);
+  const cents = original*100;
+  const finalCents = Math.round(cents * (100 - pct) / 100);
+  const display = (finalCents/100).toFixed(2);
+  return T("M_discountMoneyAlt", 2,
+    `A jacket costs <b>$${original}.00</b>. It is discounted by <b>${pct}%</b>.
+    What is the sale price?`,
+    {type:"money", cents: finalCents},
+    `$${display}`,
+    `Enter the amount in dollars (e.g., 12.50).`,
+    `Sale price = original × (1 − discount%).`
+  );
+}
+
+function tplM_ratioSimplify(){
+  // Avoid trivial cases like x:x (which would simplify to 1:1)
+  let a, b, k, A, B;
+  while (true){
+    let A0 = randInt(12, 60);
+    let B0 = randInt(12, 60);
+    if (A0 === B0) continue;
+    const g = gcd(A0, B0);
+    a = A0 / g;
+    b = B0 / g;
+    if (a === 1 && b === 1) continue;
+    k = randInt(2, 6);
+    A = a * k;
+    B = b * k;
+    if (A === B) continue;
+    break;
+  }
+  return T("M_ratioSimplify", 3,
+    `Simplify the ratio <b>${A}:${B}</b> to its simplest form.`,
+    {type:"ratio2", values:[a,b]},
+    `${a}:${b}`,
+    `Enter in the form a:b (no spaces).`,
+    `Divide both parts by their highest common factor.`
+  );
+}
+
+function tplM_solveTwoStepEq(){
+  const x = randInt(3, 20);
+  const m = randInt(2, 9);
+  const c = randInt(4, 30);
+  const rhs = m*x + c;
+  return T("M_twoStepEq", 4,
+    `Solve for <b>x</b>:<br><br><b>${m}x + ${c} = ${rhs}</b>`,
+    {type:"integer", value: x},
+    String(x),
+    `Enter an integer.`,
+    `Undo the +${c} first, then divide by ${m}.`
+  );
+}
+
+function tplM_probNotBlue(){
+  const red = randInt(2, 8);
+  const blue = randInt(3, 10);
+  const green = randInt(1, 6);
+  const total = red + blue + green;
+  const num = total - blue;
+  const g = gcd(num, total);
+  const a = num/g, b = total/g;
+  return T("M_probNotBlue", 7,
+    `A bag contains <b>${red}</b> red, <b>${blue}</b> blue, and <b>${green}</b> green marbles.
+    One marble is chosen at random. What is the probability it is <b>not blue</b>?`,
+    {type:"fraction", a, b},
+    `${a}/${b}`,
+    `Answer as a/b in simplest form (no mixed numbers).`,
+    `Probability = (favourable outcomes) ÷ (total outcomes).`
+  );
+}
+
+
 /* ---------------- HARD (4 pts) ---------------- */
 function tplH_discountThenGST(){
   const marked = choice([80,120,160,200,240,300,360]);
@@ -1618,14 +1793,21 @@ function tplH_percentChangeWord(){
   );
 }
 function tplH_threeTermRatio(){
-  const u = choice([2,3,4,5,6,7]);
-  const v = choice([3,4,5,6,7,8]);
-  const w = choice([4,5,6,7,8,9]);
-  const k = randInt(2, 6);
-  const A = u*k, B = v*k, C = w*k;
-  const rr = reduceFraction(u,v); // not used, but ok
-  const g = gcd3(u,v,w);
-  const simp = [u/g, v/g, w/g];
+  // Avoid trivial cases like x:x:x (which would simplify to 1:1:1)
+  let u, v, w, k, A, B, C, g, simp;
+  while (true){
+    u = choice([2,3,4,5,6,7]);
+    v = choice([3,4,5,6,7,8]);
+    w = choice([4,5,6,7,8,9]);
+    if (u === v && v === w) continue;
+    g = gcd3(u, v, w);
+    simp = [u/g, v/g, w/g];
+    if (simp[0] === 1 && simp[1] === 1 && simp[2] === 1) continue;
+    k = randInt(2, 6);
+    A = u*k; B = v*k; C = w*k;
+    if (A === B && B === C) continue;
+    break;
+  }
   return T("H_ratio3", 3,
     `Simplify this ratio: <b>${A}:${B}:${C}</b>.`,
     {type:"ratio3", values:simp},
@@ -1961,6 +2143,101 @@ function tplH_averageMass(){
 /* ==========================================================
    Build banks
 ========================================================== */
+
+// --- Added HARD templates (expanded bank) ---
+function tplH_ratioRectanglePerimeter(){
+  // rectangle sides in ratio a:b, given perimeter
+  const a = choice([2,3,4,5]);
+  const b = a + choice([1,2,3]);
+  const k = randInt(4, 14);
+  const L = b*k;
+  const W = a*k;
+  const P = 2*(L+W);
+  return T("H_ratioRectPerim", 6,
+    `The length and width of a rectangle are in the ratio <b>${b}:${a}</b>.
+    The perimeter is <b>${P} cm</b>. Find the <b>length</b> (in cm).`,
+    {type:"integer", value: L},
+    String(L),
+    `Enter an integer.`,
+    `Let length=${b}k and width=${a}k. Use perimeter = 2(length+width).`
+  );
+}
+
+function tplH_reversePercent(){
+  const pctOff = choice([15,20,25,30]);
+  const original = randInt(40, 140);
+  const final = Math.round(original * (100 - pctOff) / 100);
+  // ensure final is clean dollars
+  if (Math.abs(final*100 - (original*100*(100-pctOff)/100)) > 1e-6) return tplH_reversePercent();
+  const finalCents = final*100;
+  const displayFinal = final.toFixed(2);
+  const displayOrig = original.toFixed(2);
+  return T("H_reversePercent", 2,
+    `After a <b>${pctOff}%</b> discount, an item costs <b>$${displayFinal}</b>.
+    What was the original price (in dollars)?`,
+    {type:"money", cents: Math.round(original*100)},
+    `$${displayOrig}`,
+    `Enter the amount in dollars (e.g., 60.00).`,
+    `If final = original × (1 − ${pctOff}%), then original = final ÷ (1 − ${pctOff}%).`
+  );
+}
+
+function tplH_speedReturnTrip(){
+  // Out-and-back with different speeds
+  const dist = choice([12,15,18,20,24,30]);
+  const v = randInt(9, 18);
+  const delta = choice([2,3,4]);
+  if (v - delta <= 4) return tplH_speedReturnTrip();
+  const tTotal = dist/v + dist/(v-delta);
+  // make total time a neat number (0.5 steps)
+  const tRounded = Math.round(tTotal*2)/2;
+  if (Math.abs(tTotal - tRounded) > 1e-9) return tplH_speedReturnTrip();
+  const tStr = (tRounded % 1 === 0) ? String(tRounded) : (tRounded.toFixed(1));
+  return T("H_speedReturnTrip", 3,
+    `A cyclist rides <b>${dist} km</b> to a town at <b>v km/h</b> and returns on the same road at <b>(v − ${delta}) km/h</b>.
+    The total time is <b>${tStr} hours</b>. Find <b>v</b>.`,
+    {type:"integer", value: v},
+    String(v),
+    `Enter an integer.`,
+    `Use time = distance ÷ speed. Form an equation: ${dist}/v + ${dist}/(v−${delta}) = ${tStr}.`
+  );
+}
+
+function tplH_probTwoWithoutReplacement(){
+  const red = randInt(3, 9);
+  const blue = randInt(3, 10);
+  const total = red + blue;
+  // probability of 2 reds without replacement: red/total * (red-1)/(total-1)
+  const num = red*(red-1);
+  const den = total*(total-1);
+  const g = gcd(num, den);
+  const a = num/g, b = den/g;
+  return T("H_probTwoNoReplace", 7,
+    `A bag has <b>${red}</b> red and <b>${blue}</b> blue balls.
+    Two balls are drawn <b>without replacement</b>. What is the probability that both are red?`,
+    {type:"fraction", a, b},
+    `${a}/${b}`,
+    `Answer as a/b in simplest form (no mixed numbers).`,
+    `P(both red) = (red/total) × ((red−1)/(total−1)).`
+  );
+}
+
+function tplH_multiStepNumberPuzzle(){
+  const x = randInt(8, 30);
+  const add = randInt(6, 20);
+  const mult = choice([2,3,4,5]);
+  const result = mult*(x + add);
+  return T("H_multiStepNumberPuzzle", 4,
+    `I think of a number. I add <b>${add}</b> and then multiply the result by <b>${mult}</b> to get <b>${result}</b>.
+    What was my number?`,
+    {type:"integer", value: x},
+    String(x),
+    `Enter an integer.`,
+    `Work backwards: divide by ${mult}, then subtract ${add}.`
+  );
+}
+
+
 const EASY_BANK = [
   tplE_integerCompare,
   tplE_orderOps,
@@ -1984,7 +2261,13 @@ const EASY_BANK = [
   tplE_decimalToFractionSimple,
   tplE_placeValueDigit,
   tplE_times100,
-  tplE_roundMetresToNearestCm
+  tplE_roundMetresToNearestCm,
+  tplE_power10Shift,
+  tplE_fractionOfWholeInt,
+  tplE_perimeterRectangle,
+  tplE_negAddSub,
+  tplE_meanThree,
+
 ];
 
 const MED_BANK = [
@@ -2011,7 +2294,13 @@ const MED_BANK = [
   tplM_simulSkirtsDresses,
   tplM_weekRental,
   tplM_newAverageAddNumber,
-  tplM_percentMoreThan
+  tplM_percentMoreThan,
+  tplM_areaTriangle,
+  tplM_discountMoneyAlt,
+  tplM_ratioSimplify,
+  tplM_solveTwoStepEq,
+  tplM_probNotBlue,
+
 ];
 
 const HARD_BANK = [
@@ -2043,7 +2332,13 @@ const HARD_BANK = [
   tplH_beachSwimmers,
   tplH_ropeAverage,
   tplH_albumsFrames,
-  tplH_averageMass
+  tplH_averageMass,
+  tplH_ratioRectanglePerimeter,
+  tplH_reversePercent,
+  tplH_speedReturnTrip,
+  tplH_probTwoWithoutReplacement,
+  tplH_multiStepNumberPuzzle,
+
 ];
 
 /* Uniqueness: pick WITHOUT replacement per bank */
@@ -2056,9 +2351,10 @@ function pickUnique(bank, count){
 
 /* ---------------- Generate Questions (30 unique templates) ---------------- */
 function generateQuestions(){
-  const easyFns = pickUnique(EASY_BANK, 5);
-  const medFns  = pickUnique(MED_BANK, 10);
-  const hardFns = pickUnique(HARD_BANK, 15);
+  // pick unique templates then keep them in bank order (easier → harder within each group)
+  const easyFns = pickUnique(EASY_BANK, 5).sort((a,b)=>EASY_BANK.indexOf(a)-EASY_BANK.indexOf(b));
+  const medFns  = pickUnique(MED_BANK, 10).sort((a,b)=>MED_BANK.indexOf(a)-MED_BANK.indexOf(b));
+  const hardFns = pickUnique(HARD_BANK, 15).sort((a,b)=>HARD_BANK.indexOf(a)-HARD_BANK.indexOf(b));
 
   const qFns = [];
   let e=0,m=0,h=0;
@@ -2069,27 +2365,14 @@ function generateQuestions(){
     else qFns.push(hardFns[h++]);
   }
 
-  // shuffle within each point group
-  const idx2 = [], idx3 = [], idx4 = [];
-  for (let i=0;i<30;i++){
-    if (POINTS[i]===2) idx2.push(i);
-    else if (POINTS[i]===3) idx3.push(i);
-    else idx4.push(i);
-  }
-  const f2 = shuffle(idx2.map(i=>qFns[i]));
-  const f3 = shuffle(idx3.map(i=>qFns[i]));
-  const f4 = shuffle(idx4.map(i=>qFns[i]));
-
-  const finalFns = qFns.slice();
-  idx2.forEach((i,k)=>finalFns[i]=f2[k]);
-  idx3.forEach((i,k)=>finalFns[i]=f3[k]);
-  idx4.forEach((i,k)=>finalFns[i]=f4[k]);
+  // NOTE: We intentionally do NOT shuffle here so questions are ordered by difficulty:
+  // 2-point (easy) → 3-point (medium) → 4-point (hard)
 
   const Q = [];
   const usedIds = new Set();
 
   for (let i=0;i<30;i++){
-    const fn = finalFns[i];
+    const fn = qFns[i];
     let t = fn();
 
     let tries = 0;
@@ -2709,21 +2992,16 @@ function savePracticeResultAsTxt(){
 /* ---------------- Export to PDF (Print) ---------------- */
 function exportToPDF(){
   if (!questions.length) return;
-
   const w = window.open("", "_blank");
   if (!w) return;
-
   const now = new Date();
   const ts = `${now.getFullYear()}-${pad2(now.getMonth()+1)}-${pad2(now.getDate())}`;
-
   const titleText = (MODE === "practice")
     ? "NZ Year 7 Maths — Practice Set"
     : "NZ Year 7 Maths — Exam Paper";
-
   const noteText = (MODE === "practice")
     ? "Write your answers in the spaces provided. Fractions must be written as a/b (no mixed numbers)."
     : "Answer all questions. Fractions must be written as a/b (no mixed numbers).";
-
   const printStyles = `
     <style>
       body{ font-family: 'Segoe UI', Tahoma, sans-serif; color:#111; margin:24px; }
@@ -2739,9 +3017,7 @@ function exportToPDF(){
       .q .qt{ margin-bottom:8px; }
       .ansbox{ margin-top:8px; border:1px solid #aaa; border-radius:8px; height:44px; }
       .pts{ font-size:0.9em; color:#444; font-weight:800; margin-left:8px; }
-      .topic{ font-size:0.92em; color:#0d47a1; font-weight:900; margin:16px 0 6px; }
-      .page-break{ page-break-before: always; }
-
+.page-break{ page-break-before: always; }
       table.ans-table{ width:100%; border-collapse:collapse; margin-top:10px; }
       .ans-table th, .ans-table td{
         border:1px solid #bbb;
@@ -2751,11 +3027,9 @@ function exportToPDF(){
         vertical-align:top;
       }
       .ans-table th{ background:#f2f2f2; }
-
       @media print{ .noprint{ display:none; } }
     </style>
   `;
-
   // ---------- Header ----------
   let body = `
     <div class="hdr">
@@ -2765,27 +3039,18 @@ function exportToPDF(){
         <div class="edu">EDUCATION</div>
       </div>
     </div>
-
     <h1>${titleText}</h1>
     <p class="meta"><b>Student:</b> ${studentName} &nbsp; | &nbsp; <b>Date:</b> ${ts} &nbsp; | &nbsp; <b>Mode:</b> ${MODE.toUpperCase()}</p>
     <p class="small">${noteText}</p>
-
     <div class="noprint" style="margin:12px 0;">
       <button onclick="window.print()" style="padding:10px 16px;border:none;border-radius:10px;background:#6a1b9a;color:#fff;font-weight:900;cursor:pointer;">
         Print / Save as PDF
       </button>
     </div>
   `;
-
   // ---------- Questions in ORDER Q1..Q30 ----------
-  let lastTopic = "";
   questions.forEach((q) => {
-    if (q.partName !== lastTopic){
-      body += `<div class="topic">${q.partName}</div>`;
-      lastTopic = q.partName;
-    }
-
-    const ptsText = (MODE === "exam") ? `<span class="pts">(${q.points} pts)</span>` : "";
+const ptsText = (MODE === "exam") ? `<span class="pts">(${q.points} pts)</span>` : "";
     body += `
       <div class="q">
         <div class="qt"><b>Q${q.index+1}.</b> ${q.html} ${ptsText}</div>
@@ -2793,34 +3058,27 @@ function exportToPDF(){
       </div>
     `;
   });
-
   // ---------- Answers on a SEPARATE page ----------
   body += `
     <div class="page-break"></div>
     <h1>Answer Sheet</h1>
     <p class="small">Do not use mixed numbers. Fractions are shown as a/b in simplest form.</p>
-
     <table class="ans-table">
       <tr>
         <th style="width:70px;">Q#</th>
         <th style="width:180px;">Answer</th>
-        <th>Topic</th>
       </tr>
   `;
-
   questions.forEach((q) => {
     const ansText = stripHTML(q.displayCorrect || "");
     body += `
       <tr>
         <td><b>Q${q.index+1}</b></td>
         <td>${ansText}</td>
-        <td>${q.partName}</td>
       </tr>
     `;
   });
-
   body += `</table>`;
-
   // ---------- Write to new window ----------
   w.document.open();
   w.document.write(`
@@ -2835,7 +3093,6 @@ function exportToPDF(){
     </html>
   `);
   w.document.close();
-
   setTimeout(() => { try{ w.focus(); }catch(e){} }, 200);
 }
 
