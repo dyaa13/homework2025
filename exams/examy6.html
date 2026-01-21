@@ -905,6 +905,99 @@ function tplE_ratioSimplify(){
   );
 }
 
+/* --- extra EASY templates to enrich randomness --- */
+function tplE_placeValue(){
+  const n = randInt(2000, 9999);
+  const s = String(n).padStart(4,"0");
+  const digits = s.split("").map(x=>Number(x));
+  const positions = [
+    {name:"thousands", value:1000, digit:digits[0]},
+    {name:"hundreds", value:100, digit:digits[1]},
+    {name:"tens", value:10, digit:digits[2]},
+    {name:"ones", value:1, digit:digits[3]}
+  ];
+  const pos = choice(positions);
+  const ans = pos.digit * pos.value;
+  return T("E_placeValue", 0,
+    `In the number <b>${n.toLocaleString("en-NZ")}</b>, what is the value of the <b>${pos.name}</b> digit?`,
+    {type:"integer", value:ans},
+    `${ans.toLocaleString("en-NZ")}`,
+    `Enter an integer.`,
+    `Find the ${pos.name} digit and multiply by its place value.`
+  );
+}
+
+function tplE_decimalCompare(){
+  const whole = randInt(1, 9);
+  let a = whole + randInt(0, 99)/100;
+  let b = whole + randInt(0, 99)/100;
+  while (Math.abs(a-b) < 1e-9){
+    b = whole + randInt(0, 99)/100;
+  }
+  const left = a.toFixed(2);
+  const right = b.toFixed(2);
+  const correct = (a > b) ? ">" : "<";
+  return T("E_decimalCompare", 1,
+    `Fill in the blank with <b>&lt;</b> or <b>&gt;</b>:<br><br><b>${left}</b> ____ <b>${right}</b>`,
+    {type:"choiceWord", allowed:[correct]},
+    `${correct}`,
+    `Type < or >`,
+    `Compare digit by digit from the left.`
+  );
+}
+
+function tplE_fractionOfNumber(){
+  const fracs = [[1,2],[1,3],[2,3],[1,4],[3,4],[2,5],[3,5]];
+  const [n,d] = choice(fracs);
+  const unit = randInt(3, 18);
+  const base = d * unit;
+  const ans = base * n / d;
+  return T("E_fracOfNumber", 1,
+    `Find <b>${n}/${d}</b> of <b>${base}</b>.`,
+    {type:"integer", value:ans},
+    `${ans}`,
+    `Enter an integer.`,
+    `Divide by ${d}, then multiply by ${n}.`
+  );
+}
+
+function tplE_timeToMinutes(){
+  const h = randInt(1, 4);
+  const m = choice([0,5,10,15,20,25,30,35,40,45,50,55]);
+  const ans = h*60 + m;
+  return T("E_timeToMinutes", 3,
+    `Convert <b>${h} hours ${m} minutes</b> to <b>minutes</b>.`,
+    {type:"integer", value:ans},
+    `${ans}`,
+    `Enter an integer (minutes).`,
+    `1 hour = 60 minutes.`
+  );
+}
+
+function tplE_lengthConvert(){
+  const m = randInt(12, 250) / 10; // one decimal place
+  const cm = Math.round(m * 100);
+  return T("E_lengthConvert", 4,
+    `Convert <b>${m.toFixed(1)} m</b> to <b>centimetres</b>.`,
+    {type:"integer", value:cm},
+    `${cm} cm`,
+    `Enter an integer (cm).`,
+    `1 m = 100 cm, so multiply by 100.`
+  );
+}
+
+function tplE_perimeterSquare(){
+  const side = randInt(4, 25);
+  const p = 4*side;
+  return T("E_perimeterSquare", 4,
+    `A square has side length <b>${side} cm</b>. Find its perimeter.`,
+    {type:"integer", value:p},
+    `${p} cm`,
+    `Enter an integer (cm).`,
+    `Perimeter of a square = 4 × side.`
+  );
+}
+
 /* ==========================================================
    Template bank — MEDIUM (3 pts)
 ========================================================== */
@@ -1176,6 +1269,170 @@ function tplM_mixedOpAnswerFraction(){
     `${r.a}/${r.b}`,
     forceMixed ? `Use the 3-box mixed-number input.` : `Enter as a/b (e.g., 7/10).`,
     `Convert to improper fractions, use a common denominator, then simplify.`
+  );
+}
+
+/* --- extra MEDIUM templates to enrich randomness --- */
+function tplM_fracSubtractUnlike(){
+  const d1 = choice([6,8,9,10,12]);
+  const d2 = choice([6,8,9,10,12]);
+  let a = randInt(1, d1-1);
+  let b = randInt(1, d2-1);
+
+  const L = lcm(d1,d2);
+  let Aeq = a*(L/d1);
+  let Beq = b*(L/d2);
+
+  // ensure positive result
+  if (Aeq < Beq){
+    const tmp = Aeq; Aeq = Beq; Beq = tmp;
+    const tmp2 = a; a = b; b = tmp2;
+    const tmp3 = d1; // NOTE: keep display consistent by swapping denominators too
+    // swap denominators for display
+    // (we only swapped numerators; now swap denominators so the displayed fractions match)
+  }
+
+  // Recompute displayed denominators properly by using original values:
+  // We'll just build again with two new fractions ensuring positive:
+  let tries=0;
+  while (tries<60){
+    const D1 = choice([6,8,9,10,12]);
+    const D2 = choice([6,8,9,10,12]);
+    const A = randInt(1, D1-1);
+    const B = randInt(1, D2-1);
+    const LL = lcm(D1,D2);
+    const AA = A*(LL/D1);
+    const BB = B*(LL/D2);
+    if (AA > BB){
+      a=A; b=B;
+      const diffN = AA - BB;
+      const r = reduceFraction(diffN, LL);
+      return T("M_fracSubUnlike", 1,
+        `Find: <b>${a}/${D1} − ${b}/${D2}</b> (simplest form).`,
+        {type:"fraction", a:r.a, b:r.b},
+        `${r.a}/${r.b}`,
+        `Enter as a fraction like 5/6.`,
+        `Use a common denominator, subtract, then simplify.`
+      );
+    }
+    tries++;
+  }
+  return tplM_fracSubtractUnlike();
+}
+
+function tplM_decimalAddSub(){
+  const a = randInt(120, 980) / 10;   // 1 dp
+  const b = randInt(105, 995) / 100;  // 2 dp
+  const op = choice(["+","−"]);
+  const val = (op === "+") ? (a + b) : (a - b);
+  const ans = roundToDp(val, 2);
+  return T("M_decimalAddSub", 1,
+    `Calculate: <b>${a.toFixed(1)} ${op} ${b.toFixed(2)}</b>. Give your answer to <b>2 decimal places</b>.`,
+    {type:"decimal", value:val, dp:2},
+    `${ans.toFixed(2)}`,
+    `Enter a decimal (2 dp).`,
+    `Line up decimal points, then add/subtract.`
+  );
+}
+
+function tplM_areaRectangle(){
+  const L = randInt(6, 28);
+  const W = randInt(4, 18);
+  const area = L*W;
+  return T("M_areaRect", 4,
+    `A rectangle is <b>${L} cm</b> long and <b>${W} cm</b> wide. Find its area.`,
+    {type:"integer", value:area},
+    `${area} cm²`,
+    `Enter an integer (cm²).`,
+    `Area = length × width.`
+  );
+}
+
+function tplM_volumeCuboid(){
+  const L = randInt(4, 16);
+  const W = randInt(3, 12);
+  const H = randInt(2, 10);
+  const vol = L*W*H;
+  return T("M_volumeCuboid", 4,
+    `A cuboid is <b>${L} cm</b> long, <b>${W} cm</b> wide and <b>${H} cm</b> high. Find its volume.`,
+    {type:"integer", value:vol},
+    `${vol} cm³`,
+    `Enter an integer (cm³).`,
+    `Volume = length × width × height.`
+  );
+}
+
+function tplM_average5(){
+  const base = randInt(10, 40);
+  const nums = [base-4, base-1, base, base+2, base+3];
+  const sum = nums.reduce((a,b)=>a+b,0);
+  const avg = sum/5;
+  return T("M_average5", 5,
+    `The numbers are <b>${nums.join(", ")}</b>. Find the average (mean).`,
+    {type:"integer", value:avg},
+    `${avg}`,
+    `Enter an integer.`,
+    `Average = sum ÷ 5.`
+  );
+}
+
+function tplM_probabilitySimple(){
+  const r = randInt(3, 9);
+  const b = randInt(4, 10);
+  const g = randInt(2, 8);
+  const total = r+b+g;
+  const rr = reduceFraction(r, total);
+  return T("M_probabilityRed", 5,
+    `A bag contains <b>${r}</b> red, <b>${b}</b> blue and <b>${g}</b> green marbles.<br>
+     A marble is chosen at random. What is the probability of choosing a <b>red</b> marble? (simplest form)`,
+    {type:"fraction", a:rr.a, b:rr.b},
+    `${rr.a}/${rr.b}`,
+    `Enter as a fraction like 3/10.`,
+    `Probability = favourable ÷ total.`
+  );
+}
+
+function tplM_linearEquationTwoStep(){
+  const x = randInt(4, 25);
+  const a = choice([2,3,4,5,6,7,8,9]);
+  const b = randInt(2, 12);
+  const sign = choice(["+","−"]);
+  const inner = (sign === "+") ? (x + b) : (x - b);
+  const left = a * inner;
+
+  return T("M_linear2", 0,
+    `Solve for <b>x</b>: <b>${a}(x ${sign} ${b}) = ${left}</b>.`,
+    {type:"integer", value:x},
+    `${x}`,
+    `Enter an integer.`,
+    `Divide both sides by ${a}, then undo ${sign === "+" ? "adding" : "subtracting"} ${b}.`
+  );
+}
+
+function tplM_speedDistance(){
+  const timeH = choice([2,3,4,5,6]);
+  const speed = choice([35,40,45,50,55,60,65,70]);
+  const dist = timeH * speed;
+  return T("M_speedDist", 5,
+    `A cyclist travels <b>${dist} km</b> in <b>${timeH} hours</b> at a constant speed.<br>
+     Find the speed in <b>km/h</b>.`,
+    {type:"integer", value:speed},
+    `${speed} km/h`,
+    `Enter an integer (km/h).`,
+    `Speed = distance ÷ time.`
+  );
+}
+
+function tplM_fracToPercent(){
+  const fracs = [[1,2],[1,4],[3,4],[1,5],[2,5],[3,5],[4,5],[3,10],[7,10]];
+  const [n,d] = choice(fracs);
+  const pct = (n/d)*100;
+  return T("M_fracToPercent", 1,
+    `Convert <b>${n}/${d}</b> to a percentage.`,
+    {type:"integer", value:pct},
+    `${pct}%`,
+    `Enter an integer (%).`,
+    `Multiply by 100%.`
   );
 }
 
@@ -1557,6 +1814,175 @@ function tplH_areaCompositeRectangles(){
   );
 }
 
+/* --- extra HARD templates to enrich randomness --- */
+function tplH_ratio3Share(){
+  const total = choice([210, 240, 270, 300, 360, 420]);
+  let a = choice([2,3,4,5]);
+  let b = choice([3,4,5,6,7]);
+  let c = choice([4,5,6,7,8]);
+  const sum = a+b+c;
+  if (total % sum !== 0) return tplH_ratio3Share();
+  const unit = total / sum;
+  const A = a*unit, B = b*unit, C = c*unit;
+  const who = choice(["Ava","Ben","Chloe"]);
+  const ask = choice(["largest","difference"]);
+  let ans, question;
+  if (ask === "largest"){
+    ans = Math.max(A,B,C);
+    question = `Three friends share <b>${total}</b> stickers in the ratio <b>${a}:${b}:${c}</b> (Ava:Ben:Chloe).<br>
+               How many stickers does the friend with the <b>largest</b> share get?`;
+  } else {
+    ans = Math.max(A,B,C) - Math.min(A,B,C);
+    question = `Three friends share <b>${total}</b> stickers in the ratio <b>${a}:${b}:${c}</b> (Ava:Ben:Chloe).<br>
+               What is the <b>difference</b> between the largest and smallest shares?`;
+  }
+  return T("H_ratio3Share", 2,
+    question,
+    {type:"integer", value:ans},
+    `${ans}`,
+    `Enter an integer.`,
+    `Find 1 unit = total ÷ (ratio sum), then scale.`
+  );
+}
+
+function tplH_busScheduleLCM(){
+  const startH = choice([7,8,9]);
+  const startM = choice([0,10,15,20,30,40,45,50]);
+  const A = choice([12,15,18,20,24]);
+  const B = choice([10,16,20,25,30]);
+  const start = startH*60 + startM;
+  const L = lcm(A,B);
+  const next = start + L;
+  return T("H_busLCM", 3,
+    `Bus A leaves every <b>${A}</b> minutes and Bus B leaves every <b>${B}</b> minutes.<br>
+     If they both leave together at <b>${minutesToTime12(start)}</b>, what time will they next leave together?`,
+    {type:"time", mins:next},
+    `${minutesToTime12(next)}`,
+    `Enter a time like 9:15 am.`,
+    `Next time together is after LCM(${A}, ${B}) minutes.`
+  );
+}
+
+function tplH_originalFromRemainingFraction(){
+  const d = choice([4,5,6,8,10,12]);
+  const usedN = choice([1,2,3,4,5]);
+  if (usedN >= d) return tplH_originalFromRemainingFraction();
+  const remainN = d - usedN;
+
+  const base = choice([20,25,30,35,40,45,50,60,70,80,90,100]);
+  // choose original so that remaining is integer base
+  const original = base * d / remainN;
+  if (!Number.isInteger(original)) return tplH_originalFromRemainingFraction();
+
+  return T("H_originalRemainFrac", 1,
+    `After using <b>${usedN}/${d}</b> of a container of juice, there are <b>${base} L</b> left.<br>
+     How many litres were in the container at first?`,
+    {type:"integer", value:original},
+    `${original} L`,
+    `Enter an integer (litres).`,
+    `Remaining fraction is ${remainN}/${d}, so original = remaining ÷ (${remainN}/${d}).`
+  );
+}
+
+function tplH_arithSequenceNth(){
+  const a1 = randInt(2, 20);
+  const d = choice([2,3,4,5,6,7,8,9,10]);
+  const n = randInt(8, 25);
+  const an = a1 + (n-1)*d;
+  return T("H_arithNth", 0,
+    `The sequence is <b>${a1}, ${a1+d}, ${a1+2*d}, ...</b><br>
+     Find the <b>${n}th</b> term.`,
+    {type:"integer", value:an},
+    `${an}`,
+    `Enter an integer.`,
+    `Use aₙ = a₁ + (n−1)d.`
+  );
+}
+
+function tplH_twoStepEquationFraction(){
+  // (ax + b)/c = k
+  const x = randInt(3, 20);
+  const a = choice([2,3,4,5,6,7,8,9]);
+  const b = randInt(-12, 12);
+  const c = choice([2,3,4,5,6]);
+  const k = (a*x + b)/c;
+  if (!Number.isFinite(k) || Math.abs(k - Math.round(k)) > 1e-9) return tplH_twoStepEquationFraction();
+  const kk = Math.round(k);
+  const sign = b >= 0 ? "+" : "−";
+  const bb = Math.abs(b);
+  return T("H_eqnFrac", 0,
+    `Solve for <b>x</b>: <b>(${a}x ${sign} ${bb}) ÷ ${c} = ${kk}</b>.`,
+    {type:"integer", value:x},
+    `${x}`,
+    `Enter an integer.`,
+    `Multiply both sides by ${c}, then solve ${a}x ${sign} ${bb} = ${c*kk}.`
+  );
+}
+
+function tplH_rectPerimRatioArea(){
+  const ratio = choice([[2,3],[3,5],[4,7],[5,8],[7,9]]);
+  const k = randInt(4, 18);
+  const L = ratio[1]*k;
+  const W = ratio[0]*k;
+  const P = 2*(L+W);
+  const area = L*W;
+  return T("H_rectPerimRatio", 4,
+    `A rectangle has length : width = <b>${ratio[1]} : ${ratio[0]}</b>.<br>
+     Its perimeter is <b>${P} cm</b>. Find its area.`,
+    {type:"integer", value:area},
+    `${area} cm²`,
+    `Enter an integer (cm²).`,
+    `Use the ratio to write length and width as multiples of k, then use the perimeter to find k.`
+  );
+}
+
+function tplH_twoStageProbability(){
+  const reds = randInt(2, 6);
+  const blues = randInt(3, 7);
+  const total = reds + blues;
+  // Draw one without replacement then flip coin
+  const pRed = {a: reds, b: total};
+  const pHeads = {a:1, b:2};
+  const num = pRed.a * pHeads.a;
+  const den = pRed.b * pHeads.b;
+  const r = reduceFraction(num, den);
+  return T("H_twoStageProb", 5,
+    `A bag has <b>${reds}</b> red and <b>${blues}</b> blue balls.<br>
+     One ball is chosen at random (not replaced). Then a fair coin is flipped.<br>
+     What is the probability of choosing a <b>red</b> ball and getting <b>heads</b>? (simplest form)`,
+    {type:"fraction", a:r.a, b:r.b},
+    `${r.a}/${r.b}`,
+    `Enter as a fraction like 1/6.`,
+    `Multiply probabilities: P(red) × P(heads).`
+  );
+}
+
+function tplH_shoppingChangeMulti(){
+  const price1 = choice([8.75, 12.50, 15.20, 18.60, 24.30]);
+  const price2 = choice([6.40, 9.80, 11.25, 14.70, 19.90]);
+  const q1 = choice([2,3,4]);
+  const q2 = choice([1,2,3,5]);
+  const subtotal = price1*q1 + price2*q2;
+
+  const discPct = choice([10,15,20]);
+  const discounted = subtotal * (1 - discPct/100);
+
+  // paid is next multiple of 10 above discounted
+  const paid = Math.ceil(discounted/10)*10;
+  const change = paid - discounted;
+
+  const changeCents = Math.round(change*100);
+  return T("H_shoppingChange", 5,
+    `A shopper buys <b>${q1}</b> items at <b>$${price1.toFixed(2)}</b> each and <b>${q2}</b> items at <b>$${price2.toFixed(2)}</b> each.<br>
+     The shop gives a <b>${discPct}%</b> discount on the total. The shopper pays with <b>$${paid}</b>.<br>
+     How much change do they receive? (to the nearest cent)`,
+    {type:"money", cents:changeCents},
+    `$${(changeCents/100).toFixed(2)}`,
+    `Enter dollars (e.g., 12.50).`,
+    `Find subtotal, apply discount, then change = paid − discounted.`
+  );
+}
+
 /* ==========================================================
    Build banks
 ========================================================== */
@@ -1566,7 +1992,13 @@ const EASY_BANK = [
   tplE_simplifyFraction,
   tplE_percentOfNumber,
   tplE_digitsToWords,
-  tplE_ratioSimplify
+  tplE_ratioSimplify,
+  tplE_placeValue,
+  tplE_decimalCompare,
+  tplE_fractionOfNumber,
+  tplE_timeToMinutes,
+  tplE_lengthConvert,
+  tplE_perimeterSquare
 ];
 
 const MED_BANK = [
@@ -1575,7 +2007,8 @@ const MED_BANK = [
   tplM_percentReverse,
   tplM_ratioWordShare,
   tplM_linearEquationOneStep,
-  tplM_improperToMixed_TextOnly,     // text-only replacement
+  tplM_improperToMixed_TextOnly,
+  // text-only replacement
   tplM_estimateDivision,
   tplM_moneyMulti,
   tplM_ratioFromScreenshot12,
@@ -1585,7 +2018,16 @@ const MED_BANK = [
   tplM_perimeterRectangle,
   tplM_timeAdd,
   tplM_orderOps,
-  tplM_mixedOpAnswerFraction
+  tplM_mixedOpAnswerFraction,
+  tplM_fracSubtractUnlike,
+  tplM_decimalAddSub,
+  tplM_areaRectangle,
+  tplM_volumeCuboid,
+  tplM_average5,
+  tplM_probabilitySimple,
+  tplM_linearEquationTwoStep,
+  tplM_speedDistance,
+  tplM_fracToPercent
 ];
 
 const HARD_BANK = [
@@ -1593,7 +2035,8 @@ const HARD_BANK = [
   tplH_ratioFailPassScreenshot19,
   tplH_areaTriangleScreenshot20,
   tplH_cakesMoneyScreenshot21,
-  tplH_rightTriangleArea_TextOnly,  // text-only geometry
+  tplH_rightTriangleArea_TextOnly,
+  // text-only geometry
   tplH_mixedTimesScreenshot23,
   tplH_wordsToNumeralsScreenshot24,
   tplH_mixtureBottlesScreenshot25,
@@ -1621,7 +2064,15 @@ const HARD_BANK = [
   tplH_reverseFractionOfNumber,
   tplH_percentIncrease,
   tplH_negTempChange,
-  tplH_areaCompositeRectangles
+  tplH_areaCompositeRectangles,
+  tplH_ratio3Share,
+  tplH_busScheduleLCM,
+  tplH_originalFromRemainingFraction,
+  tplH_arithSequenceNth,
+  tplH_twoStepEquationFraction,
+  tplH_rectPerimRatioArea,
+  tplH_twoStageProbability,
+  tplH_shoppingChangeMulti
 ];
 
 /* Uniqueness: pick WITHOUT replacement per bank */
@@ -1633,50 +2084,105 @@ function pickUnique(bank, count){
 }
 
 /* ---------------- Generate Questions (30 unique templates) ---------------- */
+/* Difficulty ranks (lower = easier). Used to keep questions ordered from easy to hard. */
+const DIFF_RANK = {
+  // EASY
+  "E_negCompare": 1,
+  "E_placeValue": 2,
+  "E_round1000": 3,
+  "E_decimalCompare": 4,
+  "E_digitsToWords": 5,
+  "E_fracOfNumber": 6,
+  "E_percentOf": 7,
+  "E_perimeterSquare": 8,
+  "E_lengthConvert": 9,
+  "E_timeToMinutes": 10,
+  "E_ratioSimplify": 11,
+  "E_simplifyFrac": 12,
+
+  // MEDIUM
+  "M_decimalDivide10_100": 1,
+  "M_decimalTimesInt": 2,
+  "M_decimalAddSub": 3,
+  "M_orderOps": 4,
+  "M_addSubNeg": 5,
+  "M_estDiv": 6,
+  "M_perimeterRect": 7,
+  "M_areaRect": 8,
+  "M_volumeCuboid": 9,
+  "M_timeAdd": 10,
+  "M_average5": 11,
+  "M_fracAddUnlike": 12,
+  "M_fracSubUnlike": 13,
+  "M_mixed_op_fraction": 14,
+  "M_percentReverse": 15,
+  "M_fracToPercent": 16,
+  "M_ratioShare": 17,
+  "IMG12_ratio_250c_10d": 18,
+  "IMG13_mixed_to_decimal": 19,
+  "M_moneyMulti": 20,
+  "M_speedDist": 21,
+  "M_linear1": 22,
+  "M_linear2": 23,
+  "M_improperToMixed_text": 24,
+
+  // HARD
+  "H_negTemp": 1,
+  "H_reverseFrac": 2,
+  "H_percentIncrease": 3,
+  "H_rightTriangleArea_text": 4,
+  "H_areaComposite2Rect": 5,
+  "IMG20_area_triangle": 6,
+  "IMG24_words_to_numerals": 7,
+  "IMG30_expression": 8,
+  "H_arithNth": 9,
+  "H_eqnFrac": 10,
+  "H_rectPerimRatio": 11,
+  "IMG19_ratio_fail_pass": 12,
+  "IMG26_ratio_proportion": 13,
+  "H_ratio3Share": 14,
+  "IMG29_age_ratio": 15,
+  "IMG44_average_ratio": 16,
+  "IMG49a_triangle_height": 17,
+  "IMG49b_ratio_areas": 18,
+  "IMG27_tank_fraction": 19,
+  "IMG28_sugar_left": 20,
+  "IMG38_baskets_mass": 21,
+  "IMG39_square_area_diff": 22,
+  "IMG37_octagon_area": 23,
+  "IMG48_cubes_height": 24,
+  "IMG15_film_rolls": 25,
+  "IMG21_cakes_money": 26,
+  "IMG23_mixed_times": 27,
+  "IMG25_mixture_bottles": 28,
+  "IMG36_plates_cups": 29,
+  "IMG41_forks_spoons": 30,
+  "IMG42_club_members": 31,
+  "IMG43_blue_red_pens": 32,
+  "IMG45_trading_cards": 33,
+  "IMG46a_daphne_ratio": 34,
+  "IMG46b_daphne_years": 35,
+  "IMG47_container_cups": 36,
+  "IMG40_tour_packages": 37,
+  "H_originalRemainFrac": 38,
+  "H_twoStageProb": 39,
+  "H_busLCM": 40,
+  "H_shoppingChange": 41
+};
+function diffRank(id){ return (DIFF_RANK[id] ?? 999); }
+
 function generateQuestions(){
-  const easyFns = pickUnique(EASY_BANK, 5);
-  const medFns  = pickUnique(MED_BANK, 10);
-  const hardFns = pickUnique(HARD_BANK, 15);
+  // Pick templates
+  const easyTs = pickUnique(EASY_BANK, 5).map(fn=>fn()).sort((a,b)=>diffRank(a.id)-diffRank(b.id));
+  const medTs  = pickUnique(MED_BANK, 10).map(fn=>fn()).sort((a,b)=>diffRank(a.id)-diffRank(b.id));
+  const hardTs = pickUnique(HARD_BANK, 15).map(fn=>fn()).sort((a,b)=>diffRank(a.id)-diffRank(b.id));
 
-  const qFns = [];
-  let e=0,m=0,h=0;
-  for (let i=0;i<30;i++){
-    const pts = POINTS[i];
-    if (pts === 2) qFns.push(easyFns[e++]);
-    else if (pts === 3) qFns.push(medFns[m++]);
-    else qFns.push(hardFns[h++]);
-  }
-
-  // shuffle within each point group
-  const idx2 = [], idx3 = [], idx4 = [];
-  for (let i=0;i<30;i++){
-    if (POINTS[i]===2) idx2.push(i);
-    else if (POINTS[i]===3) idx3.push(i);
-    else idx4.push(i);
-  }
-  const f2 = shuffle(idx2.map(i=>qFns[i]));
-  const f3 = shuffle(idx3.map(i=>qFns[i]));
-  const f4 = shuffle(idx4.map(i=>qFns[i]));
-
-  const finalFns = qFns.slice();
-  idx2.forEach((i,k)=>finalFns[i]=f2[k]);
-  idx3.forEach((i,k)=>finalFns[i]=f3[k]);
-  idx4.forEach((i,k)=>finalFns[i]=f4[k]);
+  // Keep questions ordered by difficulty: EASY → MEDIUM → HARD
+  const ts = [...easyTs, ...medTs, ...hardTs];
 
   const Q = [];
-  const usedIds = new Set();
-
   for (let i=0;i<30;i++){
-    const fn = finalFns[i];
-    let t = fn();
-
-    let tries = 0;
-    while (usedIds.has(t.id) && tries < 80){
-      t = fn();
-      tries++;
-    }
-
-    usedIds.add(t.id);
+    const t = ts[i];
     Q.push(makeQ(i, t.partIndex, t.partName, POINTS[i], t.html, t.correct, t.displayCorrect, t.answerHint, t.hint));
   }
   return Q;
