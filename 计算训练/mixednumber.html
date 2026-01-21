@@ -237,6 +237,232 @@
         padding-bottom: 10px;
       }
     }
+  
+/* Export to PDF button */
+#exportPdfButton { background:#1976d2; }
+
+/* Modal (Export to PDF) */
+.modal-overlay{
+  position:fixed;
+  left:0; top:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.45);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+.modal{
+  width:min(420px, 92vw);
+  background:#fff;
+  border-radius:12px;
+  padding:18px 18px 14px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.25);
+}
+.modal h3{
+  margin:0 0 12px;
+  font-size:1.1em;
+}
+.modal-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin:10px 0;
+  font-size:0.95em;
+}
+.modal-row label{ color:#333; font-weight:600; }
+.modal-row select{
+  width:160px;
+  padding:7px 10px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:0.95em;
+}
+.modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:14px;
+}
+.modal-btn{
+  padding:8px 16px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  color:#fff;
+  font-size:0.95em;
+}
+.modal-btn.secondary{ background:#607d8b; }
+.modal-btn.primary{ background:#1976d2; }
+
+/* Hidden PDF render root (off-screen) */
+#pdfRenderRoot{
+  position:fixed;
+  left:-9999px;
+  top:-9999px;
+  width:210mm;
+  background:#fff;
+}
+
+/* PDF page layout */
+.pdf-page{
+  width:210mm;
+  height:297mm;
+  box-sizing:border-box;
+  padding:10mm 10mm 8mm;
+  background:#fff;
+  color:#222;
+  font-family:'Segoe UI', Tahoma, sans-serif;
+}
+.pdf-page.compact{
+  padding:7mm 7mm 6mm;
+}
+.pdf-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:2px solid #e0e0e0;
+  padding-bottom:5px;
+  margin-bottom:8px;
+}
+.pdf-page.compact .pdf-header{
+  padding-bottom:4px;
+  margin-bottom:6px;
+}
+.pdf-brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.pdf-logo{
+  width:14mm;
+  height:14mm;
+  background:#0d47a1;
+  border-radius:2mm;
+}
+.pdf-page.compact .pdf-logo{
+  width:12mm;
+  height:12mm;
+  border-radius:1.8mm;
+}
+.pdf-title{
+  font-size:13pt;
+  font-weight:700;
+  margin:0;
+}
+.pdf-page.compact .pdf-title{
+  font-size:11pt;
+}
+.pdf-meta{
+  font-size:9.5pt;
+  text-align:right;
+  color:#333;
+}
+.pdf-page.compact .pdf-meta{
+  font-size:8.2pt;
+}
+.pdf-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5mm;
+}
+.pdf-grid.compact{
+  gap:2.6mm;
+}
+.pdf-card{
+  flex:0 0 calc(50% - 2.5mm);
+  border:1px solid #cfcfcf;
+  border-radius:10px;
+  padding:4.5mm;
+  box-sizing:border-box;
+  min-height:26mm;
+}
+.pdf-grid.cols-3 .pdf-card{ flex-basis: calc(33.333% - 3.4mm); }
+.pdf-grid.cols-4 .pdf-card{ flex-basis: calc(25% - 3.4mm); }
+
+.pdf-page.compact .pdf-card{
+  padding:3mm;
+  border-radius:8px;
+  min-height:18mm;
+}
+.pdf-qnum{
+  font-weight:700;
+  margin-bottom:3px;
+  font-size:10pt;
+}
+.pdf-page.compact .pdf-qnum{
+  font-size:9pt;
+  margin-bottom:2px;
+}
+.pdf-qtext{
+  font-size:11pt;
+  line-height:1.15;
+  margin-bottom:4mm;
+  word-break:break-word;
+}
+.pdf-page.compact .pdf-qtext{
+  font-size:9.5pt;
+  line-height:1.1;
+  margin-bottom:2.4mm;
+}
+.pdf-answer{
+  font-size:9.5pt;
+  color:#222;
+}
+.pdf-page.compact .pdf-answer{
+  font-size:8.5pt;
+}
+.pdf-answer-line{
+  display:inline-block;
+  border-bottom:1px solid #333;
+  width:65%;
+  transform:translateY(-2px);
+  margin-left:5px;
+}
+.pdf-page.compact .pdf-answer-line{
+  width:55%;
+  margin-left:4px;
+}
+/* Make fraction size consistent inside PDF cards */
+.pdf-card .frac{ font-size:1em; }
+.pdf-card .frac .top{ padding:0 2px; }
+.pdf-card .frac .bottom{ font-size:0.9em; }
+/* Answer key (separate PDF page) */
+.pdf-answerkey{
+  margin-top:2mm;
+}
+.pdf-answerkey-title{
+  font-size:14pt;
+  font-weight:800;
+  margin:0 0 4mm;
+}
+.pdf-page.compact .pdf-answerkey-title{
+  font-size:12pt;
+  margin-bottom:3mm;
+}
+.pdf-ans-grid{
+  display:flex;
+  flex-wrap:wrap;
+  column-gap:6mm;
+  row-gap:2mm;
+}
+.pdf-ans-item{
+  flex:0 0 calc(50% - 3mm);
+  font-size:11pt;
+  line-height:1.2;
+  word-break:break-word;
+}
+.pdf-page.compact .pdf-ans-item{
+  font-size:10pt;
+}
+.pdf-ans-num{
+  font-weight:700;
+  margin-right:4px;
+}
+.pdf-ans-item .frac{
+  font-size:1em;
+}
   </style>
 </head>
 
@@ -255,6 +481,7 @@
     <div>
       <button id="pauseButton" style="display:none;">Pause</button>
       <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportPdfButton" style="display:none;">Export to PDF</button>
     </div>
   </div>
 
@@ -270,6 +497,43 @@
     <button id="saveButton" style="display:none;">Save Current Result</button>
   </div>
 </div>
+
+<!-- Export to PDF Modal + Hidden Render Root -->
+<div id="pdfModal" class="modal-overlay" style="display:none;">
+  <div class="modal">
+    <h3>Export to PDF</h3>
+
+    <div class="modal-row">
+      <label for="pdfTotalSelect">Total questions</label>
+      <select id="pdfTotalSelect">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+      </select>
+    </div>
+
+    <div class="modal-row">
+      <label for="pdfPerPageSelect">Questions per page</label>
+      <select id="pdfPerPageSelect">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button id="pdfCancelBtn" class="modal-btn secondary" type="button">Cancel</button>
+      <button id="pdfExportBtn" class="modal-btn primary" type="button">Export</button>
+    </div>
+  </div>
+</div>
+
+<div id="pdfRenderRoot" aria-hidden="true"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ----------------------------------------------------------
@@ -659,6 +923,14 @@ const saveButton    = document.getElementById("saveButton");
 const generateBtn   = document.getElementById("generateButton");
 const pauseButton   = document.getElementById("pauseButton");
 const timerDisplay  = document.getElementById("timerDisplay");
+const exportPdfButton = document.getElementById("exportPdfButton");
+const pdfModal        = document.getElementById("pdfModal");
+const pdfTotalSelect  = document.getElementById("pdfTotalSelect");
+const pdfPerPageSelect= document.getElementById("pdfPerPageSelect");
+const pdfCancelBtn    = document.getElementById("pdfCancelBtn");
+const pdfExportBtn    = document.getElementById("pdfExportBtn");
+const pdfRenderRoot   = document.getElementById("pdfRenderRoot");
+
 
 // 题目按钮（放在题目下面用）
 const backButton   = document.createElement("button");
@@ -1161,6 +1433,7 @@ function showStartScreen() {
   saveButton.style.display = "none";
   pauseButton.style.display = "none";
   generateBtn.style.display = "none";
+  exportPdfButton.style.display = "none";
 
   if (timerInterval) {
     clearInterval(timerInterval);
@@ -1210,6 +1483,7 @@ function startQuizCommon() {
 
   generateBtn.style.display = "inline-block";
   pauseButton.style.display = "inline-block";
+  exportPdfButton.style.display = "inline-block";
   pauseButton.textContent = "Pause";
   saveButton.style.display = "none";
 }
@@ -1224,6 +1498,230 @@ function startQuizFromUrlName(name) {
   studentName = name;
   startQuizCommon();
 }
+
+/* ----------------------------------------------------------
+   Export to PDF (custom amount + per-page)
+---------------------------------------------------------- */
+
+function clampPdfSelects() {
+  const total = Number(pdfTotalSelect.value || 10);
+  // rebuild per-page options based on total
+  const allowed = [5,10,15,20].filter(v => v <= total);
+  const current = Number(pdfPerPageSelect.value || 10);
+
+  pdfPerPageSelect.innerHTML = allowed.map(v => `<option value="${v}">${v}</option>`).join("");
+  pdfPerPageSelect.value = allowed.includes(current) ? String(current) : String(allowed[0] || total);
+}
+
+function openPdfModal() {
+  // default selection: total = 20 (or max), per page = 10
+  pdfTotalSelect.value = "20";
+  clampPdfSelects();
+  if (![5,10,15,20].includes(Number(pdfPerPageSelect.value))) {
+    pdfPerPageSelect.value = "10";
+  }
+  pdfModal.style.display = "flex";
+}
+
+function closePdfModal() {
+  pdfModal.style.display = "none";
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, (m) => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    "\"":"&quot;",
+    "'":"&#39;"
+  }[m]));
+}
+
+function buildPdfQuestionSet(total) {
+  const out = [];
+  for (let i = 0; i < total; i++) {
+    const partIndex = i % NUM_PARTS;
+    let baseQ;
+    if (partIndex === 0) baseQ = generateDecimalQuestion();
+    else if (partIndex === 1) baseQ = generateFractionQuestion();
+    else baseQ = generateMixedQuestion();
+
+    const ansHtml = baseQ.displayHtml
+      ? baseQ.displayHtml
+      : escapeHtml(baseQ.display ?? String(baseQ.value));
+
+    out.push({
+      number: i + 1,
+      partIndex,
+      textHtml: baseQ.text,
+      answerHtml: ansHtml
+    });
+  }
+  return out;
+}
+
+function renderPdfAllPages(questionSet, total, perPage) {
+  pdfRenderRoot.innerHTML = "";
+  const pages = [];
+
+  const questionPageCount = Math.ceil(total / perPage);
+
+  // Answer key pagination (keep dense; 20 answers should fit on 1 page)
+  const answersPerPage = 40;
+  const answerPageCount = Math.ceil(total / answersPerPage);
+
+  const totalPagesOverall = questionPageCount + answerPageCount;
+
+  const safeStudent = (studentName || "Student").trim() || "Student";
+  const title = "Random Mixed Calculation Quiz";
+
+  // --- Question pages ---
+  for (let p = 0; p < questionPageCount; p++) {
+    const start = p * perPage;
+    const end = Math.min(start + perPage, total);
+    const compact = perPage >= 15;
+    const cols = (perPage === 20 ? 4 : (perPage === 15 ? 3 : 2));
+
+    const page = document.createElement("div");
+    page.className = "pdf-page" + (compact ? " compact" : "");
+
+    page.innerHTML = `
+      <div class="pdf-header">
+        <div class="pdf-brand">
+          <div class="pdf-logo"></div>
+          <div>
+            <div style="font-weight:800; color:#ff9800; letter-spacing:0.5px;">EDUCATION</div>
+            <div class="pdf-title">${title}</div>
+          </div>
+        </div>
+        <div class="pdf-meta">
+          <div><strong>Student:</strong> ${safeStudent}</div>
+          <div><strong>Page:</strong> ${p + 1} / ${totalPagesOverall}</div>
+          <div style="margin-top:2px;"><strong>Total:</strong> ${total} questions</div>
+        </div>
+      </div>
+      <div class="pdf-grid cols-${cols}${compact ? " compact" : ""}"></div>
+    `;
+
+    const grid = page.querySelector(".pdf-grid");
+
+    for (let i = start; i < end; i++) {
+      const q = questionSet[i];
+      const card = document.createElement("div");
+      card.className = "pdf-card";
+      card.innerHTML = `
+        <div class="pdf-qnum">Q${q.number}</div>
+        <div class="pdf-qtext">${q.textHtml}</div>
+        <div class="pdf-answer">Answer:<span class="pdf-answer-line"></span></div>
+      `;
+      grid.appendChild(card);
+    }
+
+    pdfRenderRoot.appendChild(page);
+    pages.push(page);
+  }
+
+  // --- Answer key pages (always compact) ---
+  for (let ap = 0; ap < answerPageCount; ap++) {
+    const start = ap * answersPerPage;
+    const end = Math.min(start + answersPerPage, total);
+
+    const pageNo = questionPageCount + ap + 1;
+
+    const page = document.createElement("div");
+    page.className = "pdf-page compact pdf-answers";
+
+    page.innerHTML = `
+      <div class="pdf-header">
+        <div class="pdf-brand">
+          <div class="pdf-logo"></div>
+          <div>
+            <div style="font-weight:800; color:#ff9800; letter-spacing:0.5px;">EDUCATION</div>
+            <div class="pdf-title">Answer Key</div>
+          </div>
+        </div>
+        <div class="pdf-meta">
+          <div><strong>Student:</strong> ${safeStudent}</div>
+          <div><strong>Page:</strong> ${pageNo} / ${totalPagesOverall}</div>
+          <div style="margin-top:2px;"><strong>For:</strong> ${title}</div>
+        </div>
+      </div>
+
+      <div class="pdf-answerkey">
+        <div class="pdf-answerkey-title">Answers</div>
+        <div class="pdf-ans-grid"></div>
+      </div>
+    `;
+
+    const grid = page.querySelector(".pdf-ans-grid");
+    for (let i = start; i < end; i++) {
+      const q = questionSet[i];
+      const item = document.createElement("div");
+      item.className = "pdf-ans-item";
+      item.innerHTML = `<span class="pdf-ans-num">Q${q.number}.</span> <span class="pdf-ans-val">${q.answerHtml}</span>`;
+      grid.appendChild(item);
+    }
+
+    pdfRenderRoot.appendChild(page);
+    pages.push(page);
+  }
+
+  return pages;
+}
+
+async function exportToPdf(total, perPage) {
+  // Ensure libraries loaded
+  if (!window.jspdf || !window.jspdf.jsPDF || !window.html2canvas) {
+    alert("PDF libraries not loaded. Please refresh and try again.");
+    return;
+  }
+
+  const questionSet = buildPdfQuestionSet(total);
+  const pages = renderPdfAllPages(questionSet, total, perPage);
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
+
+  // render each page to canvas
+  for (let i = 0; i < pages.length; i++) {
+    const canvas = await window.html2canvas(pages[i], {
+      scale: 2,
+      backgroundColor: "#ffffff",
+      useCORS: true
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+    if (i > 0) pdf.addPage();
+    pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
+  }
+
+  const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  pdf.save(`MixedQuiz_${safeName}_${total}Q_${ts}.pdf`);
+}
+
+// Modal events
+exportPdfButton.addEventListener("click", openPdfModal);
+pdfCancelBtn.addEventListener("click", closePdfModal);
+pdfModal.addEventListener("click", (e) => { if (e.target === pdfModal) closePdfModal(); });
+pdfTotalSelect.addEventListener("change", clampPdfSelects);
+
+pdfExportBtn.addEventListener("click", async () => {
+  const total = Number(pdfTotalSelect.value || 10);
+  const perPage = Number(pdfPerPageSelect.value || 5);
+
+  pdfExportBtn.disabled = true;
+  const oldText = pdfExportBtn.textContent;
+  pdfExportBtn.textContent = "Exporting...";
+
+  try {
+    closePdfModal();
+    await exportToPdf(total, perPage);
+  } finally {
+    pdfExportBtn.disabled = false;
+    pdfExportBtn.textContent = oldText;
+  }
+});
 
 /* ----------------------------------------------------------
    初始化
