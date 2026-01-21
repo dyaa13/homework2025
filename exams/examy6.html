@@ -129,6 +129,7 @@
     #pauseResumeButton{ background:#607d8b; display:none; }
     #resetButton{ background:#455a64; display:none; }
     #exportPdfButton{ background:#6a1b9a; display:none; }
+    #exportWordButton{ background:#2e7d32; display:none; }
 
     .quiz-main{
       display:flex; gap:20px;
@@ -234,38 +235,83 @@
     }
     .answer-box:focus{ border-color:#1976d2; box-shadow:0 0 0 3px rgba(25,118,210,0.12); }
 
-    /* display-only mixed number boxes (for questions) */
+    /* display-only fraction/mixed-number (for questions + solutions) */
     .mxd{
       display:inline-flex;
       align-items:center;
-      gap:10px;
+      gap:0.25em;
       vertical-align:middle;
-      margin:0 4px;
+      margin:0 0.15em;
+      font-size:1em; /* inherit from surrounding text */
+    }
+    .mxd .frac{
+      display:inline-flex;
+      flex-direction:column;
+      align-items:center;
+      gap:0.15em;
+      line-height:1;
     }
     .mxd .box{
-      width:52px;
-      height:42px;
+      width:2.0em;
+      height:1.6em;
       border:1px solid #cfcfcf;
-      border-radius:10px;
+      border-radius:0.45em;
       display:flex;
       align-items:center;
       justify-content:center;
-      font-weight:900;
+      font-weight:800;
       background:#fff;
-    }
-    .mxd .frac{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
+      font-size:1em;
+      padding:0;
+      box-sizing:border-box;
     }
     .mxd .bar{
-      height:2px;
+      width:2.0em;
+      height:0.12em;
       background:#111;
       border-radius:2px;
       opacity:0.9;
     }
 
-    /* answer mixed input */
+    /* display-only mixed numbers (for questions + solutions) */
+    .mixed-inline{
+      display:inline-flex;
+      align-items:center;
+      gap:0.25em;
+      vertical-align:middle;
+      margin:0 0.15em;
+      font-size:1em;
+    }
+    .mixed-box{
+      min-width:1.9em;
+      height:1.6em;
+      padding:0 0.35em;
+      border:1px solid #cfcfcf;
+      border-radius:0.45em;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+      background:#fff;
+      box-sizing:border-box;
+      font-size:1em;
+      line-height:1;
+    }
+    .mixed-inline .frac{
+      display:inline-flex;
+      flex-direction:column;
+      align-items:center;
+      line-height:1;
+    }
+    .mixed-inline .frac-bar{
+      width:2.1em;
+      height:0.12em;
+      background:#111;
+      margin:0.15em 0;
+      border-radius:2px;
+    }
+
+/* answer mixed input */
     .mixed-answer{
       margin-top:10px;
       display:flex;
@@ -435,6 +481,7 @@
     <div class="top-right">
       <button id="pauseResumeButton">Pause</button>
       <button id="exportPdfButton">Export PDF</button>
+      <button id="exportWordButton">Export Word</button>
       <button id="generateButton">Generate New Set</button>
       <button id="resetButton">Back to Start</button>
     </div>
@@ -493,6 +540,13 @@ function lcm(a,b){ return Math.abs(a / gcd(a,b) * b); }
 function stripHTML(html){
   const tmp = document.createElement("div");
   tmp.innerHTML = html;
+
+  // Replace math-style fraction/mixed markup with their aria-label for plain text extraction
+  tmp.querySelectorAll(".mxd[aria-label], .mixed-inline[aria-label]").forEach(el=>{
+    const label = el.getAttribute("aria-label");
+    if (label) el.textContent = label;
+  });
+
   return (tmp.textContent || tmp.innerText || "").trim();
 }
 function pad2(n){ return String(n).padStart(2,"0"); }
@@ -502,7 +556,7 @@ function roundTo(n, place){ return Math.round(n / place) * place; }
 function mixedHTML(whole, num, den){
   // 如果你已经有自己的 mixed number 样式函数，就用你自己的；这里给一个通用版本
   return `
-    <span class="mixed-inline">
+    <span class="mixed-inline" aria-label="${whole} ${num}/${den}">
       <span class="mixed-box whole">${whole}</span>
       <span class="frac">
         <span class="mixed-box num">${num}</span>
@@ -515,7 +569,7 @@ function mixedHTML(whole, num, den){
 
 function fracHTML(num, den){
   return `
-    <span class="mxd" aria-label="fraction">
+    <span class="mxd" aria-label="${num}/${den}">
       <span class="frac">
         <span class="box">${num}</span>
         <span class="bar"></span>
@@ -856,9 +910,9 @@ function tplE_simplifyFraction(){
   const [n,d] = choice(pairs);
   const r = reduceFraction(n,d);
   return T("E_simplifyFrac", 1,
-    `Express this fraction in its simplest form: <b>${n}/${d}</b>`,
+    `Express this fraction in its simplest form: ${fracHTML(n,d)}`,
     {type:"fraction", a:r.a, b:r.b},
-    `${r.a}/${r.b}`,
+    `${fracHTML(r.a,r.b)}`,
     `Enter as a fraction like 2/3.`,
     `Divide top and bottom by the highest common factor.`
   );
@@ -953,7 +1007,7 @@ function tplE_fractionOfNumber(){
   const base = d * unit;
   const ans = base * n / d;
   return T("E_fracOfNumber", 1,
-    `Find <b>${n}/${d}</b> of <b>${base}</b>.`,
+    `Find ${fracHTML(n,d)} of <b>${base}</b>.`,
     {type:"integer", value:ans},
     `${ans}`,
     `Enter an integer.`,
@@ -1024,9 +1078,9 @@ function tplM_fracAddUnlike(){
   const sumN = a*(L/d1) + b*(L/d2);
   const r = reduceFraction(sumN, L);
   return T("M_fracAddUnlike", 1,
-    `Find: <b>${a}/${d1} + ${b}/${d2}</b> (simplest form).`,
+    `Find: ${fracHTML(a,d1)} + ${fracHTML(b,d2)} (simplest form).`,
     {type:"fraction", a:r.a, b:r.b},
-    `${r.a}/${r.b}`,
+    `${fracHTML(r.a,r.b)}`,
     `Enter as a fraction like 5/6.`,
     `Find a common denominator, then simplify.`
   );
@@ -1088,9 +1142,9 @@ function tplM_improperToMixed_TextOnly(){
   const targetB = rr.b;
 
   return T("M_improperToMixed_text", 1,
-    `Convert the improper fraction <b>${n}/${d}</b> to a mixed number in simplest form.`,
+    `Convert the improper fraction ${fracHTML(n,d)} to a mixed number in simplest form.`,
     {type:"fraction", a:targetA, b:targetB, forceMixed:true},
-    `${whole} ${rr.a}/${rr.b}`,
+    `${mixedHTML(whole, rr.a, rr.b)}`,
     `Use the 3-box mixed-number input.`,
     `Divide ${n} by ${d}: the quotient is the whole number, and the remainder is the numerator. Then simplify the fraction.`
   );
@@ -1148,7 +1202,7 @@ function tplM_decimalFromMixedScreenshot13(){
     {type:"decimal", value:value, dp:2},
     `${corr.toFixed(2)}`,
     `Enter a decimal (2 dp).`,
-    `Convert ${num}/${den} to a decimal, add ${whole}, then round to 2 dp.`
+    `Convert ${fracHTML(num, den)} to a decimal, add ${whole}, then round to 2 dp.`
   );
 }
 
@@ -1266,7 +1320,7 @@ function tplM_mixedOpAnswerFraction(){
     `Calculate: <b>${left} ${op} ${right}</b>.<br>
      Give your answer as a <b>fraction in simplest form</b>.`,
     {type:"fraction", a:r.a, b:r.b, forceMixed: forceMixed},
-    `${r.a}/${r.b}`,
+    `${fracHTML(r.a,r.b)}`,
     forceMixed ? `Use the 3-box mixed-number input.` : `Enter as a/b (e.g., 7/10).`,
     `Convert to improper fractions, use a common denominator, then simplify.`
   );
@@ -1308,9 +1362,9 @@ function tplM_fracSubtractUnlike(){
       const diffN = AA - BB;
       const r = reduceFraction(diffN, LL);
       return T("M_fracSubUnlike", 1,
-        `Find: <b>${a}/${D1} − ${b}/${D2}</b> (simplest form).`,
+        `Find: ${fracHTML(a,D1)} − ${fracHTML(b,D2)} (simplest form).`,
         {type:"fraction", a:r.a, b:r.b},
-        `${r.a}/${r.b}`,
+        `${fracHTML(r.a,r.b)}`,
         `Enter as a fraction like 5/6.`,
         `Use a common denominator, subtract, then simplify.`
       );
@@ -1386,7 +1440,7 @@ function tplM_probabilitySimple(){
     `A bag contains <b>${r}</b> red, <b>${b}</b> blue and <b>${g}</b> green marbles.<br>
      A marble is chosen at random. What is the probability of choosing a <b>red</b> marble? (simplest form)`,
     {type:"fraction", a:rr.a, b:rr.b},
-    `${rr.a}/${rr.b}`,
+    `${fracHTML(rr.a, rr.b)}`,
     `Enter as a fraction like 3/10.`,
     `Probability = favourable ÷ total.`
   );
@@ -1428,7 +1482,7 @@ function tplM_fracToPercent(){
   const [n,d] = choice(fracs);
   const pct = (n/d)*100;
   return T("M_fracToPercent", 1,
-    `Convert <b>${n}/${d}</b> to a percentage.`,
+    `Convert ${fracHTML(n,d)} to a percentage.`,
     {type:"integer", value:pct},
     `${pct}%`,
     `Enter an integer (%).`,
@@ -1503,7 +1557,7 @@ function tplH_mixedTimesScreenshot23(){
     {type:"integer", value:57},
     `57`,
     `Enter an integer.`,
-    `Simplify 6/8 first, convert to an improper fraction, then multiply.`
+    `Simplify ${fracHTML(6,8)} first, convert to an improper fraction, then multiply.`
   );
 }
 function tplH_wordsToNumeralsScreenshot24(){
@@ -1537,21 +1591,21 @@ function tplH_proportionScreenshot26(){
 function tplH_tankFractionScreenshot27(){
   return T("IMG27_tank_fraction", 3,
     `A rectangular tank is <b>45 cm</b> long, <b>24 cm</b> wide and <b>30 cm</b> high, and is filled to the brim.<br>
-     Maggie takes <b>1/5</b> of the water from the tank. How much water is taken, in <b>litres</b>? (1 L = 1000 cm³)`,
+     Maggie takes ${fracHTML(1,5)} of the water from the tank. How much water is taken, in <b>litres</b>? (1 L = 1000 cm³)`,
     {type:"decimal", value:6.48, dp:2},
     `6.48 L`,
     `Enter a decimal (litres).`,
-    `Volume = L×W×H, take 1/5, then convert cm³ to litres.`
+    `Volume = L×W×H, take ${fracHTML(1,5)}, then convert cm³ to litres.`
   );
 }
 function tplH_sugarLeftScreenshot28(){
   return T("IMG28_sugar_left", 1,
-    `Mrs Brown bought <b>3 kg</b> of sugar. She used <b>3/4</b> of it.<br>
+    `Mrs Brown bought <b>3 kg</b> of sugar. She used ${fracHTML(3,4)} of it.<br>
      How many <b>grams</b> of sugar did she have left?`,
     {type:"integer", value:750},
     `750 g`,
     `Enter an integer (grams).`,
-    `Left = 1/4 of 3 kg = 0.75 kg = 750 g.`
+    `Left = ${fracHTML(1,4)} of 3 kg = 0.75 kg = 750 g.`
   );
 }
 function tplH_ageRatioScreenshot29(){
@@ -1643,8 +1697,8 @@ function tplH_forksSpoonsScreenshot41(){
 }
 function tplH_clubMembersScreenshot42(){
   return T("IMG42_club_members", 5,
-    `Last year, <b>1/4</b> of the members in a health club were women.<br>
-     When <b>56</b> women joined the club, the fraction of women became <b>5/6</b>.<br>
+    `Last year, ${fracHTML(1,4)} of the members in a health club were women.<br>
+     When <b>56</b> women joined the club, the fraction of women became ${fracHTML(5,6)}.<br>
      How many men were there in the health club <b>last year</b>?`,
     {type:"integer", value:12},
     `12`,
@@ -1655,7 +1709,7 @@ function tplH_clubMembersScreenshot42(){
 function tplH_blueRedPensScreenshot43(){
   return T("IMG43_blue_red_pens", 5,
     `There were <b>648</b> more blue pens than red pens in a stationery shop.<br>
-     After <b>1/6</b> of the blue pens and <b>3/4</b> of the red pens were sold, there were <b>1338</b> more blue pens than red pens left.<br>
+     After ${fracHTML(1,6)} of the blue pens and ${fracHTML(3,4)} of the red pens were sold, there were <b>1338</b> more blue pens than red pens left.<br>
      How many blue pens were there at first?`,
     {type:"integer", value:2016},
     `2016`,
@@ -1678,7 +1732,7 @@ function tplH_averageRatioScreenshot44(){
 function tplH_tradingCardsScreenshot45(){
   return T("IMG45_trading_cards", 5,
     `Cathy had five times as many trading cards as Patrick.<br>
-     Cathy gave <b>1/4</b> of her cards to Patrick. Patrick then gave <b>1/3</b> of his trading cards to Cathy.<br>
+     Cathy gave ${fracHTML(1,4)} of her cards to Patrick. Patrick then gave ${fracHTML(1,3)} of his trading cards to Cathy.<br>
      If Cathy had <b>96</b> more trading cards than Patrick in the end, how many trading cards did Cathy have at first?`,
     {type:"integer", value:160},
     `160`,
@@ -1707,18 +1761,18 @@ function tplH_daphneYearsScreenshot46b(){
     {type:"integer", value:13},
     `13`,
     `Enter an integer (years).`,
-    `Grandmother present age is fixed at 65; solve 13 + x = (2/5)×65.`
+    `Grandmother present age is fixed at 65; solve 13 + x = (${fracHTML(2,5)})×65.`
   );
 }
 function tplH_containerCupsScreenshot47(){
   return T("IMG47_container_cups", 4,
     `A container has a square base of <b>121 cm²</b> and a height of <b>8 cm</b>.<br>
-     It is <b>1/4</b> filled with water. The water is poured into cups of <b>22 ml</b>.<br>
+     It is ${fracHTML(1,4)} filled with water. The water is poured into cups of <b>22 ml</b>.<br>
      How many cups are needed? (1 ml = 1 cm³)`,
     {type:"integer", value:11},
     `11`,
     `Enter an integer (cups).`,
-    `Volume = base area × height, take 1/4, then ÷22.`
+    `Volume = base area × height, take ${fracHTML(1,4)}, then ÷22.`
   );
 }
 function tplH_cubesHeightScreenshot48(){
@@ -1761,11 +1815,11 @@ function tplH_reverseFractionOfNumber(){
   const part = num * (frac[0]/frac[1]);
   if (!Number.isInteger(part)) return tplH_reverseFractionOfNumber();
   return T("H_reverseFrac", 1,
-    `<b>${frac[0]}/${frac[1]}</b> of a number is <b>${part}</b>. What is the original number?`,
+    `${fracHTML(frac[0], frac[1])} of a number is <b>${part}</b>. What is the original number?`,
     {type:"integer", value:num},
     `${num}`,
     `Enter an integer.`,
-    `Original = part ÷ (${frac[0]}/${frac[1]}).`
+    `Original = part ÷ (${fracHTML(frac[0], frac[1])}).`
   );
 }
 function tplH_percentIncrease(){
@@ -1875,12 +1929,12 @@ function tplH_originalFromRemainingFraction(){
   if (!Number.isInteger(original)) return tplH_originalFromRemainingFraction();
 
   return T("H_originalRemainFrac", 1,
-    `After using <b>${usedN}/${d}</b> of a container of juice, there are <b>${base} L</b> left.<br>
+    `After using ${fracHTML(usedN, d)} of a container of juice, there are <b>${base} L</b> left.<br>
      How many litres were in the container at first?`,
     {type:"integer", value:original},
     `${original} L`,
     `Enter an integer (litres).`,
-    `Remaining fraction is ${remainN}/${d}, so original = remaining ÷ (${remainN}/${d}).`
+    `Remaining fraction is ${fracHTML(remainN, d)}, so original = remaining ÷ (${fracHTML(remainN, d)}).`
   );
 }
 
@@ -1951,7 +2005,7 @@ function tplH_twoStageProbability(){
      One ball is chosen at random (not replaced). Then a fair coin is flipped.<br>
      What is the probability of choosing a <b>red</b> ball and getting <b>heads</b>? (simplest form)`,
     {type:"fraction", a:r.a, b:r.b},
-    `${r.a}/${r.b}`,
+    `${fracHTML(r.a,r.b)}`,
     `Enter as a fraction like 1/6.`,
     `Multiply probabilities: P(red) × P(heads).`
   );
@@ -2195,6 +2249,7 @@ const generateBtn = document.getElementById("generateButton");
 const resetBtn    = document.getElementById("resetButton");
 const pauseBtn    = document.getElementById("pauseResumeButton");
 const exportBtn   = document.getElementById("exportPdfButton");
+const exportWordBtn = document.getElementById("exportWordButton");
 const modePill    = document.getElementById("modePill");
 const metaLine    = document.getElementById("metaLine");
 
@@ -2271,6 +2326,7 @@ function setPausedUI(isPaused){
   generateBtn.disabled = isPaused;
   resetBtn.disabled = isPaused;
   exportBtn.disabled = isPaused;
+  if (exportWordBtn) exportWordBtn.disabled = isPaused;
 
   sidebarEl.style.pointerEvents = isPaused ? "none" : "auto";
   sidebarEl.style.opacity = isPaused ? "0.6" : "1";
@@ -2873,8 +2929,8 @@ function exportToPDF(){
     : "NZ Year 6 Maths — Exam Paper";
 
   const noteText = (MODE === "practice")
-    ? "Write your answers in the spaces provided. Fractions must be written as a/b (no mixed numbers)."
-    : "Answer all questions. Fractions must be written as a/b (no mixed numbers).";
+    ? `Write your answers in the spaces provided. If your answer is a fraction, write it in simplest form (e.g., ${fracHTML(2,3)}). If it is a mixed number, write it as (e.g., ${mixedHTML(1,1,2)}).`
+    : `Answer all questions. If your answer is a fraction, write it in simplest form (e.g., ${fracHTML(2,3)}). If it is a mixed number, write it as (e.g., ${mixedHTML(1,1,2)}).`;
 
   const printStyles = `
     <style>
@@ -2893,6 +2949,50 @@ function exportToPDF(){
       .pts{ font-size:0.9em; color:#444; font-weight:800; margin-left:8px; }
       .topic{ font-size:0.92em; color:#0d47a1; font-weight:900; margin:16px 0 6px; }
       .page-break{ page-break-before: always; }
+      /* Fraction / Mixed number display */
+      .mxd{
+        display:inline-flex;
+        align-items:center;
+        gap:10px;
+        vertical-align:middle;
+        margin:0 4px;
+      }
+      .mxd .box{
+        width:52px;
+        height:42px;
+        border:1px solid #cfcfcf;
+        border-radius:10px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-weight:900;
+        background:#fff;
+      }
+      .mxd .frac{
+        display:flex;
+        flex-direction:column;
+        gap:6px;
+      }
+      .mxd .bar{
+        height:2px;
+        background:#111;
+        border-radius:2px;
+        opacity:0.9;
+      }
+      .mixed-inline{ display:inline-flex; align-items:center; gap:8px; vertical-align:middle; margin:0 4px; }
+      .mixed-box{
+        min-width:44px; height:36px; padding:0 10px;
+        border:1.5px solid #cfcfcf;
+        border-radius:10px;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        font-weight:900;
+        background:#fff;
+      }
+      .mixed-inline .frac{ display:inline-flex; flex-direction:column; align-items:center; line-height:1; }
+      .mixed-inline .frac-bar{ width:54px; height:2px; background:#111; margin:3px 0; }
+
 
       table.ans-table{ width:100%; border-collapse:collapse; margin-top:10px; }
       .ans-table th, .ans-table td{
@@ -2961,7 +3061,7 @@ function exportToPDF(){
   `;
 
   questions.forEach((q) => {
-    const ansText = stripHTML(q.displayCorrect || "");
+    const ansText = (q.displayCorrect || "");
     body += `
       <tr>
         <td><b>Q${q.index+1}</b></td>
@@ -3014,10 +3114,180 @@ function startNewSet(){
   timerBox.style.display = "inline-flex";
   exportBtn.style.display = "inline-block";
 
+  if (exportWordBtn) exportWordBtn.style.display = "inline-block";
+
   setPausedUI(false);
   startQuizTimer();
   updateMetaLine();
 }
+
+function exportToWord(){
+  if (!questions || !questions.length) return;
+
+  const safeStudent = (studentName || "Student")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
+
+  const tsHuman = new Date().toLocaleString();
+  const titleText = (MODE === "practice")
+    ? "NZ Year 6 Maths – Practice Set"
+    : "NZ Year 6 Maths – Exam Paper";
+  const noteText = (MODE === "practice")
+    ? "Practice Mode: You may check answers after each question. Export includes an answer sheet on the last page."
+    : "Exam Mode: Show full working. No calculators unless stated.";
+
+  // Reuse the same export CSS (Word can open HTML with styles)
+  const css = `
+    <style>
+      body{ font-family: Arial, Helvetica, sans-serif; margin:24px; color:#111; }
+      h1{ margin:0 0 6px 0; }
+      .meta{ margin:0 0 10px 0; font-size:13px; color:#333; }
+      .small{ margin:0 0 14px 0; font-size:12px; color:#555; }
+      .hdr{ display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+      .logo{ width:40px; height:40px; background:#fff; border:2px solid #d35400; border-radius:8px; }
+      .brand{ font-weight:900; letter-spacing:1px; }
+      .edu{ font-size:11px; color:#d35400; font-weight:900; letter-spacing:1px; }
+
+      .topic{ margin:18px 0 8px; padding:6px 10px; border-left:6px solid #1a237e; background:#f2f4ff; font-weight:800; }
+      .q{ border:1px solid #ddd; border-radius:10px; padding:12px; margin:10px 0; }
+      .qt{ font-size:14px; line-height:1.35; }
+      .ansbox{ margin-top:8px; height:38px; border:1px dashed #999; border-radius:8px; }
+
+      /* Fraction / Mixed number display */
+      .mxd{
+        display:inline-flex;
+        align-items:center;
+        gap:10px;
+        vertical-align:middle;
+        margin:0 4px;
+      }
+      .mxd .box{
+        width:52px;
+        height:42px;
+        border:1px solid #cfcfcf;
+        border-radius:10px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-weight:900;
+        background:#fff;
+      }
+      .mxd .frac{
+        display:flex;
+        flex-direction:column;
+        gap:6px;
+      }
+      .mxd .bar{
+        height:2px;
+        background:#111;
+        border-radius:2px;
+        opacity:0.9;
+      }
+      .mixed-inline{ display:inline-flex; align-items:center; gap:8px; vertical-align:middle; margin:0 4px; }
+      .mixed-box{
+        min-width:44px; height:36px; padding:0 10px;
+        border:1.5px solid #cfcfcf;
+        border-radius:10px;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        font-weight:900;
+        background:#fff;
+      }
+      .mixed-inline .frac{ display:inline-flex; flex-direction:column; align-items:center; line-height:1; }
+      .mixed-inline .frac-bar{ width:54px; height:2px; background:#111; margin:3px 0; }
+
+
+      .page-break{ page-break-before:always; }
+      table.ans-table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:13px; }
+      table.ans-table th, table.ans-table td{ border:1px solid #bbb; padding:6px 8px; text-align:left; vertical-align:top; }
+      table.ans-table th{ background:#f2f2f2; }
+    </style>
+  `;
+
+  // ---------- Header ----------
+  let body = `
+    <div class="hdr">
+      <div class="logo"></div>
+      <div>
+        <div class="brand">DYAA</div>
+        <div class="edu">EDUCATION</div>
+      </div>
+    </div>
+
+    <h1>${titleText}</h1>
+    <p class="meta"><b>Student:</b> ${safeStudent} &nbsp; | &nbsp; <b>Date:</b> ${tsHuman} &nbsp; | &nbsp; <b>Mode:</b> ${MODE.toUpperCase()}</p>
+    <p class="small">${noteText}</p>
+  `;
+
+  // ---------- Questions ----------
+  let lastTopic = "";
+  questions.forEach((q) => {
+    if (q.partName !== lastTopic){
+      body += `<div class="topic">${q.partName}</div>`;
+      lastTopic = q.partName;
+    }
+    const ptsText = (MODE==="exam") ? ` <span class="small">[${q.points} marks]</span>` : "";
+    body += `
+      <div class="q">
+        <div class="qt"><b>Q${q.index+1}.</b> ${q.html} ${ptsText}</div>
+        <div class="ansbox"></div>
+      </div>
+    `;
+  });
+
+  // ---------- Answers page ----------
+  body += `
+    <div class="page-break"></div>
+    <h1>Answer Sheet</h1>
+    <p class="small">Do not use mixed numbers. Fractions are shown as a/b in simplest form.</p>
+    <table class="ans-table">
+      <tr>
+        <th style="width:70px;">Q#</th>
+        <th style="width:180px;">Answer</th>
+        <th>Topic</th>
+      </tr>
+  `;
+  questions.forEach((q) => {
+    const ansText = (q.displayCorrect || "");
+    body += `
+      <tr>
+        <td><b>Q${q.index+1}</b></td>
+        <td>${ansText}</td>
+        <td>${q.partName}</td>
+      </tr>
+    `;
+  });
+  body += `</table>`;
+
+  const html = `
+    <!DOCTYPE html>
+    <html xmlns:o="urn:schemas-microsoft-com:office:office"
+          xmlns:w="urn:schemas-microsoft-com:office:word"
+          xmlns="http://www.w3.org/TR/REC-html40">
+      <head>
+        <meta charset="utf-8" />
+        <title>${titleText}</title>
+        ${css}
+      </head>
+      <body>${body}</body>
+    </html>
+  `;
+
+  const blob = new Blob(["\ufeff", html], { type: "application/msword;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+  const tsFile = formatDateForFilename(new Date());
+  a.href = url;
+  a.download = `NZ_Y6_${MODE==="practice" ? "Practice" : "Exam"}_${safeName}_${tsFile}.doc`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 function updateMetaLine(){
   const modeText = (MODE === "practice")
     ? "Practice Mode (timed, Check Answer + Export PDF + Submit Summary)"
@@ -3030,6 +3300,7 @@ function showStartScreen(){
   pauseBtn.style.display = "none";
   resetBtn.style.display = "none";
   exportBtn.style.display = "none";
+  if (exportWordBtn) exportWordBtn.style.display = "none";
   timerBox.style.display = "none";
   modePill.style.display = "none";
   metaLine.textContent = "";
@@ -3104,6 +3375,10 @@ pauseBtn.addEventListener("click", () => togglePause());
 exportBtn.addEventListener("click", () => {
   if (timerPaused) return;
   exportToPDF();
+});
+if (exportWordBtn) exportWordBtn.addEventListener("click", () => {
+  if (timerPaused) return;
+  exportToWord();
 });
 
 /* Init */
