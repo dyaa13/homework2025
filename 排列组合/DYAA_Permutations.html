@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Permutations (Arrangements) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --purple:#6a1b9a;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --stroke:#111;
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .select{
+      appearance:none;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:10px;
+      padding:7px 10px;
+      font-weight:900;
+      color:var(--ink);
+      cursor:pointer;
+      outline:none;
+    }
+    .select:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:900;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:900;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+    }
+    .btn.orange{
+      background:var(--orange);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(255,152,0,0.20);
+    }
+    .btn.purple{
+      background:var(--purple);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(106,27,154,0.20);
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:1000;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card p{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .learn-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:14px;
+      margin-top:12px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .learn-grid{grid-template-columns:1fr;}
+    }
+
+    .mini-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .mini-table th, .mini-table td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    .mini-table th{
+      background:#f5f8ff;
+      color:var(--blue);
+      font-weight:1000;
+    }
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:1000;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .q-body{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:12px;
+      margin-top:10px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .q-body{grid-template-columns:1fr;}
+    }
+
+    /* IMPORTANT: no cropping on screen */
+    .svg-wrap{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:12px 12px 10px 12px;
+      overflow: hidden;
+    }
+    .svg-wrap svg{
+      display:block;
+      width:100%;
+      height:auto;
+      overflow: hidden;
+    }
+    .svg-note{
+      margin-top:6px;
+      font-size:12px;
+      color:rgba(0,0,0,0.55);
+      font-weight:900;
+    }
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      min-width:240px;
+      max-width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .hint-box{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(13,71,161,0.35);
+      background:#f5f8ff;
+      color:#1a2b55;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .hint-box.show{display:block;}
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+    .feedback.ok{color:var(--ok);font-weight:1000;}
+    .feedback.bad{color:var(--bad);font-weight:1000;}
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    /* =========================
+       PDF Export (offscreen pages)
+       ========================= */
+    .export-root{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:210mm;
+      height:auto;
+      overflow:hidden;
+      background:#fff;
+    }
+    .export-page{
+      width:210mm;
+      height:297mm;
+      background:#fff;
+      padding:12mm;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .export-header{
+      height:20mm;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10mm;
+    }
+    .export-title{
+      font-weight:1000;
+      font-size:16px;
+      color:#111;
+      line-height:1.1;
+    }
+    .export-sub{
+      margin-top:2mm;
+      font-size:11px;
+      color:#555;
+      font-weight:900;
+      line-height:1.25;
+    }
+    .export-content{
+      height: calc(297mm - 12mm - 12mm - 20mm);
+      overflow:hidden;
+    }
+    .export-qgrid{
+      width:100%;
+      height:100%;
+      display:grid;
+      min-height:0;
+    }
+    .export-qgrid.two{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:8mm;
+    }
+    .export-qgrid.three{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:4mm;
+    }
+    .export-qgrid.six{
+      grid-template-columns:1fr 1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:5mm;
+    }
+    .export-q{
+      border:1px solid #ddd;
+      border-radius:10px;
+      padding:6mm;
+      display:flex;
+      flex-direction:column;
+      gap:3mm;
+      min-height:0;
+      overflow:hidden;
+    }
+    .export-q .qprompt{
+      font-weight:900;
+      font-size:12px;
+      color:#111;
+      line-height:1.2;
+    }
+    .export-qgrid.six .qprompt{font-size:11px;}
+
+    .export-diagram{
+      border:1px solid #e6e6e6;
+      border-radius:9px;
+      padding:3mm;
+      flex:1;
+      min-height:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .export-diagram svg{
+      width:100%;
+      height:100%;
+      max-height:100%;
+      display:block;
+      overflow:visible;
+    }
+    .export-diagram .svg-note{ display:none !important; }
+
+    .export-answerline{
+      margin-top:2mm;
+      font-size:12px;
+      font-weight:900;
+      color:#111;
+    }
+    .export-answerline span{
+      display:inline-block;
+      border-bottom:1px solid #111;
+      min-width:62mm;
+      height:0.95em;
+      vertical-align:baseline;
+    }
+    .export-qgrid.six .export-answerline{font-size:11px;}
+    .export-qgrid.six .export-answerline span{min-width:35mm;}
+
+    .answers-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:4mm 10mm;
+      align-content:start;
+      font-size:13px;
+      font-weight:900;
+      color:#111;
+    }
+    .answers-note{
+      margin-top:3mm;
+      font-size:11px;
+      color:#666;
+      font-weight:900;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1 id="pageTitle">Permutations (Arrangements) — DYAA</h1>
+        <div class="sub" id="pageSubtitle">Learn • Practice • Timer • PDF export</div>
+      </div>
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="row">
+      <div class="pill">
+        <b>Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <b>Time:</b>
+        <span id="timerValue">00:00</span>
+        <span id="timerStatus" class="muted" style="font-weight:900;"></span>
+</div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <div class="pill">
+          <b>PDF per page</b>
+          <select id="pdfPerPage" class="select" aria-label="PDF per page">
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+
+        <button class="btn orange" id="pauseBtn" type="button">Pause</button>
+        <button class="btn orange" id="newSetBtn" type="button">Generate New Set</button>
+        <button class="btn purple" id="exportQuestionsBtn" type="button">Export Questions PDF</button>
+        <button class="btn purple" id="exportLearnBtn" type="button">Export Learn PDF</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    <!-- LEARN -->
+    
+    <div class="panel active" id="panel-learn">
+      <div class="learn-card">
+        <h2>Permutations (Arrangements) — Core Ideas</h2>
+
+        <p>
+          A <b>permutation</b> (also called an <b>arrangement</b>) counts the number of ways to <b>place items in order</b>.
+          If the <b>order matters</b>, you are dealing with permutations.
+        </p>
+
+        <p>
+          The most common tools are <b>factorials</b> and <b>nPr</b>.
+          <b>Factorial</b>: <b>n!</b> means <b>n × (n−1) × (n−2) × ... × 2 × 1</b>.
+        </p>
+
+        <table class="mini-table" aria-label="Permutation summary">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>When to use</th>
+              <th>Method</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Full permutation</b></td>
+              <td>Arrange <b>all</b> n different items in a line</td>
+              <td><b>n!</b></td>
+            </tr>
+            <tr>
+              <td><b>Pick and arrange</b></td>
+              <td>Select <b>r</b> items from <b>n</b> and arrange them (order matters)</td>
+              <td><b>nPr = n × (n−1) × ... × (n−r+1)</b></td>
+            </tr>
+            <tr>
+              <td><b>With restrictions</b></td>
+              <td>Rules like <b>must be together</b>, <b>cannot be together</b>, <b>fixed position</b></td>
+              <td>Use <b>block method</b> and/or <b>total − invalid</b></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="note">
+          <b>Worked examples</b><br><br>
+
+          <b>Example 1 (simple):</b> 6 different books are arranged in a row.<br>
+          Number of arrangements = <b>6! = 720</b>.<br><br>
+
+          <b>Example 2 (two-step):</b> From 8 students, choose a <i>captain</i>, <i>vice-captain</i>, and <i>secretary</i>.<br>
+          Number of choices = <b>8 × 7 × 6 = 336</b> (this is <b>8P3</b>).<br><br>
+
+          <b>Example 3 (multi-step restriction):</b> 7 people line up. A and B cannot stand next to each other.<br>
+          Total = <b>7!</b>. Invalid (A and B together) = <b>6! × 2</b>. Valid = <b>7! − 6! × 2</b>.
+        </div>
+
+        <div class="learn-grid">
+          <div class="muted">
+            <b>Answer format in this quiz:</b><br>
+            Enter your answer as an <b>integer</b> (example: <b>720</b>).<br>
+            Commas are allowed (example: <b>1,260</b>).<br><br>
+            <b>Tip:</b> If order matters (first/second/third, positions, passwords), it is usually a permutation.
+          </div>
+          <div class="svg-wrap" id="learnSvgWrap"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted" id="instructionsText">Enter your answer as an integer (example: 720).</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result (TXT)</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3>Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    /********************
+     * META
+     ********************/
+    const TEMPLATE_META = {
+      title: "Permutations (Arrangements) — DYAA",
+      subtitle: "Learn • Practice • Timer • PDF export",
+      filePrefix: "DYAA_Permutations",
+      instructions: "Enter your answer as an integer (example: 720)."
+    };
+
+    /********************
+     * Helpers
+     ********************/
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function randint(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;");
+    }
+
+    
+    /********************
+     * Answer parsing (integer)
+     * Accepts: "720" "1,260" "  3600  " and also "6!" (factorial input)
+     ********************/
+    function factorial(n){
+      n = Number(n);
+      if(!Number.isInteger(n) || n < 0) return null;
+      let r = 1;
+      for(let i=2;i<=n;i++) r *= i;
+      return r;
+    }
+
+    function parseIntAnswer(input){
+      if(input == null) return null;
+      let s = String(input).trim();
+      if(!s) return null;
+
+      // allow commas
+      s = s.replace(/,/g, "");
+
+      // allow factorial style like 6!
+      const fac = s.match(/^([0-9]{1,2})!$/);
+      if(fac){
+        const n = Number(fac[1]);
+        const v = factorial(n);
+        return Number.isFinite(v) ? v : null;
+      }
+
+      if(!/^-?\d+$/.test(s)) return null;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function formatAnswer(n){
+      if(n == null) return "?";
+      return String(n);
+    }
+
+    function isAnswerEqual(a,b){
+      return Number(a) === Number(b);
+    }
+
+
+    function stripSvgNote(html){
+      return String(html).replace(/<div class="svg-note">[\s\S]*?<\/div>/g, "");
+    }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * Timer + Pause/Resume
+     ********************/
+    const TIMER = { seconds: 0, running: true, id: null };
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function formatTime(sec){
+      sec = Math.max(0, Math.floor(sec));
+      const m = Math.floor(sec/60);
+      const s = sec % 60;
+      return `${pad2(m)}:${pad2(s)}`;
+    }
+    function updateTimerUI(){
+      $("#timerValue").textContent = formatTime(TIMER.seconds);
+      $("#timerStatus").textContent = TIMER.running ? "" : "(Paused)";
+      $("#pauseBtn").textContent = TIMER.running ? "Pause" : "Resume";
+    }
+    function startTimerTick(){
+      if(TIMER.id) clearInterval(TIMER.id);
+      TIMER.id = setInterval(() => {
+        if(TIMER.running){
+          TIMER.seconds += 1;
+          updateTimerUI();
+        }
+      }, 1000);
+    }
+    function resetTimer(){
+      TIMER.seconds = 0;
+      TIMER.running = true;
+      updateTimerUI();
+    }
+    function togglePause(){
+      TIMER.running = !TIMER.running;
+      updateTimerUI();
+    }
+    $("#pauseBtn").addEventListener("click", togglePause);
+
+    /********************
+     * SVG builders
+     ********************/
+    function svgWrap(svg){
+      return `${svg}`;
+    }
+
+    function wrapLines(text, maxLen=34){
+      const words = String(text).split(/\s+/);
+      const lines = [];
+      let cur = "";
+      for(const w of words){
+        if(!cur) { cur = w; continue; }
+        if((cur + " " + w).length <= maxLen){
+          cur += " " + w;
+        }else{
+          lines.push(cur);
+          cur = w;
+        }
+      }
+      if(cur) lines.push(cur);
+      return lines;
+    }
+
+    function textCardSvg(title, lines){
+      const all = [];
+      all.push(...wrapLines(title, 30).map(s=>({t:s, kind:"title"})));
+      all.push({t:"", kind:"spacer"});
+      for(const ln of lines){
+        const ws = wrapLines(ln, 36);
+        ws.forEach(s=>all.push({t:s, kind:"line"}));
+      }
+
+      let y = 26;
+      const dy = 18;
+
+      const textEls = all.map(row=>{
+        if(row.kind==="spacer"){ y += 8; return ""; }
+        let style;
+        if(row.kind==="title"){
+          style = "font: 15px 'Segoe UI', Tahoma, sans-serif; font-weight: 1000; fill: #0d47a1;";
+        }else{
+          const isEq = String(row.t).includes("=");
+          style = isEq
+            ? "font: 16px 'Segoe UI', Tahoma, sans-serif; font-weight: 1000; fill: #111;"
+            : "font: 14px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill: rgba(0,0,0,0.78);";
+        }
+        const t = escapeHtml(row.t);
+        const el = `<text x="14" y="${y}" style="${style}">${t}</text>`;
+        y += dy;
+        return el;
+      }).join("");
+
+      const height = Math.max(160, y + 12);
+
+      const svg = `
+        <svg viewBox="0 0 360 ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Text diagram">
+          <rect x="6" y="6" width="348" height="${height-12}" rx="14" fill="#ffffff" stroke="var(--stroke)" stroke-width="1.5"></rect>
+          <rect x="6" y="6" width="348" height="34" rx="14" fill="rgba(13,71,161,0.06)" stroke="none"></rect>
+          ${textEls}
+        </svg>
+      `;
+      return svgWrap(svg);
+    }
+
+    function systemSvg(title, lines){
+      // Kept for template compatibility (not used in this permutations page)
+      return textCardSvg(title || "Problem", Array.isArray(lines) ? lines : []);
+    }
+
+    /********************
+     * Question generators (Permutations)
+     ********************/
+    function nPr(n,r){
+      let p = 1;
+      for(let k=0;k<r;k++) p *= (n-k);
+      return p;
+    }
+    function nCr(n,r){
+      // for multi-step questions that require choosing then arranging
+      r = Math.min(r, n-r);
+      let num = 1, den = 1;
+      for(let i=1;i<=r;i++){
+        num *= (n - (r - i));
+        den *= i;
+      }
+      return Math.round(num/den);
+    }
+
+    function textCardSvg(title, lines){
+      const all = [];
+      all.push(...wrapLines(title, 30).map(s=>({t:s, kind:"title"})));
+      all.push({t:"", kind:"spacer"});
+      for(const ln of lines){
+        const ws = wrapLines(ln, 36);
+        ws.forEach(s=>all.push({t:s, kind:"line"}));
+      }
+
+      let y = 26;
+      const dy = 18;
+
+      const textEls = all.map(row=>{
+        if(row.kind==="spacer"){ y += 8; return ""; }
+        let style;
+        if(row.kind==="title"){
+          style = "font: 15px 'Segoe UI', Tahoma, sans-serif; font-weight: 1000; fill: #0d47a1;";
+        }else{
+          const isEq = String(row.t).includes("=") || String(row.t).includes("!") || String(row.t).includes("P");
+          style = isEq
+            ? "font: 16px 'Segoe UI', Tahoma, sans-serif; font-weight: 1000; fill: #111;"
+            : "font: 14px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill: rgba(0,0,0,0.78);";
+        }
+        const t = escapeHtml(row.t);
+        const el = `<text x="14" y="${y}" style="${style}">${t}</text>`;
+        y += dy;
+        return el;
+      }).join("");
+
+      const height = Math.max(160, y + 12);
+
+      const svg = `
+        <svg viewBox="0 0 360 ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Text diagram">
+          <rect x="6" y="6" width="348" height="${height-12}" rx="14" fill="#ffffff" stroke="var(--stroke)" stroke-width="1.5"></rect>
+          <rect x="6" y="6" width="348" height="34" rx="14" fill="rgba(13,71,161,0.06)" stroke="none"></rect>
+          ${textEls}
+        </svg>
+      `;
+      return svgWrap(svg);
+    }
+
+    function makeFullPermutation(){
+      const contexts = [
+        { thing:"different books", place:"on a shelf" },
+        { thing:"different photos", place:"on a wall" },
+        { thing:"different trophies", place:"in a row" },
+        { thing:"different stickers", place:"in a straight line" },
+        { thing:"different toy cars", place:"on a display" },
+        { thing:"different folders", place:"on a desk" },
+      ];
+      const c = choice(contexts);
+      const n = randint(5, 9);
+      const ans = factorial(n);
+      const title = "Full Permutation";
+      const prompt = `There are ${n} ${c.thing}. They are arranged ${c.place}. How many different arrangements are possible?`;
+      const lines = [
+        `${n} ${c.thing} are arranged ${c.place}.`,
+        `Order matters.`,
+        `Compute ${n}!.`
+      ];
+      return {
+        difficulty: "easy",
+        prompt,
+        hint: `Use n! for arranging all n items. Here: ${n}!`,
+        answer: ans,
+        svg: textCardSvg(title, lines)
+      };
+    }
+
+    function makePickAndArrange(){
+      const types = [
+        () => {
+          const n = randint(7, 12);
+          const r = randint(3, 5);
+          const roles = choice([
+            ["captain", "vice-captain", "secretary"],
+            ["leader", "deputy", "scribe"],
+            ["chair", "treasurer", "assistant"],
+            ["speaker", "timekeeper", "recorder"],
+          ]);
+          const roleList = roles.slice(0, r).map(s=>`<i>${s}</i>`).join(", ").replace(/, ([^,]*)$/, " and $1");
+          const prompt = `From ${n} students, choose ${roleList}. How many different selections are possible?`;
+          const ans = nPr(n, r);
+          const lines = [
+            `${n} students, ${r} different roles.`,
+            `Order matters (different roles).`,
+            `Compute ${n}P${r}.`
+          ];
+          return {
+            difficulty: "medium",
+            prompt,
+            hint: `Use nPr = n × (n−1) × ... for r roles. Here: ${n}P${r}.`,
+            answer: ans,
+            svg: textCardSvg("Pick and Arrange", lines)
+          };
+        },
+        () => {
+          const n = randint(8, 12);
+          const r = randint(3, 5);
+          const prompt = `A podium has ${r} places (1st to ${r}th). There are ${n} runners. How many different podium results are possible?`;
+          const ans = nPr(n, r);
+          const lines = [
+            `${n} runners, top ${r} places.`,
+            `1st/2nd/... means order matters.`,
+            `Compute ${n}P${r}.`
+          ];
+          return {
+            difficulty: "medium",
+            prompt,
+            hint: `Podium places are ordered. Use ${n}P${r}.`,
+            answer: ans,
+            svg: textCardSvg("Podium (Ordered Places)", lines)
+          };
+        },
+        () => {
+          const n = 10;
+          const r = randint(4, 6);
+          const prompt = `A lock code uses ${r} different digits (no repeats) from 0–9. How many different codes are possible?`;
+          const ans = nPr(n, r);
+          const lines = [
+            `Choose ${r} digits from 0–9 with no repeats.`,
+            `Order matters in a code.`,
+            `Compute 10P${r}.`
+          ];
+          return {
+            difficulty: "medium",
+            prompt,
+            hint: `No repeats and order matters → permutation: 10P${r}.`,
+            answer: ans,
+            svg: textCardSvg("Codes (No Repeats)", lines)
+          };
+        }
+      ];
+      return choice(types)();
+    }
+
+    function makeTogether(){
+      const n = randint(6, 9);
+      const prompt = `${n} people line up for a photo. Alex and Blake must stand next to each other. How many different line-ups are possible?`;
+      const ans = factorial(n-1) * 2;
+      const lines = [
+        `${n} people in a row.`,
+        `Alex and Blake must be adjacent.`,
+        `Treat them as one block: (${n}-1)! × 2.`
+      ];
+      return {
+        difficulty: "hard",
+        prompt,
+        hint: `Block method: treat (AB) as one item, then multiply by 2 for AB/BA.`,
+        answer: ans,
+        svg: textCardSvg("Restriction: Must be Together", lines)
+      };
+    }
+
+    function makeNotTogether(){
+      const n = randint(7, 10);
+      const prompt = `${n} students line up. Chris and Dana cannot stand next to each other. How many different line-ups are possible?`;
+      const total = factorial(n);
+      const together = factorial(n-1) * 2;
+      const ans = total - together;
+      const lines = [
+        `${n} students in a row.`,
+        `Total arrangements: ${n}!.`,
+        `Subtract cases where they are together: (${n}-1)! × 2.`
+      ];
+      return {
+        difficulty: "hard",
+        prompt,
+        hint: `Use total − invalid. Invalid = (${n}-1)! × 2 (block method).`,
+        answer: ans,
+        svg: textCardSvg("Restriction: Cannot be Together", lines)
+      };
+    }
+
+    function makeFixedPosition(){
+      const n = randint(6, 10);
+      const who = choice(["Mia", "Noah", "Olivia", "Ethan", "Sophie", "Liam"]);
+      const prompt = `${n} people line up. ${who} must stand at one end of the line. How many different line-ups are possible?`;
+      const ans = 2 * factorial(n-1);
+      const lines = [
+        `${who} must be at an end (left or right): 2 choices.`,
+        `Arrange the remaining ${n-1} people: (${n}-1)!.`,
+        `Multiply: 2 × (${n}-1)!.`
+      ];
+      return {
+        difficulty: "medium",
+        prompt,
+        hint: `Two ends → 2 choices, then arrange the rest: 2 × (${n}-1)!.`,
+        answer: ans,
+        svg: textCardSvg("Restriction: Fixed Position", lines)
+      };
+    }
+
+    function makeChooseThenArrange(){
+      // multi-step: choose a group that must include a specific person, then arrange
+      const total = randint(9, 12);
+      const r = randint(4, 6);
+      const who = choice(["Ava", "Jack", "Ella", "Leo", "Grace", "Henry"]);
+
+      // Choose (r-1) from (total-1), then arrange r
+      const ans = nCr(total-1, r-1) * factorial(r);
+      const prompt = `From ${total} students, ${r} will stand in a row for a photo. ${who} must be included. How many different rows are possible?`;
+      const lines = [
+        `Must include ${who}.`,
+        `Choose the other ${r-1} students: C(${total-1}, ${r-1}).`,
+        `Arrange ${r} students: ${r}!`,
+        `Multiply: C(${total-1}, ${r-1}) × ${r}!`
+      ];
+      return {
+        difficulty: "hard",
+        prompt,
+        hint: `Pick the group (must include ${who}), then arrange them.`,
+        answer: ans,
+        svg: textCardSvg("Multi-step: Choose + Arrange", lines)
+      };
+    }
+    function makeQuestions(){
+      const qs = [];
+      const used = new Set();
+
+      function addQ(q){
+        const key = q.prompt + "||" + (q.svg||"");
+        if(used.has(key)) return false;
+        used.add(key);
+        qs.push(q);
+        return true;
+      }
+
+      const makers = [
+        () => makeFullPermutation(),
+        () => makeFullPermutation(),
+        () => makePickAndArrange(),
+        () => makePickAndArrange(),
+        () => makeFixedPosition(),
+        () => makeTogether(),
+        () => makeNotTogether(),
+        () => makeChooseThenArrange(),
+      ];
+
+      for(const mk of makers){
+        let tries = 0;
+        while(tries++ < 80){
+          const q = mk();
+          if(addQ(q)) break;
+        }
+      }
+
+      return qs;
+    }
+
+    /********************
+     * UI state + rendering
+     ********************/
+    let QUESTIONS = [];
+    let STATE = { answers:[], checked:[], correct:[], hintShown:[], submitted:false };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+    function niceDiff(d){
+      if(d==="easy") return "Easy";
+      if(d==="medium") return "Medium";
+      return "Hard";
+    }
+
+    function renderQuestions(){
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const userVal = STATE.answers[idx] ?? "";
+        const checked = !!STATE.checked[idx];
+        const correct = !!STATE.correct[idx];
+        const hintShown = !!STATE.hintShown[idx];
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${escapeHtml(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="q-body">
+            <div class="svg-wrap">${q.svg || ""}</div>
+
+            <div class="answer-area">
+              <div class="input-row">
+                <input type="text" autocomplete="off"
+                  id="ans-${idx}" placeholder="Answer (integer) e.g., 720"
+                  value="${escapeHtml(userVal)}">
+                <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+                <button class="btn ghost" type="button" id="hint-${idx}">${hintShown ? "Hide Hint" : "Hint"}</button>
+              </div>
+
+              <div class="hint-box ${hintShown ? "show" : ""}" id="hintBox-${idx}">
+                ${escapeHtml(q.hint || "")}
+              </div>
+
+              <div class="feedback ${checked ? (correct ? "ok" : "bad") : ""}" id="fb-${idx}">
+                ${checked
+                  ? (correct
+                      ? "Correct ✅"
+                      : `Not correct ❌  (Correct answer: ${escapeHtml(formatAnswer(q.answer))})`)
+                  : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        const inp = $(`#ans-${idx}`, card);
+        inp.addEventListener("input", () => {
+          STATE.answers[idx] = inp.value;
+          STATE.checked[idx] = false;
+          STATE.correct[idx] = false;
+          if(STATE.submitted){
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+          }
+          const fb = $(`#fb-${idx}`, card);
+          fb.className = "feedback";
+          fb.textContent = "";
+        });
+
+        $(`#check-${idx}`, card).addEventListener("click", () => checkOne(idx));
+        $(`#hint-${idx}`, card).addEventListener("click", () => {
+          STATE.hintShown[idx] = !STATE.hintShown[idx];
+          renderQuestions();
+        });
+      });
+
+      $("#resultsBox").style.display = "none";
+    }
+
+    function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const v = parseIntAnswer(STATE.answers[idx]);
+      STATE.checked[idx] = true;
+
+      if(v === null){
+        STATE.correct[idx] = false;
+        renderQuestions();
+        const fb = $(`#fb-${idx}`);
+        fb.className = "feedback bad";
+        fb.textContent = "Please enter a valid integer (example: 720).";
+        return;
+      }
+
+      STATE.correct[idx] = (v !== null) && isAnswerEqual(v, q.answer);
+      renderQuestions();
+    }
+
+    function submitAll(){
+      let correctCount = 0;
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const v = parseIntAnswer(STATE.answers[i]);
+        STATE.checked[i] = true;
+        STATE.correct[i] = (v !== null) && isAnswerEqual(v, q.answer);
+        if(STATE.correct[i]) correctCount++;
+      }
+
+      STATE.submitted = true;
+      renderQuestions();
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+
+      const lines = QUESTIONS.map((q,i)=>(
+        `<div style="margin:6px 0;"><b>Q${i+1}:</b> ${escapeHtml(formatAnswer(q.answer))}</div>`
+      )).join("");
+
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:8px;"><b>Correct Answers:</b></div>
+        <div style="margin-top:6px;">${lines}</div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+    function resetAnswers(){
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    /********************
+     * Save Current Result as TXT
+     ********************/
+    function saveResult(){
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const when = new Date();
+      const dateStr = when.toLocaleString();
+      const elapsed = formatTime(TIMER.seconds);
+
+      let correctCount = 0;
+      const out = [];
+
+      out.push(`DYAA — Save Current Result`);
+      out.push(`Title: ${title}`);
+      out.push(`Student: ${student}`);
+      out.push(`Date: ${dateStr}`);
+      out.push(`Elapsed Time: ${elapsed}`);
+      out.push(``);
+
+      QUESTIONS.forEach((q, i) => {
+        const raw = (STATE.answers[i] ?? "").toString().trim();
+        const v = parseIntAnswer(raw);
+        const valid = (v !== null);
+        const isCorrect = valid && isAnswerEqual(v, q.answer);
+        if(isCorrect) correctCount++;
+
+        out.push(`Q${i+1} (${String(q.difficulty||"").toUpperCase()}): ${q.prompt}`);
+        out.push(`Your answer: ${valid ? formatAnswer(v) : (raw ? raw : "(blank)")}`);
+        out.push(`Correct answer: ${formatAnswer(q.answer)}`);
+        out.push(`Result: ${isCorrect ? "Correct" : "Not correct"}`);
+        out.push(``);
+      });
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+      out.splice(5, 0, `Score: ${correctCount} / ${total} (${pct}%)`);
+
+      const text = out.join("\r\n");
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_result.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    /********************
+     * Tabs + Student name
+     ********************/
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $(`#panel-${tab}`).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      const defaultName = "DYAA";
+      const name = safeName(prompt("Enter student name:", defaultName));
+      $("#studentNameValue").textContent = name ? name : defaultName;
+    }
+
+/********************
+     * Generate New Set (resets timer)
+     ********************/
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+
+      resetTimer();
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set? This will clear your current answers and reset the timer.", () => {
+        generateNewSet();
+        // go to practice
+        $$('.tab').forEach(b=>b.classList.remove('active'));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$('.panel').forEach(p=>p.classList.remove('active'));
+        $('#panel-practice').classList.add('active');
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    /********************
+     * Learn diagram
+     ********************/
+    function renderLearnDiagram(){
+      const svg = `
+        <svg viewBox="0 0 360 230" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Permutation overview">
+          <defs>
+            <marker id="arr" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+              <path d="M0,0 L9,3 L0,6 Z" fill="rgba(0,0,0,0.55)"></path>
+            </marker>
+          </defs>
+
+          <rect x="8" y="10" width="344" height="210" rx="16" fill="#fff" stroke="var(--stroke)" stroke-width="1.5"></rect>
+          <rect x="8" y="10" width="344" height="34" rx="16" fill="rgba(13,71,161,0.06)"></rect>
+          <text x="20" y="33" style="font: 15px 'Segoe UI', Tahoma, sans-serif; font-weight: 1000; fill: #0d47a1;">
+            Permutations: Quick Flow
+          </text>
+
+          <g>
+            <rect x="20" y="55" width="320" height="28" rx="10" fill="#f5f8ff" stroke="rgba(13,71,161,0.25)"></rect>
+            <text x="30" y="74" style="font: 13px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill:#0d47a1;">
+              1) Does the order matter?
+            </text>
+
+            <rect x="20" y="92" width="320" height="28" rx="10" fill="#fff7ea" stroke="rgba(255,152,0,0.35)"></rect>
+            <text x="30" y="111" style="font: 13px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill:#7a4a00;">
+              2) If YES → use permutations
+            </text>
+
+            <rect x="20" y="129" width="320" height="28" rx="10" fill="#f5f8ff" stroke="rgba(13,71,161,0.25)"></rect>
+            <text x="30" y="148" style="font: 13px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill:#0d47a1;">
+              3) Arrange all: n!
+            </text>
+
+            <rect x="20" y="166" width="320" height="28" rx="10" fill="#f2fff4" stroke="rgba(27,94,32,0.25)"></rect>
+            <text x="30" y="185" style="font: 13px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill:#1b5e20;">
+              4) Pick & arrange: nPr
+            </text>
+          </g>
+
+          <line x1="180" y1="83" x2="180" y2="92" stroke="rgba(0,0,0,0.55)" stroke-width="1.6" marker-end="url(#arr)"></line>
+          <line x1="180" y1="120" x2="180" y2="129" stroke="rgba(0,0,0,0.55)" stroke-width="1.6" marker-end="url(#arr)"></line>
+          <line x1="180" y1="157" x2="180" y2="166" stroke="rgba(0,0,0,0.55)" stroke-width="1.6" marker-end="url(#arr)"></line>
+
+          <text x="20" y="210" style="font: 12px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill: rgba(0,0,0,0.55);">
+            Restrictions? Use block method or total − invalid.
+          </text>
+        </svg>
+      `;
+      $("#learnSvgWrap").innerHTML = svgWrap(svg);
+    }
+
+    /********************
+     * Export Questions PDF
+     * - PDF per page: 2 / 3 / 6 (default 2)
+     * - Answers at the end (separate page(s), auto paged)
+     ********************/
+    
+
+    /********************
+     * Export Learn PDF
+     * - Exports the Learn page content (multi-page if needed)
+     ********************/
+    async function exportLearnPdf(){
+      const libsOk = (window.html2canvas && window.jspdf && window.jspdf.jsPDF);
+      if(!libsOk){
+        alert("PDF export needs html2canvas + jsPDF. Please check your connection (CDN) or include the libraries locally.");
+        return;
+      }
+
+      const title = TEMPLATE_META.title + " — Learn";
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+      const timeStr = $("#timerValue").textContent;
+
+      // Build an offscreen A4-width sheet
+      const exportRoot = document.createElement("div");
+      exportRoot.className = "export-root";
+      document.body.appendChild(exportRoot);
+
+      const sheet = document.createElement("div");
+      sheet.style.width = "210mm";
+      sheet.style.background = "#ffffff";
+      sheet.style.padding = "12mm";
+      sheet.style.boxSizing = "border-box";
+
+      const header = document.createElement("div");
+      header.style.marginBottom = "6mm";
+      header.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10mm;">
+          <div>
+            <div style="font-weight:1000; font-size:16px; color:#111; line-height:1.1;">${escapeHtml(title)}</div>
+            <div style="margin-top:2mm; font-size:11px; color:#555; font-weight:900; line-height:1.25;">
+              Student: ${escapeHtml(student)} • Date: ${escapeHtml(dateStr)} • Time: ${escapeHtml(timeStr)}
+            </div>
+          </div>
+        </div>
+      `;
+
+      const learnCard = document.querySelector("#panel-learn .learn-card");
+      const clone = learnCard ? learnCard.cloneNode(true) : null;
+
+      sheet.appendChild(header);
+      if(clone){
+        sheet.appendChild(clone);
+      }else{
+        const p = document.createElement('div');
+        p.textContent = 'Learn content not found.';
+        sheet.appendChild(p);
+      }
+
+      exportRoot.appendChild(sheet);
+
+      const canvas = await window.html2canvas(sheet, {
+        scale: 2,
+        backgroundColor: "#ffffff",
+        useCORS: true
+      });
+
+      const imgData = canvas.toDataURL("image/png", 1.0);
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+
+      const marginMm = 8;
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const usableW = pageW - marginMm * 2;
+      const usableH = pageH - marginMm * 2;
+
+      const imgH = canvas.height * (usableW / canvas.width);
+      let heightLeft = imgH;
+      let position = marginMm;
+
+      pdf.addImage(imgData, "PNG", marginMm, position, usableW, imgH, undefined, "FAST");
+      heightLeft -= usableH;
+
+      while(heightLeft > 0){
+        pdf.addPage();
+        position = marginMm - (imgH - heightLeft);
+        pdf.addImage(imgData, "PNG", marginMm, position, usableW, imgH, undefined, "FAST");
+        heightLeft -= usableH;
+      }
+
+      pdf.save(`${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_Learn.pdf`);
+      exportRoot.remove();
+    }
+
+function layoutClass(perPage){
+      if(perPage === 6) return "six";
+      if(perPage === 3) return "three";
+      return "two";
+    }
+
+    function buildQuestionPageDOM(indexGroup, perPage, meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">${escapeHtml(meta.title)}</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)} • Time: ${escapeHtml(meta.timeStr)}
+          </div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const grid = document.createElement("div");
+      grid.className = `export-qgrid ${layoutClass(perPage)}`;
+
+      indexGroup.forEach(i => {
+        const q = QUESTIONS[i];
+        const box = document.createElement("div");
+        box.className = "export-q";
+        box.innerHTML = `
+          <div class="qprompt">Q${i+1}. ${escapeHtml(q.prompt)}</div>
+          <div class="export-diagram">${stripSvgNote(q.svg || "")}</div>
+          <div class="export-answerline">Answer: <span></span></div>
+        `;
+        grid.appendChild(box);
+      });
+
+      content.appendChild(grid);
+      page.appendChild(header);
+      page.appendChild(content);
+      return page;
+    }
+
+    function createAnswerPage(meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">Answers — ${escapeHtml(meta.title)}</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)}
+          </div>
+          <div class="answers-note">These are the correct answers for the exported question set.</div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const list = document.createElement("div");
+      list.className = "answers-list";
+      content.appendChild(list);
+
+      page.appendChild(header);
+      page.appendChild(content);
+
+      return { page, content, list };
+    }
+
+    async function exportQuestionsPdf(){
+      const perPage = Number($("#pdfPerPage").value) || 2;
+
+      const libsOk = (window.html2canvas && window.jspdf && window.jspdf.jsPDF);
+      if(!libsOk){
+        alert("PDF export needs html2canvas + jsPDF. Please check your connection (CDN) or include the libraries locally.");
+        return;
+      }
+
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+      const timeStr = $("#timerValue").textContent;
+
+      const exportRoot = document.createElement("div");
+      exportRoot.className = "export-root";
+      document.body.appendChild(exportRoot);
+
+      // Question pages
+      const idxs = QUESTIONS.map((_,i)=>i);
+      for(let i=0;i<idxs.length;i+=perPage){
+        const group = idxs.slice(i, i+perPage);
+        exportRoot.appendChild(buildQuestionPageDOM(group, perPage, { title, student, dateStr, timeStr }));
+      }
+
+      // Answer pages (auto paged)
+      let ap = createAnswerPage({ title, student, dateStr });
+      exportRoot.appendChild(ap.page);
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const item = document.createElement("div");
+        item.textContent = `Q${i+1}: ${formatAnswer(QUESTIONS[i].answer)}`;
+        ap.list.appendChild(item);
+
+        if(ap.content.scrollHeight > ap.content.clientHeight){
+          ap.list.removeChild(item);
+          ap = createAnswerPage({ title, student, dateStr });
+          exportRoot.appendChild(ap.page);
+          ap.list.appendChild(item);
+        }
+      }
+
+      // Render to PDF
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+
+      const pages = Array.from(exportRoot.querySelectorAll(".export-page"));
+      const marginMm = 8;
+
+      for(let i=0;i<pages.length;i++){
+        const pageEl = pages[i];
+
+        const canvas = await window.html2canvas(pageEl, {
+          scale: 2,
+          backgroundColor: "#ffffff",
+          useCORS: true
+        });
+
+        const imgData = canvas.toDataURL("image/png", 1.0);
+
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = pdf.internal.pageSize.getHeight();
+        const usableW = pageW - marginMm*2;
+        const usableH = pageH - marginMm*2;
+
+        const imgH = canvas.height * (usableW / canvas.width);
+
+        let drawW = usableW;
+        let drawH = imgH;
+
+        if(drawH > usableH){
+          drawH = usableH;
+          drawW = canvas.width * (drawH / canvas.height);
+        }
+
+        const x = (pageW - drawW) / 2;
+        const y = marginMm;
+
+        if(i > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", x, y, drawW, drawH, undefined, "FAST");
+      }
+
+      pdf.save(`${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_Questions.pdf`);
+      exportRoot.remove();
+    }
+
+    $("#exportQuestionsBtn").addEventListener("click", exportQuestionsPdf);
+    $("#exportLearnBtn").addEventListener("click", exportLearnPdf);
+
+    /********************
+     * Init
+     ********************/
+    function applyTemplateMeta(){
+      document.title = TEMPLATE_META.title;
+      $("#pageTitle").textContent = TEMPLATE_META.title;
+      $("#pageSubtitle").textContent = TEMPLATE_META.subtitle;
+      $("#instructionsText").textContent = TEMPLATE_META.instructions;
+    }
+
+    applyTemplateMeta();
+    ensureStudentName();
+    renderLearnDiagram();
+    updateTimerUI();
+    startTimerTick();
+    generateNewSet();
+  </script>
+</body>
+</html>
