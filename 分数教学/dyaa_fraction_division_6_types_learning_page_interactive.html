@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fraction Division — 6 Common Word-Problem Types — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --radius:14px;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+    }
+    *{box-sizing:border-box}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+    /* subtle watermark */
+    body:before{
+      content: attr(data-watermark);
+      position:fixed;
+      inset:auto auto 6% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:10px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      user-select:none;
+      z-index:0;
+      white-space:nowrap;
+    }
+
+    .container{
+      position:relative;
+      z-index:1;
+      max-width:1100px;
+      margin:0 auto;
+    }
+
+    header{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px 18px 14px;
+      border:1px solid var(--line);
+    }
+    .toprow{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:260px;
+    }
+    .brand-badge{
+      width:44px;
+      height:44px;
+      border-radius:12px;
+      background:var(--blue);
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-weight:900;
+      letter-spacing:0.5px;
+      flex:0 0 auto;
+    }
+    .titlewrap h1{
+      font-size:18px;
+      margin:0;
+      line-height:1.2;
+    }
+    .titlewrap .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .meta{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .pill{
+      border:1px solid var(--line);
+      background:#fff;
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:13px;
+      color:var(--muted);
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+    .pill b{color:var(--ink)}
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+      border-top:1px solid var(--line);
+      padding-top:12px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .tabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .tabbtn{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+      padding:9px 12px;
+      font-weight:800;
+      cursor:pointer;
+      font-size:13px;
+      color:var(--ink);
+    }
+    .tabbtn.active{
+      background:rgba(13,71,161,0.10);
+      border-color:rgba(13,71,161,0.25);
+      color:var(--blue);
+    }
+    .btnrow{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    button.action{
+      border:0;
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:900;
+      cursor:pointer;
+      background:var(--blue);
+      color:#fff;
+      box-shadow:0 4px 10px rgba(13,71,161,0.20);
+      font-size:13px;
+      white-space:nowrap;
+    }
+    button.action.secondary{
+      background:#fff;
+      color:var(--blue);
+      border:1px solid rgba(13,71,161,0.25);
+      box-shadow:none;
+    }
+    button.action.orange{
+      background:var(--orange);
+      box-shadow:0 4px 10px rgba(255,152,0,0.25);
+    }
+    button.action:active{transform:translateY(1px)}
+    button.action:disabled{opacity:0.6; cursor:not-allowed; transform:none}
+
+    main{ margin-top:16px; }
+
+    .grid{ display:grid; gap:14px; }
+    .learnGrid{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+    @media (max-width:900px){ .learnGrid{grid-template-columns:1fr} }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:14px 14px 12px;
+    }
+    .card h2{
+      margin:0;
+      font-size:15px;
+      line-height:1.25;
+    }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:900;
+      font-size:12px;
+      background:rgba(255,152,0,0.14);
+      color:#7a4b00;
+      border:1px solid rgba(255,152,0,0.28);
+      white-space:nowrap;
+    }
+    .muted{color:var(--muted)}
+    .mini{
+      margin-top:10px;
+      padding-top:10px;
+      border-top:1px dashed var(--line);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .steps{
+      margin:8px 0 0;
+      padding-left:18px;
+      color:var(--ink);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .eq{
+      margin-top:8px;
+      font-size:13px;
+      color:var(--ink);
+      background:rgba(13,71,161,0.06);
+      border:1px solid rgba(13,71,161,0.12);
+      padding:10px 12px;
+      border-radius:12px;
+      overflow:auto;
+    }
+
+    /* Fraction rendering */
+    .frac{
+      display:inline-block;
+      vertical-align:middle;
+      text-align:center;
+      line-height:1.05;
+      font-size:1em;
+      margin:0 1px;
+    }
+    .frac > span{ display:block; padding:0 2px; }
+    .frac .top{ border-bottom:1px solid currentColor; padding-bottom:1px; }
+    .frac .bottom{ padding-top:1px; }
+    .mixed{
+      display:inline-flex;
+      align-items:center;
+      gap:2px;
+      vertical-align:middle;
+    }
+
+    /* Practice layout like your screenshot */
+    .practiceTopBar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .leftControls{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .selectWrap{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      background:#fff;
+      border:1px solid var(--line);
+      padding:6px 10px;
+      border-radius:999px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.04);
+      font-size:13px;
+      color:var(--muted);
+    }
+    select{
+      border:1px solid rgba(0,0,0,0.12);
+      border-radius:10px;
+      padding:6px 10px;
+      font-weight:800;
+      color:var(--ink);
+      background:#fff;
+      outline:none;
+    }
+
+    .practiceHeaderLine{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:6px;
+    }
+    .practiceTitle{
+      font-size:18px;
+      font-weight:900;
+      margin:0;
+      color:var(--blue);
+    }
+    .practiceHint{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .quizMeta{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .qcard{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:0 6px 15px rgba(0,0,0,0.07);
+      padding:16px;
+    }
+    .qcard.correct{ border-color:rgba(27,94,32,0.35); box-shadow:0 6px 15px rgba(27,94,32,0.10); }
+    .qcard.incorrect{ border-color:rgba(183,28,28,0.30); box-shadow:0 6px 15px rgba(183,28,28,0.08); }
+
+    .qtop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .qnum{
+      font-weight:1000;
+      color:var(--blue);
+      font-size:16px;
+    }
+    .qtext{
+      margin-top:10px;
+      font-size:14px;
+      line-height:1.6;
+    }
+
+    .answerRow{
+      margin-top:12px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .answerRow label{
+      color:var(--muted);
+      font-weight:900;
+      font-size:13px;
+      min-width:64px;
+    }
+    .ansInput{
+      flex:1 1 260px;
+      border:1px solid rgba(0,0,0,0.12);
+      border-radius:12px;
+      padding:10px 12px;
+      font-size:14px;
+      outline:none;
+    }
+    .ansInput:focus{ border-color:rgba(13,71,161,0.35); box-shadow:0 0 0 4px rgba(13,71,161,0.08); }
+
+    .qbtns{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .qbtn{
+      border:0;
+      border-radius:12px;
+      padding:10px 14px;
+      font-weight:1000;
+      cursor:pointer;
+      background:var(--blue);
+      color:#fff;
+      box-shadow:0 4px 10px rgba(13,71,161,0.20);
+      font-size:13px;
+    }
+    .qbtn.secondary{
+      background:#fff;
+      color:var(--blue);
+      border:1px solid rgba(13,71,161,0.25);
+      box-shadow:none;
+    }
+
+    .msg{
+      margin-top:10px;
+      padding:0;
+      font-size:13px;
+      display:none;
+      line-height:1.45;
+      font-weight:900;
+    }
+    .msg.show{display:block}
+    .msg.good{ color:var(--ok); }
+    .msg.bad{ color:var(--bad); }
+    .msg.neutral{ color:var(--blue); }
+
+    .answersWrap{
+      margin-top:14px;
+      display:none;
+    }
+    .answersWrap.show{display:block}
+    .ansList{
+      margin:0;
+      padding-left:18px;
+      font-size:13px;
+      line-height:1.7;
+    }
+    .tiny{ font-size:12px; color:var(--muted); }
+
+    @media print{
+      body{background:#fff; padding:0}
+      body:before{display:none}
+      header, .controls, .practiceTopBar, #teacherTools{display:none !important}
+      .container{max-width:none; margin:0; padding:0}
+      .card, .qcard{box-shadow:none}
+    }
+  </style>
+</head>
+<body data-watermark="DYAA">
+  <div class="container">
+    <header>
+      <div class="toprow">
+        <div class="brand">
+          <div class="brand-badge" id="brandBadge">DY</div>
+          <div class="titlewrap">
+            <h1>Fraction Division — 6 Common Word-Problem Types</h1>
+            <div class="sub">Learn the patterns • Practice with interactive checking</div>
+          </div>
+        </div>
+
+        <div class="meta">
+          <div class="pill">Student: <b id="studentName">DYAA</b></div>
+          <div class="pill">Topic: <b>Word Problems</b></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="tabs">
+          <button class="tabbtn active" data-tab="learn">Learn</button>
+          <button class="tabbtn" data-tab="practice">Practice</button>
+        </div>
+
+        <div class="btnrow" id="teacherTools">
+          <button class="action secondary" id="toggleAnswersBtn" title="Teacher view">Show Answer Key</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- LEARN -->
+      <section id="tab-learn">
+        <div class="grid learnGrid" id="learnGrid"></div>
+        <div class="card" style="margin-top:14px">
+          <div class="muted" style="font-size:13px;line-height:1.6">
+            <b>Quick reminder:</b> “Divide by a fraction” means “multiply by its reciprocal”.<br/>
+            <span class="eq" style="display:inline-block;margin-top:8px">
+              <b>a ÷</b> <span id="exFrac"></span> <b>= a ×</b> <span id="exRecip"></span>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRACTICE -->
+      <section id="tab-practice" style="display:none">
+        <div class="practiceTopBar">
+          <div class="leftControls">
+            <div class="selectWrap">
+              <span><b>Questions:</b></span>
+              <select id="qCountSel">
+                <option value="12" selected>12</option>
+                <option value="6">6</option>
+              </select>
+            </div>
+
+            <div class="selectWrap">
+              <span><b>PDF per page:</b></span>
+              <select id="pdfPerPageSel">
+                <option value="2">2</option>
+                <option value="4">4</option>
+                <option value="6" selected>6</option>
+                <option value="8">8</option>
+                <option value="12">12</option>
+              </select>
+            </div>
+
+            <button class="action" id="exportPdfBtn">Export to PDF</button>
+            <button class="action orange" id="newSetBtn">Generate New Set</button>
+            <button class="action secondary" id="resetBtn">Reset Answers</button>
+          </div>
+
+          <div class="quizMeta">
+            <div class="pill"><b>Student:</b> <span id="studentName2">DYAA</span></div>
+            <div class="pill"><b>Set:</b> <span id="setLabel">A</span></div>
+            <div class="pill"><b><span id="checkedCount">0</span></b> checked</div>
+          </div>
+        </div>
+
+        <div class="practiceHeaderLine">
+          <div>
+            <h2 class="practiceTitle">Practice Quiz</h2>
+            <div class="practiceHint">
+              Enter your answer as a fraction or mixed number (e.g., 3/4 or 1 1/2).
+            </div>
+          </div>
+        </div>
+
+        <div class="grid" id="practiceGrid" style="margin-top:14px"></div>
+
+        <div class="card answersWrap" id="answersWrap">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+            <h2 style="margin:0">Answer Key</h2>
+            <div class="tiny">For teacher/parent use.</div>
+          </div>
+          <ol class="ansList" id="ansList"></ol>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- jsPDF for direct PDF creation (no print dialog) -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+  <script>
+    // ---------- utilities: fractions ----------
+    function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ [a,b]=[b,a%b]; } return a||1; }
+    function simp(n,d){
+      if(d===0) return {n:1,d:0};
+      if(d<0){ n=-n; d=-d; }
+      const g=gcd(n,d);
+      n/=g; d/=g;
+      return {n,d};
+    }
+    function add(a,b){ return simp(a.n*b.d + b.n*a.d, a.d*b.d); }
+    function sub(a,b){ return simp(a.n*b.d - b.n*a.d, a.d*b.d); }
+    function mul(a,b){ return simp(a.n*b.n, a.d*b.d); }
+    function div(a,b){ return simp(a.n*b.d, a.d*b.n); }
+
+    function fracHTML(n,d){
+      const s=simp(n,d);
+      return `<span class="frac"><span class="top">${Math.abs(s.n)}</span><span class="bottom">${s.d}</span></span>`;
+    }
+    function mixedHTML(n,d){
+      const s=simp(n,d);
+      const sign = s.n<0 ? "−" : "";
+      const an = Math.abs(s.n);
+      const whole = Math.floor(an / s.d);
+      const rem = an % s.d;
+      if(rem===0) return `${sign}${whole}`;
+      if(whole===0) return `${sign}${fracHTML(rem, s.d)}`;
+      return `<span class="mixed">${sign}${whole}${fracHTML(rem, s.d)}</span>`;
+    }
+    function fracToString(n,d){
+      const s=simp(n,d);
+      const sign = s.n<0 ? "-" : "";
+      const an=Math.abs(s.n);
+      if(an % s.d === 0) return sign + String(an/s.d);
+      const whole = Math.floor(an/s.d);
+      const rem = an % s.d;
+      if(whole===0) return sign + `${rem}/${s.d}`;
+      return sign + `${whole} ${rem}/${s.d}`;
+    }
+    function equalFrac(a,b){
+      const x=simp(a.n,a.d), y=simp(b.n,b.d);
+      return x.n*y.d === y.n*x.d;
+    }
+
+    function parseFracInput(raw){
+      if(!raw) return null;
+      let s = String(raw).trim();
+      if(!s) return null;
+
+      // normalize minus signs and multiple spaces
+      s = s.replace(/[−–—]/g, "-").replace(/\s+/g, " ").trim();
+
+      // allow commas? not needed; remove trailing units
+      s = s.replace(/[^0-9\/\-\s]/g, "").trim();
+      if(!s) return null;
+
+      // cases:
+      // 1) integer: "7" or "-3"
+      if(/^-?\d+$/.test(s)){
+        const n = parseInt(s,10);
+        return simp(n,1);
+      }
+
+      // 2) simple fraction: "-3/4"
+      if(/^-?\d+\s*\/\s*\d+$/.test(s)){
+        const parts = s.split("/");
+        const n = parseInt(parts[0],10);
+        const d = parseInt(parts[1],10);
+        if(d===0) return null;
+        return simp(n,d);
+      }
+
+      // 3) mixed number: "1 1/2" or "-2 3/5"
+      // Note: treat "-2 3/5" as -(2 + 3/5)
+      const m = s.match(/^(-?\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+      if(m){
+        const whole = parseInt(m[1],10);
+        const num = parseInt(m[2],10);
+        const den = parseInt(m[3],10);
+        if(den===0) return null;
+        const sign = whole<0 ? -1 : 1;
+        const absWhole = Math.abs(whole);
+        const n = sign * (absWhole*den + num);
+        return simp(n, den);
+      }
+      return null;
+    }
+
+    function nowStamp(){
+      const d=new Date();
+      const pad=(x)=>String(x).padStart(2,"0");
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}`;
+    }
+    function setLabelFromIndex(i){
+      // 0->A ... 25->Z, 26->AA ...
+      const A="A".charCodeAt(0);
+      let n=i+1, label="";
+      while(n>0){
+        n--;
+        label = String.fromCharCode(A + (n % 26)) + label;
+        n = Math.floor(n/26);
+      }
+      return label;
+    }
+
+    // ---------- student name ----------
+    function getName(){
+      const url = new URL(window.location.href);
+      const name = (url.searchParams.get("name") || "DYAA").trim();
+      return name || "DYAA";
+    }
+    const studentName = getName();
+    document.getElementById("studentName").textContent = studentName;
+    document.getElementById("studentName2").textContent = studentName;
+    document.body.setAttribute("data-watermark", studentName);
+    document.getElementById("brandBadge").textContent = studentName.slice(0,2).toUpperCase();
+
+    // ---------- learn content ----------
+    const learnTypes = [
+      {
+        title:"1) Rate / Unit Rate (per 1 unit)",
+        tag:"Rate",
+        when:"Given an amount for a fractional unit, find the amount per 1 unit (per hour, per kg, per minute, etc.).",
+        steps:[
+          "Identify the unit you want (usually “per 1 unit”).",
+          "Write: unit rate = (given amount) ÷ (given unit).",
+          "Divide by the fraction (multiply by the reciprocal)."
+        ],
+        exPrompt:`A hose fills ${fracHTML(3,5)} L in ${fracHTML(1,4)} minute. How many litres per minute?`,
+        exWork:(()=>{
+          const ans=div(simp(3,5), simp(1,4)); // 12/5
+          return `Rate = ${mixedHTML(ans.n, ans.d)} L/min.`;
+        })()
+      },
+      {
+        title:"2) Scaling / Resize / Recipe Factor",
+        tag:"Scaling",
+        when:"A value is scaled by a fraction, and you need the original (or full-size) value.",
+        steps:[
+          "Write: scaled = factor × original.",
+          "Rearrange: original = scaled ÷ factor.",
+          "Simplify."
+        ],
+        exPrompt:`A model is ${fracHTML(3,4)} of the original length. The model is ${mixedHTML(9,2)} cm long. Find the original length.`,
+        exWork:(()=>{
+          const ans=div(simp(9,2), simp(3,4)); // 6
+          return `Original = ${fracToString(ans.n, ans.d)} cm.`;
+        })()
+      },
+      {
+        title:"3) Distance • Speed • Time (DST) with Fractions",
+        tag:"DST",
+        when:"Travel problems where distance, speed, or time is fractional.",
+        steps:[
+          "Use: distance = speed × time.",
+          "So speed = distance ÷ time, and time = distance ÷ speed.",
+          "Do the fraction division and simplify."
+        ],
+        exPrompt:`A runner travels ${fracHTML(5,6)} km in ${fracHTML(1,3)} h. Find the speed (km/h).`,
+        exWork:(()=>{
+          const ans=div(simp(5,6), simp(1,3)); // 5/2
+          return `Speed = ${mixedHTML(ans.n, ans.d)} km/h.`;
+        })()
+      },
+      {
+        title:"4) Unit Price / Density / “per 1”",
+        tag:"Unit cost",
+        when:"Given a cost/mass/volume for a fraction of a unit, find the value per 1 unit.",
+        steps:[
+          "Write: per 1 unit = total ÷ amount.",
+          "Keep the units clear.",
+          "Simplify."
+        ],
+        exPrompt:`${fracHTML(3,4)} kg of nuts costs $${fracToString(9,2)}. What is the price per kg?`,
+        exWork:(()=>{
+          const ans=div(simp(9,2), simp(3,4)); // 6
+          return `Price per kg = $${fracToString(ans.n, ans.d)}.`;
+        })()
+      },
+      {
+        title:"5) Multi-step (Add/Subtract, then Divide)",
+        tag:"2–3 steps",
+        when:"You must combine amounts first, then divide.",
+        steps:[
+          "Find the new total after adding/removing.",
+          "Divide by the group size (or number of groups).",
+          "If it asks “full groups”, take the whole number part only."
+        ],
+        exPrompt:`A ribbon is ${mixedHTML(11,2)} m long. ${fracHTML(3,4)} m is used. The rest is cut into pieces of ${fracHTML(2,3)} m. How many full pieces?`,
+        exWork:(()=>{
+          const left=sub(simp(11,2), simp(3,4)); // 19/4
+          const q=div(left, simp(2,3)); // 57/8
+          const full=Math.floor(Math.abs(q.n)/q.d);
+          return `Left = ${mixedHTML(left.n,left.d)} m → full pieces = ${full}.`;
+        })()
+      },
+      {
+        title:"6) Reverse / Missing Value in a Division",
+        tag:"Reverse",
+        when:"You are told the result of a division, and must find the original number (or total).",
+        steps:[
+          "Write: unknown ÷ fraction = result.",
+          "Multiply both sides by the fraction.",
+          "Simplify."
+        ],
+        exPrompt:`A number divided by ${fracHTML(3,4)} gives 6. What is the number?`,
+        exWork:(()=>{
+          const ans=mul(simp(6,1), simp(3,4)); // 9/2
+          return `Number = ${mixedHTML(ans.n, ans.d)}.`;
+        })()
+      }
+    ];
+
+    function renderLearn(){
+      const grid=document.getElementById("learnGrid");
+      grid.innerHTML="";
+      for(const t of learnTypes){
+        const el=document.createElement("div");
+        el.className="card";
+        el.innerHTML=`
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap">
+            <h2>${t.title}</h2>
+            <span class="tag">${t.tag}</span>
+          </div>
+          <div class="muted" style="margin-top:8px;font-size:13px;line-height:1.55">${t.when}</div>
+          <ol class="steps">${t.steps.map(s=>`<li>${s}</li>`).join("")}</ol>
+          <div class="mini">
+            <div class="muted" style="font-weight:900;margin-bottom:6px">Mini example</div>
+            <div><b>Example:</b> ${t.exPrompt}</div>
+            <div style="margin-top:6px"><b>Answer:</b> ${t.exWork}</div>
+          </div>
+        `;
+        grid.appendChild(el);
+      }
+      document.getElementById("exFrac").innerHTML = fracHTML(2,3);
+      document.getElementById("exRecip").innerHTML = fracHTML(3,2);
+    }
+
+    // ---------- banks ----------
+    // Each question has: id, prompt(), ans() -> fraction, unit, fullGroups?
+    const banks = {
+      rate: [
+        { id:"rate1", prompt: ()=>`A tap fills ${fracHTML(5,8)} L in ${fracHTML(1,4)} minute. How many litres per minute?`, ans: ()=>div(simp(5,8), simp(1,4)), unit:"L/min" },
+        { id:"rate2", prompt: ()=>`A machine produces ${mixedHTML(3,2)} parts in ${fracHTML(3,5)} hour. How many parts per hour?`, ans: ()=>div(simp(3,2), simp(3,5)), unit:"parts/hour" },
+        { id:"rate3", prompt: ()=>`A printer uses ${fracHTML(2,3)} cartridge in ${fracHTML(1,2)} week. How many cartridges per week?`, ans: ()=>div(simp(2,3), simp(1,2)), unit:"cartridges/week" },
+        { id:"rate4", prompt: ()=>`A small pump moves ${fracHTML(3,4)} L in ${fracHTML(2,5)} minute. How many litres per minute?`, ans: ()=>div(simp(3,4), simp(2,5)), unit:"L/min" },
+        { id:"rate5", prompt: ()=>`A candle burns down ${fracHTML(3,10)} of its length in ${fracHTML(1,2)} hour. How much of its length per hour?`, ans: ()=>div(simp(3,10), simp(1,2)), unit:"of a candle/hour" }
+      ],
+      scaling: [
+        { id:"scale1", prompt: ()=>`A photo is reduced to ${fracHTML(2,5)} of its original width. The new width is 6 cm. What was the original width?`, ans: ()=>div(simp(6,1), simp(2,5)), unit:"cm" },
+        { id:"scale2", prompt: ()=>`A recipe uses ${fracHTML(3,4)} of the full amount of flour. If you used ${mixedHTML(9,2)} cups of flour, how many cups are in the full recipe?`, ans: ()=>div(simp(9,2), simp(3,4)), unit:"cups" },
+        { id:"scale3", prompt: ()=>`A model car is ${fracHTML(3,10)} of the real car’s length. The model is 9 cm long. How long is the real car?`, ans: ()=>div(simp(9,1), simp(3,10)), unit:"cm" },
+        { id:"scale4", prompt: ()=>`A backpack is loaded to ${fracHTML(5,6)} of its maximum. The current load is 10 kg. What is the maximum load?`, ans: ()=>div(simp(10,1), simp(5,6)), unit:"kg" },
+        { id:"scale5", prompt: ()=>`A map distance is ${fracHTML(2,3)} of the real distance. The map shows ${mixedHTML(8,1)} km. What is the real distance?`, ans: ()=>div(simp(8,1), simp(2,3)), unit:"km" }
+      ],
+      dst: [
+        { id:"dst1", prompt: ()=>`A cyclist travels ${mixedHTML(9,2)} km in ${fracHTML(3,4)} h. What is the speed (km/h)?`, ans: ()=>div(simp(9,2), simp(3,4)), unit:"km/h" },
+        { id:"dst2", prompt: ()=>`A boat’s speed is ${fracHTML(5,6)} km/min. How long (in minutes) to travel ${mixedHTML(5,2)} km?`, ans: ()=>div(simp(5,2), simp(5,6)), unit:"min" },
+        { id:"dst3", prompt: ()=>`A runner goes ${fracHTML(7,8)} km in ${fracHTML(1,5)} h. Find the speed (km/h).`, ans: ()=>div(simp(7,8), simp(1,5)), unit:"km/h" },
+        { id:"dst4", prompt: ()=>`A train travels ${mixedHTML(15,2)} km at ${fracHTML(5,4)} km/min. How many minutes does it take?`, ans: ()=>div(simp(15,2), simp(5,4)), unit:"min" },
+        { id:"dst5", prompt: ()=>`A hiker walks at ${fracHTML(3,5)} km/h. How long (in hours) to walk ${fracHTML(9,10)} km?`, ans: ()=>div(simp(9,10), simp(3,5)), unit:"h" }
+      ],
+      unit: [
+        { id:"unit1", prompt: ()=>`${fracHTML(3,4)} kg of apples costs $${fracToString(9,2)}. What is the cost per kg?`, ans: ()=>div(simp(9,2), simp(3,4)), unit:"$/kg" },
+        { id:"unit2", prompt: ()=>`${fracHTML(2,3)} L of juice costs $8. What is the cost per litre?`, ans: ()=>div(simp(8,1), simp(2,3)), unit:"$/L" },
+        { id:"unit3", prompt: ()=>`${fracHTML(5,6)} kg of rice costs $${fracToString(25,3)}. What is the cost per kg?`, ans: ()=>div(simp(25,3), simp(5,6)), unit:"$/kg" },
+        { id:"unit4", prompt: ()=>`A bottle contains ${fracHTML(3,5)} L of oil and has a mass of ${mixedHTML(9,10)} kg. What is the mass per litre?`, ans: ()=>div(simp(9,10), simp(3,5)), unit:"kg/L" },
+        { id:"unit5", prompt: ()=>`${mixedHTML(7,2)} m of rope costs $${fracToString(21,2)}. What is the cost per metre?`, ans: ()=>div(simp(21,2), simp(7,2)), unit:"$/m" }
+      ],
+      multi: [
+        { id:"multi1", prompt: ()=>`A tank had ${mixedHTML(7,3)} L of water. ${fracHTML(2,3)} L was poured out. The rest is shared into cups of ${fracHTML(1,6)} L. How many full cups can be filled?`, ans: ()=>{
+            const left=sub(simp(7,3), simp(2,3)); return div(left, simp(1,6)); }, unit:"cups", fullGroups:true },
+        { id:"multi2", prompt: ()=>`A ribbon is ${mixedHTML(11,2)} m long. ${fracHTML(3,4)} m is used. The rest is cut into pieces of ${fracHTML(2,3)} m. How many full pieces?`, ans: ()=>{
+            const left=sub(simp(11,2), simp(3,4)); return div(left, simp(2,3)); }, unit:"pieces", fullGroups:true },
+        { id:"multi3", prompt: ()=>`You have ${mixedHTML(9,2)} kg of flour. After using ${fracHTML(3,5)} kg, you pack the rest into bags of ${fracHTML(3,4)} kg. How many full bags?`, ans: ()=>{
+            const left=sub(simp(9,2), simp(3,5)); return div(left, simp(3,4)); }, unit:"bags", fullGroups:true },
+        { id:"multi4", prompt: ()=>`A class collected ${mixedHTML(13,2)} kg of paper. ${fracHTML(1,4)} kg was used. The rest is packed into boxes holding ${fracHTML(3,5)} kg each. How many full boxes?`, ans: ()=>{
+            const left=sub(simp(13,2), simp(1,4)); return div(left, simp(3,5)); }, unit:"boxes", fullGroups:true },
+        { id:"multi5", prompt: ()=>`A jug contains ${mixedHTML(9,4)} L of drink. ${fracHTML(1,2)} L is added. The total is poured into bottles of ${fracHTML(3,8)} L. How many full bottles?`, ans: ()=>{
+            const total=add(simp(9,4), simp(1,2)); return div(total, simp(3,8)); }, unit:"bottles", fullGroups:true }
+      ],
+      reverse: [
+        { id:"rev1", prompt: ()=>`A number divided by ${fracHTML(3,4)} gives 6. What is the number?`, ans: ()=>mul(simp(6,1), simp(3,4)), unit:"" },
+        { id:"rev2", prompt: ()=>`When a number is divided by ${fracHTML(5,6)}, the result is ${mixedHTML(9,2)}. What is the number?`, ans: ()=>mul(simp(9,2), simp(5,6)), unit:"" },
+        { id:"rev3", prompt: ()=>`A length of rope is cut into pieces of ${fracHTML(3,8)} m. If there are 12 pieces, what was the original length?`, ans: ()=>mul(simp(12,1), simp(3,8)), unit:"m" },
+        { id:"rev4", prompt: ()=>`A container holds some juice. When it is poured into bottles of ${fracHTML(2,5)} L, it fills 9 bottles exactly. How much juice was there?`, ans: ()=>mul(simp(9,1), simp(2,5)), unit:"L" },
+        { id:"rev5", prompt: ()=>`A ribbon is shared into 7 equal lengths. Each length is ${fracHTML(5,12)} m. How long was the ribbon?`, ans: ()=>mul(simp(7,1), simp(5,12)), unit:"m" }
+      ]
+    };
+
+    const TYPE_ORDER = [
+      {key:"rate",   label:"Rate / Unit rate"},
+      {key:"scaling",label:"Scaling"},
+      {key:"dst",    label:"Distance–Speed–Time"},
+      {key:"unit",   label:"Unit price / density"},
+      {key:"multi",  label:"Multi-step"},
+      {key:"reverse",label:"Reverse"}
+    ];
+
+    const HINTS = {
+      rate:   "Write: unit rate = (given amount) ÷ (given time/amount). Then multiply by the reciprocal.",
+      scaling:"Write: scaled = factor × original, so original = scaled ÷ factor.",
+      dst:    "Use distance = speed × time. So speed = distance ÷ time, or time = distance ÷ speed.",
+      unit:   "Write: per 1 unit = total ÷ amount. Keep units (e.g., $/kg, kg/L).",
+      multi:  "Do it step-by-step: first find the remaining/total amount, then divide. If it asks full groups, take the whole number part.",
+      reverse:"Turn it into an equation: unknown ÷ fraction = result. Then unknown = result × fraction."
+    };
+
+    // ---------- state ----------
+    let setIndex = parseInt(localStorage.getItem("dyaa_fd_set_index") || "0", 10);
+    document.getElementById("setLabel").textContent = setLabelFromIndex(setIndex);
+
+    let checkedCount = 0;
+    function setCheckedCount(n){
+      checkedCount = n;
+      document.getElementById("checkedCount").textContent = String(n);
+    }
+
+    // current displayed questions
+    // {idx, typeKey, typeLabel, promptHTML, unit, expectedFrac, displayAnswer, fullGroups, checkedOnce}
+    let current = [];
+
+    function shuffle(arr){ return [...arr].sort(()=>Math.random()-0.5); }
+
+    function pickN(list, n, avoidIds){
+      const shuffled = shuffle(list);
+      const out=[];
+      for(const q of shuffled){
+        if(out.length>=n) break;
+        if(avoidIds && avoidIds.has(q.id)) continue;
+        out.push(q);
+      }
+      if(out.length<n){
+        for(const q of shuffled){
+          if(out.length>=n) break;
+          if(out.some(x=>x.id===q.id)) continue;
+          out.push(q);
+        }
+      }
+      return out.slice(0,n);
+    }
+
+    function buildSet(qCount){
+      const perType = (qCount===6) ? 1 : 2;
+      const lastIds = new Set(JSON.parse(localStorage.getItem("dyaa_fd_last_ids") || "[]"));
+
+      const selected=[];
+      for(const t of TYPE_ORDER){
+        const pool = banks[t.key];
+        const picked = pickN(pool, perType, lastIds);
+        for(const q of picked){
+          selected.push({typeKey:t.key, typeLabel:t.label, q});
+        }
+      }
+
+      // if qCount=6 we now have exactly 6
+      // if qCount=12 we have 12
+
+      // store last ids
+      localStorage.setItem("dyaa_fd_last_ids", JSON.stringify(selected.map(x=>x.q.id)));
+
+      // build current
+      current = selected.map((item, i)=>{
+        const rawAns = item.q.ans(); // fraction
+        let expectedFrac = rawAns;
+        let displayAnswer = fracToString(rawAns.n, rawAns.d);
+        if(item.q.fullGroups){
+          const full = Math.floor(Math.abs(rawAns.n)/rawAns.d);
+          expectedFrac = simp(full,1);
+          displayAnswer = String(full);
+        }
+        const unit = item.q.unit || "";
+        return {
+          idx:i+1,
+          typeKey:item.typeKey,
+          typeLabel:item.typeLabel,
+          id:item.q.id,
+          promptHTML:item.q.prompt(),
+          unit,
+          expectedFrac,
+          displayAnswer,
+          fullGroups: !!item.q.fullGroups,
+          checkedOnce:false
+        };
+      });
+
+      // reset UI state
+      setCheckedCount(0);
+      renderPractice();
+      renderAnswerKey();
+      hideAnswerKey();
+    }
+
+    function hideAnswerKey(){
+      document.getElementById("answersWrap").classList.remove("show");
+      document.getElementById("toggleAnswersBtn").textContent = "Show Answer Key";
+    }
+
+    function renderPractice(){
+      const grid=document.getElementById("practiceGrid");
+      grid.innerHTML="";
+      for(const item of current){
+        const el=document.createElement("div");
+        el.className="qcard";
+        el.dataset.q = String(item.idx);
+        el.innerHTML=`
+          <div class="qtop">
+            <div class="qnum">Q${item.idx}</div>
+            
+          </div>
+
+          <div class="qtext">
+            <b>Word problem:</b> ${item.promptHTML}
+          </div>
+
+          <div class="answerRow">
+            <label>Answer:</label>
+            <input class="ansInput" type="text" inputmode="text" placeholder="e.g., 3/4 or 1 1/2" />
+          </div>
+
+          <div class="qbtns">
+            <button class="qbtn" data-action="check">Check</button>
+            <button class="qbtn secondary" data-action="hint">Hint</button>
+            <button class="qbtn secondary" data-action="reveal">Reveal</button>
+          </div>
+
+          <div class="msg" aria-live="polite"></div>
+        `;
+        grid.appendChild(el);
+
+        const input = el.querySelector(".ansInput");
+        const btns = el.querySelectorAll("button.qbtn");
+        btns.forEach(b=>{
+          b.addEventListener("click", ()=>{
+            const act=b.dataset.action;
+            if(act==="check") onCheck(item.idx);
+            if(act==="hint") onHint(item.idx);
+            if(act==="reveal") onReveal(item.idx);
+          });
+        });
+
+        // Press Enter to check
+        input.addEventListener("keydown", (ev)=>{
+          if(ev.key==="Enter"){
+            ev.preventDefault();
+            onCheck(item.idx);
+          }
+        });
+      }
+    }
+
+    function getCard(idx){
+      return document.querySelector(`.qcard[data-q="${idx}"]`);
+    }
+    function setMsg(card, text, kind){
+      const msg = card.querySelector(".msg");
+      msg.className = `msg show ${kind}`;
+      msg.textContent = text;
+    }
+    function clearMsg(card){
+      const msg = card.querySelector(".msg");
+      msg.className = "msg";
+      msg.textContent = "";
+    }
+
+    function onCheck(idx){
+      const item = current[idx-1];
+      const card = getCard(idx);
+      const input = card.querySelector(".ansInput");
+      const val = input.value;
+
+      if(!item.checkedOnce){
+        item.checkedOnce = true;
+        setCheckedCount(checkedCount + 1);
+      }
+
+      const parsed = parseFracInput(val);
+      if(!parsed){
+        card.classList.remove("correct","incorrect");
+        setMsg(card, "Please enter a fraction or mixed number (e.g., 3/4 or 1 1/2).", "neutral");
+        return;
+      }
+
+      const ok = equalFrac(parsed, item.expectedFrac);
+      if(ok){
+        card.classList.remove("incorrect");
+        card.classList.add("correct");
+        const unit = item.unit ? ` ${item.unit}` : "";
+        setMsg(card, `Correct! ✓  Answer: ${item.displayAnswer}${unit}`, "good");
+      }else{
+        card.classList.remove("correct");
+        card.classList.add("incorrect");
+        setMsg(card, "Not quite. Try again.", "bad");
+      }
+    }
+
+    function onHint(idx){
+      const item = current[idx-1];
+      const card = getCard(idx);
+      card.classList.remove("correct","incorrect");
+      setMsg(card, HINTS[item.typeKey] || "Use fraction division: multiply by the reciprocal.", "neutral");
+    }
+
+    function onReveal(idx){
+      const item = current[idx-1];
+      const card = getCard(idx);
+      const unit = item.unit ? ` ${item.unit}` : "";
+      card.classList.remove("incorrect");
+      setMsg(card, `Answer: ${item.displayAnswer}${unit}`, "neutral");
+    }
+
+    function resetAnswers(){
+      setCheckedCount(0);
+      current.forEach(q=>q.checkedOnce=false);
+      document.querySelectorAll(".qcard").forEach(card=>{
+        card.classList.remove("correct","incorrect");
+        const input=card.querySelector(".ansInput");
+        input.value="";
+        clearMsg(card);
+      });
+    }
+
+    // ---------- answer key ----------
+    function renderAnswerKey(){
+      const list=document.getElementById("ansList");
+      list.innerHTML="";
+      for(const item of current){
+        const li=document.createElement("li");
+        const unit = item.unit ? ` ${item.unit}` : "";
+        const suffix = item.fullGroups ? " (full groups)" : "";
+        li.innerHTML = `<b>Q${item.idx}:</b> ${item.displayAnswer}${unit}${suffix}`;
+        list.appendChild(li);
+      }
+    }
+    document.getElementById("toggleAnswersBtn").addEventListener("click", ()=>{
+      const wrap = document.getElementById("answersWrap");
+      const showing = wrap.classList.toggle("show");
+      document.getElementById("toggleAnswersBtn").textContent = showing ? "Hide Answer Key" : "Show Answer Key";
+    });
+
+    // ---------- tabs ----------
+    function setTab(name){
+      const learn = document.getElementById("tab-learn");
+      const prac  = document.getElementById("tab-practice");
+      document.querySelectorAll(".tabbtn").forEach(b=>b.classList.toggle("active", b.dataset.tab===name));
+      if(name==="learn"){ learn.style.display="block"; prac.style.display="none"; }
+      else{ learn.style.display="none"; prac.style.display="block"; }
+    }
+    document.querySelectorAll(".tabbtn").forEach(btn=>{
+      btn.addEventListener("click", ()=>setTab(btn.dataset.tab));
+    });
+
+    // ---------- export PDF ----------
+    function htmlToPlain(html){
+      const div=document.createElement("div");
+      div.innerHTML=html;
+
+      // frac => a/b
+      div.querySelectorAll(".frac").forEach(fr=>{
+        const top=fr.querySelector(".top")?.textContent?.trim() || "";
+        const bot=fr.querySelector(".bottom")?.textContent?.trim() || "";
+        fr.replaceWith(document.createTextNode(`${top}/${bot}`));
+      });
+
+      // mixed => "1 1/2" (already text)
+      div.querySelectorAll(".mixed").forEach(m=>{
+        const txt = m.textContent.replace(/\s+/g," ").trim();
+        m.replaceWith(document.createTextNode(txt));
+      });
+
+      return div.textContent.replace(/\s+/g," ").trim();
+    }
+
+    function wrapText(doc, text, x, y, maxWidth, lineHeight){
+      const lines = doc.splitTextToSize(text, maxWidth);
+      for(const ln of lines){
+        doc.text(ln, x, y);
+        y += lineHeight;
+      }
+      return y;
+    }
+
+    async function exportPDF(){
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({unit:"pt", format:"a4"});
+      const stamp = nowStamp();
+      const pageW = doc.internal.pageSize.getWidth();
+      const pageH = doc.internal.pageSize.getHeight();
+
+      const perPage = parseInt(document.getElementById("pdfPerPageSel").value, 10) || 6;
+      const margin = 36;
+      const headerY = 40;
+      const topY = headerY + 26;
+      const availableH = pageH - topY - margin;
+      const gap = 10;
+      const cardH = Math.max(80, (availableH - gap*(perPage-1)) / perPage);
+      const cardW = pageW - margin*2;
+
+      function header(pageNum){
+        doc.setFont("helvetica","bold");
+        doc.setFontSize(13);
+        doc.text(`Fraction Division — Practice (${studentName})`, margin, headerY);
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(10);
+        doc.text(`Set ${document.getElementById("setLabel").textContent} • ${stamp}`, pageW - margin, headerY, {align:"right"});
+        doc.setDrawColor(220);
+        doc.line(margin, headerY+10, pageW-margin, headerY+10);
+        doc.setFontSize(9);
+        doc.setTextColor(90);
+        doc.text(`Page ${pageNum}`, pageW - margin, pageH - 18, {align:"right"});
+        doc.setTextColor(0);
+      }
+
+      const totalQ = current.length;
+      const pages = Math.ceil(totalQ / perPage);
+
+      for(let p=0; p<pages; p++){
+        if(p>0) doc.addPage();
+        header(p+1);
+
+        const slice = current.slice(p*perPage, (p+1)*perPage);
+        let y = topY;
+
+        for(const q of slice){
+          // card border
+          doc.setDrawColor(230);
+          doc.setLineWidth(1);
+          doc.roundedRect(margin, y, cardW, cardH, 10, 10);
+
+          // q number and tag
+          doc.setFont("helvetica","bold");
+          doc.setFontSize(11);
+          doc.setTextColor(13,71,161);
+          doc.text(`Q${q.idx}`, margin+12, y+18);
+          doc.setTextColor(0);
+
+          doc.setFont("helvetica","normal");
+          doc.setFontSize(9);
+          doc.setTextColor(120);
+          // type label hidden in questions
+          // doc.text(q.typeLabel, margin+50, y+18);
+
+          doc.setTextColor(0);
+
+          // question text
+          doc.setFont("helvetica","normal");
+          doc.setFontSize(10);
+          const text = "Word problem: " + htmlToPlain(q.promptHTML);
+          let yy = y + 36;
+          yy = wrapText(doc, text, margin+12, yy, cardW-24, 13);
+          // workspace box removed (leave blank space)
+
+          y += cardH + gap;
+        }
+      }
+
+      // Answer key page (always at end)
+      doc.addPage();
+      header(pages+1);
+      doc.setFont("helvetica","bold");
+      doc.setFontSize(12);
+      doc.text("Answer Key", margin, topY);
+
+      doc.setFont("helvetica","normal");
+      doc.setFontSize(10);
+      let y = topY + 20;
+      const lineH = 16;
+
+      for(const q of current){
+        const unit = q.unit ? ` ${q.unit}` : "";
+        const suffix = q.fullGroups ? " (full groups)" : "";
+        const rowText = `Q${q.idx}: ${q.displayAnswer}${unit}${suffix}`;
+        if(y > pageH - margin - 20){
+          doc.addPage();
+          header(doc.getNumberOfPages());
+          y = topY;
+        }
+        doc.text(rowText, margin, y);
+        y += lineH;
+      }
+
+      const filename = `Fraction_Division_6_Types_${studentName}_Set_${document.getElementById("setLabel").textContent}_${stamp}.pdf`;
+      doc.save(filename);
+    }
+
+    // ---------- controls ----------
+    document.getElementById("exportPdfBtn").addEventListener("click", exportPDF);
+    document.getElementById("resetBtn").addEventListener("click", resetAnswers);
+
+    document.getElementById("newSetBtn").addEventListener("click", ()=>{
+      setIndex += 1;
+      localStorage.setItem("dyaa_fd_set_index", String(setIndex));
+      document.getElementById("setLabel").textContent = setLabelFromIndex(setIndex);
+      const qCount = parseInt(document.getElementById("qCountSel").value, 10) || 12;
+      buildSet(qCount);
+    });
+
+    document.getElementById("qCountSel").addEventListener("change", ()=>{
+      const qCount = parseInt(document.getElementById("qCountSel").value, 10) || 12;
+      // keep the same set label; just rebuild questions and reset answers
+      buildSet(qCount);
+    });
+
+    // init
+    renderLearn();
+    buildSet(12);
+  </script>
+</body>
+</html>

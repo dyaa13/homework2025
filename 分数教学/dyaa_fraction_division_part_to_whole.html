@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fractions — Division: From Part to Whole (Learn + Practice) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --radius:14px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    /* subtle DYAA watermark */
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      user-select:none;
+      z-index:0;
+      white-space:nowrap;
+    }
+
+    .container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:24px auto 60px;
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+    }
+
+    /* Header */
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+      border-bottom:2px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:42px; height:42px;
+      background:var(--blue);
+      border-radius:8px;
+      position:relative;
+      flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px; height:10px;
+      background:var(--orange);
+      top:-7px; left:22px;
+      border-radius:4px;
+      transform:rotate(14deg);
+      box-shadow:0 4px 10px rgba(0,0,0,0.10);
+    }
+    .logo-text{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .logo-text h1{
+      margin:0;
+      font-size:20px;
+      color:var(--blue);
+      letter-spacing:.2px;
+    }
+    .tag{
+      font-size:12px;
+      font-weight:800;
+      color:#fff;
+      background:var(--orange);
+      padding:4px 10px;
+      border-radius:999px;
+      letter-spacing:.4px;
+    }
+    .subtitle{
+      margin:2px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      width:100%;
+    }
+
+    .student-pill{
+      margin-left:auto;
+      background:#eef2ff;
+      border:1px solid #dbe3ff;
+      padding:6px 10px;
+      border-radius:999px;
+      color:var(--blue);
+      font-weight:800;
+      display:flex;
+      gap:6px;
+      align-items:center;
+    }
+
+    /* Top bar */
+    .top-bar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+      margin-bottom:14px;
+    }
+
+    .tabs{
+      display:flex;
+      gap:8px;
+      background:#f7f7ff;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:6px;
+    }
+    .tab-btn{
+      border:none;
+      background:transparent;
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:900;
+      cursor:pointer;
+      color:var(--blue);
+      font-size:13px;
+    }
+    .tab-btn.active{
+      background:var(--blue);
+      color:#fff;
+    }
+
+    .controls{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    select, input[type="number"], input[type="text"]{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:9px 10px;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn.primary{ background:var(--blue); color:#fff; }
+    .btn.secondary{ background:#eef2ff; color:var(--blue); border:1px solid #dbe3ff; }
+    .btn.warn{ background:#fff3e0; color:#8a4b00; border:1px solid #ffe0b2; }
+    .btn:active{ transform:translateY(1px); }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+
+    /* Sections */
+    .section{ display:none; margin-top:16px; }
+    .section.active{ display:block; }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    @media (min-width: 860px){
+      .grid.two{ grid-template-columns:1fr 1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      padding:16px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+    .card h3{
+      margin:10px 0 8px;
+      font-size:15px;
+      color:#111;
+    }
+    .muted{ color:var(--muted); }
+    .note{
+      background:#f7fbff;
+      border:1px solid #d9ecff;
+      padding:12px;
+      border-radius:12px;
+      color:#123;
+    }
+    .rule{ border-top:1px dashed var(--line); margin:12px 0; }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      font-weight:800;
+      color:#111;
+    }
+
+    /* Fraction inline */
+    .math{ font-weight:900; color:#111; }
+    .frac{ display:inline-block; vertical-align:middle; text-align:center; font-weight:900; font-size:0.98em; }
+    .frac .top{ display:block; padding:0 2px; }
+    .frac .bar{ display:block; height:1px; background:#111; margin:1px 0; }
+    .frac .bottom{ display:block; padding:0 2px; }
+    .mixed{ display:inline-flex; align-items:center; gap:0;}
+    .mixed .whole{ font-weight:900; }
+
+    /* Practice */
+    .practice-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+
+    .practice-meta{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .pill{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:7px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-weight:900;
+      color:#111;
+      font-size:13px;
+    }
+
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fff;
+      padding:14px;
+      box-shadow:0 2px 0 rgba(0,0,0,0.02);
+    }
+
+    .q-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    .q-num{
+      font-weight:1000;
+      color:var(--blue);
+      font-size:15px;
+    }
+
+    .q-topic{
+      font-size:12px;
+      font-weight:1000;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fafafe;
+      color:#111;
+    }
+
+    .q-body{
+      line-height:1.55;
+      font-size:14px;
+      margin-bottom:10px;
+    }
+
+    .q-input{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+
+    .q-input input.wide{
+      min-width:min(360px, 100%);
+      flex:1 1 auto;
+    }
+
+    .q-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:4px;
+    }
+
+    .feedback{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      display:none;
+      background:#fff;
+    }
+    .feedback.show{ display:block; }
+    .feedback.ok{ border-color:rgba(27,94,32,0.28); background:rgba(27,94,32,0.06); }
+    .feedback.bad{ border-color:rgba(183,28,28,0.25); background:rgba(183,28,28,0.06); }
+    .feedback .title{ font-weight:1000; margin-bottom:6px; }
+
+    .footer-actions{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+      padding-top:10px;
+      border-top:1px dashed var(--line);
+    }
+
+    .scorebox{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .scorebox strong{ color:var(--blue); }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+    .modal-backdrop.show{ display:flex; }
+    .modal{
+      width:min(560px, 96vw);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 18px 45px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+      padding:16px;
+    }
+    .modal h3{ margin:0 0 6px; color:var(--blue); }
+    .modal p{ margin:6px 0 14px; color:var(--muted); }
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); border:0;
+    }
+
+    /* hidden print layout for PDF */
+    #pdfPrintArea{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:794px; /* ~A4 at 96dpi */
+      background:#fff;
+      color:#111;
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      padding:0;
+    }
+    .pdf-page{
+      width:794px;
+      min-height:1123px; /* ~A4 at 96dpi */
+      padding:36px 44px;
+      page-break-after:always;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .pdf-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+      padding-bottom:10px;
+      border-bottom:2px solid #e6e6ef;
+    }
+    .pdf-title{
+      font-weight:1000;
+      color:#111;
+      font-size:18px;
+      line-height:1.2;
+    }
+    .pdf-sub{
+      color:#666;
+      font-size:12px;
+      margin-top:4px;
+    }
+    .pdf-meta{
+      text-align:right;
+      font-size:12px;
+      color:#666;
+      white-space:nowrap;
+      line-height:1.35;
+    }
+
+    /* PDF question grid: 6 per page = 2 columns × 3 rows */
+    .pdf-grid{
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:12px;
+    }
+    .pdf-q{
+      border:1px solid #e6e6ef;
+      border-radius:12px;
+      padding:12px 12px;
+      display:flex;
+      flex-direction:column;
+    }
+    .pdf-qhead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .pdf-qnum{ font-weight:1000; color:#111; }
+
+    .pdf-qbody{
+      font-size:13px;
+      line-height:1.45;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .pdf-answerline{
+      margin-top:auto;
+      padding-top:10px;
+      font-size:12px;
+      color:#111;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:flex-end;
+    }
+    .linebox{
+      display:inline-block;
+      border-bottom:2px solid #111;
+      min-width:160px;
+      height:14px;
+      vertical-align:baseline;
+      margin-left:6px;
+    }
+
+
+    /* Blank answer space (about 4 lines), no horizontal lines */
+    .pdf-blank{
+      margin-top:auto;
+      height:56px;
+    }
+    /* Adjust card height based on 4/6/8 per page */
+    .pdf-page.per-4 .pdf-q{ min-height:285px; }
+    /* 2 columns × 3 rows layout needs slightly shorter cards */
+    .pdf-page.per-6 .pdf-q{ min-height: 230px; }
+    .pdf-page.per-8 .pdf-q{ min-height:145px; }
+
+    /* Answer key cards */
+    .pdf-ansgrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .pdf-ans{
+      border:1px solid #e6e6ef;
+      border-radius:12px;
+      padding:10px 10px;
+      font-size:12.5px;
+      line-height:1.35;
+    }
+    .pdf-ans b{ color:#0d47a1; }
+  
+    /* Answer list (compact, fits many on one page) */
+    .pdf-answers{
+      column-count:2;
+      column-gap:18px;
+      font-size:13px;
+      line-height:1.45;
+    }
+    .pdf-ansline{
+      break-inside:avoid;
+      padding:2px 0;
+    }
+    .pdf-ansq{
+      font-weight:1000;
+      color:#111;
+      display:inline-block;
+      width:44px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div>
+        <div class="logo-text">
+          <h1>Fractions — Division: From Part to Whole</h1>
+          <span class="tag">DYAA EDUCATION</span>
+        </div>
+        <p class="subtitle">Find the whole (part → total) • Remaining fractions • Mixed numbers</p>
+      </div>
+
+      <div id="studentPillHeader" class="student-pill" aria-live="polite">
+        Student: <span id="studentNameHeader"></span>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="learn">Learn</button>
+        <button class="tab-btn" data-tab="practice">Practice</button>
+      </div>
+
+      <div class="controls" id="practiceControls" style="display:none;">
+        <label class="chip">
+          Questions:
+          <select id="countSelect" aria-label="Number of questions">
+            <option value="10" selected>10</option>
+          </select>
+        </label>
+
+        <label class="chip">
+          PDF per page:
+          <select id="perPageSelect" aria-label="PDF questions per page">
+            <option value="4">4</option>
+            <option value="6" selected>6</option>
+            <option value="8">8</option>
+          </select>
+        </label>
+
+        <button class="btn secondary" id="exportPdfBtn">Export to PDF</button>
+        <button class="btn warn" id="newSetBtn">Generate New Set</button>
+        <button class="btn secondary" id="resetBtn">Reset Answers</button>
+      </div>
+    </div>
+
+    <!-- LEARN -->
+    <div class="section active" id="learnSection">
+      <div class="grid two">
+
+        <div class="card">
+          <h2>1) Key rule</h2>
+          <p class="muted">To divide by a fraction, multiply by its reciprocal.</p>
+          <div class="note">
+            <div class="chip"><span class="math">a/b ÷ c/d = a/b × d/c</span></div>
+            <div class="rule"></div>
+            <div class="muted">Tip: <b>Keep</b> the first fraction, <b>Change</b> ÷ to ×, <b>Flip</b> the second fraction.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>2) From part to whole (Part → Total)</h2>
+          <p class="muted">If a fraction of the whole equals a known amount, you can find the whole by dividing by the fraction.</p>
+          <div class="note">
+            <div class="chip"><span class="math">fraction × whole = part</span></div>
+            <div class="chip"><span class="math">whole = part ÷ fraction</span></div>
+            <div class="rule"></div>
+            <div class="muted">Example: <span class="math">3/5</span> of a tank is <span class="math">12&nbsp;L</span>.<br/>
+              Whole = <span class="math">12 ÷ 3/5 = 12 × 5/3 = 20&nbsp;L</span>.
+            </div>
+            <div class="rule"></div>
+            <div class="muted">If a question says “<b>1/4 was used</b>”, then the amount left is <span class="math">1 − 1/4 = 3/4</span> of the whole.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>3) Mixed numbers</h2>
+          <p class="muted">Convert mixed numbers to improper fractions before dividing.</p>
+          <div class="note">
+            <div class="muted">Example: <span class="math">1 1/2 = 3/2</span></div>
+            <div class="muted">Then: <span class="math">3/2 ÷ 1/4 = 3/2 × 4/1</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>4) Always simplify</h2>
+          <p class="muted">After multiplying, simplify the result.</p>
+          <div class="note">
+            <div class="muted">Example: <span class="math">(3/4) × (8/3) = 2</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>5) Input format (Practice)</h2>
+          <p class="muted">You can type your answers as:</p>
+          <div class="note">
+            <div class="chip">Fraction:  <span class="math">7/8</span></div>
+            <div class="chip">Mixed:  <span class="math">2 1/3</span></div>
+            <div class="chip">Integer:  <span class="math">5</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>6) Common mistake</h2>
+          <p class="muted">Do <b>not</b> divide the numerators and denominators separately.</p>
+          <div class="note">
+            <div class="muted">Correct method: multiply by the reciprocal.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="section" id="practiceSection">
+      <div class="practice-header">
+        <div>
+          <h2 style="margin:0;color:var(--blue);font-size:18px;">Practice Quiz</h2>
+          <p class="muted" style="margin:6px 0 0;">Enter your answer as a fraction or mixed number (e.g., <b>3/4</b> or <b>1 1/2</b>).</p>
+        </div>
+        <div class="practice-meta">
+          <span class="pill" id="studentPillPractice" style="display:none;">Student: <span id="studentNamePractice"></span></span>
+          <span class="pill" id="setLabel">Set: A</span>
+          <span class="pill" id="progressLabel">0 checked</span>
+        </div>
+      </div>
+
+      <div id="questionsWrap" class="grid"></div>
+
+      <div class="footer-actions">
+        <div class="scorebox">
+          <strong>Score:</strong>
+          <span id="scoreValue">—</span>
+        </div>
+        <div class="controls">
+          <button class="btn primary" id="submitBtn">Submit All</button>
+          <button class="btn secondary" id="showAllBtn">Show All Answers</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Confirm new set modal -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle">Generate a new set?</h3>
+      <p>This will replace the current questions. Your answers will be cleared.</p>
+      <div class="modal-actions">
+        <button class="btn secondary" id="cancelModalBtn">Cancel</button>
+        <button class="btn warn" id="confirmModalBtn">Generate New Set</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Name modal -->
+  <div class="modal-backdrop" id="nameBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+      <h3 id="nameTitle">Student name</h3>
+      <p>Please enter the student name to start Practice (it will also appear on the exported PDF).</p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <input id="nameInput" type="text" placeholder="e.g., Tiger" style="flex:1 1 220px;" />
+        <button class="btn primary" id="startWithNameBtn">Start</button>
+        <button class="btn secondary" id="cancelNameBtn">Cancel</button>
+      </div>
+      <p class="muted" style="margin-top:10px;">Tip: you can also pass the student name using <span class="math">?name=Tiger</span> in the URL.</p>
+    </div>
+  </div>
+
+  <!-- Hidden PDF print area -->
+  <div id="pdfPrintArea" aria-hidden="true"></div>
+
+  <script>
+    /***********************
+     * Helpers
+     ************************/
+    function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+    function pick(arr){ return arr[randInt(0, arr.length-1)]; }
+    function shuffle(a){
+      const b=a.slice();
+      for(let i=b.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [b[i],b[j]]=[b[j],b[i]];
+      }
+      return b;
+    }
+
+    function escapeHTML(s){
+      return String(s)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/\"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    function sanitizeName(s){
+      return String(s||"")
+        .trim()
+        .replace(/\s+/g," ")
+        .replace(/[^\p{L}\p{N} .,'-]/gu, "")
+        .slice(0, 40);
+    }
+
+    /***********************
+     * Rational arithmetic
+     ************************/
+    function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ const t=a%b; a=b; b=t; } return a||1; }
+    function normRat(n,d){
+      if(d===0) return null;
+      if(d<0){ n=-n; d=-d; }
+      const g = gcd(n,d);
+      return { n: n/g, d: d/g };
+    }
+    function addRat(r1,r2){ return normRat(r1.n*r2.d + r2.n*r1.d, r1.d*r2.d); }
+    function subRat(r1,r2){ return normRat(r1.n*r2.d - r2.n*r1.d, r1.d*r2.d); }
+    function mulRat(r1,r2){ return normRat(r1.n*r2.n, r1.d*r2.d); }
+    function divRat(r1,r2){ return normRat(r1.n*r2.d, r1.d*r2.n); }
+    function ratEq(r1,r2){ return !!r1 && !!r2 && r1.n===r2.n && r1.d===r2.d; }
+
+    function ratToMixedText(r){
+      if(!r) return "";
+      const n = r.n, d = r.d;
+      const sign = n<0 ? "-" : "";
+      const an = Math.abs(n);
+      const whole = Math.floor(an / d);
+      const rem = an - whole*d;
+      if(rem===0) return sign + String(whole);
+      if(whole===0) return sign + `${rem}/${d}`;
+      return sign + `${whole} ${rem}/${d}`;
+    }
+
+    function fracHTML(n,d){
+      return `<span class="frac" aria-label="${n} over ${d}"><span class="top">${n}</span><span class="bar"></span><span class="bottom">${d}</span></span>`;
+    }
+    function mixedHTML(w,n,d){
+      return `<span class="mixed"><span class="whole">${w}</span>${fracHTML(n,d)}</span>`;
+    }
+
+    function ratToHTML(r){
+      if(!r) return "";
+      const n=r.n, d=r.d;
+      const sign = n<0 ? "-" : "";
+      const an = Math.abs(n);
+      const w = Math.floor(an/d);
+      const rem = an - w*d;
+      if(rem===0) return `<span class="math">${sign}${w}</span>`;
+      if(w===0) return `<span class="math">${sign}</span>${fracHTML(rem,d)}`;
+      return `<span class="math">${sign}</span>` + mixedHTML(w, rem, d);
+    }
+
+    function parseRationalString(raw){
+      const s = String(raw||"").trim();
+      if(!s) return null;
+
+      // integer
+      if(/^[-+]?\d+$/.test(s)){
+        return normRat(parseInt(s,10), 1);
+      }
+
+      // mixed: w n/d
+      const m = s.match(/^\s*([-+]?\d+)\s+([0-9]+)\s*\/\s*([0-9]+)\s*$/);
+      if(m){
+        const w = parseInt(m[1],10);
+        const n = parseInt(m[2],10);
+        const d = parseInt(m[3],10);
+        if(d===0) return null;
+        const sign = w<0 ? -1 : 1;
+        const aw = Math.abs(w);
+        const totalN = sign * (aw*d + n);
+        return normRat(totalN, d);
+      }
+
+      // fraction: n/d
+      const f = s.match(/^\s*([-+]?\d+)\s*\/\s*([0-9]+)\s*$/);
+      if(f){
+        const n = parseInt(f[1],10);
+        const d = parseInt(f[2],10);
+        if(d===0) return null;
+        return normRat(n,d);
+      }
+
+      return null;
+    }
+
+    function fractionInputHTML(label="Answer"){
+      return `
+        <span class="muted">${escapeHTML(label)}:</span>
+        <input class="wide" type="text" autocomplete="off" placeholder="e.g., 3/4 or 1 1/2" aria-label="${escapeHTML(label)}" />
+      `;
+    }
+
+    function parseRationalFromCard(card){
+      const inp = card.querySelector("input");
+      if(!inp) return null;
+      return parseRationalString(inp.value);
+    }
+
+    function makeFracQ(type, signature, promptHTML, ansRat, hintHTML, stepsArr){
+      const answerText = ratToMixedText(ansRat);
+      const explainHTML = `<div class="rule"></div><div><b>Answer:</b> ${escapeHTML(answerText)}</div>`;
+return {
+        type,
+        signature,
+        promptHTML,
+        inputHTML: fractionInputHTML("Answer"),
+        getUser: (card)=> parseRationalFromCard(card),
+        isCorrect: (u)=> ratEq(u, ansRat),
+        hintHTML: hintHTML || "Use the reciprocal: keep-change-flip.",
+        explainHTML,
+        answerText,
+        answerRat: ansRat
+      };
+    }
+
+    function topicLabel(type){
+      if(type === "p1") return "Find the whole (one-step)";
+      if(type === "m1") return "Find the whole (mixed)";
+      if(type === "ms") return "Multi-step (find the whole)";
+      return "Question";
+    }
+
+    /***********************
+     * Fraction generators
+     ************************/
+    function properFrac(){
+      const d = randInt(4, 12);
+      const n = randInt(1, d-1);
+      return normRat(n,d);
+    }
+
+    function unitFrac(){
+      const d = randInt(4, 12);
+      return normRat(1, d);
+    }
+
+    function mixedNumber(){
+      const whole = randInt(1, 4);
+      const f = properFrac();
+      return normRat(whole*f.d + f.n, f.d);
+    }
+
+    function asMixedParts(r){
+      const an = Math.abs(r.n);
+      const w = Math.floor(an / r.d);
+      const rem = an - w*r.d;
+      return { w, rem, d: r.d, sign: r.n<0?-1:1 };
+    }
+
+    /***********************
+     * Question bank builders
+     * 10 questions total:
+     * Q1–Q3: one-step proper ÷ proper
+     * Q4–Q6: one-step mixed ÷ fraction
+     * Q7–Q10: multi-step (includes ÷ and other ops)
+     ************************/
+
+        function buildQuestionSet(){
+      const used = new Set();
+      function unique(q){
+        if(used.has(q.signature)) return false;
+        used.add(q.signature);
+        return true;
+      }
+
+      const units = {
+        liquid: pick(["L", "litres"]),
+        mass: pick(["kg", "kilograms"]),
+        length: pick(["m", "metres"]),
+        count: pick(["items", "tickets", "cards", "marbles"])
+      };
+
+      const qs = [];
+
+      const niceProperFracs = [
+        normRat(1,2), normRat(1,3), normRat(2,3),
+        normRat(1,4), normRat(3,4),
+        normRat(1,5), normRat(2,5), normRat(3,5), normRat(4,5),
+        normRat(1,6), normRat(5,6),
+        normRat(3,8), normRat(5,8),
+        normRat(2,7), normRat(3,7), normRat(4,7), normRat(5,7)
+      ];
+
+      function oneStepSteps(part, frac){
+        const rec = normRat(frac.d, frac.n);
+        const whole = divRat(part, frac);
+        return {
+          whole,
+          steps: [
+            `Whole = ${ratToMixedText(part)} ÷ ${ratToMixedText(frac)}`,
+            `= ${ratToMixedText(part)} × ${ratToMixedText(rec)}`,
+            `= <b>${ratToMixedText(whole)}</b>`
+          ]
+        };
+      }
+
+      function remainingSteps(left, usedFrac){
+        const remain = normRat(usedFrac.d - usedFrac.n, usedFrac.d);
+        const rec = normRat(remain.d, remain.n);
+        const whole = divRat(left, remain);
+        return {
+          remain,
+          whole,
+          steps: [
+            `Remaining fraction = 1 − ${ratToMixedText(usedFrac)} = ${ratToMixedText(remain)}`,
+            `Whole = ${ratToMixedText(left)} ÷ ${ratToMixedText(remain)}`,
+            `= ${ratToMixedText(left)} × ${ratToMixedText(rec)}`,
+            `= <b>${ratToMixedText(whole)}</b>`
+          ]
+        };
+      }
+
+      function tryBuildUntil(builder, tries=60){
+        for(let i=0;i<tries;i++){
+          const q = builder();
+          if(q && unique(q)) return q;
+        }
+        return null;
+      }
+
+      /***********************
+       * Q1–Q3: One-step (integer part, integer whole)
+       ************************/
+      const oneStepPool = [
+        ()=>{
+          const frac = pick(niceProperFracs);
+          const k = randInt(2, 9);
+          const whole = normRat(k * frac.d, 1);
+          const part = normRat(k * frac.n, 1);
+
+          const container = pick(["a water tank", "a bottle", "a jug", "a container"]);
+          const liquid = pick(["water", "juice", "milk", "lemonade"]);
+          const unit = units.liquid;
+
+          const { steps } = oneStepSteps(part, frac);
+
+          return makeFracQ(
+            "p1",
+            `ptw_full_${frac.n}_${frac.d}_${part.n}_${container}_${liquid}`,
+            `<b>Word problem:</b> ${escapeHTML(container)} is <b>${ratToHTML(frac)}</b> full, which is <b>${ratToHTML(part)}</b> ${escapeHTML(unit)} of ${escapeHTML(liquid)}.<div class="rule"></div>What is the <b>full</b> capacity of the ${escapeHTML(container)}?`,
+            whole,
+            "Whole = part ÷ fraction (multiply by the reciprocal).",
+            steps
+          );
+        },
+        ()=>{
+          const frac = pick(niceProperFracs);
+          const k = randInt(2, 10);
+          const whole = normRat(k * frac.d, 1);
+          const part = normRat(k * frac.n, 1);
+
+          const item = pick(["rope", "ribbon", "string", "tape"]);
+          const unit = units.length;
+
+          const { steps } = oneStepSteps(part, frac);
+
+          return makeFracQ(
+            "p1",
+            `ptw_rope_${frac.n}_${frac.d}_${part.n}_${item}`,
+            `<b>Word problem:</b> You have <b>${ratToHTML(frac)}</b> of a ${escapeHTML(item)} left, which is <b>${ratToHTML(part)}</b> ${escapeHTML(unit)}.<div class="rule"></div>How long was the ${escapeHTML(item)} at the start?`,
+            whole,
+            "Whole = part ÷ fraction.",
+            steps
+          );
+        },
+        ()=>{
+          const frac = pick(niceProperFracs);
+          const k = randInt(2, 10);
+          const whole = normRat(k * frac.d, 1);
+          const part = normRat(k * frac.n, 1);
+
+          const thing = pick(["a bag of rice", "a bag of flour", "a box of apples", "a sack of potatoes"]);
+          const unit = (thing.indexOf("apples")>=0) ? units.count : units.mass;
+
+          const { steps } = oneStepSteps(part, frac);
+
+          return makeFracQ(
+            "p1",
+            `ptw_bag_${frac.n}_${frac.d}_${part.n}_${thing}`,
+            `<b>Word problem:</b> <b>${ratToHTML(frac)}</b> of ${escapeHTML(thing)} is <b>${ratToHTML(part)}</b> ${escapeHTML(unit)}.<div class="rule"></div>How much is the <b>whole</b> ${escapeHTML(thing)}?`,
+            whole,
+            "Whole = part ÷ fraction.",
+            steps
+          );
+        },
+        ()=>{
+          const frac = pick(niceProperFracs);
+          const k = randInt(2, 9);
+          const whole = normRat(k * frac.d, 1);
+          const part = normRat(k * frac.n, 1);
+
+          const unit = pick(["pages", "stickers", "cards", "points"]);
+          const book = pick(["a book", "a workbook", "a comic", "a reading log"]);
+
+          const { steps } = oneStepSteps(part, frac);
+
+          return makeFracQ(
+            "p1",
+            `ptw_pages_${frac.n}_${frac.d}_${part.n}_${unit}`,
+            `<b>Word problem:</b> <b>${ratToHTML(frac)}</b> of ${escapeHTML(book)} is <b>${ratToHTML(part)}</b> ${escapeHTML(unit)}.<div class="rule"></div>How many ${escapeHTML(unit)} are there in the whole ${escapeHTML(book)}?`,
+            whole,
+            "Whole = part ÷ fraction.",
+            steps
+          );
+        }
+      ];
+
+      /***********************
+       * Q4–Q6: One-step (mixed numbers appear)
+       ************************/
+      const mixedPool = [
+        ()=>{
+          // part is a mixed number, whole is an integer
+          const frac = pick(niceProperFracs);
+          let whole, part, guard = 0;
+
+          while(guard < 80){
+            whole = normRat(randInt(3, 18), 1);
+            part = mulRat(whole, frac);
+            const isInteger = (part.n % part.d === 0);
+            const asMixed = asMixedParts(part);
+            const isMixed = asMixed.w >= 1 && asMixed.rem !== 0;
+            if(isMixed && !isInteger && part.d <= 24) break;
+            guard++;
+          }
+
+          const ctx = pick(["a bottle", "a tank", "a jug", "a container"]);
+          const liquid = pick(["water", "juice", "milk"]);
+          const unit = units.liquid;
+
+          const rec = normRat(frac.d, frac.n);
+          const steps = [
+            `Whole = ${ratToMixedText(part)} ÷ ${ratToMixedText(frac)}`,
+            `= ${ratToMixedText(part)} × ${ratToMixedText(rec)}`,
+            `= <b>${ratToMixedText(whole)}</b>`
+          ];
+
+          return makeFracQ(
+            "m1",
+            `ptw_mixPart_${frac.n}_${frac.d}_${part.n}_${part.d}_${ctx}_${liquid}`,
+            `<b>Word problem:</b> <b>${ratToHTML(frac)}</b> of ${escapeHTML(ctx)} is <b>${ratToHTML(part)}</b> ${escapeHTML(unit)} of ${escapeHTML(liquid)}.<div class="rule"></div>What is the full capacity of the ${escapeHTML(ctx)}?`,
+            whole,
+            "Whole = part ÷ fraction.",
+            steps
+          );
+        },
+        ()=>{
+          // whole is a mixed number, part can be integer or fraction
+          const frac = pick(niceProperFracs);
+          let whole, part, guard = 0;
+
+          const denChoices = [2,3,4,6,8];
+          while(guard < 80){
+            const d = pick(denChoices);
+            const n = randInt(1, d-1);
+            const w = randInt(1, 6);
+            whole = normRat(w*d + n, d);
+            part = mulRat(whole, frac);
+            if(part.d <= 24 && part.n > 0) break;
+            guard++;
+          }
+
+          const item = pick(["rope", "ribbon", "string"]);
+          const unit = units.length;
+
+          const rec = normRat(frac.d, frac.n);
+          const steps = [
+            `Whole = ${ratToMixedText(part)} ÷ ${ratToMixedText(frac)}`,
+            `= ${ratToMixedText(part)} × ${ratToMixedText(rec)}`,
+            `= <b>${ratToMixedText(whole)}</b>`
+          ];
+
+          return makeFracQ(
+            "m1",
+            `ptw_mixWhole_${frac.n}_${frac.d}_${whole.n}_${whole.d}_${item}`,
+            `<b>Word problem:</b> <b>${ratToHTML(frac)}</b> of a ${escapeHTML(item)} is <b>${ratToHTML(part)}</b> ${escapeHTML(unit)}.<div class="rule"></div>How long was the ${escapeHTML(item)} at the start?`,
+            whole,
+            "Whole = part ÷ fraction (multiply by the reciprocal).",
+            steps
+          );
+        },
+        ()=>{
+          // context with counts; whole is integer, part is fraction/mixed
+          const frac = pick(niceProperFracs);
+          let whole, part, guard=0;
+
+          while(guard<80){
+            whole = normRat(randInt(8, 60), 1);
+            part = mulRat(whole, frac);
+            const asMixed = asMixedParts(part);
+            const isMixed = asMixed.w >= 0 && asMixed.rem !== 0;
+            if(isMixed && part.d <= 24) break;
+            guard++;
+          }
+
+          const unit = pick(["stickers", "tickets", "points", "cards"]);
+          const ctx = pick(["a set", "a pack", "a collection"]);
+
+          const rec = normRat(frac.d, frac.n);
+          const steps = [
+            `Whole = ${ratToMixedText(part)} ÷ ${ratToMixedText(frac)}`,
+            `= ${ratToMixedText(part)} × ${ratToMixedText(rec)}`,
+            `= <b>${ratToMixedText(whole)}</b>`
+          ];
+
+          return makeFracQ(
+            "m1",
+            `ptw_count_${frac.n}_${frac.d}_${whole.n}_${unit}_${ctx}`,
+            `<b>Word problem:</b> <b>${ratToHTML(frac)}</b> of ${escapeHTML(ctx)} is <b>${ratToHTML(part)}</b> ${escapeHTML(unit)}.<div class="rule"></div>How many ${escapeHTML(unit)} are in the whole ${escapeHTML(ctx)}?`,
+            whole,
+            "Whole = part ÷ fraction.",
+            steps
+          );
+        }
+      ];
+
+      /***********************
+       * Q7–Q10: Multi-step (use “remaining fraction” + part → whole)
+       ************************/
+      const multiPool = [
+        ()=>{
+          // Used a fraction, left amount is given
+          const usedFrac = pick([normRat(1,4), normRat(1,5), normRat(2,5), normRat(1,6), normRat(1,3), normRat(2,7), normRat(3,8)]);
+          const remain = normRat(usedFrac.d - usedFrac.n, usedFrac.d);
+
+          const k = randInt(2, 10);
+          const whole = normRat(k * remain.d, 1);
+          const left = normRat(k * remain.n, 1);
+
+          const ctx = pick(["a bottle of juice", "a tank of water", "a bag of rice", "a jar of sweets"]);
+          const unit = (ctx.indexOf("rice")>=0) ? units.mass : (ctx.indexOf("sweets")>=0 ? units.count : units.liquid);
+
+          const data = remainingSteps(left, usedFrac);
+
+          return makeFracQ(
+            "ms",
+            `ptw_used_${usedFrac.n}_${usedFrac.d}_${left.n}_${ctx}`,
+            `<b>Word problem:</b> From ${escapeHTML(ctx)}, <b>${ratToHTML(usedFrac)}</b> was used.<div class="rule"></div><b>${ratToHTML(left)}</b> ${escapeHTML(unit)} is left. What was the amount at the start?`,
+            data.whole,
+            "Find the fraction left, then divide the amount left by that fraction.",
+            data.steps
+          );
+        },
+        ()=>{
+          // Used a fraction, then used a fixed amount more
+          const usedFrac = pick([normRat(1,4), normRat(1,5), normRat(1,6), normRat(1,3), normRat(2,7), normRat(3,8)]);
+          const remain = normRat(usedFrac.d - usedFrac.n, usedFrac.d);
+
+          const k = randInt(3, 10);
+          const whole = normRat(k * remain.d, 1);
+          const leftBefore = normRat(k * remain.n, 1);
+
+          const extra = randInt(1, Math.max(1, Math.min(6, leftBefore.n - 1)));
+          const leftAfter = normRat(leftBefore.n - extra, 1);
+
+          const ctx = pick(["a tank of water", "a bottle of juice", "a bag of flour"]);
+          const unit = (ctx.indexOf("flour")>=0) ? units.mass : units.liquid;
+
+          const rec = normRat(remain.d, remain.n);
+          const steps = [
+            `Remaining fraction = 1 − ${ratToMixedText(usedFrac)} = ${ratToMixedText(remain)}`,
+            `Before the extra use: ${ratToMixedText(leftAfter)} + ${extra} = ${ratToMixedText(leftBefore)}`,
+            `Whole = ${ratToMixedText(leftBefore)} ÷ ${ratToMixedText(remain)}`,
+            `= ${ratToMixedText(leftBefore)} × ${ratToMixedText(rec)}`,
+            `= <b>${ratToMixedText(whole)}</b>`
+          ];
+
+          return makeFracQ(
+            "ms",
+            `ptw_usedExtra_${usedFrac.n}_${usedFrac.d}_${leftAfter.n}_${extra}_${ctx}`,
+            `<b>Word problem:</b> From ${escapeHTML(ctx)}, <b>${ratToHTML(usedFrac)}</b> was used. Then <b>${extra}</b> ${escapeHTML(unit)} was used again.<div class="rule"></div>Now <b>${ratToHTML(leftAfter)}</b> ${escapeHTML(unit)} is left. What was the amount at the start?`,
+            whole,
+            "Add back the extra amount, then divide by the fraction left.",
+            steps
+          );
+        },
+        ()=>{
+          // Sold a fraction, tickets/items left are given
+          const sold = pick([normRat(1,4), normRat(1,5), normRat(2,5), normRat(1,6), normRat(3,8), normRat(2,7)]);
+          const remain = normRat(sold.d - sold.n, sold.d);
+
+          const k = randInt(2, 12);
+          const whole = normRat(k * remain.d, 1);
+          const left = normRat(k * remain.n, 1);
+
+          const unit = pick(["tickets", "items", "stickers"]);
+          const ctx = pick(["a fundraiser", "a school fair", "a shop", "a class pack"]);
+
+          const data = remainingSteps(left, sold);
+
+          return makeFracQ(
+            "ms",
+            `ptw_sold_${sold.n}_${sold.d}_${left.n}_${unit}_${ctx}`,
+            `<b>Word problem:</b> At ${escapeHTML(ctx)}, <b>${ratToHTML(sold)}</b> of the ${escapeHTML(unit)} were sold.<div class="rule"></div><b>${ratToHTML(left)}</b> ${escapeHTML(unit)} are left. How many ${escapeHTML(unit)} were there at first?`,
+            data.whole,
+            "Remaining fraction = 1 − sold, then whole = left ÷ remaining fraction.",
+            data.steps
+          );
+        }
+      ];
+
+      // Build Q1–Q3
+      const pFns = shuffle(oneStepPool);
+      for(const fn of pFns){
+        if(qs.length >= 3) break;
+        const q = tryBuildUntil(fn);
+        if(q) qs.push(q);
+      }
+      let guard = 0;
+      while(qs.length < 3 && guard < 80){
+        const q = tryBuildUntil(pick(oneStepPool));
+        if(q) qs.push(q);
+        guard++;
+      }
+
+      // Build Q4–Q6
+      const mFns = shuffle(mixedPool);
+      for(const fn of mFns){
+        if(qs.length >= 6) break;
+        const q = tryBuildUntil(fn);
+        if(q) qs.push(q);
+      }
+      guard = 0;
+      while(qs.length < 6 && guard < 80){
+        const q = tryBuildUntil(pick(mixedPool));
+        if(q) qs.push(q);
+        guard++;
+      }
+
+      // Build Q7–Q10
+      const msFns = shuffle(multiPool);
+      const msQs = [];
+      for(const fn of msFns){
+        if(msQs.length >= 4) break;
+        const q = tryBuildUntil(fn);
+        if(q) msQs.push(q);
+      }
+      guard = 0;
+      while(msQs.length < 4 && guard < 120){
+        const q = tryBuildUntil(pick(multiPool));
+        if(q) msQs.push(q);
+        guard++;
+      }
+      for(const q of msQs){
+        if(qs.length >= 10) break;
+        qs.push(q);
+      }
+
+      // Fallback (should not happen)
+      while(qs.length < 10){
+        const frac = normRat(3,5);
+        const part = normRat(12,1);
+        const ans = divRat(part, frac);
+        const steps = [
+          `Whole = ${ratToMixedText(part)} ÷ ${ratToMixedText(frac)}`,
+          `= ${ratToMixedText(part)} × ${ratToMixedText(normRat(frac.d, frac.n))}`,
+          `= <b>${ratToMixedText(ans)}</b>`
+        ];
+        qs.push(makeFracQ("p1", `fb_${qs.length}`, `<b>Word problem:</b> <b>${ratToHTML(frac)}</b> of a tank is <b>${ratToHTML(part)}</b> L. What is the full capacity?`, ans, "Whole = part ÷ fraction.", steps));
+      }
+
+      return qs.slice(0,10);
+    }
+
+    /***********************
+     * Student name
+     ************************/
+    let studentName = "";
+
+    function setStudentName(name){
+      studentName = sanitizeName(name);
+      const headerName = document.getElementById("studentNameHeader");
+      const practiceName = document.getElementById("studentNamePractice");
+      const pillPractice = document.getElementById("studentPillPractice");
+
+      if(studentName){
+        headerName.textContent = studentName;
+        practiceName.textContent = studentName;
+        pillPractice.style.display = "inline-flex";
+      }else{
+        headerName.textContent = "";
+        practiceName.textContent = "";
+        pillPractice.style.display = "none";
+      }
+    }
+
+    function setPracticeButtonsEnabled(enabled){
+      [newSetBtn, resetBtn, submitBtn, showAllBtn, exportPdfBtn].forEach(b=>{ if(b) b.disabled = !enabled; });
+    }
+
+    /***********************
+     * PDF helpers
+     ************************/
+    function loadScript(src){
+      return new Promise((resolve, reject)=>{
+        const s = document.createElement("script");
+        s.src = src;
+        s.onload = ()=> resolve();
+        s.onerror = ()=> reject(new Error("Failed to load " + src));
+        document.head.appendChild(s);
+      });
+    }
+
+    let pdfLibReady = false;
+    async function ensurePdfLibs(){
+      if(pdfLibReady) return;
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
+      pdfLibReady = true;
+    }
+
+    function safeFileNamePart(s){
+      return String(s || "")
+        .trim()
+        .replace(/[\\/:*?\"<>|]+/g, "-")
+        .replace(/\s+/g, "_")
+        .slice(0, 40);
+    }
+
+    function setNameFromIndex(i){
+      return String.fromCharCode(65 + (i % 26));
+    }
+
+    
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function makeTimestamp(){
+      const now = new Date();
+      const y = now.getFullYear();
+      const mo = pad2(now.getMonth()+1);
+      const d = pad2(now.getDate());
+      const h = pad2(now.getHours());
+      const mi = pad2(now.getMinutes());
+      return {
+        display: `${y}-${mo}-${d} ${h}:${mi}`,
+        file: `${y}${mo}${d}_${h}${mi}`
+      };
+    }
+
+    function typeCode(type){
+      // Keep it short like (B1) in your screenshot
+      if(type === "p1") return "B1";     // 1-step (proper)
+      if(type === "m1") return "B2";     // 1-step (mixed)
+      if(type === "ms") return "B3";     // multi-step
+      return "—";
+    }
+
+
+    function pdfPromptHTML(promptHTML){
+      let s = String(promptHTML || "");
+      // Remove "Word problem:" label
+      s = s.replace(/<b>\s*Word problem:\s*<\/b>\s*/gi, "");
+      s = s.replace(/<b>\s*Word problem\s*<\/b>\s*/gi, "");
+      // Turn rule divs into line breaks
+      s = s.replace(/<div\s+class=["']rule["']\s*>\s*<\/div>/gi, "<br/>");
+      // Remove bold tags for cleaner printing
+      s = s.replace(/<\/?b>/gi, "");
+      // Remove extra consecutive breaks
+      s = s.replace(/(<br\/>\s*){3,}/g, "<br/><br/>");
+      return s.trim();
+    }
+
+    // Build PDF print pages: fixed 6 questions per page, arranged as 2 columns x 3 rows
+    function buildPdfPages(stamp){
+      const perPage = 6;               // 6 questions per page
+      const answersPerPage = 60;       // compact answer list per page
+      const printArea = document.getElementById("pdfPrintArea");
+      printArea.innerHTML = "";
+
+      const totalQ = state.questions.length;
+      const pagesQ = Math.max(1, Math.ceil(totalQ / perPage));
+      const pagesA = Math.max(1, Math.ceil(totalQ / answersPerPage));
+      const totalPages = pagesQ + pagesA;
+
+      const safeStudent = escapeHTML(studentName || "DYAA");
+
+      // Question pages (2 columns × 3 rows)
+      for(let p=0; p<pagesQ; p++){
+        const page = document.createElement("div");
+        page.className = "pdf-page per-6";
+
+        const startIdx = p * perPage;
+        const endIdx = Math.min(totalQ, startIdx + perPage);
+
+        // Title includes timestamp (same on every page)
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div>
+              <div class="pdf-title">Fraction Division — From Part to Whole — ${escapeHTML(stamp.display)}</div>
+            </div>
+            <div class="pdf-meta">
+              Student: <b>${safeStudent}</b><br/>
+              Page ${p+1} / ${totalPages}
+            </div>
+          </div>
+          <div class="pdf-grid"></div>
+        `;
+
+        const grid = page.querySelector(".pdf-grid");
+
+        for(let i=startIdx; i<endIdx; i++){
+          const q = state.questions[i];
+          const code = typeCode(q.type);
+
+          const qBox = document.createElement("div");
+          qBox.className = "pdf-q";
+          qBox.innerHTML = `
+            <div class="pdf-qhead">
+              <div class="pdf-qnum">Q${i+1} (${escapeHTML(code)})</div>
+            </div>
+            <div class="pdf-qbody">${pdfPromptHTML(q.promptHTML)}</div>
+            <div class="pdf-blank"></div>
+          `;
+          grid.appendChild(qBox);
+        }
+
+        printArea.appendChild(page);
+      }
+
+      // Answer page(s) at the end
+      for(let ap=0; ap<pagesA; ap++){
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const startIdx = ap * answersPerPage;
+        const endIdx = Math.min(totalQ, startIdx + answersPerPage);
+        const pageNo = pagesQ + ap + 1;
+
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div>
+              <div class="pdf-title">Fraction Division — From Part to Whole — ${escapeHTML(stamp.display)}</div>
+              <div class="pdf-sub">Answers</div>
+            </div>
+            <div class="pdf-meta">
+              Student: <b>${safeStudent}</b><br/>
+              Page ${pageNo} / ${totalPages}
+            </div>
+          </div>
+          <div class="pdf-answers"></div>
+        `;
+
+        const block = page.querySelector(".pdf-answers");
+        for(let i=startIdx; i<endIdx; i++){
+          const q = state.questions[i];
+          const ansHTML = q.answerRat ? ratToHTML(q.answerRat) : escapeHTML(q.answerText);
+          const line = document.createElement("div");
+          line.className = "pdf-ansline";
+          line.innerHTML = `<span class="pdf-ansq">Q${i+1}</span><span class="pdf-ansa">${ansHTML}</span>`;
+          block.appendChild(line);
+        }
+
+        printArea.appendChild(page);
+      }
+    }
+async function exportToPdf(){
+      if(!studentName){
+        alert("Please enter the student name first.");
+        return;
+      }
+
+      // Every Export generates a fresh random set
+      generateNewSet({scroll:false});
+
+      const stamp = makeTimestamp();
+
+      await ensurePdfLibs();
+      buildPdfPages(stamp);
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+      const pages = Array.from(document.querySelectorAll("#pdfPrintArea .pdf-page"));
+
+      for(let i=0; i<pages.length; i++){
+        const pageEl = pages[i];
+        const canvas = await html2canvas(pageEl, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false
+        });
+        const imgData = canvas.toDataURL("image/png", 1.0);
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight, undefined, "FAST");
+        if(i < pages.length - 1) pdf.addPage();
+      }
+
+      const fileStudent = safeFileNamePart(studentName);
+      pdf.save(`DYAA_Fraction_Division_PartToWhole_${fileStudent}_${stamp.file}.pdf`);
+    }
+
+
+    /***********************
+     * Render + checking
+     ************************/
+    const tabs = document.querySelectorAll(".tab-btn");
+    const learnSection = document.getElementById("learnSection");
+    const practiceSection = document.getElementById("practiceSection");
+    const practiceControls = document.getElementById("practiceControls");
+    const questionsWrap = document.getElementById("questionsWrap");
+    const countSelect = document.getElementById("countSelect");
+    const scoreValue = document.getElementById("scoreValue");
+    const progressLabel = document.getElementById("progressLabel");
+    const setLabel = document.getElementById("setLabel");
+
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const cancelModalBtn = document.getElementById("cancelModalBtn");
+    const confirmModalBtn = document.getElementById("confirmModalBtn");
+
+    const nameBackdrop = document.getElementById("nameBackdrop");
+    const nameInput = document.getElementById("nameInput");
+    const startWithNameBtn = document.getElementById("startWithNameBtn");
+    const cancelNameBtn = document.getElementById("cancelNameBtn");
+
+    const newSetBtn = document.getElementById("newSetBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const showAllBtn = document.getElementById("showAllBtn");
+    const exportPdfBtn = document.getElementById("exportPdfBtn");
+
+    let state = {
+      setIndex: 0,
+      questions: [],
+      checked: new Set(),
+      results: new Map(),
+    };
+
+    function renderQuestions(){
+      questionsWrap.innerHTML = "";
+      state.questions.forEach((q, idx)=>{
+        const card = document.createElement("div");
+        card.className = "q-card";
+        card.dataset.qindex = String(idx);
+
+        card.innerHTML = `
+          <div class="q-head">
+            <div class="q-num">Q${idx+1}</div>
+            <div class="q-topic">${topicLabel(q.type)}</div>
+          </div>
+          <div class="q-body">${q.promptHTML}</div>
+          <div class="q-input">${q.inputHTML}</div>
+          <div class="q-actions">
+            <button class="btn primary" data-action="check">Check</button>
+            <button class="btn secondary" data-action="hint">Hint</button>
+            <button class="btn secondary" data-action="reveal">Reveal</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+        `;
+        questionsWrap.appendChild(card);
+      });
+    }
+
+    function updateProgress(){
+      progressLabel.textContent = `${state.checked.size} checked`;
+    }
+
+    function showFeedback(card, ok, title, html){
+      const fb = card.querySelector(".feedback");
+      fb.classList.add("show");
+      fb.classList.toggle("ok", !!ok);
+      fb.classList.toggle("bad", !ok);
+      fb.innerHTML = `
+        <div class="title" style="color:${ok ? "var(--ok)" : "var(--bad)"}">${title}</div>
+        <div>${html}</div>
+      `;
+    }
+
+    function checkOne(card){
+      const idx = parseInt(card.dataset.qindex, 10);
+      const q = state.questions[idx];
+      const user = q.getUser(card);
+      const ok = q.isCorrect(user);
+
+      state.checked.add(idx);
+      state.results.set(idx, ok);
+
+      showFeedback(
+        card,
+        ok,
+        ok ? "\u2705 Correct" : "\u274c Not quite",
+        ok
+          ? `<b>Answer:</b> ${escapeHTML(q.answerText)}`
+          : `Hint: ${q.hintHTML}<div class="rule"></div><b>Answer:</b> ${escapeHTML(q.answerText)}`
+      );
+
+      updateProgress();
+      return ok;
+    }
+
+    function resetAnswers(){
+      state.checked = new Set();
+      state.results = new Map();
+      scoreValue.textContent = "—";
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const fb = card.querySelector(".feedback");
+        fb.className = "feedback";
+        fb.innerHTML = "";
+        card.querySelectorAll("input").forEach(i => i.value = "");
+      });
+      updateProgress();
+    }
+
+    function setNameLabel(){
+      setLabel.textContent = `Set: ${setNameFromIndex(state.setIndex-1)}`;
+    }
+
+    
+    function generateNewSet(opts = {scroll:true}){
+      state.setIndex++;
+      state.questions = buildQuestionSet();
+      state.checked = new Set();
+      state.results = new Map();
+      setNameLabel();
+      scoreValue.textContent = "—";
+      renderQuestions();
+      updateProgress();
+      if(opts && opts.scroll){
+        practiceSection.scrollIntoView({behavior:"smooth", block:"start"});
+      }
+    }
+
+
+    function submitAll(){
+      let correct = 0;
+      state.questions.forEach((_, idx)=>{
+        const card = document.querySelector(`.q-card[data-qindex="${idx}"]`);
+        const ok = checkOne(card);
+        if(ok) correct++;
+      });
+      scoreValue.textContent = `${correct} / ${state.questions.length}`;
+      scoreValue.style.fontWeight = "1000";
+    }
+
+    function showAllAnswers(){
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const idx = parseInt(card.dataset.qindex,10);
+        const q = state.questions[idx];
+        const ansHTML = q.answerRat ? ratToHTML(q.answerRat) : escapeHTML(q.answerText);
+        showFeedback(card, true, "🔎 Answer", `<b>Answer:</b> ${ansHTML}`);
+      });
+    }
+
+
+    /***********************
+     * Tabs + Name gating
+     ************************/
+    function openNameModal(){
+      nameBackdrop.classList.add("show");
+      nameBackdrop.setAttribute("aria-hidden","false");
+      nameInput.value = studentName || "DYAA";
+      setTimeout(()=> nameInput.focus(), 50);
+    }
+    function closeNameModal(){
+      nameBackdrop.classList.remove("show");
+      nameBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    function setTab(tab){
+      tabs.forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      const isPractice = tab === "practice";
+      learnSection.classList.toggle("active", !isPractice);
+      practiceSection.classList.toggle("active", isPractice);
+      practiceControls.style.display = isPractice ? "flex" : "none";
+
+      if(isPractice){
+        if(!studentName){
+          openNameModal();
+          setPracticeButtonsEnabled(false);
+          return;
+        }
+        setPracticeButtonsEnabled(true);
+        if(state.questions.length === 0){
+          generateNewSet();
+        }
+      }
+    }
+
+    tabs.forEach(btn=>{
+      btn.addEventListener("click", ()=> setTab(btn.dataset.tab));
+    });
+
+    // Name modal actions
+    startWithNameBtn.addEventListener("click", ()=>{
+      const v = sanitizeName(nameInput.value);
+      if(!v){
+        alert("Please enter a student name.");
+        nameInput.focus();
+        return;
+      }
+      setStudentName(v);
+      closeNameModal();
+      setPracticeButtonsEnabled(true);
+      if(practiceSection.classList.contains("active") && state.questions.length === 0){
+        generateNewSet();
+      }
+    });
+    nameInput.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter"){ e.preventDefault(); startWithNameBtn.click(); }
+      if(e.key === "Escape"){ e.preventDefault(); cancelNameBtn.click(); }
+    });
+    cancelNameBtn.addEventListener("click", ()=>{
+      closeNameModal();
+      setTab("learn");
+    });
+    nameBackdrop.addEventListener("click", (e)=>{
+      if(e.target === nameBackdrop){ cancelNameBtn.click(); }
+    });
+
+    // Practice buttons
+    function openConfirmModal(){
+      modalBackdrop.classList.add("show");
+      modalBackdrop.setAttribute("aria-hidden","false");
+    }
+    function closeConfirmModal(){
+      modalBackdrop.classList.remove("show");
+      modalBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    newSetBtn.addEventListener("click", ()=> openConfirmModal());
+    cancelModalBtn.addEventListener("click", ()=> closeConfirmModal());
+    modalBackdrop.addEventListener("click", (e)=>{ if(e.target === modalBackdrop) closeConfirmModal(); });
+    confirmModalBtn.addEventListener("click", ()=>{ closeConfirmModal(); generateNewSet(); });
+
+    resetBtn.addEventListener("click", ()=> resetAnswers());
+    submitBtn.addEventListener("click", ()=> submitAll());
+    showAllBtn.addEventListener("click", ()=> showAllAnswers());
+    exportPdfBtn.addEventListener("click", ()=> exportToPdf());
+
+    // Delegated actions (Check/Hint/Reveal)
+    questionsWrap.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button[data-action]");
+      if(!btn) return;
+      const action = btn.dataset.action;
+      const card = btn.closest(".q-card");
+      if(!card) return;
+      const idx = parseInt(card.dataset.qindex, 10);
+      const q = state.questions[idx];
+      if(action === "check"){
+        checkOne(card);
+      }else if(action === "hint"){
+        showFeedback(card, true, "\ud83d\udca1 Hint", q.hintHTML);
+      }else if(action === "reveal"){
+        const ansHTML = q.answerRat ? ratToHTML(q.answerRat) : escapeHTML(q.answerText);
+        showFeedback(card, true, "\ud83d\udd0e Answer", `<b>Answer:</b> ${ansHTML}`);
+      }
+    });
+
+    /***********************
+     * Init: read URL ?name=
+     ************************/
+    (function init(){
+      const params = new URLSearchParams(window.location.search);
+      const nm = params.get("name");
+      if(nm){
+        setStudentName(nm);
+      }else{
+        setStudentName("DYAA");
+      }
+      if(nameInput) nameInput.value = studentName || "DYAA";
+      setPracticeButtonsEnabled(!!studentName);
+      setNameLabel();
+    })();
+  </script>
+</body>
+</html>
