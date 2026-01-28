@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Otago math 2020</title>
+
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    .quiz-container {
+      max-width: 950px;
+      margin: 40px auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    }
+
+    #headerLogo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 10px;
+      gap: 14px;
+    }
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background-color: #0d47a1;
+      border-radius: 4px;
+    }
+    .logo-text span.edu {
+      font-size: 0.9em;
+      color: #ff9800;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0 0 18px 0;
+      font-size: 1.9em;
+      font-weight: 700;
+    }
+
+    .quiz-main {
+      display: flex;
+      gap: 20px;
+      margin-top: 10px;
+    }
+
+    .sidebar {
+      width: 170px;
+      border-right: 1px solid #ddd;
+      padding-right: 10px;
+      display: none;
+    }
+
+    .sidebar h4 {
+      margin: 0 0 8px;
+      font-size: 0.95em;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 4px;
+    }
+
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
+
+    .sidebar li {
+      padding: 6px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 0.9em;
+      user-select: none;
+    }
+
+    .sidebar li.active {
+      background: #bbdefb;
+      font-weight: 600;
+    }
+
+    .sidebar li.correct-li { border-left: 4px solid #4caf50; }
+    .sidebar li.incorrect-li { border-left: 4px solid #f44336; }
+
+    #quizContent { flex: 1; }
+
+    .question-text {
+      font-size: 1.1em;
+      margin-bottom: 10px;
+    }
+
+    .answer-box {
+      width: 260px;
+      padding: 10px;
+      font-size: 1.05em;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+    }
+    .answer-box:focus {
+      border-color: #5ba8ff;
+      box-shadow: 0 0 0 3px rgba(91,168,255,0.2);
+    }
+    .answer-box[disabled] {
+      background: #f6f7f9;
+      color: #666;
+    }
+
+    .button-row {
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-prev, .btn-next, .btn-check {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1em;
+      white-space: nowrap;
+    }
+
+    .btn-prev { background: #03a9f4; }
+    .btn-next { background: #4caf50; }
+    .btn-check { background: #9c27b0; }
+
+    #checkResult {
+      margin-top: 10px;
+      min-height: 22px;
+      font-weight: 700;
+    }
+
+    table.review-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+    }
+    .review-table th, .review-table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      font-size: 0.9em;
+    }
+    .review-table th { background: #f2f2f2; }
+    .correct-answer { background: #d4edda; }
+    .incorrect-answer { background: #f8d7da; }
+
+    .action-btns {
+      margin-top: 14px;
+    }
+    .action-btns button {
+      padding: 10px 18px;
+      border-radius: 6px;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.95em;
+      margin-right: 10px;
+    }
+    #redoBtn { background: #ff9800; }
+    #saveResultBtn { background: #607d8b; }
+
+    .start-row {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .start-row input {
+      width: 280px;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1.05em;
+      outline: none;
+    }
+    .start-row input:focus {
+      border-color: #5ba8ff;
+      box-shadow: 0 0 0 3px rgba(91,168,255,0.2);
+    }
+    .start-row button {
+      padding: 12px 22px;
+      border-radius: 8px;
+      border: none;
+      background: #4caf50;
+      color: #fff;
+      font-size: 1.05em;
+      cursor: pointer;
+    }
+
+    .mode-row {
+      margin-top: 10px;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .mode-pill {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      background: #fafafa;
+      cursor: pointer;
+      user-select: none;
+    }
+    .mode-pill input { cursor: pointer; }
+
+    /* topbar (both exercise + exam) */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .timer {
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: #f2f6ff;
+      border: 1px solid #d6e4ff;
+      white-space: nowrap;
+    }
+    .mini-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .mini-btn[disabled] { opacity: .6; cursor: not-allowed; }
+
+    @media (max-width: 700px) {
+      .quiz-main { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        padding-right: 0;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon"></div>
+      <div class="logo-text"><span class="edu">EDUCATION</span></div>
+    </div>
+
+    <h1>Random Mixed Calculation Quiz</h1>
+
+    <div class="quiz-main">
+      <div id="sidebar" class="sidebar"></div>
+      <div id="quizContent"></div>
+    </div>
+  </div>
+
+<script>
+/* ----------------------------------------------------------
+   CONFIG
+---------------------------------------------------------- */
+const QUESTION_FOLDER = "otago/2021";
+const NUM_QUESTIONS = 25;
+
+// 每 5 题循环顺序：1,6,11,16,21 / 2,7,12,17,22 / ...
+const CYCLE_SIZE = 5;
+
+// ✅ Q13 supports two answers (R then S). Accepts: "2,9" / "2 9" / "R=2, S=9" / "S=9 R=2"
+const ANSWERS = [
+  "Friday",        // 1
+  3,               // 2
+  4,               // 3
+  14,              // 4
+  "yellow",        // 5
+  12,              // 6
+  5,               // 7
+  9,               // 8
+  9,               // 9
+  4536,            // 10
+  12,              // 11
+  6,               // 12
+  { type:"pair", labels:["R","S"], values:[2,9] }, // 13 ✅
+  21,              // 14
+  420,             // 15
+  10,              // 16
+  18,              // 17
+  3.5,             // 18  (accept sw / SW / s w)
+  162,             // 19
+  144,             // 20
+  12,              // 21
+  178,             // 22
+  26,              // 23
+  10,              // 24
+  15               // 25
+];
+
+/* ----------------------------------------------------------
+   STATE
+---------------------------------------------------------- */
+let questions = [];
+let userAnswers = [];
+let currentQuestionIndex = 0;
+
+let studentName = "";
+let quizStartTime = null;
+let quizEndTime = null;
+
+let latestResults = null;
+let finalScore = 0;
+
+// redo
+let redoMode = false;
+let redoIndices = [];
+
+// mode
+let selectedMode = "exercise"; // "exercise" | "exam"
+
+// exam state
+let examUnlocked = 0;
+let examSolved = [];
+
+// unified timer + pause
+let quizTimerId = null;
+let quizPaused = false;
+let quizPauseStart = null;
+let quizPausedDuration = 0;
+
+// url name
+const urlParams = new URLSearchParams(window.location.search);
+const urlNameFromQuery = (urlParams.get("name") || "").trim();
+if (urlNameFromQuery) studentName = urlNameFromQuery;
+
+// DOM
+const quizContent = document.getElementById("quizContent");
+const sidebarEl = document.getElementById("sidebar");
+
+/* ----------------------------------------------------------
+   HELPERS
+---------------------------------------------------------- */
+function parseNumeric(str) {
+  const s = (str || "").trim();
+  if (s === "") return NaN;
+
+  if (s.includes("/")) {
+    const parts = s.split("/");
+    if (parts.length !== 2) return NaN;
+    const num = Number(parts[0]);
+    const den = Number(parts[1]);
+    if (!Number.isFinite(num) || !Number.isFinite(den) || den === 0) return NaN;
+    return num / den;
+  }
+
+  const n = Number(s);
+  return Number.isFinite(n) ? n : NaN;
+}
+function numericEqual(a, b) {
+  return Number.isFinite(a) && Number.isFinite(b) && Math.abs(a - b) < 1e-9;
+}
+function isNumericAnswer(raw) {
+  const v = parseNumeric(String(raw));
+  return Number.isFinite(v);
+}
+function normalizeTextAnswer(s) {
+  return String(s ?? "").trim().toLowerCase().replace(/\s+/g, "");
+}
+
+/* ---- Pair answers (e.g. R,S) ---- */
+function isPairAnswer(raw){
+  return raw && typeof raw === "object" && raw.type === "pair"
+    && Array.isArray(raw.labels) && Array.isArray(raw.values);
+}
+function formatCorrectAnswer(raw){
+  if (isPairAnswer(raw)) {
+    return raw.labels.map((lab,i)=>`${lab}=${raw.values[i]}`).join(", ");
+  }
+  return String(raw);
+}
+function parsePairInput(userRaw, labels){
+  const s = (userRaw || "").trim();
+  if (!s) return null;
+
+  // labeled form: R=..., S=...
+  const out = {};
+  let found = 0;
+  labels.forEach(lab => {
+    const re = new RegExp(`${lab}\\s*=\\s*([\\-\\d\\.\\/]+)`, "i");
+    const m = s.match(re);
+    if (m) { out[lab] = parseNumeric(m[1]); found++; }
+  });
+  if (found === labels.length) {
+    return labels.map(lab => out[lab]); // return in label order
+  }
+
+  // unlabeled: extract first N numeric/fraction tokens
+  const tokens = s.split(/[^0-9\-\.\/]+/).filter(Boolean);
+  if (tokens.length < labels.length) return null;
+
+  return tokens.slice(0, labels.length).map(t => parseNumeric(t));
+}
+
+function getAnswerOrderHint(q){
+  if (!q || !isPairAnswer(q.answerRaw)) return "";
+  const eg = q.answerRaw.values.join(", ");
+  return `
+    <div style="margin:6px 0 0;color:#666;font-size:0.92em;">
+      Hint: Enter <strong>${q.answerRaw.labels[0]}</strong> first, then <strong>${q.answerRaw.labels[1]}</strong>
+      (e.g. <em>${eg}</em>).
+    </div>
+  `;
+}
+
+function answersMatch(userRaw, correctRaw) {
+  // pair answer
+  if (isPairAnswer(correctRaw)) {
+    const vals = parsePairInput(userRaw, correctRaw.labels);
+    if (!vals) return false;
+
+    for (let i = 0; i < correctRaw.values.length; i++) {
+      const ua = vals[i];
+      const ca = parseNumeric(String(correctRaw.values[i]));
+      if (!Number.isFinite(ua) || !Number.isFinite(ca) || !numericEqual(ua, ca)) return false;
+    }
+    return true;
+  }
+
+  // numeric
+  if (isNumericAnswer(correctRaw)) {
+    const uaVal = parseNumeric(userRaw);
+    const caVal = parseNumeric(String(correctRaw));
+    return Number.isFinite(uaVal) && numericEqual(uaVal, caVal);
+  }
+
+  // text
+  return normalizeTextAnswer(userRaw) === normalizeTextAnswer(correctRaw);
+}
+
+function formatDuration(ms) {
+  const total = Math.floor(ms / 1000);
+  const m = Math.floor(total / 60);
+  const s = total % 60;
+  return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+}
+
+/* ----------------------------------------------------------
+   TIMER (unified for exercise + exam)
+---------------------------------------------------------- */
+function stopQuizTimer() {
+  if (quizTimerId) {
+    clearInterval(quizTimerId);
+    quizTimerId = null;
+  }
+}
+function getElapsedMs() {
+  if (!quizStartTime) return 0;
+  const start = quizStartTime.getTime();
+  if (quizPaused && quizPauseStart) {
+    return Math.max(0, quizPauseStart - start - quizPausedDuration);
+  }
+  return Math.max(0, Date.now() - start - quizPausedDuration);
+}
+function startQuizTimer() {
+  stopQuizTimer();
+  quizTimerId = setInterval(() => {
+    const el = document.getElementById("quizTimer");
+    if (!el || !quizStartTime) return;
+    el.textContent = `Time: ${formatDuration(getElapsedMs())}`;
+  }, 250);
+}
+function togglePauseResume() {
+  if (!quizPaused) {
+    quizPaused = true;
+    quizPauseStart = Date.now();
+  } else {
+    quizPaused = false;
+    quizPausedDuration += Date.now() - quizPauseStart;
+    quizPauseStart = null;
+  }
+}
+
+/* ----------------------------------------------------------
+   QUESTION ORDER
+---------------------------------------------------------- */
+function buildOrder(n, cycleSize = 5) {
+  const order = [];
+  for (let start = 1; start <= cycleSize; start++) {
+    for (let x = start; x <= n; x += cycleSize) order.push(x);
+  }
+  return order;
+}
+const QUESTION_ORDER = buildOrder(NUM_QUESTIONS, CYCLE_SIZE);
+
+/* ----------------------------------------------------------
+   BUILD QUESTIONS
+---------------------------------------------------------- */
+function generateQuestions() {
+  questions = [];
+  for (let i = 0; i < NUM_QUESTIONS; i++) {
+    const originalQ = QUESTION_ORDER[i];
+    const ans = ANSWERS[originalQ - 1];
+    questions.push({
+      originalQ,
+      text: `<img src="${QUESTION_FOLDER}/q${originalQ}.png" style="max-width:100%;">`,
+      answerRaw: ans
+    });
+  }
+  userAnswers = Array(NUM_QUESTIONS).fill(null).map(() => ({ value: "" }));
+}
+
+/* ----------------------------------------------------------
+   SIDEBAR
+---------------------------------------------------------- */
+function updateSidebarActive() {
+  const items = document.querySelectorAll("#qList li");
+  items.forEach(li => {
+    const idx = Number(li.dataset.index);
+    li.classList.toggle("active", idx === currentQuestionIndex);
+  });
+}
+
+function renderSidebarExercise() {
+  sidebarEl.style.display = "block";
+  sidebarEl.innerHTML = `<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul = document.getElementById("qList");
+
+  for (let i = 0; i < NUM_QUESTIONS; i++) {
+    const li = document.createElement("li");
+    li.textContent = `Q${i + 1}`;
+    li.dataset.index = i;
+
+    li.onclick = () => {
+      if (quizPaused) return;
+      saveCurrentInput();
+      currentQuestionIndex = i;
+
+      if (redoMode && redoIndices.includes(i)) {
+        // keep redo
+      } else {
+        redoMode = false;
+      }
+      renderQuestionExercise();
+    };
+    ul.appendChild(li);
+  }
+  updateSidebarActive();
+}
+
+function renderSidebarExam() {
+  sidebarEl.style.display = "block";
+  sidebarEl.innerHTML = `<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul = document.getElementById("qList");
+
+  const shown = new Set();
+  for (let i = 0; i < NUM_QUESTIONS; i++) {
+    if (examSolved[i]) shown.add(i);
+  }
+  if (examUnlocked < NUM_QUESTIONS) shown.add(examUnlocked);
+
+  const list = Array.from(shown).sort((a,b)=>a-b);
+
+  list.forEach(i => {
+    const li = document.createElement("li");
+    li.textContent = `Q${i + 1}`;
+    li.dataset.index = i;
+    if (examSolved[i]) li.classList.add("correct-li");
+
+    li.onclick = () => {
+      if (quizPaused) return;
+      saveCurrentInput();
+      currentQuestionIndex = i;
+      renderQuestionExam();
+    };
+
+    ul.appendChild(li);
+  });
+
+  updateSidebarActive();
+}
+
+function markSidebarFromLatestResults() {
+  const items = document.querySelectorAll("#qList li");
+  items.forEach(li => {
+    li.classList.remove("correct-li","incorrect-li");
+    const idx = Number(li.dataset.index);
+    const r = latestResults ? latestResults.find(x => x.index === idx) : null;
+    if (!r) return;
+    li.classList.add(r.isCorrect ? "correct-li" : "incorrect-li");
+  });
+}
+
+function markSidebarGreen(idx) {
+  const li = document.querySelector(`#qList li[data-index="${idx}"]`);
+  if (!li) return;
+  li.classList.remove("incorrect-li");
+  li.classList.add("correct-li");
+}
+
+/* ----------------------------------------------------------
+   INPUT SAVE
+---------------------------------------------------------- */
+function saveCurrentInput() {
+  const input = document.getElementById("answerInput");
+  if (input) userAnswers[currentQuestionIndex].value = input.value;
+}
+
+/* ----------------------------------------------------------
+   TOPBAR (exercise / exam)
+---------------------------------------------------------- */
+function renderTopbar(titleText) {
+  return `
+    <div class="topbar">
+      <p class="question-text">${titleText}</p>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <div class="timer" id="quizTimer"></div>
+        <button id="pauseResumeBtn"
+          class="mini-btn"
+          style="background:${quizPaused ? "#4caf50" : "#ff9800"};">
+          ${quizPaused ? "Resume" : "Pause"}
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+/* ----------------------------------------------------------
+   EXERCISE MODE (with timer + pause/resume)
+---------------------------------------------------------- */
+function renderQuestionExercise() {
+  const qIndex = currentQuestionIndex;
+  const q = questions[qIndex];
+  const ua = userAnswers[qIndex].value || "";
+
+  let displayIndex = qIndex + 1;
+  let totalCount = NUM_QUESTIONS;
+
+  if (redoMode) {
+    const pos = redoIndices.indexOf(qIndex);
+    displayIndex = pos >= 0 ? (pos + 1) : 1;
+    totalCount = redoIndices.length;
+  }
+
+  const isLastNormal = (!redoMode && qIndex === NUM_QUESTIONS - 1);
+  const isLastRedo = (redoMode && redoIndices.length > 0 && redoIndices[redoIndices.length - 1] === qIndex);
+
+  const hasPrev =
+    (!redoMode && qIndex > 0) ||
+    (redoMode && redoIndices.indexOf(qIndex) > 0);
+
+  const nextText = redoMode
+    ? (isLastRedo ? "Submit & Update Results" : "Next Question")
+    : (isLastNormal ? "Submit & View Results" : "Next Question");
+
+  const topbar = renderTopbar(
+    `${redoMode ? "[Redo] " : ""}Exercise Mode – Question ${displayIndex} of ${totalCount}`
+  );
+
+  let html = topbar + `
+    ${q.text}
+    <br><br>
+    <input id="answerInput" class="answer-box" type="text" value="${ua}"
+      placeholder="Enter a number, fraction, or text (e.g. -3/4 or SW)"
+      ${quizPaused ? "disabled" : ""}>
+    ${getAnswerOrderHint(q)}
+  `;
+
+  html += `<div id="checkResult">${quizPaused ? "Paused." : ""}</div>`;
+
+  html += `<div class="button-row">`;
+  html += hasPrev
+    ? `<button class="btn-prev" id="btnPrev" ${quizPaused ? "disabled style='opacity:.6;cursor:not-allowed;'" : ""}>Previous</button>`
+    : `<span></span>`;
+
+  html += redoMode
+    ? `<button class="btn-check" id="btnCheck" ${quizPaused ? "disabled style='opacity:.6;cursor:not-allowed;'" : ""}>Check Answer</button>`
+    : `<span></span>`;
+
+  html += `<button class="btn-next" id="btnNext" ${quizPaused ? "disabled style='opacity:.6;cursor:not-allowed;'" : ""}>${nextText}</button>`;
+  html += `</div>`;
+
+  quizContent.innerHTML = html;
+
+  // start/keep timer ticking
+  startQuizTimer();
+  const t = document.getElementById("quizTimer");
+  if (t) t.textContent = `Time: ${formatDuration(getElapsedMs())}`;
+
+  // pause/resume
+  document.getElementById("pauseResumeBtn").onclick = () => {
+    togglePauseResume();
+    renderQuestionExercise();
+  };
+
+  // Next
+  document.getElementById("btnNext").onclick = () => {
+    if (quizPaused) return;
+    saveCurrentInput();
+
+    if (!redoMode) {
+      if (isLastNormal) {
+        calculateAndShowResults(false);
+      } else {
+        currentQuestionIndex++;
+        renderQuestionExercise();
+      }
+    } else {
+      if (isLastRedo) {
+        redoMode = false;
+        calculateAndShowResults(true);
+      } else {
+        const pos = redoIndices.indexOf(qIndex);
+        currentQuestionIndex = redoIndices[pos + 1];
+        renderQuestionExercise();
+      }
+    }
+  };
+
+  // Prev
+  const prevBtn = document.getElementById("btnPrev");
+  if (prevBtn) {
+    prevBtn.onclick = () => {
+      if (quizPaused) return;
+      saveCurrentInput();
+      if (!redoMode) {
+        currentQuestionIndex--;
+        renderQuestionExercise();
+      } else {
+        const pos = redoIndices.indexOf(qIndex);
+        currentQuestionIndex = redoIndices[pos - 1];
+        renderQuestionExercise();
+      }
+    };
+  }
+
+  // Redo check
+  if (redoMode) {
+    const btnCheck = document.getElementById("btnCheck");
+    const checkDiv = document.getElementById("checkResult");
+
+    btnCheck.onclick = () => {
+      if (quizPaused) return;
+      saveCurrentInput();
+
+      const uaRaw = (userAnswers[qIndex].value || "").trim();
+      if (uaRaw === "") {
+        checkDiv.textContent = "Please enter an answer first.";
+        checkDiv.style.color = "#e65100";
+        return;
+      }
+
+      const correctRaw = q.answerRaw;
+
+      // ✅ pair validation + swapped hint
+      if (isPairAnswer(correctRaw)) {
+        const vals = parsePairInput(uaRaw, correctRaw.labels);
+        if (!vals || vals.some(v => !Number.isFinite(v))) {
+          checkDiv.textContent = `Invalid input. Enter ${correctRaw.labels.join(" then ")} (e.g. ${correctRaw.values.join(", ")}).`;
+          checkDiv.style.color = "#c62828";
+          return;
+        }
+        if (correctRaw.values.length === 2) {
+          const ca0 = parseNumeric(String(correctRaw.values[0]));
+          const ca1 = parseNumeric(String(correctRaw.values[1]));
+          if (numericEqual(vals[0], ca1) && numericEqual(vals[1], ca0)) {
+            checkDiv.textContent = `Values look swapped. Please enter ${correctRaw.labels[0]} first, then ${correctRaw.labels[1]}.`;
+            checkDiv.style.color = "#c62828";
+            return;
+          }
+        }
+      }
+
+      if (isNumericAnswer(correctRaw)) {
+        const uaVal = parseNumeric(uaRaw);
+        if (!Number.isFinite(uaVal)) {
+          checkDiv.textContent = "Invalid input. Use a number or fraction (e.g. -3/4).";
+          checkDiv.style.color = "#c62828";
+          return;
+        }
+      }
+
+      if (answersMatch(uaRaw, correctRaw)) {
+        checkDiv.textContent = "Correct!";
+        checkDiv.style.color = "#2e7d32";
+
+        markSidebarGreen(qIndex);
+
+        redoIndices = redoIndices.filter(idx => idx !== qIndex);
+
+        if (redoIndices.length > 0) {
+          const nextIdx = redoIndices.find(idx => idx > qIndex) ?? redoIndices[0];
+          setTimeout(() => {
+            currentQuestionIndex = nextIdx;
+            renderQuestionExercise();
+          }, 350);
+        } else {
+          setTimeout(() => {
+            redoMode = false;
+            calculateAndShowResults(true);
+          }, 500);
+        }
+      } else {
+        checkDiv.textContent = "Incorrect. Try again.";
+        checkDiv.style.color = "#c62828";
+      }
+    };
+  }
+
+  updateSidebarActive();
+}
+
+/* ----------------------------------------------------------
+   EXAM MODE (still has timer + pause/resume)
+---------------------------------------------------------- */
+function renderQuestionExam() {
+  const qIndex = currentQuestionIndex;
+  const q = questions[qIndex];
+  const ua = userAnswers[qIndex].value || "";
+
+  const isSolved = !!examSolved[qIndex];
+  const isCurrentToSolve = (qIndex === examUnlocked);
+  const allSolved = (examUnlocked >= NUM_QUESTIONS);
+
+  const topbar = renderTopbar(`Exam Mode – Question ${qIndex + 1} of ${NUM_QUESTIONS}`);
+
+  let html = topbar + `
+    ${q.text}
+    <br><br>
+    <input id="answerInput" class="answer-box" type="text" value="${ua}"
+      placeholder="Enter a number, fraction, or text (e.g. -3/4 or SW)"
+      ${isSolved || quizPaused ? "disabled" : ""}>
+    ${getAnswerOrderHint(q)}
+    <div id="checkResult">${quizPaused ? "Paused." : ""}</div>
+  `;
+
+  html += `<div class="button-row">`;
+  html += `<span></span>`;
+  html += `
+    <button class="btn-check" id="btnCheck"
+      ${isSolved || quizPaused ? "disabled style='opacity:.6;cursor:not-allowed;'" : ""}>
+      Check Answer
+    </button>
+  `;
+  html += allSolved
+    ? `<button class="btn-next" id="btnSubmit" ${quizPaused ? "disabled style='opacity:.6;cursor:not-allowed;'" : ""}>Submit</button>`
+    : `<span></span>`;
+  html += `</div>`;
+
+  quizContent.innerHTML = html;
+
+  startQuizTimer();
+  const t = document.getElementById("quizTimer");
+  if (t) t.textContent = `Time: ${formatDuration(getElapsedMs())}`;
+
+  // pause/resume
+  document.getElementById("pauseResumeBtn").onclick = () => {
+    togglePauseResume();
+    renderQuestionExam();
+  };
+
+  // Submit
+  const btnSubmit = document.getElementById("btnSubmit");
+  if (btnSubmit) {
+    btnSubmit.onclick = () => {
+      if (quizPaused) return;
+      saveCurrentInput();
+      calculateAndShowResults(false);
+    };
+  }
+
+  // Check
+  const checkDiv = document.getElementById("checkResult");
+  const btnCheck = document.getElementById("btnCheck");
+  btnCheck.onclick = () => {
+    if (quizPaused || isSolved) return;
+
+    saveCurrentInput();
+
+    const uaRaw = (userAnswers[qIndex].value || "").trim();
+    if (uaRaw === "") {
+      checkDiv.textContent = "Please enter an answer first.";
+      checkDiv.style.color = "#e65100";
+      return;
+    }
+
+    const correctRaw = q.answerRaw;
+
+    // ✅ pair validation + swapped hint
+    if (isPairAnswer(correctRaw)) {
+      const vals = parsePairInput(uaRaw, correctRaw.labels);
+      if (!vals || vals.some(v => !Number.isFinite(v))) {
+        checkDiv.textContent = `Invalid input. Enter ${correctRaw.labels.join(" then ")} (e.g. ${correctRaw.values.join(", ")}).`;
+        checkDiv.style.color = "#c62828";
+        return;
+      }
+      if (correctRaw.values.length === 2) {
+        const ca0 = parseNumeric(String(correctRaw.values[0]));
+        const ca1 = parseNumeric(String(correctRaw.values[1]));
+        if (numericEqual(vals[0], ca1) && numericEqual(vals[1], ca0)) {
+          checkDiv.textContent = `Values look swapped. Please enter ${correctRaw.labels[0]} first, then ${correctRaw.labels[1]}.`;
+          checkDiv.style.color = "#c62828";
+          return;
+        }
+      }
+    }
+
+    if (isNumericAnswer(correctRaw)) {
+      const uaVal = parseNumeric(uaRaw);
+      if (!Number.isFinite(uaVal)) {
+        checkDiv.textContent = "Invalid input. Use a number or fraction.";
+        checkDiv.style.color = "#c62828";
+        return;
+      }
+    }
+
+    if (answersMatch(uaRaw, correctRaw)) {
+      checkDiv.textContent = "Correct!";
+      checkDiv.style.color = "#2e7d32";
+
+      examSolved[qIndex] = true;
+      if (isCurrentToSolve) examUnlocked++;
+
+      if (examUnlocked >= 1) renderSidebarExam();
+
+      if (examUnlocked >= NUM_QUESTIONS) {
+        setTimeout(() => renderQuestionExam(), 250);
+        return;
+      }
+
+      setTimeout(() => {
+        currentQuestionIndex = examUnlocked;
+        renderSidebarExam();
+        renderQuestionExam();
+      }, 350);
+
+    } else {
+      checkDiv.textContent = "Incorrect. Try again.";
+      checkDiv.style.color = "#c62828";
+    }
+  };
+
+  if (examUnlocked === 0) sidebarEl.style.display = "none";
+  else sidebarEl.style.display = "block";
+
+  updateSidebarActive();
+}
+
+/* ----------------------------------------------------------
+   RESULTS
+---------------------------------------------------------- */
+function calculateAndShowResults(isRedo) {
+  quizEndTime = new Date();
+  stopQuizTimer();
+
+  let score = 0;
+  const results = [];
+
+  for (let i = 0; i < NUM_QUESTIONS; i++) {
+    const uaRaw = (userAnswers[i].value || "");
+    const ok = answersMatch(uaRaw, questions[i].answerRaw);
+    if (ok) score++;
+
+    results.push({
+      index: i,
+      isCorrect: ok,
+      uaDisplay: uaRaw.trim() === "" ? "—" : uaRaw,
+      caDisplay: formatCorrectAnswer(questions[i].answerRaw) // ✅
+    });
+  }
+
+  latestResults = results;
+  finalScore = score;
+
+  sidebarEl.style.display = "block";
+  renderSidebarExercise();
+  markSidebarFromLatestResults();
+
+  const durationStr = quizStartTime ? formatDuration(getElapsedMs()) : "00:00";
+
+  let html = `
+    <h3>Results for ${studentName}${isRedo ? " (after redo)" : ""}</h3>
+    <p>
+      <strong>Mode:</strong> ${selectedMode.toUpperCase()}<br>
+      <strong>Start Time:</strong> ${quizStartTime ? quizStartTime.toLocaleString() : "-"}<br>
+      <strong>End Time:</strong> ${quizEndTime.toLocaleString()}<br>
+      <strong>Duration:</strong> ${durationStr}<br>
+      <strong>Score:</strong> ${finalScore} / ${NUM_QUESTIONS}
+    </p>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th>
+        <th>Your Answer</th>
+        <th>Correct Answer</th>
+        <th>Result</th>
+      </tr>
+  `;
+
+  results.forEach(r => {
+    html += `
+      <tr class="${r.isCorrect ? "correct-answer" : "incorrect-answer"}">
+        <td>Q${r.index + 1}</td>
+        <td>${r.uaDisplay}</td>
+        <td>${r.caDisplay}</td>
+        <td>${r.isCorrect ? "Correct" : "Incorrect"}</td>
+      </tr>
+    `;
+  });
+
+  html += `</table>`;
+
+  html += `<div class="action-btns">`;
+  if (selectedMode === "exercise") {
+    html += `<button id="redoBtn">Redo Incorrect Questions</button>`;
+  }
+  html += `<button id="saveResultBtn">Save Result as TXT</button>`;
+  html += `</div>`;
+
+  quizContent.innerHTML = html;
+
+  document.getElementById("saveResultBtn").onclick = saveResultTxt;
+
+  const redoBtn = document.getElementById("redoBtn");
+  if (redoBtn) redoBtn.onclick = startRedoMode;
+}
+
+/* ----------------------------------------------------------
+   EXERCISE REDO
+---------------------------------------------------------- */
+function startRedoMode() {
+  if (!latestResults) return;
+
+  redoIndices = latestResults
+    .filter(r => !r.isCorrect)
+    .map(r => r.index)
+    .sort((a,b) => a - b);
+
+  if (redoIndices.length === 0) {
+    alert("No incorrect questions to redo. Well done!");
+    return;
+  }
+
+  redoMode = true;
+  currentQuestionIndex = redoIndices[0];
+  renderQuestionExercise();
+}
+
+/* ----------------------------------------------------------
+   SAVE RESULT TXT
+---------------------------------------------------------- */
+function saveResultTxt() {
+  if (!latestResults) return;
+
+  const durationStr = quizStartTime && quizEndTime ? formatDuration(getElapsedMs()) : "00:00";
+
+  const lines = [];
+  lines.push(`Student: ${studentName}`);
+  lines.push(`Mode: ${selectedMode.toUpperCase()}`);
+  lines.push(`Start Time: ${quizStartTime ? quizStartTime.toLocaleString() : "-"}`);
+  lines.push(`End Time: ${quizEndTime ? quizEndTime.toLocaleString() : "-"}`);
+  lines.push(`Duration: ${durationStr}`);
+  lines.push(`Score: ${finalScore} / ${NUM_QUESTIONS}`);
+  lines.push("");
+  lines.push("Details:");
+  lines.push("Q#, Your Answer, Correct Answer, Result");
+
+  latestResults.forEach(r => {
+    lines.push(`Q${r.index + 1}, ${r.uaDisplay}, ${r.caDisplay}, ${r.isCorrect ? "Correct" : "Incorrect"}`);
+  });
+
+  const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_");
+  a.href = url;
+  a.download = `${safeName}_${selectedMode}_result.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ----------------------------------------------------------
+   START SCREEN
+---------------------------------------------------------- */
+function showStartScreen() {
+  stopQuizTimer();
+  sidebarEl.style.display = "none";
+
+  let nameSectionHtml = "";
+
+  if (urlNameFromQuery) {
+    nameSectionHtml = `
+      <p>Student: <strong>${urlNameFromQuery}</strong></p>
+      <div class="start-row">
+        <button id="startBtn">Start Quiz</button>
+      </div>
+    `;
+  } else {
+    nameSectionHtml = `
+      <p>Please enter your name to begin:</p>
+      <div class="start-row">
+        <input id="nameInput" type="text" placeholder="Your name">
+        <button id="startBtn">Start Quiz</button>
+      </div>
+    `;
+  }
+
+  quizContent.innerHTML = `
+    <p>This quiz contains ${NUM_QUESTIONS} questions.</p>
+
+    <div class="mode-row">
+      <label class="mode-pill">
+        <input type="radio" name="mode" value="exercise" checked>
+        Exercise Mode
+      </label>
+      <label class="mode-pill">
+        <input type="radio" name="mode" value="exam">
+        Exam Mode
+      </label>
+    </div>
+
+    ${nameSectionHtml}
+  `;
+
+  document.getElementById("startBtn").onclick = () => {
+    if (!urlNameFromQuery) {
+      const nameInput = document.getElementById("nameInput");
+      studentName = (nameInput.value || "Student").trim();
+    } else {
+      studentName = urlNameFromQuery;
+    }
+
+    const modeEl = document.querySelector('input[name="mode"]:checked');
+    selectedMode = modeEl ? modeEl.value : "exercise";
+
+    quizStartTime = new Date();
+    quizEndTime = null;
+    latestResults = null;
+    finalScore = 0;
+
+    redoMode = false;
+    redoIndices = [];
+
+    examUnlocked = 0;
+    examSolved = Array(NUM_QUESTIONS).fill(false);
+
+    // reset pause/timer
+    quizPaused = false;
+    quizPauseStart = null;
+    quizPausedDuration = 0;
+
+    generateQuestions();
+    currentQuestionIndex = 0;
+
+    if (selectedMode === "exercise") {
+      renderSidebarExercise();
+      renderQuestionExercise();
+    } else {
+      sidebarEl.style.display = "none";
+      renderQuestionExam();
+    }
+  };
+}
+
+/* ----------------------------------------------------------
+   INIT
+---------------------------------------------------------- */
+showStartScreen();
+</script>
+</body>
+</html>
