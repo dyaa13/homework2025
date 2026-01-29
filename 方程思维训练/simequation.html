@@ -99,11 +99,9 @@
     </div>
     <div class="top-actions">
       <div id="pdfGroup" class="pdf-group" style="display:none;">
-        <span class="pdf-label">PDF per page</span>
-        <select id="pdfPerPageTop" class="pdf-select">
-          <option value="2">2</option>
-          <option value="3" selected>3</option>
-          <option value="6">6</option>
+        <span class="pdf-label">PDF layout: 6 per page (3 × 2)</span>
+        <select id="pdfPerPageTop" class="pdf-select" style="display:none;">
+          <option value="6" selected>6</option>
         </select>
         <button id="exportPdfButton" type="button">Export Questions PDF</button>
       </div>
@@ -157,7 +155,7 @@ function escapeXml(s){
     .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
     .replaceAll('"',"&quot;").replaceAll("'","&apos;");
 }
-function wrapLines(lines, maxChars = 56){
+function wrapLines(lines, maxChars = 46){
   const out=[];
   function pushWrapped(line){
     const words=String(line).split(/\s+/).filter(Boolean);
@@ -178,13 +176,14 @@ function wrapLines(lines, maxChars = 56){
   return out;
 }
 function makeSvgQuestionImage(lines, titleText="Simultaneous Equations"){
-  const W=980, headerH=74, padX=44, lineH=46, firstLineY=headerH+56, padBottom=56;
-  const wrapped=wrapLines(lines, 56);
+    // Slightly narrower canvas so text appears larger in the PDF cards
+  const W=780, headerH=64, padX=34, lineH=44, firstLineY=headerH+46, padBottom=44;
+    const wrapped=wrapLines(lines, 46);
   const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
 
   const textSpans=wrapped.map((t,i)=>{
     const y=firstLineY + i*lineH;
-    return `<text x="${padX}" y="${y}" font-size="30" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+    return `<text x="${padX}" y="${y}" font-size="32" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
   }).join("");
 
   const svg=`
@@ -199,12 +198,12 @@ function makeSvgQuestionImage(lines, titleText="Simultaneous Equations"){
       </filter>
     </defs>
 
-    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
-          fill="url(#g)" stroke="#dfe7f2" stroke-width="3" filter="url(#shadow)"/>
-    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${headerH}"
+    <rect x="14" y="14" rx="16" ry="16" width="${W-28}" height="${H-28}"
+          fill="url(#g)" stroke="#dfe7f2" stroke-width="2.5" filter="url(#shadow)"/>
+    <rect x="14" y="14" rx="16" ry="16" width="${W-28}" height="${headerH}"
           fill="#0d47a1" opacity="0.10"/>
 
-    <text x="${padX}" y="56" font-size="28" fill="#0d47a1" font-weight="700"
+    <text x="${padX}" y="50" font-size="26" fill="#0d47a1" font-weight="700"
           font-family="Segoe UI, Arial">${escapeXml(titleText)}</text>
 
     ${textSpans}
@@ -871,16 +870,48 @@ function wp_fish_current(){
 }
 
 function wp_fraction_original(){
-  // From screenshot-style: denom is 2 more; if both +1 becomes 2/3 -> original = 3/5 always
-  const n=3, d=5;
+  // Randomised fraction word problem so "Generate New Set" actually changes the numbers.
+  // Original fraction = n/(n+k). After increasing both by m, it becomes p/q.
+  function gcd(a,b){
+    a=Math.abs(a); b=Math.abs(b);
+    while(b){ const t=a%b; a=b; b=t; }
+    return a||1;
+  }
+
+  let n=3, k=2, m=1, p=2, q=3;
+  let guard=0;
+
+  while(guard < 200){
+    n = randInt(2, 12);
+    k = randInt(1, 8);
+    m = randInt(1, 6);
+
+    const num = n + m;
+    const den = n + k + m;
+
+    const g = gcd(num, den);
+    p = num / g;
+    q = den / g;
+
+    // keep the displayed fraction small-ish and not too trivial
+    if(p === 1) { guard++; continue; }
+    if(q > 20)  { guard++; continue; }
+    break;
+  }
+
   const lines=[
-    "A fraction has a denominator that is 2 more than the numerator.",
-    "If both the numerator and denominator are increased by 1, the fraction becomes 2/3.",
+    `A fraction has a denominator that is ${k} more than the numerator.`,
+    `If both the numerator and denominator are increased by ${m}, the fraction becomes ${p}/${q}.`,
     "Find the original fraction (give numerator and denominator)."
   ];
-  return { img: makeSvgQuestionImage(lines, "Word Problem"),
-    ansA: n, ansB: d, labelA:"Numerator", labelB:"Denominator",
-    hint: PART3_ELIMINATION_HINT
+
+  return {
+    img: makeSvgQuestionImage(lines, "Word Problem"),
+    ansA: n, ansB: n+k, labelA:"Numerator", labelB:"Denominator",
+    hint:
+      `Hint: Let the numerator be n, so the denominator is n + ${k}. ` +
+      `Then (n + ${m})/(n + ${k} + ${m}) = ${p}/${q}. ` +
+      "Cross-multiply to solve for n, then find the denominator."
   };
 }
 
@@ -1065,23 +1096,31 @@ function safeFilename(s){
   return String(s||"Student").trim().replace(/[^a-z0-9_\-]+/gi,"_").replace(/^_+|_+$/g,"") || "Student";
 }
 async function svgToPng(svgDataUrl){
+  // Render SVG to a higher-resolution PNG so text stays sharp in PDF
   return new Promise((resolve, reject)=>{
     const img=new Image();
     img.onload=()=>{
-      const w=img.naturalWidth||img.width||980;
+      const w=img.naturalWidth||img.width||780;
       const h=img.naturalHeight||img.height||520;
+
+      const scale=2; // 2× for sharper output
       const canvas=document.createElement("canvas");
-      canvas.width=w; canvas.height=h;
+      canvas.width=w*scale;
+      canvas.height=h*scale;
+
       const ctx=canvas.getContext("2d");
+      ctx.setTransform(scale,0,0,scale,0,0);
       ctx.fillStyle="#ffffff";
       ctx.fillRect(0,0,w,h);
       ctx.drawImage(img,0,0,w,h);
-      resolve({ url: canvas.toDataURL("image/png", 1.0), w, h });
+
+      resolve({ url: canvas.toDataURL("image/png", 1.0), w: canvas.width, h: canvas.height });
     };
     img.onerror=()=>reject(new Error("Failed to load question image for PDF export."));
     img.src=svgDataUrl;
   });
 }
+
 function partLabel(q){
   return (q.partIndex===0) ? "Substitution" : (q.partIndex===1) ? "Elimination" : "Word Problem";
 }
@@ -1095,9 +1134,8 @@ async function exportQuestionsToPdf(perPage){
     alert("PDF library failed to load. Please refresh the page and try again.");
     return;
   }
-  perPage = Number(perPage);
-  if(![2,3,6].includes(perPage)) perPage=3;
-
+  // Fixed layout: 6 questions per page (3 rows × 2 columns)
+  perPage = 6;
   exportPdfButton.disabled=true;
   pdfPerPageTop.disabled=true;
 
@@ -1107,7 +1145,7 @@ async function exportQuestionsToPdf(perPage){
 
     const pageW = doc.internal.pageSize.getWidth();
     const pageH = doc.internal.pageSize.getHeight();
-    const margin = 12;
+    const margin = 10;
     const headerH = 18;
     const contentW = pageW - 2*margin;
     const contentH = pageH - 2*margin - headerH;
@@ -1117,15 +1155,15 @@ async function exportQuestionsToPdf(perPage){
     const cellH = contentH/rows;
 
     const exportedAt = new Date();
+    const ts = formatDateForFilename(exportedAt);
     const timeStr = formatMs(getTotalTimeMs());
-
     function addHeader(title){
       doc.setFont("helvetica","bold");
       doc.setFontSize(14);
       doc.text("DYAA EDUCATION", margin, margin+6);
       doc.setFontSize(12);
       doc.setFont("helvetica","normal");
-      doc.text(title, margin, margin+13);
+      doc.text(`${title} • ${ts}`, margin, margin+13);
 
       doc.setFontSize(10);
       doc.text(`Student: ${studentName}`, pageW-margin, margin+6, {align:"right"});
@@ -1136,7 +1174,7 @@ async function exportQuestionsToPdf(perPage){
 
       doc.setFontSize(9);
       doc.setTextColor(90);
-      doc.text(`Exported: ${exportedAt.toLocaleString()}`, margin, pageH-margin+3);
+      doc.text(`Exported: ${ts}`, margin, pageH-margin+3);
       doc.setTextColor(0);
     }
 
@@ -1168,17 +1206,17 @@ async function exportQuestionsToPdf(perPage){
 
         // Labels
         doc.setFont("helvetica","bold");
-        doc.setFontSize(11);
+        doc.setFontSize(12);
         doc.text(`Q${qi+1}`, x+4, y+6);
         doc.setFont("helvetica","normal");
-        doc.setFontSize(9);
+        doc.setFontSize(10);
         doc.text(partLabel(q), x+4, y+11);
 
         // Image box
         const imgBoxX = x+4;
-        const imgBoxY = y+14;
+        const imgBoxY = y+12;
         const imgBoxW = cellW-8;
-        const imgBoxH = cellH-28;
+        const imgBoxH = cellH-24;
 
         const iw=q._pngCache.w, ih=q._pngCache.h;
         const scale = Math.min(imgBoxW/iw, imgBoxH/ih);
@@ -1191,9 +1229,9 @@ async function exportQuestionsToPdf(perPage){
         doc.addImage(q._pngCache.url, "PNG", dx, dy, dw, dh);
 
         // Answer blanks
-        doc.setFontSize(9);
+        doc.setFontSize(10);
         const line = `${q.labelA}: ______   ${q.labelB}: ______`;
-        doc.text(line, x+4, y + cellH - 8);
+        doc.text(line, x+4, y + cellH - 6);
       }
     }
 
@@ -1221,7 +1259,7 @@ async function exportQuestionsToPdf(perPage){
       doc.text(txt, x, y);
     }
 
-    const file = `Simultaneous_${safeFilename(studentName)}_${formatDateForFilename(exportedAt)}.pdf`;
+    const file = `Simultaneous_${safeFilename(studentName)}_${ts}.pdf`;
     doc.save(file);
   }catch(err){
     console.error(err);
@@ -1624,7 +1662,7 @@ pauseButton.addEventListener("click", ()=>{
 
 
 /* Export to PDF */
-exportPdfButton.addEventListener("click", ()=>exportQuestionsToPdf(Number(pdfPerPageTop.value)));
+exportPdfButton.addEventListener("click", ()=>exportQuestionsToPdf());
 
 /* Generate new set */
 generateBtn.addEventListener("click", ()=>{
