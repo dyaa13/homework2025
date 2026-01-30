@@ -328,6 +328,40 @@
         padding-bottom:10px;
       }
     }
+
+    /* --- Math-style fractions (stacked) --- */
+    .frac{
+      display:inline-block;
+      vertical-align:middle;
+      text-align:center;
+      line-height:1;
+      margin:0 2px;
+    }
+    .frac sup{
+      display:block;
+      font-size:0.75em;
+      padding:0 2px;
+    }
+    .frac .fbar{
+      display:block;
+      border-top:1.6px solid #111;
+      margin:1px 0;
+    }
+    .frac sub{
+      display:block;
+      font-size:0.75em;
+      padding:0 2px;
+    }
+    .mixed{
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      vertical-align:middle;
+    }
+    .mixed .whole{
+      font-weight:900;
+    }
+
   </style>
 </head>
 
@@ -369,7 +403,7 @@
 <script>
 /* ==========================================================
    NZ Year 7 Maths Test (Practice / Exam)
-   ✅ 30 questions per set, total 100 points
+   ✅ 40 questions per set, ordered easy → hard
    ✅ No repeated question TYPES within one set (unique templates)
    ✅ TEXT-ONLY (no diagrams / images)
    ✅ NO mixed numbers anywhere: if a value > 1 is a fraction, it must be an improper fraction
@@ -409,6 +443,23 @@ function stripHTML(html){
   tmp.innerHTML = html;
   return (tmp.textContent || tmp.innerText || "").trim();
 }
+
+/* ---------------- Display helpers: fractions/mixed numbers in math form ---------------- */
+function fracHTML(num, den){
+  return `<span class="frac"><sup>${num}</sup><span class="fbar"></span><sub>${den}</sub></span>`;
+}
+function mixedHTML(whole, num, den){
+  return `<span class="mixed"><span class="whole">${whole}</span>${fracHTML(num, den)}</span>`;
+}
+function mathifyHTML(html){
+  let s = String(html || "");
+  // Mixed number (just in case): 2 3/4
+  s = s.replace(/\b(-?\d+)\s+(\d+)\/(\d+)\b/g, (m, w, n, d) => mixedHTML(w, n, d));
+  // Simple fraction: -3/4, 5/8, etc.
+  s = s.replace(/\b(-?\d+)\/(\d+)\b/g, (m, n, d) => fracHTML(n, d));
+  return s;
+}
+
 function pad2(n){ return String(n).padStart(2,"0"); }
 function roundToDp(x, dp){
   const p = Math.pow(10, dp);
@@ -604,15 +655,19 @@ function compareByType(userStr, correct){
 
 /* ---------------- Question model ---------------- */
 function makeQ(index, partIndex, partName, points, html, correct, displayCorrect, answerHint, hint){
+  const rawHtml = String(html || "");
+  const rawDisplay = String(displayCorrect || "");
   return {
     index,
     partIndex,
     partName,
     points,
-    html,
-    plain: stripHTML(html),
+    rawHtml,
+    html: mathifyHTML(rawHtml),
+    plain: stripHTML(rawHtml),
     correct,
-    displayCorrect,
+    displayCorrectRaw: rawDisplay,
+    displayCorrect: mathifyHTML(rawDisplay),
     answerHint,
     hint,
     userValue:"",
@@ -622,12 +677,14 @@ function makeQ(index, partIndex, partName, points, html, correct, displayCorrect
   };
 }
 
-/* ---------------- Points: 30 questions, total 100 ---------------- */
+/* ---------------- Points: 40 questions, total 125 ---------------- */
 function buildPointsArray(){
+  // 40 questions, ordered by difficulty:
+  // 10 easy (2 pts) + 15 medium (3 pts) + 15 hard (4 pts) = 125 pts
   const pts = [];
-  for (let i=0;i<5;i++) pts.push(2);   // 10
-  for (let i=0;i<10;i++) pts.push(3);  // 30 -> 40
-  for (let i=0;i<15;i++) pts.push(4);  // 60 -> 100
+  for (let i=0;i<10;i++) pts.push(2);   // 20
+  for (let i=0;i<15;i++) pts.push(3);   // 45 -> 65
+  for (let i=0;i<15;i++) pts.push(4);   // 60 -> 125
   return pts;
 }
 const POINTS = buildPointsArray();
@@ -2349,16 +2406,20 @@ function pickUnique(bank, count){
   return shuffle(bank).slice(0, count);
 }
 
-/* ---------------- Generate Questions (30 unique templates) ---------------- */
+/* ---------------- Generate Questions (40 unique templates) ---------------- */
 function generateQuestions(){
+  const easyCount = POINTS.filter(p => p === 2).length;
+  const medCount  = POINTS.filter(p => p === 3).length;
+  const hardCount = POINTS.filter(p => p === 4).length;
+
   // pick unique templates then keep them in bank order (easier → harder within each group)
-  const easyFns = pickUnique(EASY_BANK, 5).sort((a,b)=>EASY_BANK.indexOf(a)-EASY_BANK.indexOf(b));
-  const medFns  = pickUnique(MED_BANK, 10).sort((a,b)=>MED_BANK.indexOf(a)-MED_BANK.indexOf(b));
-  const hardFns = pickUnique(HARD_BANK, 15).sort((a,b)=>HARD_BANK.indexOf(a)-HARD_BANK.indexOf(b));
+  const easyFns = pickUnique(EASY_BANK, easyCount).sort((a,b)=>EASY_BANK.indexOf(a)-EASY_BANK.indexOf(b));
+  const medFns  = pickUnique(MED_BANK,  medCount).sort((a,b)=>MED_BANK.indexOf(a)-MED_BANK.indexOf(b));
+  const hardFns = pickUnique(HARD_BANK, hardCount).sort((a,b)=>HARD_BANK.indexOf(a)-HARD_BANK.indexOf(b));
 
   const qFns = [];
   let e=0,m=0,h=0;
-  for (let i=0;i<30;i++){
+  for (let i=0;i<POINTS.length;i++){
     const pts = POINTS[i];
     if (pts === 2) qFns.push(easyFns[e++]);
     else if (pts === 3) qFns.push(medFns[m++]);
@@ -2366,12 +2427,12 @@ function generateQuestions(){
   }
 
   // NOTE: We intentionally do NOT shuffle here so questions are ordered by difficulty:
-  // 2-point (easy) → 3-point (medium) → 4-point (hard)
+  // Easy → Medium → Hard
 
   const Q = [];
   const usedIds = new Set();
 
-  for (let i=0;i<30;i++){
+  for (let i=0;i<POINTS.length;i++){
     const fn = qFns[i];
     let t = fn();
 
@@ -2924,7 +2985,7 @@ function saveExamResultAsTxt(){
       `Q${i+1} (${q.partName}) [${earned}/${q.points} pts]` +
       "\nQuestion: " + q.plain +
       "\nYour answer: " + userAns +
-      "\nCorrect answer: " + stripHTML(q.displayCorrect) +
+      "\nCorrect answer: " + (q.displayCorrectRaw || "") +
       "\nResult: " + resultText
     );
     lines.push("");
@@ -2968,7 +3029,7 @@ function savePracticeResultAsTxt(){
       `Q${i+1} (${q.partName})` +
       "\nQuestion: " + q.plain +
       "\nYour answer: " + userAns +
-      "\nCorrect answer: " + stripHTML(q.displayCorrect) +
+      "\nCorrect answer: " + (q.displayCorrectRaw || "") +
       "\nResult: " + resultText
     );
     lines.push("");
@@ -3017,6 +3078,15 @@ function exportToPDF(){
       .q .qt{ margin-bottom:8px; }
       .ansbox{ margin-top:8px; border:1px solid #aaa; border-radius:8px; height:44px; }
       .pts{ font-size:0.9em; color:#444; font-weight:800; margin-left:8px; }
+
+      /* --- Math-style fractions (stacked) --- */
+      .frac{ display:inline-block; vertical-align:middle; text-align:center; line-height:1; margin:0 2px; }
+      .frac sup{ display:block; font-size:0.75em; padding:0 2px; }
+      .frac .fbar{ display:block; border-top:1.6px solid #111; margin:1px 0; }
+      .frac sub{ display:block; font-size:0.75em; padding:0 2px; }
+      .mixed{ display:inline-flex; align-items:center; gap:4px; vertical-align:middle; }
+      .mixed .whole{ font-weight:900; }
+
 .page-break{ page-break-before: always; }
       table.ans-table{ width:100%; border-collapse:collapse; margin-top:10px; }
       .ans-table th, .ans-table td{
@@ -3048,7 +3118,7 @@ function exportToPDF(){
       </button>
     </div>
   `;
-  // ---------- Questions in ORDER Q1..Q30 ----------
+  // ---------- Questions in ORDER Q1..Q40 ----------
   questions.forEach((q) => {
 const ptsText = (MODE === "exam") ? `<span class="pts">(${q.points} pts)</span>` : "";
     body += `
@@ -3070,11 +3140,11 @@ const ptsText = (MODE === "exam") ? `<span class="pts">(${q.points} pts)</span>`
       </tr>
   `;
   questions.forEach((q) => {
-    const ansText = stripHTML(q.displayCorrect || "");
+    const ansHtml = (q.displayCorrect || "");
     body += `
       <tr>
         <td><b>Q${q.index+1}</b></td>
-        <td>${ansText}</td>
+        <td>${ansHtml}</td>
       </tr>
     `;
   });
@@ -3127,7 +3197,7 @@ function updateMetaLine(){
   const modeText = (MODE === "practice")
     ? "Practice Mode (timed, Check Answer + Export PDF + Submit Summary)"
     : `Exam Mode (timed, total ${TOTAL_POINTS} points)`;
-  metaLine.textContent = `Student: ${studentName} • ${modeText} • 30 questions • NZ Year 7 • Fractions as a/b only`;
+  metaLine.textContent = `Student: ${studentName} • ${modeText} • 40 questions • NZ Year 7 • Fractions as a/b only`;
 }
 function showStartScreen(){
   sidebarEl.style.display = "none";
@@ -3146,7 +3216,7 @@ function showStartScreen(){
       • <b>Exam</b>: timed, total <b>${TOTAL_POINTS}</b> points. Only <b>Submit</b> on the last question.<br><br>
 
       <b>Rule:</b> Do <b>NOT</b> use mixed numbers. If your answer is a fraction, write it as <b>a/b</b> in simplest form.
-      <br><b>Note:</b> All questions are <b>text-only</b>. Each set contains <b>30 different question types</b> (no repeats).
+      <br><b>Note:</b> All questions are <b>text-only</b>. Each set contains <b>40 different question types</b> (no repeats).
     </div>
 
     <div style="margin-top:14px;">
