@@ -499,7 +499,7 @@
 <script>
 /* ==========================================================
    NZ Year 6 Maths Test (Practice / Exam)
-   ✅ 30 questions per set, total 100 points
+   ✅ 40 questions per set, total 100 points
    ✅ No repeated question TYPES within one set (unique templates)
    ✅ Mixed numbers displayed in "3-box" style
    ✅ Mixed subtraction/addition question random (numbers + +/−)
@@ -579,12 +579,39 @@ function fracHTML(num, den){
   `;
 }
 
-/* ---------------- Points: 30 questions, total 100 ---------------- */
+/* ---------------- Safe text -> math-style HTML for inline display ---------------- */
+function escapeHTML(str){
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+// Expects an already-escaped string (no HTML tags), returns HTML with fraction/mixed styling.
+function mathifyText(escapedStr){
+  let s = String(escapedStr);
+
+  // Mixed number: "2 1/3" -> 2 + stacked fraction (no space)
+  s = s.replace(/\b(\d{1,3})\s+(\d{1,3})\/(\d{1,3})\b/g, (m, w, n, d) => {
+    return mixedHTML(Number(w), Number(n), Number(d));
+  });
+
+  // Simple fraction: "7/10" -> stacked fraction
+  s = s.replace(/\b(\d{1,3})\/(\d{1,3})\b/g, (m, n, d) => {
+    return fracHTML(Number(n), Number(d));
+  });
+
+  return s;
+}
+
+/* ---------------- Points: 40 questions, total 100 ---------------- */
 function buildPointsArray(){
   const pts = [];
-  for (let i=0;i<5;i++) pts.push(2);   // 10
-  for (let i=0;i<10;i++) pts.push(3);  // 30 -> 40
-  for (let i=0;i<15;i++) pts.push(4);  // 60 -> 100
+  for (let i=0;i<10;i++) pts.push(1);  // Easy (10)  -> 10
+  for (let i=0;i<15;i++) pts.push(2);  // Medium (15)-> 40
+  for (let i=0;i<15;i++) pts.push(4);  // Hard (15)  -> 100
   return pts;
 }
 const POINTS = buildPointsArray();
@@ -2137,7 +2164,7 @@ function pickUnique(bank, count){
   return shuffle(bank).slice(0, count);
 }
 
-/* ---------------- Generate Questions (30 unique templates) ---------------- */
+/* ---------------- Generate Questions (40 unique templates) ---------------- */
 /* Difficulty ranks (lower = easier). Used to keep questions ordered from easy to hard. */
 const DIFF_RANK = {
   // EASY
@@ -2227,15 +2254,15 @@ function diffRank(id){ return (DIFF_RANK[id] ?? 999); }
 
 function generateQuestions(){
   // Pick templates
-  const easyTs = pickUnique(EASY_BANK, 5).map(fn=>fn()).sort((a,b)=>diffRank(a.id)-diffRank(b.id));
-  const medTs  = pickUnique(MED_BANK, 10).map(fn=>fn()).sort((a,b)=>diffRank(a.id)-diffRank(b.id));
+  const easyTs = pickUnique(EASY_BANK, 10).map(fn=>fn()).sort((a,b)=>diffRank(a.id)-diffRank(b.id));
+  const medTs  = pickUnique(MED_BANK, 15).map(fn=>fn()).sort((a,b)=>diffRank(a.id)-diffRank(b.id));
   const hardTs = pickUnique(HARD_BANK, 15).map(fn=>fn()).sort((a,b)=>diffRank(a.id)-diffRank(b.id));
 
   // Keep questions ordered by difficulty: EASY → MEDIUM → HARD
   const ts = [...easyTs, ...medTs, ...hardTs];
 
   const Q = [];
-  for (let i=0;i<30;i++){
+  for (let i=0;i<40;i++){
     const t = ts[i];
     Q.push(makeQ(i, t.partIndex, t.partName, POINTS[i], t.html, t.correct, t.displayCorrect, t.answerHint, t.hint));
   }
@@ -2590,7 +2617,7 @@ function renderQuestion(){
   quizContent.innerHTML = `
     <p class="question-text">${topLine}</p>
     ${pointsLine}
-    <p class="instructions">${q.answerHint}</p>
+    <p class="instructions">${mathifyText(escapeHTML(q.answerHint))}</p>
 
     <div class="part-title">${q.partName}</div>
 
@@ -2743,7 +2770,7 @@ function renderExamResults(pointsEarned){
         <td>${earned}</td>
         <td>${q.partName}</td>
         <td style="text-align:left;">${q.html}</td>
-        <td>${yourAns}</td>
+        <td>${mathifyText(escapeHTML(yourAns))}</td>
         <td>${q.displayCorrect}</td>
         <td>${!isAnswered ? "Not answered" : (q.isCorrect ? "Correct" : "Incorrect")}</td>
       </tr>
@@ -2797,7 +2824,7 @@ function renderPracticeResults(correctCount){
         <td>${i+1}</td>
         <td>${q.partName}</td>
         <td style="text-align:left;">${q.html}</td>
-        <td>${yourAns}</td>
+        <td>${mathifyText(escapeHTML(yourAns))}</td>
         <td>${q.displayCorrect}</td>
         <td>${(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect ? "Correct" : "Incorrect")}</td>
       </tr>
@@ -3292,7 +3319,7 @@ function updateMetaLine(){
   const modeText = (MODE === "practice")
     ? "Practice Mode (timed, Check Answer + Export PDF + Submit Summary)"
     : `Exam Mode (timed, total ${TOTAL_POINTS} points)`;
-  metaLine.textContent = `Student: ${studentName} • ${modeText} • 30 questions • NZ Year 6`;
+  metaLine.textContent = `Student: ${studentName} • ${modeText} • ${POINTS.length} questions • NZ Year 6`;
 }
 function showStartScreen(){
   sidebarEl.style.display = "none";
@@ -3312,7 +3339,7 @@ function showStartScreen(){
       • <b>Exam</b>: timed, total <b>${TOTAL_POINTS}</b> points. Only <b>Submit</b> on the last question.<br><br>
 
       <b>Note:</b> Geometry questions are <b>text-only</b> (no diagrams).
-      Each set contains <b>30 different question types</b> (no repeats).
+      Each set contains <b>40 different question types</b> (no repeats).
     </div>
 
     <div style="margin-top:14px;">

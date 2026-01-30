@@ -377,7 +377,7 @@
 <script>
 /* ==========================================================
    NZ Year 5 version (expanded bank)
-   ✅ 30 questions per set, total 100 points
+   ✅ 40 questions per set (easy → hard)
    ✅ In each set: NO repeated template types
    ✅ Geometry mostly word-based
    ✅ Richer NZ-style scenarios
@@ -426,13 +426,15 @@ function roundTo(n, place){ // place = 1,10,100,1000...
   return Math.round(n / place) * place;
 }
 
-/* ---------------- Points: 30 questions, total 100 ---------------- */
+/* ---------------- Points: 40 questions ---------------- */
+const NUM_EASY = 14;
+const NUM_MED  = 14;
+const NUM_HARD = 12;
+const NUM_TOTAL = NUM_EASY + NUM_MED + NUM_HARD;
+
 function buildPointsArray(){
-  const pts = [];
-  for (let i=0;i<5;i++) pts.push(2);   // 10
-  for (let i=0;i<10;i++) pts.push(3);  // 30 -> 40
-  for (let i=0;i<15;i++) pts.push(4);  // 60 -> 100
-  return pts;
+  // 1 point per question (total 40). You can weight points by difficulty if needed.
+  return Array(NUM_TOTAL).fill(1);
 }
 const POINTS = buildPointsArray();
 const TOTAL_POINTS = POINTS.reduce((a,b)=>a+b,0);
@@ -2166,26 +2168,19 @@ function pickUnique(bank, count){
   return picked;
 }
 
-/* ---------------- Generate Questions (30 unique templates) ---------------- */
+/* ---------------- Generate Questions (40 unique templates, easy → hard) ---------------- */
 function generateQuestions(){
-  const easyFns = pickUnique(EASY_BANK, 5);
-  const medFns  = pickUnique(MED_BANK, 10);
-  const hardFns = pickUnique(HARD_BANK, 15);
+  const easyFns = pickUnique(EASY_BANK, NUM_EASY);
+  const medFns  = pickUnique(MED_BANK, NUM_MED);
+  const hardFns = pickUnique(HARD_BANK, NUM_HARD);
 
-  // Build slots based on POINTS order (easy → medium → hard)
-  const qFns = [];
-  let e=0,m=0,h=0;
-  for (let i=0;i<30;i++){
-    const pts = POINTS[i];
-    if (pts === 2) qFns.push(easyFns[e++]);
-    else if (pts === 3) qFns.push(medFns[m++]);
-    else qFns.push(hardFns[h++]);
-  }
+  // Easy first, then Medium, then Hard (already sorted by bank order)
+  const qFns = easyFns.concat(medFns, hardFns);
 
   const usedIds = new Set();
   const Q = [];
 
-  for (let i=0;i<30;i++){
+  for (let i=0;i<NUM_TOTAL;i++){
     const fn = qFns[i];
     let t = fn();
 
@@ -2199,7 +2194,7 @@ function generateQuestions(){
 
     if (usedIds.has(t.id)){
       // fallback: try other templates from the same tier (prefer bank order)
-      const tierBank = (POINTS[i]===2) ? EASY_BANK : (POINTS[i]===3 ? MED_BANK : HARD_BANK);
+      const tierBank = (i < NUM_EASY) ? EASY_BANK : (i < (NUM_EASY + NUM_MED) ? MED_BANK : HARD_BANK);
 
       for (const alt of tierBank){
         const altT = alt();
@@ -2227,6 +2222,7 @@ function generateQuestions(){
 
   return Q;
 }
+
 
 
 /* ---------------- UI + State ---------------- */
@@ -2888,7 +2884,7 @@ function exportToPDF(){
     </div>
   `;
 
-  // ---------- Questions in ORDER Q1..Q30 ----------
+  // ---------- Questions in ORDER Q1..Q40 ----------
   questions.forEach((q) => {
     const ptsText = (MODE === "exam") ? `<span class="pts">(${q.points} pts)</span>` : "";
     body += `
@@ -2973,7 +2969,7 @@ function updateMetaLine(){
   const modeText = (MODE === "practice")
     ? "Practice Mode (timed, Check Answer + Export PDF + Submit Summary)"
     : `Exam Mode (timed, total ${TOTAL_POINTS} points)`;
-  metaLine.textContent = `Student: ${studentName} • ${modeText} • 30 questions • NZ Year 5`;
+  metaLine.textContent = `Student: ${studentName} • ${modeText} • ${NUM_TOTAL} questions • NZ Year 5`;
 }
 function showStartScreen(){
   sidebarEl.style.display = "none";
