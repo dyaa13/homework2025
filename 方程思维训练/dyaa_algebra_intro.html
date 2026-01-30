@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algebra — Intro (Expressions) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --radius:14px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      user-select:none;
+      z-index:0;
+      white-space:nowrap;
+    }
+
+    .container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:24px auto 60px;
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+    }
+
+    /* Header */
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:42px;height:42px;
+      background:var(--blue);
+      border-radius:8px;
+      position:relative;
+      flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px;height:10px;
+      background:var(--orange);
+      top:-6px;left:10px;
+      border-radius:6px;
+    }
+    .logo-text{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .logo-text h1{
+      font-size:22px;
+      margin:0;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .logo-text .tag{
+      font-size:13px;
+      color:var(--orange);
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .student-pill{
+      margin-left:auto;
+      display:none;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      font-weight:800;
+      color:#111;
+      white-space:nowrap;
+    }
+    .student-pill.show{ display:inline-flex; }
+
+    /* Top bar */
+    .top-bar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:14px 0 10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .tabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .tab-btn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--blue);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+    }
+    .tab-btn.active{
+      background:var(--blue);
+      color:#fff;
+      border-color:var(--blue);
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    select, input[type="number"], input[type="text"]{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:9px 10px;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn.primary{ background:var(--blue); color:#fff; }
+    .btn.secondary{ background:#eef2ff; color:var(--blue); border:1px solid #dbe3ff; }
+    .btn.warn{ background:#fff3e0; color:#8a4b00; border:1px solid #ffe0b2; }
+    .btn:active{ transform:translateY(1px); }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+
+    /* Sections */
+    .section{ display:none; margin-top:16px; }
+    .section.active{ display:block; }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    @media (min-width: 860px){
+      .grid.two{ grid-template-columns:1fr 1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      padding:16px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+    .card h3{
+      margin:10px 0 8px;
+      font-size:15px;
+      color:#111;
+    }
+    .muted{ color:var(--muted); }
+    .note{
+      background:#f7fbff;
+      border:1px solid #d9ecff;
+      padding:12px;
+      border-radius:12px;
+      color:#123;
+    }
+    .rule{ border-top:1px dashed var(--line); margin:12px 0; }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      color:#111;
+      flex-wrap:wrap;
+      margin:3px 6px 0 0;
+    }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-weight:900;
+      background:#fafafe;
+      border:1px solid var(--line);
+      padding:2px 6px;
+      border-radius:8px;
+      display:inline-block;
+    }
+
+    /* Practice */
+    .practice-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .practice-meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      background:#f6f7ff;
+      border:1px solid #e2e6ff;
+      color:#1d2a7a;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:13px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:14px;
+      background:#fff;
+    }
+    .q-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:6px;
+    }
+    .q-num{ font-weight:900; color:var(--blue); }
+    .q-topic{
+      font-size:12px;
+      font-weight:900;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color:#111;
+      background:#fafafe;
+      white-space:nowrap;
+    }
+    .q-body{
+      font-size:15px;
+      line-height:1.45;
+      margin-bottom:10px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .q-input{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:10px;
+    }
+    .answerbox{
+      width:min(320px, 70vw);
+    }
+    .q-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .feedback{
+      margin-top:10px;
+      border-radius:12px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      background:#fafafa;
+      display:none;
+    }
+    .feedback.show{ display:block; }
+    .feedback.ok{ border-color:#c9e7cf; background:#f0fbf2; }
+    .feedback.bad{ border-color:#ffd0d0; background:#fff3f3; }
+    .feedback .title{ font-weight:900; margin-bottom:6px; }
+
+    .footer-actions{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      border-top:1px solid var(--line);
+      padding-top:14px;
+    }
+    .scorebox{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fff;
+      min-width:220px;
+    }
+    .scorebox strong{ color:var(--blue); }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+    .modal-backdrop.show{ display:flex; }
+    .modal{
+      width:min(560px, 96vw);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 18px 45px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+      padding:16px;
+    }
+    .modal h3{ margin:0 0 6px; color:var(--blue); }
+    .modal p{ margin:6px 0 14px; color:var(--muted); }
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); border:0;
+    }
+
+    /* hidden print layout for PDF */
+    #pdfPrintArea{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:794px; /* ~A4 at 96dpi */
+      background:#fff;
+      color:#111;
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      padding:0;
+    }
+    .pdf-page{
+      width:794px;
+      min-height:1123px; /* ~A4 at 96dpi */
+      padding:36px 44px;
+      page-break-after:always;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .pdf-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+      padding-bottom:10px;
+      border-bottom:2px solid #e6e6ef;
+    }
+    .pdf-title{
+      font-weight:900;
+      color:#0d47a1;
+      font-size:18px;
+      line-height:1.2;
+    }
+    .pdf-sub{
+      color:#666;
+      font-size:12px;
+      margin-top:4px;
+    }
+    .pdf-meta{
+      text-align:right;
+      font-size:12px;
+      color:#666;
+      white-space:nowrap;
+      line-height:1.35;
+    }
+    .pdf-grid{
+      display:grid;
+      gap:10px;
+    }
+    .pdf-qgrid{
+      grid-template-columns:1fr 1fr 1fr;
+    }
+    .pdf-agrid{
+      grid-template-columns:1fr;
+    }
+    .pdf-q{
+      border:1px solid #e6e6ef;
+      border-radius:12px;
+      padding:12px 12px;
+      height:176px;              /* ~4 lines workspace while fitting 15 per page */
+      box-sizing:border-box;
+      display:flex;
+      flex-direction:column;
+    }
+    .pdf-workspace{
+      flex:1;
+      margin-top:8px;
+    }
+    .pdf-qhead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .pdf-qnum{ font-weight:900; color:#0d47a1; }
+    .pdf-qbody{
+      font-size:13px;
+      line-height:1.45;
+      margin-bottom:8px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .pdf-qline1{
+      font-size:13px;
+      line-height:1.35;
+      margin-bottom:4px;
+      color:#111;
+      font-weight:700;
+    }
+    .pdf-qnum-inline{
+      font-weight:900;
+      color:#0d47a1;
+      margin-right:6px;
+    }
+    .pdf-qline2{
+      font-size:13px;
+      line-height:1.45;
+      color:#111;
+    }
+    .pdf-answerline{
+      margin-top:8px;
+      font-size:12px;
+      color:#111;
+    }
+    .linebox{
+      display:inline-block;
+      border-bottom:2px solid #111;
+      min-width:220px;
+      height:14px;
+      vertical-align:baseline;
+      margin-left:6px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div>
+        <div class="logo-text">
+          <h1>Algebra — Intro</h1>
+          <span class="tag">DYAA EDUCATION</span>
+        </div>
+        <p class="subtitle">Variables • Algebraic Shorthand • Like Terms • Expanding Brackets</p>
+      </div>
+
+      <!-- shows only when name is known -->
+      <div id="studentPillHeader" class="student-pill" aria-live="polite">
+        Student: <span id="studentNameHeader"></span>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="learn">Learn</button>
+        <button class="tab-btn" data-tab="practice">Practice</button>
+      </div>
+
+      <div class="controls" id="practiceControls" style="display:none;">
+        <label class="chip">
+          Questions:
+          <select id="countSelect" aria-label="Number of questions" disabled>
+            <option value="25" selected>25</option>
+          </select>
+        </label>
+
+        <label class="chip">
+          PDF per page:
+          <select id="perPageSelect" aria-label="PDF questions per page" disabled>
+            <option value="15" selected>15</option>
+          </select>
+        </label>
+
+        <button class="btn secondary" id="exportPdfBtn">Export to PDF</button>
+        <button class="btn warn" id="newSetBtn">Generate New Set</button>
+        <button class="btn secondary" id="resetBtn">Reset Answers</button>
+      </div>
+    </div>
+
+    <!-- LEARN -->
+    <div class="section active" id="learnSection">
+      <div class="grid two">
+
+        <div class="card">
+          <h2>1) Using Letters to Represent Numbers</h2>
+          <p class="muted">
+            In algebra, a letter can stand for a number. We call it a <b>variable</b>.
+            A number on its own is a <b>constant</b>.
+          </p>
+          <div class="note">
+            <div class="chip">If <span class="mono">x</span> is a number, then <span class="mono">x + 5</span> means “5 more than x”.</div>
+            <div class="chip"><span class="mono">3x</span> means “3 times x”.</div>
+            <div class="chip"><span class="mono">2x − 7</span> means “7 less than 2 times x”.</div>
+          </div>
+          <div class="rule"></div>
+          <p class="muted" style="margin:0;">
+            An <b>expression</b> has no equals sign (e.g. <span class="mono">4x + 3</span>).<br/>
+            An <b>equation</b> has an equals sign (e.g. <span class="mono">4x + 3 = 11</span>).
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>2) Algebraic Shorthand</h2>
+          <p class="muted">
+            We usually <b>omit</b> the multiplication sign “×”.
+          </p>
+          <div class="note">
+            <div class="chip"><span class="mono">4 × x</span> becomes <span class="mono">4x</span></div>
+            <div class="chip"><span class="mono">a × b</span> becomes <span class="mono">ab</span></div>
+            <div class="chip"><span class="mono">2 × (x + 3)</span> becomes <span class="mono">2(x + 3)</span></div>
+            <div class="chip">We write <span class="mono">x</span> instead of <span class="mono">1x</span></div>
+            <div class="chip">We write <span class="mono">−x</span> instead of <span class="mono">−1x</span></div>
+          </div>
+          <div class="rule"></div>
+          <p class="muted" style="margin:0;">
+            The number in front of a variable is the <b>coefficient</b>.
+            In <span class="mono">7x</span>, the coefficient is 7.
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>3) Combining Like Terms</h2>
+          <p class="muted">
+            <b>Like terms</b> have the same variable part.
+            You can combine them by adding/subtracting the coefficients.
+          </p>
+          <div class="note">
+            <div class="chip"><span class="mono">3x + 5x = 8x</span></div>
+            <div class="chip"><span class="mono">7x − 2x = 5x</span></div>
+            <div class="chip"><span class="mono">2x + 3 + x − 5 = 3x − 2</span></div>
+          </div>
+          <div class="rule"></div>
+          <p class="muted" style="margin:0;">
+            You can also combine constants:
+            <span class="mono">4 + 9 − 3 = 10</span>.
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>4) Removing Brackets</h2>
+          <p class="muted">
+            Use the <b>distributive law</b>:
+            <span class="mono">a(b + c) = ab + ac</span>.
+          </p>
+          <div class="note">
+            <div class="chip"><span class="mono">3(x + 4) = 3x + 12</span></div>
+            <div class="chip"><span class="mono">2(5x − 1) = 10x − 2</span></div>
+            <div class="chip"><span class="mono">−(x − 6) = −x + 6</span></div>
+          </div>
+          <div class="rule"></div>
+          <p class="muted" style="margin:0;">
+            After expanding, <b>combine like terms</b> to simplify.
+          </p>
+        </div>
+
+        <div class="card" style="grid-column:1/-1;">
+          <h2>5) A Clear “Simplify” Method</h2>
+          <div class="note">
+            <div style="margin-bottom:6px;"><b>Goal:</b> write your final answer in the simple form <span class="mono">ax + b</span>.</div>
+            <ol class="muted" style="margin:8px 0 0 18px;">
+              <li>Remove brackets (expand).</li>
+              <li>Collect all <span class="mono">x</span> terms together.</li>
+              <li>Collect all constants together.</li>
+              <li>Write the final answer neatly (no “×”, no brackets).</li>
+            </ol>
+            <div class="rule"></div>
+            <div class="muted">
+              Example: <span class="mono">2(x − 3) + 4x + 5</span><br/>
+              Expand: <span class="mono">2x − 6 + 4x + 5</span><br/>
+              Combine: <span class="mono">6x − 1</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="section" id="practiceSection">
+      <div class="practice-header">
+        <div>
+          <h2 style="margin:0;color:var(--blue);font-size:18px;">Practice Quiz</h2>
+          <p class="muted" style="margin:6px 0 0;">
+            Enter your answer in <b>simplest form</b> (no brackets, no “×”): usually <span class="mono">ax+b</span>.
+          </p>
+        </div>
+        <div class="practice-meta">
+          <span class="pill" id="studentPillPractice" style="display:none;">Student: <span id="studentNamePractice"></span></span>
+          <span class="pill" id="setLabel">Set: A</span>
+          <span class="pill" id="progressLabel">0 checked</span>
+        </div>
+      </div>
+
+      <div id="questionsWrap" class="grid"></div>
+
+      <div class="footer-actions">
+        <div class="scorebox">
+          <div><strong id="scoreText">Score:</strong> <span id="scoreValue">—</span></div>
+          <div class="muted" style="font-size:13px;margin-top:4px;">Tip: Combine like terms and remove brackets before checking.</div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn primary" id="submitBtn">Submit & View Result</button>
+          <button class="btn secondary" id="showAllBtn">Show All Explanations</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- hidden print area for PDF -->
+  <div id="pdfPrintArea" aria-hidden="true"></div>
+
+  <!-- Confirm modal (new set) -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle">Generate a new set?</h3>
+      <p>This will clear your current answers and create a new random set of questions.</p>
+      <div class="modal-actions">
+        <button class="btn secondary" id="cancelModalBtn">Cancel</button>
+        <button class="btn warn" id="confirmModalBtn">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Name modal (required when URL has no ?name=...) -->
+  <div class="modal-backdrop" id="nameBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+      <h3 id="nameTitle">Enter student name to start</h3>
+      <p>
+        Tip: You can skip this step by using a link like:
+        <b>algebra_intro.html?name=Tiger</b>
+      </p>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <label class="sr-only" for="nameInput">Student name</label>
+        <input id="nameInput" type="text" placeholder="e.g., Tiger" autocomplete="off" style="min-width:240px;" />
+        <button class="btn primary" id="startWithNameBtn">Start</button>
+      </div>
+
+      <div class="modal-actions" style="margin-top:14px;">
+        <button class="btn secondary" id="cancelNameBtn">Back to Learn</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Student name logic
+     ************************/
+    let studentName = "";
+
+    function escapeHTML(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function sanitizeName(raw){
+      let s = String(raw || "").trim();
+      s = s.replace(/[\u0000-\u001F\u007F]/g, "");
+      if(s.length > 40) s = s.slice(0, 40);
+      return s;
+    }
+
+    function setStudentName(name){
+      studentName = sanitizeName(name);
+      updateStudentUI();
+    }
+
+    function updateStudentUI(){
+      const headerPill = document.getElementById("studentPillHeader");
+      const headerName = document.getElementById("studentNameHeader");
+      const practicePill = document.getElementById("studentPillPractice");
+      const practiceName = document.getElementById("studentNamePractice");
+
+      if(studentName){
+        headerPill.classList.add("show");
+        headerName.textContent = studentName;
+
+        practicePill.style.display = "inline-flex";
+        practiceName.textContent = studentName;
+
+        setPracticeButtonsEnabled(true);
+      }else{
+        headerPill.classList.remove("show");
+        headerName.textContent = "";
+
+        practicePill.style.display = "none";
+        practiceName.textContent = "";
+
+        setPracticeButtonsEnabled(false);
+      }
+    }
+
+    function setPracticeButtonsEnabled(enabled){
+      document.getElementById("exportPdfBtn").disabled = !enabled;
+      document.getElementById("newSetBtn").disabled = !enabled;
+      document.getElementById("resetBtn").disabled = !enabled;
+      document.getElementById("submitBtn").disabled = !enabled;
+      document.getElementById("showAllBtn").disabled = !enabled;
+    }
+
+    function getNameFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("name");
+      if(!raw) return "";
+      return sanitizeName(raw);
+    }
+
+    /***********************
+     * Utilities
+     ************************/
+    function randInt(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    
+function topicLabel(type){
+  switch(type){
+    case "var": return "Letters → Expression";
+    case "short": return "Shorthand";
+    case "like": return "Combine Like Terms";
+    case "brOnly": return "Expand Brackets";
+    case "br": return "Remove Brackets";
+    default: return "Practice";
+  }
+}
+
+    /***********************
+     * Safe linear expression evaluation in x
+     ************************/
+    function basicNormalize(raw){
+      let s = String(raw || "");
+      s = s.replaceAll("−","-").replaceAll("–","-").replaceAll("—","-");
+      s = s.replaceAll("×","*");
+      s = s.replace(/\s+/g, "");
+      s = s.replaceAll("X","x");
+      return s;
+    }
+
+    function insertImplicitMult(s){
+      // Insert * between (digit|x|)) and (x|()
+      return s.replace(/(\d|x|\))(?=x|\()/g, "$1*");
+    }
+
+    function tokenize(s){
+      const tokens = [];
+      let i = 0;
+      while(i < s.length){
+        const ch = s[i];
+        if(ch >= "0" && ch <= "9"){
+          let j = i+1;
+          while(j < s.length && s[j] >= "0" && s[j] <= "9") j++;
+          tokens.push({t:"num", v: parseInt(s.slice(i,j),10)});
+          i = j;
+          continue;
+        }
+        if(ch === "x"){
+          tokens.push({t:"x"});
+          i++;
+          continue;
+        }
+        if(ch === "+" || ch === "-" || ch === "*" || ch === "(" || ch === ")"){
+          tokens.push({t:ch});
+          i++;
+          continue;
+        }
+        // reject anything else (/, ^, letters, etc.)
+        return null;
+      }
+      return tokens;
+    }
+
+    function parseAndEval(tokens, xVal){
+      let pos = 0;
+
+      function peek(){ return tokens[pos] || null; }
+      function take(tt){
+        const p = peek();
+        if(!p || p.t !== tt) return null;
+        pos++;
+        return p;
+      }
+
+      function parseExpr(){
+        let v = parseTerm();
+        if(v === null) return null;
+        while(true){
+          const p = peek();
+          if(!p) break;
+          if(p.t === "+" || p.t === "-"){
+            pos++;
+            const rhs = parseTerm();
+            if(rhs === null) return null;
+            v = (p.t === "+") ? (v + rhs) : (v - rhs);
+          }else{
+            break;
+          }
+        }
+        return v;
+      }
+
+      function parseTerm(){
+        let v = parseFactor();
+        if(v === null) return null;
+        while(true){
+          const p = peek();
+          if(!p) break;
+          if(p.t === "*"){
+            pos++;
+            const rhs = parseFactor();
+            if(rhs === null) return null;
+            v = v * rhs;
+          }else{
+            break;
+          }
+        }
+        return v;
+      }
+
+      function parseFactor(){
+        const p = peek();
+        if(!p) return null;
+
+        if(p.t === "+"){
+          pos++;
+          return parseFactor();
+        }
+        if(p.t === "-"){
+          pos++;
+          const inner = parseFactor();
+          if(inner === null) return null;
+          return -inner;
+        }
+        if(p.t === "num"){
+          pos++;
+          return p.v;
+        }
+        if(p.t === "x"){
+          pos++;
+          return xVal;
+        }
+        if(p.t === "("){
+          pos++;
+          const inner = parseExpr();
+          if(inner === null) return null;
+          if(!take(")")) return null;
+          return inner;
+        }
+        return null;
+      }
+
+      const val = parseExpr();
+      if(val === null) return null;
+      if(pos !== tokens.length) return null;
+      return val;
+    }
+
+    function getLinearCoefficients(userRaw){
+      const rawNorm = basicNormalize(userRaw);
+      if(!rawNorm) return { ok:false, reason:"empty" };
+
+      // reject obvious disallowed characters
+      if(/[^0-9xX+\-*\(\)\s×−–—]/.test(userRaw)) return { ok:false, reason:"chars" };
+      if(rawNorm.includes("/")) return { ok:false, reason:"division" };
+      if(rawNorm.includes("^")) return { ok:false, reason:"power" };
+
+      const evalStr = insertImplicitMult(rawNorm);
+      const toks = tokenize(evalStr);
+      if(!toks) return { ok:false, reason:"token" };
+
+      const v0 = parseAndEval(toks, 0);
+      const v1 = parseAndEval(toks, 1);
+      const v2 = parseAndEval(toks, 2);
+      if(v0 === null || v1 === null || v2 === null) return { ok:false, reason:"parse" };
+
+      const a = v1 - v0;
+      const b = v0;
+
+      // check linearity with x=2
+      if(v2 !== a*2 + b) return { ok:false, reason:"nonlinear" };
+
+      if(Math.abs(a) > 1000000 || Math.abs(b) > 1000000) return { ok:false, reason:"big" };
+
+      return { ok:true, a:a, b:b, rawNorm: rawNorm };
+    }
+
+    function formatLinear(a, b, varFirst){
+      // returns simplest form string, no spaces, no brackets, no *
+      function xTerm(coeff){
+        if(coeff === 0) return "";
+        if(coeff === 1) return "x";
+        if(coeff === -1) return "-x";
+        return String(coeff) + "x";
+      }
+      const xt = xTerm(a);
+      const ct = String(b);
+
+      if(a === 0) return ct;
+
+      if(b === 0) return xt;
+
+      if(varFirst){
+        if(b > 0) return xt + "+" + b;
+        return xt + b; // b is negative => "…-k"
+      }else{
+        const join = (a > 0) ? "+" : ""; // if a is negative, xTerm already has '-'
+        return ct + join + xt;
+      }
+    }
+
+    function isUserSimplest(rawNorm, a, b){
+      let s = rawNorm;
+      if(!s) return false;
+      if(s[0] === "+") s = s.slice(1);
+
+      // simplest form we accept (var first or constant first)
+      const want1 = formatLinear(a,b,true);
+      const want2 = formatLinear(a,b,false);
+
+      return (s === want1 || s === want2);
+    }
+
+    function answerInputHTML(){
+      return `
+        <span class="muted">Answer:</span>
+        <input class="answerbox" type="text" autocomplete="off" placeholder="e.g., 5x-2" aria-label="answer" />
+        <span class="muted" style="font-size:13px;">(no brackets, no ×)</span>
+      `;
+    }
+
+    function parseUserLinear(card){
+      const inp = card.querySelector("input");
+      const raw = (inp && inp.value) ? inp.value : "";
+      const info = getLinearCoefficients(raw);
+
+      if(!info.ok){
+        return { ok:false, raw: raw, reason: info.reason || "invalid" };
+      }
+
+      const simplest = isUserSimplest(info.rawNorm, info.a, info.b);
+
+      return {
+        ok:true,
+        raw: raw,
+        a: info.a,
+        b: info.b,
+        rawNorm: info.rawNorm,
+        simplest: simplest,
+        canonicalVarFirst: formatLinear(info.a, info.b, true),
+        canonicalConstFirst: formatLinear(info.a, info.b, false)
+      };
+    }
+
+    /***********************
+     * Question generators (all answers become ax+b)
+     ************************/
+    
+function makeVarExpression(){
+  // Word/description -> expression in simplest form (ax+b)
+  // Focus: meaning of phrases like "more than", "less than", "times", "minus"
+  const patterns = [
+    // x plus/minus k
+    ()=>{ const k=randInt(2,15); return { phrase:`x plus ${k}`, a:1, b:k }; },
+    ()=>{ const k=randInt(2,15); return { phrase:`x minus ${k}`, a:1, b:-k }; },
+    ()=>{ const k=randInt(2,15); return { phrase:`${k} more than x`, a:1, b:k }; },
+    ()=>{ const k=randInt(2,15); return { phrase:`${k} less than x`, a:1, b:-k }; },
+
+    // k minus x / x minus k
+    ()=>{ const k=randInt(5,20); return { phrase:`${k} minus x`, a:-1, b:k }; },
+    ()=>{ const k=randInt(5,20); return { phrase:`x minus ${k}`, a:1, b:-k }; },
+
+    // m times x then +/- k
+    ()=>{ const m=randInt(2,12); const k=randInt(1,15); return { phrase:`${m} times x, then add ${k}`, a:m, b:k }; },
+    ()=>{ const m=randInt(2,12); const k=randInt(1,15); return { phrase:`${m} times x, then subtract ${k}`, a:m, b:-k }; },
+
+    // k more/less than mx
+    ()=>{ const m=randInt(2,9); const k=randInt(2,15); return { phrase:`${k} more than ${m}x`, a:m, b:k }; },
+    ()=>{ const m=randInt(2,9); const k=randInt(2,15); return { phrase:`${k} less than ${m}x`, a:m, b:-k }; },
+
+    // "twice" / "three times" style language
+    ()=>{ const k=randInt(1,12); return { phrase:`twice x plus ${k}`, a:2, b:k }; },
+    ()=>{ const k=randInt(1,12); return { phrase:`three times x minus ${k}`, a:3, b:-k }; },
+
+    // "the sum/difference of ..."
+    ()=>{ const k=randInt(2,18); return { phrase:`the sum of x and ${k}`, a:1, b:k }; },
+    ()=>{ const k=randInt(2,18); return { phrase:`the difference between x and ${k}`, a:1, b:-k }; },
+  ];
+
+  const p = patterns[randInt(0, patterns.length-1)]();
+  const ans = formatLinear(p.a, p.b, true);
+
+  const hint = `Translate words into operations: <b>plus / more than</b> means +, <b>minus / less than</b> means −, and <b>times</b> means multiplication.`;
+  const explain = `The expression in simplest form is <b><span class="mono">${ans}</span></b>.`;
+
+  return {
+    type:"var",
+    promptHTML: `Write an expression for: <b>${escapeHTML(p.phrase)}</b>. <span class="muted">(Simplest form)</span>`,
+    pdfLine1: "Write an expression for:",
+    pdfLine2HTML: `<b>${escapeHTML(p.phrase)}</b>. <span class="muted">(Simplest form)</span>`,
+    inputHTML: answerInputHTML(),
+    getUser: (card)=> parseUserLinear(card),
+    expected: {a:p.a, b:p.b},
+    hintHTML: hint,
+    explainHTML: explain,
+    pdfAnswerHint: "Answer:",
+    answerText: ans
+  };
+}
+
+    
+
+function makeShorthand(){
+  // Rewrite using algebraic shorthand (no “×”), simplest form (ax+b)
+  // Focus: remove the multiplication sign and write coefficients next to variables.
+  const templates = [
+    ()=>{ const m=randInt(2,15); return { expr:`${m} × x`, a:m, b:0 }; },
+    ()=>{ const m=randInt(2,15); return { expr:`x × ${m}`, a:m, b:0 }; },
+
+    ()=>{ const m=randInt(2,15); const k=randInt(1,15); return { expr:`${m} × x + ${k}`, a:m, b:k }; },
+    ()=>{ const m=randInt(2,15); const k=randInt(1,15); return { expr:`${m} × x − ${k}`, a:m, b:-k }; },
+
+    ()=>{ const m=randInt(2,15); const k=randInt(1,15); return { expr:`${k} + ${m} × x`, a:m, b:k }; },
+    ()=>{ const m=randInt(2,15); const k=randInt(1,15); return { expr:`${k} − ${m} × x`, a:-m, b:k }; },
+
+    ()=>{ const m=randInt(2,15); return { expr:`(${m} × x)`, a:m, b:0 }; },
+    ()=>{ const m=randInt(2,15); const k=randInt(1,15); return { expr:`(${m} × x) + ${k}`, a:m, b:k }; },
+    ()=>{ const m=randInt(2,15); const k=randInt(1,15); return { expr:`${k} + (x × ${m})`, a:m, b:k }; },
+    ()=>{ const m=randInt(2,15); const k=randInt(1,15); return { expr:`(${k}) − (x × ${m})`, a:-m, b:k }; },
+  ];
+
+  const t = templates[randInt(0, templates.length-1)]();
+  const ans = formatLinear(t.a, t.b, true);
+
+  const hint = `Write multiplication without “×”: <b>7 × x</b> becomes <b>7x</b>.`;
+  const explain = `The simplest form is <b><span class="mono">${ans}</span></b>.`;
+
+  return {
+    type:"short",
+    promptHTML: `Rewrite using algebraic shorthand (no “×”): <b>${escapeHTML(t.expr)}</b>.`,
+    pdfLine1: "Rewrite using algebraic shorthand (no “×”):",
+    pdfLine2HTML: `<b>${escapeHTML(t.expr)}</b>.`,
+    inputHTML: answerInputHTML(),
+    getUser: (card)=> parseUserLinear(card),
+    expected: {a:t.a, b:t.b},
+    hintHTML: hint,
+    explainHTML: explain,
+    pdfAnswerHint: "Answer:",
+    answerText: ans
+  };
+}
+
+    
+
+    
+function makeLikeTerms(){
+  // Combine like terms with exactly 4 terms: 2 x-terms + 2 constants.
+  // Answer in simplest form (ax+b). Keeps the expression short and exam-friendly.
+
+  const pickCoeff = ()=>{
+    // avoid ±1 and 0
+    let v = randInt(2, 9);
+    if(Math.random() < 0.5) v = -v;
+    return v;
+  };
+  const pickConst = ()=>{
+    let v = randInt(1, 20);
+    if(Math.random() < 0.5) v = -v;
+    return v;
+  };
+
+  // Two x-terms and two constants (avoid trivial cancellations)
+  let a1, a2, c1, c2;
+  do { a1 = pickCoeff(); a2 = pickCoeff(); } while((a1 + a2) === 0);
+  do { c1 = pickConst(); c2 = pickConst(); } while((c1 + c2) === 0);
+
+  const a = a1 + a2;
+  const b = c1 + c2;
+
+  function fmtXDisplay(coeff){
+    if(coeff === 1) return "x";
+    if(coeff === -1) return "−x";
+    if(coeff < 0) return `−${Math.abs(coeff)}x`;
+    return `${coeff}x`;
+  }
+  function fmtConstDisplay(c){
+    if(c < 0) return `−${Math.abs(c)}`;
+    return `${c}`;
+  }
+  function termToDisplay(t){
+    return (t.kind === "x") ? fmtXDisplay(t.val) : fmtConstDisplay(t.val);
+  }
+  function appendTerm(parts, raw){
+    if(parts.length === 0){
+      parts.push(raw);
+      return;
+    }
+    if(raw.startsWith("−")){
+      parts.push(" − " + raw.slice(1));
+    }else{
+      parts.push(" + " + raw);
+    }
+  }
+
+  // Mix order of the 4 terms for variety (still easy to read)
+  let terms = [
+    {kind:"x", val:a1},
+    {kind:"x", val:a2},
+    {kind:"c", val:c1},
+    {kind:"c", val:c2}
+  ];
+  for(let i=terms.length-1;i>0;i--){
+    const j = randInt(0,i);
+    const tmp = terms[i]; terms[i]=terms[j]; terms[j]=tmp;
+  }
+
+  const parts = [];
+  for(const t of terms){
+    appendTerm(parts, termToDisplay(t));
+  }
+  const expr = parts.join("") || "0";
+
+  const ans = formatLinear(a, b, true);
+
+  const prompt = `Simplify: <b>${escapeHTML(expr)}</b>.`;
+  const hint = `Combine the two <b>x</b>-terms (add their coefficients), and combine the two constants.`;
+  const explain = `After combining like terms, the simplest form is <b><span class="mono">${ans}</span></b>.`;
+
+  return {
+    type:"like",
+    promptHTML: prompt,
+    pdfLine1: "Simplify",
+    pdfLine2HTML: `<b>${escapeHTML(expr)}</b>.`,
+    inputHTML: answerInputHTML(),
+    getUser: (card)=> parseUserLinear(card),
+    expected: {a:a, b:b},
+    hintHTML: hint,
+    explainHTML: explain,
+    pdfAnswerHint: "Answer:",
+    answerText: ans
+  };
+}
+
+function makeBracketsOnly(){
+  // Expand/remove brackets ONLY (no extra like-term combining needed) -> ax+b
+  // Examples: 3(x−4), −2(5x+3), −(x−7), 4(2x−5)
+
+  const variant = randInt(1, 6);
+
+  // coefficients
+  const pickNonZero = (minAbs, maxAbs)=>{
+    let v = randInt(minAbs, maxAbs);
+    if(Math.random() < 0.5) v = -v;
+    return v;
+  };
+
+  let p = pickNonZero(2, 9);            // outside multiplier (never 0, never ±1)
+  let q = (Math.random() < 0.55) ? 1 : randInt(2, 7); // inside x coefficient
+  let r = randInt(-12, 12);             // constant inside bracket
+  while(r === 0) r = randInt(-12, 12);
+
+  // sometimes make it a simple leading minus
+  if(variant === 1){
+    p = -1; q = 1; // −(x ± r)
+  }else if(variant === 2){
+    p = -1; q = randInt(2, 7); // −(qx ± r)
+  }else if(variant === 3){
+    q = 1; // p(x ± r)
+  }else if(variant === 4){
+    // keep p and q as generated (p(qx ± r))
+  }else if(variant === 5){
+    // make r larger a bit for variety
+    r = randInt(-18, 18);
+    while(r === 0) r = randInt(-18, 18);
+  }else{
+    // keep moderate numbers
+    r = randInt(-15, 15);
+    while(r === 0) r = randInt(-15, 15);
+  }
+
+  const a = p * q;
+  const b = p * r;
+
+  const rSign = (r >= 0) ? " + " : " − ";
+  const insideX = (q === 1) ? "x" : `${q}x`;
+
+  let expr = "";
+  if(p === -1){
+    expr = `−(${insideX}${rSign}${Math.abs(r)})`;
+  }else{
+    expr = `${p}(${insideX}${rSign}${Math.abs(r)})`;
+  }
+
+  expr = expr.replace(/\s+/g, " ").trim();
+
+  const ans = formatLinear(a, b, true);
+  const prompt = `Expand: <b>${escapeHTML(expr)}</b>.`;
+  const hint = `Multiply the number outside the bracket by <b>each</b> term inside the bracket.`;
+  const explain = `After expanding, the simplest form is <b><span class="mono">${ans}</span></b>.`;
+
+  return {
+    type:"brOnly",
+    promptHTML: prompt,
+    pdfLine1: "Expand",
+    pdfLine2HTML: `<b>${escapeHTML(expr)}</b>.`,
+    inputHTML: answerInputHTML(),
+    getUser: (card)=> parseUserLinear(card),
+    expected: {a:a, b:b},
+    hintHTML: hint,
+    explainHTML: explain,
+    pdfAnswerHint: "Answer:",
+    answerText: ans
+  };
+}
+
+
+function makeBrackets(){
+  // Remove brackets and simplify -> ax+b
+  // Create a variety of forms: a(x±b) + c,  a(x±b) ± d(x±e),  ax + k − m(x±n)
+
+  const variant = randInt(1, 6);
+
+  let a=0, b=0, expr="";
+
+  if(variant === 1){
+    // p(x ± r) ± k
+    const p = randInt(2,9) * (Math.random()<0.25 ? -1 : 1);
+    const r = randInt(1,15) * (Math.random()<0.5 ? 1 : -1);
+    const k = randInt(1,15) * (Math.random()<0.5 ? 1 : -1);
+
+    a = p;
+    b = p*r + k;
+
+    const rSign = (r >= 0) ? " + " : " − ";
+    expr = (p===1) ? `(x${rSign}${Math.abs(r)})`
+         : (p===-1) ? `−(x${rSign}${Math.abs(r)})`
+         : `${p}(x${rSign}${Math.abs(r)})`;
+    if(k !== 0) expr += (k >= 0) ? ` + ${k}` : ` − ${Math.abs(k)}`;
+  }else if(variant === 2){
+    // p(x ± r) ± s(x ± u)
+    const p = randInt(2,7) * (Math.random()<0.25 ? -1 : 1);
+    const r = randInt(1,12) * (Math.random()<0.5 ? 1 : -1);
+    const s = randInt(2,6) * (Math.random()<0.5 ? 1 : -1);
+    const u = randInt(1,12) * (Math.random()<0.5 ? 1 : -1);
+
+    a = p + s;
+    b = p*r + s*u;
+
+    const rSign = (r >= 0) ? " + " : " − ";
+    const uSign = (u >= 0) ? " + " : " − ";
+    expr = `${p}(x${rSign}${Math.abs(r)})`;
+    expr += (s >= 0) ? " + " : " − ";
+    expr += `${Math.abs(s)}(x${uSign}${Math.abs(u)})`;
+  }else if(variant === 3){
+    // ax + k − m(x ± n)
+    const a1 = randInt(2,12) * (Math.random()<0.35 ? -1 : 1);
+    const k1 = randInt(1,15) * (Math.random()<0.5 ? 1 : -1);
+    const m = randInt(2,9);
+    const n = randInt(1,12) * (Math.random()<0.5 ? 1 : -1);
+
+    a = a1 - m;
+    b = k1 - m*n;
+
+    const nSign = (n >= 0) ? " + " : " − ";
+    const a1Str = (a1===1) ? "x" : (a1===-1) ? "−x" : `${a1}x`;
+    expr = `${a1Str}${k1>=0?` + ${k1}`:` − ${Math.abs(k1)}`} − ${m}(x${nSign}${Math.abs(n)})`;
+  }else if(variant === 4){
+    // p(qx ± r) ± k  (qx inside)
+    const p = randInt(2,6) * (Math.random()<0.25 ? -1 : 1);
+    const q = randInt(2,7);
+    const r = randInt(1,15) * (Math.random()<0.5 ? 1 : -1);
+    const k = randInt(1,15) * (Math.random()<0.5 ? 1 : -1);
+
+    a = p*q;
+    b = p*r + k;
+
+    const rSign = (r >= 0) ? " + " : " − ";
+    const insideX = (q===1) ? "x" : `${q}x`;
+    expr = `${p}(${insideX}${rSign}${Math.abs(r)})`;
+    if(k !== 0) expr += (k >= 0) ? ` + ${k}` : ` − ${Math.abs(k)}`;
+  }else if(variant === 5){
+    // p(x ± r) + s(tx ± u) ± k
+    const p = randInt(2,6) * (Math.random()<0.35 ? -1 : 1);
+    const r = randInt(1,12) * (Math.random()<0.5 ? 1 : -1);
+    const s = randInt(2,5) * (Math.random()<0.5 ? 1 : -1);
+    const t = randInt(2,6);
+    const u = randInt(1,12) * (Math.random()<0.5 ? 1 : -1);
+    const k = (Math.random()<0.7) ? randInt(1,12) * (Math.random()<0.5 ? 1 : -1) : 0;
+
+    a = p + s*t;
+    b = p*r + s*u + k;
+
+    const rSign = (r >= 0) ? " + " : " − ";
+    const uSign = (u >= 0) ? " + " : " − ";
+    expr = `${p}(x${rSign}${Math.abs(r)})`;
+    expr += (s >= 0) ? " + " : " − ";
+    expr += `${Math.abs(s)}(${t}x${uSign}${Math.abs(u)})`;
+    if(k !== 0) expr += (k >= 0) ? ` + ${k}` : ` − ${Math.abs(k)}`;
+  }else{
+    // (x ± r) + p(x ± u)
+    const r = randInt(1,12) * (Math.random()<0.5 ? 1 : -1);
+    const p = randInt(2,9) * (Math.random()<0.35 ? -1 : 1);
+    const u = randInt(1,12) * (Math.random()<0.5 ? 1 : -1);
+
+    a = 1 + p;
+    b = r + p*u;
+
+    const rSign = (r >= 0) ? " + " : " − ";
+    const uSign = (u >= 0) ? " + " : " − ";
+    expr = `(x${rSign}${Math.abs(r)})`;
+    expr += (p >= 0) ? " + " : " − ";
+    expr += `${Math.abs(p)}(x${uSign}${Math.abs(u)})`;
+  }
+
+  expr = expr.replace(/\s+/g, " ").trim();
+
+  const ans = formatLinear(a,b,true);
+
+  const prompt = `Simplify: <b>${escapeHTML(expr)}</b>.`;
+  const hint = `Distribute into each bracket, then combine like terms.`;
+  const explain = `After expanding and collecting like terms, the simplest form is <b><span class="mono">${ans}</span></b>.`;
+
+  return {
+    type:"br",
+    promptHTML: prompt,
+    pdfLine1: "Simplify",
+    pdfLine2HTML: `<b>${escapeHTML(expr)}</b>.`,
+    inputHTML: answerInputHTML(),
+    getUser: (card)=> parseUserLinear(card),
+    expected: {a:a, b:b},
+    hintHTML: hint,
+    explainHTML: explain,
+    pdfAnswerHint: "Answer:",
+    answerText: ans
+  };
+}
+
+    function makeMixedSimplify(){
+      // mixture of like terms and brackets: p(x±r) + ax + b
+      const p = randInt(2,6) * (Math.random()<0.35 ? -1 : 1);
+      const r = randInt(1,12) * (Math.random()<0.5 ? 1 : -1);
+      const a1 = randInt(1,9) * (Math.random()<0.45 ? -1 : 1);
+      const b1 = randInt(1,12) * (Math.random()<0.5 ? 1 : -1);
+
+      const a = p*1 + a1; // p*x + a1*x
+      const b = p*r + b1;
+
+      const signR = (r >= 0) ? " + " : " − ";
+      const magR = Math.abs(r);
+
+      let expr = "";
+      if(p === 1) expr += `(x${signR}${magR})`;
+      else if(p === -1) expr += `−(x${signR}${magR})`;
+      else expr += `${p}(x${signR}${magR})`;
+
+      // add a1x
+      if(a1 !== 0){
+        const sign = (a1 >= 0) ? " + " : " − ";
+        const mag = Math.abs(a1);
+        const core = (mag===1) ? "x" : `${mag}x`;
+        expr += sign + core;
+      }
+
+      // add constant
+      if(b1 !== 0){
+        expr += (b1 >= 0) ? ` + ${b1}` : ` − ${Math.abs(b1)}`;
+      }
+
+      const ans = formatLinear(a,b,true);
+      const prompt = `Simplify completely: <b>${escapeHTML(expr)}</b>.`;
+      const hint = `Expand the bracket first, then combine like terms.`;
+      const explain = `Expand and collect like terms to get <b><span class="mono">${ans}</span></b>.`;
+
+      return {
+        type:"mix",
+        promptHTML: prompt,
+        inputHTML: answerInputHTML(),
+        getUser: (card)=> parseUserLinear(card),
+        expected: {a:a, b:b},
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer:",
+        answerText: ans
+      };
+    }
+
+    
+function buildQuestionSet(){
+  // Practice follows Learn order:
+  // 1) Letters → Expression, 2) Shorthand, 3) Combine Like Terms, 4) Expand Brackets, 5) Remove Brackets
+  // Each type: 5 questions (total 25). No shuffling.
+  const makers = [makeVarExpression, makeShorthand, makeLikeTerms, makeBracketsOnly, makeBrackets];
+  const qs = [];
+  for(const mk of makers){
+    for(let i=0;i<5;i++){
+      qs.push(mk());
+    }
+  }
+  return qs;
+}
+
+    /***********************
+     * PDF helpers (Answer Key on last pages)
+     ************************/
+    function loadScript(src){
+      return new Promise((resolve, reject)=>{
+        const s = document.createElement("script");
+        s.src = src;
+        s.onload = ()=> resolve();
+        s.onerror = ()=> reject(new Error("Failed to load " + src));
+        document.head.appendChild(s);
+      });
+    }
+
+    let pdfLibReady = false;
+    async function ensurePdfLibs(){
+      if(pdfLibReady) return;
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
+      pdfLibReady = true;
+    }
+
+
+function formatPdfTimestamp(d){
+  const pad = (n)=> String(n).padStart(2,"0");
+  // Safe for Windows filenames: no colon
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}`;
+}
+
+    function buildPdfPages(ts){
+      const perPage = 15; // fixed: 15 questions per page
+      const perSel = document.getElementById("perPageSelect");
+      if(perSel) perSel.value = "15";
+      const printArea = document.getElementById("pdfPrintArea");
+      printArea.innerHTML = "";
+
+      const stamp = ts || formatPdfTimestamp(new Date());
+
+      const total = state.questions.length;
+      const pagesQ = Math.ceil(total / perPage);
+
+      const ansPerPage = 24;
+      const pagesA = Math.ceil(total / ansPerPage);
+
+      const totalPagesAll = pagesQ + pagesA;
+
+      const safeStudentForHtml = escapeHTML(studentName || "");
+      const setName = setNameFromIndex(state.setIndex-1);
+
+      // Question pages
+      for(let p=0; p<pagesQ; p++){
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const startIdx = p * perPage;
+        const endIdx = Math.min(total, startIdx + perPage);
+
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div>
+              <div class="pdf-title">Algebra — Intro (Practice) — ${stamp}</div>
+              <div class="pdf-sub">Variables • Shorthand • Like Terms • Brackets</div>
+            </div>
+            <div class="pdf-meta">
+              Student: <b>${safeStudentForHtml || "—"}</b><br/>
+              Set ${setName}<br/>
+              ${stamp}<br/>
+              Page ${p+1} / ${totalPagesAll}
+            </div>
+          </div>
+          <div class="pdf-grid pdf-qgrid"></div>
+        `;
+
+        const grid = page.querySelector(".pdf-grid");
+
+        for(let i=startIdx; i<endIdx; i++){
+          const q = state.questions[i];
+          const qBox = document.createElement("div");
+          qBox.className = "pdf-q";
+          const line1 = q && q.pdfLine1 ? escapeHTML(q.pdfLine1) : "";
+          const line2 = q && q.pdfLine2HTML ? q.pdfLine2HTML : (q ? q.promptHTML : "");
+          qBox.innerHTML = `
+            <div class="pdf-qbody">
+              <div class="pdf-qline1"><span class="pdf-qnum-inline">Q${i+1}</span>${line1 ? " " + line1 : ""}</div>
+              <div class="pdf-qline2">${line2}</div>
+            </div>
+            <div class="pdf-workspace"></div>
+          `;
+          grid.appendChild(qBox);
+        }
+
+        printArea.appendChild(page);
+      }
+
+      // Answer key pages at the end
+      for(let ap=0; ap<pagesA; ap++){
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const startIdx = ap * ansPerPage;
+        const endIdx = Math.min(total, startIdx + ansPerPage);
+        const pageNumber = pagesQ + ap + 1;
+
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div>
+              <div class="pdf-title">Algebra — Intro (Answer Key) — ${stamp}</div>
+              <div class="pdf-sub">Answers for the generated set</div>
+            </div>
+            <div class="pdf-meta">
+              Student: <b>${safeStudentForHtml || "—"}</b><br/>
+              Set ${setName}<br/>
+              ${stamp}<br/>
+              Page ${pageNumber} / ${totalPagesAll}
+            </div>
+          </div>
+          <div class="pdf-grid pdf-agrid"></div>
+        `;
+
+        const grid = page.querySelector(".pdf-grid");
+
+        for(let i=startIdx; i<endIdx; i++){
+          const q = state.questions[i];
+          const ans = (q && typeof q.answerText === "string") ? q.answerText : "";
+          const qBox = document.createElement("div");
+          qBox.className = "pdf-q";
+          qBox.innerHTML = `
+            <div class="pdf-qhead">
+              <div class="pdf-qnum">Q${i+1}</div>
+            </div>
+            <div class="pdf-qbody"><b>Answer:</b> ${escapeHTML(ans)}</div>
+          `;
+          grid.appendChild(qBox);
+        }
+
+        printArea.appendChild(page);
+      }
+    }
+
+    function safeFileNamePart(s){
+      return String(s || "")
+        .trim()
+        .replace(/[\\/:*?"<>|]+/g, "-")
+        .replace(/\s+/g, "_")
+        .slice(0, 40);
+    }
+
+    async function exportToPdf(){
+      if(!studentName){
+        alert("Please enter the student name first.");
+        return;
+      }
+      await ensurePdfLibs();
+      const stamp = formatPdfTimestamp(new Date());
+      buildPdfPages(stamp);
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+      const pages = Array.from(document.querySelectorAll("#pdfPrintArea .pdf-page"));
+
+      for(let i=0; i<pages.length; i++){
+        const pageEl = pages[i];
+
+        const canvas = await html2canvas(pageEl, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false
+        });
+
+        const imgData = canvas.toDataURL("image/png", 1.0);
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight, undefined, "FAST");
+        if(i < pages.length - 1) pdf.addPage();
+      }
+
+      const setName = setNameFromIndex(state.setIndex-1);
+      const fileStudent = safeFileNamePart(studentName);
+      pdf.save(`DYAA_Algebra_Intro_${fileStudent}_Set_${setName}_${stamp}.pdf`);
+    }
+
+    /***********************
+     * Render + checking
+     ************************/
+    const tabs = document.querySelectorAll(".tab-btn");
+    const learnSection = document.getElementById("learnSection");
+    const practiceSection = document.getElementById("practiceSection");
+    const practiceControls = document.getElementById("practiceControls");
+    const questionsWrap = document.getElementById("questionsWrap");
+    const countSelect = document.getElementById("countSelect");
+    const scoreValue = document.getElementById("scoreValue");
+    const progressLabel = document.getElementById("progressLabel");
+    const setLabel = document.getElementById("setLabel");
+
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const cancelModalBtn = document.getElementById("cancelModalBtn");
+    const confirmModalBtn = document.getElementById("confirmModalBtn");
+
+    const nameBackdrop = document.getElementById("nameBackdrop");
+    const nameInput = document.getElementById("nameInput");
+    const startWithNameBtn = document.getElementById("startWithNameBtn");
+    const cancelNameBtn = document.getElementById("cancelNameBtn");
+
+    const newSetBtn = document.getElementById("newSetBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const showAllBtn = document.getElementById("showAllBtn");
+    const exportPdfBtn = document.getElementById("exportPdfBtn");
+
+    let state = {
+      setIndex: 0,
+      questions: [],
+      checked: new Set(),
+      results: new Map(), // idx -> true/false
+    };
+
+    function setNameFromIndex(i){
+      return String.fromCharCode(65 + (i % 26));
+    }
+
+    function renderQuestions(){
+      questionsWrap.innerHTML = "";
+      state.questions.forEach((q, idx)=>{
+        const card = document.createElement("div");
+        card.className = "q-card";
+        card.dataset.qindex = String(idx);
+
+        card.innerHTML = `
+          <div class="q-head">
+            <div class="q-num">Q${idx+1}</div>
+            <div class="q-topic">${topicLabel(q.type)}</div>
+          </div>
+          <div class="q-body">${q.promptHTML}</div>
+          <div class="q-input">${q.inputHTML}</div>
+          <div class="q-actions">
+            <button class="btn primary" data-action="check">Check</button>
+            <button class="btn secondary" data-action="hint">Hint</button>
+            <button class="btn secondary" data-action="reveal">Reveal</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+        `;
+        questionsWrap.appendChild(card);
+      });
+    }
+
+    function updateProgress(){
+      progressLabel.textContent = `${state.checked.size} checked`;
+    }
+
+    function showFeedback(card, ok, title, html){
+      const fb = card.querySelector(".feedback");
+      fb.classList.add("show");
+      fb.classList.toggle("ok", !!ok);
+      fb.classList.toggle("bad", !ok);
+      fb.innerHTML = `
+        <div class="title" style="color:${ok ? "var(--ok)" : "var(--bad)"}">${title}</div>
+        <div>${html}</div>
+      `;
+    }
+
+    function checkOne(card){
+      const idx = parseInt(card.dataset.qindex, 10);
+      const q = state.questions[idx];
+      const user = q.getUser(card);
+
+      state.checked.add(idx);
+
+      // validate user input
+      if(!user || !user.ok){
+        state.results.set(idx, false);
+        showFeedback(card, false, "❌ Not quite", `Please enter a valid expression in simplest form (e.g., <span class="mono">5x-2</span>).`);
+        updateProgress();
+        return false;
+      }
+
+      const wantA = q.expected.a;
+      const wantB = q.expected.b;
+
+      const equivalent = (user.a === wantA && user.b === wantB);
+      const simplestOk = user.simplest;
+
+      if(equivalent && simplestOk){
+        state.results.set(idx, true);
+        showFeedback(card, true, "✅ Correct", `Great. ${q.explainHTML}`);
+        updateProgress();
+        return true;
+      }
+
+      if(equivalent && !simplestOk){
+        state.results.set(idx, false);
+        const best = formatLinear(wantA, wantB, true);
+        showFeedback(card, false, "⚠️ Equivalent, but not in simplest form",
+          `Your expression has the correct value, but please write it in simplest algebraic form (no brackets, no “×”).<div class="rule"></div>Correct simplest form: <b><span class="mono">${best}</span></b>.<div class="rule"></div>${q.explainHTML}`
+        );
+        updateProgress();
+        return false;
+      }
+
+      state.results.set(idx, false);
+      showFeedback(card, false, "❌ Not quite",
+        `Hint: ${q.hintHTML}<div class="rule"></div>${q.explainHTML}`
+      );
+      updateProgress();
+      return false;
+    }
+
+    function resetAnswers(){
+      state.checked = new Set();
+      state.results = new Map();
+      scoreValue.textContent = "—";
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const fb = card.querySelector(".feedback");
+        fb.className = "feedback";
+        fb.innerHTML = "";
+        card.querySelectorAll("input").forEach(i => i.value = "");
+      });
+      updateProgress();
+    }
+
+    function generateNewSet(){
+      const count = 25;
+      // keep the UI in sync
+      if(countSelect) countSelect.value = String(count);
+      state.setIndex++;
+      state.questions = buildQuestionSet();
+      state.checked = new Set();
+      state.results = new Map();
+      setLabel.textContent = `Set: ${setNameFromIndex(state.setIndex-1)}`;
+      scoreValue.textContent = "—";
+      renderQuestions();
+      updateProgress();
+      practiceSection.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    function submitAll(){
+      let correct = 0;
+      state.questions.forEach((_, idx)=>{
+        const card = document.querySelector(`.q-card[data-qindex="${idx}"]`);
+        const ok = checkOne(card);
+        if(ok) correct++;
+      });
+      scoreValue.textContent = `${correct} / ${state.questions.length}`;
+      scoreValue.style.fontWeight = "900";
+    }
+
+    function showAllExplanations(){
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const idx = parseInt(card.dataset.qindex,10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "📌 Explanation", q.explainHTML);
+      });
+    }
+
+    /***********************
+     * Tabs + Name gating
+     ************************/
+    function openNameModal(){
+      nameBackdrop.classList.add("show");
+      nameBackdrop.setAttribute("aria-hidden","false");
+      nameInput.value = (studentName || "DYAA");
+      setTimeout(()=> nameInput.focus(), 50);
+    }
+    function closeNameModal(){
+      nameBackdrop.classList.remove("show");
+      nameBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    function setTab(tab){
+      tabs.forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      const isPractice = tab === "practice";
+      learnSection.classList.toggle("active", !isPractice);
+      practiceSection.classList.toggle("active", isPractice);
+      practiceControls.style.display = isPractice ? "flex" : "none";
+
+      if(isPractice){
+        if(!studentName){
+          openNameModal();
+          setPracticeButtonsEnabled(false);
+          return;
+        }
+        if(state.questions.length === 0){
+          generateNewSet();
+        }
+      }
+    }
+
+    tabs.forEach(btn=>{
+      btn.addEventListener("click", ()=> setTab(btn.dataset.tab));
+    });
+
+    // Name modal actions
+    startWithNameBtn.addEventListener("click", ()=>{
+      const v = sanitizeName(nameInput.value);
+      if(!v){
+        alert("Please enter a student name.");
+        nameInput.focus();
+        return;
+      }
+      setStudentName(v);
+      closeNameModal();
+      if(practiceSection.classList.contains("active") && state.questions.length === 0){
+        generateNewSet();
+      }
+    });
+    nameInput.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter"){
+        e.preventDefault();
+        startWithNameBtn.click();
+      }
+      if(e.key === "Escape"){
+        e.preventDefault();
+        cancelNameBtn.click();
+      }
+    });
+    cancelNameBtn.addEventListener("click", ()=>{
+      closeNameModal();
+      setTab("learn");
+    });
+    nameBackdrop.addEventListener("click", (e)=>{
+      if(e.target === nameBackdrop){
+        // keep modal open
+      }
+    });
+
+    /***********************
+     * New-set confirm modal
+     ************************/
+    function openModal(){
+      modalBackdrop.classList.add("show");
+      modalBackdrop.setAttribute("aria-hidden","false");
+    }
+    function closeModal(){
+      modalBackdrop.classList.remove("show");
+      modalBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    newSetBtn.addEventListener("click", openModal);
+    cancelModalBtn.addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", (e)=>{
+      if(e.target === modalBackdrop) closeModal();
+    });
+    confirmModalBtn.addEventListener("click", ()=>{
+      closeModal();
+      generateNewSet();
+    });
+
+    questionsWrap.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button");
+      if(!btn) return;
+      const action = btn.dataset.action;
+      const card = e.target.closest(".q-card");
+      if(!card) return;
+
+      if(action === "check"){
+        checkOne(card);
+      }else if(action === "hint"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "💡 Hint", q.hintHTML);
+      }else if(action === "reveal"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        const best = q.answerText || "";
+        showFeedback(card, true, "🧠 Solution", `${q.explainHTML}<div class="rule"></div>Final answer: <b><span class="mono">${escapeHTML(best)}</span></b>`);
+      }
+    });
+
+    resetBtn.addEventListener("click", resetAnswers);
+    submitBtn.addEventListener("click", submitAll);
+    showAllBtn.addEventListener("click", showAllExplanations);
+
+    exportPdfBtn.addEventListener("click", async ()=>{
+      if(!practiceSection.classList.contains("active")) setTab("practice");
+      if(!studentName){
+        openNameModal();
+        return;
+      }
+      if(state.questions.length === 0) generateNewSet();
+
+      try{
+        exportPdfBtn.textContent = "Exporting...";
+        exportPdfBtn.disabled = true;
+        await exportToPdf();
+      }catch(err){
+        alert("Export failed. If you opened this file locally, try hosting it on GitHub Pages (recommended) or allow internet access for CDNs.\n\n" + err.message);
+      }finally{
+        exportPdfBtn.textContent = "Export to PDF";
+        exportPdfBtn.disabled = false;
+      }
+    });
+
+    /***********************
+     * Init: read URL ?name=
+     ************************/
+    (function init(){
+      setPracticeButtonsEnabled(false);
+      const urlName = getNameFromUrl();
+      if(urlName){
+        setStudentName(urlName);
+      }else{
+        setStudentName("DYAA");
+      }
+    })();
+  </script>
+</body>
+</html>
