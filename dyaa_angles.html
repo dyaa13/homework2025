@@ -1,0 +1,2061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Angles — Definitions & Measuring — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --radius:14px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      user-select:none;
+      z-index:0;
+      white-space:nowrap;
+    }
+
+    .container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:24px auto 60px;
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+    }
+
+    /* Header */
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:42px;height:42px;
+      background:var(--blue);
+      border-radius:8px;
+      position:relative;
+      flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px;height:10px;
+      background:var(--orange);
+      top:-6px;left:10px;
+      border-radius:6px;
+    }
+    .logo-text{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .logo-text h1{
+      font-size:22px;
+      margin:0;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .logo-text .tag{
+      font-size:13px;
+      color:var(--orange);
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .student-pill{
+      margin-left:auto;
+      display:none;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      font-weight:800;
+      color:#111;
+      white-space:nowrap;
+    }
+    .student-pill.show{ display:inline-flex; }
+
+    /* Top bar */
+    .top-bar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:14px 0 10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .tabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .tab-btn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--blue);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+    }
+    .tab-btn.active{
+      background:var(--blue);
+      color:#fff;
+      border-color:var(--blue);
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    select, input[type="number"], input[type="text"]{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:9px 10px;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn.primary{ background:var(--blue); color:#fff; }
+    .btn.secondary{ background:#eef2ff; color:var(--blue); border:1px solid #dbe3ff; }
+    .btn.warn{ background:#fff3e0; color:#8a4b00; border:1px solid #ffe0b2; }
+    .btn:active{ transform:translateY(1px); }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+
+    /* Sections */
+    .section{ display:none; margin-top:16px; }
+    .section.active{ display:block; }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    @media (min-width: 860px){
+      .grid.two{ grid-template-columns:1fr 1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      padding:16px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+    .muted{ color:var(--muted); }
+    .note{
+      background:#f7fbff;
+      border:1px solid #d9ecff;
+      padding:12px;
+      border-radius:12px;
+      color:#123;
+    }
+    .rule{ border-top:1px dashed var(--line); margin:12px 0; }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      color:#111;
+      flex-wrap:wrap;
+      margin:3px 6px 0 0;
+    }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-weight:900;
+      background:#fafafe;
+      border:1px solid var(--line);
+      padding:2px 6px;
+      border-radius:8px;
+      display:inline-block;
+    }
+
+    /* Practice */
+    .practice-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .practice-meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      background:#f6f7ff;
+      border:1px solid #e2e6ff;
+      color:#1d2a7a;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:13px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:14px;
+      background:#fff;
+    }
+    .q-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+    .q-num{ font-weight:900; color:var(--blue); }
+    .q-topic{
+      font-size:12px;
+      font-weight:900;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color:#111;
+      background:#fafafe;
+      white-space:nowrap;
+    }
+    .q-body{
+      font-size:15px;
+      line-height:1.45;
+      margin-bottom:10px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .q-input{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:10px;
+    }
+    .answerbox{
+      width:min(320px, 70vw);
+    }
+    .q-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .feedback{
+      margin-top:10px;
+      border-radius:12px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      background:#fafafa;
+      display:none;
+    }
+    .feedback.show{ display:block; }
+    .feedback.ok{ border-color:#c9e7cf; background:#f0fbf2; }
+    .feedback.bad{ border-color:#ffd0d0; background:#fff3f3; }
+    .feedback .title{ font-weight:900; margin-bottom:6px; }
+
+    .footer-actions{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      border-top:1px solid var(--line);
+      padding-top:14px;
+    }
+    .scorebox{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fff;
+      min-width:220px;
+    }
+    .scorebox strong{ color:var(--blue); }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+    .modal-backdrop.show{ display:flex; }
+    .modal{
+      width:min(560px, 96vw);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 18px 45px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+      padding:16px;
+    }
+    .modal h3{ margin:0 0 6px; color:var(--blue); }
+    .modal p{ margin:6px 0 14px; color:var(--muted); }
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); border:0;
+    }
+
+    /* hidden print layout for PDF */
+    #pdfPrintArea{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:794px; /* ~A4 at 96dpi */
+      background:#fff;
+      color:#111;
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      padding:0;
+    }
+    .pdf-page{
+      width:794px;
+      min-height:1123px; /* ~A4 at 96dpi */
+      padding:36px 44px;
+      page-break-after:always;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .pdf-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+      padding-bottom:10px;
+      border-bottom:2px solid #e6e6ef;
+    }
+    .pdf-title{
+      font-weight:900;
+      color:#111;
+      font-size:18px;
+      line-height:1.2;
+    }
+    .pdf-sub{
+      color:#666;
+      font-size:12px;
+      margin-top:4px;
+    }
+    .pdf-meta{
+      text-align:right;
+      font-size:12px;
+      color:#666;
+      white-space:nowrap;
+      line-height:1.35;
+    }
+    .pdf-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    .pdf-q{
+      border:1px solid #e6e6ef;
+      border-radius:12px;
+      padding:12px 12px;
+    }
+    .pdf-qhead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .pdf-qnum{ font-weight:900; color:#0d47a1; }
+    .pdf-qtopic{
+      font-size:11px;
+      font-weight:900;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid #e6e6ef;
+      background:#fafafe;
+    }
+    .pdf-qbody{
+      font-size:13px;
+      line-height:1.45;
+      margin-bottom:8px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .pdf-answerline{
+      margin-top:8px;
+      font-size:12px;
+      color:#111;
+    }
+    .linebox{
+      display:inline-block;
+      border-bottom:2px solid #111;
+      min-width:220px;
+      height:14px;
+      vertical-align:baseline;
+      margin-left:6px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div>
+        <div class="logo-text">
+          <h1>Angles</h1>
+          <span class="tag">DYAA EDUCATION</span>
+        </div>
+        <p class="subtitle">Definitions • Drawing • Measuring</p>
+      </div>
+
+      <!-- shows only when name is known -->
+      <div id="studentPillHeader" class="student-pill" aria-live="polite">
+        Student: <span id="studentNameHeader"></span>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="learn">Learn</button>
+        <button class="tab-btn" data-tab="practice">Practice</button>
+      </div>
+
+      <div class="controls" id="practiceControls" style="display:none;">
+        <label class="chip">
+          Questions:
+          <select id="countSelect" aria-label="Number of questions" disabled>
+            <option value="20" selected>20</option>
+          </select>
+        </label>
+
+        <label class="chip">
+          PDF per page:
+          <select id="perPageSelect" aria-label="PDF questions per page">
+            <option value="3">3</option>
+            <option value="4" selected>4</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+        </label>
+
+        <label class="chip">
+          Order:
+          <select id="orderSelect" aria-label="Question order">
+            <option value="ordered" selected>In order</option>
+            <option value="shuffled">Shuffle</option>
+          </select>
+        </label>
+
+        <button class="btn secondary" id="exportPdfBtn">Export to PDF</button>
+        <button class="btn warn" id="newSetBtn">Generate New Set</button>
+        <button class="btn secondary" id="resetBtn">Reset Answers</button>
+      </div>
+    </div>
+
+    
+    <!-- LEARN -->
+    <div class="section active" id="learnSection">
+      <div class="grid two">
+
+        <div class="card">
+          <h2>1) What is an Angle?</h2>
+          <p class="muted">
+            An <b>angle</b> is the amount of <b>turn</b> between two rays (arms) that meet at a point.
+          </p>
+          <div class="note">
+            <div class="chip">The meeting point is the <b>vertex</b>.</div>
+            <div class="chip">The sides are called <b>arms</b> (or rays).</div>
+            <div class="chip">Angles are measured in <b>degrees</b> (<span class="mono">°</span>).</div>
+            <div class="chip">You may see the notation <span class="mono">∠ABC</span> (vertex at <b>B</b>).</div>
+          </div>
+          <div class="rule"></div>
+          <p class="muted" style="margin:0;">
+            A <b>full turn</b> is <span class="mono">360°</span>.
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>2) Types of Angles</h2>
+          <p class="muted">Angles are named by their size (their degree measure).</p>
+          <div class="note">
+            <div class="chip"><b>Acute</b>: less than <span class="mono">90°</span></div>
+            <div class="chip"><b>Right</b>: exactly <span class="mono">90°</span></div>
+            <div class="chip"><b>Obtuse</b>: between <span class="mono">90°</span> and <span class="mono">180°</span></div>
+            <div class="chip"><b>Straight</b>: exactly <span class="mono">180°</span></div>
+            <div class="chip"><b>Reflex</b>: between <span class="mono">180°</span> and <span class="mono">360°</span></div>
+            <div class="chip"><b>Full turn</b>: <span class="mono">360°</span></div>
+          </div>
+          <div class="rule"></div>
+          <p class="muted" style="margin:0;">
+            Most problems measure the <b>smaller</b> angle, unless a reflex angle is clearly shown.
+          </p>
+        </div>
+
+        
+        <div class="card">
+          <h2>3) Complementary &amp; Supplementary Angles</h2>
+          <p class="muted">Two angles can be related by the <b>total</b> they add up to.</p>
+          <div class="note">
+            <div class="chip"><b>Complementary</b>: two angles add to <span class="mono">90°</span> (a right angle)</div>
+            <div class="chip"><b>Supplementary</b>: two angles add to <span class="mono">180°</span> (a straight line)</div>
+          </div>
+          <div class="rule"></div>
+          <p class="muted" style="margin:0;">
+            Example: if one angle is <span class="mono">32°</span>, its complement is <span class="mono">90° − 32° = 58°</span>.
+            If one angle is <span class="mono">117°</span>, its supplement is <span class="mono">180° − 117° = 63°</span>.
+          </p>
+        </div>
+
+<div class="card">
+          <h2>4) How to Draw an Angle (Using a Protractor)</h2>
+          <div class="note">
+            <div style="margin-bottom:6px;"><b>Step-by-step:</b></div>
+            <ol class="muted" style="margin:8px 0 0 18px;">
+              <li>Draw a ray (this is your <b>baseline</b>).</li>
+              <li>Place the protractor’s <b>center mark</b> on the vertex.</li>
+              <li>Line up the baseline with the <b>0° line</b> on the protractor.</li>
+              <li>Find the required degree (e.g., <span class="mono">65°</span>) and make a small mark.</li>
+              <li>Draw the second ray from the vertex through your mark.</li>
+            </ol>
+          </div>
+          <div class="rule"></div>
+          <p class="muted" style="margin:0;">
+            Tip: Always start reading from the side where the protractor shows <b>0°</b> on your baseline.
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>5) How to Measure an Angle</h2>
+          <div class="note">
+            <div style="margin-bottom:6px;"><b>Step-by-step:</b></div>
+            <ol class="muted" style="margin:8px 0 0 18px;">
+              <li>Place the protractor’s center on the <b>vertex</b>.</li>
+              <li>Align the <b>0° line</b> with one arm of the angle.</li>
+              <li>Use the scale that starts at <b>0°</b> on the baseline arm.</li>
+              <li>Read the number where the other arm crosses the scale.</li>
+            </ol>
+          </div>
+          <div class="rule"></div>
+          <p class="muted" style="margin:0;">
+            Common mistake: reading from the wrong scale (getting <span class="mono">30°</span> instead of <span class="mono">150°</span>).
+          </p>
+        </div>
+
+        <div class="card" style="grid-column:1/-1;">
+          <h2>6) Finding Unknown Angles from Diagrams</h2>
+          <div class="note">
+            <div style="margin-bottom:6px;"><b>Useful facts:</b></div>
+            <div class="chip"><b>On a straight line</b>: angles add to <span class="mono">180°</span></div>
+            <div class="chip"><b>Around a point</b>: angles add to <span class="mono">360°</span></div>
+            <div class="chip"><b>Right angle</b>: angles add to <span class="mono">90°</span></div>
+            <div class="chip"><b>Vertically opposite angles</b> are <b>equal</b></div>
+            <div class="chip"><b>Triangle angles</b>: add to <span class="mono">180°</span></div>
+            <div class="rule"></div>
+            <div class="muted">
+              Example (straight line): if one angle is <span class="mono">38°</span>, the other is <span class="mono">180° − 38° = 142°</span>.<br/>
+              Example (right angle): if one part is <span class="mono">27°</span>, the other is <span class="mono">90° − 27° = 63°</span>.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- PRACTICE -->
+    <div class="section" id="practiceSection">
+      <div class="practice-header">
+        <div>
+          <h2 style="margin:0;color:var(--blue);font-size:18px;">Practice Quiz</h2>
+          <p class="muted" style="margin:6px 0 0;">
+            Enter <b>numbers only</b> (do not write the <span class="mono">°</span> symbol). You may type simple calculations like <span class="mono">2*(10+4)</span>.
+          </p>
+        </div>
+        <div class="practice-meta">
+          <span class="pill" id="studentPillPractice" style="display:none;">Student: <span id="studentNamePractice"></span></span>
+          <span class="pill" id="setLabel">Set: A</span>
+          <span class="pill" id="progressLabel">0 checked</span>
+        </div>
+      </div>
+
+      <div id="questionsWrap" class="grid"></div>
+
+      <div class="footer-actions">
+        <div class="scorebox">
+          <div><strong id="scoreText">Score:</strong> <span id="scoreValue">—</span></div>
+          <div class="muted" style="font-size:13px;margin-top:4px;">Tip: complementary angles add to 90°; supplementary angles add to 180°.</div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn primary" id="submitBtn">Submit & View Result</button>
+          <button class="btn secondary" id="showAllBtn">Show All Explanations</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- hidden print area for PDF -->
+  <div id="pdfPrintArea" aria-hidden="true"></div>
+
+  <!-- Confirm modal (new set) -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle">Generate a new set?</h3>
+      <p>This will clear your current answers and create a new random set of questions.</p>
+      <div class="modal-actions">
+        <button class="btn secondary" id="cancelModalBtn">Cancel</button>
+        <button class="btn warn" id="confirmModalBtn">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Name modal (kept for compatibility, but default is DYAA) -->
+  <div class="modal-backdrop" id="nameBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+      <h3 id="nameTitle">Enter student name to start</h3>
+      <p>
+        Tip: You can skip this step by using a link like:
+        <b>dyaa_angles.html?name=Tiger</b>
+      </p>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <label class="sr-only" for="nameInput">Student name</label>
+        <input id="nameInput" type="text" placeholder="e.g., Tiger" autocomplete="off" style="min-width:240px;" />
+        <button class="btn primary" id="startWithNameBtn">Start</button>
+      </div>
+
+      <div class="modal-actions" style="margin-top:14px;">
+        <button class="btn secondary" id="cancelNameBtn">Back to Learn</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Student name logic
+     ************************/
+    let studentName = "";
+
+    function escapeHTML(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function sanitizeName(raw){
+      let s = String(raw || "").trim();
+      s = s.replace(/[\u0000-\u001F\u007F]/g, "");
+      if(s.length > 40) s = s.slice(0, 40);
+      return s;
+    }
+
+    function setStudentName(name){
+      studentName = sanitizeName(name);
+      updateStudentUI();
+    }
+
+    function updateStudentUI(){
+      const headerPill = document.getElementById("studentPillHeader");
+      const headerName = document.getElementById("studentNameHeader");
+      const practicePill = document.getElementById("studentPillPractice");
+      const practiceName = document.getElementById("studentNamePractice");
+
+      if(studentName){
+        headerPill.classList.add("show");
+        headerName.textContent = studentName;
+
+        practicePill.style.display = "inline-flex";
+        practiceName.textContent = studentName;
+
+        setPracticeButtonsEnabled(true);
+      }else{
+        headerPill.classList.remove("show");
+        headerName.textContent = "";
+
+        practicePill.style.display = "none";
+        practiceName.textContent = "";
+
+        setPracticeButtonsEnabled(false);
+      }
+    }
+
+    function setPracticeButtonsEnabled(enabled){
+      document.getElementById("exportPdfBtn").disabled = !enabled;
+      document.getElementById("newSetBtn").disabled = !enabled;
+      document.getElementById("resetBtn").disabled = !enabled;
+      document.getElementById("submitBtn").disabled = !enabled;
+      document.getElementById("showAllBtn").disabled = !enabled;
+    }
+
+    function getNameFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("name");
+      if(!raw) return "";
+      return sanitizeName(raw);
+    }
+
+    /***********************
+     * Utilities
+     ************************/
+    function randInt(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function pick(arr){
+      return arr[randInt(0, arr.length-1)];
+    }
+
+    function fmtNum(n){
+      // Avoid low-level formatting issues like 2.0 or 24.000
+      if(!Number.isFinite(n)) return "";
+      const rounded = Math.abs(n - Math.round(n)) < 1e-9 ? Math.round(n) : n;
+      if(Number.isInteger(rounded)) return String(rounded);
+      // keep up to 3 dp, trim trailing zeros
+      let s = rounded.toFixed(3);
+      s = s.replace(/0+$/g, "").replace(/\.$/g, "");
+      return s;
+    }
+
+    function topicLabel(type){
+      switch(type){
+        case "defs": return "Definitions";
+        case "comp": return "Complementary/Supplementary";
+        case "draw": return "Drawing";
+        case "measure": return "Measuring";
+        case "diagram": return "From Diagrams";
+        default: return "Practice";
+      }
+    }
+
+    /***********************
+     * Safe numeric expression parser
+     ************************/
+    function basicNormalize(raw){
+      let s = String(raw || "").trim();
+      s = s.replaceAll("−","-").replaceAll("–","-").replaceAll("—","-");
+      s = s.replaceAll("×","*").replaceAll("÷","/");
+      s = s.replace(/\s+/g, "");
+      s = s.replaceAll(",", "");
+      return s;
+    }
+
+    function extractMathPrefix(s){
+      // Keep the leading math part only (allows users to type units like "28cm" or "49 cm2").
+      const m = s.match(/^[0-9.\+\-\*\/\(\)]+/);
+      return m ? m[0] : "";
+    }
+
+    function insertImplicitMultNumeric(s){
+      // Support 2(3+4) and (3+4)2
+      s = s.replace(/(\d|\))(?=\()/g, "$1*");
+      s = s.replace(/(\))(?=\d)/g, "$1*");
+      return s;
+    }
+
+    function tokenizeNumber(s){
+      const tokens = [];
+      let i = 0;
+      while(i < s.length){
+        const ch = s[i];
+        if((ch >= "0" && ch <= "9") || ch === "."){
+          let j = i + 1;
+          while(j < s.length){
+            const cj = s[j];
+            if((cj >= "0" && cj <= "9") || cj === ".") j++;
+            else break;
+          }
+          const numStr = s.slice(i, j);
+          if(numStr === ".") return null;
+          const v = Number(numStr);
+          if(!Number.isFinite(v)) return null;
+          tokens.push({t:"num", v:v});
+          i = j;
+          continue;
+        }
+        if(ch === "+" || ch === "-" || ch === "*" || ch === "/" || ch === "(" || ch === ")"){
+          tokens.push({t:ch});
+          i++;
+          continue;
+        }
+        return null;
+      }
+      return tokens;
+    }
+
+    function parseAndEvalNumber(tokens){
+      let pos = 0;
+      function peek(){ return tokens[pos] || null; }
+      function take(tt){
+        const p = peek();
+        if(!p || p.t !== tt) return null;
+        pos++;
+        return p;
+      }
+
+      function parseExpr(){
+        let v = parseTerm();
+        if(v === null) return null;
+        while(true){
+          const p = peek();
+          if(!p) break;
+          if(p.t === "+" || p.t === "-"){
+            pos++;
+            const rhs = parseTerm();
+            if(rhs === null) return null;
+            v = (p.t === "+") ? (v + rhs) : (v - rhs);
+          }else{
+            break;
+          }
+        }
+        return v;
+      }
+
+      function parseTerm(){
+        let v = parseFactor();
+        if(v === null) return null;
+        while(true){
+          const p = peek();
+          if(!p) break;
+          if(p.t === "*" || p.t === "/"){
+            pos++;
+            const rhs = parseFactor();
+            if(rhs === null) return null;
+            if(p.t === "*"){
+              v = v * rhs;
+            }else{
+              if(Math.abs(rhs) < 1e-12) return null;
+              v = v / rhs;
+            }
+          }else{
+            break;
+          }
+        }
+        return v;
+      }
+
+      function parseFactor(){
+        const p = peek();
+        if(!p) return null;
+        if(p.t === "+"){
+          pos++;
+          return parseFactor();
+        }
+        if(p.t === "-"){
+          pos++;
+          const inner = parseFactor();
+          if(inner === null) return null;
+          return -inner;
+        }
+        if(p.t === "num"){
+          pos++;
+          return p.v;
+        }
+        if(p.t === "("){
+          pos++;
+          const inner = parseExpr();
+          if(inner === null) return null;
+          if(!take(")")) return null;
+          return inner;
+        }
+        return null;
+      }
+
+      const val = parseExpr();
+      if(val === null) return null;
+      if(pos !== tokens.length) return null;
+      if(!Number.isFinite(val)) return null;
+      if(Math.abs(val) > 1e9) return null;
+      return val;
+    }
+
+    function parseUserNumber(card){
+      const inp = card.querySelector("input");
+      const raw = (inp && inp.value) ? inp.value : "";
+      let s = basicNormalize(raw);
+      s = extractMathPrefix(s);
+      s = insertImplicitMultNumeric(s);
+      if(!s) return { ok:false, raw: raw };
+
+      // Reject any characters not part of math prefix (after stripping, there should be no invalid chars)
+      if(/[^0-9.\+\-\*\/\(\)]/.test(s)) return { ok:false, raw: raw };
+
+      const toks = tokenizeNumber(s);
+      if(!toks) return { ok:false, raw: raw };
+      const val = parseAndEvalNumber(toks);
+      if(val === null) return { ok:false, raw: raw };
+
+      return { ok:true, raw: raw, value: val };
+    }
+
+    function answerInputHTML(){
+      return `
+        <span class="muted">Answer:</span>
+        <input class="answerbox" type="text" autocomplete="off" placeholder="e.g., 28" aria-label="answer" />
+        <span class="muted" style="font-size:13px;">(number only)</span>
+      `;
+    }
+
+    
+    /***********************
+     * Question generators (Practice follows Learn order)
+     ************************/
+
+    
+    /***********************
+     * Diagram helpers (SVG) — consistent geometry
+     ************************/
+    function svgPt(cx, cy, r, deg){
+      const rad = deg * Math.PI / 180;
+      return { x: cx + r * Math.cos(rad), y: cy - r * Math.sin(rad) };
+    }
+    function svgArcD(cx, cy, r, startDeg, endDeg){
+      // Poly-arc (avoids SVG sweep/large-arc confusion) — accurate and stable
+      const span = Math.abs(endDeg - startDeg);
+      const steps = Math.max(14, Math.round(span / 6));
+      let d = "";
+      for(let i=0;i<=steps;i++){
+        const t = startDeg + (endDeg - startDeg) * (i/steps);
+        const p = svgPt(cx, cy, r, t);
+        d += (i===0 ? "M " : " L ") + p.x.toFixed(2) + " " + p.y.toFixed(2);
+      }
+      return d;
+    }
+
+    function svgProtractorAngle(angleDeg){
+      const w = 270, h = 170;
+      const cx = 135, cy = 145;
+      const r = 110;
+
+      const pRay = svgPt(cx, cy, r, angleDeg);
+
+      const tickDegs = [0,15,30,45,60,75,90,105,120,135,150,165,180];
+
+      // semicircle arc from left to right
+      const leftX = cx - r, leftY = cy;
+      const rightX = cx + r, rightY = cy;
+
+      let ticks = "";
+      for(const d of tickDegs){
+        const p1 = svgPt(cx, cy, r-10, d);
+        const p2 = svgPt(cx, cy, r, d);
+        const pl = svgPt(cx, cy, r-26, d);
+        ticks += `
+          <line x1="${p1.x.toFixed(2)}" y1="${p1.y.toFixed(2)}" x2="${p2.x.toFixed(2)}" y2="${p2.y.toFixed(2)}" stroke="#111" stroke-width="1"/>
+          <text x="${pl.x.toFixed(2)}" y="${pl.y.toFixed(2)}" font-size="10" fill="#111" text-anchor="middle" dominant-baseline="middle">${d}</text>
+        `;
+      }
+
+      // angle arc
+      const arcR = 62;
+      const arcD = svgArcD(cx, cy, arcR, 0, angleDeg);
+
+      return `
+        <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Angle diagram">
+          <path d="M ${leftX} ${leftY} A ${r} ${r} 0 0 1 ${rightX} ${rightY}" fill="none" stroke="#111" stroke-width="2"/>
+          ${ticks}
+          <!-- baseline -->
+          <line x1="${cx}" y1="${cy}" x2="${cx + r}" y2="${cy}" stroke="#111" stroke-width="3"/>
+          <!-- second ray -->
+          <line x1="${cx}" y1="${cy}" x2="${pRay.x.toFixed(2)}" y2="${pRay.y.toFixed(2)}" stroke="#111" stroke-width="3"/>
+          <!-- vertex -->
+          <circle cx="${cx}" cy="${cy}" r="4" fill="#111"/>
+          <!-- arc -->
+          <path d="${arcD}" fill="none" stroke="#0d47a1" stroke-width="3"/>
+        </svg>
+      `;
+    }
+
+    function svgStraightLine(knownDeg){
+      // Adjacent angles on a straight line: known + x = 180
+      const xDeg = 180 - knownDeg;
+
+      const w = 270, h = 140;
+      const cx = 135, cy = 92;
+      const L = 110;
+
+      // Horizontal straight line
+      const left = {x: cx - L, y: cy};
+      const right = {x: cx + L, y: cy};
+
+      // Choose the ray so that the angle with the LEFT ray is knownDeg.
+      // Left ray direction = 180°. So ray direction = 180 - knownDeg.
+      const rayDeg = 180 - knownDeg;
+      const pRay = svgPt(cx, cy, 85, rayDeg);
+
+      // Arcs
+      const rArc = 30;
+      const knownArc = svgArcD(cx, cy, rArc, 180, rayDeg);
+      const xArc = svgArcD(cx, cy, rArc, rayDeg, 0);
+
+      // Labels at sector mid-angles
+      const pKnownTxt = svgPt(cx, cy, 48, (180 + rayDeg)/2);
+      const pXTxt = svgPt(cx, cy, 48, rayDeg/2);
+
+      return `
+        <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Straight line angles">
+          <line x1="${left.x}" y1="${left.y}" x2="${right.x}" y2="${right.y}" stroke="#111" stroke-width="3"/>
+          <line x1="${cx}" y1="${cy}" x2="${pRay.x.toFixed(2)}" y2="${pRay.y.toFixed(2)}" stroke="#111" stroke-width="3"/>
+          <circle cx="${cx}" cy="${cy}" r="4" fill="#111"/>
+
+          <path d="${knownArc}" fill="none" stroke="#0d47a1" stroke-width="3"/>
+          <path d="${xArc}" fill="none" stroke="#0d47a1" stroke-width="3"/>
+
+          <text x="${pKnownTxt.x.toFixed(2)}" y="${pKnownTxt.y.toFixed(2)}" font-size="12" fill="#111" text-anchor="middle" dominant-baseline="middle">${knownDeg}°</text>
+          <text x="${pXTxt.x.toFixed(2)}" y="${pXTxt.y.toFixed(2)}" font-size="12" fill="#111" text-anchor="middle" dominant-baseline="middle">x°</text>
+        </svg>
+      `;
+    }
+
+    function svgRightAngleSplit(knownDeg){
+      // x = 90 - knownDeg, draw the split ray at exactly knownDeg from the baseline.
+      const w = 270, h = 150;
+      const vx = 75, vy = 120;
+      const baseLen = 165;
+      const vertLen = 95;
+      const splitLen = 105;
+
+      const pBase = { x: vx + baseLen, y: vy };
+      const pVert = { x: vx, y: vy - vertLen };
+      const pSplit = svgPt(vx, vy, splitLen, knownDeg);
+
+      const rArc1 = 34;
+      const arcKnown = svgArcD(vx, vy, rArc1, 0, knownDeg);
+      const arcX = svgArcD(vx, vy, rArc1, knownDeg, 90);
+
+      const pKnownTxt = svgPt(vx, vy, 56, knownDeg/2);
+      const pXTxt = svgPt(vx, vy, 60, (knownDeg+90)/2);
+
+      return `
+        <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Right angle split">
+          <line x1="${vx}" y1="${vy}" x2="${pBase.x}" y2="${pBase.y}" stroke="#111" stroke-width="3"/>
+          <line x1="${vx}" y1="${vy}" x2="${pVert.x}" y2="${pVert.y}" stroke="#111" stroke-width="3"/>
+          <line x1="${vx}" y1="${vy}" x2="${pSplit.x.toFixed(2)}" y2="${pSplit.y.toFixed(2)}" stroke="#111" stroke-width="3"/>
+
+          <rect x="${vx}" y="${vy-18}" width="18" height="18" fill="none" stroke="#111" stroke-width="2"/>
+          <circle cx="${vx}" cy="${vy}" r="4" fill="#111"/>
+
+          <path d="${arcKnown}" fill="none" stroke="#0d47a1" stroke-width="3"/>
+          <path d="${arcX}" fill="none" stroke="#0d47a1" stroke-width="3"/>
+
+          <text x="${pKnownTxt.x.toFixed(2)}" y="${pKnownTxt.y.toFixed(2)}" font-size="12" fill="#111" text-anchor="middle" dominant-baseline="middle">${knownDeg}°</text>
+          <text x="${pXTxt.x.toFixed(2)}" y="${pXTxt.y.toFixed(2)}" font-size="12" fill="#111" text-anchor="middle" dominant-baseline="middle">x°</text>
+        </svg>
+      `;
+    }
+
+    function svgIntersect(knownDeg){
+      // Draw two lines intersecting with the acute vertical angle = knownDeg
+      const w = 270, h = 200;
+      const cx = 135, cy = 100;
+      const L = 105;
+
+      const a = knownDeg; // acute angle from horizontal
+      const p1 = svgPt(cx, cy, L, a);
+      const p2 = svgPt(cx, cy, L, a+180);
+
+      return `
+        <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Intersecting lines">
+          <!-- line 1 (horizontal) -->
+          <line x1="${cx-L}" y1="${cy}" x2="${cx+L}" y2="${cy}" stroke="#111" stroke-width="3"/>
+          <!-- line 2 -->
+          <line x1="${p1.x.toFixed(2)}" y1="${p1.y.toFixed(2)}" x2="${p2.x.toFixed(2)}" y2="${p2.y.toFixed(2)}" stroke="#111" stroke-width="3"/>
+          <circle cx="${cx}" cy="${cy}" r="4" fill="#111"/>
+
+          <!-- known angle arc (top-right) -->
+          <path d="${svgArcD(cx, cy, 28, 0, a)}" fill="none" stroke="#0d47a1" stroke-width="3"/>
+          <text x="${svgPt(cx, cy, 48, a/2).x.toFixed(2)}" y="${svgPt(cx, cy, 48, a/2).y.toFixed(2)}" font-size="12" fill="#111" text-anchor="middle" dominant-baseline="middle">${knownDeg}°</text>
+
+          <!-- x angle arc (bottom-left, vertically opposite) -->
+          <path d="${svgArcD(cx, cy, 28, 180, 180+a)}" fill="none" stroke="#0d47a1" stroke-width="3"/>
+          <text x="${svgPt(cx, cy, 50, 180+a/2).x.toFixed(2)}" y="${svgPt(cx, cy, 50, 180+a/2).y.toFixed(2)}" font-size="12" fill="#111" text-anchor="middle" dominant-baseline="middle">x°</text>
+        </svg>
+      `;
+    }
+
+    function svgAroundPoint(a, b, c){
+      // Rays at 0, a, a+b, a+b+c (degrees). Remaining is x.
+      const x = 360 - (a+b+c);
+
+      const w = 270, h = 200;
+      const cx = 135, cy = 100;
+      const L = 85;
+
+      const angs = [0, a, a+b, a+b+c];
+      const pts = angs.map(d=>svgPt(cx, cy, L, d));
+
+      // Arc radius and label radius
+      const rArc = 40, rLab = 62;
+
+      const midA = a/2;
+      const midB = a + b/2;
+      const midC = a + b + c/2;
+      const midX = a + b + c + x/2;
+
+      return `
+        <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Angles around a point">
+          <circle cx="${cx}" cy="${cy}" r="4" fill="#111"/>
+
+          <line x1="${cx}" y1="${cy}" x2="${pts[0].x.toFixed(2)}" y2="${pts[0].y.toFixed(2)}" stroke="#111" stroke-width="3"/>
+          <line x1="${cx}" y1="${cy}" x2="${pts[1].x.toFixed(2)}" y2="${pts[1].y.toFixed(2)}" stroke="#111" stroke-width="3"/>
+          <line x1="${cx}" y1="${cy}" x2="${pts[2].x.toFixed(2)}" y2="${pts[2].y.toFixed(2)}" stroke="#111" stroke-width="3"/>
+          <line x1="${cx}" y1="${cy}" x2="${pts[3].x.toFixed(2)}" y2="${pts[3].y.toFixed(2)}" stroke="#111" stroke-width="3"/>
+
+          <path d="${svgArcD(cx, cy, rArc, 0, a)}" fill="none" stroke="#0d47a1" stroke-width="3"/>
+          <path d="${svgArcD(cx, cy, rArc, a, a+b)}" fill="none" stroke="#0d47a1" stroke-width="3"/>
+          <path d="${svgArcD(cx, cy, rArc, a+b, a+b+c)}" fill="none" stroke="#0d47a1" stroke-width="3"/>
+          <path d="${svgArcD(cx, cy, rArc, a+b+c, 360)}" fill="none" stroke="#0d47a1" stroke-width="3"/>
+
+          <text x="${svgPt(cx, cy, rLab, midA).x.toFixed(2)}" y="${svgPt(cx, cy, rLab, midA).y.toFixed(2)}" font-size="12" fill="#111" text-anchor="middle" dominant-baseline="middle">${a}°</text>
+          <text x="${svgPt(cx, cy, rLab, midB).x.toFixed(2)}" y="${svgPt(cx, cy, rLab, midB).y.toFixed(2)}" font-size="12" fill="#111" text-anchor="middle" dominant-baseline="middle">${b}°</text>
+          <text x="${svgPt(cx, cy, rLab, midC).x.toFixed(2)}" y="${svgPt(cx, cy, rLab, midC).y.toFixed(2)}" font-size="12" fill="#111" text-anchor="middle" dominant-baseline="middle">${c}°</text>
+          <text x="${svgPt(cx, cy, rLab, midX % 360).x.toFixed(2)}" y="${svgPt(cx, cy, rLab, midX % 360).y.toFixed(2)}" font-size="12" fill="#111" text-anchor="middle" dominant-baseline="middle">x°</text>
+        </svg>
+      `;
+    }
+
+    function svgTriangle(a, b){
+      // Construct a triangle with base angles exactly a and b (then top angle is x)
+      const w = 270, h = 170;
+      const A = {x: 60, y: 135};   // left base
+      const B = {x: 210, y: 135};  // right base
+      const L = 600; // long enough for intersection
+
+      const dir1 = a;          // from A, above base
+      const dir2 = 180 - b;    // from B, above base pointing up-left
+
+      const p1 = { x: A.x + L*Math.cos(dir1*Math.PI/180), y: A.y - L*Math.sin(dir1*Math.PI/180) };
+      const p2 = { x: B.x + L*Math.cos(dir2*Math.PI/180), y: B.y - L*Math.sin(dir2*Math.PI/180) };
+
+      // line intersection (A->p1) with (B->p2)
+      const x1=A.x, y1=A.y, x2=p1.x, y2=p1.y;
+      const x3=B.x, y3=B.y, x4=p2.x, y4=p2.y;
+
+      const den = (x1-x2)*(y3-y4) - (y1-y2)*(x3-x4);
+      let C = {x: 140, y: 35}; // fallback
+      if(Math.abs(den) > 1e-6){
+        const px = ((x1*y2 - y1*x2)*(x3-x4) - (x1-x2)*(x3*y4 - y3*x4)) / den;
+        const py = ((x1*y2 - y1*x2)*(y3-y4) - (y1-y2)*(x3*y4 - y3*x4)) / den;
+        if(Number.isFinite(px) && Number.isFinite(py) && py < A.y-10){
+          C = {x: px, y: py};
+          // keep inside canvas if needed
+          C.x = Math.min(245, Math.max(25, C.x));
+          C.y = Math.min(120, Math.max(20, C.y));
+        }
+      }
+
+      const xDeg = 180 - (a + b);
+
+      return `
+        <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Triangle angles">
+          <polygon points="${A.x},${A.y} ${B.x},${B.y} ${C.x.toFixed(2)},${C.y.toFixed(2)}" fill="none" stroke="#111" stroke-width="3"/>
+          <text x="${(A.x+18)}" y="${(A.y-10)}" font-size="12" fill="#111">${a}°</text>
+          <text x="${(B.x-28)}" y="${(B.y-10)}" font-size="12" fill="#111">${b}°</text>
+          <text x="${(C.x+5).toFixed(2)}" y="${(C.y+18).toFixed(2)}" font-size="12" fill="#111">x°</text>
+        </svg>
+      `;
+    }
+
+function makeDefinitions(){
+      const variants = [
+        ()=>({ prompt:`How many degrees are in a <b>right angle</b>?`, ans:90,
+               hint:`A right angle is one quarter of a full turn.`, explain:`A right angle measures <b>90°</b>.`}),
+        ()=>({ prompt:`How many degrees are in a <b>straight angle</b>?`, ans:180,
+               hint:`A straight angle is half of a full turn.`, explain:`A straight angle measures <b>180°</b>.`}),
+        ()=>({ prompt:`How many degrees are in a <b>full turn</b>?`, ans:360,
+               hint:`A full turn is a complete rotation.`, explain:`A full turn is <b>360°</b>.`}),
+        ()=>({ prompt:`An <b>acute</b> angle is less than ___° .`, ans:90,
+               hint:`Acute angles are smaller than a right angle.`, explain:`Acute angles are less than <b>90°</b>.`}),
+        ()=>({ prompt:`A <b>reflex</b> angle is greater than ___° .`, ans:180,
+               hint:`Reflex angles are larger than a straight angle.`, explain:`Reflex angles are greater than <b>180°</b> (and less than 360°).`}),
+        ()=>({ prompt:`An <b>obtuse</b> angle is less than ___° .`, ans:180,
+               hint:`Obtuse angles are smaller than a straight angle.`, explain:`Obtuse angles are less than <b>180°</b> (and greater than 90°).`}),
+      ];
+      const v = variants[randInt(0, variants.length-1)]();
+      return {
+        type:"defs",
+        promptHTML: v.prompt,
+        inputHTML: answerInputHTML(),
+        getUser: (card)=> parseUserNumber(card),
+        expected: { value: v.ans },
+        hintHTML: v.hint,
+        explainHTML: v.explain,
+        answerText: fmtNum(v.ans)
+      };
+    }
+
+
+    function makeCompSupp(){
+      const variants = [
+        // Complement (sum to 90)
+        ()=>{
+          const a = pick([12,15,18,24,27,33,38,42,55,63,71,76,79]);
+          const ans = 90 - a;
+          return {
+            prompt:`Angle A is <b>${a}°</b>. Angle B is <b>complementary</b> to Angle A. Find Angle B.`,
+            ans:ans,
+            hint:`Complementary angles add to <b>90°</b>.`,
+            explain:`Angle B = 90 − ${a} = <b>${ans}°</b>.`
+          };
+        },
+        // Supplement (sum to 180)
+        ()=>{
+          const a = pick([25,35,48,62,73,89,102,115,128,146,157]);
+          const ans = 180 - a;
+          return {
+            prompt:`Angle A is <b>${a}°</b>. Angle B is <b>supplementary</b> to Angle A. Find Angle B.`,
+            ans:ans,
+            hint:`Supplementary angles add to <b>180°</b>.`,
+            explain:`Angle B = 180 − ${a} = <b>${ans}°</b>.`
+          };
+        },
+        // Complement with difference
+        ()=>{
+          const d = pick([6,10,14,18,22,26]); // even-ish to keep integers
+          const small = (90 - d) / 2;
+          const big = small + d;
+          return {
+            prompt:`Two angles are <b>complementary</b>. One angle is <b>${d}°</b> larger than the other. Find the <b>smaller</b> angle.`,
+            ans:small,
+            hint:`Let the smaller angle be x. Then x + (x + ${d}) = 90.`,
+            explain:`2x + ${d} = 90 ⇒ 2x = ${90-d} ⇒ x = <b>${small}°</b> (smaller). The larger is ${big}°.`
+          };
+        },
+        // Supplement with ratio
+        ()=>{
+          const ratio = pick([[1,2],[2,3],[3,5],[4,5]]);
+          const a = ratio[0], b = ratio[1];
+          const total = a + b;
+          const unit = 180 / total;
+          const larger = Math.max(a,b) * unit;
+          return {
+            prompt:`Two angles are <b>supplementary</b> and are in the ratio <b>${a}:${b}</b>. Find the <b>larger</b> angle.`,
+            ans:larger,
+            hint:`Supplementary angles add to 180°. Split 180 in the given ratio.`,
+            explain:`Total parts = ${a}+${b} = ${total}. One part = 180 ÷ ${total} = ${fmtNum(unit)}. Larger angle = ${Math.max(a,b)} × ${fmtNum(unit)} = <b>${fmtNum(larger)}°</b>.`
+          };
+        },
+        // Identify total (enter 90 or 180)
+        ()=>{
+          const isComp = Math.random() < 0.5;
+          if(isComp){
+            const a = pick([15,20,25,30,35,40,45,50,55,60,65,70,75]);
+            const b = 90 - a;
+            return {
+              prompt:`Angle A is <b>${a}°</b> and Angle B is <b>${b}°</b>. They add to a total of ___° . (Enter <b>90</b> or <b>180</b>.)`,
+              ans:90,
+              hint:`Complementary angles add to 90°; supplementary angles add to 180°.`,
+              explain:`${a} + ${b} = <b>90°</b>, so they are complementary.`
+            };
+          }else{
+            const a = pick([25,30,35,40,50,60,70,80,90,100,110,120,130,140,150]);
+            const b = 180 - a;
+            return {
+              prompt:`Angle A is <b>${a}°</b> and Angle B is <b>${b}°</b>. They add to a total of ___° . (Enter <b>90</b> or <b>180</b>.)`,
+              ans:180,
+              hint:`Complementary angles add to 90°; supplementary angles add to 180°.`,
+              explain:`${a} + ${b} = <b>180°</b>, so they are supplementary.`
+            };
+          }
+        }
+      ];
+
+      const v = variants[randInt(0, variants.length-1)]();
+      return {
+        type:"comp",
+        promptHTML: v.prompt,
+        inputHTML: answerInputHTML(),
+        getUser: (card)=> parseUserNumber(card),
+        expected: { value: v.ans },
+        hintHTML: v.hint,
+        explainHTML: v.explain,
+        answerText: fmtNum(v.ans)
+      };
+    }
+
+    function makeDrawing(){
+      const variants = [
+        ()=>{
+          const a = pick([25,35,45,60,65,75,90,105,120,135,150]);
+          return {
+            prompt:`You want to draw an angle of <b>${a}°</b>. After aligning your baseline with <b>0°</b> on the protractor, at what number should you make your mark?`,
+            ans:a,
+            hint:`You mark the degree you want to draw. Start from the <b>0°</b> line.`,
+            explain:`Mark <b>${a}°</b>, then draw the second ray through the mark.`
+          };
+        },
+        ()=>{
+          const want = pick([80,95,110,125,140]);
+          const off = pick([5,10,15]);
+          const marked = want - off;
+          return {
+            prompt:`You need to draw <b>${want}°</b>, but you accidentally marked <b>${marked}°</b>. How many degrees is your mark <b>short</b> by?`,
+            ans:off,
+            hint:`Find the difference: wanted − marked.`,
+            explain:`${want} − ${marked} = <b>${off}°</b>.`
+          };
+        },
+        ()=>{
+          const a = pick([30,40,55,65]);
+          const add = pick([10,15,20,25]);
+          const ans = a + add;
+          return {
+            prompt:`You drew an angle of <b>${a}°</b>. Then you widen it by <b>${add}°</b>. What is the new angle measure?`,
+            ans:ans,
+            hint:`Add the extra turn to the original angle.`,
+            explain:`${a} + ${add} = <b>${ans}°</b>.`
+          };
+        },
+        ()=>{
+          const more = pick([10,15,20,25,30,35,40]);
+          const ans = 90 + more;
+          return {
+            prompt:`You want to draw an angle that is <b>${more}°</b> more than a right angle. What angle should you draw?`,
+            ans:ans,
+            hint:`A right angle is 90°.`,
+            explain:`90 + ${more} = <b>${ans}°</b>.`
+          };
+        },
+        ()=>{
+          const turn = pick([1,2,3]);
+          const ans = turn*90;
+          return {
+            prompt:`A student rotates a ray by <b>${turn}</b> quarter-turn(s). What is the angle turned (in degrees)?`,
+            ans:ans,
+            hint:`One quarter-turn is 90°.`,
+            explain:`${turn} × 90 = <b>${ans}°</b>.`
+          };
+        }
+      ];
+
+      const v = variants[randInt(0, variants.length-1)]();
+      return {
+        type:"draw",
+        promptHTML: v.prompt,
+        inputHTML: answerInputHTML(),
+        getUser: (card)=> parseUserNumber(card),
+        expected: { value: v.ans },
+        hintHTML: v.hint,
+        explainHTML: v.explain,
+        answerText: fmtNum(v.ans)
+      };
+    }
+
+    function makeMeasuring(){
+      const angle = pick([20,30,40,50,60,70,90,110,120,135,150,160]);
+      const diagram = svgProtractorAngle(angle);
+
+      return {
+        type:"measure",
+        promptHTML: `Read the measure of the angle shown (use the scale that starts at 0° on the baseline).<div style="margin-top:8px;">${diagram}</div>`,
+        inputHTML: answerInputHTML(),
+        getUser: (card)=> parseUserNumber(card),
+        expected: { value: angle },
+        hintHTML: `The baseline ray is on the <b>0°</b> line. Read the number where the other ray meets the protractor arc.`,
+        explainHTML: `The other ray points to <b>${angle}°</b>.`,
+        answerText: fmtNum(angle)
+      };
+    }
+
+    function makeDiagramAngles(){
+      const variants = [
+        ()=>{
+          const known = pick([15,22,28,33,37,42,48,55,63,72]);
+          const ans = 90 - known;
+          return {
+            prompt:`Find <b>x</b>.<div style="margin-top:8px;">${svgRightAngleSplit(known)}</div>`,
+            ans:ans,
+            hint:`Angles in a right angle add to <b>90°</b>.`,
+            explain:`x = 90 − ${known} = <b>${ans}°</b>.`
+          };
+        },
+        ()=>{
+          const known = pick([35,48,62,70,110,125,142,155]);
+          const ans = 180 - known;
+          return {
+            prompt:`Find <b>x</b>.<div style="margin-top:8px;">${svgStraightLine(known)}</div>`,
+            ans:ans,
+            hint:`Angles on a straight line add to <b>180°</b>.`,
+            explain:`x = 180 − ${known} = <b>${ans}°</b>.`
+          };
+        },
+        ()=>{
+          const known = pick([28,34,40,50,58,64,72]);
+          const ans = known;
+          return {
+            prompt:`Find <b>x</b> (vertically opposite angles).<div style="margin-top:8px;">${svgIntersect(known)}</div>`,
+            ans:ans,
+            hint:`Vertically opposite angles are equal.`,
+            explain:`x = <b>${known}°</b>.`
+          };
+        },
+        ()=>{
+          let a,b,c,ans;
+          let guard = 0;
+          do{
+            a = pick([80,90,100,110,120]);
+            b = pick([60,70,80,90]);
+            c = pick([40,45,50,55,60]);
+            ans = 360 - (a+b+c);
+            guard++;
+          }while((ans < 40 || ans > 160) && guard < 60);
+          return {
+            prompt:`Find <b>x</b> (angles around a point).<div style="margin-top:8px;">${svgAroundPoint(a,b,c)}</div>`,
+            ans:ans,
+            hint:`Angles around a point add to <b>360°</b>.`,
+            explain:`x = 360 − (${a}+${b}+${c}) = 360 − ${a+b+c} = <b>${ans}°</b>.`
+          };
+        },
+        ()=>{
+          let a,b,ans;
+          let guard = 0;
+          do{
+            a = pick([30,35,40,45,50,55,60]);
+            b = pick([30,35,40,45,50,55,60,65]);
+            ans = 180 - (a+b);
+            guard++;
+          }while((ans < 25 || ans > 110) && guard < 80);
+          return {
+            prompt:`Find <b>x</b> (angles in a triangle).<div style="margin-top:8px;">${svgTriangle(a,b)}</div>`,
+            ans:ans,
+            hint:`Angles in a triangle add to <b>180°</b>.`,
+            explain:`x = 180 − (${a}+${b}) = 180 − ${a+b} = <b>${ans}°</b>.`
+          };
+        }
+      ];
+
+      const v = variants[randInt(0, variants.length-1)]();
+      return {
+        type:"diagram",
+        promptHTML: v.prompt,
+        inputHTML: answerInputHTML(),
+        getUser: (card)=> parseUserNumber(card),
+        expected: { value: v.ans },
+        hintHTML: v.hint,
+        explainHTML: v.explain,
+        answerText: fmtNum(v.ans)
+      };
+    }
+
+
+    function shuffleArray(arr){
+      for(let i=arr.length-1; i>0; i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function applyOrder(){
+      const mode = (document.getElementById("orderSelect") || {value:"ordered"}).value;
+      if(mode === "shuffled"){
+        state.questions = shuffleArray(state.baseQuestions.slice());
+      }else{
+        state.questions = state.baseQuestions.slice();
+      }
+    }
+
+    function buildQuestionSet(){
+      // Build a 20-question set following Learn order:
+      // 1) Definitions (4) 2) Complementary/Supplementary (4) 3) Drawing (4) 4) Measuring (4) 5) From Diagrams (4)
+      // Avoid duplicate questions within the same set.
+      const makers = [makeDefinitions, makeCompSupp, makeDrawing, makeMeasuring, makeDiagramAngles];
+      const qs = [];
+      const used = new Set();
+
+      function keyOf(q){
+        // Exact promptHTML match is enough to stop "same question twice"
+        return (q.type || "") + "|" + (q.promptHTML || "");
+      }
+
+      for(const mk of makers){
+        let added = 0;
+        let guard = 0;
+        while(added < 4 && guard < 250){
+          guard++;
+          const q = mk();
+          const k = keyOf(q);
+          if(used.has(k)) continue;
+          used.add(k);
+          qs.push(q);
+          added++;
+        }
+        // If the variant pool is unexpectedly small, fall back to allowing repeats so the set still completes.
+        while(added < 4){
+          const q = mk();
+          qs.push(q);
+          added++;
+        }
+      }
+      return qs;
+    }
+
+    /***********************
+     * PDF helpers (Answer Key on last pages)
+     ************************/
+    function loadScript(src){
+      return new Promise((resolve, reject)=>{
+        const s = document.createElement("script");
+        s.src = src;
+        s.onload = ()=> resolve();
+        s.onerror = ()=> reject(new Error("Failed to load " + src));
+        document.head.appendChild(s);
+      });
+    }
+
+    let pdfLibReady = false;
+    async function ensurePdfLibs(){
+      if(pdfLibReady) return;
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
+      pdfLibReady = true;
+    }
+
+    function buildPdfPages(){
+      const perPage = parseInt(document.getElementById("perPageSelect").value, 10);
+      const printArea = document.getElementById("pdfPrintArea");
+      printArea.innerHTML = "";
+
+      const total = state.questions.length;
+      const pagesQ = Math.ceil(total / perPage);
+
+      const ansPerPage = 24;
+      const pagesA = Math.ceil(total / ansPerPage);
+
+      const totalPagesAll = pagesQ + pagesA;
+
+      const safeStudentForHtml = escapeHTML(studentName || "");
+      const setName = setNameFromIndex(state.setIndex-1);
+
+      // Question pages
+      for(let p=0; p<pagesQ; p++){
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const startIdx = p * perPage;
+        const endIdx = Math.min(total, startIdx + perPage);
+
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div class="pdf-title">DYAA</div>
+            <div class="pdf-meta">
+              Student: <b>${safeStudentForHtml || "—"}</b><br/>
+              Set ${setName}<br/>
+              Page ${p+1} / ${totalPagesAll}
+            </div>
+          </div>
+          <div class="pdf-grid"></div>
+        `;
+
+        const grid = page.querySelector(".pdf-grid");
+
+        for(let i=startIdx; i<endIdx; i++){
+          const q = state.questions[i];
+          const qBox = document.createElement("div");
+          qBox.className = "pdf-q";
+          qBox.innerHTML = `
+            <div class="pdf-qhead">
+              <div class="pdf-qnum">Q${i+1}</div>
+              <div class="pdf-qtopic">${topicLabel(q.type)}</div>
+            </div>
+            <div class="pdf-qbody">${q.promptHTML}</div>
+            <div class="pdf-answerline">
+              Answer:
+              <span class="linebox"></span>
+            </div>
+          `;
+          grid.appendChild(qBox);
+        }
+
+        printArea.appendChild(page);
+      }
+
+      // Answer key pages at the end
+      for(let ap=0; ap<pagesA; ap++){
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const startIdx = ap * ansPerPage;
+        const endIdx = Math.min(total, startIdx + ansPerPage);
+        const pageNumber = pagesQ + ap + 1;
+
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div class="pdf-title">DYAA</div>
+            <div class="pdf-meta">
+              Student: <b>${safeStudentForHtml || "—"}</b><br/>
+              Set ${setName}<br/>
+              Page ${pageNumber} / ${totalPagesAll}
+            </div>
+          </div>
+          <div class="pdf-grid"></div>
+        `;
+
+        const grid = page.querySelector(".pdf-grid");
+
+        for(let i=startIdx; i<endIdx; i++){
+          const q = state.questions[i];
+          const ans = (q && typeof q.answerText === "string") ? q.answerText : "";
+          const qBox = document.createElement("div");
+          qBox.className = "pdf-q";
+          qBox.innerHTML = `
+            <div class="pdf-qhead">
+              <div class="pdf-qnum">Q${i+1}</div>
+              <div class="pdf-qtopic">${topicLabel(q.type)}</div>
+            </div>
+            <div class="pdf-qbody"><b>Answer:</b> ${escapeHTML(ans)}</div>
+          `;
+          grid.appendChild(qBox);
+        }
+
+        printArea.appendChild(page);
+      }
+    }
+
+    function safeFileNamePart(s){
+      return String(s || "")
+        .trim()
+        .replace(/[\\/:*?"<>|]+/g, "-")
+        .replace(/\s+/g, "_")
+        .slice(0, 40);
+    }
+
+    async function exportToPdf(){
+      if(!studentName){
+        alert("Please enter the student name first.");
+        return;
+      }
+      await ensurePdfLibs();
+      buildPdfPages();
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+      const pages = Array.from(document.querySelectorAll("#pdfPrintArea .pdf-page"));
+
+      for(let i=0; i<pages.length; i++){
+        const pageEl = pages[i];
+
+        const canvas = await html2canvas(pageEl, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false
+        });
+
+        const imgData = canvas.toDataURL("image/png", 1.0);
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight, undefined, "FAST");
+        if(i < pages.length - 1) pdf.addPage();
+      }
+
+      const setName = setNameFromIndex(state.setIndex-1);
+      const fileStudent = safeFileNamePart(studentName);
+      pdf.save(`DYAA_Angles_${fileStudent}_Set_${setName}.pdf`);
+    }
+
+    /***********************
+     * Render + checking
+     ************************/
+    const tabs = document.querySelectorAll(".tab-btn");
+    const learnSection = document.getElementById("learnSection");
+    const practiceSection = document.getElementById("practiceSection");
+    const practiceControls = document.getElementById("practiceControls");
+    const questionsWrap = document.getElementById("questionsWrap");
+    const countSelect = document.getElementById("countSelect");
+    const scoreValue = document.getElementById("scoreValue");
+    const progressLabel = document.getElementById("progressLabel");
+    const setLabel = document.getElementById("setLabel");
+
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const cancelModalBtn = document.getElementById("cancelModalBtn");
+    const confirmModalBtn = document.getElementById("confirmModalBtn");
+
+    const nameBackdrop = document.getElementById("nameBackdrop");
+    const nameInput = document.getElementById("nameInput");
+    const startWithNameBtn = document.getElementById("startWithNameBtn");
+    const cancelNameBtn = document.getElementById("cancelNameBtn");
+
+    const newSetBtn = document.getElementById("newSetBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const showAllBtn = document.getElementById("showAllBtn");
+    const exportPdfBtn = document.getElementById("exportPdfBtn");
+    const orderSelect = document.getElementById("orderSelect");
+
+    let state = {
+      setIndex: 0,
+      baseQuestions: [],
+      questions: [],
+      checked: new Set(),
+      results: new Map(), // idx -> true/false
+    };
+
+    function setNameFromIndex(i){
+      return String.fromCharCode(65 + (i % 26));
+    }
+
+    function renderQuestions(){
+      questionsWrap.innerHTML = "";
+      state.questions.forEach((q, idx)=>{
+        const card = document.createElement("div");
+        card.className = "q-card";
+        card.dataset.qindex = String(idx);
+
+        card.innerHTML = `
+          <div class="q-head">
+            <div class="q-num">Q${idx+1}</div>
+            <div class="q-topic">${topicLabel(q.type)}</div>
+          </div>
+          <div class="q-body">${q.promptHTML}</div>
+          <div class="q-input">${q.inputHTML}</div>
+          <div class="q-actions">
+            <button class="btn primary" data-action="check">Check</button>
+            <button class="btn secondary" data-action="hint">Hint</button>
+            <button class="btn secondary" data-action="reveal">Reveal</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+        `;
+        questionsWrap.appendChild(card);
+      });
+    }
+
+    function updateProgress(){
+      progressLabel.textContent = `${state.checked.size} checked`;
+    }
+
+    function showFeedback(card, ok, title, html){
+      const fb = card.querySelector(".feedback");
+      fb.classList.add("show");
+      fb.classList.toggle("ok", !!ok);
+      fb.classList.toggle("bad", !ok);
+      fb.innerHTML = `
+        <div class="title" style="color:${ok ? "var(--ok)" : "var(--bad)"}">${title}</div>
+        <div>${html}</div>
+      `;
+    }
+
+    function checkOne(card){
+      const idx = parseInt(card.dataset.qindex, 10);
+      const q = state.questions[idx];
+      const user = q.getUser(card);
+
+      state.checked.add(idx);
+
+      if(!user || !user.ok){
+        state.results.set(idx, false);
+        showFeedback(card, false, "❌ Not quite", `Please enter a valid number (you can type calculations like <span class="mono">2*(10+4)</span>).`);
+        updateProgress();
+        return false;
+      }
+
+      const want = q.expected.value;
+      const got = user.value;
+      const ok = Math.abs(got - want) < 1e-9;
+
+      if(ok){
+        state.results.set(idx, true);
+        showFeedback(card, true, "✅ Correct", `Great. ${q.explainHTML}`);
+        updateProgress();
+        return true;
+      }
+
+      state.results.set(idx, false);
+      showFeedback(card, false, "❌ Not quite", `Hint: ${q.hintHTML}<div class="rule"></div>${q.explainHTML}`);
+      updateProgress();
+      return false;
+    }
+
+    function resetAnswers(){
+      state.checked = new Set();
+      state.results = new Map();
+      scoreValue.textContent = "—";
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const fb = card.querySelector(".feedback");
+        fb.className = "feedback";
+        fb.innerHTML = "";
+        card.querySelectorAll("input").forEach(i => i.value = "");
+      });
+      updateProgress();
+    }
+
+    function generateNewSet(){
+      const count = 20;
+      if(countSelect) countSelect.value = String(count);
+      state.setIndex++;
+      state.baseQuestions = buildQuestionSet();
+      applyOrder();
+      state.checked = new Set();
+      state.results = new Map();
+      setLabel.textContent = `Set: ${setNameFromIndex(state.setIndex-1)}`;
+      scoreValue.textContent = "—";
+      renderQuestions();
+      updateProgress();
+      practiceSection.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    function submitAll(){
+      let correct = 0;
+      state.questions.forEach((_, idx)=>{
+        const card = document.querySelector(`.q-card[data-qindex="${idx}"]`);
+        const ok = checkOne(card);
+        if(ok) correct++;
+      });
+      scoreValue.textContent = `${correct} / ${state.questions.length}`;
+      scoreValue.style.fontWeight = "900";
+    }
+
+    function showAllExplanations(){
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const idx = parseInt(card.dataset.qindex,10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "📌 Explanation", q.explainHTML);
+      });
+    }
+
+    /***********************
+     * Tabs + Name gating
+     ************************/
+    function openNameModal(){
+      nameBackdrop.classList.add("show");
+      nameBackdrop.setAttribute("aria-hidden","false");
+      nameInput.value = (studentName || "DYAA");
+      setTimeout(()=> nameInput.focus(), 50);
+    }
+    function closeNameModal(){
+      nameBackdrop.classList.remove("show");
+      nameBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    function setTab(tab){
+      tabs.forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      const isPractice = tab === "practice";
+      learnSection.classList.toggle("active", !isPractice);
+      practiceSection.classList.toggle("active", isPractice);
+      practiceControls.style.display = isPractice ? "flex" : "none";
+
+      if(isPractice){
+        if(!studentName){
+          openNameModal();
+          setPracticeButtonsEnabled(false);
+          return;
+        }
+        if(state.questions.length === 0){
+          generateNewSet();
+        }
+      }
+    }
+
+    tabs.forEach(btn=>{
+      btn.addEventListener("click", ()=> setTab(btn.dataset.tab));
+    });
+
+    // Name modal actions
+    startWithNameBtn.addEventListener("click", ()=>{
+      const v = sanitizeName(nameInput.value);
+      if(!v){
+        alert("Please enter a student name.");
+        nameInput.focus();
+        return;
+      }
+      setStudentName(v);
+      closeNameModal();
+      if(practiceSection.classList.contains("active") && state.questions.length === 0){
+        generateNewSet();
+      }
+    });
+    nameInput.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter"){
+        e.preventDefault();
+        startWithNameBtn.click();
+      }
+      if(e.key === "Escape"){
+        e.preventDefault();
+        cancelNameBtn.click();
+      }
+    });
+    cancelNameBtn.addEventListener("click", ()=>{
+      closeNameModal();
+      setTab("learn");
+    });
+
+    /***********************
+     * New-set confirm modal
+     ************************/
+    function openModal(){
+      modalBackdrop.classList.add("show");
+      modalBackdrop.setAttribute("aria-hidden","false");
+    }
+    function closeModal(){
+      modalBackdrop.classList.remove("show");
+      modalBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    newSetBtn.addEventListener("click", openModal);
+    cancelModalBtn.addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", (e)=>{
+      if(e.target === modalBackdrop) closeModal();
+    });
+    confirmModalBtn.addEventListener("click", ()=>{
+      closeModal();
+      generateNewSet();
+    });
+
+    questionsWrap.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button");
+      if(!btn) return;
+      const action = btn.dataset.action;
+      const card = e.target.closest(".q-card");
+      if(!card) return;
+
+      if(action === "check"){
+        checkOne(card);
+      }else if(action === "hint"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "💡 Hint", q.hintHTML);
+      }else if(action === "reveal"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        const best = q.answerText || "";
+        showFeedback(card, true, "🧠 Solution", `${q.explainHTML}<div class="rule"></div>Final answer: <b><span class="mono">${escapeHTML(best)}</span></b>`);
+      }
+    });
+
+    resetBtn.addEventListener("click", resetAnswers);
+    submitBtn.addEventListener("click", submitAll);
+    showAllBtn.addEventListener("click", showAllExplanations);
+
+    if(orderSelect){
+      orderSelect.addEventListener("change", ()=>{
+        if(state.baseQuestions && state.baseQuestions.length){
+          applyOrder();
+          // Reset progress because indexes change
+          state.checked = new Set();
+          state.results = new Map();
+          scoreValue.textContent = "—";
+          renderQuestions();
+          updateProgress();
+        }
+      });
+    }
+
+
+    exportPdfBtn.addEventListener("click", async ()=>{
+      if(!practiceSection.classList.contains("active")) setTab("practice");
+      if(!studentName){
+        openNameModal();
+        return;
+      }
+      if(state.questions.length === 0) generateNewSet();
+
+      try{
+        exportPdfBtn.textContent = "Exporting...";
+        exportPdfBtn.disabled = true;
+        await exportToPdf();
+      }catch(err){
+        alert("Export failed. If you opened this file locally, try hosting it on GitHub Pages (recommended) or allow internet access for CDNs.\n\n" + err.message);
+      }finally{
+        exportPdfBtn.textContent = "Export to PDF";
+        exportPdfBtn.disabled = false;
+      }
+    });
+
+    /***********************
+     * Init: read URL ?name=
+     ************************/
+    (function init(){
+      setPracticeButtonsEnabled(false);
+      const urlName = getNameFromUrl();
+      if(urlName){
+        setStudentName(urlName);
+      }else{
+        setStudentName("DYAA");
+      }
+    })();
+  </script>
+</body>
+</html>
