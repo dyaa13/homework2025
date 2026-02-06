@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Percentages — Basics • Find % • Find the Whole • Increase/Decrease • Applications — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --radius:14px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      user-select:none;
+      z-index:0;
+      white-space:nowrap;
+    }
+
+    .container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:24px auto 60px;
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+    }
+
+    /* Header */
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:42px;height:42px;
+      background:var(--blue);
+      border-radius:8px;
+      position:relative;
+      flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px;height:10px;
+      background:var(--orange);
+      top:-6px;left:10px;
+      border-radius:6px;
+    }
+    .logo-text{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .logo-text h1{
+      font-size:22px;
+      margin:0;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .logo-text .tag{
+      font-size:13px;
+      color:var(--orange);
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .student-pill{
+      margin-left:auto;
+      display:none;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      font-weight:800;
+      color:#111;
+      white-space:nowrap;
+    }
+    .student-pill.show{ display:inline-flex; }
+
+    /* Top bar */
+    .top-bar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:14px 0 10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .tabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .tab-btn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--blue);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+    }
+    .tab-btn.active{
+      background:var(--blue);
+      color:#fff;
+      border-color:var(--blue);
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    select, input[type="text"]{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:9px 10px;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn.primary{ background:var(--blue); color:#fff; }
+    .btn.secondary{ background:#eef2ff; color:var(--blue); border:1px solid #dbe3ff; }
+    .btn.warn{ background:#fff3e0; color:#8a4b00; border:1px solid #ffe0b2; }
+    .btn:active{ transform:translateY(1px); }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+
+    /* Sections */
+    .section{ display:none; margin-top:16px; }
+    .section.active{ display:block; }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    @media (min-width: 860px){
+      .grid.two{ grid-template-columns:1fr 1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      padding:16px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+    .muted{ color:var(--muted); }
+    .note{
+      background:#f7fbff;
+      border:1px solid #d9ecff;
+      padding:12px;
+      border-radius:12px;
+      color:#123;
+    }
+    .rule{ border-top:1px dashed var(--line); margin:12px 0; }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      color:#111;
+      flex-wrap:wrap;
+      margin:4px 6px 0 0;
+    }
+    .math{ font-weight:900; color:#111; }
+
+    /* Practice */
+    .practice-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .practice-meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      background:#f6f7ff;
+      border:1px solid #e2e6ff;
+      color:#1d2a7a;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:13px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:14px;
+      background:#fff;
+    }
+    .q-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+    .q-num{ font-weight:900; color:var(--blue); }
+    .q-topic{
+      font-size:12px;
+      font-weight:900;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color:#111;
+      background:#fafafe;
+      white-space:nowrap;
+    }
+    .q-body{
+      font-size:15px;
+      line-height:1.45;
+      margin-bottom:10px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .q-input{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:10px;
+    }
+    .tiny{ width:180px; }
+    .tiny.small{ width:120px; }
+
+    .q-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .feedback{
+      margin-top:10px;
+      border-radius:12px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      background:#fafafa;
+      display:none;
+    }
+    .feedback.show{ display:block; }
+    .feedback.ok{ border-color:#c9e7cf; background:#f0fbf2; }
+    .feedback.bad{ border-color:#ffd0d0; background:#fff3f3; }
+    .feedback .title{ font-weight:900; margin-bottom:6px; }
+
+    .footer-actions{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      border-top:1px solid var(--line);
+      padding-top:14px;
+    }
+    .scorebox{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fff;
+      min-width:260px;
+    }
+    .scorebox strong{ color:var(--blue); }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+    .modal-backdrop.show{ display:flex; }
+    .modal{
+      width:min(560px, 96vw);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 18px 45px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+      padding:16px;
+    }
+    .modal h3{ margin:0 0 6px; color:var(--blue); }
+    .modal p{ margin:6px 0 14px; color:var(--muted); }
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); border:0;
+    }
+
+    /* hidden print layout for PDF */
+    #pdfPrintArea{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:794px; /* ~A4 at 96dpi */
+      background:#fff;
+      color:#111;
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      padding:0;
+    }
+    .pdf-page{
+      width:794px;
+      min-height:1123px; /* ~A4 at 96dpi */
+      padding:36px 44px;
+      page-break-after:always;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .pdf-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+      padding-bottom:10px;
+      border-bottom:2px solid #e6e6ef;
+    }
+    .pdf-title{
+      font-weight:900;
+      color:#0d47a1;
+      font-size:18px;
+      line-height:1.2;
+    }
+    .pdf-sub{
+      color:#666;
+      font-size:12px;
+      margin-top:4px;
+    }
+    .pdf-meta{
+      text-align:right;
+      font-size:12px;
+      color:#666;
+      white-space:nowrap;
+      line-height:1.35;
+    }
+
+.pdf-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:14px;
+}
+.pdf-grid.cols3{
+  grid-template-columns:repeat(3, 1fr);
+  gap:10px;
+}
+.pdf-grid.cols2{
+  grid-template-columns:repeat(2, 1fr);
+  gap:12px;
+}
+.pdf-q{
+  border:1px solid #e6e6ef;
+  border-radius:12px;
+  padding:12px 12px;
+}
+.pdf-q.compact{
+  padding:9px 10px;
+  border-radius:10px;
+}
+.pdf-q.compact .pdf-qhead{ margin-bottom:6px; }
+.pdf-q.compact .pdf-qbody{
+  font-size:12px;
+  line-height:1.35;
+  margin-bottom:6px;
+}
+.pdf-q.compact .pdf-answerline{
+  margin-top:6px;
+  font-size:11px;
+}
+.pdf-q.compact .linebox{
+  min-width:160px;
+  height:12px;
+  border-bottom-width:1.6px;
+}
+.pdf-q.compact .linebox.small{ min-width:110px; }
+    .pdf-qhead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .pdf-qnum{ font-weight:900; color:#0d47a1; }
+    .pdf-qtopic{
+      font-size:11px;
+      font-weight:900;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid #e6e6ef;
+      background:#fafafe;
+    }
+    .pdf-qbody{
+      font-size:13px;
+      line-height:1.45;
+      margin-bottom:8px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .pdf-answerline{
+      margin-top:8px;
+      font-size:12px;
+      color:#111;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:flex-end;
+    }
+    .linebox{
+      display:inline-block;
+      border-bottom:2px solid #111;
+      min-width:260px;
+      height:14px;
+      vertical-align:baseline;
+    }
+    .linebox.small{ min-width:140px; }
+
+    /* Blank answer space (no lines) */
+    .pdf-space{ width:100%; }
+    .pdf-space.normal{ height:40px; }
+    .pdf-space.big{ height:85px; }
+    .pdf-q.compact .pdf-space.normal{ height:32px; }
+
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div>
+        <div class="logo-text">
+          <h1>Percentages — Basics • Find % • Find the Whole • Increase/Decrease • Applications</h1>
+          <span class="tag">DYAA EDUCATION</span>
+        </div>
+        <p class="subtitle">Part 1–8 in order • Round to <b>2 decimal places</b> when needed • You may include the <b>%</b> sign for percentage answers</p>
+      </div>
+
+      <div id="studentPillHeader" class="student-pill" aria-live="polite">
+        Student: <span id="studentNameHeader"></span>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="learn">Learn</button>
+        <button class="tab-btn" data-tab="practice">Practice</button>
+      </div>
+
+      <div class="controls" id="practiceControls" style="display:none;">
+        <label class="chip">
+          Questions:
+          <select id="countSelect" aria-label="Number of questions">
+            <option value="25" selected>25 (Full set)</option>
+            <option value="20">20</option>
+            <option value="16">16</option>
+          </select>
+        </label>
+
+        
+<label class="chip">
+  PDF layout:
+  <b style="color:var(--blue)">15/page (3 cols) • Word problems 8/page (2 cols)</b>
+</label>
+<select id="perPageSelect" style="display:none">
+  <option value="15" selected>15</option>
+</select>
+
+        <button class="btn secondary" id="exportPdfBtn">Export to PDF</button>
+        <button class="btn warn" id="newSetBtn">Generate New Set</button>
+        <button class="btn secondary" id="resetBtn">Reset Answers</button>
+      </div>
+    </div>
+
+    <!-- LEARN -->
+    <div class="section active" id="learnSection">
+      <div class="grid two">
+
+        <div class="card">
+          <h2>Part 1: Basic Percentage Calculations</h2>
+          <div class="note">
+            <div class="muted">
+              Convert when needed:
+              <div class="rule"></div>
+              <span class="math">p%</span> as a decimal is <span class="math">p ÷ 100</span>.<br/>
+              Examples: <span class="math">25% = 0.25</span>, <span class="math">120% = 1.20</span>.
+              <div class="rule"></div>
+              Handy fractions: <span class="math">1/2 = 0.5</span>, <span class="math">3/4 = 0.75</span>, <span class="math">2/5 = 0.4</span>.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Part 2: Find a Percentage of a Number</h2>
+          <div class="note">
+            <div class="muted">
+              Use: <span class="math">p% of N = (p/100) × N</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Part 3: Given a Percentage, Find the Number</h2>
+          <div class="note">
+            <div class="muted">
+              If <span class="math">p%</span> of <span class="math">N</span> is <span class="math">A</span>:
+              <div class="rule"></div>
+              <span class="math">(p/100) × N = A</span> → <span class="math">N = A ÷ (p/100)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Part 4: Find the Percentage</h2>
+          <div class="note">
+            <div class="muted">
+              Percentage = <span class="math">(part ÷ whole) × 100%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Part 5: Increase and Decrease Problems</h2>
+          <div class="note">
+            <div class="muted">
+              Discount: <span class="math">New = Original × (1 − p/100)</span><br/>
+              Increase: <span class="math">New = Original × (1 + p/100)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Part 6: Real-life Applications</h2>
+          <div class="note">
+            <div class="muted">
+              Translate into: <span class="math">p%</span> of total = given amount, then solve for total.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Part 7: Mixed Percentage Problems</h2>
+          <div class="note">
+            <div class="muted">
+              For overall percent: find totals first (e.g., total boys), then divide by total students, then ×100.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Part 8: More Challenging / Multi-step Problems</h2>
+          <div class="note">
+            <div class="muted">
+              Apply changes step-by-step. For weighted totals: <span class="math">Total = w₁×s₁ + w₂×s₂ + w₃×s₃</span> (weights as decimals).
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="section" id="practiceSection">
+      <div class="practice-header">
+        <div>
+          <h2 style="margin:0;color:var(--blue);font-size:18px;">Practice Quiz</h2>
+          <p class="muted" style="margin:6px 0 0;">
+            Questions follow <b>Part 1 → Part 8</b> (same order as your sheet).
+            Round to <b>2 d.p.</b> when needed.
+          </p>
+        </div>
+        <div class="practice-meta">
+          <span class="pill" id="studentPillPractice" style="display:none;">Student: <span id="studentNamePractice"></span></span>
+          <span class="pill" id="setLabel">Set: A</span>
+          <span class="pill" id="progressLabel">0 checked</span>
+        </div>
+      </div>
+
+      <div id="questionsWrap" class="grid"></div>
+
+      <div class="footer-actions">
+        <div class="scorebox">
+          <div><strong id="scoreText">Score:</strong> <span id="scoreValue">—</span></div>
+          <div class="muted" style="font-size:13px;margin-top:4px;">
+            Tip: For percent answers you may type <b>90</b> or <b>90%</b>.
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn primary" id="submitBtn">Submit & View Result</button>
+          <button class="btn secondary" id="showAllBtn">Show All Explanations</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- hidden print area for PDF -->
+  <div id="pdfPrintArea" aria-hidden="true"></div>
+
+  <!-- Confirm modal (new set) -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle">Generate a new set?</h3>
+      <p>Numbers and scenarios will change. This will clear your current answers and restart the practice set (same Part 1→8 order).</p>
+      <div class="modal-actions">
+        <button class="btn secondary" id="cancelModalBtn">Cancel</button>
+        <button class="btn warn" id="confirmModalBtn">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Name modal -->
+  <div class="modal-backdrop" id="nameBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+      <h3 id="nameTitle">Enter student name to start</h3>
+      <p>
+        Tip: you can skip this step by using a link like:
+        <b>percentages.html?name=Tiger</b>
+      </p>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <label class="sr-only" for="nameInput">Student name</label>
+        <input id="nameInput" type="text" placeholder="e.g., Tiger" autocomplete="off" style="min-width:240px;" />
+        <button class="btn primary" id="startWithNameBtn">Start</button>
+      </div>
+
+      <div class="modal-actions" style="margin-top:14px;">
+        <button class="btn secondary" id="cancelNameBtn">Back to Learn</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Student name logic
+     ************************/
+    let studentName = "";
+
+    function escapeHTML(s){
+      return String(s)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    function sanitizeName(raw){
+      let s = String(raw || "").trim();
+      s = s.replace(/[\u0000-\u001F\u007F]/g, "");
+      if(s.length > 40) s = s.slice(0, 40);
+      return s;
+    }
+
+    function setStudentName(name){
+      studentName = sanitizeName(name);
+      updateStudentUI();
+    }
+
+    function updateStudentUI(){
+      const headerPill = document.getElementById("studentPillHeader");
+      const headerName = document.getElementById("studentNameHeader");
+      const practicePill = document.getElementById("studentPillPractice");
+      const practiceName = document.getElementById("studentNamePractice");
+
+      if(studentName){
+        headerPill.classList.add("show");
+        headerName.textContent = studentName;
+
+        practicePill.style.display = "inline-flex";
+        practiceName.textContent = studentName;
+
+        setPracticeButtonsEnabled(true);
+      }else{
+        headerPill.classList.remove("show");
+        headerName.textContent = "";
+
+        practicePill.style.display = "none";
+        practiceName.textContent = "";
+
+        setPracticeButtonsEnabled(false);
+      }
+    }
+
+    function setPracticeButtonsEnabled(enabled){
+      document.getElementById("exportPdfBtn").disabled = !enabled;
+      document.getElementById("newSetBtn").disabled = !enabled;
+      document.getElementById("resetBtn").disabled = !enabled;
+      document.getElementById("submitBtn").disabled = !enabled;
+      document.getElementById("showAllBtn").disabled = !enabled;
+    }
+
+    function getNameFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("name");
+      if(!raw) return "";
+      return sanitizeName(raw);
+    }
+
+    /***********************
+     * Utilities
+     ************************/
+    function randInt(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function pick(arr){
+      return arr[randInt(0, arr.length - 1)];
+    }
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+      }
+      return a;
+    }
+    function round2(n){
+      return Math.round((n + Number.EPSILON) * 100) / 100;
+    }
+    function fmt2(n){
+      const v = round2(n);
+      if(Number.isInteger(v)) return String(v);
+      return v.toFixed(2);
+    }
+    function fmtMoney(n){
+      return "$" + round2(n).toFixed(2);
+    }
+    function fmtPct(p){
+      const v = round2(p);
+      if(Number.isInteger(v)) return String(v) + "%";
+      return v.toFixed(2) + "%";
+    }
+    function pctToDec(p){ return p / 100; }
+    function isIntLike(n){
+      return Math.abs(n - Math.round(n)) < 1e-9;
+    }
+
+    function parseFractionOrDecimal(s){
+      // accepts: 0.55, 3, -2.4, 1/2, -3/4, 55%
+      let t = String(s || "").trim();
+      if(!t) return null;
+
+      // allow currency
+      t = t.replace(/\$/g,"").trim();
+
+      // percent -> decimal
+      let isPct = false;
+      if(/%$/.test(t)){
+        isPct = true;
+        t = t.replace(/%$/,"").trim();
+      }
+
+      // fraction a/b
+      const fracMatch = t.match(/^(-?\d+)\s*\/\s*(\d+)$/);
+      let val = null;
+      if(fracMatch){
+        const a = Number(fracMatch[1]);
+        const b = Number(fracMatch[2]);
+        if(!Number.isFinite(a) || !Number.isFinite(b) || b === 0) return null;
+        val = a / b;
+      }else{
+        val = Number(t);
+        if(!Number.isFinite(val)) return null;
+      }
+
+      if(isPct) val = val / 100;
+      return val;
+    }
+
+    function parsePercentNumber(s){
+      // accepts: 90, 90%, 52.31, 52.31%
+      let t = String(s || "").trim();
+      if(!t) return null;
+      t = t.replace(/\s+/g,"");
+      t = t.replace(/%$/,"");
+      const n = Number(t);
+      if(!Number.isFinite(n)) return null;
+      return n;
+    }
+
+    function topicLabel(part){ return part; }
+
+    /***********************
+     * Inputs
+     ************************/
+    function singleInputHTML(label="Answer", placeholder=""){
+      return `
+        <input class="tiny" type="text" autocomplete="off"
+               placeholder="${escapeHTML(placeholder)}" aria-label="${escapeHTML(label)}" />
+      `;
+    }
+
+    function twoInputHTML(labelA, phA, labelB, phB){
+      return `
+        <input class="tiny small" type="text" autocomplete="off" placeholder="${escapeHTML(phA)}" aria-label="${escapeHTML(labelA)}" />
+        <input class="tiny small" type="text" autocomplete="off" placeholder="${escapeHTML(phB)}" aria-label="${escapeHTML(labelB)}" />
+      `;
+    }
+
+    /***********************
+     * Dynamic question generator (Part 1 → 8, same order)
+     * Requirement: each "Generate New Set" changes numbers AND scenarios.
+     ************************/
+    const PARTS = {
+      P1: "Part 1: Basic Percentage Calculations",
+      P2: "Part 2: Find a Percentage of a Number",
+      P3: "Part 3: Given a Percentage, Find the Number",
+      P4: "Part 4: Find the Percentage",
+      P5: "Part 5: Increase and Decrease Problems",
+      P6: "Part 6: Real-life Applications",
+      P7: "Part 7: Mixed Percentage Problems",
+      P8: "Part 8: More Challenging / Multi-step Percentage Problems"
+    };
+
+    const NAMES = ["Alex","Mia","Noah","Emma","Liam","Zoe","Ethan","Olivia","Ava","Jack","Sofia","Leo","Grace","Ella","Henry","Ruby"];
+    const GROUPS = ["Class","Team","Club","Group"];
+    const ITEMS = ["books","stickers","notebooks","markers","pencils","folders","tickets","cookies"];
+    const TYPES = ["Chinese","sports","science","mystery","art","history","math"];
+    const VEHICLES = ["car","bus","train","cyclist","hiker"];
+    const PRODUCTS = ["jacket","phone case","headphones","board game","backpack","pair of shoes","basketball","toy"];
+
+    const DECIMALS = [0.12,0.15,0.18,0.2,0.24,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.72,0.75,0.8,0.85,0.9];
+    const PCTS_5 = [5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,120,130,150];
+    const PCTS_COMMON = [10,15,20,25,30,40,50,60,75,80,90];
+    const PCTS_TEST = [65,70,75,80,85,90,95];
+    const PCTS_DISC = [5,10,15,20,25,30,40];
+    const PCTS_INC = [5,10,15,20,25,30];
+    const FRACTIONS = [
+      {n:1,d:2},{n:1,d:4},{n:3,d:4},{n:2,d:5},{n:3,d:5},{n:4,d:5},{n:5,d:8}
+    ];
+
+    function fracVal(f){ return f.n / f.d; }
+    function fracText(f){ return `${f.n}/${f.d}`; }
+
+    function makeQDecimal(part, signature, exprHTML, ans){
+      const a = round2(ans);
+      return {
+        part,
+        signature,
+        promptHTML: `<span class="math">${exprHTML}</span>`,
+        inputHTML: singleInputHTML("Answer", "decimal (e.g., 0.55)"),
+        getUser:(card)=>{
+          const v = card.querySelector("input")?.value || "";
+          return parseFractionOrDecimal(v); // allows 55% too
+        },
+        isCorrect:(u)=> (u !== null) && (round2(u) === a),
+        hintHTML:`Convert % to a decimal first (divide by 100), then do the operation. Round to 2 d.p. if needed.`,
+        explainHTML:`${exprHTML} → <b>${fmt2(a)}</b>.`,
+        pdfAnswerHint:`Answer: <span class="linebox"></span>`,
+        answerText: fmt2(a)
+      };
+    }
+
+    function makeQPercent(part, signature, promptHTML, correctPct, hint, explain){
+      const cp = round2(correctPct);
+      return {
+        part,
+        signature,
+        promptHTML,
+        inputHTML: singleInputHTML("Percent", "e.g., 52.31 or 52.31%"),
+        getUser:(card)=> parsePercentNumber(card.querySelector("input")?.value || ""),
+        isCorrect:(u)=> (u !== null) && (round2(u) === cp),
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint:`Percent: <span class="linebox small"></span> %`,
+        answerText: fmtPct(cp)
+      };
+    }
+
+    function makeQNumber(part, signature, promptHTML, correctNumber, hint, explain, unitSuffix=""){
+      const cn = round2(correctNumber);
+      const suffix = unitSuffix ? ` ${unitSuffix}` : "";
+      return {
+        part,
+        signature,
+        promptHTML,
+        inputHTML: singleInputHTML("Answer", unitSuffix ? `number (${unitSuffix})` : "number"),
+        getUser:(card)=> parseFractionOrDecimal(card.querySelector("input")?.value || ""),
+        isCorrect:(u)=> (u !== null) && (round2(u) === cn),
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint:`Answer: <span class="linebox"></span>${suffix}`,
+        answerText: fmt2(cn) + (unitSuffix ? ` ${unitSuffix}` : "")
+      };
+    }
+
+    function makeFullSetQuestions(){
+      const qs = [];
+
+      // ---------------- Part 1 (9) ----------------
+      // 1) p% + d
+      {
+        const p = pick([5,10,15,20,25,30,35,40,45,50,60,75,80,90]);
+        const d = pick(DECIMALS);
+        const expr = `${p}% + ${fmt2(d)}`;
+        qs.push(makeQDecimal(PARTS.P1, "p1_q1", expr, pctToDec(p) + d));
+      }
+      // 2) d - p%
+      {
+        let d = pick(DECIMALS);
+        let p = pick([5,10,15,20,25,30,35,40,45,50,60,75,80]);
+        if(pctToDec(p) > d){
+          // ensure non-negative result
+          const bigger = pctToDec(p) + pick([0.1,0.15,0.2,0.25,0.3]);
+          d = round2(Math.min(0.95, bigger));
+        }
+        const expr = `${fmt2(d)} − ${p}%`;
+        qs.push(makeQDecimal(PARTS.P1, "p1_q2", expr, d - pctToDec(p)));
+      }
+      // 3) frac × p%
+      {
+        const f = pick(FRACTIONS);
+        const p = pick([10,15,20,25,30,35,40,50,60,75]);
+        const expr = `${fracText(f)} × ${p}%`;
+        qs.push(makeQDecimal(PARTS.P1, "p1_q3", expr, fracVal(f) * pctToDec(p)));
+      }
+      // 4) a × b
+      {
+        const a = pick([0.12,0.15,0.18,0.2,0.24,0.25,0.3,0.35,0.4,0.45,0.5,0.6,0.75,0.8]);
+        const b = pick([0.2,0.25,0.3,0.4,0.5,0.6,0.75,0.8,0.9]);
+        const expr = `${fmt2(a)} × ${fmt2(b)}`;
+        qs.push(makeQDecimal(PARTS.P1, "p1_q4", expr, a * b));
+      }
+      // 5) p% ÷ d
+      {
+        const p = pick([80,90,100,110,120,130,150]);
+        const d = pick([0.2,0.25,0.3,0.4,0.5,0.6,0.75,0.8]);
+        const expr = `${p}% ÷ ${fmt2(d)}`;
+        qs.push(makeQDecimal(PARTS.P1, "p1_q5", expr, pctToDec(p) / d));
+      }
+      // 6) frac ÷ p%
+      {
+        const f = pick(FRACTIONS);
+        const p = pick([10,20,25,40,50,60,75]);
+        const expr = `${fracText(f)} ÷ ${p}%`;
+        qs.push(makeQDecimal(PARTS.P1, "p1_q6", expr, fracVal(f) / pctToDec(p)));
+      }
+      // 7) p% + d (again, different)
+      {
+        const p = pick([5,10,15,20,25,30,35,40,45,50,60,75,80,90]);
+        const d = pick([0.05,0.1,0.12,0.18,0.25,0.3,0.45,0.6,0.72,0.75,0.8,0.85,0.9]);
+        const expr = `${p}% + ${fmt2(d)}`;
+        qs.push(makeQDecimal(PARTS.P1, "p1_q7", expr, pctToDec(p) + d));
+      }
+      // 8) a × p%
+      {
+        const a = pick([0.2,0.3,0.4,0.5,0.6,0.75,0.8,0.9,1.2,1.5]);
+        const p = pick([10,20,25,30,40,50,60,75,80,90]);
+        const expr = `${fmt2(a)} × ${p}%`;
+        qs.push(makeQDecimal(PARTS.P1, "p1_q8", expr, a * pctToDec(p)));
+      }
+      // 9) frac + p%
+      {
+        const f = pick(FRACTIONS);
+        const p = pick([5,10,15,20,25,30,35,40,45,50]);
+        const expr = `${fracText(f)} + ${p}%`;
+        qs.push(makeQDecimal(PARTS.P1, "p1_q9", expr, fracVal(f) + pctToDec(p)));
+      }
+
+      // ---------------- Part 2 (2) ----------------
+      // (a) What is p% of N?
+      {
+        let p = pick([5,10,15,20,25,30,40,50,60,75,80]);
+        let N = pick([40,60,80,100,120,140,160,180,200,240,300]);
+        // make sure answer is "nice"
+        let A = N * pctToDec(p);
+        A = round2(A);
+        const prompt = `What is <span class="math">${p}%</span> of <span class="math">${N}</span>?`;
+        qs.push(makeQNumber(
+          PARTS.P2, "p2_q1",
+          prompt,
+          A,
+          `${p}% = ${fmt2(pctToDec(p))}. Multiply ${fmt2(pctToDec(p))} × ${N}.`,
+          `${p}% of ${N} = ${fmt2(pctToDec(p))} × ${N} = <b>${fmt2(A)}</b>.`
+        ));
+      }
+      // (b) Scenario: group with % are girls (ensure integer)
+      {
+        const group = pick(GROUPS);
+        const context = pick(["has","includes","contains"]);
+        const totalCandidates = [30,35,40,45,50,60,70,80,90,100];
+        const pctCandidates = [10,20,25,30,40,50,60,75,80];
+        let total = 0, pct = 0, girls = 0;
+        for(let k=0;k<200;k++){
+          total = pick(totalCandidates);
+          pct = pick(pctCandidates);
+          girls = total * pctToDec(pct);
+          if(isIntLike(girls)) break;
+        }
+        girls = Math.round(girls);
+        const prompt = `A ${group.toLowerCase()} ${context} <span class="math">${total}</span> students, <span class="math">${pct}%</span> are girls. How many girls are there?`;
+        qs.push(makeQNumber(
+          PARTS.P2, "p2_q2",
+          prompt,
+          girls,
+          `${pct}% = ${fmt2(pctToDec(pct))}. Multiply ${fmt2(pctToDec(pct))} × ${total}.`,
+          `Girls = ${fmt2(pctToDec(pct))} × ${total} = <b>${girls}</b>.`
+        ));
+      }
+
+      // ---------------- Part 3 (2) ----------------
+      // (a) p% of a number is A (pick N first then compute A)
+      {
+        const p = pick([10,15,20,25,30,40,50,60,75]);
+        const N = pick([60,80,90,100,120,150,180,200,240,300,360]);
+        const A = Math.round(N * pctToDec(p));
+        const prompt = `<span class="math">${p}%</span> of a number is <span class="math">${A}</span>. What is the number?`;
+        qs.push(makeQNumber(
+          PARTS.P3, "p3_q1",
+          prompt,
+          N,
+          `${fmt2(pctToDec(p))} × N = ${A} ⇒ N = ${A} ÷ ${fmt2(pctToDec(p))}`,
+          `N = ${A} ÷ ${fmt2(pctToDec(p))} = <b>${N}</b>.`
+        ));
+      }
+      // (b) pages (scenario changes)
+      {
+        const p = pick([10,15,20,25,30,40,50,60,75]);
+        const totalPages = pick([120,150,180,200,240,300,360,400]);
+        const pages = Math.round(totalPages * pctToDec(p));
+        const bookType = pick(["book","novel","comic collection","study guide"]);
+        const prompt = `<span class="math">${p}%</span> of a ${bookType} is <span class="math">${pages}</span> pages. How many pages are in the ${bookType}?`;
+        qs.push(makeQNumber(
+          PARTS.P3, "p3_q2",
+          prompt,
+          totalPages,
+          `0.${String(p).padStart(2,"0")} × total = ${pages} ⇒ total = ${pages} ÷ ${fmt2(pctToDec(p))}`,
+          `Total pages = ${pages} ÷ ${fmt2(pctToDec(p))} = <b>${totalPages}</b>.`
+        ));
+      }
+
+      // ---------------- Part 4 (4) ----------------
+      // (a) Test score (make percent nice)
+      {
+        const total = pick([40,50,60,80,100]);
+        const pct = pick(PCTS_TEST);
+        const score = Math.round(total * pctToDec(pct));
+        const name = pick(NAMES);
+        const prompt = `In a test, ${name} scored <span class="math">${score}</span> out of <span class="math">${total}</span>. What percentage did ${name} get?`;
+        qs.push(makeQPercent(
+          PARTS.P4, "p4_q1",
+          prompt,
+          pct,
+          `Percentage = (score ÷ total) × 100.`,
+          `(${score} ÷ ${total}) × 100 = <b>${pct}%</b>.`
+        ));
+      }
+      // (b) Trip completed (vehicle scenario changes, percent nice)
+      {
+        const vehicle = pick(VEHICLES);
+        const total = pick([200,240,250,300,320,360,400]);
+        const pct = pick([60,70,75,80,85,90]);
+        const traveled = Math.round(total * pctToDec(pct));
+        const left = total - traveled;
+        const unit = pick(["km","miles"]);
+        const prompt = `A ${vehicle} traveled <span class="math">${traveled} ${unit}</span> and has <span class="math">${left} ${unit}</span> left. What percentage of the trip is completed?`;
+        qs.push(makeQPercent(
+          PARTS.P4, "p4_q2",
+          prompt,
+          pct,
+          `Total = traveled + left. Completed % = (traveled ÷ total) × 100.`,
+          `Total = ${traveled}+${left}=${total}. Completed = (${traveled}/${total})×100 = <b>${pct}%</b>.`
+        ));
+      }
+      // (c) Savings (names + money change; percent nice)
+      {
+        const nameA = pick(NAMES);
+        let nameB = pick(NAMES);
+        if(nameB === nameA) nameB = pick(NAMES);
+
+        const pctMore = pick([10,15,20,25,30,40,50]);
+        const tom = pick([120,150,160,180,200,240,300,320,360,400,480,500]);
+        const diff = Math.round(tom * pctToDec(pctMore));
+        const anna = tom + diff;
+
+        const prompt = `${nameA} saved <span class="math">$${anna}</span>, which is <span class="math">$${diff}</span> more than ${nameB}. What percentage more than ${nameB}?`;
+        qs.push(makeQPercent(
+          PARTS.P4, "p4_q3",
+          prompt,
+          pctMore,
+          `Find ${nameB} first. Then (difference ÷ ${nameB}) × 100.`,
+          `${nameB} = ${anna} − ${diff} = ${tom}. Percentage more = (${diff}/${tom})×100 = <b>${pctMore}%</b>.`
+        ));
+      }
+      // (d) Used liters is p% of total (make total nice)
+      {
+        const pct = pick([25,30,40,50,60,75]);
+        const total = pick([20,24,30,32,40,48,50,60,64,72,80]);
+        const used = Math.round(total * pctToDec(pct));
+        const prompt = `A tank used <span class="math">${used}</span> liters, which is <span class="math">${pct}%</span> of the total. How many liters total?`;
+        qs.push(makeQNumber(
+          PARTS.P4, "p4_q4",
+          prompt,
+          total,
+          `0.${String(pct).padStart(2,"0")} × total = ${used} ⇒ total = ${used} ÷ ${fmt2(pctToDec(pct))}`,
+          `Total = ${used} ÷ ${fmt2(pctToDec(pct))} = <b>${total}</b> liters.`,
+          "liters"
+        ));
+      }
+
+      // ---------------- Part 5 (2) ----------------
+      // (a) Discount: find new price and decrease % (scenario changes)
+      {
+        const item = pick(PRODUCTS);
+        const original = pick([120,150,180,200,240,300,360,400,450,500,600]);
+        const disc = pick(PCTS_DISC);
+        const newPrice = round2(original * (1 - pctToDec(disc)));
+
+        qs.push({
+          part: PARTS.P5,
+          signature:"p5_q1",
+          promptHTML:`A ${item} was <span class="math">$${original}</span>. After a <span class="math">${disc}%</span> discount, how much is it? What is the percentage decrease?`,
+          inputHTML: twoInputHTML("New price ($)", "e.g., 160", "Decrease (%)", "e.g., 20"),
+          getUser:(card)=>{
+            const inputs = Array.from(card.querySelectorAll("input"));
+            const price = parseFractionOrDecimal(inputs[0]?.value || "");
+            const pct = parsePercentNumber(inputs[1]?.value || "");
+            return { price, pct };
+          },
+          isCorrect:(u)=>{
+            if(!u || u.price === null || u.pct === null) return false;
+            return round2(u.price) === newPrice && round2(u.pct) === round2(disc);
+          },
+          hintHTML:`New = ${original} × (1 − ${fmt2(pctToDec(disc))}). The percentage decrease is ${disc}%.`,
+          explainHTML:`New price = ${original} × ${fmt2(1 - pctToDec(disc))} = <b>${fmtMoney(newPrice)}</b>. Percentage decrease = <b>${disc}%</b>.`,
+          pdfAnswerHint:`New price: <span class="linebox small"></span>  Decrease: <span class="linebox small"></span> %`,
+          answerText:`${fmtMoney(newPrice)}, ${disc}%`
+        });
+      }
+      // (b) Increase: old -> new, find % increase (scenario changes, percent often nice)
+      {
+        const item = pick(["bicycle","scooter","tablet","guitar","desk chair"]);
+        const original = pick([200,240,250,300,320,360,400,450,500,600,750]);
+        const inc = pick(PCTS_INC);
+        const newPrice = round2(original * (1 + pctToDec(inc)));
+
+        qs.push(makeQPercent(
+          PARTS.P5, "p5_q2",
+          `A ${item} was <span class="math">$${original}</span>. Now it is <span class="math">${fmtMoney(newPrice)}</span>. What is the percentage increase?`,
+          inc,
+          `Increase % = (increase ÷ original) × 100.`,
+          `Increase = ${fmtMoney(newPrice)} − $${original} = ${fmtMoney(newPrice - original)}. Increase % = (${fmt2(newPrice - original)}/${original})×100 = <b>${inc}%</b>.`
+        ));
+      }
+
+      // ---------------- Part 6 (2) ----------------
+      // (a) Bought X items, p% are type -> how many
+      {
+        const totalCandidates = [60,70,80,90,100,120,150,160,180,200];
+        const pctCandidates = [10,20,25,30,40,50,60,75,80];
+        let total=0, pct=0, count=0;
+
+        for(let k=0;k<200;k++){
+          total = pick(totalCandidates);
+          pct = pick(pctCandidates);
+          count = total * pctToDec(pct);
+          if(isIntLike(count)) break;
+        }
+        count = Math.round(count);
+
+        const item = pick(ITEMS);
+        const kind = pick(TYPES) + " " + item;
+        const place = pick(["school","library","community centre","sports club"]);
+        const prompt = `The ${place} bought <span class="math">${total}</span> ${item}. <span class="math">${pct}%</span> are ${kind}. How many are ${kind}?`;
+        qs.push(makeQNumber(
+          PARTS.P6, "p6_q1",
+          prompt,
+          count,
+          `${pct}% = ${fmt2(pctToDec(pct))}. Multiply ${fmt2(pctToDec(pct))} × ${total}.`,
+          `${fmt2(pctToDec(pct))} × ${total} = <b>${count}</b>.`
+        ));
+      }
+      // (b) Given weight is p% total -> total weight
+      {
+        const pctCandidates = [20,25,30,40,50,60,75,80];
+        const totalCandidates = [20,24,25,30,32,40,48,50,60,64,72,80,96,100,120];
+        let pct=0, total=0, given=0;
+        for(let k=0;k<200;k++){
+          pct = pick(pctCandidates);
+          total = pick(totalCandidates);
+          given = total * pctToDec(pct);
+          if(isIntLike(given)) break;
+        }
+        given = Math.round(given);
+
+        const material = pick(["juice","rice","sand","flour","apples"]);
+        const container = pick(["barrel","crate","bag","box","container"]);
+        const prompt = `A ${container} of ${material} has <span class="math">${given} kg</span>, which is <span class="math">${pct}%</span> of the total weight. What is the total weight?`;
+        qs.push(makeQNumber(
+          PARTS.P6, "p6_q2",
+          prompt,
+          total,
+          `${fmt2(pctToDec(pct))} × total = ${given} ⇒ total = ${given} ÷ ${fmt2(pctToDec(pct))}`,
+          `Total = ${given} ÷ ${fmt2(pctToDec(pct))} = <b>${total} kg</b>.`,
+          "kg"
+        ));
+      }
+
+      // ---------------- Part 7 (2) ----------------
+      // (a) Overall percentage across two groups (scenario changes)
+      {
+        const pctChoices = [30,40,45,50,55,60,65,70,75];
+        const sizeChoices = [40,50,60,70,80,90,100,120];
+        let aSize=0,bSize=0,aPct=0,bPct=0,aBoys=0,bBoys=0,overall=0;
+        for(let k=0;k<500;k++){
+          aSize = pick(sizeChoices);
+          bSize = pick(sizeChoices);
+          aPct = pick(pctChoices);
+          bPct = pick(pctChoices);
+          aBoys = aSize * pctToDec(aPct);
+          bBoys = bSize * pctToDec(bPct);
+          if(isIntLike(aBoys) && isIntLike(bBoys) && (aSize + bSize) > 0) break;
+        }
+        aBoys = Math.round(aBoys);
+        bBoys = Math.round(bBoys);
+        overall = round2(((aBoys + bBoys) / (aSize + bSize)) * 100);
+
+        const groupA = pick(["Class A","Team A","Group A","Club A"]);
+        const groupB = pick(["Class B","Team B","Group B","Club B"]);
+        const prompt = `${groupA} has <span class="math">${aSize}</span> students, <span class="math">${aPct}%</span> boys. ${groupB} has <span class="math">${bSize}</span> students, <span class="math">${bPct}%</span> boys. What is the overall percentage of boys?`;
+
+        qs.push(makeQPercent(
+          PARTS.P7, "p7_q1",
+          prompt,
+          overall,
+          `Find boys in each group, add them, then divide by total students and ×100. Round to 2 d.p.`,
+          `${groupA}: boys = ${fmt2(pctToDec(aPct))}×${aSize} = ${aBoys}. ${groupB}: boys = ${fmt2(pctToDec(bPct))}×${bSize} = ${bBoys}. Total boys = ${aBoys+bBoys}, total students = ${aSize+bSize}. Overall = (${aBoys+bBoys}/${aSize+bSize})×100 = <b>${fmtPct(overall)}</b>.`
+        ));
+      }
+      // (b) One number is p% more, other is what % less (p changes)
+      {
+        const p = pick([10,15,20,25,30,40,50]);
+        const less = round2((p / (100 + p)) * 100); // % less compared to larger
+        const prompt = `One number is <span class="math">${p}%</span> more than another. The other is what percentage less?`;
+        qs.push(makeQPercent(
+          PARTS.P7, "p7_q2",
+          prompt,
+          less,
+          `If A is ${p}% more than B, then A = (1 + ${p}/100)B. Compare B to A.`,
+          `A = ${(1 + p/100).toFixed(2)}B. So B/A = 1/${(1 + p/100).toFixed(2)} = ${(1/(1+p/100)).toFixed(4)}. Percent less = (1 − B/A)×100 = <b>${fmtPct(less)}</b>.`
+        ));
+      }
+
+      // ---------------- Part 8 (2) ----------------
+      // (a) Increase then discount (scenario changes)
+      {
+        const item = pick(PRODUCTS);
+        const start = pick([120,150,180,200,240,300,360,400,450,500,600,750,800]);
+        const inc = pick([5,10,12,15,20,25,30]);
+        const disc = pick([5,10,15,20,25,30]);
+        const afterInc = start * (1 + pctToDec(inc));
+        const final = round2(afterInc * (1 - pctToDec(disc)));
+
+        const prompt = `A ${item} was <span class="math">$${start}</span>, increased by <span class="math">${inc}%</span>, then discounted by <span class="math">${disc}%</span>. What is the final price?`;
+        qs.push({
+          part: PARTS.P8,
+          signature:"p8_q1",
+          promptHTML: prompt,
+          inputHTML: singleInputHTML("Final price ($)", "number"),
+          getUser:(card)=> parseFractionOrDecimal(card.querySelector("input")?.value || ""),
+          isCorrect:(u)=> (u !== null) && (round2(u) === final),
+          hintHTML:`Apply changes step by step: ×(1+${inc}/100) then ×(1−${disc}/100).`,
+          explainHTML:`After increase: $${start} × ${fmt2(1 + pctToDec(inc))} = ${fmtMoney(afterInc)}. Then discount: ${fmtMoney(afterInc)} × ${fmt2(1 - pctToDec(disc))} = <b>${fmtMoney(final)}</b>.`,
+          pdfAnswerHint:`Final price: <span class="linebox"></span>`,
+          answerText: fmtMoney(final)
+        });
+      }
+      // (b) Weighted average (weights + scores change)
+      {
+        let w1=0,w2=0,w3=0;
+        for(let k=0;k<500;k++){
+          w1 = pick([20,25,30,35,40,45,50]);
+          w2 = pick([20,25,30,35,40]);
+          w3 = 100 - w1 - w2;
+          if(w3 >= 10 && w3 <= 50) break;
+        }
+        const subjects = shuffle(["Math","English","Science","History","Art","Technology"]);
+        const s1 = pick([55,60,65,70,75,80,85,90,95]);
+        const s2 = pick([55,60,65,70,75,80,85,90,95]);
+        const s3 = pick([55,60,65,70,75,80,85,90,95]);
+        const total = round2((w1/100)*s1 + (w2/100)*s2 + (w3/100)*s3);
+
+        const prompt = `A student takes 3 subjects: ${subjects[0]} <span class="math">${w1}%</span>, ${subjects[1]} <span class="math">${w2}%</span>, ${subjects[2]} <span class="math">${w3}%</span>. Scores are <span class="math">${s1}, ${s2}, ${s3}</span>. What is the student's total percentage?`;
+
+        qs.push(makeQPercent(
+          PARTS.P8, "p8_q2",
+          prompt,
+          total,
+          `Weighted total = (${w1}% × ${s1}) + (${w2}% × ${s2}) + (${w3}% × ${s3}). Round to 2 d.p.`,
+          `Total = ${fmt2(w1/100)}×${s1} + ${fmt2(w2/100)}×${s2} + ${fmt2(w3/100)}×${s3} = <b>${fmtPct(total)}</b>.`
+        ));
+      }
+
+      return qs; // 25 in order
+    }
+
+    function buildQuestionSet(count){
+      const all = makeFullSetQuestions();
+      return all.slice(0, Math.min(count, all.length));
+    }
+
+    /***********************
+     * PDF helpers (Answer Key appended)
+     ************************/
+    function loadScript(src){
+      return new Promise((resolve, reject)=>{
+        const s = document.createElement("script");
+        s.src = src;
+        s.onload = ()=> resolve();
+        s.onerror = ()=> reject(new Error("Failed to load " + src));
+        document.head.appendChild(s);
+      });
+    }
+
+    let pdfLibReady = false;
+    async function ensurePdfLibs(){
+      if(pdfLibReady) return;
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
+      pdfLibReady = true;
+    }
+
+    function setNameFromIndex(i){
+      return String.fromCharCode(65 + (i % 26));
+    }
+
+    function pad2(n){ return String(n).padStart(2, "0"); }
+
+function makePdfTimestamp(now){
+  const yyyy = now.getFullYear();
+  const mm = pad2(now.getMonth() + 1);
+  const dd = pad2(now.getDate());
+  const hh = pad2(now.getHours());
+  const mi = pad2(now.getMinutes());
+  const stamp = `${yyyy}${mm}${dd}_${hh}${mi}`;
+  const display = `${yyyy}-${mm}-${dd} ${hh}:${mi}`;
+  return { stamp, display };
+}
+
+function isWordProblem(q){
+  const part = String((q && q.part) || "");
+  return /^Part\s*(4|5|6|7|8)\b/.test(part);
+}
+
+function buildPdfPages(ts){
+  const printArea = document.getElementById("pdfPrintArea");
+  printArea.innerHTML = "";
+
+  const safeStudent = escapeHTML(studentName || "DYAA");
+  const setName = setNameFromIndex(state.setIndex - 1);
+
+  // Reorder for PDF only:
+  // Page 1: first 15 non-application questions (3 columns)
+  // Page 2+: applications (Part 4–8) in 2 columns, 8 per page
+  // Remaining non-application questions go after applications (3 columns)
+  const allQs = state.questions.slice();
+  const appQs = allQs.filter(isWordProblem);
+  const nonAppQs = allQs.filter(q => !isWordProblem(q));
+
+  const nonAppFirst = nonAppQs.slice(0, 15);
+  const nonAppRest = nonAppQs.slice(15);
+
+  const pdfQs = nonAppFirst.concat(appQs, nonAppRest);
+
+  const segments = [];
+  if(nonAppFirst.length) segments.push({ items: nonAppFirst, perPage: 15, gridClass: "cols3", compact: true, section: "Skills" });
+  if(appQs.length) segments.push({ items: appQs, perPage: 8, gridClass: "cols2", compact: false, section: "Applications" });
+  if(nonAppRest.length) segments.push({ items: nonAppRest, perPage: 15, gridClass: "cols3", compact: true, section: "Skills" });
+
+  const pagesQ = segments.reduce((acc, s) => acc + Math.ceil(s.items.length / s.perPage), 0);
+
+  // Answer key pages (kept at the end)
+  const ansPerPage = 24;
+  const pagesA = Math.ceil(pdfQs.length / ansPerPage);
+
+  const totalPagesAll = pagesQ + pagesA;
+
+  let pageNo = 0;
+  let qNo = 1;
+
+  // Question pages
+  segments.forEach(seg => {
+    const segPages = Math.ceil(seg.items.length / seg.perPage);
+    for(let p=0; p<segPages; p++){
+      pageNo++;
+      const page = document.createElement("div");
+      page.className = "pdf-page";
+
+      const startIdx = p * seg.perPage;
+      const endIdx = Math.min(seg.items.length, startIdx + seg.perPage);
+
+      page.innerHTML = `
+        <div class="pdf-header">
+          <div>
+            <div class="pdf-title">Percentages (Practice) — ${ts.stamp}</div>
+            <div class="pdf-sub">${seg.section} • Fixed layout • Timestamp ${ts.stamp}</div>
+          </div>
+          <div class="pdf-meta">
+            Student: <b>${safeStudent}</b><br/>
+            Set ${setName}<br/>
+            Timestamp: ${ts.stamp}<br/>
+            Page ${pageNo} / ${totalPagesAll}
+          </div>
+        </div>
+        <div class="pdf-grid ${seg.gridClass}"></div>
+      `;
+
+      const grid = page.querySelector(".pdf-grid");
+
+      for(let i=startIdx; i<endIdx; i++){
+        const q = seg.items[i];
+        const qBox = document.createElement("div");
+        qBox.className = `pdf-q${seg.compact ? " compact" : ""}`;
+        qBox.innerHTML = `
+          <div class="pdf-qhead">
+            <div class="pdf-qnum">Q${qNo}</div>
+          </div>
+          <div class="pdf-qbody">${q.promptHTML}</div>
+          <div class="pdf-space ${seg.compact ? "normal" : "big"}"></div>
+        `;
+        grid.appendChild(qBox);
+        qNo++;
+      }
+
+      printArea.appendChild(page);
+    }
+  });
+
+  // Answer key pages (match PDF order)
+  for(let ap=0; ap<pagesA; ap++){
+    pageNo++;
+    const page = document.createElement("div");
+    page.className = "pdf-page";
+
+    const startIdx = ap * ansPerPage;
+    const endIdx = Math.min(pdfQs.length, startIdx + ansPerPage);
+
+    page.innerHTML = `
+      <div class="pdf-header">
+        <div>
+          <div class="pdf-title">Answer Key — ${ts.stamp}</div>
+          <div class="pdf-sub">Answers for the exported PDF order</div>
+        </div>
+        <div class="pdf-meta">
+          Student: <b>${safeStudent}</b><br/>
+          Set ${setName}<br/>
+          Timestamp: ${ts.stamp}<br/>
+          Page ${pageNo} / ${totalPagesAll}
+        </div>
+      </div>
+      <div class="pdf-grid cols3"></div>
+    `;
+
+    const grid = page.querySelector(".pdf-grid");
+
+    for(let i=startIdx; i<endIdx; i++){
+      const q = pdfQs[i];
+      const ans = (q && typeof q.answerText === "string") ? q.answerText : "";
+      const qBox = document.createElement("div");
+      qBox.className = "pdf-q compact";
+      qBox.innerHTML = `
+        <div class="pdf-qhead">
+          <div class="pdf-qnum">Q${i+1}</div>
+        </div>
+        <div class="pdf-qbody"><b>Answer:</b> ${escapeHTML(ans)}</div>
+      `;
+      grid.appendChild(qBox);
+    }
+
+    printArea.appendChild(page);
+  }
+}
+
+    function safeFileNamePart(s){
+      return String(s || "")
+        .trim()
+        .replace(/[\\/:*?"<>|]+/g, "-")
+        .replace(/\s+/g, "_")
+        .slice(0, 40);
+    }
+
+    async function exportToPdf(){
+  if(!studentName){
+    alert("Please enter the student name first.");
+    return;
+  }
+  await ensurePdfLibs();
+
+  const ts = makePdfTimestamp(new Date());
+  buildPdfPages(ts);
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+  const pages = Array.from(document.querySelectorAll("#pdfPrintArea .pdf-page"));
+
+  for(let i=0; i<pages.length; i++){
+    const pageEl = pages[i];
+
+    const canvas = await html2canvas(pageEl, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+      logging: false
+    });
+
+    const imgData = canvas.toDataURL("image/png", 1.0);
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight, undefined, "FAST");
+    if(i < pages.length - 1) pdf.addPage();
+  }
+
+  const setName = setNameFromIndex(state.setIndex-1);
+  const fileStudent = safeFileNamePart(studentName);
+  pdf.save(`DYAA_Percentages_${fileStudent}_Set_${setName}_${ts.stamp}.pdf`);
+}
+
+    /***********************
+     * Render + checking
+     ************************/
+    const tabs = document.querySelectorAll(".tab-btn");
+    const learnSection = document.getElementById("learnSection");
+    const practiceSection = document.getElementById("practiceSection");
+    const practiceControls = document.getElementById("practiceControls");
+    const questionsWrap = document.getElementById("questionsWrap");
+
+    const countSelect = document.getElementById("countSelect");
+    const scoreValue = document.getElementById("scoreValue");
+    const progressLabel = document.getElementById("progressLabel");
+    const setLabel = document.getElementById("setLabel");
+
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const cancelModalBtn = document.getElementById("cancelModalBtn");
+    const confirmModalBtn = document.getElementById("confirmModalBtn");
+
+    const nameBackdrop = document.getElementById("nameBackdrop");
+    const nameInput = document.getElementById("nameInput");
+    const startWithNameBtn = document.getElementById("startWithNameBtn");
+    const cancelNameBtn = document.getElementById("cancelNameBtn");
+
+    const newSetBtn = document.getElementById("newSetBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const showAllBtn = document.getElementById("showAllBtn");
+    const exportPdfBtn = document.getElementById("exportPdfBtn");
+
+    let state = {
+      setIndex: 0,
+      questions: [],
+      checked: new Set(),
+      results: new Map(),
+    };
+
+    function renderQuestions(){
+      questionsWrap.innerHTML = "";
+      state.questions.forEach((q, idx)=>{
+        const card = document.createElement("div");
+        card.className = "q-card";
+        card.dataset.qindex = String(idx);
+
+        card.innerHTML = `
+          <div class="q-head">
+            <div class="q-num">Q${idx+1}</div>
+          </div>
+          <div class="q-body">${q.promptHTML}</div>
+          <div class="q-input">${q.inputHTML}</div>
+          <div class="q-actions">
+            <button class="btn primary" data-action="check">Check</button>
+            <button class="btn secondary" data-action="hint">Hint</button>
+            <button class="btn secondary" data-action="reveal">Reveal</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+        `;
+        questionsWrap.appendChild(card);
+      });
+    }
+
+    function updateProgress(){
+      progressLabel.textContent = `${state.checked.size} checked`;
+    }
+
+    function showFeedback(card, ok, title, html){
+      const fb = card.querySelector(".feedback");
+      fb.classList.add("show");
+      fb.classList.toggle("ok", !!ok);
+      fb.classList.toggle("bad", !ok);
+      fb.innerHTML = `
+        <div class="title" style="color:${ok ? "var(--ok)" : "var(--bad)"}">${title}</div>
+        <div>${html}</div>
+      `;
+    }
+
+    function checkOne(card){
+      const idx = parseInt(card.dataset.qindex, 10);
+      const q = state.questions[idx];
+      const user = q.getUser(card);
+      const ok = q.isCorrect(user);
+
+      state.checked.add(idx);
+      state.results.set(idx, ok);
+
+      showFeedback(
+        card,
+        ok,
+        ok ? "✅ Correct" : "❌ Not quite",
+        ok
+          ? `Nice. ${q.explainHTML}`
+          : `Hint: ${q.hintHTML}<div class="rule"></div>${q.explainHTML}`
+      );
+
+      updateProgress();
+      return ok;
+    }
+
+    function resetAnswers(){
+      state.checked = new Set();
+      state.results = new Map();
+      scoreValue.textContent = "—";
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const fb = card.querySelector(".feedback");
+        fb.className = "feedback";
+        fb.innerHTML = "";
+        card.querySelectorAll("input").forEach(i => i.value = "");
+      });
+      updateProgress();
+    }
+
+    function generateNewSet(){
+      const count = parseInt(countSelect.value, 10);
+      state.setIndex++;
+      state.questions = buildQuestionSet(count); // NEW: numbers + scenarios regenerate each set
+      state.checked = new Set();
+      state.results = new Map();
+      setLabel.textContent = `Set: ${setNameFromIndex(state.setIndex-1)}`;
+      scoreValue.textContent = "—";
+      renderQuestions();
+      updateProgress();
+      practiceSection.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    function submitAll(){
+      let correct = 0;
+      state.questions.forEach((_, idx)=>{
+        const card = document.querySelector(`.q-card[data-qindex="${idx}"]`);
+        const ok = checkOne(card);
+        if(ok) correct++;
+      });
+      scoreValue.textContent = `${correct} / ${state.questions.length}`;
+      scoreValue.style.fontWeight = "900";
+    }
+
+    function showAllExplanations(){
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const idx = parseInt(card.dataset.qindex,10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "📌 Explanation", q.explainHTML);
+      });
+    }
+
+    /***********************
+     * Tabs + Name gating
+     ************************/
+    function openNameModal(){
+      nameBackdrop.classList.add("show");
+      nameBackdrop.setAttribute("aria-hidden","false");
+      nameInput.value = "";
+      setTimeout(()=> nameInput.focus(), 50);
+    }
+    function closeNameModal(){
+      nameBackdrop.classList.remove("show");
+      nameBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    function setTab(tab){
+      tabs.forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      const isPractice = tab === "practice";
+      learnSection.classList.toggle("active", !isPractice);
+      practiceSection.classList.toggle("active", isPractice);
+      practiceControls.style.display = isPractice ? "flex" : "none";
+
+      if(isPractice){
+        if(!studentName){
+          openNameModal();
+          setPracticeButtonsEnabled(false);
+          return;
+        }
+        if(state.questions.length === 0){
+          generateNewSet();
+        }
+      }
+    }
+
+    tabs.forEach(btn=>{
+      btn.addEventListener("click", ()=> setTab(btn.dataset.tab));
+    });
+
+    // Name modal actions
+    startWithNameBtn.addEventListener("click", ()=>{
+      const v = sanitizeName(nameInput.value);
+      if(!v){
+        alert("Please enter a student name.");
+        nameInput.focus();
+        return;
+      }
+      setStudentName(v);
+      closeNameModal();
+      if(practiceSection.classList.contains("active") && state.questions.length === 0){
+        generateNewSet();
+      }
+    });
+
+    nameInput.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter"){
+        e.preventDefault();
+        startWithNameBtn.click();
+      }
+      if(e.key === "Escape"){
+        e.preventDefault();
+        cancelNameBtn.click();
+      }
+    });
+
+    cancelNameBtn.addEventListener("click", ()=>{
+      closeNameModal();
+      setTab("learn");
+    });
+
+    /***********************
+     * New-set confirm modal
+     ************************/
+    function openModal(){
+      modalBackdrop.classList.add("show");
+      modalBackdrop.setAttribute("aria-hidden","false");
+    }
+    function closeModal(){
+      modalBackdrop.classList.remove("show");
+      modalBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    newSetBtn.addEventListener("click", openModal);
+    cancelModalBtn.addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", (e)=>{
+      if(e.target === modalBackdrop) closeModal();
+    });
+    confirmModalBtn.addEventListener("click", ()=>{
+      closeModal();
+      generateNewSet();
+    });
+
+    questionsWrap.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button");
+      if(!btn) return;
+      const action = btn.dataset.action;
+      const card = e.target.closest(".q-card");
+      if(!card) return;
+
+      if(action === "check"){
+        checkOne(card);
+      }else if(action === "hint"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "💡 Hint", q.hintHTML);
+      }else if(action === "reveal"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "🧠 Solution", q.explainHTML);
+      }
+    });
+
+    resetBtn.addEventListener("click", resetAnswers);
+    submitBtn.addEventListener("click", submitAll);
+    showAllBtn.addEventListener("click", showAllExplanations);
+
+    /***********************
+     * PDF
+     ************************/
+    exportPdfBtn.addEventListener("click", async ()=>{
+      if(!practiceSection.classList.contains("active")) setTab("practice");
+      if(!studentName){
+        openNameModal();
+        return;
+      }
+      if(state.questions.length === 0) generateNewSet();
+
+      try{
+        exportPdfBtn.textContent = "Exporting...";
+        exportPdfBtn.disabled = true;
+        await exportToPdf();
+      }catch(err){
+        alert(
+          "Export failed. If you opened this file locally, make sure you have internet access for the PDF libraries (CDN).\n" +
+          "GitHub Pages is recommended.\n\n" + err.message
+        );
+      }finally{
+        exportPdfBtn.textContent = "Export to PDF";
+        exportPdfBtn.disabled = false;
+      }
+    });
+
+    /***********************
+     * Init
+     ************************/
+    (function init(){
+      setPracticeButtonsEnabled(false);
+      const urlName = getNameFromUrl();
+      if(urlName){
+        setStudentName(urlName);
+      }else{
+        setStudentName("DYAA");
+      }
+    })();
+  </script>
+</body>
+</html>

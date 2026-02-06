@@ -1,0 +1,2613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ratio — Basic • Quantity • Equivalent • Word Problems • Proportion • Multi-step — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --radius:14px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      user-select:none;
+      z-index:0;
+      white-space:nowrap;
+    }
+
+    .container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:24px auto 60px;
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+    }
+
+    /* Header */
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:42px;height:42px;
+      background:var(--blue);
+      border-radius:8px;
+      position:relative;
+      flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px;height:10px;
+      background:var(--orange);
+      top:-6px;left:10px;
+      border-radius:6px;
+    }
+    .logo-text{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .logo-text h1{
+      font-size:22px;
+      margin:0;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .logo-text .tag{
+      font-size:13px;
+      color:var(--orange);
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .student-pill{
+      margin-left:auto;
+      display:none;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      font-weight:800;
+      color:#111;
+      white-space:nowrap;
+    }
+    .student-pill.show{ display:inline-flex; }
+
+    /* Top bar */
+    .top-bar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:14px 0 10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .tabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .tab-btn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--blue);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+    }
+    .tab-btn.active{
+      background:var(--blue);
+      color:#fff;
+      border-color:var(--blue);
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    select, input[type="text"]{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:9px 10px;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn.primary{ background:var(--blue); color:#fff; }
+    .btn.secondary{ background:#eef2ff; color:var(--blue); border:1px solid #dbe3ff; }
+    .btn.warn{ background:#fff3e0; color:#8a4b00; border:1px solid #ffe0b2; }
+    .btn:active{ transform:translateY(1px); }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+
+    /* Sections */
+    .section{ display:none; margin-top:16px; }
+    .section.active{ display:block; }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    @media (min-width: 860px){
+      .grid.two{ grid-template-columns:1fr 1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      padding:16px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+    .muted{ color:var(--muted); }
+    .note{
+      background:#f7fbff;
+      border:1px solid #d9ecff;
+      padding:12px;
+      border-radius:12px;
+      color:#123;
+    }
+    .rule{ border-top:1px dashed var(--line); margin:12px 0; }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      color:#111;
+      flex-wrap:wrap;
+      margin:3px 6px 3px 0;
+    }
+    .math{ font-weight:900; color:#111; }
+
+    /* Mixed number styling (whole + fraction) */
+    .mixed{
+      display:inline-grid;
+      grid-template-columns:auto auto;
+      align-items:center;
+      gap:6px;
+      vertical-align:middle;
+      font-weight:900;
+      color:#111;
+    }
+    .frac{
+      display:inline-grid;
+      grid-template-rows:auto auto;
+      justify-items:center;
+      font-weight:900;
+      font-size:.95em;
+      line-height:1.0;
+      color:#111;
+    }
+    .frac .top{padding:0 4px;}
+    .frac .bar{
+      width:100%;
+      border-top:2px solid currentColor;
+      margin:2px 0;
+    }
+    .frac .bottom{padding:0 4px;}
+
+    /* Practice */
+    .practice-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .practice-meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      background:#f6f7ff;
+      border:1px solid #e2e6ff;
+      color:#1d2a7a;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:13px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:14px;
+      background:#fff;
+    }
+    .q-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+    .q-num{ font-weight:900; color:var(--blue); }
+    .q-topic{
+      font-size:12px;
+      font-weight:900;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color:#111;
+      background:#fafafe;
+      white-space:nowrap;
+    }
+    .q-body{
+      font-size:15px;
+      line-height:1.45;
+      margin-bottom:10px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .q-input{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:10px;
+    }
+    .tiny{ width:180px; }
+    .tiny.small{ width:120px; }
+
+    .q-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .feedback{
+      margin-top:10px;
+      border-radius:12px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      background:#fafafa;
+      display:none;
+    }
+    .feedback.show{ display:block; }
+    .feedback.ok{ border-color:#c9e7cf; background:#f0fbf2; }
+    .feedback.bad{ border-color:#ffd0d0; background:#fff3f3; }
+    .feedback .title{ font-weight:900; margin-bottom:6px; }
+
+    .footer-actions{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      border-top:1px solid var(--line);
+      padding-top:14px;
+    }
+    .scorebox{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fff;
+      min-width:240px;
+    }
+    .scorebox strong{ color:var(--blue); }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+    .modal-backdrop.show{ display:flex; }
+    .modal{
+      width:min(560px, 96vw);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 18px 45px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+      padding:16px;
+    }
+    .modal h3{ margin:0 0 6px; color:var(--blue); }
+    .modal p{ margin:6px 0 14px; color:var(--muted); }
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); border:0;
+    }
+  </style>
+
+  <!-- jsPDF (crisp text PDF) -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div>
+        <div class="logo-text">
+          <h1>Ratio — Basic • Quantity • Equivalent • Word Problems • Proportion • Multi-step</h1>
+          <span class="tag">DYAA EDUCATION</span>
+        </div>
+        <p class="subtitle">Simplify ratios • Convert to fraction/decimal/percent • Divide quantities • Equivalent ratios • Real-life ratio problems</p>
+      </div>
+
+      <div id="studentPillHeader" class="student-pill" aria-live="polite">
+        Student: <span id="studentNameHeader"></span>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="learn">Learn</button>
+        <button class="tab-btn" data-tab="practice">Practice</button>
+      </div>
+
+      <div class="controls" id="practiceControls" style="display:none;">
+        <label class="chip">
+          Questions:
+          <select id="countSelect" aria-label="Number of questions">
+            <option value="12">12</option>
+            <option value="16">16</option>
+            <option value="20">20</option>
+            <option value="23" selected>23</option>
+          </select>
+        </label>
+
+        <label class="chip">
+          PDF per page:
+          <select id="perPageSelect" aria-label="PDF questions per page">
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+        </label>
+
+        <button class="btn secondary" id="exportPdfBtn">Export to PDF</button>
+        <button class="btn warn" id="newSetBtn">Generate New Set</button>
+        <button class="btn secondary" id="resetBtn">Reset Answers</button>
+      </div>
+    </div>
+
+    <!-- LEARN -->
+    <div class="section active" id="learnSection">
+      <div class="grid two">
+
+        <div class="card">
+          <h2>Part 1: Basic Ratio</h2>
+          <div class="note">
+            <div class="chip">A ratio compares quantities: <span class="math">a : b</span></div>
+            <div class="chip">Simplify by dividing both sides by the <b>HCF</b></div>
+            <div class="rule"></div>
+            <div class="muted">
+              Example: <span class="math">72:108</span> → divide by 36 → <span class="math">2:3</span>
+            </div>
+            <div class="rule"></div>
+            <div class="muted">
+              Convert ratio <span class="math">a:b</span> to fraction: <span class="math">a/b</span><br/>
+              Convert to percent: <span class="math">(a/b)×100%</span><br/>
+              Convert to decimal: <span class="math">a/b</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Part 2: Ratio to Quantity</h2>
+          <div class="note">
+            <div class="muted">
+              If <span class="math">A:B = 3:5</span>, total parts = <span class="math">3+5=8</span>.<br/>
+              Each part = <span class="math">Total ÷ 8</span>.<br/>
+              Then <span class="math">A = 3 parts</span>, <span class="math">B = 5 parts</span>.
+            </div>
+            <div class="rule"></div>
+            <div class="chip">Tip: Always add the ratio numbers to find <b>total parts</b>.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Part 3: Equivalent Ratios</h2>
+          <div class="note">
+            <div class="muted">
+              Equivalent ratios have the <b>same value</b>. Multiply or divide both sides by the same number.
+              <div class="rule"></div>
+              Example: <span class="math">15:20</span> = <span class="math">75:100</span> (×5)
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Part 4: Word Problems with Ratios</h2>
+          <div class="note">
+            <div class="muted">
+              Common types:
+              <div class="rule"></div>
+              • Mixing (water:salt, paint:water)<br/>
+              • Scale (map scale)<br/>
+              • Speed comparisons (same distance, different times)<br/>
+              • Angles in a polygon (sum is fixed)
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Part 5: Ratio and Proportion</h2>
+          <div class="note">
+            <div class="muted">
+              If costs are proportional, use a ratio or unit rate.
+              <div class="rule"></div>
+              Example: 18 pens cost $27 → 1 pen costs $1.50 → 40 pens cost $60.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Part 6: More Challenging / Multi-step Ratio Problems</h2>
+          <div class="note">
+            <div class="muted">
+              Multi-step ratio problems often involve:
+              <div class="rule"></div>
+              • Splitting a total into 3 parts (A:B:C)<br/>
+              • Using mixed numbers in ratios<br/>
+              • Finding totals from one part (e.g., given Z in X:Y:Z)
+            </div>
+            <div class="rule"></div>
+            <div class="chip">Decimal answers: round to <b>2 d.p.</b> if needed.</div>
+          </div>
+        </div>
+
+        <div class="card" style="grid-column:1/-1;">
+          <h2>Answer format tips (important)</h2>
+          <div class="note">
+            <div class="chip">Simplified ratio: type like <span class="math">5:3</span></div>
+            <div class="chip">Fraction form: type like <span class="math">3/4</span></div>
+            <div class="chip">Percent: type like <span class="math">25%</span> (or 25)</div>
+            <div class="chip">Decimals: type like <span class="math">36.75</span> (up to 2 d.p.)</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="section" id="practiceSection">
+      <div class="practice-header">
+        <div>
+          <h2 style="margin:0;color:var(--blue);font-size:18px;">Practice Quiz</h2>
+          <p class="muted" style="margin:6px 0 0;">
+            Use the correct format (ratio / fraction / percent). If an answer is a decimal, round to <b>2 d.p.</b> when needed.
+          </p>
+        </div>
+        <div class="practice-meta">
+          <span class="pill" id="studentPillPractice" style="display:none;">Student: <span id="studentNamePractice"></span></span>
+          <span class="pill" id="setLabel">Set: A</span>
+          <span class="pill" id="progressLabel">0 checked</span>
+        </div>
+      </div>
+
+      <div id="questionsWrap" class="grid"></div>
+
+      <div class="footer-actions">
+        <div class="scorebox">
+          <div><strong id="scoreText">Score:</strong> <span id="scoreValue">—</span></div>
+          <div class="muted" style="font-size:13px;margin-top:4px;">Tip: For quantity problems, find total parts first.</div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn primary" id="submitBtn">Submit & View Result</button>
+          <button class="btn secondary" id="showAllBtn">Show All Explanations</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Confirm modal (new set) -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle">Generate a new set?</h3>
+      <p>This will clear your current answers and create a new set.</p>
+      <div class="modal-actions">
+        <button class="btn secondary" id="cancelModalBtn">Cancel</button>
+        <button class="btn warn" id="confirmModalBtn">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Name modal -->
+  <div class="modal-backdrop" id="nameBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+      <h3 id="nameTitle">Enter student name to start</h3>
+      <p>
+        Tip: you can skip this step by using a link like:
+        <b>ratio.html?name=Tiger</b>
+      </p>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <label class="sr-only" for="nameInput">Student name</label>
+        <input id="nameInput" type="text" placeholder="e.g., Tiger" autocomplete="off" style="min-width:240px;" />
+        <button class="btn primary" id="startWithNameBtn">Start</button>
+      </div>
+
+      <div class="modal-actions" style="margin-top:14px;">
+        <button class="btn secondary" id="cancelNameBtn">Back to Learn</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Display helpers (mixed / fraction)
+     ************************/
+    function mixedHTML(whole, num, den){
+      return `
+        <span class="mixed">
+          <span>${whole}</span>
+          <span class="frac">
+            <span class="top">${num}</span>
+            <span class="bar"></span>
+            <span class="bottom">${den}</span>
+          </span>
+        </span>
+      `;
+    }
+    function fracHTML(num, den){
+      return `
+        <span class="frac">
+          <span class="top">${num}</span>
+          <span class="bar"></span>
+          <span class="bottom">${den}</span>
+        </span>
+      `;
+    }
+
+    /***********************
+     * Student name logic
+     ************************/
+    let studentName = "";
+
+    function escapeHTML(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function sanitizeName(raw){
+      let s = String(raw || "").trim();
+      s = s.replace(/[\u0000-\u001F\u007F]/g, "");
+      if(s.length > 40) s = s.slice(0, 40);
+      return s;
+    }
+
+    function setStudentName(name){
+      studentName = sanitizeName(name);
+      updateStudentUI();
+    }
+
+    function updateStudentUI(){
+      const headerPill = document.getElementById("studentPillHeader");
+      const headerName = document.getElementById("studentNameHeader");
+      const practicePill = document.getElementById("studentPillPractice");
+      const practiceName = document.getElementById("studentNamePractice");
+
+      if(studentName){
+        headerPill.classList.add("show");
+        headerName.textContent = studentName;
+
+        practicePill.style.display = "inline-flex";
+        practiceName.textContent = studentName;
+
+        setPracticeButtonsEnabled(true);
+      }else{
+        headerPill.classList.remove("show");
+        headerName.textContent = "";
+
+        practicePill.style.display = "none";
+        practiceName.textContent = "";
+
+        setPracticeButtonsEnabled(false);
+      }
+    }
+
+    function setPracticeButtonsEnabled(enabled){
+      document.getElementById("exportPdfBtn").disabled = !enabled;
+      document.getElementById("newSetBtn").disabled = !enabled;
+      document.getElementById("resetBtn").disabled = !enabled;
+      document.getElementById("submitBtn").disabled = !enabled;
+      document.getElementById("showAllBtn").disabled = !enabled;
+    }
+
+    function getNameFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("name");
+      if(!raw) return "";
+      return sanitizeName(raw);
+    }
+
+    /***********************
+     * Math + parsing
+     ************************/
+    function gcd(a,b){
+      a = Math.abs(a); b = Math.abs(b);
+      while(b){ const t = a % b; a = b; b = t; }
+      return a || 1;
+    }
+    function round2(x){
+      return Math.round(x * 100) / 100;
+    }
+    function isFiniteNumber(x){
+      return typeof x === "number" && Number.isFinite(x);
+    }
+
+    function parseNumberLoose(s){
+      const t = String(s||"").trim().replace(/,/g,"");
+      if(!t) return null;
+
+      // allow percent
+      if(/^-?\d+(\.\d+)?%$/.test(t)){
+        const v = Number(t.replace("%",""));
+        return Number.isFinite(v) ? v : null;
+      }
+
+      // allow fraction a/b
+      if(/^[-]?\d+(\.\d+)?\s*\/\s*[-]?\d+(\.\d+)?$/.test(t)){
+        const [a,b] = t.split("/").map(x=>Number(String(x).trim()));
+        if(!Number.isFinite(a) || !Number.isFinite(b) || b === 0) return null;
+        return a/b;
+      }
+
+      const v = Number(t);
+      return Number.isFinite(v) ? v : null;
+    }
+
+    function parseRatio(s){
+      const raw = String(s||"").trim();
+      if(!raw) return null;
+      if(!raw.includes(":")) return null;
+      const parts = raw.split(":").map(x=>String(x).trim());
+      if(parts.length !== 2) return null;
+      const a = parseNumberLoose(parts[0]);
+      const b = parseNumberLoose(parts[1]);
+      if(!isFiniteNumber(a) || !isFiniteNumber(b) || b === 0) return null;
+      return {a,b};
+    }
+
+    function ratioEquivalent(userA, userB, expA, expB){
+      const uv = userA / userB;
+      const ev = expA / expB;
+      return Math.abs(uv - ev) <= 1e-9;
+    }
+
+    function isInt(n){ return Number.isInteger(n); }
+
+    /***********************
+     * Inputs
+     ************************/
+    function singleInputHTML(label="Answer", placeholder="", small=false){
+      return `
+        <span class="muted">${escapeHTML(label)}:</span>
+        <input class="tiny ${small ? "small":""}" type="text" autocomplete="off"
+               placeholder="${escapeHTML(placeholder)}" aria-label="${escapeHTML(label)}" />
+      `;
+    }
+
+    function multiInputHTML(labels){
+      return labels.map(l=>{
+        return `
+          <span class="muted">${escapeHTML(l)}:</span>
+          <input class="tiny small" type="text" autocomplete="off" placeholder="" aria-label="${escapeHTML(l)}" />
+        `;
+      }).join("");
+    }
+
+    function getInputs(card){
+      return Array.from(card.querySelectorAll("input")).map(inp => inp.value.trim());
+    }
+
+    /***********************
+     * Question builders
+     ************************/
+    function makeQ(opts){
+      // opts: { tag, promptHTML, inputHTML, check(userVals)->{ok,msg}, hintHTML, explainHTML, answerText, pdfLines? }
+      return {
+        tag: opts.tag,
+        promptHTML: opts.promptHTML,
+        inputHTML: opts.inputHTML,
+        hintHTML: opts.hintHTML,
+        explainHTML: opts.explainHTML,
+        answerText: opts.answerText,
+        pdfAnswerHint: opts.pdfAnswerHint || `Answer: ________`,
+        getUser: (card)=> getInputs(card),
+        isCorrect: (userVals)=>{
+          const res = opts.check(userVals);
+          return { ok: !!res.ok, msg: res.msg || "" };
+        }
+      };
+    }
+
+    function checkRatioSimplified(userVals, expA, expB){
+      const r = parseRatio(userVals[0] || "");
+      if(!r) return {ok:false, msg:"Use a:b"};
+      if(!isInt(r.a) || !isInt(r.b)) return {ok:false, msg:"Use integers in the ratio."};
+      if(!ratioEquivalent(r.a, r.b, expA, expB)) return {ok:false, msg:"Not correct."};
+      if(gcd(r.a, r.b) !== 1) return {ok:false, msg:"Correct value, but not simplified."};
+      return {ok:true, msg:"Correct!"};
+    }
+
+    function checkRatioValue(userVals, expA, expB){
+      const r = parseRatio(userVals[0] || "");
+      if(!r) return {ok:false, msg:"Use a:b"};
+      if(!isInt(r.a) || !isInt(r.b)) return {ok:false, msg:"Use integers in the ratio."};
+      if(!ratioEquivalent(r.a, r.b, expA, expB)) return {ok:false, msg:"Not correct."};
+      return {ok:true, msg:"Correct!"};
+    }
+
+    function checkFractionForm(userVals, expectedValue){
+      const s = String(userVals[0] || "").trim();
+      if(!s.includes("/")) return {ok:false, msg:"Use a fraction like 3/4."};
+      const v = parseNumberLoose(s);
+      if(!isFiniteNumber(v)) return {ok:false, msg:"Invalid fraction."};
+      if(Math.abs(v - expectedValue) <= 1e-9) return {ok:true, msg:"Correct!"};
+      return {ok:false, msg:"Not correct."};
+    }
+
+    function checkPercent(userVals, expectedPercent){
+      const s = String(userVals[0] || "").trim().replace("%","");
+      const v = Number(s);
+      if(!Number.isFinite(v)) return {ok:false, msg:"Enter a percent like 25% (or 25)."};
+      if(Math.abs(v - expectedPercent) <= 0.01) return {ok:true, msg:"Correct!"};
+      return {ok:false, msg:"Not correct."};
+    }
+
+    function checkDecimal(userVals, expected){
+      const v = parseNumberLoose(userVals[0] || "");
+      if(!isFiniteNumber(v)) return {ok:false, msg:"Enter a decimal number."};
+      if(Math.abs(v - expected) <= 0.005) return {ok:true, msg:"Correct!"};
+      return {ok:false, msg:"Not correct."};
+    }
+
+    function checkNumber(userVals, expected, tol=0.02){
+      const v = parseNumberLoose(userVals[0] || "");
+      if(!isFiniteNumber(v)) return {ok:false, msg:"Enter a number."};
+      if(Math.abs(v - expected) <= tol) return {ok:true, msg:"Correct!"};
+      return {ok:false, msg:"Not correct."};
+    }
+
+    function checkNumbers(userVals, expectedArr, tol=0.05){
+      if(userVals.length < expectedArr.length) return {ok:false, msg:"Fill in all boxes."};
+      for(let i=0;i<expectedArr.length;i++){
+        const v = parseNumberLoose(userVals[i]);
+        if(!isFiniteNumber(v)) return {ok:false, msg:"Enter valid numbers."};
+        if(Math.abs(v - expectedArr[i]) > tol) return {ok:false, msg:"Not correct."};
+      }
+      return {ok:true, msg:"Correct!"};
+    }
+
+    /***********************
+     * Variant banks (Set A matches your image)
+     ************************/
+    
+    /***********************
+     * Variant generators (large, low-repeat)
+     ************************/
+    function randInt(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function pick(arr){
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+    function simplifyPair(a,b){
+      const g = gcd(a,b);
+      return [a/g, b/g];
+    }
+
+    const COPRIME_PAIRS = (() => {
+      const out = [];
+      for(let a=1;a<=12;a++){
+        for(let b=1;b<=12;b++){
+          if(a===b) continue;
+          if(gcd(a,b)===1) out.push([a,b]);
+        }
+      }
+      // prefer common classroom-friendly pairs first
+      const preferred = [
+        [2,3],[3,2],[3,4],[4,3],[2,5],[5,2],[3,5],[5,3],[4,5],[5,4],
+        [5,8],[8,5],[7,9],[9,7],[4,7],[7,4],[6,7],[7,6],[5,7],[7,5],
+        [3,7],[7,3],[2,7],[7,2],[1,2],[2,1],[1,3],[3,1],[1,4],[4,1]
+      ];
+      // merge unique
+      const key = p => p[0]+":"+p[1];
+      const seen = new Set(preferred.map(key));
+      for(const p of out){
+        const k = key(p);
+        if(!seen.has(k)){
+          preferred.push(p);
+          seen.add(k);
+        }
+      }
+      return preferred;
+    })();
+
+    const DEC_BANK = [
+      {dec:0.125, num:1, den:8},
+      {dec:0.15,  num:3, den:20},
+      {dec:0.2,   num:1, den:5},
+      {dec:0.25,  num:1, den:4},
+      {dec:0.3,   num:3, den:10},
+      {dec:0.4,   num:2, den:5},
+      {dec:0.5,   num:1, den:2},
+      {dec:0.6,   num:3, den:5},
+      {dec:0.75,  num:3, den:4},
+      {dec:0.8,   num:4, den:5},
+    ];
+
+    const PCTS = [10,15,20,25,30,35,40,45,50,60,75,80];
+
+    const BANK = {
+      // Part 1
+      P1Q1: () => {
+        // a:b simplifies to sa:sb (and needs simplifying)
+        for(let tries=0; tries<120; tries++){
+          const [sa,sb] = pick(COPRIME_PAIRS.filter(p => p[0] >= 2 && p[1] >= 2 && p[0] <= 9 && p[1] <= 9));
+          const k = randInt(3, 30);
+          const a = sa * k;
+          const b = sb * k;
+          if(a <= 360 && b <= 360 && a !== b){
+            return {a,b, sa, sb};
+          }
+        }
+        return {a:72,b:108, sa:2,sb:3};
+      },
+
+      P1Q2: () => {
+        for(let tries=0; tries<120; tries++){
+          const [p,q] = pick(COPRIME_PAIRS.filter(x => x[0] >= 2 && x[1] >= 3 && x[0] <= 12 && x[1] <= 15));
+          const k = randInt(2, 18);
+          const a = p*k, b = q*k;
+          if(a !== b && a <= 180 && b <= 220){
+            return {a,b, val:a/b};
+          }
+        }
+        return {a:45,b:60, val:45/60};
+      },
+
+      P1Q3: () => {
+        for(let tries=0; tries<120; tries++){
+          const pct = pick(PCTS);
+          const step = 100 / gcd(100, pct); // b must be multiple of step to make a integer
+          const mult = randInt(3, 18);
+          const b = step * mult;
+          const a = b * pct / 100;
+          if(Number.isInteger(a) && a > 0 && b > a && b <= 240){
+            return {a,b,pct};
+          }
+        }
+        return {a:18,b:45,pct:40};
+      },
+
+      P1Q4: () => {
+        for(let tries=0; tries<120; tries++){
+          const f = pick(DEC_BANK);
+          const mult = randInt(6, 30);
+          const b = f.den * mult;
+          const a = f.num * mult;
+          if(a > 0 && b > a && b <= 400){
+            return {a,b, dec:f.dec};
+          }
+        }
+        return {a:19,b:95,dec:0.2};
+      },
+
+      P1Q5: () => {
+        // km : m
+        const tChoices = [50,100,150,200,250,300,400,500,600,750,800,900,1000,1200,1500,1800,2000];
+        for(let tries=0; tries<120; tries++){
+          const [sa,sb] = pick(COPRIME_PAIRS.filter(p => p[0] <= 6 && p[1] <= 6));
+          const t = pick(tChoices);
+          const m1 = sa * t;
+          const m2 = sb * t;
+          const km = m1 / 1000;
+          // keep km readable (<=2 d.p.)
+          const km2 = round2(km);
+          if(km2 >= 0.3 && km2 <= 6 && m2 <= 6000){
+            return {km: km2, m: m2, sa, sb};
+          }
+        }
+        return {km:1.5, m:750, sa:2,sb:1};
+      },
+
+      P1Q6: () => {
+        // g : kg
+        const tChoices = [50,100,150,200,250,300,400,500,600,750,800,900,1000,1200,1500,1800,2000];
+        for(let tries=0; tries<120; tries++){
+          const [sa,sb] = pick(COPRIME_PAIRS.filter(p => p[0] <= 9 && p[1] <= 9));
+          const t = pick(tChoices);
+          const gVal = sa * t;
+          const kg = (sb * t) / 1000;
+          const kg2 = round2(kg);
+          if(gVal >= 800 && gVal <= 9000 && kg2 >= 0.8 && kg2 <= 9){
+            return {g:gVal, kg:kg2, sa, sb};
+          }
+        }
+        return {g:3200, kg:2.8, sa:8,sb:7};
+      },
+
+      // Part 2
+      P2Q1: () => {
+        for(let tries=0; tries<120; tries++){
+          let ra = randInt(2, 9);
+          let rb = randInt(2, 9);
+          if(ra === rb) continue;
+          const part = randInt(10, 70);
+          const total = (ra + rb) * part;
+          const A = ra * part;
+          return {ra, rb, total, A};
+        }
+        return {ra:3, rb:5, total:160, A:60};
+      },
+
+      P2Q2: () => {
+        for(let tries=0; tries<120; tries++){
+          let ra = randInt(1, 8);
+          let rb = randInt(2, 10);
+          if(ra === rb) continue;
+          const part = randInt(40, 180);
+          const total = (ra + rb) * part;
+          const A = ra * part;
+          const B = rb * part;
+          return {total, ra, rb, A, B, aLab:"Bonds ($)", bLab:"Stocks ($)"};
+        }
+        return {total:1250, ra:2, rb:3, A:500, B:750, aLab:"Bonds ($)", bLab:"Stocks ($)"};
+      },
+
+      P2Q3: () => {
+        const dChoices = [2,3,4,5,6,8,10,12];
+        for(let tries=0; tries<120; tries++){
+          const d = pick(dChoices);
+          const n = randInt(1, d-1);
+          const w = randInt(1, 3);
+          const t = randInt(40, 220);
+          const sugar = d * t; // ensures flour integer
+          const flour = (w*d + n) * t;
+          if(sugar >= 200 && sugar <= 2400 && flour <= 4200){
+            return {flW:w, flN:n, flD:d, sugar, flour};
+          }
+        }
+        return {flW:1, flN:3, flD:4, sugar:480, flour:840};
+      },
+
+      // Part 3
+      P3Q1: () => {
+        const toChoices = [60, 80, 100, 120];
+        for(let tries=0; tries<180; tries++){
+          const to = pick(toChoices);
+          const divisors = [];
+          for(let d=4; d<=30; d++){
+            if(to % d === 0) divisors.push(d);
+          }
+          const b0 = pick(divisors);
+          const factor = to / b0;
+          const a0 = randInt(3, 30);
+          const k = pick([1,2,3,4]);
+          const a = a0 * k;
+          const b = b0 * k;
+          const x = a * factor;
+          if(x <= 360 && b <= 240){
+            return {a,b,to,x};
+          }
+        }
+        return {a:15,b:20,to:100,x:75};
+      },
+
+      P3Q2: () => {
+        const toChoices = [12, 16, 18, 20, 24];
+        const dChoices = [2,3,4,5,6,8,10,12];
+        for(let tries=0; tries<200; tries++){
+          const to = pick(toChoices);
+          const d = pick(dChoices);
+          const n = randInt(1, d-1);
+          const w = randInt(1, 3);
+          const b = randInt(6, 12);
+          const left = w + (n/d);
+          const x = left / b * to;
+          const x2 = round2(x);
+          if(x2 > 0.5 && x2 < 60){
+            return {w,n,d, b, to, x:x2};
+          }
+        }
+        return {w:2,n:2,d:5, b:9, to:18, x:4.8};
+      },
+
+      P3Q3: () => {
+        const nChoices = [2,4,5,8,10];
+        const scaleChoices = [0.05, 0.1, 0.2, 0.25];
+        for(let tries=0; tries<200; tries++){
+          const n = pick(nChoices);
+          let m = randInt(1, n-1);
+          if(gcd(m,n) !== 1) continue;
+          const scale = pick(scaleChoices);
+          const a = round2(m * scale);
+          const b = round2(n * scale);
+          const to = 10;
+          const x = round2(10 * m / n);
+          if(a > 0 && b > a && x > 0){
+            return {a,b,to,x};
+          }
+        }
+        return {a:0.45,b:0.9,to:10,x:5};
+      },
+
+      P3Q4: () => {
+        for(let tries=0; tries<240; tries++){
+          const ad = randInt(2, 9);
+          const bd = randInt(2, 9);
+          const an = randInt(1, ad-1);
+          const bn = randInt(1, bd-1);
+          // ratio = (an/ad) : (bn/bd) => (an*bd) : (ad*bn)
+          let p = an * bd;
+          let q = ad * bn;
+          if(p === q) continue;
+          const g = gcd(p,q);
+          p /= g; q /= g;
+          const t = randInt(6, 20);
+          const to = q * t;
+          const x = p * t;
+          if(to <= 300 && x <= 300){
+            return {an,ad, bn,bd, to, x};
+          }
+        }
+        return {an:3,ad:8, bn:4,bd:7, to:56, x:36.75};
+      },
+
+      // Part 4
+      P4Q1: () => {
+        for(let tries=0; tries<120; tries++){
+          const ra = randInt(4, 12);
+          const rb = 1;
+          const salt = randInt(20, 90); // choose salt first so answer isn't too tiny
+          const water = ra * salt;
+          return {ra, rb, water, salt: water/ra};
+        }
+        return {ra:9, rb:1, water:400, salt:400/9};
+      },
+
+      P4Q2: () => {
+        const scales = [10000, 25000, 50000];
+        for(let tries=0; tries<240; tries++){
+          const scale = pick(scales);
+          const cm = randInt(2, 14);
+          const km = round2(cm * scale / 100000); // 100000 cm = 1 km
+          if(km >= 0.3 && km <= 8){
+            return {scale, cm, km};
+          }
+        }
+        return {scale:25000, cm:8, km:2};
+      },
+
+      P4Q3: () => {
+        for(let tries=0; tries<120; tries++){
+          const dist = randInt(80, 240);
+          const t1 = randInt(2, 8);
+          const t2 = randInt(2, 8);
+          if(t1 === t2) continue;
+          const [ra, rb] = simplifyPair(t2, t1); // car:bus
+          return {dist, t1, t2, ra, rb};
+        }
+        return {dist:150, t1:3, t2:5, ra:5, rb:3};
+      },
+
+      P4Q4: () => {
+        const sumChoices = [12, 15, 18, 20, 24, 30, 36];
+        for(let tries=0; tries<240; tries++){
+          const S = pick(sumChoices);
+          // generate 4 positive integers summing to S
+          let a = randInt(1, S-3);
+          let b = randInt(1, S-a-2);
+          let c = randInt(1, S-a-b-1);
+          let d = S - a - b - c;
+          const r = [a,b,c,d];
+          // avoid too-similar ratios
+          const uniq = new Set(r).size;
+          if(uniq < 2) continue;
+          const factor = 360 / S;
+          const ang = r.map(x => round2(x * factor));
+          return {r, ang};
+        }
+        return {r:[2,3,4,5], ang:[360*2/14, 360*3/14, 360*4/14, 360*5/14]};
+      },
+
+      // Part 5
+      P5Q1: () => {
+        for(let tries=0; tries<180; tries++){
+          const unit = randInt(1, 6); // $ per pen
+          const pens = randInt(12, 30);
+          const cost = pens * unit;
+          const target = randInt(25, 65);
+          const ans = target * unit;
+          if(cost <= 180 && ans <= 420){
+            return {pens, cost, target, ans};
+          }
+        }
+        return {pens:18, cost:27, target:40, ans:60};
+      },
+
+      P5Q2: () => {
+        for(let tries=0; tries<180; tries++){
+          const slow = randInt(3, 9);
+          const fast = randInt(4, 12);
+          if(slow === fast) continue;
+          const k = randInt(20, 80);
+          const slowDist = slow * k;       // ensures integer result
+          const fastDist = fast * k;
+          if(slowDist <= 900 && fastDist <= 1200){
+            return {slow, fast, slowDist, fastDist};
+          }
+        }
+        return {slow:7, fast:9, slowDist:210, fastDist:270};
+      },
+
+      // Part 6
+      P6Q1: () => {
+        for(let tries=0; tries<240; tries++){
+          let r1 = randInt(1, 10), r2 = randInt(1, 10), r3 = randInt(1, 14);
+          if(r1 === r2 && r2 === r3) continue;
+          const one = randInt(30, 140);
+          const total = (r1+r2+r3) * one;
+          const ans = [r1*one, r2*one, r3*one];
+          if(total <= 5600){
+            return {total, r:[r1,r2,r3], ans};
+          }
+        }
+        return {total:3150, r:[7,9,14], ans:[735,945,1470]};
+      },
+
+      P6Q2: () => {
+        const dChoices = [2,3,4,5,6,8,10,12];
+        for(let tries=0; tries<280; tries++){
+          const d = pick(dChoices);
+          const n = randInt(1, d-1);
+          const w = randInt(1, 3);
+          const b = randInt(4, 12);
+
+          // ratio (w+n/d) : b
+          let p = (w*d + n);
+          let q = (b*d);
+          const g = gcd(p,q);
+          p = p/g; q = q/g;
+
+          const one = randInt(10, 70);
+          const sum = (p + q) * one;
+          const ans = [p*one, q*one];
+          if(sum <= 1200){
+            return {w,n,d, b, sum, ans};
+          }
+        }
+        return {w:1,n:3,d:4, b:8, sum:585, ans:[105, 480]};
+      },
+
+      P6Q3: () => {
+        for(let tries=0; tries<200; tries++){
+          const r = [randInt(1, 8), randInt(1, 8), randInt(2, 10)];
+          const t = randInt(20, 90);
+          const z = r[2] * t;
+          const total = (r[0] + r[1] + r[2]) * t;
+          if(total <= 1800){
+            return {r, z, total};
+          }
+        }
+        return {r:[2,3,5], z:250, total:500};
+      },
+
+      P6Q4: () => {
+        const dChoices = [2,3,4,5,6,8,10,12];
+        for(let tries=0; tries<320; tries++){
+          const pDen = pick(dChoices);
+          const dDen = pick(dChoices);
+          const p = {w: randInt(1, 3), n: randInt(1, pDen-1), d: pDen};
+          const d = {w: randInt(1, 3), n: randInt(1, dDen-1), d: dDen};
+
+          const pNum = p.w*p.d + p.n;
+          const dNum = d.w*d.d + d.n;
+
+          // convert to integer ratio: pVal : dVal = (pNum/pDen) : (dNum/dDen)
+          let rp = pNum * dDen;
+          let rd = dNum * pDen;
+          if(rp === rd) continue;
+          const g = gcd(rp, rd);
+          rp /= g; rd /= g;
+
+          const t = randInt(3, 16);
+          const petrol = rp * t;
+          const diesel = rd * t;
+
+          if(petrol <= 180 && diesel <= 220){
+            return {p, d, petrol, diesel};
+          }
+        }
+        return {p:{w:1,n:3,d:4}, d:{w:2,n:2,d:5}, petrol:14, diesel:19.2};
+      },
+    };
+
+
+    
+    
+    // --- Randomization (strong no-repeat + unique numbers) ---
+    const PICK_STATE = {
+      recentVariantSigs: Object.create(null),
+      recentSceneIdxs: Object.create(null)
+    };
+
+    const RECENT_VARIANT_LIMIT = 18; // per question key
+    const RECENT_SCENE_LIMIT = 8;    // per scene key
+
+    function _recentArr(map, key){
+      if(!map[key]) map[key] = [];
+      return map[key];
+    }
+    function _pushLimited(arr, val, limit){
+      arr.push(val);
+      if(arr.length > limit) arr.splice(0, arr.length - limit);
+    }
+
+    function numToken(n){
+      if(!Number.isFinite(n)) return null;
+      if(Object.is(n, -0)) n = 0;
+      if(Number.isInteger(n)){
+        if(Math.abs(n) < 10) return `s:${n}`;
+        return `i:${n}`;
+      }
+      return `d:${round2(n)}`;
+    }
+
+    function collectTokens(val, out, includeSmall){
+      if(val === null || val === undefined) return;
+
+      if(typeof val === "number"){
+        const t = numToken(val);
+        if(!t) return;
+        if(!includeSmall && t.startsWith("s:")) return;
+        out.add(t);
+        return;
+      }
+
+      if(Array.isArray(val)){
+        for(const x of val) collectTokens(x, out, includeSmall);
+        return;
+      }
+
+      if(typeof val === "object"){
+        for(const k in val){
+          collectTokens(val[k], out, includeSmall);
+        }
+      }
+    }
+
+    function variantTokens(v, includeSmall=true){
+      const out = new Set();
+      collectTokens(v, out, includeSmall);
+      return out;
+    }
+
+    function variantSig(v){
+      // token-based signature (stable + order-independent)
+      return Array.from(variantTokens(v, true)).sort().join("|");
+    }
+
+    function hasConflict(tokens, usedSet){
+      for(const t of tokens){
+        if(usedSet.has(t)) return true;
+      }
+      return false;
+    }
+
+    function pickVariant(key, used){
+      const src = BANK[key];
+      if(!src) throw new Error("Missing bank: " + key);
+
+      const recent = _recentArr(PICK_STATE.recentVariantSigs, key);
+
+      function accept(v){
+        const sig = variantSig(v);
+        _pushLimited(recent, sig, RECENT_VARIANT_LIMIT);
+
+        // Track numbers used in this set:
+        // - used.any tries to avoid *all* repeats
+        // - used.major always avoids repeats for >=10 and decimals
+        variantTokens(v, true).forEach(t => used.any.add(t));
+        variantTokens(v, false).forEach(t => used.major.add(t));
+        return v;
+      }
+
+      function ok(v, strict){
+        const sig = variantSig(v);
+        if(recent.includes(sig)) return false;
+
+        const tAny = variantTokens(v, true);
+        const tMajor = variantTokens(v, false);
+
+        if(strict){
+          if(hasConflict(tAny, used.any)) return false;
+        } else {
+          if(hasConflict(tMajor, used.major)) return false;
+        }
+        return true;
+      }
+
+      const MAX_TRIES = 140;
+
+      if(typeof src === "function"){
+        for(let i=0;i<MAX_TRIES;i++){
+          const v = src();
+          if(ok(v, true)) return accept(v);
+        }
+        for(let i=0;i<MAX_TRIES;i++){
+          const v = src();
+          if(ok(v, false)) return accept(v);
+        }
+        return accept(src());
+      }
+
+      const n = src.length;
+      const idx = [...Array(n).keys()];
+      for(let i=n-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [idx[i], idx[j]] = [idx[j], idx[i]];
+      }
+
+      for(let pass=0; pass<2; pass++){
+        const strict = (pass===0);
+        for(let i=0;i<Math.max(MAX_TRIES, n);i++){
+          const v = src[idx[i % n]];
+          if(ok(v, strict)) return accept(v);
+        }
+      }
+      return accept(src[Math.floor(Math.random()*n)]);
+    }
+
+const SCENES = {
+      P1Q1: [
+        "In a bag of marbles, the ratio red:blue is",
+        "In a sticker pack, the ratio stars:hearts is",
+        "In a fruit bowl, the ratio apples:oranges is",
+        "In a library, the ratio fiction:non-fiction books checked out is",
+        "In a jar of buttons, the ratio large:small buttons is",
+        "In a box of LEGO bricks, the ratio blue:yellow pieces is",
+        "In a class, the ratio boys:girls is",
+        "In a pencil case, the ratio HB:2B pencils is",
+        "In a sports practice, the ratio passes:shots is",
+        "In a café order list, the ratio hot:cold drinks is",
+        "In a coin purse, the ratio $1:$2 coins is",
+        "In a toy set, the ratio cars:trucks is"
+      ],
+      P1Q2: [
+        "A sports team’s wins:losses ratio is",
+        "A playlist’s pop:song ratio is",
+        "A robot’s forward steps:backward steps ratio is",
+        "A garden’s roses:tulips ratio is"
+      ],
+      P1Q3: [
+        "For two quantities, A:B is",
+        "In a mix, concentrate:water is",
+        "In a class survey, yes:no is",
+        "For two measurements, first:second is"
+      ],
+      P1Q4: [
+        "For two quantities, A:B is",
+        "In a recipe, flour:sugar is",
+        "In a box, small:large items is",
+        "For two measurements, first:second is"
+      ],
+      P1Q5: [
+        "A runner records distances as",
+        "A drone flight is recorded as",
+        "A hiker’s walk is recorded as",
+        "A delivery route is recorded as"
+      ],
+      P1Q6: [
+        "Two ingredient masses are recorded as",
+        "A shipment’s masses are recorded as",
+        "Two package weights are recorded as",
+        "A recipe’s masses are recorded as"
+      ],
+
+      P2Q1: [
+        "A lab technician mixes solutions",
+        "A barista mixes syrups",
+        "A painter mixes colours",
+        "A chef mixes sauces",
+        "A pharmacist mixes a liquid medicine",
+        "A smoothie shop mixes fruit puree and juice",
+        "A gardener mixes fertiliser with water",
+        "A pool technician prepares a treatment mix",
+        "A photographer mixes developer chemicals",
+        "A sports coach mixes an energy drink",
+        "A bakery mixes icing ingredients",
+        "A science student prepares a salt solution"
+      ],
+      P2Q2: [
+        "A financial planner splits an investment:",
+        "A student splits a budget:",
+        "A small business splits savings:",
+        "A charity splits a donation:",
+        "A family splits holiday spending:",
+        "A club splits membership fees:",
+        "A team splits fundraising money:",
+        "A school splits a grant:",
+        "A shop owner splits weekly profit:",
+        "A council splits a community fund:",
+        "A pair of friends split a shared bill:",
+        "A startup splits a budget plan:"
+      ],
+      P2Q3: [
+        "A bakery recipe uses",
+        "A pancake recipe uses",
+        "A cookie recipe uses",
+        "A muffin recipe uses",
+        "A brownie recipe uses",
+        "A bread recipe uses",
+        "A cake recipe uses",
+        "A waffle recipe uses",
+        "A crêpe recipe uses",
+        "A biscuit recipe uses",
+        "A scone recipe uses",
+        "A doughnut recipe uses"
+      ],
+
+      P3Q1: [
+        "Scaling up a ratio:",
+        "Enlarging a photo:",
+        "Doubling a recipe:",
+        "Changing a map scale:"
+      ],
+      P3Q2: [
+        "Keeping a mixture in proportion:",
+        "Scaling a recipe in proportion:",
+        "Keeping a paint mix consistent:",
+        "Keeping a juice mix consistent:"
+      ],
+      P3Q3: [
+        "Using an equivalent ratio:",
+        "Keeping a ratio equivalent:",
+        "Scaling a ratio up:",
+        "Scaling a ratio down:"
+      ],
+      P3Q4: [
+        "Comparing two fractions as a ratio:",
+        "Writing a fraction ratio in a new form:",
+        "Scaling a fraction ratio:",
+        "Equivalent ratios with fractions:"
+      ],
+
+      P4Q1: [
+        "In a science experiment,",
+        "In a sports drink mix,",
+        "In a cleaning solution mix,",
+        "In a salt-water tank,",
+        "In a cooking brine,",
+        "In a lab demonstration,",
+        "In an aquarium setup,",
+        "In a chemistry class,",
+        "In a water-treatment test,",
+        "In a camping meal prep,",
+        "In a kitchen recipe test,",
+        "In a workplace safety drill,"
+      ],
+      P4Q2: [
+        "On a tourist map,",
+        "On a hiking map,",
+        "On an architect’s plan,",
+        "On a school campus map,",
+        "On a city street map,",
+        "On a theme-park map,",
+        "On a bike-trail map,",
+        "On a park guide map,",
+        "On a train network map,",
+        "On a festival site plan,",
+        "On a shopping-centre plan,",
+        "On an emergency-evacuation plan,"
+      ],
+      P4Q3: [
+        "On a road trip,",
+        "In a delivery run,",
+        "In a race timing check,",
+        "During a school excursion,",
+        "On a commuter route,",
+        "During a weekend getaway,",
+        "On an airport shuttle route,",
+        "On a coach tour,",
+        "In a logistics schedule,",
+        "On a sports team trip,",
+        "On a countryside route,",
+        "During a field-trip journey,"
+      ],
+      P4Q4: [
+        "In a kite-shaped quadrilateral,",
+        "In a window frame (quadrilateral),",
+        "In a sign frame (quadrilateral),",
+        "In a quadrilateral design,",
+        "In a tile pattern (quadrilateral),",
+        "In a floor plan (quadrilateral),",
+        "In a poster frame (quadrilateral),",
+        "In a stained-glass panel (quadrilateral),",
+        "In a garden bed outline (quadrilateral),",
+        "In a tabletop design (quadrilateral),",
+        "In a playground marking (quadrilateral),",
+        "In a stage prop frame (quadrilateral),"
+      ],
+
+      P5Q1: [
+        "At a stationery shop,",
+        "At a school fundraiser,",
+        "At a market stall,",
+        "At a bookshop,",
+        "At an online store,",
+        "At a back-to-school sale,",
+        "At a class tuck shop,",
+        "At a discount warehouse,",
+        "At a museum gift shop,",
+        "At a pop-up shop,",
+        "At a campus store,",
+        "At a charity fair,"
+      ],
+      P5Q2: [
+        "In a cycling race,",
+        "In a running training session,",
+        "In a rowing workout,",
+        "In a roller-skating session,",
+        "In a time-trial event,",
+        "In a charity ride,",
+        "On a bike track,",
+        "During sprint training,",
+        "In a fitness challenge,",
+        "In a road cycling session,",
+        "During interval training,",
+        "In a triathlon cycling leg,"
+      ],
+
+      P6Q1: [
+        "A prize pool is shared as follows:",
+        "A family budget is shared as follows:",
+        "A class fundraiser total is shared as follows:",
+        "A scholarship fund is shared as follows:",
+        "A team bonus is shared as follows:",
+        "A community grant is shared as follows:",
+        "A project budget is shared as follows:",
+        "A club fund is shared as follows:",
+        "A birthday gift fund is shared as follows:",
+        "A tournament reward is shared as follows:",
+        "A charity collection is shared as follows:",
+        "A trip budget is shared as follows:"
+      ],
+      P6Q2: [
+        "Two lengths are compared:",
+        "Two numbers are compared:",
+        "Two segments are compared:",
+        "Two quantities are compared:",
+        "Two test scores are compared:",
+        "Two temperatures are compared:",
+        "Two masses are compared:",
+        "Two times are compared:",
+        "Two distances are compared:",
+        "Two amounts are compared:",
+        "Two measurements are compared:",
+        "Two values are compared:"
+      ],
+      P6Q3: [
+        "In a lab mixture,",
+        "In a juice blend,",
+        "In a paint blend,",
+        "In a chemical solution,",
+        "In a perfume blend,",
+        "In an ink mixture,",
+        "In a sports drink blend,",
+        "In a shampoo mix,",
+        "In a cleaning concentrate,",
+        "In a smoothie blend,",
+        "In a dye mixture,",
+        "In a science practical,"
+      ],
+      P6Q4: [
+        "A custom mixture is made:",
+        "A fuel blend is made:",
+        "A syrup blend is made:",
+        "A cleaning blend is made:",
+        "A two-liquid mixture is made:",
+        "A workshop solvent mix is made:",
+        "A farm fuel mix is made:",
+        "A generator fuel mix is made:",
+        "A service-station blend is made:",
+        "A machinery fuel blend is made:",
+        "A transport fuel mix is made:",
+        "A backup-power fuel mix is made:"
+      ]
+    };
+
+    
+    function pickScene(key){
+      const arr = SCENES[key] || [];
+      if(!arr.length) return "";
+      const recent = _recentArr(PICK_STATE.recentSceneIdxs, key);
+
+      let idx = Math.floor(Math.random() * arr.length);
+      let guard = 0;
+
+      // Avoid any scene used recently (if enough scenes exist)
+      while(arr.length > recent.length && recent.includes(idx) && guard < 80){
+        idx = Math.floor(Math.random() * arr.length);
+        guard++;
+      }
+
+      _pushLimited(recent, idx, RECENT_SCENE_LIMIT);
+      return arr[idx];
+    }
+
+    /***********************
+     * Build the full 23-question structure
+     ************************/
+    function buildFull23(setIndex){
+      const Q = [];
+      const used = { any:new Set(), major:new Set() };
+
+      // Part 1 (6)
+      {
+        const v = pickVariant("P1Q1", used);
+        Q.push(makeQ({
+          tag:"Part 1 • Basic Ratio",
+          promptHTML:`${pickScene("P1Q1")} <span class="math">${v.a}:${v.b}</span>. Write it in simplest form.`,
+          inputHTML: singleInputHTML("Ratio","e.g., 2:3", true),
+          check:(u)=> checkRatioSimplified(u, v.sa, v.sb),
+          hintHTML:`Find the HCF of ${v.a} and ${v.b}, then divide both sides.`,
+          explainHTML:`${v.a}:${v.b} simplifies to <b>${v.sa}:${v.sb}</b>.`,
+          answerText:`${v.sa}:${v.sb}`,
+          pdfAnswerHint:`Ratio: ________`
+        }));
+      }
+      {
+        const v = pickVariant("P1Q2", used);
+        Q.push(makeQ({
+          tag:"Part 1 • Basic Ratio",
+          promptHTML:`${pickScene("P1Q2")} <span class="math">${v.a}:${v.b}</span>. Express the ratio in <b>fraction form</b> (first ÷ second).`,
+          inputHTML: singleInputHTML("Fraction","e.g., 3/4", true),
+          check:(u)=> checkFractionForm(u, v.val),
+          hintHTML:`Convert <span class="math">a:b</span> to <span class="math">a/b</span>.`,
+          explainHTML:`${v.a}:${v.b} → ${v.a}/${v.b} = <b>${round2(v.val)}</b> (so a correct fraction is any equivalent to this value).`,
+          answerText:`${v.a}/${v.b} (or simplified)`,
+          pdfAnswerHint:`Fraction: ________`
+        }));
+      }
+      {
+        const v = pickVariant("P1Q3", used);
+        Q.push(makeQ({
+          tag:"Part 1 • Basic Ratio",
+          promptHTML:`${pickScene("P1Q3")} <span class="math">${v.a}:${v.b}</span>. Express the ratio as a <b>percentage</b> (first ÷ second).`,
+          inputHTML: singleInputHTML("Percent","e.g., 25%", true),
+          check:(u)=> checkPercent(u, v.pct),
+          hintHTML:`Compute <span class="math">a/b × 100%</span>.`,
+          explainHTML:`${v.a}/${v.b} × 100% = <b>${v.pct}%</b>.`,
+          answerText:`${v.pct}%`,
+          pdfAnswerHint:`Percent: ________`
+        }));
+      }
+      {
+        const v = pickVariant("P1Q4", used);
+        Q.push(makeQ({
+          tag:"Part 1 • Basic Ratio",
+          promptHTML:`${pickScene("P1Q4")} <span class="math">${v.a}:${v.b}</span>. Express the ratio as a <b>decimal</b> (first ÷ second).`,
+          inputHTML: singleInputHTML("Decimal","e.g., 0.20", true),
+          check:(u)=> checkDecimal(u, v.dec),
+          hintHTML:`Compute <span class="math">a/b</span>.`,
+          explainHTML:`${v.a}/${v.b} = <b>${v.dec}</b>.`,
+          answerText:`${v.dec}`,
+          pdfAnswerHint:`Decimal: ________`
+        }));
+      }
+      {
+        const v = pickVariant("P1Q5", used);
+        const kmStr = (String(v.km).includes(".")) ? v.km : (v.km.toFixed ? v.km.toFixed(1) : v.km);
+        Q.push(makeQ({
+          tag:"Part 1 • Basic Ratio",
+          promptHTML:`${pickScene("P1Q5")} <span class="math">${kmStr} km : ${v.m} m</span>. Simplify the ratio.`,
+          inputHTML: singleInputHTML("Simplified ratio","e.g., 2:1", true),
+          check:(u)=> checkRatioSimplified(u, v.sa, v.sb),
+          hintHTML:`Convert km to m first, then simplify.`,
+          explainHTML:`${v.km} km = ${v.km*1000} m. So the ratio simplifies to <b>${v.sa}:${v.sb}</b>.`,
+          answerText:`${v.sa}:${v.sb}`,
+          pdfAnswerHint:`Ratio: ________`
+        }));
+      }
+      {
+        const v = pickVariant("P1Q6", used);
+        Q.push(makeQ({
+          tag:"Part 1 • Basic Ratio",
+          promptHTML:`${pickScene("P1Q6")} <span class="math">${v.g} g : ${v.kg} kg</span>. Simplify the ratio.`,
+          inputHTML: singleInputHTML("Simplified ratio","e.g., 8:7", true),
+          check:(u)=> checkRatioSimplified(u, v.sa, v.sb),
+          hintHTML:`Convert kg to g first, then simplify.`,
+          explainHTML:`${v.kg} kg = ${v.kg*1000} g. So the ratio simplifies to <b>${v.sa}:${v.sb}</b>.`,
+          answerText:`${v.sa}:${v.sb}`,
+          pdfAnswerHint:`Ratio: ________`
+        }));
+      }
+
+      // Part 2 (3)
+      {
+        const v = pickVariant("P2Q1", used);
+        Q.push(makeQ({
+          tag:"Part 2 • Ratio to Quantity",
+          promptHTML:`${pickScene("P2Q1")} A and B in the ratio <span class="math">${v.ra}:${v.rb}</span>. If the total mixture is <span class="math">${v.total} ml</span>, how much of <b>A</b> is used?`,
+          inputHTML: singleInputHTML("A (ml)","", false),
+          check:(u)=> checkNumber(u, v.A, 0.02),
+          hintHTML:`Total parts = ${v.ra}+${v.rb}. One part = total ÷ parts. Then A = ${v.ra} parts.`,
+          explainHTML:`Total parts = ${v.ra+v.rb}. A = ${v.ra}/${v.ra+v.rb} × ${v.total} = <b>${round2(v.A)}</b> ml.`,
+          answerText:`${round2(v.A)} ml`,
+          pdfAnswerHint:`A (ml): ________`
+        }));
+      }
+      {
+        const v = pickVariant("P2Q2", used);
+        Q.push(makeQ({
+          tag:"Part 2 • Ratio to Quantity",
+          promptHTML:`${pickScene("P2Q2")} <span class="math">$${v.total}</span> is split between bonds and stocks in the ratio <span class="math">${v.ra}:${v.rb}</span>. How much is in each?`,
+          inputHTML: multiInputHTML([v.aLab, v.bLab]),
+          check:(u)=> checkNumbers(u, [v.A, v.B], 0.02),
+          hintHTML:`Total parts = ${v.ra}+${v.rb}. Multiply each part by its ratio number.`,
+          explainHTML:`Bonds = <b>$${v.A}</b>, Stocks = <b>$${v.B}</b>.`,
+          answerText:`Bonds $${v.A}, Stocks $${v.B}`,
+          pdfAnswerHint:`Bonds: ________   Stocks: ________`
+        }));
+      }
+      {
+        const v = pickVariant("P2Q3", used);
+        const flourMixed = mixedHTML(v.flW, v.flN, v.flD);
+        Q.push(makeQ({
+          tag:"Part 2 • Ratio to Quantity",
+          promptHTML:`${pickScene("P2Q3")} flour:sugar = ${flourMixed} : <span class="math">1</span>. If sugar is <span class="math">${v.sugar} g</span>, how much flour is needed?`,
+          inputHTML: singleInputHTML("Flour (g)","", false),
+          check:(u)=> checkNumber(u, v.flour, 0.02),
+          hintHTML:`If flour:sugar = 1 ${v.flN}/${v.flD} : 1, then flour = (1 ${v.flN}/${v.flD}) × sugar.`,
+          explainHTML:`Flour = <b>${v.flour} g</b>.`,
+          answerText:`${v.flour} g`,
+          pdfAnswerHint:`Flour (g): ________`
+        }));
+      }
+
+      // Part 3 (4)
+      // Part 3 should include both styles:
+      // - find the FIRST term ( ____ : known )
+      // - find the SECOND term ( known : ____ )
+      // For smaller sets that only include Part 3 Q1–Q2, we force a mix every time.
+      const p3AskSecond1 = Math.random() < 0.5;
+      const p3AskSecond2 = !p3AskSecond1;
+      const p3AskSecond3 = Math.random() < 0.5;
+      const p3AskSecond4 = Math.random() < 0.5;
+
+      {
+        const v = pickVariant("P3Q1", used);
+        const scene = pickScene("P3Q1");
+        const askSecond = p3AskSecond1;
+        Q.push(makeQ({
+          tag:"Part 3 • Equivalent Ratios",
+          promptHTML: askSecond
+            ? `${scene} <span class="math">${v.a}:${v.b}</span> = <span class="math">${v.x} : ____</span>`
+            : `${scene} <span class="math">${v.a}:${v.b}</span> = <span class="math">____ : ${v.to}</span>`,
+          inputHTML: singleInputHTML("Number","", true),
+          check:(u)=> checkNumber(u, askSecond ? v.to : v.x, 0.02),
+          hintHTML: askSecond
+            ? `Scale the first term from ${v.a} to ${v.x}, then scale the second term by the same factor.`
+            : `Scale ${v.b} to ${v.to}, then scale ${v.a} by the same factor.`,
+          explainHTML: askSecond
+            ? `${v.x} : <b>${v.to}</b>.`
+            : `<b>${v.x}</b> : ${v.to}.`,
+          answerText: askSecond ? `${v.to}` : `${v.x}`,
+          pdfAnswerHint:`Blank: ________`
+        }));
+      }
+      {
+        const v = pickVariant("P3Q2", used);
+        const leftMixed = mixedHTML(v.w, v.n, v.d);
+        const scene = pickScene("P3Q2");
+        const askSecond = p3AskSecond2;
+        const xStr = round2(v.x);
+        Q.push(makeQ({
+          tag:"Part 3 • Equivalent Ratios",
+          promptHTML: askSecond
+            ? `${scene} ${leftMixed} : <span class="math">${v.b}</span> = <span class="math">${xStr} : ____</span>`
+            : `${scene} ${leftMixed} : <span class="math">${v.b}</span> = <span class="math">____ : ${v.to}</span>`,
+          inputHTML: singleInputHTML("Number","", true),
+          check:(u)=> checkNumber(u, askSecond ? v.to : v.x, 0.02),
+          hintHTML: askSecond
+            ? `Find the scale factor from the first term to ${xStr}, then apply the same factor to the second term.`
+            : `Use proportional scaling: (left / right) stays the same.`,
+          explainHTML: askSecond
+            ? `Blank = <b>${v.to}</b>. (So the equivalent ratio is ${xStr} : ${v.to}.)`
+            : `Blank = <b>${xStr}</b>.`,
+          answerText: askSecond ? `${v.to}` : `${xStr}`,
+          pdfAnswerHint:`Blank: ________`
+        }));
+      }
+      {
+        const v = pickVariant("P3Q3", used);
+        const scene = pickScene("P3Q3");
+        const askSecond = p3AskSecond3;
+        const xStr = round2(v.x);
+        Q.push(makeQ({
+          tag:"Part 3 • Equivalent Ratios",
+          promptHTML: askSecond
+            ? `${scene} <span class="math">${v.a} : ${v.b}</span> = <span class="math">${xStr} : ____</span>`
+            : `${scene} <span class="math">${v.a} : ${v.b}</span> = <span class="math">____ : ${v.to}</span>`,
+          inputHTML: singleInputHTML("Number","", true),
+          check:(u)=> checkNumber(u, askSecond ? v.to : v.x, 0.02),
+          hintHTML: askSecond
+            ? `Scale ${v.a} to ${xStr}, then scale ${v.b} by the same factor.`
+            : `Find the ratio value (${v.a}/${v.b}), then multiply by ${v.to}.`,
+          explainHTML: askSecond
+            ? `Blank = <b>${v.to}</b>. (So the equivalent ratio is ${xStr} : ${v.to}.)`
+            : `Blank = <b>${xStr}</b>.`,
+          answerText: askSecond ? `${v.to}` : `${xStr}`,
+          pdfAnswerHint:`Blank: ________`
+        }));
+      }
+      {
+        const v = pickVariant("P3Q4", used);
+        const leftF = fracHTML(v.an, v.ad);
+        const rightF = fracHTML(v.bn, v.bd);
+        const scene = pickScene("P3Q4");
+        const askSecond = p3AskSecond4;
+        const xStr = round2(v.x);
+        Q.push(makeQ({
+          tag:"Part 3 • Equivalent Ratios",
+          promptHTML: askSecond
+            ? `${scene} ${leftF} : ${rightF} = <span class="math">${xStr} : ____</span>`
+            : `${scene} ${leftF} : ${rightF} = <span class="math">____ : ${v.to}</span>`,
+          inputHTML: singleInputHTML("Number","", true),
+          check:(u)=> checkNumber(u, askSecond ? v.to : v.x, 0.05),
+          hintHTML: askSecond
+            ? `Scale the first term to ${xStr}, then scale the second term by the same factor.`
+            : `Compute (left ÷ right), then scale to match the second term.`,
+          explainHTML: askSecond
+            ? `Blank = <b>${v.to}</b>. (So the equivalent ratio is ${xStr} : ${v.to}.)`
+            : `Blank = <b>${xStr}</b>.`,
+          answerText: askSecond ? `${v.to}` : `${xStr}`,
+          pdfAnswerHint:`Blank: ________`
+        }));
+      }
+
+      // Part 4 (4)
+      {
+        const v = pickVariant("P4Q1", used);
+        Q.push(makeQ({
+          tag:"Part 4 • Word Problems",
+          promptHTML:`${pickScene("P4Q1")} water:salt is mixed in the ratio <span class="math">${v.ra}:${v.rb}</span>. If <span class="math">${v.water} g</span> of water is used, how much salt is added? (round to 2 d.p. if needed)`,
+          inputHTML: singleInputHTML("Salt (g)","e.g., 44.44", false),
+          check:(u)=> checkNumber(u, round2(v.salt), 0.06),
+          hintHTML:`Water:salt = ${v.ra}:${v.rb}. If water is ${v.water}, then salt = water ÷ ${v.ra}.`,
+          explainHTML:`Salt = ${v.water} ÷ ${v.ra} = <b>${round2(v.salt)} g</b>.`,
+          answerText:`${round2(v.salt)} g`,
+          pdfAnswerHint:`Salt (g): ________`
+        }));
+      }
+      {
+        const v = pickVariant("P4Q2", used);
+        Q.push(makeQ({
+          tag:"Part 4 • Word Problems",
+          promptHTML:`${pickScene("P4Q2")} the scale is <span class="math">1:${v.scale.toLocaleString()}</span>. If two places are <span class="math">${v.cm} cm</span> apart, what is the real distance in <b>km</b>?`,
+          inputHTML: singleInputHTML("Distance (km)","", false),
+          check:(u)=> checkNumber(u, v.km, 0.02),
+          hintHTML:`Real distance = map distance × scale. Convert cm to km.`,
+          explainHTML:`Real distance = <b>${v.km}</b> km.`,
+          answerText:`${v.km} km`,
+          pdfAnswerHint:`Distance (km): ________`
+        }));
+      }
+      {
+        const v = pickVariant("P4Q3", used);
+        Q.push(makeQ({
+          tag:"Part 4 • Word Problems",
+          promptHTML:`${pickScene("P4Q3")} a car travels <span class="math">${v.dist} km</span> in <span class="math">${v.t1}</span> hours, and a bus travels the same distance in <span class="math">${v.t2}</span> hours. What is the ratio of their speeds? (car : bus)`,
+          inputHTML: singleInputHTML("Ratio","e.g., 5:3", true),
+          check:(u)=> checkRatioSimplified(u, v.ra, v.rb),
+          hintHTML:`Speed = distance ÷ time. Compare speeds and simplify.`,
+          explainHTML:`Speed ratio = <b>${v.ra}:${v.rb}</b>.`,
+          answerText:`${v.ra}:${v.rb}`,
+          pdfAnswerHint:`Speed ratio: ________`
+        }));
+      }
+      {
+        const v = pickVariant("P4Q4", used);
+        const ang2 = v.ang.map(x=>round2(x));
+        Q.push(makeQ({
+          tag:"Part 4 • Word Problems",
+          promptHTML:`${pickScene("P4Q4")} the angles are in the ratio <span class="math">${v.r.join(":")}</span>. Find each angle. (round to 2 d.p. if needed)`,
+          inputHTML: multiInputHTML(["Angle 1 (°)","Angle 2 (°)","Angle 3 (°)","Angle 4 (°)"]),
+          check:(u)=> checkNumbers(u, ang2, 0.6),
+          hintHTML:`Quadrilateral angles sum to <b>360°</b>. One part = 360 ÷ (sum of ratio parts).`,
+          explainHTML:`Angles: <b>${ang2[0]}°</b>, <b>${ang2[1]}°</b>, <b>${ang2[2]}°</b>, <b>${ang2[3]}°</b>.`,
+          answerText:`${ang2.join("°, ")}°`,
+          pdfAnswerHint:`A1: ________  A2: ________  A3: ________  A4: ________`
+        }));
+      }
+
+      // Part 5 (2)
+      {
+        const v = pickVariant("P5Q1", used);
+        Q.push(makeQ({
+          tag:"Part 5 • Proportion",
+          promptHTML:`${pickScene("P5Q1")} if <span class="math">${v.pens}</span> pens cost <span class="math">$${v.cost}</span>, how much will <span class="math">${v.target}</span> pens cost?`,
+          inputHTML: singleInputHTML("Cost ($)","", false),
+          check:(u)=> checkNumber(u, v.ans, 0.02),
+          hintHTML:`Find unit price (cost ÷ pens), then multiply by ${v.target}.`,
+          explainHTML:`Cost = <b>$${v.ans}</b>.`,
+          answerText:`$${v.ans}`,
+          pdfAnswerHint:`Cost ($): ________`
+        }));
+      }
+      {
+        const v = pickVariant("P5Q2", used);
+        Q.push(makeQ({
+          tag:"Part 5 • Proportion",
+          promptHTML:`${pickScene("P5Q2")} two cyclists travel at speed ratio <span class="math">${v.slow}:${v.fast}</span>. If the slower cyclist covers <span class="math">${v.slowDist} km</span>, how far does the faster cyclist travel?`,
+          inputHTML: singleInputHTML("Distance (km)","", false),
+          check:(u)=> checkNumber(u, v.fastDist, 0.02),
+          hintHTML:`Distances in the same time follow the same ratio as speeds.`,
+          explainHTML:`Faster distance = <b>${v.fastDist} km</b>.`,
+          answerText:`${v.fastDist} km`,
+          pdfAnswerHint:`Distance (km): ________`
+        }));
+      }
+
+      // Part 6 (4)
+      {
+        const v = pickVariant("P6Q1", used);
+        Q.push(makeQ({
+          tag:"Part 6 • Multi-step",
+          promptHTML:`${pickScene("P6Q1")} A total of <span class="math">$${v.total}</span> is divided among A, B, C in the ratio <span class="math">${v.r.join(":")}</span>. How much does each get?`,
+          inputHTML: multiInputHTML(["A ($)","B ($)","C ($)"]),
+          check:(u)=> checkNumbers(u, v.ans, 0.02),
+          hintHTML:`Total parts = ${v.r.reduce((a,b)=>a+b,0)}. One part = total ÷ parts.`,
+          explainHTML:`A = <b>$${v.ans[0]}</b>, B = <b>$${v.ans[1]}</b>, C = <b>$${v.ans[2]}</b>.`,
+          answerText:`A $${v.ans[0]}, B $${v.ans[1]}, C $${v.ans[2]}`,
+          pdfAnswerHint:`A: ________  B: ________  C: ________`
+        }));
+      }
+      {
+        const v = pickVariant("P6Q2", used);
+        const leftMixed = mixedHTML(v.w, v.n, v.d);
+        const ans2 = v.ans.map(x=>round2(x));
+        Q.push(makeQ({
+          tag:"Part 6 • Multi-step",
+          promptHTML:`${pickScene("P6Q2")} the ratio is ${leftMixed} : <span class="math">${v.b}</span>. If their sum is <span class="math">${v.sum}</span>, find the two numbers. (round to 2 d.p. if needed)`,
+          inputHTML: multiInputHTML(["Number 1","Number 2"]),
+          check:(u)=> checkNumbers(u, ans2, 0.08),
+          hintHTML:`Convert the left mixed number to a fraction/decimal, then simplify the ratio, then split the sum by total parts.`,
+          explainHTML:`Numbers: <b>${ans2[0]}</b> and <b>${ans2[1]}</b>.`,
+          answerText:`${ans2[0]}, ${ans2[1]}`,
+          pdfAnswerHint:`N1: ________  N2: ________`
+        }));
+      }
+      {
+        const v = pickVariant("P6Q3", used);
+        Q.push(makeQ({
+          tag:"Part 6 • Multi-step",
+          promptHTML:`${pickScene("P6Q3")} solution X:Y:Z is mixed in the ratio <span class="math">${v.r.join(":")}</span>. If Z is <span class="math">${v.z} ml</span>, find the total mixture.`,
+          inputHTML: singleInputHTML("Total (ml)","", false),
+          check:(u)=> checkNumber(u, v.total, 0.02),
+          hintHTML:`Z corresponds to ${v.r[2]} parts. One part = Z ÷ ${v.r[2]}. Total = parts sum × one part.`,
+          explainHTML:`Total mixture = <b>${v.total} ml</b>.`,
+          answerText:`${v.total} ml`,
+          pdfAnswerHint:`Total (ml): ________`
+        }));
+      }
+      {
+        const v = pickVariant("P6Q4", used);
+        const pMix = mixedHTML(v.p.w, v.p.n, v.p.d);
+        const dMix = mixedHTML(v.d.w, v.d.n, v.d.d);
+        Q.push(makeQ({
+          tag:"Part 6 • Multi-step",
+          promptHTML:`${pickScene("P6Q4")} petrol:diesel = ${pMix} : ${dMix}. If petrol is <span class="math">${v.petrol} L</span>, how much diesel is needed? (round to 2 d.p. if needed)`,
+          inputHTML: singleInputHTML("Diesel (L)","e.g., 19.20", false),
+          check:(u)=> checkNumber(u, round2(v.diesel), 0.06),
+          hintHTML:`Diesel = petrol × (diesel ratio) ÷ (petrol ratio).`,
+          explainHTML:`Diesel needed = <b>${round2(v.diesel)} L</b>.`,
+          answerText:`${round2(v.diesel)} L`,
+          pdfAnswerHint:`Diesel (L): ________`
+        }));
+      }
+
+      return Q;
+    }
+
+    function buildQuestionSet(count, setIndex){
+      const full = buildFull23(setIndex);
+
+      if(count >= 23) return full;
+
+      // Keep coverage across parts (fixed selection plan)
+      const plan = {
+        12: {p1:4,p2:2,p3:2,p4:2,p5:1,p6:1},
+        16: {p1:4,p2:2,p3:3,p4:3,p5:2,p6:2},
+        20: {p1:5,p2:3,p3:3,p4:4,p5:2,p6:3}
+      }[count] || {p1:4,p2:2,p3:2,p4:2,p5:1,p6:1};
+
+      // indices by part in full(23)
+      const idx = {
+        p1: [0,1,2,3,4,5],
+        p2: [6,7,8],
+        p3: [9,10,11,12],
+        p4: [13,14,15,16],
+        p5: [17,18],
+        p6: [19,20,21,22]
+      };
+
+      function take(arr, n){
+        // Keep question order consistent; only numbers/scenes change each set
+        return arr.slice(0, n);
+      }
+
+      const chosenIdx = []
+        .concat(take(idx.p1, plan.p1))
+        .concat(take(idx.p2, plan.p2))
+        .concat(take(idx.p3, plan.p3))
+        .concat(take(idx.p4, plan.p4))
+        .concat(take(idx.p5, plan.p5))
+        .concat(take(idx.p6, plan.p6));
+
+      // Keep question order consistent (numbers/scenes still change)
+      const questions = chosenIdx.map(i=>full[i]);
+      return questions.slice(0, count);
+    }
+
+    /***********************
+     * PDF export (crisp)
+     ************************/
+    function htmlToPlainText(html){
+      const tmp = document.createElement("div");
+      tmp.innerHTML = html;
+
+      // Convert mixed/fraction visuals to simple text for PDF readability
+      // mixed: whole + (num/den)
+      tmp.querySelectorAll(".mixed").forEach(m=>{
+        const whole = m.querySelector(":scope > span")?.textContent?.trim() || "";
+        const top = m.querySelector(".frac .top")?.textContent?.trim() || "";
+        const bottom = m.querySelector(".frac .bottom")?.textContent?.trim() || "";
+        m.replaceWith(document.createTextNode(`${whole} ${top}/${bottom}`.trim()));
+      });
+      tmp.querySelectorAll(".frac").forEach(f=>{
+        const top = f.querySelector(".top")?.textContent?.trim() || "";
+        const bottom = f.querySelector(".bottom")?.textContent?.trim() || "";
+        f.replaceWith(document.createTextNode(`${top}/${bottom}`));
+      });
+
+      return (tmp.textContent || "").replace(/\s+/g," ").trim();
+    }
+
+    function safeFileNamePart(s){
+      return String(s || "")
+        .trim()
+        .replace(/[\\/:*?"<>|]+/g, "-")
+        .replace(/\s+/g, "_")
+        .slice(0, 40);
+    }
+
+    function setNameFromIndex(i){
+      return String.fromCharCode(65 + (i % 26));
+    }
+
+    function exportToPdf(){
+      if(!studentName){
+        alert("Please enter the student name first.");
+        return;
+      }
+      if(state.questions.length === 0){
+        generateNewSet();
+      }
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+
+      const perPage = parseInt(document.getElementById("perPageSelect").value, 10) || 3;
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const margin = 12;
+      const lineH = 6;
+
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, {year:"numeric", month:"short", day:"2-digit", hour:"2-digit", minute:"2-digit"});
+
+      const setName = setNameFromIndex(state.setIndex-1);
+
+      const totalQ = state.questions.length;
+      const qPages = Math.ceil(totalQ / perPage);
+      const ansPerPage = 24;
+      const aPages = Math.ceil(totalQ / ansPerPage);
+      const totalPagesAll = qPages + aPages;
+
+      function header(title, pageNum){
+        pdf.setFont("helvetica","bold");
+        pdf.setFontSize(14);
+        pdf.text(title, margin, margin);
+
+        pdf.setFont("helvetica","normal");
+        pdf.setFontSize(11);
+        pdf.text(`Student: ${studentName}`, margin, margin + 7);
+        pdf.text(`Set ${setName} • ${dateStr}`, pageW - margin, margin + 7, {align:"right"});
+
+        pdf.setDrawColor(220);
+        pdf.line(margin, margin + 10, pageW - margin, margin + 10);
+
+        pdf.setFontSize(10);
+        pdf.setTextColor(120);
+        pdf.text(`Page ${pageNum} / ${totalPagesAll}`, pageW - margin, pageH - 8, {align:"right"});
+        pdf.text("DYAA Education", margin, pageH - 8);
+        pdf.setTextColor(0);
+      }
+
+      function addWrappedText(text, x, y, maxW){
+        const lines = pdf.splitTextToSize(text, maxW);
+        pdf.text(lines, x, y);
+        return y + lines.length * lineH;
+      }
+
+      function drawLine(x1, y, w){
+        pdf.setDrawColor(30);
+        pdf.line(x1, y, x1 + w, y);
+      }
+
+      // Question pages
+      let pageNum = 1;
+      let qIndex = 0;
+
+      for(let p=0; p<qPages; p++){
+        if(p>0) pdf.addPage();
+        header("Ratio — Practice", pageNum++);
+
+        let y = margin + 18;
+        const start = p * perPage;
+        const end = Math.min(totalQ, start + perPage);
+
+        for(let i=start; i<end; i++){
+          const q = state.questions[i];
+          pdf.setFont("helvetica","bold");
+          pdf.setFontSize(11);
+          pdf.text(`Q${i+1}`, margin, y);
+          pdf.setFont("helvetica","normal");
+          pdf.setFontSize(11);
+          pdf.text(q.tag, pageW - margin, y, {align:"right"});
+          y += 6;
+
+          const plain = htmlToPlainText(q.promptHTML);
+          y = addWrappedText(plain, margin, y, pageW - margin*2);
+
+          // Answer lines (2 lines space like your preference)
+          y += 2;
+          pdf.setFontSize(10);
+          pdf.text("Answer:", margin, y);
+
+          // Draw line(s) depending on number of inputs
+          const inputCount = (q.inputHTML.match(/<input/g) || []).length;
+          const lineX = margin + 16;
+          const lineW = pageW - margin - lineX;
+
+          if(inputCount <= 1){
+            drawLine(lineX, y, lineW);
+            y += lineH * 2;
+          }else{
+            // multiple answers
+            const labels = ["1","2","3","4","5"];
+            for(let k=0;k<inputCount;k++){
+              pdf.text(`${labels[k]}.`, margin + 12, y);
+              drawLine(lineX, y, lineW);
+              y += lineH;
+            }
+            y += lineH; // extra blank line
+          }
+
+          // separator
+          pdf.setDrawColor(230);
+          pdf.line(margin, y-2, pageW - margin, y-2);
+          y += 2;
+        }
+      }
+
+      // Answer key pages
+      for(let ap=0; ap<aPages; ap++){
+        pdf.addPage();
+        header("Answer Key", pageNum++);
+
+        let y = margin + 18;
+        const start = ap * ansPerPage;
+        const end = Math.min(totalQ, start + ansPerPage);
+
+        pdf.setFont("helvetica","normal");
+        pdf.setFontSize(11);
+
+        for(let i=start; i<end; i++){
+          const q = state.questions[i];
+          const line = `Q${i+1}: ${q.answerText}`;
+          y = addWrappedText(line, margin, y, pageW - margin*2);
+          y += 1;
+          if(y > pageH - 18){
+            // unlikely here, but safe
+            pdf.addPage();
+            header("Answer Key (cont.)", pageNum++);
+            y = margin + 18;
+          }
+        }
+      }
+
+      const fileStudent = safeFileNamePart(studentName);
+      pdf.save(`DYAA_Ratio_${fileStudent}_Set_${setName}.pdf`);
+    }
+
+    /***********************
+     * Render + checking
+     ************************/
+    const tabs = document.querySelectorAll(".tab-btn");
+    const learnSection = document.getElementById("learnSection");
+    const practiceSection = document.getElementById("practiceSection");
+    const practiceControls = document.getElementById("practiceControls");
+    const questionsWrap = document.getElementById("questionsWrap");
+
+    const countSelect = document.getElementById("countSelect");
+    const scoreValue = document.getElementById("scoreValue");
+    const progressLabel = document.getElementById("progressLabel");
+    const setLabel = document.getElementById("setLabel");
+
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const cancelModalBtn = document.getElementById("cancelModalBtn");
+    const confirmModalBtn = document.getElementById("confirmModalBtn");
+
+    const nameBackdrop = document.getElementById("nameBackdrop");
+    const nameInput = document.getElementById("nameInput");
+    const startWithNameBtn = document.getElementById("startWithNameBtn");
+    const cancelNameBtn = document.getElementById("cancelNameBtn");
+
+    const newSetBtn = document.getElementById("newSetBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const showAllBtn = document.getElementById("showAllBtn");
+    const exportPdfBtn = document.getElementById("exportPdfBtn");
+
+    let state = {
+      setIndex: 0,
+      questions: [],
+      checked: new Set(),
+      results: new Map(), // idx -> boolean
+    };
+
+    function renderQuestions(){
+      questionsWrap.innerHTML = "";
+      state.questions.forEach((q, idx)=>{
+        const card = document.createElement("div");
+        card.className = "q-card";
+        card.dataset.qindex = String(idx);
+
+        card.innerHTML = `
+          <div class="q-head">
+            <div class="q-num">Q${idx+1}</div>
+            <div class="q-topic">${escapeHTML(q.tag)}</div>
+          </div>
+          <div class="q-body">${q.promptHTML}</div>
+          <div class="q-input">${q.inputHTML}</div>
+          <div class="q-actions">
+            <button class="btn primary" data-action="check">Check</button>
+            <button class="btn secondary" data-action="hint">Hint</button>
+            <button class="btn secondary" data-action="reveal">Reveal</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+        `;
+        questionsWrap.appendChild(card);
+      });
+    }
+
+    function updateProgress(){
+      progressLabel.textContent = `${state.checked.size} checked`;
+    }
+
+    function showFeedback(card, ok, title, html){
+      const fb = card.querySelector(".feedback");
+      fb.classList.add("show");
+      fb.classList.toggle("ok", !!ok);
+      fb.classList.toggle("bad", !ok);
+      fb.innerHTML = `
+        <div class="title" style="color:${ok ? "var(--ok)" : "var(--bad)"}">${title}</div>
+        <div>${html}</div>
+      `;
+    }
+
+    function checkOne(card){
+      const idx = parseInt(card.dataset.qindex, 10);
+      const q = state.questions[idx];
+
+      const userVals = q.getUser(card);
+      const res = q.isCorrect(userVals);
+
+      state.checked.add(idx);
+      state.results.set(idx, res.ok);
+
+      showFeedback(
+        card,
+        res.ok,
+        res.ok ? "✅ Correct" : "❌ Not quite",
+        res.ok
+          ? `${q.explainHTML}`
+          : `${escapeHTML(res.msg)}<div class="rule"></div><b>Hint:</b> ${q.hintHTML}<div class="rule"></div>${q.explainHTML}`
+      );
+
+      updateProgress();
+      return res.ok;
+    }
+
+    function resetAnswers(){
+      state.checked = new Set();
+      state.results = new Map();
+      scoreValue.textContent = "—";
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const fb = card.querySelector(".feedback");
+        fb.className = "feedback";
+        fb.innerHTML = "";
+        card.querySelectorAll("input").forEach(i => i.value = "");
+      });
+      updateProgress();
+    }
+
+    function generateNewSet(){
+      const count = parseInt(countSelect.value, 10);
+      state.setIndex++;
+      state.questions = buildQuestionSet(count, state.setIndex);
+      state.checked = new Set();
+      state.results = new Map();
+      setLabel.textContent = `Set: ${setNameFromIndex(state.setIndex-1)}`;
+      scoreValue.textContent = "—";
+      renderQuestions();
+      updateProgress();
+      practiceSection.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    function submitAll(){
+      let correct = 0;
+      state.questions.forEach((_, idx)=>{
+        const card = document.querySelector(`.q-card[data-qindex="${idx}"]`);
+        const ok = checkOne(card);
+        if(ok) correct++;
+      });
+      scoreValue.textContent = `${correct} / ${state.questions.length}`;
+      scoreValue.style.fontWeight = "900";
+    }
+
+    function showAllExplanations(){
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const idx = parseInt(card.dataset.qindex,10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "📌 Explanation", q.explainHTML);
+      });
+    }
+
+    /***********************
+     * Tabs + Name gating
+     ************************/
+    function openNameModal(){
+      nameBackdrop.classList.add("show");
+      nameBackdrop.setAttribute("aria-hidden","false");
+      nameInput.value = "";
+      setTimeout(()=> nameInput.focus(), 50);
+    }
+    function closeNameModal(){
+      nameBackdrop.classList.remove("show");
+      nameBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    function setTab(tab){
+      tabs.forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      const isPractice = tab === "practice";
+      learnSection.classList.toggle("active", !isPractice);
+      practiceSection.classList.toggle("active", isPractice);
+      practiceControls.style.display = isPractice ? "flex" : "none";
+
+      if(isPractice){
+        if(!studentName){
+          openNameModal();
+          setPracticeButtonsEnabled(false);
+          return;
+        }
+        if(state.questions.length === 0){
+          generateNewSet();
+        }
+      }
+    }
+
+    tabs.forEach(btn=>{
+      btn.addEventListener("click", ()=> setTab(btn.dataset.tab));
+    });
+
+    // Name modal actions
+    startWithNameBtn.addEventListener("click", ()=>{
+      const v = sanitizeName(nameInput.value);
+      if(!v){
+        alert("Please enter a student name.");
+        nameInput.focus();
+        return;
+      }
+      setStudentName(v);
+      closeNameModal();
+      if(practiceSection.classList.contains("active") && state.questions.length === 0){
+        generateNewSet();
+      }
+    });
+
+    nameInput.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter"){
+        e.preventDefault();
+        startWithNameBtn.click();
+      }
+      if(e.key === "Escape"){
+        e.preventDefault();
+        cancelNameBtn.click();
+      }
+    });
+
+    cancelNameBtn.addEventListener("click", ()=>{
+      closeNameModal();
+      setTab("learn");
+    });
+
+    /***********************
+     * New-set confirm modal
+     ************************/
+    function openModal(){
+      modalBackdrop.classList.add("show");
+      modalBackdrop.setAttribute("aria-hidden","false");
+    }
+    function closeModal(){
+      modalBackdrop.classList.remove("show");
+      modalBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    newSetBtn.addEventListener("click", openModal);
+    cancelModalBtn.addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", (e)=>{
+      if(e.target === modalBackdrop) closeModal();
+    });
+    confirmModalBtn.addEventListener("click", ()=>{
+      closeModal();
+      generateNewSet();
+    });
+
+    questionsWrap.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button");
+      if(!btn) return;
+      const action = btn.dataset.action;
+      const card = e.target.closest(".q-card");
+      if(!card) return;
+
+      if(action === "check"){
+        checkOne(card);
+      }else if(action === "hint"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "💡 Hint", q.hintHTML);
+      }else if(action === "reveal"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "🧠 Solution", q.explainHTML);
+      }
+    });
+
+    resetBtn.addEventListener("click", resetAnswers);
+    submitBtn.addEventListener("click", submitAll);
+    showAllBtn.addEventListener("click", showAllExplanations);
+
+    /***********************
+     * PDF
+     ************************/
+    exportPdfBtn.addEventListener("click", ()=>{
+      if(!practiceSection.classList.contains("active")) setTab("practice");
+      if(!studentName){
+        openNameModal();
+        return;
+      }
+      if(state.questions.length === 0) generateNewSet();
+      exportToPdf();
+    });
+
+    /***********************
+     * Init
+     ************************/
+    (function init(){
+      setPracticeButtonsEnabled(false);
+      const urlName = getNameFromUrl();
+      if(urlName){
+        setStudentName(urlName);
+      }else{
+        setStudentName("");
+      }
+    })();
+  </script>
+</body>
+</html>
