@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Logarithms — Laws, Equations & Graphs — DYAA</title>
+
+  <style>
+
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --purple:#6a1b9a;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --stroke:#111;
+      --radius:18px;
+    }
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .select{
+      appearance:none;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:10px;
+      padding:7px 10px;
+      font-weight:900;
+      color:var(--ink);
+      cursor:pointer;
+      outline:none;
+    }
+    .select:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:900;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:900;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+    }
+    .btn.orange{
+      background:var(--orange);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(255,152,0,0.20);
+    }
+    .btn.purple{
+      background:var(--purple);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(106,27,154,0.20);
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:1000;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card p{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .learn-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:14px;
+      margin-top:12px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .learn-grid{grid-template-columns:1fr;}
+    }
+
+    .mini-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .mini-table th, .mini-table td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    .mini-table th{
+      background:#f5f8ff;
+      color:var(--blue);
+      font-weight:1000;
+    }
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:1000;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .q-body{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:12px;
+      margin-top:10px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .q-body{grid-template-columns:1fr;}
+    }
+
+    .svg-wrap{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:12px 12px 10px 12px;
+      overflow:hidden;
+    }
+    .svg-wrap svg{
+      display:block;
+      width:100%;
+      height:auto;
+      overflow:hidden;
+    }
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      min-width:240px;
+      max-width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .hint-box{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(13,71,161,0.35);
+      background:#f5f8ff;
+      color:#1a2b55;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .hint-box.show{display:block;}
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+    .feedback.ok{color:var(--ok);font-weight:1000;}
+    .feedback.bad{color:var(--bad);font-weight:1000;}
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    /* =========================
+       PDF Export (offscreen pages)
+       ========================= */
+    .export-root{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:210mm;
+      height:auto;
+      overflow:hidden;
+      background:#fff;
+    }
+    .export-page{
+      width:210mm;
+      height:297mm;
+      background:#fff;
+      padding:12mm;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .export-header{
+      height:20mm;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10mm;
+    }
+    .export-title{
+      font-weight:1000;
+      font-size:16px;
+      color:#111;
+      line-height:1.1;
+    }
+    .export-sub{
+      margin-top:2mm;
+      font-size:11px;
+      color:#555;
+      font-weight:900;
+      line-height:1.25;
+    }
+    .export-content{
+      height: calc(297mm - 12mm - 12mm - 20mm);
+      overflow:hidden;
+    }
+    .export-qgrid{
+      width:100%;
+      display:grid;
+      align-content:start;
+      align-items:start;
+      justify-items:stretch;
+      min-height:0;
+    }
+    .export-qgrid.two{
+      grid-template-columns:1fr;
+      grid-auto-rows:auto;
+      gap:8mm;
+    }
+    .export-qgrid.three{
+      grid-template-columns:1fr;
+      grid-auto-rows:auto;
+      gap:4mm;
+    }
+    .export-qgrid.six{
+      grid-template-columns:1fr 1fr;
+      grid-auto-rows:auto;
+      gap:5mm;
+    }
+    .export-q{
+      border:1px solid #ddd;
+      border-radius:10px;
+      padding:6mm;
+      display:flex;
+      flex-direction:column;
+      gap:3mm;
+      min-height:0;
+      overflow:hidden;
+    }
+    .export-q .qprompt{
+      font-weight:900;
+      font-size:12px;
+      color:#111;
+      line-height:1.2;
+    }
+    .export-qgrid.six .qprompt{font-size:11px;}
+
+    .export-diagram{
+      border:1px solid #e6e6e6;
+      border-radius:9px;
+      padding:3mm;
+      display:flex;
+      align-items:flex-start;
+      justify-content:flex-start;
+      overflow:hidden;
+    }
+    .export-qgrid.two .export-diagram{max-height:120mm;}
+    .export-qgrid.three .export-diagram{max-height:85mm;}
+    .export-qgrid.six .export-diagram{max-height:65mm;}
+
+    .export-diagram svg{
+      width:100%;
+      height:auto;
+      max-height:100%;
+      display:block;
+      overflow:hidden;
+    }
+
+    .answers-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:4mm 10mm;
+      align-content:start;
+      font-size:13px;
+      font-weight:900;
+      color:#111;
+    }
+    .answers-note{
+      margin-top:3mm;
+      font-size:11px;
+      color:#666;
+      font-weight:900;
+    }
+  
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1 id="pageTitle">Logarithms — Laws, Equations & Graphs</h1>
+        <div class="sub" id="pageSubtitle">Learn • Practice • Timer • PDF export</div>
+      </div>
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="row">
+      <div class="pill">
+        <b>Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <b>Time:</b>
+        <span id="timerValue">00:00</span>
+        <span id="timerStatus" class="muted" style="font-weight:900;"></span>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <div class="pill">
+          <b>PDF per page</b>
+          <select id="pdfPerPage" class="select" aria-label="PDF per page">
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+
+        <div class="pill">
+          <b>Questions</b>
+          <select id="questionCount" class="select" aria-label="Total questions">
+            <option value="12">12</option>
+            <option value="18">18</option>
+            <option value="24" selected>24</option>
+            <option value="30">30</option>
+          </select>
+        </div>
+
+        <button class="btn orange" id="pauseBtn" type="button">Pause</button>
+        <button class="btn orange" id="newSetBtn" type="button">Generate New Set</button>
+        <button class="btn purple" id="exportQuestionsBtn" type="button">Export PDF (Questions + Answers)</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    <!-- LEARN -->
+    <div class="panel active" id="panel-learn">
+      <div class="learn-card">
+        <h2>Logarithms — Detailed Guide</h2>
+
+        <p>
+          A <b>logarithm</b> answers the question: <i>"What exponent gives this number?"</i><br>
+          The logarithm is the inverse of an exponential.
+        </p>
+
+        <div class="note" style="margin-top:8px;">
+          <b>Definition</b><br>
+          <b>log<sub>b</sub>(x) = y</b> means <b>b<sup>y</sup> = x</b><br>
+          where <b>b &gt; 0</b>, <b>b ≠ 1</b>, and <b>x &gt; 0</b>.
+        </div>
+
+        
+        <h3 style="margin-top:12px;">1) Notation & key reminders (lg and ln)</h3>
+        <div class="note">
+          <b>Things to watch out for</b>
+          <ul style="margin:8px 0 0 18px; padding:0; line-height:1.55;">
+            <li><b>Domain:</b> for real logarithms you must have <b>x &gt; 0</b>. (So <b>log(0)</b> and <b>log(−2)</b> are undefined in real numbers.)</li>
+            <li><b>Base conditions:</b> <b>b &gt; 0</b> and <b>b ≠ 1</b>.</li>
+            <li><b>Key facts:</b> <b>log<sub>b</sub>(1) = 0</b> and <b>log<sub>b</sub>(b) = 1</b>.</li>
+            <li><b>Inverse relationship:</b> <b>b<sup>log<sub>b</sub>(x)</sup> = x</b> and <b>log<sub>b</sub>(b<sup>x</sup>) = x</b>.</li>
+            <li><b>After solving equations:</b> always <b>check the domain</b> — any solution that makes a log input ≤ 0 must be rejected.</li>
+            <li><b>Graph behaviour:</b> if <b>b &gt; 1</b> then <b>y = log<sub>b</sub>(x)</b> increases; if <b>0 &lt; b &lt; 1</b> then it decreases.</li>
+            <li><b>Notation:</b> <b>lg(x)</b> usually means <b>log<sub>10</sub>(x)</b> (common log). <b>ln(x)</b> means <b>log<sub>e</sub>(x)</b> (natural log), where <b>e ≈ 2.71828</b>.</li>
+            <li><b>Missing base:</b> if the base is not written (e.g. “log x”), <b>check the context</b> (some courses use base 10; calculus often uses base e).</li>
+          </ul>
+        </div>
+
+        <h3 style="margin-top:12px;">2) Quick reference (approximate values)</h3>
+        <p class="muted" style="line-height:1.6; margin-top:6px;">
+          These are handy calculator-style approximations (rounded to <b>4 decimal places</b>).
+        </p>
+
+        <table class="mini-table" aria-label="Quick reference values for lg and ln">
+          <thead>
+            <tr>
+              <th>x</th>
+              <th>lg(x) = log<sub>10</sub>(x)</th>
+              <th>ln(x) = log<sub>e</sub>(x)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><b>10</b></td><td><b>1</b></td><td>2.3026</td></tr>
+            <tr><td><b>2</b></td><td>0.3010</td><td>0.6931</td></tr>
+            <tr><td><b>3</b></td><td>0.4771</td><td>1.0986</td></tr>
+            <tr><td><b>5</b></td><td>0.6990</td><td>1.6094</td></tr>
+            <tr><td><b>7</b></td><td>0.8451</td><td>1.9459</td></tr>
+            <tr><td><b>e</b></td><td>0.4343</td><td><b>1</b></td></tr>
+            <tr><td><b>0.5</b></td><td>−0.3010</td><td>−0.6931</td></tr>
+            <tr><td><b>0.2</b></td><td>−0.6990</td><td>−1.6094</td></tr>
+            <tr><td><b>0.1</b></td><td><b>−1</b></td><td>−2.3026</td></tr>
+            <tr><td><b>100</b></td><td><b>2</b></td><td>4.6052</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin-top:12px;">3) Worked examples (exact)</h3>
+
+        <table class="mini-table" aria-label="Common log values">
+          <thead>
+            <tr>
+              <th>Example</th>
+              <th>Meaning</th>
+              <th>Answer</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>log<sub>2</sub>(8)</b></td>
+              <td>2 to what power is 8?</td>
+              <td><b>3</b> because 2<sup>3</sup> = 8</td>
+            </tr>
+            <tr>
+              <td><b>log<sub>10</sub>(0.01)</b></td>
+              <td>10 to what power is 0.01?</td>
+              <td><b>−2</b> because 10<sup>−2</sup> = 0.01</td>
+            </tr>
+            <tr>
+              <td><b>log<sub>3</sub>(1)</b></td>
+              <td>3 to what power is 1?</td>
+              <td><b>0</b> because 3<sup>0</sup> = 1</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin-top:12px;">4) Laws of logarithms</h3>
+        <table class="mini-table" aria-label="Log laws">
+          <thead>
+            <tr>
+              <th>Law</th>
+              <th>Rule</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Product</b></td>
+              <td><b>log<sub>b</sub>(MN) = log<sub>b</sub>(M) + log<sub>b</sub>(N)</b></td>
+              <td>M &gt; 0, N &gt; 0</td>
+            </tr>
+            <tr>
+              <td><b>Quotient</b></td>
+              <td><b>log<sub>b</sub>(M/N) = log<sub>b</sub>(M) − log<sub>b</sub>(N)</b></td>
+              <td>M &gt; 0, N &gt; 0</td>
+            </tr>
+            <tr>
+              <td><b>Power</b></td>
+              <td><b>log<sub>b</sub>(M<sup>p</sup>) = p · log<sub>b</sub>(M)</b></td>
+              <td>Works for any real p (as long as M &gt; 0)</td>
+            </tr>
+            <tr>
+              <td><b>Change of base</b></td>
+              <td><b>log<sub>b</sub>(x) = log<sub>k</sub>(x) / log<sub>k</sub>(b)</b></td>
+              <td>Often use k = 10 or k = e</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin-top:12px;">5) Solving logarithmic equations</h3>
+        <p class="muted" style="line-height:1.6;">
+          A common method is to <b>convert to exponential form</b>. After solving, always <b>check the domain</b>
+          (the log input must be positive).
+        </p>
+        <details>
+          <summary><b>Example — Solve log<sub>3</sub>(x − 2) = 4</b></summary>
+          <div class="muted" style="margin-top:8px; line-height:1.6;">
+            Convert to exponential form: <b>3<sup>4</sup> = x − 2</b><br>
+            So <b>x − 2 = 81</b> → <b>x = 83</b><br>
+            Check domain: x − 2 &gt; 0 → x &gt; 2 (83 is valid).
+          </div>
+        </details>
+
+        <h3 style="margin-top:12px;">6) Graph features of y = log<sub>b</sub>(x)</h3>
+        <table class="mini-table" aria-label="Graph features">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>What it is</th>
+              <th>Key fact</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Domain</b></td>
+              <td>All x-values allowed</td>
+              <td><b>x &gt; 0</b></td>
+            </tr>
+            <tr>
+              <td><b>Range</b></td>
+              <td>All y-values possible</td>
+              <td><b>All real numbers</b></td>
+            </tr>
+            <tr>
+              <td><b>Vertical asymptote</b></td>
+              <td>Where the graph approaches but never touches</td>
+              <td><b>x = 0</b></td>
+            </tr>
+            <tr>
+              <td><b>Intercept</b></td>
+              <td>Where the graph crosses an axis</td>
+              <td><b>(1, 0)</b> because log<sub>b</sub>(1) = 0</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="note" style="margin-top:10px;">
+          <b>Transformations</b><br>
+          For <b>y = a·log<sub>b</sub>(x − h) + k</b>:<br>
+          • <b>h</b> shifts the graph left/right, and the vertical asymptote becomes <b>x = h</b>.<br>
+          • <b>k</b> shifts up/down.<br>
+          • <b>a</b> stretches vertically; if <b>a &lt; 0</b> it reflects across the x-axis.
+        </div>
+
+        <div class="learn-grid" style="margin-top:12px;">
+          <div class="muted">
+            <b>Answer formats in this quiz:</b><br>
+            • A number (e.g. <b>3</b>, <b>-2</b>, <b>1.5</b>, <b>3/2</b>)<br>
+            • A point as <b>x,y</b> or <b>(x,y)</b><br>
+            • Two solutions as <b>x1,x2</b> (either order is fine)<br><br>
+            <b>Tip:</b> If the question asks for the <b>asymptote value</b>, give just the number <b>h</b>
+            (not “x = h”).
+          </div>
+          <div class="svg-wrap" id="learnSvgWrap"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted" id="instructionsText">Follow the answer format written in each question.</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result (TXT)</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3>Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Offscreen export root (used for PDF rendering) -->
+  <div id="exportRoot" class="export-root" aria-hidden="true"></div>
+
+  <!-- PDF libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    /********************
+     * META
+     ********************/
+    const TEMPLATE_META = {
+      title: "Logarithms — Laws, Equations & Graphs — DYAA",
+      subtitle: "Learn • Practice • Timer • PDF export",
+      filePrefix: "DYAA_Logarithms",
+      instructions: "Follow the answer format written in each question."
+    };
+
+    /********************
+     * Helpers
+     ********************/
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function randint(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+    function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;");
+    }
+
+    /********************
+     * Math display helpers (log formatting)
+     ********************/
+    const SUB_DIGIT = { "0":"₀","1":"₁","2":"₂","3":"₃","4":"₄","5":"₅","6":"₆","7":"₇","8":"₈","9":"₉","-":"₋","+":"₊" };
+    const SUP_DIGIT = { "0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵","6":"⁶","7":"⁷","8":"⁸","9":"⁹","-":"⁻","+":"⁺" };
+    function toSubDigits(str){
+      return String(str).split("").map(ch => SUB_DIGIT[ch] || ch).join("");
+    }
+    function toSupDigits(str){
+      return String(str).split("").map(ch => SUP_DIGIT[ch] || ch).join("");
+    }
+    // For SVG text (no HTML): use Unicode subscripts/superscripts where possible.
+    function prettySvgMath(s){
+      if(s == null) return "";
+      let t = String(s);
+      t = t.replace(/log_([0-9]+)/g, (_,b)=> "log" + toSubDigits(b));
+      // simple integer exponents like 10^3, 2^-1
+      t = t.replace(/\b([0-9A-Za-z]+)\^([+\-]?\d+)\b/g, (_,base,exp)=> base + toSupDigits(exp));
+      return t;
+    }
+    // For HTML (Practice prompt/hints): render log base as subscript and exponents as superscript.
+    function mathifyHTML(text){
+      let s = escapeHtml(text ?? "");
+      s = s.replace(/log_([0-9]+)\(/g, 'log<sub>$1</sub>(');
+      s = s.replace(/\bln\(/g, 'ln(');
+      s = s.replace(/\blg\(/g, 'lg(');
+      // powers like 10^3, e^x, x^2
+      s = s.replace(/\b([0-9A-Za-z]+)\^([+\-]?[0-9A-Za-z]+)\b/g, '$1<sup>$2</sup>');
+      return s;
+    }
+
+
+    /********************
+     * Timer + Pause/Resume
+     ********************/
+    const TIMER = { seconds: 0, running: true, id: null };
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function formatTime(sec){
+      sec = Math.max(0, Math.floor(sec));
+      const m = Math.floor(sec/60);
+      const s = sec % 60;
+      return `${pad2(m)}:${pad2(s)}`;
+    }
+    function updateTimerUI(){
+      $("#timerValue").textContent = formatTime(TIMER.seconds);
+      $("#timerStatus").textContent = TIMER.running ? "" : "(Paused)";
+      $("#pauseBtn").textContent = TIMER.running ? "Pause" : "Resume";
+    }
+    function startTimerTick(){
+      if(TIMER.id) clearInterval(TIMER.id);
+      TIMER.id = setInterval(() => {
+        if(TIMER.running){
+          TIMER.seconds += 1;
+          updateTimerUI();
+        }
+      }, 1000);
+    }
+    function resetTimer(){
+      TIMER.seconds = 0;
+      TIMER.running = true;
+      updateTimerUI();
+    }
+    function togglePause(){
+      TIMER.running = !TIMER.running;
+      updateTimerUI();
+    }
+    $("#pauseBtn").addEventListener("click", togglePause);
+
+    /********************
+     * Number + point parsing
+     ********************/
+    function parseNumber(input){
+      if(input == null) return null;
+      let s = String(input).trim();
+      if(!s) return null;
+
+      // Remove labels like "x=", "y=", etc.
+      s = s.replace(/^[a-zA-Z]\s*=\s*/g, "");
+      s = s.replace(/\s+/g,"");
+
+      // fraction a/b
+      if(/^[+-]?\d+\/\d+$/.test(s)){
+        const [n,d] = s.split("/");
+        const dn = Number(d);
+        if(!Number.isFinite(dn) || dn === 0) return null;
+        return Number(n)/dn;
+      }
+
+      // decimal or integer
+      if(!/^[+-]?\d+(\.\d+)?$/.test(s)) return null;
+      const v = Number(s);
+      if(!Number.isFinite(v)) return null;
+      return v;
+    }
+
+    function parseTwoNumbers(input){
+      if(input == null) return null;
+      let s = String(input).trim();
+      if(!s) return null;
+
+      s = s.replace(/[()]/g,"");
+      s = s.replace(/;/g, ",");
+      s = s.replace(/x\s*=\s*/ig, "");
+      s = s.replace(/y\s*=\s*/ig, "");
+
+      const parts = s.split(/[, ]+/).filter(Boolean);
+      if(parts.length !== 2) return null;
+
+      const a = parseNumber(parts[0]);
+      const b = parseNumber(parts[1]);
+      if(a == null || b == null) return null;
+      return [a,b];
+    }
+
+    function approxEq(a,b,eps=1e-9){ return Math.abs(a-b) <= eps; }
+    function fmtNumber(n){
+      if(n == null) return "?";
+      const r = Math.round(n);
+      if(Math.abs(n - r) < 1e-9) return String(r);
+
+      // show halves nicely when possible
+      const twice = Math.round(n*2);
+      if(Math.abs(n - twice/2) < 1e-9){
+        if(twice % 2 === 0) return String(twice/2);
+        return (twice/2).toFixed(1).replace(/\.0$/,"");
+      }
+      return n.toFixed(3).replace(/\.?0+$/,"");
+    }
+    function fmtPoint(p){ return p ? `(${fmtNumber(p[0])}, ${fmtNumber(p[1])})` : "(?, ?)"; }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * Formatting helpers (logs)
+     ********************/
+    function fmtLogArg(varName, h){
+      if(Math.abs(h) < 1e-9) return varName;
+      return (h > 0) ? `${varName} − ${fmtNumber(Math.abs(h))}` : `${varName} + ${fmtNumber(Math.abs(h))}`;
+    }
+
+    function fmtLogFunction(a, b, h, k, varName="x"){
+      const arg = fmtLogArg(varName, h);
+      const base = `log_${b}(${arg})`;
+      const aStr = (a === 1) ? "" : (a === -1 ? "−" : `${fmtNumber(a)}·`);
+      const main = `${aStr}${base}`;
+      if(Math.abs(k) < 1e-9) return `y = ${main}`;
+      if(k > 0) return `y = ${main} + ${fmtNumber(k)}`;
+      return `y = ${main} − ${fmtNumber(Math.abs(k))}`;
+    }
+
+    function logBase(b, x){
+      return Math.log(x) / Math.log(b);
+    }
+
+    /********************
+     * SVG helpers
+     ********************/
+    function cardSvg({label="", line1="", line2="", line3=""}){
+      const lines = [line1, line2, line3].filter(Boolean);
+      const L = lines.map((t,i)=>`<text x="16" y="${60 + i*22}" style="font: 15px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill: rgba(0,0,0,0.85);">${escapeHtml(prettySvgMath(t))}</text>`).join("");
+      return `
+        <svg viewBox="0 0 360 250" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Logarithms card">
+          <rect x="6" y="6" width="348" height="238" rx="14" fill="#ffffff" stroke="#111" stroke-width="1.5"></rect>
+          <rect x="6" y="6" width="348" height="34" rx="14" fill="rgba(13,71,161,0.06)" stroke="none"></rect>
+          <text x="14" y="29" style="font: 13px 'Segoe UI', Tahoma, sans-serif; font-weight: 1000; fill: #0d47a1;">
+            ${escapeHtml(prettySvgMath(label))}
+          </text>
+          ${L}
+        </svg>
+      `;
+    }
+
+    function logGraphSvg({a=1, b=2, h=0, k=0, label="", showAsymptote=true, showKeyPoint=true, showPoint=null}){
+      const W = 360, H = 250;
+      const mL = 26, mR = 12, mT = 16, mB = 20;
+      const plotW = W - mL - mR;
+      const plotH = H - mT - mB;
+
+      // ranges
+      const xMin = -4, xMax = 12;
+      const yMin = -6, yMax = 6;
+
+      const xToPx = (x) => mL + (x - xMin) * (plotW / (xMax - xMin));
+      const yToPx = (y) => mT + (yMax - y) * (plotH / (yMax - yMin));
+
+      const xAxisY = yToPx(0);
+      const yAxisX = xToPx(0);
+
+      // grid
+      const grid = [];
+      for(let xi=Math.ceil(xMin); xi<=Math.floor(xMax); xi++){
+        const xpx = xToPx(xi);
+        const major = (xi % 2 === 0);
+        grid.push(`<line x1="${xpx}" y1="${mT}" x2="${xpx}" y2="${mT+plotH}" stroke="${major ? 'rgba(0,0,0,0.10)' : 'rgba(0,0,0,0.06)'}" stroke-width="1"></line>`);
+      }
+      for(let yi=yMin; yi<=yMax; yi++){
+        const ypx = yToPx(yi);
+        const major = (yi % 2 === 0);
+        grid.push(`<line x1="${mL}" y1="${ypx}" x2="${mL+plotW}" y2="${ypx}" stroke="${major ? 'rgba(0,0,0,0.10)' : 'rgba(0,0,0,0.06)'}" stroke-width="1"></line>`);
+      }
+
+      // curve samples (x > h)
+      const xStart = Math.max(h + 0.06, xMin);
+      const step = 0.08;
+      let d = "";
+      let penDown = false;
+
+      for(let x = xStart; x <= xMax + 1e-9; x += step){
+        const t = x - h;
+        if(t <= 0){ penDown = false; continue; }
+        const y = a*logBase(b, t) + k;
+
+        if(!Number.isFinite(y) || y < yMin-2 || y > yMax+2){
+          penDown = false;
+          continue;
+        }
+
+        const px = xToPx(x);
+        const py = yToPx(y);
+        if(!penDown){
+          d += `M ${px.toFixed(2)} ${py.toFixed(2)} `;
+          penDown = true;
+        } else {
+          d += `L ${px.toFixed(2)} ${py.toFixed(2)} `;
+        }
+      }
+
+      const asymptoteLine = showAsymptote
+        ? `<line x1="${xToPx(h)}" y1="${mT}" x2="${xToPx(h)}" y2="${mT+plotH}" stroke="rgba(255,152,0,0.85)" stroke-width="2" stroke-dasharray="6 5"></line>`
+        : "";
+
+      // key point at x = h + 1 -> y = k
+      const keyPoint = showKeyPoint
+        ? (() => {
+            const xk = h + 1;
+            if(xk <= xMax){
+              return `
+                <circle cx="${xToPx(xk)}" cy="${yToPx(k)}" r="4.8" fill="rgba(13,71,161,0.95)"></circle>
+                <text x="${clamp(xToPx(xk)+8, 18, 330)}" y="${clamp(yToPx(k)-8, 24, 230)}" style="font: 12px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill: rgba(13,71,161,0.95);">
+                  (h+1, k)
+                </text>
+              `;
+            }
+            return "";
+          })()
+        : "";
+
+      // optional point
+      let pDotEl = "";
+      if(showPoint && typeof showPoint.x === "number" && typeof showPoint.y === "number"){
+        pDotEl = `
+          <circle cx="${xToPx(showPoint.x)}" cy="${yToPx(showPoint.y)}" r="4.6" fill="rgba(106,27,154,0.95)"></circle>
+          ${showPoint.label ? `<text x="${clamp(xToPx(showPoint.x)+8, 18, 330)}" y="${clamp(yToPx(showPoint.y)-8, 24, 230)}" style="font: 12px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill: rgba(106,27,154,0.95);">${escapeHtml(showPoint.label)}</text>` : ""}
+        `;
+      }
+
+      return `
+        <svg viewBox="0 0 360 250" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Logarithm graph">
+          <rect x="6" y="6" width="348" height="238" rx="14" fill="#ffffff" stroke="#111" stroke-width="1.5"></rect>
+          <rect x="6" y="6" width="348" height="34" rx="14" fill="rgba(13,71,161,0.06)" stroke="none"></rect>
+          <text x="14" y="29" style="font: 13px 'Segoe UI', Tahoma, sans-serif; font-weight: 1000; fill: #0d47a1;">
+            ${escapeHtml(prettySvgMath(label))}
+          </text>
+
+          <g>
+            ${grid.join("")}
+
+            <!-- axes -->
+            <line x1="${mL}" y1="${xAxisY}" x2="${mL+plotW}" y2="${xAxisY}" stroke="rgba(0,0,0,0.55)" stroke-width="1.4"></line>
+            <line x1="${yAxisX}" y1="${mT}" x2="${yAxisX}" y2="${mT+plotH}" stroke="rgba(0,0,0,0.55)" stroke-width="1.4"></line>
+
+            <!-- labels -->
+            <text x="${mL+plotW-10}" y="${clamp(xAxisY-6, 18, 235)}" style="font: 12px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill: rgba(0,0,0,0.65);">x</text>
+            <text x="${clamp(yAxisX+6, 18, 330)}" y="${mT+12}" style="font: 12px 'Segoe UI', Tahoma, sans-serif; font-weight: 900; fill: rgba(0,0,0,0.65);">y</text>
+
+            ${asymptoteLine}
+
+            <!-- curve -->
+            <path d="${d}" fill="none" stroke="rgba(13,71,161,0.90)" stroke-width="2.4"></path>
+
+            ${keyPoint}
+            ${pDotEl}
+          </g>
+        </svg>
+      `;
+    }
+
+    /********************
+     * Question generators
+     ********************/
+    function pickBase(){
+      return choice([2,3,5,10]);
+    }
+
+    function powExact(b, k){
+      if(k >= 0) return Math.pow(b, k);
+      return 1 / Math.pow(b, -k);
+    }
+
+    function makeEvaluateLogExact(){
+      const b = pickBase();
+      const k = choice([randint(-3,-1), 0, 1, 2, 3, 4]);
+      const x = powExact(b, k);
+      const xStr = (Number.isInteger(x)) ? String(x) : fmtNumber(x);
+      const expr = `log_${b}(${xStr})`;
+      return {
+        difficulty: "easy",
+        prompt: `Evaluate ${expr}. Answer format: number`,
+        hint: `If log_${b}(x) = k, then b^k = x. Here, ${xStr} = ${b}^${k}.`,
+        answer: k,
+        answerType: "number",
+        answerDisplay: fmtNumber(k),
+        svg: cardSvg({label:"Evaluate", line1: expr})
+      };
+    }
+
+    function makeEvaluateUsingLaws(){
+      const b = pickBase();
+      const k1 = randint(1,5);
+      const k2 = randint(1,5);
+      const x1 = Math.pow(b, k1);
+      const x2 = Math.pow(b, k2);
+      const op = choice(["+", "-"]);
+      const expr = op === "+"
+        ? `log_${b}(${x1}) + log_${b}(${x2})`
+        : `log_${b}(${x1}) − log_${b}(${x2})`;
+      const ans = op === "+" ? (k1 + k2) : (k1 - k2);
+      return {
+        difficulty: "easy",
+        prompt: `Evaluate ${expr}. Answer format: number`,
+        hint: `Use the fact that log_${b}(b^k) = k.`,
+        answer: ans,
+        answerType: "number",
+        answerDisplay: fmtNumber(ans),
+        svg: cardSvg({label:"Use log values", line1: expr, line2:`(${b}^${k1}, ${b}^${k2})`})
+      };
+    }
+
+    function makeSolveLogEquals(){
+      const b = pickBase();
+      const k = randint(-2,5);
+      const x = powExact(b, k);
+      return {
+        difficulty: "easy",
+        prompt: `Solve for x: log_${b}(x) = ${k}. Answer format: number`,
+        hint: `Convert to exponential form: x = ${b}^${k}.`,
+        answer: x,
+        answerType: "number",
+        answerDisplay: fmtNumber(x),
+        svg: cardSvg({label:"Solve", line1: `log_${b}(x) = ${k}`})
+      };
+    }
+
+    function makeChangeOfBaseNice(){
+      const cases = [
+        {b:4, x:8, ans:1.5},
+        {b:9, x:3, ans:0.5},
+        {b:8, x:2, ans:1/3},
+        {b:27, x:3, ans:1/3},
+        {b:16, x:2, ans:0.25},
+        {b:25, x:5, ans:0.5}
+      ];
+      const c = choice(cases);
+      const expr = `log_${c.b}(${c.x})`;
+      return {
+        difficulty: "medium",
+        prompt: `Evaluate ${expr}. Answer format: number`,
+        hint: `Find y such that ${c.b}^y = ${c.x}.`,
+        answer: c.ans,
+        answerType: "number",
+        answerDisplay: fmtNumber(c.ans),
+        svg: cardSvg({label:"Change of base idea", line1: expr, line2:`Find y: ${c.b}^y = ${c.x}`})
+      };
+    }
+
+    function makeAsymptoteQuestion(){
+      const a = choice([1, -1, 2, -2]);
+      const b = choice([2,3,10]);
+      const h = randint(-2,5);
+      const k = randint(-3,3);
+      const f = fmtLogFunction(a,b,h,k);
+      return {
+        difficulty: "easy",
+        prompt: `For the function ${f}, state the vertical asymptote value h (so the asymptote is x = h). Answer format: number`,
+        hint: `For y = a·log_b(x − h) + k, the vertical asymptote is x = h.`,
+        answer: h,
+        answerType: "number",
+        answerDisplay: `x = ${fmtNumber(h)}`,
+        svg: logGraphSvg({a,b,h,k,label:f, showAsymptote:true, showKeyPoint:true})
+      };
+    }
+
+    function makeSolveShiftedLog(){
+      const b = choice([2,3,5,10]);
+      const h = randint(-2,6);
+      const k = randint(-3,4);
+      const x = h + powExact(b, k);
+      return {
+        difficulty: "medium",
+        prompt: `Solve for x: log_${b}(x − (${fmtNumber(h)})) = ${k}. Answer format: number`,
+        hint: `Convert to exponential form: x − h = b^k, so x = h + b^k.`,
+        answer: x,
+        answerType: "number",
+        answerDisplay: fmtNumber(x),
+        svg: cardSvg({label:"Solve", line1:`log_${b}(x − (${fmtNumber(h)})) = ${k}`, line2:`x = h + b^k`})
+      };
+    }
+
+    function makeSolveLinearInside(){
+      const b = choice([2,3,5,10]);
+      const a = choice([1,2,3]);
+      const c = randint(-6,6);
+      const k = randint(0,4);
+      const rhs = Math.pow(b, k);
+      const num = rhs - c;
+      if(num % a !== 0) return makeSolveLinearInside();
+      const x = num / a;
+      return {
+        difficulty: "medium",
+        prompt: `Solve for x: log_${b}(${a}x + (${fmtNumber(c)})) = ${k}. Answer format: number`,
+        hint: `Convert to exponential form: ${a}x + ${c} = ${b}^${k}.`,
+        answer: x,
+        answerType: "number",
+        answerDisplay: fmtNumber(x),
+        svg: cardSvg({label:"Solve", line1:`log_${b}(${a}x + (${fmtNumber(c)})) = ${k}`, line2:`(Check: ${a}x + ${c} > 0)`})
+      };
+    }
+
+    function makeLogSumEquation(){
+      const b = choice([2,3,5]);
+      const kTotal = randint(3,8);
+      const knownPow = randint(1, kTotal-1);
+      const known = Math.pow(b, knownPow);
+      const ansPow = kTotal - knownPow;
+      const x = Math.pow(b, ansPow);
+      return {
+        difficulty:"medium",
+        prompt:`Solve for x: log_${b}(x) + log_${b}(${known}) = ${kTotal}. Answer format: number`,
+        hint:`Use log_b(M) + log_b(N) = log_b(MN), or compare powers of ${b}.`,
+        answer:x,
+        answerType:"number",
+        answerDisplay: fmtNumber(x),
+        svg: cardSvg({label:"Log laws", line1:`log_${b}(x) + log_${b}(${known}) = ${kTotal}`, line2:`(known = ${b}^${knownPow})`})
+      };
+    }
+
+    function makeXInterceptFromGraph(){
+      const b = choice([2,3,10]);
+      const h = randint(-1,5);
+      const k = randint(-2,2);
+      const x0 = h + powExact(b, -k);
+      const f = fmtLogFunction(1,b,h,k);
+      return {
+        difficulty:"hard",
+        prompt:`For the function ${f}, find the x-intercept. Answer format: x,y`,
+        hint:`Set y = 0: log_b(x − h) = −k, so x − h = b^(−k).`,
+        answer:[x0, 0],
+        answerType:"point",
+        answerDisplay: fmtPoint([x0,0]),
+        svg: logGraphSvg({a:1,b,h,k,label:f, showAsymptote:true, showKeyPoint:true, showPoint:{x:x0,y:0,label:"x-int"}})
+      };
+    }
+
+    function makeValueAtX(){
+      const a = choice([1,2,-1]);
+      const b = choice([2,3,10]);
+      const h = randint(-1,4);
+      const k = randint(-2,3);
+      const x = h + choice([1,2,3,4,5]);
+      const y = a*logBase(b, x-h) + k;
+      const f = fmtLogFunction(a,b,h,k);
+      return {
+        difficulty:"medium",
+        prompt:`For the function ${f}, find y when x = ${fmtNumber(x)}. Answer format: number`,
+        hint:`Substitute x into the function. Make sure x − h > 0.`,
+        answer:y,
+        answerType:"number",
+        answerDisplay: fmtNumber(y),
+        svg: logGraphSvg({a,b,h,k,label:f, showAsymptote:true, showKeyPoint:true, showPoint:{x,y,label:"P"}})
+      };
+    }
+
+    function makeSolveForBase(){
+      const m = choice([2,3,4]);
+      const b = choice([2,3,5]);
+      const N = Math.pow(b, m);
+      return {
+        difficulty:"hard",
+        prompt:`Solve for b (b > 0, b ≠ 1): log_b(${N}) = ${m}. Answer format: number`,
+        hint:`Convert to exponential form: b^${m} = ${N}.`,
+        answer:b,
+        answerType:"number",
+        answerDisplay: fmtNumber(b),
+        svg: cardSvg({label:"Solve for base", line1:`log_b(${N}) = ${m}`, line2:`b^${m} = ${N}`})
+      };
+    }
+
+    function makeQuestions(){
+      const desired = parseInt($('#questionCount').value, 10) || 24;
+      const used = new Set();
+
+      const easyFns = [
+        makeEvaluateLogExact,
+        makeEvaluateUsingLaws,
+        makeSolveLogEquals,
+        makeAsymptoteQuestion
+      ];
+
+      const mediumFns = [
+        makeChangeOfBaseNice,
+        makeSolveShiftedLog,
+        makeSolveLinearInside,
+        makeLogSumEquation,
+        makeValueAtX
+      ];
+
+      const hardFns = [
+        makeXInterceptFromGraph,
+        makeSolveForBase
+      ];
+
+      let easyTarget = Math.max(5, Math.round(desired * 0.40));
+      let hardTarget = Math.max(2, Math.round(desired * 0.20));
+      let mediumTarget = desired - easyTarget - hardTarget;
+
+      const out = [];
+      const buckets = [
+        {fns: easyFns, n: easyTarget, key:"easy"},
+        {fns: mediumFns, n: mediumTarget, key:"medium"},
+        {fns: hardFns, n: hardTarget, key:"hard"}
+      ];
+
+      for(const bucket of buckets){
+        let tries = 0;
+        while(out.filter(q=>q.difficulty===bucket.key).length < bucket.n && tries < 1500){
+          tries++;
+          const q = choice(bucket.fns)();
+          if(!used.has(q.prompt)){ used.add(q.prompt); out.push(q); }
+        }
+      }
+
+      const easy = shuffle(out.filter(q=>q.difficulty==="easy"));
+      const med  = shuffle(out.filter(q=>q.difficulty==="medium"));
+      const hard = shuffle(out.filter(q=>q.difficulty==="hard"));
+      let final = [...easy, ...med, ...hard];
+
+      let tries = 0;
+      while(final.length < desired && tries < 2000){
+        tries++;
+        const q = choice(mediumFns.concat(easyFns).concat(hardFns))();
+        if(!used.has(q.prompt)){ used.add(q.prompt); final.push(q); }
+      }
+
+      return final.slice(0, desired);
+    }
+
+    let QUESTIONS = [];
+    let STATE = { answers:[], checked:[], correct:[], hintShown:[], submitted:false };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+    function niceDiff(d){ return d==="easy" ? "Easy" : d==="medium" ? "Medium" : "Hard"; }
+
+    function parseAnswerByType(type, raw){
+      if(type === "number") return parseNumber(raw);
+      if(type === "point") return parseTwoNumbers(raw);
+      if(type === "twoNumbers") {
+        const p = parseTwoNumbers(raw);
+        if(!p) return null;
+        return p.slice().sort((a,b)=>a-b);
+      }
+      return null;
+    }
+
+    function isCorrect(type, userVal, ans){
+      if(userVal == null) return false;
+      if(type === "number") return approxEq(userVal, ans);
+      if(type === "point") return Array.isArray(userVal) && Array.isArray(ans) && approxEq(userVal[0], ans[0]) && approxEq(userVal[1], ans[1]);
+      if(type === "twoNumbers") return Array.isArray(userVal) && Array.isArray(ans) && userVal.length===2 && ans.length===2 && approxEq(userVal[0], ans[0]) && approxEq(userVal[1], ans[1]);
+      return false;
+    }
+
+    function formatUserValue(type, userVal){
+      if(userVal == null) return "(invalid)";
+      if(type === "number") return fmtNumber(userVal);
+      if(type === "point") return fmtPoint(userVal);
+      if(type === "twoNumbers") return `${fmtNumber(userVal[0])}, ${fmtNumber(userVal[1])}`;
+      return String(userVal);
+    }
+
+    function renderQuestions(){
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const userVal = STATE.answers[idx] ?? "";
+        const checked = !!STATE.checked[idx];
+        const correct = !!STATE.correct[idx];
+        const hintShown = !!STATE.hintShown[idx];
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${mathifyHTML(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="q-body">
+            <div class="svg-wrap">${q.svg || ""}</div>
+
+            <div class="answer-area">
+              <div class="input-row">
+                <input type="text" autocomplete="off"
+                  id="ans-${idx}" placeholder="Answer"
+                  value="${escapeHtml(userVal)}">
+                <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+                <button class="btn ghost" type="button" id="hint-${idx}">${hintShown ? "Hide Hint" : "Hint"}</button>
+              </div>
+
+              <div class="hint-box ${hintShown ? "show" : ""}" id="hintBox-${idx}">
+                ${mathifyHTML(q.hint || "")}
+              </div>
+
+              <div class="feedback ${checked ? (correct ? "ok" : "bad") : ""}" id="fb-${idx}">
+                ${checked
+                  ? (correct
+                      ? "Correct ✅"
+                      : `Not correct ❌  (Correct answer: ${escapeHtml(q.answerDisplay || String(q.answer))})`)
+                  : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        const inp = $(`#ans-${idx}`, card);
+        inp.addEventListener("input", () => {
+          STATE.answers[idx] = inp.value;
+          STATE.checked[idx] = false;
+          STATE.correct[idx] = false;
+          if(STATE.submitted){
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+          }
+          const fb = $(`#fb-${idx}`, card);
+          fb.className = "feedback";
+          fb.textContent = "";
+        });
+
+        $(`#check-${idx}`, card).addEventListener("click", () => checkOne(idx));
+        $(`#hint-${idx}`, card).addEventListener("click", () => {
+          STATE.hintShown[idx] = !STATE.hintShown[idx];
+          renderQuestions();
+        });
+      });
+
+      $("#resultsBox").style.display = "none";
+    }
+
+    function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const v = parseAnswerByType(q.answerType, STATE.answers[idx]);
+      STATE.checked[idx] = true;
+
+      if(v == null){
+        STATE.correct[idx] = false;
+        renderQuestions();
+        const fb = $(`#fb-${idx}`);
+        fb.className = "feedback bad";
+        fb.textContent = "Please follow the answer format shown in the question.";
+        return;
+      }
+
+      STATE.correct[idx] = isCorrect(q.answerType, v, q.answer);
+      renderQuestions();
+    }
+
+    function submitAll(){
+      let correctCount = 0;
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const v = parseAnswerByType(q.answerType, STATE.answers[i]);
+        STATE.checked[i] = true;
+        STATE.correct[i] = isCorrect(q.answerType, v, q.answer);
+        if(STATE.correct[i]) correctCount++;
+      }
+
+      STATE.submitted = true;
+      renderQuestions();
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+
+      const lines = QUESTIONS.map((q,i)=>(
+        `<div style="margin:6px 0;"><b>Q${i+1}:</b> ${escapeHtml(q.answerDisplay || String(q.answer))}</div>`
+      )).join("");
+
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:8px;"><b>Answer Key:</b></div>
+        <div style="margin-top:6px;">${lines}</div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+    function resetAnswers(){
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    function saveResult(){
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const when = new Date();
+      const dateStr = when.toLocaleString();
+      const elapsed = formatTime(TIMER.seconds);
+
+      let correctCount = 0;
+      const out = [];
+
+      out.push(`DYAA — Save Current Result`);
+      out.push(`Title: ${title}`);
+      out.push(`Student: ${student}`);
+      out.push(`Date: ${dateStr}`);
+      out.push(`Elapsed Time: ${elapsed}`);
+      out.push(``);
+
+      QUESTIONS.forEach((q, i) => {
+        const raw = (STATE.answers[i] ?? "").toString().trim();
+        const v = parseAnswerByType(q.answerType, raw);
+        const valid = (v != null);
+        const ok = isCorrect(q.answerType, v, q.answer);
+        if(ok) correctCount++;
+
+        out.push(`Q${i+1} (${String(q.difficulty||"").toUpperCase()}): ${q.prompt}`);
+        out.push(`Your answer: ${valid ? formatUserValue(q.answerType, v) : (raw ? raw : "(blank)")}`);
+        out.push(`Correct answer: ${q.answerDisplay || String(q.answer)}`);
+        out.push(`Result: ${ok ? "Correct" : "Not correct"}`);
+        out.push(``);
+      });
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+      out.splice(5, 0, `Score: ${correctCount} / ${total} (${pct}%)`);
+
+      const text = out.join("\r\n");
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_result.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $(`#panel-${tab}`).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", "DYAA"));
+      $("#studentNameValue").textContent = name ? name : "DYAA";
+    }
+
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+
+      resetTimer();
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set? This will clear your current answers and reset the timer.", () => {
+        generateNewSet();
+        $$('.tab').forEach(b=>b.classList.remove('active'));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$('.panel').forEach(p=>p.classList.remove('active'));
+        $('#panel-practice').classList.add('active');
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    /********************
+     * Learn diagrams
+     ********************/
+    function renderLearnDiagram(){
+      const d1 = logGraphSvg({a:1,b:2,h:0,k:0,label:"y = log_2(x)", showAsymptote:true, showKeyPoint:true});
+      const d2 = logGraphSvg({a:1,b:2,h:2,k:0,label:"Shift right: y = log_2(x − 2)", showAsymptote:true, showKeyPoint:true});
+      const d3 = logGraphSvg({a:1,b:10,h:0,k:1,label:"Shift up: y = log_10(x) + 1", showAsymptote:true, showKeyPoint:true});
+      const d4 = logGraphSvg({a:-1,b:3,h:0,k:0,label:"Reflected: y = −log_3(x)", showAsymptote:true, showKeyPoint:true});
+
+      $("#learnSvgWrap").innerHTML = `
+        <div style="display:grid; grid-template-columns:1fr; gap:10px;">
+          ${d1}
+          ${d2}
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            ${d3}
+            ${d4}
+          </div>
+        </div>
+      `;
+    }
+
+    /********************
+     * PDF EXPORT — QUESTIONS + ANSWERS
+     ********************/
+    const exportRoot = $("#exportRoot");
+
+    function yyyymmdd(){
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,"0");
+      const day = String(d.getDate()).padStart(2,"0");
+      return `${y}${m}${day}`;
+    }
+
+    function cleanFilePart(s){
+      return String(s || "").trim().replace(/\s+/g,"_").replace(/[^\w\-]+/g,"").slice(0,40) || "Student";
+    }
+
+    function gridClassFromPerPage(n){
+      if(n === 2) return "two";
+      if(n === 3) return "three";
+      return "six";
+    }
+
+    function buildQuestionPageHTML(group, pageIndex, totalPages, perPage){
+      const rawTitle = TEMPLATE_META.title.replace(/\s*—\s*DYAA\s*$/i,"");
+      const student = safeName($("#studentNameValue").textContent) || "DYAA";
+      const now = new Date();
+      const dateStr = now.toLocaleDateString();
+
+      const qTiles = group.map((q) => {
+        const qNum = q.__num;
+        const svgSafe = (q.svg || "").replace(/var\(--stroke\)/g, "#111");
+        return `
+          <div class="export-q">
+            <div class="qprompt">Q${qNum}</div>
+            <div class="export-diagram">${svgSafe}</div>
+          </div>
+        `;
+      }).join("");
+
+      const gridCls = gridClassFromPerPage(perPage);
+
+      return `
+        <div class="export-page">
+          <div class="export-header">
+            <div>
+              <div class="export-title">DYAA — ${escapeHtml(rawTitle)}</div>
+              <div class="export-sub">
+                Student: <b>${escapeHtml(student)}</b> • Date: ${escapeHtml(dateStr)} • Answer format: see each prompt
+              </div>
+            </div>
+            <div style="text-align:right; font-size:11px; font-weight:900; color:#555;">
+              Questions<br>
+              Page ${pageIndex+1} / ${totalPages}
+            </div>
+          </div>
+
+          <div class="export-content">
+            <div class="export-qgrid ${gridCls}">
+              ${qTiles}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildAnswersPageHTML(){
+      const rawTitle = TEMPLATE_META.title.replace(/\s*—\s*DYAA\s*$/i,"");
+      const student = safeName($("#studentNameValue").textContent) || "DYAA";
+      const now = new Date();
+      const dateStr = now.toLocaleDateString();
+
+      const ansItems = QUESTIONS.map((q, i) => {
+        const ans = q.answerDisplay || String(q.answer);
+        return `<div>Q${i+1}: ${escapeHtml(ans)}</div>`;
+      }).join("");
+
+      return `
+        <div class="export-page">
+          <div class="export-header">
+            <div>
+              <div class="export-title">DYAA — ${escapeHtml(rawTitle)}</div>
+              <div class="export-sub">
+                Student: <b>${escapeHtml(student)}</b> • Date: ${escapeHtml(dateStr)} • Answer key
+              </div>
+            </div>
+            <div style="text-align:right; font-size:11px; font-weight:900; color:#555;">
+              Answer Key
+            </div>
+          </div>
+
+          <div class="export-content">
+            <div class="answers-list">
+              ${ansItems}
+            </div>
+            <div class="answers-note">Tip: Keep answers as numbers or ordered pairs, and follow the prompt format.</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildQuestionPages(perPage){
+      exportRoot.innerHTML = "";
+      const groups = [];
+      const qs = QUESTIONS.map((q, i) => ({...q, __num: i+1}));
+
+      for(let i=0;i<qs.length;i+=perPage){
+        groups.push(qs.slice(i, i+perPage));
+      }
+
+      const totalPages = groups.length;
+      groups.forEach((g, idx) => {
+        const pageWrap = document.createElement("div");
+        pageWrap.innerHTML = buildQuestionPageHTML(g, idx, totalPages, perPage);
+        exportRoot.appendChild(pageWrap.firstElementChild);
+      });
+
+      const ansWrap = document.createElement("div");
+      ansWrap.innerHTML = buildAnswersPageHTML();
+      exportRoot.appendChild(ansWrap.firstElementChild);
+
+      return $$(".export-page", exportRoot);
+    }
+
+    async function exportQuestionsPDF(){
+      if(!window.html2canvas || !window.jspdf || !window.jspdf.jsPDF){
+        alert("PDF export libraries did not load. Please ensure you are online (or host html2canvas & jsPDF locally) and refresh the page.");
+        return;
+      }
+
+      const btn = $("#exportQuestionsBtn");
+      const oldLabel = btn.textContent;
+      btn.textContent = "Exporting…";
+      btn.disabled = true;
+
+      try{
+        const perPage = parseInt($("#pdfPerPage").value, 10) || 2;
+        const pages = buildQuestionPages(perPage);
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+
+        for(let i=0;i<pages.length;i++){
+          const pageEl = pages[i];
+
+          const canvas = await html2canvas(pageEl, {
+            scale: 2,
+            backgroundColor: "#ffffff",
+            useCORS: true
+          });
+
+          const imgData = canvas.toDataURL("image/png", 1.0);
+          if(i > 0) pdf.addPage();
+          pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
+        }
+
+        const student = cleanFilePart($("#studentNameValue").textContent);
+        pdf.save(`${TEMPLATE_META.filePrefix}_Questions_${student}_${yyyymmdd()}.pdf`);
+      } catch(err){
+        console.error(err);
+        alert("PDF export failed. Please open the browser console for details.");
+      } finally {
+        btn.textContent = oldLabel;
+        btn.disabled = false;
+        exportRoot.innerHTML = "";
+      }
+    }
+
+    $("#exportQuestionsBtn").addEventListener("click", exportQuestionsPDF);
+
+    function applyTemplateMeta(){
+      document.title = TEMPLATE_META.title;
+      $("#pageTitle").textContent = TEMPLATE_META.title.replace(/\s*—\s*DYAA\s*$/,"");
+      $("#pageSubtitle").textContent = TEMPLATE_META.subtitle;
+      $("#instructionsText").textContent = TEMPLATE_META.instructions;
+    }
+
+    applyTemplateMeta();
+    ensureStudentName();
+    renderLearnDiagram();
+    updateTimerUI();
+    startTimerTick();
+    generateNewSet();
+  </script>
+</body>
+</html>
