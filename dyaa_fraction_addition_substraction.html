@@ -1,0 +1,2490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fractions — Part 3 (Add • Subtract) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --radius:14px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      user-select:none;
+      z-index:0;
+      white-space:nowrap;
+    }
+
+    .container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:24px auto 60px;
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+    }
+
+    /* Header */
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:42px;height:42px;
+      background:var(--blue);
+      border-radius:8px;
+      position:relative;
+      flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px;height:10px;
+      background:var(--orange);
+      top:-6px;left:10px;
+      border-radius:6px;
+    }
+    .logo-text{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .logo-text h1{
+      font-size:22px;
+      margin:0;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .logo-text .tag{
+      font-size:13px;
+      color:var(--orange);
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .student-pill{
+      margin-left:auto;
+      display:none;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      font-weight:800;
+      color:#111;
+      white-space:nowrap;
+    }
+    .student-pill.show{ display:inline-flex; }
+
+    /* Top bar */
+    .top-bar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:14px 0 10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .tabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .tab-btn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--blue);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+    }
+    .tab-btn.active{
+      background:var(--blue);
+      color:#fff;
+      border-color:var(--blue);
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    select, input[type="number"], input[type="text"]{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:9px 10px;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn.primary{ background:var(--blue); color:#fff; }
+    .btn.secondary{ background:#eef2ff; color:var(--blue); border:1px solid #dbe3ff; }
+    .btn.warn{ background:#fff3e0; color:#8a4b00; border:1px solid #ffe0b2; }
+    .btn:active{ transform:translateY(1px); }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+
+    /* Sections */
+    .section{ display:none; margin-top:16px; }
+    .section.active{ display:block; }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    @media (min-width: 860px){
+      .grid.two{ grid-template-columns:1fr 1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      padding:16px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+    .card h3{
+      margin:10px 0 8px;
+      font-size:15px;
+      color:#111;
+    }
+    .muted{ color:var(--muted); }
+    .note{
+      background:#f7fbff;
+      border:1px solid #d9ecff;
+      padding:12px;
+      border-radius:12px;
+      color:#123;
+    }
+    .rule{ border-top:1px dashed var(--line); margin:12px 0; }
+
+    /* Fraction styling */
+    .frac{
+      display:inline-grid;
+      grid-template-rows:auto auto;
+      align-items:center;
+      justify-items:center;
+      font-weight:800;
+      line-height:1;
+      margin:0 2px;
+      vertical-align:middle;
+      min-width:22px;
+    }
+    .frac .top{ padding:0 4px 2px; }
+    .frac .bar{
+      width:100%;
+      height:2px;
+      background:#111;
+      opacity:.75;
+      border-radius:2px;
+    }
+    .frac .bottom{ padding:2px 4px 0; }
+    .whole{ font-weight:800; margin:0 2px; vertical-align:middle; }
+    .mixed{
+      display:inline-flex;
+      gap:4px;
+      align-items:center;
+      font-weight:800;
+      vertical-align:middle;
+      margin:0 2px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      color:#111;
+      flex-wrap:wrap;
+    }
+
+    .svgbox{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px;
+      background:#fff;
+      overflow:hidden;
+    }
+    .svgbox svg{ width:100%; height:auto; display:block; }
+
+    /* Practice */
+    .practice-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .practice-meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      background:#f6f7ff;
+      border:1px solid #e2e6ff;
+      color:#1d2a7a;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:13px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:14px;
+      background:#fff;
+    }
+    .q-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+    .q-num{ font-weight:900; color:var(--blue); }
+    .q-topic{
+      font-size:12px;
+      font-weight:900;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color:#111;
+      background:#fafafe;
+      white-space:nowrap;
+    }
+    .q-body{
+      font-size:15px;
+      line-height:1.45;
+      margin-bottom:10px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .q-input{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:10px;
+    }
+    .tiny{ width:80px; }
+    .symbol{ font-weight:900; padding:0 2px; }
+    .q-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .feedback{
+      margin-top:10px;
+      border-radius:12px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      background:#fafafa;
+      display:none;
+    }
+    .feedback.show{ display:block; }
+    .feedback.ok{ border-color:#c9e7cf; background:#f0fbf2; }
+    .feedback.bad{ border-color:#ffd0d0; background:#fff3f3; }
+    .feedback .title{ font-weight:900; margin-bottom:6px; }
+
+    .footer-actions{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      border-top:1px solid var(--line);
+      padding-top:14px;
+    }
+    .scorebox{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fff;
+      min-width:220px;
+    }
+    .scorebox strong{ color:var(--blue); }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+    .modal-backdrop.show{ display:flex; }
+    .modal{
+      width:min(560px, 96vw);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 18px 45px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+      padding:16px;
+    }
+    .modal h3{ margin:0 0 6px; color:var(--blue); }
+    .modal p{ margin:6px 0 14px; color:var(--muted); }
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); border:0;
+    }
+
+    /* hidden print layout for PDF */
+    #pdfPrintArea{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:794px; /* ~A4 at 96dpi */
+      background:#fff;
+      color:#111;
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      padding:0;
+    }
+    .pdf-page{
+      width:794px;
+      min-height:1123px; /* ~A4 at 96dpi */
+      padding:36px 44px;
+      page-break-after:always;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .pdf-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+      padding-bottom:10px;
+      border-bottom:2px solid #e6e6ef;
+    }
+    .pdf-title{
+      font-weight:900;
+      color:#111;
+      font-size:18px;
+      line-height:1.2;
+    }
+    .pdf-sub{
+      color:#666;
+      font-size:12px;
+      margin-top:4px;
+    }
+    .pdf-meta{
+      text-align:right;
+      font-size:12px;
+      color:#666;
+      white-space:nowrap;
+      line-height:1.35;
+    }
+    .pdf-grid{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:12px;
+    }
+    .pdf-q{
+      border:1px solid #e6e6ef;
+      border-radius:12px;
+      padding:12px 12px;
+    }
+    .pdf-qhead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .pdf-qnum{ font-weight:900; color:#111; }
+    .pdf-qtopic{
+      font-size:11px;
+      font-weight:900;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid #e6e6ef;
+      background:#fff;
+    }
+    .pdf-qbody{
+      font-size:12.5px;
+      line-height:1.45;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .pdf-qnum{
+      font-weight:900;
+      color:#111;
+      font-size:11px;
+      margin-right:6px;
+      white-space:nowrap;
+    }
+    .pdf-workspace{
+      height:84px; /* ~4 lines */
+      margin-top:10px;
+    }
+</style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div>
+        <div class="logo-text">
+          <h1>Fractions — Part 3</h1>
+          <span class="tag">DYAA EDUCATION</span>
+        </div>
+        <p class="subtitle">Adding & Subtracting Fractions • Mixed Numbers • Improper Fractions</p>
+      </div>
+
+      <!-- shows only when name is known -->
+      <div id="studentPillHeader" class="student-pill" aria-live="polite">
+        Student: <span id="studentNameHeader"></span>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="learn">Learn</button>
+        <button class="tab-btn" data-tab="practice">Practice</button>
+      </div>
+
+      <div class="controls" id="practiceControls" style="display:none;">
+        <label class="chip">
+          Questions:
+          <select id="countSelect" aria-label="Number of questions">
+            <option value="30" selected>30 (24 skills + 6 word problems)</option>
+            <option value="24">24 (skills only)</option>
+            <option value="36">36 (30 skills + 6 word problems)</option>
+            <option value="48">48 (42 skills + 6 word problems)</option>
+</select>
+        </label>
+
+        <label class="chip">
+          Order:
+          <select id="orderSelect" aria-label="Question order">
+            <option value="inorder" selected>In order</option>
+            <option value="shuffle">Shuffle</option>
+          </select>
+        </label>
+
+        <label class="chip" style="display:none;">
+          <span>PDF per page</span>
+          <select id="perPageSelect" aria-label="PDF questions per page">
+            <option value="15" selected>15</option>
+          </select>
+        </label>
+
+        <button class="btn secondary" id="exportPdfBtn">Export to PDF</button>
+        <button class="btn warn" id="newSetBtn">Generate New Set</button>
+        <button class="btn secondary" id="resetBtn">Reset Answers</button>
+      </div>
+    </div>
+
+    <!-- LEARN -->
+    <div class="section active" id="learnSection">
+      <div class="grid two">
+
+        <div class="card">
+          <h2>1) Same Denominator (Add / Subtract)</h2>
+          <p class="muted">
+            If the denominators are the same, you only add/subtract the numerators.
+            Keep the denominator the same, then <b>simplify</b>.
+          </p>
+
+          <div class="note">
+            <div class="chip">
+              Example:
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">8</span></span>
+              +
+              <span class="frac"><span class="top">2</span><span class="bar"></span><span class="bottom">8</span></span>
+              =
+              <span class="frac"><span class="top">5</span><span class="bar"></span><span class="bottom">8</span></span>
+            </div>
+            <div class="chip">
+              Example:
+              <span class="frac"><span class="top">7</span><span class="bar"></span><span class="bottom">10</span></span>
+              −
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">10</span></span>
+              =
+              <span class="frac"><span class="top">4</span><span class="bar"></span><span class="bottom">10</span></span>
+              →
+              <span class="frac"><span class="top">2</span><span class="bar"></span><span class="bottom">5</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>2) Different Denominators (LCD)</h2>
+          <p class="muted">
+            If denominators are different, find the <b>lowest common denominator (LCD)</b>,
+            convert both fractions to equivalent fractions with that denominator, then add/subtract.
+            Finally, <b>simplify</b>.
+          </p>
+
+          <div class="note">
+            <div class="chip">
+              Example:
+              <span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">3</span></span>
+              +
+              <span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">4</span></span>
+              →
+              LCD = 12 →
+              <span class="frac"><span class="top">4</span><span class="bar"></span><span class="bottom">12</span></span>
+              +
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">12</span></span>
+              =
+              <span class="frac"><span class="top">7</span><span class="bar"></span><span class="bottom">12</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>3) Improper Fractions</h2>
+          <p class="muted">
+            You can add/subtract improper fractions the same way as normal fractions:
+            get a common denominator, add/subtract, simplify.
+            You may convert the final answer to a mixed number if you want.
+          </p>
+
+          <div class="note">
+            <div class="chip">
+              Example:
+              <span class="frac"><span class="top">11</span><span class="bar"></span><span class="bottom">6</span></span>
+              −
+              <span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">3</span></span>
+              =
+              <span class="frac"><span class="top">11</span><span class="bar"></span><span class="bottom">6</span></span>
+              −
+              <span class="frac"><span class="top">2</span><span class="bar"></span><span class="bottom">6</span></span>
+              =
+              <span class="frac"><span class="top">9</span><span class="bar"></span><span class="bottom">6</span></span>
+              →
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">2</span></span>
+              =
+              <span class="mixed"><span>1</span><span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">2</span></span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>4) Mixed Numbers</h2>
+          <p class="muted">
+            Two common methods:
+          </p>
+          <ul class="muted" style="margin:0 0 0 18px;">
+            <li><b>Convert to improper</b> → add/subtract → simplify → (optional) convert back to mixed.</li>
+            <li>Or <b>add/subtract whole parts</b> and <b>fraction parts</b> separately (works best for same denominators).</li>
+          </ul>
+
+          <div class="note" style="margin-top:10px;">
+            <div class="chip">
+              Example:
+              <span class="mixed"><span>2</span><span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">4</span></span></span>
+              +
+              <span class="mixed"><span>1</span><span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">2</span></span></span>
+              →
+              <span class="frac"><span class="top">9</span><span class="bar"></span><span class="bottom">4</span></span>
+              +
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">2</span></span>
+              =
+              <span class="frac"><span class="top">9</span><span class="bar"></span><span class="bottom">4</span></span>
+              +
+              <span class="frac"><span class="top">6</span><span class="bar"></span><span class="bottom">4</span></span>
+              =
+              <span class="frac"><span class="top">15</span><span class="bar"></span><span class="bottom">4</span></span>
+              =
+              <span class="mixed"><span>3</span><span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">4</span></span></span>
+            </div>
+          </div>
+
+                    <div class="note" style="margin-top:10px;">
+            <h3 style="margin:0 0 6px;color:var(--blue);">By-Parts Method (Mixed Numbers)</h3>
+            <p class="muted" style="margin:6px 0 10px;">
+              For mixed numbers (same <i>or</i> different denominators), you can:
+              <b>(1)</b> add/subtract the <b>whole parts</b>,
+              then <b>(2)</b> add/subtract the <b>fraction parts</b> after making them share a <b>common denominator</b>.
+              <br/>If the fraction part becomes <b>1 or more</b>, <b>regroup</b> (carry 1 to the whole part).
+              For subtraction, if the fraction part is too small, <b>borrow 1</b> from the whole part first.
+            </p>
+
+            <div class="chip">
+              Example (different denominators, no regroup):
+              <span class="mixed"><span>3</span><span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">4</span></span></span>
+              +
+              <span class="mixed"><span>2</span><span class="frac"><span class="top">2</span><span class="bar"></span><span class="bottom">3</span></span></span>
+              =
+              (3+2) +
+              (<span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">4</span></span>
+              +
+              <span class="frac"><span class="top">2</span><span class="bar"></span><span class="bottom">3</span></span>)
+              =
+              5 +
+              (<span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">12</span></span>
+              +
+              <span class="frac"><span class="top">8</span><span class="bar"></span><span class="bottom">12</span></span>)
+              =
+              <span class="mixed"><span>5</span><span class="frac"><span class="top">11</span><span class="bar"></span><span class="bottom">12</span></span></span>
+            </div>
+
+            <div class="chip">
+              Example (different denominators, regroup):
+              <span class="mixed"><span>1</span><span class="frac"><span class="top">5</span><span class="bar"></span><span class="bottom">6</span></span></span>
+              +
+              <span class="mixed"><span>2</span><span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">4</span></span></span>
+              =
+              (1+2) +
+              (<span class="frac"><span class="top">5</span><span class="bar"></span><span class="bottom">6</span></span>
+              +
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">4</span></span>)
+              =
+              3 +
+              (<span class="frac"><span class="top">10</span><span class="bar"></span><span class="bottom">12</span></span>
+              +
+              <span class="frac"><span class="top">9</span><span class="bar"></span><span class="bottom">12</span></span>)
+              =
+              3 +
+              <span class="frac"><span class="top">19</span><span class="bar"></span><span class="bottom">12</span></span>
+              =
+              <span class="mixed"><span>4</span><span class="frac"><span class="top">7</span><span class="bar"></span><span class="bottom">12</span></span></span>
+            </div>
+
+            <div class="chip">
+              Example (subtraction with borrowing):
+              <span class="mixed"><span>5</span><span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">3</span></span></span>
+              −
+              <span class="mixed"><span>2</span><span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">4</span></span></span>
+              =
+              (4−2) +
+              (<span class="frac"><span class="top">4</span><span class="bar"></span><span class="bottom">3</span></span>
+              −
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">4</span></span>)
+              =
+              2 +
+              (<span class="frac"><span class="top">16</span><span class="bar"></span><span class="bottom">12</span></span>
+              −
+              <span class="frac"><span class="top">9</span><span class="bar"></span><span class="bottom">12</span></span>)
+              =
+              <span class="mixed"><span>2</span><span class="frac"><span class="top">7</span><span class="bar"></span><span class="bottom">12</span></span></span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="card" style="grid-column:1/-1;">
+          <h2>5) Whole Numbers with Fractions</h2>
+          <p class="muted">
+            Treat a whole number as a fraction with denominator 1:
+            <b>5 = 5/1</b>. Or think of it as a mixed number:
+            <b>5 = 5 0/1</b>.
+          </p>
+          <div class="note">
+            <div class="chip">
+              Example: 4 +
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">8</span></span>
+              =
+              <span class="mixed"><span>4</span><span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">8</span></span></span>
+            </div>
+            <div class="chip">
+              Example: 6 −
+              <span class="frac"><span class="top">5</span><span class="bar"></span><span class="bottom">6</span></span>
+              =
+              <span class="mixed"><span>5</span><span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">6</span></span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ✅ Added content: GCF + LCD (full width) -->
+        <div class="card" style="grid-column:1/-1;">
+          <h2>6) How to Find GCF and LCD</h2>
+          <p class="muted">
+            <b>GCF</b> helps you <b>simplify</b>. <b>LCD</b> helps you <b>add/subtract</b> fractions with different denominators.
+          </p>
+
+          <div class="grid two" style="margin-top:10px;gap:14px;">
+            <div class="note" style="background:#fff;border:1px solid var(--line);">
+              <h3 style="margin:0 0 6px;color:var(--blue);">A) Finding the GCF (Greatest Common Factor)</h3>
+              <p class="muted" style="margin:6px 0 10px;">
+                The <b>GCF</b> is the <b>largest</b> number that divides both numbers exactly.
+              </p>
+
+              <div class="rule"></div>
+
+              <p class="muted" style="margin:0 0 6px;"><b>Method 1: List factors</b></p>
+              <p class="muted" style="margin:0;">
+                Example: GCF(18, 24)<br/>
+                Factors of 18: 1, 2, 3, 6, 9, 18<br/>
+                Factors of 24: 1, 2, 3, 4, 6, 8, 12, 24<br/>
+                Largest common factor is <b>6</b>.
+              </p>
+
+              <div class="rule"></div>
+
+              <p class="muted" style="margin:0 0 6px;"><b>Method 2: Prime factorization</b></p>
+              <p class="muted" style="margin:0;">
+                18 = 2 × 3 × 3<br/>
+                24 = 2 × 2 × 2 × 3<br/>
+                Common primes: 2 × 3 = <b>6</b> → GCF = <b>6</b>.
+              </p>
+            </div>
+
+            <div class="note" style="background:#fff;border:1px solid var(--line);">
+              <h3 style="margin:0 0 6px;color:var(--blue);">B) Finding the LCD (Lowest Common Denominator)</h3>
+              <p class="muted" style="margin:6px 0 10px;">
+                The <b>LCD</b> is the <b>LCM</b> (least common multiple) of the denominators.
+              </p>
+
+              <div class="rule"></div>
+
+              <p class="muted" style="margin:0 0 6px;"><b>Method 1: List multiples</b></p>
+              <p class="muted" style="margin:0;">
+                Example: LCD of 6 and 8<br/>
+                Multiples of 6: 6, 12, 18, <b>24</b>, 30, …<br/>
+                Multiples of 8: 8, 16, <b>24</b>, 32, …<br/>
+                First common multiple is <b>24</b> → LCD = <b>24</b>.
+              </p>
+
+              <div class="rule"></div>
+
+              <p class="muted" style="margin:0 0 6px;"><b>Method 2: Use GCF (fast)</b></p>
+              <p class="muted" style="margin:0;">
+                LCM(a,b) = (a × b) ÷ GCF(a,b)<br/>
+                For 6 and 8: GCF(6,8)=2<br/>
+                LCM = (6×8)÷2 = 48÷2 = <b>24</b> → LCD = <b>24</b>.
+              </p>
+            </div>
+          </div>
+
+          <div class="rule"></div>
+          <div class="note">
+            <div class="chip">
+              Quick tip for <b>adding/subtracting</b>:
+              Find LCD first, then convert to equivalent fractions.
+              Example:
+              <span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">6</span></span>
+              +
+              <span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">8</span></span>
+              → LCD 24 →
+              <span class="frac"><span class="top">4</span><span class="bar"></span><span class="bottom">24</span></span>
+              +
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">24</span></span>
+              =
+              <span class="frac"><span class="top">7</span><span class="bar"></span><span class="bottom">24</span></span>
+            </div>
+          </div>
+        </div>
+        <!-- ✅ End added content -->
+
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="section" id="practiceSection">
+      <div class="practice-header">
+        <div>
+          <h2 style="margin:0;color:var(--blue);font-size:18px;">Practice Quiz</h2>
+          <p class="muted" style="margin:6px 0 0;">
+            You can enter as a mixed number (whole + fraction) or as an improper fraction.
+          </p>
+        </div>
+        <div class="practice-meta">
+          <span class="pill" id="studentPillPractice" style="display:none;">Student: <span id="studentNamePractice"></span></span>
+          <span class="pill" id="setLabel">Set: A</span>
+          <span class="pill" id="progressLabel">0 checked</span>
+        </div>
+      </div>
+
+      <div id="questionsWrap" class="grid"></div>
+
+      <div class="footer-actions">
+        <div class="scorebox">
+          <div><strong id="scoreText">Score:</strong> <span id="scoreValue">—</span></div>
+          <div class="muted" style="font-size:13px;margin-top:4px;">Tip: If your fraction can be simplified, it is not correct yet.</div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn primary" id="submitBtn">Submit & View Result</button>
+          <button class="btn secondary" id="showAllBtn">Show All Explanations</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- hidden print area for PDF -->
+  <div id="pdfPrintArea" aria-hidden="true"></div>
+
+  <!-- Confirm modal (new set) -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle">Generate a new set?</h3>
+      <p>This will clear your current answers and create a new random set of questions.</p>
+      <div class="modal-actions">
+        <button class="btn secondary" id="cancelModalBtn">Cancel</button>
+        <button class="btn warn" id="confirmModalBtn">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Name modal (required when URL has no ?name=...) -->
+  <div class="modal-backdrop" id="nameBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+      <h3 id="nameTitle">Enter student name to start</h3>
+      <p>
+        Tip: You can skip this step by using a link like:
+        <b>mixed_quiz.html?name=Tiger</b>
+      </p>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <label class="sr-only" for="nameInput">Student name</label>
+        <input id="nameInput" type="text" placeholder="e.g., Tiger" autocomplete="off" style="min-width:240px;" />
+        <button class="btn primary" id="startWithNameBtn">Start</button>
+      </div>
+
+      <div class="modal-actions" style="margin-top:14px;">
+        <button class="btn secondary" id="cancelNameBtn">Back to Learn</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Student name logic
+     ************************/
+    let studentName = "DYAA";
+
+function escapeHTML(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function sanitizeName(raw){
+      let s = String(raw || "").trim();
+      s = s.replace(/[\u0000-\u001F\u007F]/g, "");
+      if(s.length > 40) s = s.slice(0, 40);
+      return s;
+    }
+
+    function setStudentName(name){
+      studentName = sanitizeName(name);
+      updateStudentUI();
+    }
+
+    function updateStudentUI(){
+      const headerPill = document.getElementById("studentPillHeader");
+      const headerName = document.getElementById("studentNameHeader");
+      const practicePill = document.getElementById("studentPillPractice");
+      const practiceName = document.getElementById("studentNamePractice");
+
+      if(studentName){
+        headerPill.classList.add("show");
+        headerName.textContent = studentName;
+
+        practicePill.style.display = "inline-flex";
+        practiceName.textContent = studentName;
+
+        setPracticeButtonsEnabled(true);
+      }else{
+        headerPill.classList.remove("show");
+        headerName.textContent = "";
+
+        practicePill.style.display = "none";
+        practiceName.textContent = "";
+
+        setPracticeButtonsEnabled(false);
+      }
+    }
+
+    function setPracticeButtonsEnabled(enabled){
+      document.getElementById("exportPdfBtn").disabled = !enabled;
+      document.getElementById("newSetBtn").disabled = !enabled;
+      document.getElementById("resetBtn").disabled = !enabled;
+      document.getElementById("submitBtn").disabled = !enabled;
+      document.getElementById("showAllBtn").disabled = !enabled;
+    }
+
+    function getNameFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("name");
+      if(!raw) return "";
+      return sanitizeName(raw);
+    }
+
+    /***********************
+     * Utilities
+     ************************/
+    function randInt(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function gcd(a, b){
+      a = Math.abs(a); b = Math.abs(b);
+      while(b !== 0){
+        const t = a % b;
+        a = b; b = t;
+      }
+      return a;
+    }
+
+    function lcm(a, b){
+      return Math.abs(a / gcd(a,b) * b);
+    }
+
+    function simplify(n, d){
+      if(d === 0) return { n: 0, d: 0 };
+      if(d < 0){ n = -n; d = -d; }
+      const g = gcd(n, d);
+      return { n: n / g, d: d / g };
+    }
+
+    function addFrac(a, b){
+      return simplify(a.n * b.d + b.n * a.d, a.d * b.d);
+    }
+    function subFrac(a, b){
+      return simplify(a.n * b.d - b.n * a.d, a.d * b.d);
+    }
+
+    function fracHTML(n, d){
+      // Avoid showing things like 2/1 in questions/PDF. Display as a whole number instead.
+      if(d === 1) return `<span class="whole">${n}</span>`;
+      return `<span class="frac"><span class="top">${n}</span><span class="bar"></span><span class="bottom">${d}</span></span>`;
+    }
+    // Use this when we explicitly want to show denominator 1 (teaching notes).
+    function fracHTMLForce(n, d){
+      return `<span class="frac"><span class="top">${n}</span><span class="bar"></span><span class="bottom">${d}</span></span>`;
+    }
+    function mixedHTML(w, n, d){
+      return `<span class="mixed"><span>${w}</span>${fracHTML(n,d)}</span>`;
+    }
+
+    function toMixed(n, d){
+      const s = simplify(n, d);
+      n = s.n; d = s.d;
+      if(n === 0) return { w:0, n:0, d:1 };
+      const absN = Math.abs(n);
+      const whole = Math.floor(absN / d);
+      const rem = absN % d;
+      if(rem === 0) return { w: whole, n:0, d:1 };
+      const part = simplify(rem, d);
+      return { w: whole, n: part.n, d: part.d };
+    }
+
+    function formatAnswerText(n, d){
+      const s = simplify(n,d);
+      if(s.d === 1) return String(s.n);
+      if(Math.abs(s.n) < s.d) return `${s.n}/${s.d}`;
+      const m = toMixed(s.n, s.d);
+      if(m.n === 0) return String(m.w);
+      return `${m.w} ${m.n}/${m.d}`;
+    }
+
+    function topicLabel(type){
+      switch(type){
+        case "sd_add": return "Same Den • Add";
+        case "sd_sub": return "Same Den • Sub";
+        case "dd_add": return "Diff Den • Add";
+        case "dd_sub": return "Diff Den • Sub";
+        case "imp": return "Improper";
+        case "mix": return "Mixed";
+        case "whole": return "Whole +/− Frac";
+        case "gcf": return "GCF";
+        case "lcd": return "LCD";
+        case "wp_pf": return "Word • Proper";
+        case "wp_if": return "Word • Improper";
+        case "wp_mixed": return "Word • Mixed";
+        case "wp_2step": return "Word • Two-Step";
+        default: return "Practice";
+      }
+    }
+
+    /***********************
+     * Answer input (mixed or improper)
+     ************************/
+    function isIntegerStr(s){
+      return /^-?\d+$/.test(String(s).trim());
+    }
+
+    function parseUserMixed(card){
+      const ins = card.querySelectorAll("input");
+      const wStr = ins[0].value.trim();
+      const nStr = ins[1].value.trim();
+      const dStr = ins[2].value.trim();
+
+      const wEmpty = wStr === "";
+      const nEmpty = nStr === "";
+      const dEmpty = dStr === "";
+
+      // whole only
+      if(!wEmpty && nEmpty && dEmpty){
+        if(!isIntegerStr(wStr)) return null;
+        const w = parseInt(wStr,10);
+        if(w < 0) return null;
+        return simplify(w, 1);
+      }
+
+      // fraction (or mixed)
+      const w = wEmpty ? 0 : (isIntegerStr(wStr) ? parseInt(wStr,10) : NaN);
+      if(Number.isNaN(w) || w < 0) return null;
+
+      if(nEmpty || dEmpty) return null;
+      if(!isIntegerStr(nStr) || !isIntegerStr(dStr)) return null;
+      const num = parseInt(nStr,10);
+      const den = parseInt(dStr,10);
+      if(den === 0) return null;
+      if(den < 0) return null;
+      if(num < 0) return null;
+
+      const totalN = w * den + num;
+      const totalD = den;
+
+      // Must already be simplest form
+      if(gcd(totalN, totalD) !== 1) return null;
+
+      return simplify(totalN, totalD);
+    }
+
+    function mixedInputHTML(){
+      return `
+        <span class="muted">Answer:</span>
+        <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="whole" aria-label="whole" />
+        <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="num" aria-label="numerator" />
+        <span class="symbol">/</span>
+        <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="den" aria-label="denominator" />
+        <span class="muted" style="font-size:13px;">(whole can be blank/0)</span>
+      `;
+    }
+
+    
+    function integerInputHTML(){
+      return `
+        <span class="muted">Answer:</span>
+        <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="number" aria-label="answer" />
+      `;
+    }
+
+    function parseUserInt(card){
+      const inp = card.querySelector("input");
+      if(!inp) return null;
+      const s = inp.value.trim();
+      if(s === "") return null;
+      if(!isIntegerStr(s)) return null;
+      const v = parseInt(s, 10);
+      if(v < 0) return null;
+      return v;
+    }
+
+    function makeGcfQuestion(){
+      // Build numbers with a clear common factor
+      const base = randInt(2, 12);
+      let a = base * randInt(2, 12);
+      let b = base * randInt(2, 12);
+      while(b === a) b = base * randInt(2, 12);
+
+      const ans = gcd(a, b);
+
+      const prompt = `Find the <b>GCF</b> of <b>${a}</b> and <b>${b}</b>.`;
+      const hint = `List factors or use prime factorization. The GCF is the largest number that divides both exactly.`;
+      const explain = `Since ${a} and ${b} are both divisible by <b>${ans}</b>, and no larger common factor works, the GCF is <b>${ans}</b>.`;
+
+      return {
+        type:"gcf",
+        promptHTML: prompt,
+        inputHTML: integerInputHTML(),
+        getUser: (card)=> parseUserInt(card),
+        isCorrect: (u)=> (u !== null) && (u === ans),
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer:",
+        answerText: String(ans)
+      };
+    }
+
+    function makeLcdQuestion(){
+      const LCD_DENOMS = [12,14,15,16,18,20,21,24,25,27,28,30,32,35,36,40,42,45,48];
+      let d1 = LCD_DENOMS[randInt(0, LCD_DENOMS.length-1)];
+      let d2 = LCD_DENOMS[randInt(0, LCD_DENOMS.length-1)];
+      while(d2 === d1) d2 = LCD_DENOMS[randInt(0, LCD_DENOMS.length-1)];
+
+      const ans = lcm(d1, d2);
+
+      const prompt = `Find the <b>LCD</b> of <b>${d1}</b> and <b>${d2}</b>.`;
+      const hint = `The LCD is the LCM of the denominators. You can list multiples or use: LCM(a,b) = (a×b) ÷ GCF(a,b).`;
+      const g = gcd(d1, d2);
+      const explain = `GCF(${d1}, ${d2}) = ${g}. So LCD = LCM = (${d1}×${d2}) ÷ ${g} = <b>${ans}</b>.`;
+
+      return {
+        type:"lcd",
+        promptHTML: prompt,
+        inputHTML: integerInputHTML(),
+        getUser: (card)=> parseUserInt(card),
+        isCorrect: (u)=> (u !== null) && (u === ans),
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer:",
+        answerText: String(ans)
+      };
+    }
+
+/***********************
+     * Question generators
+     ************************/
+    const DENOMS = [2,3,4,5,6,8,10,12];
+
+    function makeSameDenAdd(){
+      const d = DENOMS[randInt(0, DENOMS.length-1)];
+      let a = randInt(1, d-1);
+      let b = randInt(1, d-1);
+      const ans = simplify(a + b, d);
+
+      const prompt = ` ${fracHTML(a,d)} + ${fracHTML(b,d)}.`;
+      const hint = `Same denominator: add the numerators, keep the denominator, then simplify.`;
+      const explain = `Add numerators: ${a} + ${b} = <b>${a+b}</b>, so
+        ${fracHTML(a,d)} + ${fracHTML(b,d)} = ${fracHTML(a+b,d)}.
+        Simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+
+      return {
+        type:"sd_add",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+    function makeSameDenSub(){
+      const d = DENOMS[randInt(0, DENOMS.length-1)];
+      let a = randInt(2, d-1);
+      let b = randInt(1, a-1);
+      const ans = simplify(a - b, d);
+
+      const prompt = ` ${fracHTML(a,d)} − ${fracHTML(b,d)}.`;
+      const hint = `Same denominator: subtract the numerators, keep the denominator, then simplify.`;
+      const explain = `Subtract numerators: ${a} − ${b} = <b>${a-b}</b>, so
+        ${fracHTML(a,d)} − ${fracHTML(b,d)} = ${fracHTML(a-b,d)}.
+        Simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+
+      return {
+        type:"sd_sub",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+    function makeDiffDenAdd(){
+      let d1 = DENOMS[randInt(0, DENOMS.length-1)];
+      let d2 = DENOMS[randInt(0, DENOMS.length-1)];
+      while(d2 === d1) d2 = DENOMS[randInt(0, DENOMS.length-1)];
+
+      const n1 = randInt(1, d1-1);
+      const n2 = randInt(1, d2-1);
+
+      const A = simplify(n1, d1);
+      const B = simplify(n2, d2);
+      const ans = addFrac(A, B);
+
+      const lcd = lcm(A.d, B.d);
+      const m1 = lcd / A.d, m2 = lcd / B.d;
+      const e1n = A.n * m1, e2n = B.n * m2;
+
+      const prompt = ` ${fracHTML(A.n,A.d)} + ${fracHTML(B.n,B.d)}.`;
+      const hint = `Find the LCD, convert both fractions, then add and simplify.`;
+      const explain = `LCD of ${A.d} and ${B.d} is <b>${lcd}</b>.
+        Convert:
+        ${fracHTML(A.n,A.d)} = ${fracHTML(e1n,lcd)},
+        ${fracHTML(B.n,B.d)} = ${fracHTML(e2n,lcd)}.
+        Add:
+        ${fracHTML(e1n,lcd)} + ${fracHTML(e2n,lcd)} = ${fracHTML(e1n+e2n,lcd)}.
+        Simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+
+      return {
+        type:"dd_add",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+    function makeDiffDenSub(){
+      let d1 = DENOMS[randInt(0, DENOMS.length-1)];
+      let d2 = DENOMS[randInt(0, DENOMS.length-1)];
+      while(d2 === d1) d2 = DENOMS[randInt(0, DENOMS.length-1)];
+
+      let n1 = randInt(1, d1-1);
+      let n2 = randInt(1, d2-1);
+      let A = simplify(n1, d1);
+      let B = simplify(n2, d2);
+
+      let tries = 0;
+      while(A.n * B.d <= B.n * A.d && tries < 50){
+        d1 = DENOMS[randInt(0, DENOMS.length-1)];
+        d2 = DENOMS[randInt(0, DENOMS.length-1)];
+        while(d2 === d1) d2 = DENOMS[randInt(0, DENOMS.length-1)];
+        n1 = randInt(1, d1-1);
+        n2 = randInt(1, d2-1);
+        A = simplify(n1, d1);
+        B = simplify(n2, d2);
+        tries++;
+      }
+
+      const ans = subFrac(A, B);
+
+      const lcd = lcm(A.d, B.d);
+      const m1 = lcd / A.d, m2 = lcd / B.d;
+      const e1n = A.n * m1, e2n = B.n * m2;
+
+      const prompt = ` ${fracHTML(A.n,A.d)} − ${fracHTML(B.n,B.d)}.`;
+      const hint = `Find the LCD, convert both fractions, then subtract and simplify.`;
+      const explain = `LCD of ${A.d} and ${B.d} is <b>${lcd}</b>.
+        Convert:
+        ${fracHTML(A.n,A.d)} = ${fracHTML(e1n,lcd)},
+        ${fracHTML(B.n,B.d)} = ${fracHTML(e2n,lcd)}.
+        Subtract:
+        ${fracHTML(e1n,lcd)} − ${fracHTML(e2n,lcd)} = ${fracHTML(e1n-e2n,lcd)}.
+        Simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+
+      return {
+        type:"dd_sub",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+    function makeImproperAddSub(forceOp=null){
+      const d1 = DENOMS[randInt(0, DENOMS.length-1)];
+      const d2 = DENOMS[randInt(0, DENOMS.length-1)];
+      let n1 = randInt(d1+1, d1*3-1);
+      while(n1 % d1 === 0) n1 = randInt(d1+1, d1*3-1);
+      let n2 = randInt(d2+1, d2*3-1);
+      while(n2 % d2 === 0) n2 = randInt(d2+1, d2*3-1);
+      const A = simplify(n1, d1);
+      const B = simplify(n2, d2);
+
+      const isAdd = (forceOp === "add") ? true : (forceOp === "sub") ? false : (Math.random() < 0.55);
+
+      let prompt, hint, explain, ans;
+      if(isAdd){
+        ans = addFrac(A, B);
+        const lcd = lcm(A.d, B.d);
+        const e1n = A.n * (lcd / A.d);
+        const e2n = B.n * (lcd / B.d);
+        prompt = ` ${fracHTML(A.n,A.d)} + ${fracHTML(B.n,B.d)}.`;
+        hint = `Improper fractions work the same way: use a common denominator, then add and simplify.`;
+        explain = `LCD of ${A.d} and ${B.d} is <b>${lcd}</b>.
+          ${fracHTML(A.n,A.d)} = ${fracHTML(e1n,lcd)}, ${fracHTML(B.n,B.d)} = ${fracHTML(e2n,lcd)}.
+          Add: ${fracHTML(e1n+e2n,lcd)}.
+          Simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+      }else{
+        let A2 = A, B2 = B;
+        if(A.n * B.d < B.n * A.d){
+          A2 = B; B2 = A;
+        }
+        ans = subFrac(A2, B2);
+        const lcd = lcm(A2.d, B2.d);
+        const e1n = A2.n * (lcd / A2.d);
+        const e2n = B2.n * (lcd / B2.d);
+        prompt = ` ${fracHTML(A2.n,A2.d)} − ${fracHTML(B2.n,B2.d)}.`;
+        hint = `Convert to the same denominator first, then subtract and simplify.`;
+        explain = `LCD of ${A2.d} and ${B2.d} is <b>${lcd}</b>.
+          ${fracHTML(A2.n,A2.d)} = ${fracHTML(e1n,lcd)}, ${fracHTML(B2.n,B2.d)} = ${fracHTML(e2n,lcd)}.
+          Subtract: ${fracHTML(e1n-e2n,lcd)}.
+          Simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+      }
+
+      return {
+        type:"imp",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+    
+    function makeMixedAddSub(forceOp=null){
+      // Often use the "by-parts" method when denominators match:
+      // whole + whole, then fraction + fraction (regroup if needed).
+      const preferByParts = Math.random() < 0.60;
+
+      let d1, d2;
+      if(preferByParts){
+        d1 = d2 = DENOMS[randInt(0, DENOMS.length-1)];
+      }else{
+        d1 = DENOMS[randInt(0, DENOMS.length-1)];
+        d2 = DENOMS[randInt(0, DENOMS.length-1)];
+        while(d2 === d1) d2 = DENOMS[randInt(0, DENOMS.length-1)];
+      }
+
+      const w1 = randInt(1,4);
+      const w2 = randInt(1,4);
+      const n1 = randInt(1, d1-1);
+      const n2 = randInt(1, d2-1);
+
+      const A = simplify(w1 * d1 + n1, d1);
+      const B = simplify(w2 * d2 + n2, d2);
+
+      const isAdd =
+        (forceOp === "add") ? true :
+        (forceOp === "sub") ? false :
+        (Math.random() < 0.55);
+
+      const aDisp = mixedHTML(w1, n1, d1);
+      const bDisp = mixedHTML(w2, n2, d2);
+
+      let prompt, hint, explain, ans;
+
+      if(isAdd){
+        ans = addFrac(A, B);
+        prompt = ` ${aDisp} + ${bDisp}.`;
+
+        // By-parts explanation when denominators match
+        if(d1 === d2){
+          const d = d1;
+          const wholeSum = w1 + w2;
+          const fracRawN = n1 + n2;
+
+          const carry = Math.floor(fracRawN / d);
+          const rem = fracRawN % d;
+
+          const fracSimpl = simplify(fracRawN, d);
+          const remSimpl = simplify(rem, d);
+
+          hint = `Same denominator: add the whole parts and the fraction parts separately. Regroup if the fraction part is 1 or more.`;
+
+          if(carry === 0){
+            explain = `
+              Whole parts: ${w1} + ${w2} = <b>${wholeSum}</b>.<br/>
+              Fraction parts: ${fracHTML(n1,d)} + ${fracHTML(n2,d)} = ${fracHTML(fracRawN,d)} → ${fracHTML(fracSimpl.n, fracSimpl.d)}.<br/>
+              Combine → <b>${formatAnswerText(ans.n, ans.d)}</b>.
+            `;
+          }else{
+            const newWhole = wholeSum + carry;
+            explain = `
+              Whole parts: ${w1} + ${w2} = <b>${wholeSum}</b>.<br/>
+              Fraction parts: ${fracHTML(n1,d)} + ${fracHTML(n2,d)} = ${fracHTML(fracRawN,d)} = <b>${carry}</b> + ${fracHTML(remSimpl.n, remSimpl.d)}.<br/>
+              Regroup: ${wholeSum} + ${carry} = <b>${newWhole}</b>.<br/>
+              Answer → <b>${formatAnswerText(ans.n, ans.d)}</b>.
+            `;
+          }
+        }else{
+          hint = `Convert mixed numbers to improper fractions, then add and simplify.`;
+          explain = `Convert:
+            ${aDisp} = ${fracHTML(A.n,A.d)}, and ${bDisp} = ${fracHTML(B.n,B.d)}.
+            Then add and simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+        }
+
+      }else{
+        // subtraction: ensure first value is larger
+        let A2 = A, B2 = B, a2Disp = aDisp, b2Disp = bDisp;
+        let wA = w1, nA = n1, dA = d1;
+        let wB = w2, nB = n2, dB = d2;
+
+        if(A.n * B.d < B.n * A.d){
+          A2 = B; B2 = A;
+          a2Disp = bDisp; b2Disp = aDisp;
+
+          wA = w2; nA = n2; dA = d2;
+          wB = w1; nB = n1; dB = d1;
+        }
+
+        ans = subFrac(A2, B2);
+        prompt = ` ${a2Disp} − ${b2Disp}.`;
+
+        // By-parts explanation when denominators match
+        if(dA === dB){
+          const d = dA;
+          hint = `Same denominator: subtract the whole parts and the fraction parts separately. Borrow 1 if the top fraction is smaller.`;
+
+          if(nA >= nB){
+            const wholeDiff = wA - wB;
+            const fracDiffN = nA - nB;
+            const fracDiff = simplify(fracDiffN, d);
+
+            explain = `
+              Whole parts: ${wA} − ${wB} = <b>${wholeDiff}</b>.<br/>
+              Fraction parts: ${fracHTML(nA,d)} − ${fracHTML(nB,d)} = ${fracHTML(fracDiffN,d)} → ${fracHTML(fracDiff.n, fracDiff.d)}.<br/>
+              Combine → <b>${formatAnswerText(ans.n, ans.d)}</b>.
+            `;
+          }else{
+            const newWhole = wA - 1;
+            const borrowedN = nA + d;
+            const fracDiffN = borrowedN - nB;
+            const fracDiff = simplify(fracDiffN, d);
+
+            explain = `
+              Borrow 1 from the whole part: ${wA} becomes <b>${newWhole}</b> and add ${fracHTML(d,d)} to the fraction part.<br/>
+              New fraction part: ${fracHTML(nA,d)} + ${fracHTML(d,d)} = ${fracHTML(borrowedN,d)}.<br/>
+              Now subtract: ${fracHTML(borrowedN,d)} − ${fracHTML(nB,d)} = ${fracHTML(fracDiffN,d)} → ${fracHTML(fracDiff.n, fracDiff.d)}.<br/>
+              Combine → <b>${formatAnswerText(ans.n, ans.d)}</b>.
+            `;
+          }
+        }else{
+          hint = `Convert mixed numbers to improper fractions first, then subtract and simplify.`;
+          explain = `Convert:
+            ${a2Disp} = ${fracHTML(A2.n,A2.d)}, and ${b2Disp} = ${fracHTML(B2.n,B2.d)}.
+            Subtract and simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+        }
+      }
+
+      return {
+        type:"mix",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+    function makeWholeWithFraction(forceOp=null){
+      const w = randInt(2, 9);
+      const d = DENOMS[randInt(0, DENOMS.length-1)];
+      const n = randInt(1, d-1);
+
+      const isAdd = (forceOp === "add") ? true : (forceOp === "sub") ? false : (Math.random() < 0.55);
+
+      let prompt, hint, explain, ans;
+      const F = simplify(n, d);
+      const W = simplify(w, 1);
+
+      if(isAdd){
+        ans = addFrac(W, F);
+        prompt = ` <b>${w}</b> + ${fracHTML(F.n,F.d)}.`;
+        hint = `Treat ${w} as ${w}/1 (or as a mixed number), then add.`;
+        explain = `${w} = ${fracHTMLForce(w,1)}.
+          Add: ${fracHTMLForce(w,1)} + ${fracHTML(F.n,F.d)} = <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+      }else{
+        ans = subFrac(W, F);
+        prompt = ` <b>${w}</b> − ${fracHTML(F.n,F.d)}.`;
+        hint = `Rewrite ${w} as a fraction (or as a mixed number), then subtract.`;
+        explain = `${w} = ${fracHTMLForce(w,1)}.
+          Subtract: ${fracHTMLForce(w,1)} − ${fracHTML(F.n,F.d)} = <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+      }
+
+      return {
+        type:"whole",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+    
+    /***********************
+     * Word Problems (Applications)
+     ************************/
+    function pick(arr){
+      return arr[randInt(0, arr.length-1)];
+    }
+
+    function makeWordProperAdd(){
+      // Proper fractions + proper fractions (result stays < 1)
+      let d1, d2, n1, n2, A, B, tries = 0;
+      while(true){
+        d1 = DENOMS[randInt(0, DENOMS.length-1)];
+        d2 = DENOMS[randInt(0, DENOMS.length-1)];
+        // encourage different denominators sometimes
+        if(Math.random() < 0.60){
+          while(d2 === d1) d2 = DENOMS[randInt(0, DENOMS.length-1)];
+        }
+        n1 = randInt(1, d1-1);
+        n2 = randInt(1, d2-1);
+        A = simplify(n1, d1);
+        B = simplify(n2, d2);
+
+        // ensure A + B < 1
+        if(A.n * B.d + B.n * A.d < A.d * B.d) break;
+
+        tries++;
+        if(tries > 80){
+          // fallback to safe values
+          A = simplify(1, 3);
+          B = simplify(1, 6);
+          break;
+        }
+      }
+
+      const ans = addFrac(A, B);
+      const lcd = lcm(A.d, B.d);
+      const e1n = A.n * (lcd / A.d);
+      const e2n = B.n * (lcd / B.d);
+
+      const contexts = [
+        (a,b)=> `A bottle of juice was full. Mia drank ${a} of the bottle in the morning and ${b} of the bottle in the afternoon. What fraction of the bottle did Mia drink altogether?`,
+        (a,b)=> `A cake was cut into equal slices. Liam ate ${a} of the cake and Noah ate ${b} of the cake. What fraction of the cake was eaten in total?`,
+        (a,b)=> `A class read a book. On Monday, the class read ${a} of the book. On Tuesday, the class read ${b} of the book. What fraction of the book was read altogether?`,
+      ];
+
+      const prompt = pick(contexts)(fracHTML(A.n,A.d), fracHTML(B.n,B.d));
+      const hint = `Add the two fractions (they are parts of the same whole). If denominators are different, find the LCD first.`;
+      const explain = `LCD(${A.d}, ${B.d}) = <b>${lcd}</b>.
+        ${fracHTML(A.n,A.d)} = ${fracHTML(e1n,lcd)}, ${fracHTML(B.n,B.d)} = ${fracHTML(e2n,lcd)}.
+        Add: ${fracHTML(e1n+e2n,lcd)}.
+        Simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+
+      return {
+        type:"wp_pf",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+    function makeWordProperSub(){
+      // Proper fraction subtraction (result stays positive and proper)
+      let d1, d2, n1, n2, A, B, tries = 0;
+      while(true){
+        d1 = DENOMS[randInt(0, DENOMS.length-1)];
+        d2 = DENOMS[randInt(0, DENOMS.length-1)];
+        if(Math.random() < 0.60){
+          while(d2 === d1) d2 = DENOMS[randInt(0, DENOMS.length-1)];
+        }
+        n1 = randInt(1, d1-1);
+        n2 = randInt(1, d2-1);
+        A = simplify(n1, d1);
+        B = simplify(n2, d2);
+
+        // ensure A > B and result > 0
+        if(A.n * B.d > B.n * A.d) break;
+
+        tries++;
+        if(tries > 80){
+          A = simplify(5, 6);
+          B = simplify(1, 4);
+          break;
+        }
+      }
+
+      const ans = subFrac(A, B);
+      const lcd = lcm(A.d, B.d);
+      const e1n = A.n * (lcd / A.d);
+      const e2n = B.n * (lcd / B.d);
+
+      const contexts = [
+        (a,b)=> `A tank was filled to ${a} of its capacity. Later, ${b} of the tank’s capacity was used. What fraction of the tank’s capacity remains filled?`,
+        (a,b)=> `Ella had ${a} of a chocolate bar. She gave away ${b} of a whole bar. What fraction of the chocolate bar does Ella have left?`,
+        (a,b)=> `A ribbon was ${a} of a metre long. Noah used ${b} of a metre for a craft project. What fraction of a metre of ribbon is left?`,
+      ];
+
+      const prompt = pick(contexts)(fracHTML(A.n,A.d), fracHTML(B.n,B.d));
+      const hint = `Subtract the second fraction from the first. Use the LCD if denominators are different, then simplify.`;
+      const explain = `LCD(${A.d}, ${B.d}) = <b>${lcd}</b>.
+        ${fracHTML(A.n,A.d)} = ${fracHTML(e1n,lcd)}, ${fracHTML(B.n,B.d)} = ${fracHTML(e2n,lcd)}.
+        Subtract: ${fracHTML(e1n-e2n,lcd)}.
+        Simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+
+      return {
+        type:"wp_pf",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+    function makeWordImproperAdd(){
+      // Mixed-number addition in context (shown as mixed numbers)
+      const d1 = DENOMS[randInt(0, DENOMS.length-1)];
+      const d2 = DENOMS[randInt(0, DENOMS.length-1)];
+      let n1 = randInt(d1+1, d1*3-1);
+      while(n1 % d1 === 0) n1 = randInt(d1+1, d1*3-1);
+      let n2 = randInt(d2+1, d2*3-1);
+      while(n2 % d2 === 0) n2 = randInt(d2+1, d2*3-1);
+
+      const A = simplify(n1, d1);
+      const B = simplify(n2, d2);
+      const ans = addFrac(A, B);
+
+      const Am = toMixed(A.n, A.d);
+      const Bm = toMixed(B.n, B.d);
+
+      const lcd = lcm(A.d, B.d);
+      const e1n = A.n * (lcd / A.d);
+      const e2n = B.n * (lcd / B.d);
+
+      const contexts = [
+        (a,b)=> `A plumber used ${a} metres of pipe on Monday and ${b} metres of pipe on Tuesday. How many metres of pipe were used altogether?`,
+        (a,b)=> `A hiker walked ${a} km before lunch and ${b} km after lunch. How far did the hiker walk in total?`,
+        (a,b)=> `Two containers of paint were used. One contained ${a} litres and the other contained ${b} litres. How many litres of paint were used altogether?`,
+      ];
+
+      const prompt = pick(contexts)(
+        mixedHTML(Am.w, Am.n, Am.d),
+        mixedHTML(Bm.w, Bm.n, Bm.d)
+      );
+
+      const hint = `Add the two mixed numbers. A good method is: convert to improper fractions → find the LCD → add → simplify.`;
+
+      const explain = `Convert to improper fractions:
+        ${mixedHTML(Am.w, Am.n, Am.d)} = ${fracHTML(A.n,A.d)},
+        ${mixedHTML(Bm.w, Bm.n, Bm.d)} = ${fracHTML(B.n,B.d)}.
+        LCD(${A.d}, ${B.d}) = <b>${lcd}</b>.
+        ${fracHTML(A.n,A.d)} = ${fracHTML(e1n,lcd)}, ${fracHTML(B.n,B.d)} = ${fracHTML(e2n,lcd)}.
+        Add: ${fracHTML(e1n+e2n,lcd)}.
+        Simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+
+      return {
+        type:"wp_mixed",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+
+
+        function makeWordImproperSub(){
+      // Mixed-number subtraction in context (shown as mixed numbers; ensure positive result)
+      let d1, d2, n1, n2, A, B, tries = 0;
+      while(true){
+        d1 = DENOMS[randInt(0, DENOMS.length-1)];
+        d2 = DENOMS[randInt(0, DENOMS.length-1)];
+        n1 = randInt(d1+1, d1*4-1);
+        while(n1 % d1 === 0) n1 = randInt(d1+1, d1*4-1);
+        n2 = randInt(d2+1, d2*3-1);
+        while(n2 % d2 === 0) n2 = randInt(d2+1, d2*3-1);
+
+        A = simplify(n1, d1);
+        B = simplify(n2, d2);
+
+        if(A.n * B.d > B.n * A.d) break;
+
+        tries++;
+        if(tries > 100){
+          A = simplify(13, 6);
+          B = simplify(7, 4);
+          break;
+        }
+      }
+
+      const ans = subFrac(A, B);
+
+      const Am = toMixed(A.n, A.d);
+      const Bm = toMixed(B.n, B.d);
+
+      const lcd = lcm(A.d, B.d);
+      const e1n = A.n * (lcd / A.d);
+      const e2n = B.n * (lcd / B.d);
+
+      const contexts = [
+        (a,b)=> `A large jug contained ${a} litres of water. After pouring out ${b} litres, how much water remained in the jug?`,
+        (a,b)=> `A rope was ${a} metres long. A piece measuring ${b} metres was cut off. What length of rope remained?`,
+        (a,b)=> `A runner trained for ${a} hours in the first week. In the second week, the runner trained ${b} hours less than the first week. How many hours did the runner train in the second week?`,
+      ];
+
+      const prompt = pick(contexts)(
+        mixedHTML(Am.w, Am.n, Am.d),
+        mixedHTML(Bm.w, Bm.n, Bm.d)
+      );
+
+      const hint = `Subtract the second mixed number from the first. Convert to improper fractions if needed, use the LCD, then simplify.`;
+
+      const explain = `Convert to improper fractions:
+        ${mixedHTML(Am.w, Am.n, Am.d)} = ${fracHTML(A.n,A.d)},
+        ${mixedHTML(Bm.w, Bm.n, Bm.d)} = ${fracHTML(B.n,B.d)}.
+        LCD(${A.d}, ${B.d}) = <b>${lcd}</b>.
+        ${fracHTML(A.n,A.d)} = ${fracHTML(e1n,lcd)}, ${fracHTML(B.n,B.d)} = ${fracHTML(e2n,lcd)}.
+        Subtract: ${fracHTML(e1n-e2n,lcd)}.
+        Simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+
+      return {
+        type:"wp_mixed",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+
+
+    function makeWordTwoStepAddSub(){
+      // Two-step word problem: add then subtract (A + B − C), ensure positive
+      let A, B, C, tries = 0;
+      while(true){
+        // A is often improper, B and C are proper
+        const dA = DENOMS[randInt(0, DENOMS.length-1)];
+        let nA = randInt(dA+1, dA*3-1);
+        while(nA % dA === 0) nA = randInt(dA+1, dA*3-1);
+        A = simplify(nA, dA);
+
+        const dB = DENOMS[randInt(0, DENOMS.length-1)];
+        B = simplify(randInt(1, dB-1), dB);
+
+        const dC = DENOMS[randInt(0, DENOMS.length-1)];
+        C = simplify(randInt(1, dC-1), dC);
+
+        // compute A + B - C and ensure > 0
+        const t = subFrac(addFrac(A,B), C);
+        if(t.n > 0) break;
+
+        tries++;
+        if(tries > 120){
+          A = simplify(7, 3);
+          B = simplify(5, 6);
+          C = simplify(1, 2);
+          break;
+        }
+      }
+
+      const ans = subFrac(addFrac(A,B), C);
+
+      const contexts = [
+        (a,b,c)=> `A water tank contained ${a} litres of water. Then ${b} litres were added. After that, ${c} litres were used. How many litres of water are in the tank now?`,
+        (a,b,c)=> `A builder had ${a} metres of rope. The builder bought another ${b} metres. Then ${c} metres were cut off. How many metres of rope are there now?`,
+        (a,b,c)=> `A cyclist rode ${a} km in the morning. The cyclist rode another ${b} km in the afternoon, then took a shortcut that was ${c} km shorter. How many kilometres did the cyclist travel in total?`,
+      ];
+
+      const prompt = pick(contexts)(fracHTML(A.n,A.d), fracHTML(B.n,B.d), fracHTML(C.n,C.d));
+      const hint = `Work step by step: first add, then subtract. Use the LCD whenever denominators are different, and simplify.`;
+      const explain = `Step 1: ${fracHTML(A.n,A.d)} + ${fracHTML(B.n,B.d)}.<br/>Step 2: subtract ${fracHTML(C.n,C.d)}.<br/>Final answer (simplest) → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+
+      return {
+        type:"wp_2step",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+    function makeWordTwoStepSubAdd(){
+      // Two-step word problem: subtract then add (A − B + C), ensure positive
+      let A, B, C, tries = 0;
+      while(true){
+        const dA = DENOMS[randInt(0, DENOMS.length-1)];
+        let nA = randInt(dA+1, dA*3-1);
+        while(nA % dA === 0) nA = randInt(dA+1, dA*3-1);
+        A = simplify(nA, dA);
+
+        const dB = DENOMS[randInt(0, DENOMS.length-1)];
+        B = simplify(randInt(1, dB-1), dB);
+
+        const dC = DENOMS[randInt(0, DENOMS.length-1)];
+        C = simplify(randInt(1, dC-1), dC);
+
+        const t = addFrac(subFrac(A,B), C);
+        if(t.n > 0) break;
+
+        tries++;
+        if(tries > 120){
+          A = simplify(11, 4);
+          B = simplify(2, 3);
+          C = simplify(1, 6);
+          break;
+        }
+      }
+
+      const ans = addFrac(subFrac(A,B), C);
+
+      const contexts = [
+        (a,b,c)=> `A bucket contained ${a} litres of water. ${b} litres were poured out, then ${c} litres were poured in. How many litres of water are in the bucket now?`,
+        (a,b,c)=> `A gardener had ${a} bags of soil. The gardener used ${b} of a bag, then bought ${c} of a bag. How many bags of soil does the gardener have now?`,
+        (a,b,c)=> `A student read ${a} of a book by Wednesday. The student read ${b} of a book less on Thursday, then read another ${c} of a book on Friday. What fraction of a book did the student read in total by Friday?`,
+      ];
+
+      const prompt = pick(contexts)(fracHTML(A.n,A.d), fracHTML(B.n,B.d), fracHTML(C.n,C.d));
+      const hint = `Work step by step: subtract first, then add. Use the LCD when needed, and simplify.`;
+      const explain = `Step 1: ${fracHTML(A.n,A.d)} − ${fracHTML(B.n,B.d)}.<br/>Step 2: add ${fracHTML(C.n,C.d)}.<br/>Final answer (simplest) → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+
+      return {
+        type:"wp_2step",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+function shuffleArray(arr){
+      for(let i=arr.length-1;i>0;i--){
+        const j = randInt(0,i);
+        [arr[i],arr[j]] = [arr[j],arr[i]];
+      }
+      return arr;
+    }
+
+    function buildQuestionSet(count, orderMode){
+      // Skill questions (Learn sections 1–6) + optional Word Problems (Q25–Q30)
+      const includeWord = (count >= 30);
+      const wordCount = includeWord ? 6 : 0;
+
+      const remaining = Math.max(0, count - wordCount); // reserved for 6 skill groups
+      const groupCount = 6;
+      const each = Math.floor(remaining / groupCount);
+      const qs = [];
+
+      // 1) Same denominator (Add/Subtract)
+      for(let i=0; i<each; i++){
+        qs.push(i % 2 === 0 ? makeSameDenAdd() : makeSameDenSub());
+      }
+
+      // 2) Different denominators (LCD) (Add/Subtract)
+      for(let i=0; i<each; i++){
+        qs.push(i % 2 === 0 ? makeDiffDenAdd() : makeDiffDenSub());
+      }
+
+      // 3) Improper fractions (Add/Subtract)
+      for(let i=0; i<each; i++){
+        qs.push(makeImproperAddSub(i % 2 === 0 ? "add" : "sub"));
+      }
+
+      // 4) Mixed numbers (Add/Subtract)
+      for(let i=0; i<each; i++){
+        qs.push(makeMixedAddSub(i % 2 === 0 ? "add" : "sub"));
+      }
+
+      // 5) Whole numbers with fractions (Add/Subtract)
+      for(let i=0; i<each; i++){
+        qs.push(makeWholeWithFraction(i % 2 === 0 ? "add" : "sub"));
+      }
+
+      // 6) GCF and LCD skills
+      for(let i=0; i<each; i++){
+        qs.push(i % 2 === 0 ? makeGcfQuestion() : makeLcdQuestion());
+      }
+
+      // pad/trim to hit the remaining count (skill questions only)
+      while(qs.length < remaining){
+        qs.push(makeMixedAddSub());
+      }
+      if(qs.length > remaining){
+        qs.length = remaining;
+      }
+
+      // Shuffle only the skill questions (keep word problems at the end, as Q25–Q30)
+      if(orderMode === "shuffle"){
+        shuffleArray(qs);
+      }
+
+      // Word problems (Applications): fixed slots when count >= 30
+      if(includeWord){
+        // Q25–Q26: Proper fractions (add, subtract)
+        qs.push(makeWordProperAdd());
+        qs.push(makeWordProperSub());
+
+        // Q27–Q28: Improper fractions (add, subtract)
+        qs.push(makeWordImproperAdd());
+        qs.push(makeWordImproperSub());
+
+        // Q29–Q30: Two-step (mixed +/−)
+        qs.push(makeWordTwoStepAddSub());
+        qs.push(makeWordTwoStepSubAdd());
+      }
+
+      // final safety
+      if(qs.length > count) qs.length = count;
+
+      return qs;
+    }
+
+/***********************
+     * PDF helpers (Answer Key on last pages)
+     ************************/
+    function loadScript(src){
+      return new Promise((resolve, reject)=>{
+        const s = document.createElement("script");
+        s.src = src;
+        s.onload = ()=> resolve();
+        s.onerror = ()=> reject(new Error("Failed to load " + src));
+        document.head.appendChild(s);
+      });
+    }
+
+    let pdfLibReady = false;
+    async function ensurePdfLibs(){
+      if(pdfLibReady) return;
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
+      pdfLibReady = true;
+    }
+
+    function buildPdfPages(){
+      const perPage = 15;
+      const printArea = document.getElementById("pdfPrintArea");
+      printArea.innerHTML = "";
+
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, {year:"numeric", month:"short", day:"2-digit", hour:"2-digit", minute:"2-digit"});
+
+      const total = state.questions.length;
+      const pagesQ = Math.ceil(total / perPage);
+
+      const ansPerPage = 15;
+      const pagesA = Math.ceil(total / ansPerPage);
+
+      const totalPagesAll = pagesQ + pagesA;
+
+      const safeStudentForHtml = escapeHTML(studentName || "");
+      const setName = setNameFromIndex(state.setIndex-1);
+
+      // Question pages
+      for(let p=0; p<pagesQ; p++){
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const startIdx = p * perPage;
+        const endIdx = Math.min(total, startIdx + perPage);
+
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div>
+              <div class="pdf-title">DYAA</div>
+              <div class="pdf-sub">Fractions — Part 3 (Adding & Subtracting)</div>
+            </div>
+            <div class="pdf-meta">
+              Student: <b>${safeStudentForHtml || "—"}</b><br/>
+              Set ${setName}<br/>
+              ${dateStr}<br/>
+              Page ${p+1} / ${totalPagesAll}
+            </div>
+          </div>
+          <div class="pdf-grid"></div>
+        `;
+
+        const grid = page.querySelector(".pdf-grid");
+
+        for(let i=startIdx; i<endIdx; i++){
+          const q = state.questions[i];
+          const qBox = document.createElement("div");
+          qBox.className = "pdf-q";
+          qBox.innerHTML = `
+            <div class="pdf-qbody"><span class="pdf-qnum">Q${i+1}</span> ${q.promptHTML}</div>
+            <div class="pdf-workspace"></div>
+          `;
+          grid.appendChild(qBox);
+        }
+
+        printArea.appendChild(page);
+      }
+
+      // Answer key pages at the end
+      for(let ap=0; ap<pagesA; ap++){
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const startIdx = ap * ansPerPage;
+        const endIdx = Math.min(total, startIdx + ansPerPage);
+        const pageNumber = pagesQ + ap + 1;
+
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div>
+              <div class="pdf-title">DYAA</div>
+              <div class="pdf-sub">Fractions — Part 3 (Answer Key)</div>
+            </div>
+            <div class="pdf-meta">
+              Student: <b>${safeStudentForHtml || "—"}</b><br/>
+              Set ${setName}<br/>
+              ${dateStr}<br/>
+              Page ${pageNumber} / ${totalPagesAll}
+            </div>
+          </div>
+          <div class="pdf-grid"></div>
+        `;
+
+        const grid = page.querySelector(".pdf-grid");
+
+        for(let i=startIdx; i<endIdx; i++){
+          const q = state.questions[i];
+          const ans = (q && typeof q.answerText === "string") ? q.answerText : "";
+          const qBox = document.createElement("div");
+          qBox.className = "pdf-q";
+          qBox.innerHTML = `
+            <div class="pdf-qbody"><span class="pdf-qnum">Q${i+1}</span> <b>Answer:</b> ${escapeHTML(ans)}</div>
+          `;
+          grid.appendChild(qBox);
+        }
+
+        printArea.appendChild(page);
+      }
+    }
+
+    function safeFileNamePart(s){
+      return String(s || "")
+        .trim()
+        .replace(/[\\/:*?"<>|]+/g, "-")
+        .replace(/\s+/g, "_")
+        .slice(0, 40);
+    }
+
+    async function exportToPdf(){
+      if(!studentName){
+        alert("Please enter the student name first.");
+        return;
+      }
+      await ensurePdfLibs();
+      buildPdfPages();
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+      const pages = Array.from(document.querySelectorAll("#pdfPrintArea .pdf-page"));
+
+      for(let i=0; i<pages.length; i++){
+        const pageEl = pages[i];
+
+        const canvas = await html2canvas(pageEl, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false
+        });
+
+        const imgData = canvas.toDataURL("image/png", 1.0);
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight, undefined, "FAST");
+        if(i < pages.length - 1) pdf.addPage();
+      }
+
+      const setName = setNameFromIndex(state.setIndex-1);
+      const fileStudent = safeFileNamePart(studentName);
+      const now2 = new Date();
+      const pad2 = (n)=> String(n).padStart(2,"0");
+      const ts = `${now2.getFullYear()}${pad2(now2.getMonth()+1)}${pad2(now2.getDate())}_${pad2(now2.getHours())}${pad2(now2.getMinutes())}`;
+      pdf.save(`DYAA_Fractions_Part3_${fileStudent}_Set_${setName}_${ts}.pdf`);
+}
+
+    /***********************
+     * Render + checking
+     ************************/
+    const tabs = document.querySelectorAll(".tab-btn");
+    const learnSection = document.getElementById("learnSection");
+    const practiceSection = document.getElementById("practiceSection");
+    const practiceControls = document.getElementById("practiceControls");
+    const questionsWrap = document.getElementById("questionsWrap");
+    const countSelect = document.getElementById("countSelect");
+    const orderSelect = document.getElementById("orderSelect");
+    const scoreValue = document.getElementById("scoreValue");
+    const progressLabel = document.getElementById("progressLabel");
+    const setLabel = document.getElementById("setLabel");
+
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const cancelModalBtn = document.getElementById("cancelModalBtn");
+    const confirmModalBtn = document.getElementById("confirmModalBtn");
+
+    const nameBackdrop = document.getElementById("nameBackdrop");
+    const nameInput = document.getElementById("nameInput");
+    const startWithNameBtn = document.getElementById("startWithNameBtn");
+    const cancelNameBtn = document.getElementById("cancelNameBtn");
+
+    const newSetBtn = document.getElementById("newSetBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const showAllBtn = document.getElementById("showAllBtn");
+    const exportPdfBtn = document.getElementById("exportPdfBtn");
+
+    let state = {
+      setIndex: 0,
+      questions: [],
+      checked: new Set(),
+      results: new Map(),
+    };
+
+    function setNameFromIndex(i){
+      return String.fromCharCode(65 + (i % 26));
+    }
+
+    function renderQuestions(){
+      questionsWrap.innerHTML = "";
+      state.questions.forEach((q, idx)=>{
+        const card = document.createElement("div");
+        card.className = "q-card";
+        card.dataset.qindex = String(idx);
+
+        card.innerHTML = `
+          <div class="q-head">
+            <div class="q-num">Q${idx+1}</div>
+            <div class="q-topic">${topicLabel(q.type)}</div>
+          </div>
+          <div class="q-body">${q.promptHTML}</div>
+          <div class="q-input">${q.inputHTML}</div>
+          <div class="q-actions">
+            <button class="btn primary" data-action="check">Check</button>
+            <button class="btn secondary" data-action="hint">Hint</button>
+            <button class="btn secondary" data-action="reveal">Reveal</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+        `;
+        questionsWrap.appendChild(card);
+      });
+    }
+
+    function updateProgress(){
+      progressLabel.textContent = `${state.checked.size} checked`;
+    }
+
+    function showFeedback(card, ok, title, html){
+      const fb = card.querySelector(".feedback");
+      fb.classList.add("show");
+      fb.classList.toggle("ok", !!ok);
+      fb.classList.toggle("bad", !ok);
+      fb.innerHTML = `
+        <div class="title" style="color:${ok ? "var(--ok)" : "var(--bad)"}">${title}</div>
+        <div>${html}</div>
+      `;
+    }
+
+    function checkOne(card){
+      const idx = parseInt(card.dataset.qindex, 10);
+      const q = state.questions[idx];
+      const user = q.getUser(card);
+      const ok = q.isCorrect(user);
+
+      state.checked.add(idx);
+      state.results.set(idx, ok);
+
+      showFeedback(
+        card,
+        ok,
+        ok ? "✅ Correct" : "❌ Not quite",
+        ok
+          ? `Great. ${q.explainHTML}`
+          : `Hint: ${q.hintHTML}<div class="rule"></div>${q.explainHTML}`
+      );
+
+      updateProgress();
+      return ok;
+    }
+
+    function resetAnswers(){
+      state.checked = new Set();
+      state.results = new Map();
+      scoreValue.textContent = "—";
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const fb = card.querySelector(".feedback");
+        fb.className = "feedback";
+        fb.innerHTML = "";
+        card.querySelectorAll("input").forEach(i => i.value = "");
+        card.querySelectorAll("select").forEach(s => s.value = "");
+      });
+      updateProgress();
+    }
+
+    function generateNewSet(){
+      const count = parseInt(countSelect.value, 10);
+      state.setIndex++;
+      const orderMode = (document.getElementById("orderSelect")?.value) || "inorder";
+      state.questions = buildQuestionSet(count, orderMode);
+      state.checked = new Set();
+      state.results = new Map();
+      setLabel.textContent = `Set: ${setNameFromIndex(state.setIndex-1)}`;
+      scoreValue.textContent = "—";
+      renderQuestions();
+      updateProgress();
+      practiceSection.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    function submitAll(){
+      let correct = 0;
+      state.questions.forEach((_, idx)=>{
+        const card = document.querySelector(`.q-card[data-qindex="${idx}"]`);
+        const ok = checkOne(card);
+        if(ok) correct++;
+      });
+      scoreValue.textContent = `${correct} / ${state.questions.length}`;
+      scoreValue.style.fontWeight = "900";
+    }
+
+    function showAllExplanations(){
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const idx = parseInt(card.dataset.qindex,10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "📌 Explanation", q.explainHTML);
+      });
+    }
+
+    /***********************
+     * Tabs + Name gating
+     ************************/
+    function openNameModal(){
+      nameBackdrop.classList.add("show");
+      nameBackdrop.setAttribute("aria-hidden","false");
+      nameInput.value = "";
+      setTimeout(()=> nameInput.focus(), 50);
+    }
+    function closeNameModal(){
+      nameBackdrop.classList.remove("show");
+      nameBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    function setTab(tab){
+      tabs.forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      const isPractice = tab === "practice";
+      learnSection.classList.toggle("active", !isPractice);
+      practiceSection.classList.toggle("active", isPractice);
+      practiceControls.style.display = isPractice ? "flex" : "none";
+
+      if(isPractice){
+        if(!studentName){
+          openNameModal();
+          setPracticeButtonsEnabled(false);
+          return;
+        }
+        if(state.questions.length === 0){
+          generateNewSet();
+        }
+      }
+    }
+
+    tabs.forEach(btn=>{
+      btn.addEventListener("click", ()=> setTab(btn.dataset.tab));
+    });
+
+    // Name modal actions
+    startWithNameBtn.addEventListener("click", ()=>{
+      const v = sanitizeName(nameInput.value);
+      if(!v){
+        alert("Please enter a student name.");
+        nameInput.focus();
+        return;
+      }
+      setStudentName(v);
+      closeNameModal();
+      if(practiceSection.classList.contains("active") && state.questions.length === 0){
+        generateNewSet();
+      }
+    });
+    nameInput.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter"){
+        e.preventDefault();
+        startWithNameBtn.click();
+      }
+      if(e.key === "Escape"){
+        e.preventDefault();
+        cancelNameBtn.click();
+      }
+    });
+    cancelNameBtn.addEventListener("click", ()=>{
+      closeNameModal();
+      setTab("learn");
+    });
+    nameBackdrop.addEventListener("click", (e)=>{
+      if(e.target === nameBackdrop){
+        // keep modal open
+      }
+    });
+
+    /***********************
+     * New-set confirm modal
+     ************************/
+    function openModal(){
+      modalBackdrop.classList.add("show");
+      modalBackdrop.setAttribute("aria-hidden","false");
+    }
+    function closeModal(){
+      modalBackdrop.classList.remove("show");
+      modalBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    newSetBtn.addEventListener("click", openModal);
+    cancelModalBtn.addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", (e)=>{
+      if(e.target === modalBackdrop) closeModal();
+    });
+    confirmModalBtn.addEventListener("click", ()=>{
+      closeModal();
+      generateNewSet();
+    });
+
+    questionsWrap.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button");
+      if(!btn) return;
+      const action = btn.dataset.action;
+      const card = e.target.closest(".q-card");
+      if(!card) return;
+
+      if(action === "check"){
+        checkOne(card);
+      }else if(action === "hint"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "💡 Hint", q.hintHTML);
+      }else if(action === "reveal"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "🧠 Solution", q.explainHTML);
+      }
+    });
+
+    resetBtn.addEventListener("click", resetAnswers);
+    submitBtn.addEventListener("click", submitAll);
+    showAllBtn.addEventListener("click", showAllExplanations);
+
+    exportPdfBtn.addEventListener("click", async ()=>{
+      if(!practiceSection.classList.contains("active")) setTab("practice");
+      if(!studentName){
+        openNameModal();
+        return;
+      }
+      if(state.questions.length === 0) generateNewSet();
+
+      try{
+        exportPdfBtn.textContent = "Exporting...";
+        exportPdfBtn.disabled = true;
+        await exportToPdf();
+      }catch(err){
+        alert("Export failed. If you opened this file locally, try hosting it on GitHub Pages (recommended) or allow internet access for CDNs.\n\n" + err.message);
+      }finally{
+        exportPdfBtn.textContent = "Export to PDF";
+        exportPdfBtn.disabled = false;
+      }
+    });
+
+    /***********************
+     * Init: read URL ?name=
+     ************************/
+    (function init(){
+      setPracticeButtonsEnabled(false);
+      const urlName = getNameFromUrl();
+      if(urlName){
+        setStudentName(urlName);
+      }else{
+        setStudentName("DYAA");
+      }
+    })();
+  </script>
+</body>
+</html>
