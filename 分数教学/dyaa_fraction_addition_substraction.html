@@ -242,6 +242,7 @@
       border-radius:2px;
     }
     .frac .bottom{ padding:2px 4px 0; }
+    .whole{ font-weight:800; margin:0 2px; vertical-align:middle; }
     .mixed{
       display:inline-flex;
       gap:4px;
@@ -441,7 +442,7 @@
     }
     .pdf-title{
       font-weight:900;
-      color:#0d47a1;
+      color:#111;
       font-size:18px;
       line-height:1.2;
     }
@@ -459,8 +460,8 @@
     }
     .pdf-grid{
       display:grid;
-      grid-template-columns:1fr;
-      gap:14px;
+      grid-template-columns:repeat(3, 1fr);
+      gap:12px;
     }
     .pdf-q{
       border:1px solid #e6e6ef;
@@ -474,37 +475,33 @@
       gap:10px;
       margin-bottom:8px;
     }
-    .pdf-qnum{ font-weight:900; color:#0d47a1; }
+    .pdf-qnum{ font-weight:900; color:#111; }
     .pdf-qtopic{
       font-size:11px;
       font-weight:900;
       padding:3px 8px;
       border-radius:999px;
       border:1px solid #e6e6ef;
-      background:#fafafe;
+      background:#fff;
     }
     .pdf-qbody{
-      font-size:13px;
+      font-size:12.5px;
       line-height:1.45;
-      margin-bottom:8px;
       overflow-wrap:anywhere;
       word-break:break-word;
     }
-    .pdf-answerline{
-      margin-top:8px;
-      font-size:12px;
+    .pdf-qnum{
+      font-weight:900;
       color:#111;
+      font-size:11px;
+      margin-right:6px;
+      white-space:nowrap;
     }
-    .linebox{
-      display:inline-block;
-      border-bottom:2px solid #111;
-      min-width:180px;
-      height:14px;
-      vertical-align:baseline;
-      margin-left:6px;
+    .pdf-workspace{
+      height:84px; /* ~4 lines */
+      margin-top:10px;
     }
-    .linebox.small{ min-width:120px; }
-  </style>
+</style>
 </head>
 
 <body>
@@ -536,20 +533,25 @@
         <label class="chip">
           Questions:
           <select id="countSelect" aria-label="Number of questions">
-            <option value="12">12</option>
-            <option value="16" selected>16</option>
-            <option value="20">20</option>
-          </select>
+            <option value="30" selected>30 (24 skills + 6 word problems)</option>
+            <option value="24">24 (skills only)</option>
+            <option value="36">36 (30 skills + 6 word problems)</option>
+            <option value="48">48 (42 skills + 6 word problems)</option>
+</select>
         </label>
 
         <label class="chip">
-          PDF per page:
+          Order:
+          <select id="orderSelect" aria-label="Question order">
+            <option value="inorder" selected>In order</option>
+            <option value="shuffle">Shuffle</option>
+          </select>
+        </label>
+
+        <label class="chip" style="display:none;">
+          <span>PDF per page</span>
           <select id="perPageSelect" aria-label="PDF questions per page">
-            <option value="3" selected>3</option>
-            <option value="4">4</option>
-            <option value="6">6</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
+            <option value="15" selected>15</option>
           </select>
         </label>
 
@@ -675,6 +677,78 @@
               <span class="mixed"><span>3</span><span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">4</span></span></span>
             </div>
           </div>
+
+                    <div class="note" style="margin-top:10px;">
+            <h3 style="margin:0 0 6px;color:var(--blue);">By-Parts Method (Mixed Numbers)</h3>
+            <p class="muted" style="margin:6px 0 10px;">
+              For mixed numbers (same <i>or</i> different denominators), you can:
+              <b>(1)</b> add/subtract the <b>whole parts</b>,
+              then <b>(2)</b> add/subtract the <b>fraction parts</b> after making them share a <b>common denominator</b>.
+              <br/>If the fraction part becomes <b>1 or more</b>, <b>regroup</b> (carry 1 to the whole part).
+              For subtraction, if the fraction part is too small, <b>borrow 1</b> from the whole part first.
+            </p>
+
+            <div class="chip">
+              Example (different denominators, no regroup):
+              <span class="mixed"><span>3</span><span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">4</span></span></span>
+              +
+              <span class="mixed"><span>2</span><span class="frac"><span class="top">2</span><span class="bar"></span><span class="bottom">3</span></span></span>
+              =
+              (3+2) +
+              (<span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">4</span></span>
+              +
+              <span class="frac"><span class="top">2</span><span class="bar"></span><span class="bottom">3</span></span>)
+              =
+              5 +
+              (<span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">12</span></span>
+              +
+              <span class="frac"><span class="top">8</span><span class="bar"></span><span class="bottom">12</span></span>)
+              =
+              <span class="mixed"><span>5</span><span class="frac"><span class="top">11</span><span class="bar"></span><span class="bottom">12</span></span></span>
+            </div>
+
+            <div class="chip">
+              Example (different denominators, regroup):
+              <span class="mixed"><span>1</span><span class="frac"><span class="top">5</span><span class="bar"></span><span class="bottom">6</span></span></span>
+              +
+              <span class="mixed"><span>2</span><span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">4</span></span></span>
+              =
+              (1+2) +
+              (<span class="frac"><span class="top">5</span><span class="bar"></span><span class="bottom">6</span></span>
+              +
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">4</span></span>)
+              =
+              3 +
+              (<span class="frac"><span class="top">10</span><span class="bar"></span><span class="bottom">12</span></span>
+              +
+              <span class="frac"><span class="top">9</span><span class="bar"></span><span class="bottom">12</span></span>)
+              =
+              3 +
+              <span class="frac"><span class="top">19</span><span class="bar"></span><span class="bottom">12</span></span>
+              =
+              <span class="mixed"><span>4</span><span class="frac"><span class="top">7</span><span class="bar"></span><span class="bottom">12</span></span></span>
+            </div>
+
+            <div class="chip">
+              Example (subtraction with borrowing):
+              <span class="mixed"><span>5</span><span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">3</span></span></span>
+              −
+              <span class="mixed"><span>2</span><span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">4</span></span></span>
+              =
+              (4−2) +
+              (<span class="frac"><span class="top">4</span><span class="bar"></span><span class="bottom">3</span></span>
+              −
+              <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bottom">4</span></span>)
+              =
+              2 +
+              (<span class="frac"><span class="top">16</span><span class="bar"></span><span class="bottom">12</span></span>
+              −
+              <span class="frac"><span class="top">9</span><span class="bar"></span><span class="bottom">12</span></span>)
+              =
+              <span class="mixed"><span>2</span><span class="frac"><span class="top">7</span><span class="bar"></span><span class="bottom">12</span></span></span>
+            </div>
+          </div>
+
         </div>
 
         <div class="card" style="grid-column:1/-1;">
@@ -693,7 +767,7 @@
             </div>
             <div class="chip">
               Example: 6 −
-              <span class="frac"><span class="top">5</span><span/ class="bar"></span><span class="bottom">6</span></span>
+              <span class="frac"><span class="top">5</span><span class="bar"></span><span class="bottom">6</span></span>
               =
               <span class="mixed"><span>5</span><span class="frac"><span class="top">1</span><span class="bar"></span><span class="bottom">6</span></span></span>
             </div>
@@ -790,7 +864,7 @@
         <div>
           <h2 style="margin:0;color:var(--blue);font-size:18px;">Practice Quiz</h2>
           <p class="muted" style="margin:6px 0 0;">
-            Answers must be in <b>simplest form</b>. You can enter as a mixed number (whole + fraction) or as an improper fraction.
+            You can enter as a mixed number (whole + fraction) or as an improper fraction.
           </p>
         </div>
         <div class="practice-meta">
@@ -856,9 +930,9 @@
     /***********************
      * Student name logic
      ************************/
-    let studentName = "";
+    let studentName = "DYAA";
 
-    function escapeHTML(s){
+function escapeHTML(s){
       return String(s)
         .replaceAll("&","&amp;")
         .replaceAll("<","&lt;")
@@ -954,6 +1028,12 @@
     }
 
     function fracHTML(n, d){
+      // Avoid showing things like 2/1 in questions/PDF. Display as a whole number instead.
+      if(d === 1) return `<span class="whole">${n}</span>`;
+      return `<span class="frac"><span class="top">${n}</span><span class="bar"></span><span class="bottom">${d}</span></span>`;
+    }
+    // Use this when we explicitly want to show denominator 1 (teaching notes).
+    function fracHTMLForce(n, d){
       return `<span class="frac"><span class="top">${n}</span><span class="bar"></span><span class="bottom">${d}</span></span>`;
     }
     function mixedHTML(w, n, d){
@@ -990,6 +1070,12 @@
         case "imp": return "Improper";
         case "mix": return "Mixed";
         case "whole": return "Whole +/− Frac";
+        case "gcf": return "GCF";
+        case "lcd": return "LCD";
+        case "wp_pf": return "Word • Proper";
+        case "wp_if": return "Word • Improper";
+        case "wp_mixed": return "Word • Mixed";
+        case "wp_2step": return "Word • Two-Step";
         default: return "Practice";
       }
     }
@@ -1051,7 +1137,78 @@
       `;
     }
 
-    /***********************
+    
+    function integerInputHTML(){
+      return `
+        <span class="muted">Answer:</span>
+        <input class="tiny" type="text" inputmode="numeric" autocomplete="off" placeholder="number" aria-label="answer" />
+      `;
+    }
+
+    function parseUserInt(card){
+      const inp = card.querySelector("input");
+      if(!inp) return null;
+      const s = inp.value.trim();
+      if(s === "") return null;
+      if(!isIntegerStr(s)) return null;
+      const v = parseInt(s, 10);
+      if(v < 0) return null;
+      return v;
+    }
+
+    function makeGcfQuestion(){
+      // Build numbers with a clear common factor
+      const base = randInt(2, 12);
+      let a = base * randInt(2, 12);
+      let b = base * randInt(2, 12);
+      while(b === a) b = base * randInt(2, 12);
+
+      const ans = gcd(a, b);
+
+      const prompt = `Find the <b>GCF</b> of <b>${a}</b> and <b>${b}</b>.`;
+      const hint = `List factors or use prime factorization. The GCF is the largest number that divides both exactly.`;
+      const explain = `Since ${a} and ${b} are both divisible by <b>${ans}</b>, and no larger common factor works, the GCF is <b>${ans}</b>.`;
+
+      return {
+        type:"gcf",
+        promptHTML: prompt,
+        inputHTML: integerInputHTML(),
+        getUser: (card)=> parseUserInt(card),
+        isCorrect: (u)=> (u !== null) && (u === ans),
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer:",
+        answerText: String(ans)
+      };
+    }
+
+    function makeLcdQuestion(){
+      const LCD_DENOMS = [12,14,15,16,18,20,21,24,25,27,28,30,32,35,36,40,42,45,48];
+      let d1 = LCD_DENOMS[randInt(0, LCD_DENOMS.length-1)];
+      let d2 = LCD_DENOMS[randInt(0, LCD_DENOMS.length-1)];
+      while(d2 === d1) d2 = LCD_DENOMS[randInt(0, LCD_DENOMS.length-1)];
+
+      const ans = lcm(d1, d2);
+
+      const prompt = `Find the <b>LCD</b> of <b>${d1}</b> and <b>${d2}</b>.`;
+      const hint = `The LCD is the LCM of the denominators. You can list multiples or use: LCM(a,b) = (a×b) ÷ GCF(a,b).`;
+      const g = gcd(d1, d2);
+      const explain = `GCF(${d1}, ${d2}) = ${g}. So LCD = LCM = (${d1}×${d2}) ÷ ${g} = <b>${ans}</b>.`;
+
+      return {
+        type:"lcd",
+        promptHTML: prompt,
+        inputHTML: integerInputHTML(),
+        getUser: (card)=> parseUserInt(card),
+        isCorrect: (u)=> (u !== null) && (u === ans),
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer:",
+        answerText: String(ans)
+      };
+    }
+
+/***********************
      * Question generators
      ************************/
     const DENOMS = [2,3,4,5,6,8,10,12];
@@ -1062,7 +1219,7 @@
       let b = randInt(1, d-1);
       const ans = simplify(a + b, d);
 
-      const prompt = `Calculate: ${fracHTML(a,d)} + ${fracHTML(b,d)}. Write your answer in simplest form.`;
+      const prompt = ` ${fracHTML(a,d)} + ${fracHTML(b,d)}.`;
       const hint = `Same denominator: add the numerators, keep the denominator, then simplify.`;
       const explain = `Add numerators: ${a} + ${b} = <b>${a+b}</b>, so
         ${fracHTML(a,d)} + ${fracHTML(b,d)} = ${fracHTML(a+b,d)}.
@@ -1087,7 +1244,7 @@
       let b = randInt(1, a-1);
       const ans = simplify(a - b, d);
 
-      const prompt = `Calculate: ${fracHTML(a,d)} − ${fracHTML(b,d)}. Write your answer in simplest form.`;
+      const prompt = ` ${fracHTML(a,d)} − ${fracHTML(b,d)}.`;
       const hint = `Same denominator: subtract the numerators, keep the denominator, then simplify.`;
       const explain = `Subtract numerators: ${a} − ${b} = <b>${a-b}</b>, so
         ${fracHTML(a,d)} − ${fracHTML(b,d)} = ${fracHTML(a-b,d)}.
@@ -1122,7 +1279,7 @@
       const m1 = lcd / A.d, m2 = lcd / B.d;
       const e1n = A.n * m1, e2n = B.n * m2;
 
-      const prompt = `Calculate: ${fracHTML(A.n,A.d)} + ${fracHTML(B.n,B.d)}. Write your answer in simplest form.`;
+      const prompt = ` ${fracHTML(A.n,A.d)} + ${fracHTML(B.n,B.d)}.`;
       const hint = `Find the LCD, convert both fractions, then add and simplify.`;
       const explain = `LCD of ${A.d} and ${B.d} is <b>${lcd}</b>.
         Convert:
@@ -1173,7 +1330,7 @@
       const m1 = lcd / A.d, m2 = lcd / B.d;
       const e1n = A.n * m1, e2n = B.n * m2;
 
-      const prompt = `Calculate: ${fracHTML(A.n,A.d)} − ${fracHTML(B.n,B.d)}. Write your answer in simplest form.`;
+      const prompt = ` ${fracHTML(A.n,A.d)} − ${fracHTML(B.n,B.d)}.`;
       const hint = `Find the LCD, convert both fractions, then subtract and simplify.`;
       const explain = `LCD of ${A.d} and ${B.d} is <b>${lcd}</b>.
         Convert:
@@ -1196,16 +1353,17 @@
       };
     }
 
-    function makeImproperAddSub(){
+    function makeImproperAddSub(forceOp=null){
       const d1 = DENOMS[randInt(0, DENOMS.length-1)];
       const d2 = DENOMS[randInt(0, DENOMS.length-1)];
-      const n1 = randInt(d1+1, d1*3-1);
-      const n2 = randInt(d2+1, d2*3-1);
-
+      let n1 = randInt(d1+1, d1*3-1);
+      while(n1 % d1 === 0) n1 = randInt(d1+1, d1*3-1);
+      let n2 = randInt(d2+1, d2*3-1);
+      while(n2 % d2 === 0) n2 = randInt(d2+1, d2*3-1);
       const A = simplify(n1, d1);
       const B = simplify(n2, d2);
 
-      const isAdd = Math.random() < 0.55;
+      const isAdd = (forceOp === "add") ? true : (forceOp === "sub") ? false : (Math.random() < 0.55);
 
       let prompt, hint, explain, ans;
       if(isAdd){
@@ -1213,7 +1371,7 @@
         const lcd = lcm(A.d, B.d);
         const e1n = A.n * (lcd / A.d);
         const e2n = B.n * (lcd / B.d);
-        prompt = `Calculate: ${fracHTML(A.n,A.d)} + ${fracHTML(B.n,B.d)}. Write your answer in simplest form.`;
+        prompt = ` ${fracHTML(A.n,A.d)} + ${fracHTML(B.n,B.d)}.`;
         hint = `Improper fractions work the same way: use a common denominator, then add and simplify.`;
         explain = `LCD of ${A.d} and ${B.d} is <b>${lcd}</b>.
           ${fracHTML(A.n,A.d)} = ${fracHTML(e1n,lcd)}, ${fracHTML(B.n,B.d)} = ${fracHTML(e2n,lcd)}.
@@ -1228,7 +1386,7 @@
         const lcd = lcm(A2.d, B2.d);
         const e1n = A2.n * (lcd / A2.d);
         const e2n = B2.n * (lcd / B2.d);
-        prompt = `Calculate: ${fracHTML(A2.n,A2.d)} − ${fracHTML(B2.n,B2.d)}. Write your answer in simplest form.`;
+        prompt = ` ${fracHTML(A2.n,A2.d)} − ${fracHTML(B2.n,B2.d)}.`;
         hint = `Convert to the same denominator first, then subtract and simplify.`;
         explain = `LCD of ${A2.d} and ${B2.d} is <b>${lcd}</b>.
           ${fracHTML(A2.n,A2.d)} = ${fracHTML(e1n,lcd)}, ${fracHTML(B2.n,B2.d)} = ${fracHTML(e2n,lcd)}.
@@ -1249,42 +1407,130 @@
       };
     }
 
-    function makeMixedAddSub(){
-      const d1 = DENOMS[randInt(0, DENOMS.length-1)];
-      const d2 = DENOMS[randInt(0, DENOMS.length-1)];
-      const w1 = randInt(1,3);
-      const w2 = randInt(1,3);
+    
+    function makeMixedAddSub(forceOp=null){
+      // Often use the "by-parts" method when denominators match:
+      // whole + whole, then fraction + fraction (regroup if needed).
+      const preferByParts = Math.random() < 0.60;
+
+      let d1, d2;
+      if(preferByParts){
+        d1 = d2 = DENOMS[randInt(0, DENOMS.length-1)];
+      }else{
+        d1 = DENOMS[randInt(0, DENOMS.length-1)];
+        d2 = DENOMS[randInt(0, DENOMS.length-1)];
+        while(d2 === d1) d2 = DENOMS[randInt(0, DENOMS.length-1)];
+      }
+
+      const w1 = randInt(1,4);
+      const w2 = randInt(1,4);
       const n1 = randInt(1, d1-1);
       const n2 = randInt(1, d2-1);
 
       const A = simplify(w1 * d1 + n1, d1);
       const B = simplify(w2 * d2 + n2, d2);
 
-      const isAdd = Math.random() < 0.55;
+      const isAdd =
+        (forceOp === "add") ? true :
+        (forceOp === "sub") ? false :
+        (Math.random() < 0.55);
 
-      let prompt, hint, explain, ans, aDisp, bDisp;
-      aDisp = mixedHTML(w1, n1, d1);
-      bDisp = mixedHTML(w2, n2, d2);
+      const aDisp = mixedHTML(w1, n1, d1);
+      const bDisp = mixedHTML(w2, n2, d2);
+
+      let prompt, hint, explain, ans;
 
       if(isAdd){
         ans = addFrac(A, B);
-        prompt = `Calculate: ${aDisp} + ${bDisp}. Write your answer in simplest form.`;
-        hint = `Convert mixed numbers to improper fractions, then add and simplify.`;
-        explain = `Convert:
-          ${aDisp} = ${fracHTML(A.n,A.d)}, and ${bDisp} = ${fracHTML(B.n,B.d)}.
-          Then add and simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+        prompt = ` ${aDisp} + ${bDisp}.`;
+
+        // By-parts explanation when denominators match
+        if(d1 === d2){
+          const d = d1;
+          const wholeSum = w1 + w2;
+          const fracRawN = n1 + n2;
+
+          const carry = Math.floor(fracRawN / d);
+          const rem = fracRawN % d;
+
+          const fracSimpl = simplify(fracRawN, d);
+          const remSimpl = simplify(rem, d);
+
+          hint = `Same denominator: add the whole parts and the fraction parts separately. Regroup if the fraction part is 1 or more.`;
+
+          if(carry === 0){
+            explain = `
+              Whole parts: ${w1} + ${w2} = <b>${wholeSum}</b>.<br/>
+              Fraction parts: ${fracHTML(n1,d)} + ${fracHTML(n2,d)} = ${fracHTML(fracRawN,d)} → ${fracHTML(fracSimpl.n, fracSimpl.d)}.<br/>
+              Combine → <b>${formatAnswerText(ans.n, ans.d)}</b>.
+            `;
+          }else{
+            const newWhole = wholeSum + carry;
+            explain = `
+              Whole parts: ${w1} + ${w2} = <b>${wholeSum}</b>.<br/>
+              Fraction parts: ${fracHTML(n1,d)} + ${fracHTML(n2,d)} = ${fracHTML(fracRawN,d)} = <b>${carry}</b> + ${fracHTML(remSimpl.n, remSimpl.d)}.<br/>
+              Regroup: ${wholeSum} + ${carry} = <b>${newWhole}</b>.<br/>
+              Answer → <b>${formatAnswerText(ans.n, ans.d)}</b>.
+            `;
+          }
+        }else{
+          hint = `Convert mixed numbers to improper fractions, then add and simplify.`;
+          explain = `Convert:
+            ${aDisp} = ${fracHTML(A.n,A.d)}, and ${bDisp} = ${fracHTML(B.n,B.d)}.
+            Then add and simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+        }
+
       }else{
+        // subtraction: ensure first value is larger
         let A2 = A, B2 = B, a2Disp = aDisp, b2Disp = bDisp;
+        let wA = w1, nA = n1, dA = d1;
+        let wB = w2, nB = n2, dB = d2;
+
         if(A.n * B.d < B.n * A.d){
           A2 = B; B2 = A;
           a2Disp = bDisp; b2Disp = aDisp;
+
+          wA = w2; nA = n2; dA = d2;
+          wB = w1; nB = n1; dB = d1;
         }
+
         ans = subFrac(A2, B2);
-        prompt = `Calculate: ${a2Disp} − ${b2Disp}. Write your answer in simplest form.`;
-        hint = `Convert to improper fractions first, then subtract and simplify.`;
-        explain = `Convert:
-          ${a2Disp} = ${fracHTML(A2.n,A2.d)}, and ${b2Disp} = ${fracHTML(B2.n,B2.d)}.
-          Subtract and simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+        prompt = ` ${a2Disp} − ${b2Disp}.`;
+
+        // By-parts explanation when denominators match
+        if(dA === dB){
+          const d = dA;
+          hint = `Same denominator: subtract the whole parts and the fraction parts separately. Borrow 1 if the top fraction is smaller.`;
+
+          if(nA >= nB){
+            const wholeDiff = wA - wB;
+            const fracDiffN = nA - nB;
+            const fracDiff = simplify(fracDiffN, d);
+
+            explain = `
+              Whole parts: ${wA} − ${wB} = <b>${wholeDiff}</b>.<br/>
+              Fraction parts: ${fracHTML(nA,d)} − ${fracHTML(nB,d)} = ${fracHTML(fracDiffN,d)} → ${fracHTML(fracDiff.n, fracDiff.d)}.<br/>
+              Combine → <b>${formatAnswerText(ans.n, ans.d)}</b>.
+            `;
+          }else{
+            const newWhole = wA - 1;
+            const borrowedN = nA + d;
+            const fracDiffN = borrowedN - nB;
+            const fracDiff = simplify(fracDiffN, d);
+
+            explain = `
+              Borrow 1 from the whole part: ${wA} becomes <b>${newWhole}</b> and add ${fracHTML(d,d)} to the fraction part.<br/>
+              New fraction part: ${fracHTML(nA,d)} + ${fracHTML(d,d)} = ${fracHTML(borrowedN,d)}.<br/>
+              Now subtract: ${fracHTML(borrowedN,d)} − ${fracHTML(nB,d)} = ${fracHTML(fracDiffN,d)} → ${fracHTML(fracDiff.n, fracDiff.d)}.<br/>
+              Combine → <b>${formatAnswerText(ans.n, ans.d)}</b>.
+            `;
+          }
+        }else{
+          hint = `Convert mixed numbers to improper fractions first, then subtract and simplify.`;
+          explain = `Convert:
+            ${a2Disp} = ${fracHTML(A2.n,A2.d)}, and ${b2Disp} = ${fracHTML(B2.n,B2.d)}.
+            Subtract and simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+        }
       }
 
       return {
@@ -1300,12 +1546,12 @@
       };
     }
 
-    function makeWholeWithFraction(){
+    function makeWholeWithFraction(forceOp=null){
       const w = randInt(2, 9);
       const d = DENOMS[randInt(0, DENOMS.length-1)];
       const n = randInt(1, d-1);
 
-      const isAdd = Math.random() < 0.55;
+      const isAdd = (forceOp === "add") ? true : (forceOp === "sub") ? false : (Math.random() < 0.55);
 
       let prompt, hint, explain, ans;
       const F = simplify(n, d);
@@ -1313,16 +1559,16 @@
 
       if(isAdd){
         ans = addFrac(W, F);
-        prompt = `Calculate: <b>${w}</b> + ${fracHTML(F.n,F.d)}. Write your answer in simplest form.`;
+        prompt = ` <b>${w}</b> + ${fracHTML(F.n,F.d)}.`;
         hint = `Treat ${w} as ${w}/1 (or as a mixed number), then add.`;
-        explain = `${w} = ${fracHTML(w,1)}.
-          Add: ${fracHTML(w,1)} + ${fracHTML(F.n,F.d)} = <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+        explain = `${w} = ${fracHTMLForce(w,1)}.
+          Add: ${fracHTMLForce(w,1)} + ${fracHTML(F.n,F.d)} = <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
       }else{
         ans = subFrac(W, F);
-        prompt = `Calculate: <b>${w}</b> − ${fracHTML(F.n,F.d)}. Write your answer in simplest form.`;
+        prompt = ` <b>${w}</b> − ${fracHTML(F.n,F.d)}.`;
         hint = `Rewrite ${w} as a fraction (or as a mixed number), then subtract.`;
-        explain = `${w} = ${fracHTML(w,1)}.
-          Subtract: ${fracHTML(w,1)} − ${fracHTML(F.n,F.d)} = <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+        explain = `${w} = ${fracHTMLForce(w,1)}.
+          Subtract: ${fracHTMLForce(w,1)} − ${fracHTML(F.n,F.d)} = <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
       }
 
       return {
@@ -1338,29 +1584,442 @@
       };
     }
 
-    function buildQuestionSet(count){
-      const types = ["sd_add","sd_sub","dd_add","dd_sub","imp","mix","whole"];
-      const qs = [];
-      while(qs.length < count){
-        const t = types[qs.length % types.length];
-        let q;
-        if(t === "sd_add") q = makeSameDenAdd();
-        if(t === "sd_sub") q = makeSameDenSub();
-        if(t === "dd_add") q = makeDiffDenAdd();
-        if(t === "dd_sub") q = makeDiffDenSub();
-        if(t === "imp") q = makeImproperAddSub();
-        if(t === "mix") q = makeMixedAddSub();
-        if(t === "whole") q = makeWholeWithFraction();
-        qs.push(q);
+    
+    /***********************
+     * Word Problems (Applications)
+     ************************/
+    function pick(arr){
+      return arr[randInt(0, arr.length-1)];
+    }
+
+    function makeWordProperAdd(){
+      // Proper fractions + proper fractions (result stays < 1)
+      let d1, d2, n1, n2, A, B, tries = 0;
+      while(true){
+        d1 = DENOMS[randInt(0, DENOMS.length-1)];
+        d2 = DENOMS[randInt(0, DENOMS.length-1)];
+        // encourage different denominators sometimes
+        if(Math.random() < 0.60){
+          while(d2 === d1) d2 = DENOMS[randInt(0, DENOMS.length-1)];
+        }
+        n1 = randInt(1, d1-1);
+        n2 = randInt(1, d2-1);
+        A = simplify(n1, d1);
+        B = simplify(n2, d2);
+
+        // ensure A + B < 1
+        if(A.n * B.d + B.n * A.d < A.d * B.d) break;
+
+        tries++;
+        if(tries > 80){
+          // fallback to safe values
+          A = simplify(1, 3);
+          B = simplify(1, 6);
+          break;
+        }
       }
-      for(let i=qs.length-1;i>0;i--){
+
+      const ans = addFrac(A, B);
+      const lcd = lcm(A.d, B.d);
+      const e1n = A.n * (lcd / A.d);
+      const e2n = B.n * (lcd / B.d);
+
+      const contexts = [
+        (a,b)=> `A bottle of juice was full. Mia drank ${a} of the bottle in the morning and ${b} of the bottle in the afternoon. What fraction of the bottle did Mia drink altogether?`,
+        (a,b)=> `A cake was cut into equal slices. Liam ate ${a} of the cake and Noah ate ${b} of the cake. What fraction of the cake was eaten in total?`,
+        (a,b)=> `A class read a book. On Monday, the class read ${a} of the book. On Tuesday, the class read ${b} of the book. What fraction of the book was read altogether?`,
+      ];
+
+      const prompt = pick(contexts)(fracHTML(A.n,A.d), fracHTML(B.n,B.d));
+      const hint = `Add the two fractions (they are parts of the same whole). If denominators are different, find the LCD first.`;
+      const explain = `LCD(${A.d}, ${B.d}) = <b>${lcd}</b>.
+        ${fracHTML(A.n,A.d)} = ${fracHTML(e1n,lcd)}, ${fracHTML(B.n,B.d)} = ${fracHTML(e2n,lcd)}.
+        Add: ${fracHTML(e1n+e2n,lcd)}.
+        Simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+
+      return {
+        type:"wp_pf",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+    function makeWordProperSub(){
+      // Proper fraction subtraction (result stays positive and proper)
+      let d1, d2, n1, n2, A, B, tries = 0;
+      while(true){
+        d1 = DENOMS[randInt(0, DENOMS.length-1)];
+        d2 = DENOMS[randInt(0, DENOMS.length-1)];
+        if(Math.random() < 0.60){
+          while(d2 === d1) d2 = DENOMS[randInt(0, DENOMS.length-1)];
+        }
+        n1 = randInt(1, d1-1);
+        n2 = randInt(1, d2-1);
+        A = simplify(n1, d1);
+        B = simplify(n2, d2);
+
+        // ensure A > B and result > 0
+        if(A.n * B.d > B.n * A.d) break;
+
+        tries++;
+        if(tries > 80){
+          A = simplify(5, 6);
+          B = simplify(1, 4);
+          break;
+        }
+      }
+
+      const ans = subFrac(A, B);
+      const lcd = lcm(A.d, B.d);
+      const e1n = A.n * (lcd / A.d);
+      const e2n = B.n * (lcd / B.d);
+
+      const contexts = [
+        (a,b)=> `A tank was filled to ${a} of its capacity. Later, ${b} of the tank’s capacity was used. What fraction of the tank’s capacity remains filled?`,
+        (a,b)=> `Ella had ${a} of a chocolate bar. She gave away ${b} of a whole bar. What fraction of the chocolate bar does Ella have left?`,
+        (a,b)=> `A ribbon was ${a} of a metre long. Noah used ${b} of a metre for a craft project. What fraction of a metre of ribbon is left?`,
+      ];
+
+      const prompt = pick(contexts)(fracHTML(A.n,A.d), fracHTML(B.n,B.d));
+      const hint = `Subtract the second fraction from the first. Use the LCD if denominators are different, then simplify.`;
+      const explain = `LCD(${A.d}, ${B.d}) = <b>${lcd}</b>.
+        ${fracHTML(A.n,A.d)} = ${fracHTML(e1n,lcd)}, ${fracHTML(B.n,B.d)} = ${fracHTML(e2n,lcd)}.
+        Subtract: ${fracHTML(e1n-e2n,lcd)}.
+        Simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+
+      return {
+        type:"wp_pf",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+    function makeWordImproperAdd(){
+      // Mixed-number addition in context (shown as mixed numbers)
+      const d1 = DENOMS[randInt(0, DENOMS.length-1)];
+      const d2 = DENOMS[randInt(0, DENOMS.length-1)];
+      let n1 = randInt(d1+1, d1*3-1);
+      while(n1 % d1 === 0) n1 = randInt(d1+1, d1*3-1);
+      let n2 = randInt(d2+1, d2*3-1);
+      while(n2 % d2 === 0) n2 = randInt(d2+1, d2*3-1);
+
+      const A = simplify(n1, d1);
+      const B = simplify(n2, d2);
+      const ans = addFrac(A, B);
+
+      const Am = toMixed(A.n, A.d);
+      const Bm = toMixed(B.n, B.d);
+
+      const lcd = lcm(A.d, B.d);
+      const e1n = A.n * (lcd / A.d);
+      const e2n = B.n * (lcd / B.d);
+
+      const contexts = [
+        (a,b)=> `A plumber used ${a} metres of pipe on Monday and ${b} metres of pipe on Tuesday. How many metres of pipe were used altogether?`,
+        (a,b)=> `A hiker walked ${a} km before lunch and ${b} km after lunch. How far did the hiker walk in total?`,
+        (a,b)=> `Two containers of paint were used. One contained ${a} litres and the other contained ${b} litres. How many litres of paint were used altogether?`,
+      ];
+
+      const prompt = pick(contexts)(
+        mixedHTML(Am.w, Am.n, Am.d),
+        mixedHTML(Bm.w, Bm.n, Bm.d)
+      );
+
+      const hint = `Add the two mixed numbers. A good method is: convert to improper fractions → find the LCD → add → simplify.`;
+
+      const explain = `Convert to improper fractions:
+        ${mixedHTML(Am.w, Am.n, Am.d)} = ${fracHTML(A.n,A.d)},
+        ${mixedHTML(Bm.w, Bm.n, Bm.d)} = ${fracHTML(B.n,B.d)}.
+        LCD(${A.d}, ${B.d}) = <b>${lcd}</b>.
+        ${fracHTML(A.n,A.d)} = ${fracHTML(e1n,lcd)}, ${fracHTML(B.n,B.d)} = ${fracHTML(e2n,lcd)}.
+        Add: ${fracHTML(e1n+e2n,lcd)}.
+        Simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+
+      return {
+        type:"wp_mixed",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+
+
+        function makeWordImproperSub(){
+      // Mixed-number subtraction in context (shown as mixed numbers; ensure positive result)
+      let d1, d2, n1, n2, A, B, tries = 0;
+      while(true){
+        d1 = DENOMS[randInt(0, DENOMS.length-1)];
+        d2 = DENOMS[randInt(0, DENOMS.length-1)];
+        n1 = randInt(d1+1, d1*4-1);
+        while(n1 % d1 === 0) n1 = randInt(d1+1, d1*4-1);
+        n2 = randInt(d2+1, d2*3-1);
+        while(n2 % d2 === 0) n2 = randInt(d2+1, d2*3-1);
+
+        A = simplify(n1, d1);
+        B = simplify(n2, d2);
+
+        if(A.n * B.d > B.n * A.d) break;
+
+        tries++;
+        if(tries > 100){
+          A = simplify(13, 6);
+          B = simplify(7, 4);
+          break;
+        }
+      }
+
+      const ans = subFrac(A, B);
+
+      const Am = toMixed(A.n, A.d);
+      const Bm = toMixed(B.n, B.d);
+
+      const lcd = lcm(A.d, B.d);
+      const e1n = A.n * (lcd / A.d);
+      const e2n = B.n * (lcd / B.d);
+
+      const contexts = [
+        (a,b)=> `A large jug contained ${a} litres of water. After pouring out ${b} litres, how much water remained in the jug?`,
+        (a,b)=> `A rope was ${a} metres long. A piece measuring ${b} metres was cut off. What length of rope remained?`,
+        (a,b)=> `A runner trained for ${a} hours in the first week. In the second week, the runner trained ${b} hours less than the first week. How many hours did the runner train in the second week?`,
+      ];
+
+      const prompt = pick(contexts)(
+        mixedHTML(Am.w, Am.n, Am.d),
+        mixedHTML(Bm.w, Bm.n, Bm.d)
+      );
+
+      const hint = `Subtract the second mixed number from the first. Convert to improper fractions if needed, use the LCD, then simplify.`;
+
+      const explain = `Convert to improper fractions:
+        ${mixedHTML(Am.w, Am.n, Am.d)} = ${fracHTML(A.n,A.d)},
+        ${mixedHTML(Bm.w, Bm.n, Bm.d)} = ${fracHTML(B.n,B.d)}.
+        LCD(${A.d}, ${B.d}) = <b>${lcd}</b>.
+        ${fracHTML(A.n,A.d)} = ${fracHTML(e1n,lcd)}, ${fracHTML(B.n,B.d)} = ${fracHTML(e2n,lcd)}.
+        Subtract: ${fracHTML(e1n-e2n,lcd)}.
+        Simplify → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+
+      return {
+        type:"wp_mixed",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+
+
+    function makeWordTwoStepAddSub(){
+      // Two-step word problem: add then subtract (A + B − C), ensure positive
+      let A, B, C, tries = 0;
+      while(true){
+        // A is often improper, B and C are proper
+        const dA = DENOMS[randInt(0, DENOMS.length-1)];
+        let nA = randInt(dA+1, dA*3-1);
+        while(nA % dA === 0) nA = randInt(dA+1, dA*3-1);
+        A = simplify(nA, dA);
+
+        const dB = DENOMS[randInt(0, DENOMS.length-1)];
+        B = simplify(randInt(1, dB-1), dB);
+
+        const dC = DENOMS[randInt(0, DENOMS.length-1)];
+        C = simplify(randInt(1, dC-1), dC);
+
+        // compute A + B - C and ensure > 0
+        const t = subFrac(addFrac(A,B), C);
+        if(t.n > 0) break;
+
+        tries++;
+        if(tries > 120){
+          A = simplify(7, 3);
+          B = simplify(5, 6);
+          C = simplify(1, 2);
+          break;
+        }
+      }
+
+      const ans = subFrac(addFrac(A,B), C);
+
+      const contexts = [
+        (a,b,c)=> `A water tank contained ${a} litres of water. Then ${b} litres were added. After that, ${c} litres were used. How many litres of water are in the tank now?`,
+        (a,b,c)=> `A builder had ${a} metres of rope. The builder bought another ${b} metres. Then ${c} metres were cut off. How many metres of rope are there now?`,
+        (a,b,c)=> `A cyclist rode ${a} km in the morning. The cyclist rode another ${b} km in the afternoon, then took a shortcut that was ${c} km shorter. How many kilometres did the cyclist travel in total?`,
+      ];
+
+      const prompt = pick(contexts)(fracHTML(A.n,A.d), fracHTML(B.n,B.d), fracHTML(C.n,C.d));
+      const hint = `Work step by step: first add, then subtract. Use the LCD whenever denominators are different, and simplify.`;
+      const explain = `Step 1: ${fracHTML(A.n,A.d)} + ${fracHTML(B.n,B.d)}.<br/>Step 2: subtract ${fracHTML(C.n,C.d)}.<br/>Final answer (simplest) → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+
+      return {
+        type:"wp_2step",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+    function makeWordTwoStepSubAdd(){
+      // Two-step word problem: subtract then add (A − B + C), ensure positive
+      let A, B, C, tries = 0;
+      while(true){
+        const dA = DENOMS[randInt(0, DENOMS.length-1)];
+        let nA = randInt(dA+1, dA*3-1);
+        while(nA % dA === 0) nA = randInt(dA+1, dA*3-1);
+        A = simplify(nA, dA);
+
+        const dB = DENOMS[randInt(0, DENOMS.length-1)];
+        B = simplify(randInt(1, dB-1), dB);
+
+        const dC = DENOMS[randInt(0, DENOMS.length-1)];
+        C = simplify(randInt(1, dC-1), dC);
+
+        const t = addFrac(subFrac(A,B), C);
+        if(t.n > 0) break;
+
+        tries++;
+        if(tries > 120){
+          A = simplify(11, 4);
+          B = simplify(2, 3);
+          C = simplify(1, 6);
+          break;
+        }
+      }
+
+      const ans = addFrac(subFrac(A,B), C);
+
+      const contexts = [
+        (a,b,c)=> `A bucket contained ${a} litres of water. ${b} litres were poured out, then ${c} litres were poured in. How many litres of water are in the bucket now?`,
+        (a,b,c)=> `A gardener had ${a} bags of soil. The gardener used ${b} of a bag, then bought ${c} of a bag. How many bags of soil does the gardener have now?`,
+        (a,b,c)=> `A student read ${a} of a book by Wednesday. The student read ${b} of a book less on Thursday, then read another ${c} of a book on Friday. What fraction of a book did the student read in total by Friday?`,
+      ];
+
+      const prompt = pick(contexts)(fracHTML(A.n,A.d), fracHTML(B.n,B.d), fracHTML(C.n,C.d));
+      const hint = `Work step by step: subtract first, then add. Use the LCD when needed, and simplify.`;
+      const explain = `Step 1: ${fracHTML(A.n,A.d)} − ${fracHTML(B.n,B.d)}.<br/>Step 2: add ${fracHTML(C.n,C.d)}.<br/>Final answer (simplest) → <b>${formatAnswerText(ans.n, ans.d)}</b>.`;
+
+      return {
+        type:"wp_2step",
+        promptHTML: prompt,
+        inputHTML: mixedInputHTML(),
+        getUser: (card)=> parseUserMixed(card),
+        isCorrect: (u)=> !!u && u.n === ans.n && u.d === ans.d,
+        hintHTML: hint,
+        explainHTML: explain,
+        pdfAnswerHint: "Answer (simplest): whole __  num __ / den __",
+        answerText: formatAnswerText(ans.n, ans.d)
+      };
+    }
+
+function shuffleArray(arr){
+      for(let i=arr.length-1;i>0;i--){
         const j = randInt(0,i);
-        [qs[i],qs[j]] = [qs[j],qs[i]];
+        [arr[i],arr[j]] = [arr[j],arr[i]];
       }
+      return arr;
+    }
+
+    function buildQuestionSet(count, orderMode){
+      // Skill questions (Learn sections 1–6) + optional Word Problems (Q25–Q30)
+      const includeWord = (count >= 30);
+      const wordCount = includeWord ? 6 : 0;
+
+      const remaining = Math.max(0, count - wordCount); // reserved for 6 skill groups
+      const groupCount = 6;
+      const each = Math.floor(remaining / groupCount);
+      const qs = [];
+
+      // 1) Same denominator (Add/Subtract)
+      for(let i=0; i<each; i++){
+        qs.push(i % 2 === 0 ? makeSameDenAdd() : makeSameDenSub());
+      }
+
+      // 2) Different denominators (LCD) (Add/Subtract)
+      for(let i=0; i<each; i++){
+        qs.push(i % 2 === 0 ? makeDiffDenAdd() : makeDiffDenSub());
+      }
+
+      // 3) Improper fractions (Add/Subtract)
+      for(let i=0; i<each; i++){
+        qs.push(makeImproperAddSub(i % 2 === 0 ? "add" : "sub"));
+      }
+
+      // 4) Mixed numbers (Add/Subtract)
+      for(let i=0; i<each; i++){
+        qs.push(makeMixedAddSub(i % 2 === 0 ? "add" : "sub"));
+      }
+
+      // 5) Whole numbers with fractions (Add/Subtract)
+      for(let i=0; i<each; i++){
+        qs.push(makeWholeWithFraction(i % 2 === 0 ? "add" : "sub"));
+      }
+
+      // 6) GCF and LCD skills
+      for(let i=0; i<each; i++){
+        qs.push(i % 2 === 0 ? makeGcfQuestion() : makeLcdQuestion());
+      }
+
+      // pad/trim to hit the remaining count (skill questions only)
+      while(qs.length < remaining){
+        qs.push(makeMixedAddSub());
+      }
+      if(qs.length > remaining){
+        qs.length = remaining;
+      }
+
+      // Shuffle only the skill questions (keep word problems at the end, as Q25–Q30)
+      if(orderMode === "shuffle"){
+        shuffleArray(qs);
+      }
+
+      // Word problems (Applications): fixed slots when count >= 30
+      if(includeWord){
+        // Q25–Q26: Proper fractions (add, subtract)
+        qs.push(makeWordProperAdd());
+        qs.push(makeWordProperSub());
+
+        // Q27–Q28: Improper fractions (add, subtract)
+        qs.push(makeWordImproperAdd());
+        qs.push(makeWordImproperSub());
+
+        // Q29–Q30: Two-step (mixed +/−)
+        qs.push(makeWordTwoStepAddSub());
+        qs.push(makeWordTwoStepSubAdd());
+      }
+
+      // final safety
+      if(qs.length > count) qs.length = count;
+
       return qs;
     }
 
-    /***********************
+/***********************
      * PDF helpers (Answer Key on last pages)
      ************************/
     function loadScript(src){
@@ -1382,7 +2041,7 @@
     }
 
     function buildPdfPages(){
-      const perPage = parseInt(document.getElementById("perPageSelect").value, 10);
+      const perPage = 15;
       const printArea = document.getElementById("pdfPrintArea");
       printArea.innerHTML = "";
 
@@ -1392,7 +2051,7 @@
       const total = state.questions.length;
       const pagesQ = Math.ceil(total / perPage);
 
-      const ansPerPage = 24;
+      const ansPerPage = 15;
       const pagesA = Math.ceil(total / ansPerPage);
 
       const totalPagesAll = pagesQ + pagesA;
@@ -1411,8 +2070,8 @@
         page.innerHTML = `
           <div class="pdf-header">
             <div>
-              <div class="pdf-title">Fractions — Part 3 (Practice)</div>
-              <div class="pdf-sub">Adding & Subtracting Fractions • Mixed • Improper</div>
+              <div class="pdf-title">DYAA</div>
+              <div class="pdf-sub">Fractions — Part 3 (Adding & Subtracting)</div>
             </div>
             <div class="pdf-meta">
               Student: <b>${safeStudentForHtml || "—"}</b><br/>
@@ -1431,15 +2090,8 @@
           const qBox = document.createElement("div");
           qBox.className = "pdf-q";
           qBox.innerHTML = `
-            <div class="pdf-qhead">
-              <div class="pdf-qnum">Q${i+1}</div>
-              <div class="pdf-qtopic">${topicLabel(q.type)}</div>
-            </div>
-            <div class="pdf-qbody">${q.promptHTML}</div>
-            <div class="pdf-answerline">
-              ${q.pdfAnswerHint || "Answer:"}
-              <span class="linebox"></span>
-            </div>
+            <div class="pdf-qbody"><span class="pdf-qnum">Q${i+1}</span> ${q.promptHTML}</div>
+            <div class="pdf-workspace"></div>
           `;
           grid.appendChild(qBox);
         }
@@ -1459,8 +2111,8 @@
         page.innerHTML = `
           <div class="pdf-header">
             <div>
-              <div class="pdf-title">Fractions — Part 3 (Answer Key)</div>
-              <div class="pdf-sub">Answers for the generated set</div>
+              <div class="pdf-title">DYAA</div>
+              <div class="pdf-sub">Fractions — Part 3 (Answer Key)</div>
             </div>
             <div class="pdf-meta">
               Student: <b>${safeStudentForHtml || "—"}</b><br/>
@@ -1480,11 +2132,7 @@
           const qBox = document.createElement("div");
           qBox.className = "pdf-q";
           qBox.innerHTML = `
-            <div class="pdf-qhead">
-              <div class="pdf-qnum">Q${i+1}</div>
-              <div class="pdf-qtopic">${topicLabel(q.type)}</div>
-            </div>
-            <div class="pdf-qbody"><b>Answer:</b> ${escapeHTML(ans)}</div>
+            <div class="pdf-qbody"><span class="pdf-qnum">Q${i+1}</span> <b>Answer:</b> ${escapeHTML(ans)}</div>
           `;
           grid.appendChild(qBox);
         }
@@ -1533,8 +2181,11 @@
 
       const setName = setNameFromIndex(state.setIndex-1);
       const fileStudent = safeFileNamePart(studentName);
-      pdf.save(`DYAA_Fractions_Part3_${fileStudent}_Set_${setName}.pdf`);
-    }
+      const now2 = new Date();
+      const pad2 = (n)=> String(n).padStart(2,"0");
+      const ts = `${now2.getFullYear()}${pad2(now2.getMonth()+1)}${pad2(now2.getDate())}_${pad2(now2.getHours())}${pad2(now2.getMinutes())}`;
+      pdf.save(`DYAA_Fractions_Part3_${fileStudent}_Set_${setName}_${ts}.pdf`);
+}
 
     /***********************
      * Render + checking
@@ -1545,6 +2196,7 @@
     const practiceControls = document.getElementById("practiceControls");
     const questionsWrap = document.getElementById("questionsWrap");
     const countSelect = document.getElementById("countSelect");
+    const orderSelect = document.getElementById("orderSelect");
     const scoreValue = document.getElementById("scoreValue");
     const progressLabel = document.getElementById("progressLabel");
     const setLabel = document.getElementById("setLabel");
@@ -1654,7 +2306,8 @@
     function generateNewSet(){
       const count = parseInt(countSelect.value, 10);
       state.setIndex++;
-      state.questions = buildQuestionSet(count);
+      const orderMode = (document.getElementById("orderSelect")?.value) || "inorder";
+      state.questions = buildQuestionSet(count, orderMode);
       state.checked = new Set();
       state.results = new Map();
       setLabel.textContent = `Set: ${setNameFromIndex(state.setIndex-1)}`;
@@ -1829,7 +2482,7 @@
       if(urlName){
         setStudentName(urlName);
       }else{
-        setStudentName("");
+        setStudentName("DYAA");
       }
     })();
   </script>
