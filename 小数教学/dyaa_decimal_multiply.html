@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Decimal Multiplication — Learn & Practice — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --radius:14px;
+    }
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI',Tahoma,sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+    /* subtle DYAA watermark */
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-12deg);
+      pointer-events:none;
+      z-index:0;
+      user-select:none;
+    }
+
+    .container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:28px auto;
+      background:var(--card);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:26px;
+      border:1px solid var(--line);
+    }
+
+    /* Header */
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:12px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex;align-items:center;gap:12px;min-width:260px;
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:8px;position:relative;flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:9px;background:var(--orange);
+      top:-6px;left:11px;border-radius:4px;
+    }
+    .logo-text{
+      display:flex;flex-direction:column;line-height:1.1;
+    }
+    .logo-text b{font-size:1.12rem;color:var(--blue);letter-spacing:.2px;}
+    .logo-text span{font-size:.92rem;color:var(--orange);font-weight:800;}
+    .title-block{
+      flex:1 1 260px;
+      min-width:260px;
+    }
+    .title-block h1{
+      margin:0;
+      font-size:1.15rem;
+      color:#111;
+      letter-spacing:.2px;
+    }
+    .title-block p{
+      margin:4px 0 0 0;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    /* Top Bar */
+    .topbar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin:14px 0 18px;
+      flex-wrap:wrap;
+    }
+
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;}
+    .tab-btn{
+      border:1px solid var(--line);
+      background:#fff;
+      padding:10px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:700;
+      color:#333;
+      box-shadow:0 2px 10px rgba(0,0,0,.04);
+    }
+    .tab-btn.active{
+      background:rgba(13,71,161,0.10);
+      border-color:rgba(13,71,161,0.25);
+      color:var(--blue);
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      flex:1 1 360px;
+    }
+
+    .pill{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      min-width:240px;
+      flex:1 1 240px;
+    }
+    .pill label{font-weight:800;color:#333;font-size:.95rem;white-space:nowrap;}
+    .pill input{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:9px 10px;
+      outline:none;
+      width:100%;
+      font-size:.95rem;
+    }
+    .student-name{font-weight:800;color:#111;}
+
+    .btn{
+      border:none;
+      background:var(--blue);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:800;
+      box-shadow:0 4px 12px rgba(13,71,161,0.18);
+      white-space:nowrap;
+    }
+    .btn.secondary{
+      background:#fff;
+      color:#111;
+      border:1px solid var(--line);
+      box-shadow:0 2px 10px rgba(0,0,0,.05);
+    }
+    .btn.orange{
+      background:var(--orange);
+      box-shadow:0 4px 12px rgba(255,152,0,0.18);
+    }
+    .btn:active{transform:translateY(1px);}
+
+    select{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      background:#fff;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    /* Sections */
+    .section{display:none;margin-top:10px;}
+    .section.active{display:block;}
+
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;}
+    @media (min-width: 900px){
+      .grid.two{grid-template-columns:1fr 1fr;}
+    }
+
+    .card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.05);
+    }
+    .card h2{margin:0 0 8px 0;font-size:1.05rem;color:var(--blue);}
+    .card h3{margin:12px 0 6px 0;font-size:1rem;color:#111;}
+    .card p, .card li{color:#222;line-height:1.55;margin:6px 0;}
+    .muted{color:var(--muted);}
+
+    .mini-table{
+      width:100%;
+      border-collapse:collapse;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      margin-top:10px;
+    }
+    .mini-table th, .mini-table td{
+      border-bottom:1px solid var(--line);
+      padding:10px 10px;
+      text-align:left;
+      font-size:.95rem;
+    }
+    .mini-table th{
+      background:rgba(13,71,161,0.06);
+      color:#111;
+    }
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    /* Practice header note */
+    .practice-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .note{
+      background:rgba(255,152,0,0.12);
+      border:1px solid rgba(255,152,0,0.25);
+      padding:10px 12px;
+      border-radius:12px;
+      color:#222;
+      line-height:1.45;
+      flex:1 1 420px;
+    }
+    .tiny{font-size:.9rem;color:var(--muted);}
+
+    /* Part title */
+    .part-title{
+      margin:18px 0 10px 0;
+      padding:10px 12px;
+      border-radius:12px;
+      background:rgba(13,71,161,0.06);
+      border:1px solid rgba(13,71,161,0.15);
+      color:#111;
+      font-weight:900;
+    }
+
+    /* Question card style */
+    .qCard{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.05);
+      margin:12px 0;
+    }
+    .qHeader{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+    .qHeader .qTitle{
+      font-weight:1000;
+      color:var(--blue);
+      font-size:1.05rem;
+      letter-spacing:.3px;
+    }
+    .qChip{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+      padding:6px 10px;
+      font-weight:900;
+      color:#111;
+      font-size:.85rem;
+      box-shadow:0 2px 10px rgba(0,0,0,.04);
+    }
+
+    .qPrompt{
+      line-height:1.5;
+      color:#111;
+      margin:6px 0 10px 0;
+    }
+
+    .answerRow{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:8px 0 10px 0;
+    }
+    .answerRow .label{
+      font-weight:900;
+      color:#111;
+      min-width:70px;
+      padding-top:8px;
+    }
+    .answerRow input, .answerRow textarea{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      font-size:1rem;
+      outline:none;
+      width:min(520px, 100%);
+    }
+    .answerRow textarea{min-height:44px;resize:vertical;}
+
+    .btnRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:2px;
+    }
+    .btnSmall{
+      border:none;
+      background:var(--blue);
+      color:#fff;
+      padding:10px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:900;
+      box-shadow:0 4px 12px rgba(13,71,161,0.18);
+    }
+    .btnSmall.hint{
+      background:#eef3ff;
+      color:var(--blue);
+      border:1px solid rgba(13,71,161,0.18);
+      box-shadow:none;
+    }
+    .btnSmall.reveal{
+      background:#eef3ff;
+      color:var(--blue);
+      border:1px solid rgba(13,71,161,0.18);
+      box-shadow:none;
+    }
+
+    .msgBox{
+      margin-top:10px;
+      border-radius:14px;
+      padding:12px 12px;
+      border:1px solid var(--line);
+      display:none;
+    }
+    .msgBox.show{display:block;}
+    .msgBox .msgHead{
+      display:flex;align-items:center;gap:8px;
+      font-weight:1000;
+      margin-bottom:6px;
+    }
+    .msgBox .msgBody{line-height:1.5;color:#111;}
+    .msgBox.solution{
+      background:rgba(27,94,32,0.08);
+      border-color:rgba(27,94,32,0.22);
+    }
+    .msgBox.hint{
+      background:rgba(13,71,161,0.07);
+      border-color:rgba(13,71,161,0.20);
+    }
+    .msgBox.wrong{
+      background:rgba(183,28,28,0.07);
+      border-color:rgba(183,28,28,0.22);
+    }
+
+    /* Footer actions */
+    .footer-actions{
+      margin-top:18px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      border-top:1px solid var(--line);
+      padding-top:14px;
+    }
+    .score{font-weight:900;color:#111;}
+
+    /* Confirm modal */
+    .modal-backdrop{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:999;
+      padding:18px;
+    }
+    .modal-backdrop.show{display:flex;}
+    .modal{
+      background:#fff;
+      border-radius:18px;
+      border:1px solid var(--line);
+      box-shadow:0 10px 30px rgba(0,0,0,0.2);
+      max-width:520px;
+      width:100%;
+      padding:18px;
+    }
+    .modal h4{margin:0 0 8px 0;color:#111;font-size:1.05rem;}
+    .modal p{margin:0 0 14px 0;color:#333;line-height:1.5;}
+    .modal .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div id="headerLogo">
+      <div class="brand">
+        <div class="logo-icon"></div>
+        <div class="logo-text">
+          <b>DYAA Education</b>
+          <span>Mathematics</span>
+        </div>
+      </div>
+      <div class="title-block">
+        <h1>Decimal Multiplication — Learn & Practice</h1>
+        <p>× 10, 100, 1000 • × 0.1, 0.01, 0.001 • Decimal × Decimal • Distributive/Associative • Word problems</p>
+      </div>
+    </div>
+
+    <div class="topbar">
+      <div class="tabs">
+        <button class="tab-btn active" id="learnTab">Learn</button>
+        <button class="tab-btn" id="practiceTab">Practice</button>
+      </div>
+
+      <div class="controls">
+        <div class="pill" id="studentPill">
+          <label>Student</label>
+          <span id="studentDisplay" class="student-name" style="display:none;"></span>
+          <input id="studentInput" type="text" placeholder="Enter student name" style="display:none;">
+        </div>
+
+        <select id="perPageSelect" title="Questions per page for Export to PDF">
+          <option value="3">3 / page</option>
+          <option value="4" selected>4 / page</option>
+          <option value="6">6 / page</option>
+          <option value="8">8 / page</option>
+          <option value="9">9 / page</option>
+        </select>
+
+        <button class="btn secondary" id="exportBtn" title="Opens the print dialog (Save as PDF)">
+          Export to PDF
+        </button>
+        <button class="btn orange" id="newSetBtn">Generate New Set</button>
+      </div>
+    </div>
+
+    <!-- LEARN -->
+    <div class="section active" id="learnSection">
+      <div class="grid two">
+        <div class="card">
+          <h2>1) Multiply by powers of 10 (10, 100, 1000)</h2>
+          <ul>
+            <li>Multiplying by <b>10</b> moves the decimal point <b>1 place right</b>.</li>
+            <li>Multiplying by <b>100</b> moves it <b>2 places right</b>.</li>
+            <li>Multiplying by <b>1000</b> moves it <b>3 places right</b>.</li>
+          </ul>
+          <p><b>Example:</b> 0.36 × 10 = 3.6</p>
+
+          <h3>Multiply by negative powers of 10 (0.1, 0.01, 0.001)</h3>
+          <ul>
+            <li>Multiplying by <b>0.1</b> moves the decimal point <b>1 place left</b>.</li>
+            <li>Multiplying by <b>0.01</b> moves it <b>2 places left</b>.</li>
+            <li>Multiplying by <b>0.001</b> moves it <b>3 places left</b>.</li>
+          </ul>
+          <p><b>Example:</b> 5.46 × 0.01 = 0.0546</p>
+        </div>
+
+        <div class="card">
+          <h2>2) Decimal × Integer / Decimal × Decimal</h2>
+          <h3>Decimal × Integer</h3>
+          <ul>
+            <li>Multiply normally (ignore the decimal first).</li>
+            <li>Put the decimal point back in the answer.</li>
+          </ul>
+          <p><b>Example:</b> 3.2 × 4 = 12.8</p>
+
+          <h3>Decimal × Decimal</h3>
+          <ul>
+            <li>Multiply as whole numbers.</li>
+            <li>Count the <b>total decimal places</b> in the factors.</li>
+            <li>Put the same number of decimal places in the product.</li>
+          </ul>
+          <p><b>Example:</b> 0.6 × 0.3 = 0.18 (1+1 = 2 decimal places)</p>
+        </div>
+
+        <div class="card">
+          <h2>3) Distributive & Associative Laws</h2>
+          <h3>Distributive law</h3>
+          <p><b>a × (b + c) = a×b + a×c</b></p>
+          <p>Example: 2.4 × (3 + 0.2) = 2.4×3 + 2.4×0.2</p>
+
+          <h3>Associative law</h3>
+          <p><b>(a × b) × c = a × (b × c)</b></p>
+          <p>Example: (1.2×25)×4 = 1.2×(25×4) = 1.2×100</p>
+        </div>
+
+        <div class="card">
+          <h2>Multiplication Rules (summary table)</h2>
+          <table class="mini-table">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Example</th>
+                <th>Rule</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Decimal × Power of 10</td>
+                <td>0.46 × 100 = 46</td>
+                <td>Move decimal right</td>
+              </tr>
+              <tr>
+                <td>Decimal × Multiple of 10</td>
+                <td>1.2 × 300 = 360</td>
+                <td>Multiply by digit, then move decimal</td>
+              </tr>
+              <tr>
+                <td>Decimal × Integer</td>
+                <td>3.2 × 4 = 12.8</td>
+                <td>Multiply normally, restore decimal</td>
+              </tr>
+              <tr>
+                <td>Decimal × Decimal</td>
+                <td>0.6 × 0.3 = 0.18</td>
+                <td>Count total decimal places</td>
+              </tr>
+              <tr>
+                <td>Decimal × 0.01 (10⁻²)</td>
+                <td>5.46 × 0.01 = 0.0546</td>
+                <td>Move decimal left</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>4) Word Problems (1-step & 2-step)</h2>
+          <ul>
+            <li><b>1-step:</b> multiply (quantity × per unit).</li>
+            <li><b>2-step:</b> often multiply twice, or multiply then add.</li>
+            <li>Keep units: <b>$</b>, L, kg, km, hours…</li>
+          </ul>
+          <p class="tiny">Switch to <b>Practice</b> for a worksheet-style set like your screenshot.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="section" id="practiceSection">
+      <div class="practice-head">
+        <div class="note">
+          <b>Instructions:</b> Each question has <b>Check</b>, <b>Hint</b>, and <b>Reveal</b>.
+          <div class="tiny">Export to PDF will put the <b>Answer Key on a new page at the end</b>.</div>
+        </div>
+      </div>
+
+      <div id="practiceRoot"></div>
+
+      <div class="footer-actions">
+        <div class="score" id="scoreText">Score: —</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;">
+          <button class="btn secondary" id="resetBtn">Reset Answers</button>
+          <button class="btn" id="submitBtn">Submit & View Result</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div class="modal-backdrop" id="confirmBackdrop" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h4>Generate a new set?</h4>
+      <p>This will replace all current questions and clear your answers.</p>
+      <div class="row">
+        <button class="btn secondary" id="cancelNewSet">Cancel</button>
+        <button class="btn orange" id="confirmNewSet">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Student name (URL param ?name=Tiger)
+     ***********************/
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function initStudent(){
+      const n = getParam("name");
+      const studentDisplay = document.getElementById("studentDisplay");
+      const studentInput = document.getElementById("studentInput");
+      if(n && n.trim()){
+        studentDisplay.style.display = "inline";
+        studentInput.style.display = "none";
+        studentDisplay.textContent = n.trim();
+      }else{
+        studentDisplay.style.display = "none";
+        studentInput.style.display = "inline";
+        const saved = localStorage.getItem("dyaa_student_name") || "";
+        studentInput.value = saved;
+        studentInput.addEventListener("input", ()=>{
+          localStorage.setItem("dyaa_student_name", studentInput.value.trim());
+        });
+      }
+    }
+    function getStudentName(){
+      const n = getParam("name");
+      if(n && n.trim()) return n.trim();
+      const v = (document.getElementById("studentInput").value || "").trim();
+      return v || "________";
+    }
+
+    /***********************
+     * BigInt decimal helpers (exact)
+     ***********************/
+    function pow10(n){
+      if(n <= 0) return 1n;
+      return BigInt("1" + "0".repeat(n));
+    }
+    function parseDec(str){
+      str = String(str).trim();
+      if(!str) return null;
+      str = str.replace(/,/g,"");
+      if(str[0]==="+") str = str.slice(1);
+      if(!/^-?\d+(\.\d+)?$/.test(str)) return null;
+
+      const neg = str[0]==="-";
+      if(neg) str = str.slice(1);
+
+      const parts = str.split(".");
+      const intPart = parts[0] || "0";
+      const frac = parts[1] || "";
+      const scale = frac.length;
+      const bi = BigInt(intPart + frac);
+      return { int: (neg ? -bi : bi), scale };
+    }
+    function bigToStr(x, scale){
+      const neg = x < 0n;
+      let v = neg ? -x : x;
+      let s = v.toString();
+      if(scale === 0) return (neg ? "-" : "") + s;
+      if(s.length <= scale){
+        s = "0".repeat(scale - s.length + 1) + s;
+      }
+      const idx = s.length - scale;
+      let out = s.slice(0, idx) + "." + s.slice(idx);
+      out = out.replace(/(\.\d*?)0+$/,"$1").replace(/\.$/,"");
+      return (neg ? "-" : "") + out;
+    }
+    function bigToStrFixed(x, scale){
+      const neg = x < 0n;
+      let v = neg ? -x : x;
+      let s = v.toString();
+      if(scale === 0) return (neg ? "-" : "") + s;
+      if(s.length <= scale){
+        s = "0".repeat(scale - s.length + 1) + s;
+      }
+      const idx = s.length - scale;
+      const out = s.slice(0, idx) + "." + s.slice(idx);
+      return (neg ? "-" : "") + out;
+    }
+    function stripTrailingZerosDec(s){
+      return String(s).replace(/(\.\d*?)0+$/,"$1").replace(/\.$/,"");
+    }
+    function align(a,b){
+      const s = Math.max(a.scale, b.scale);
+      const ai = a.int * pow10(s - a.scale);
+      const bi = b.int * pow10(s - b.scale);
+      return {ai, bi, scale:s};
+    }
+    function addDecStr(aStr,bStr){
+      const a = parseDec(aStr), b = parseDec(bStr);
+      const al = align(a,b);
+      return bigToStr(al.ai + al.bi, al.scale);
+    }
+    function subDecStr(aStr,bStr){
+      const a = parseDec(aStr), b = parseDec(bStr);
+      const al = align(a,b);
+      return bigToStr(al.ai - al.bi, al.scale);
+    }
+    function cmpDecStr(aStr,bStr){
+      const a = parseDec(aStr), b = parseDec(bStr);
+      const al = align(a,b);
+      if(al.ai < al.bi) return -1;
+      if(al.ai > al.bi) return 1;
+      return 0;
+    }
+    function mulDecStr(aStr,bStr){
+      const a = parseDec(aStr), b = parseDec(bStr);
+      const prodInt = a.int * b.int;
+      const scale = a.scale + b.scale;
+      return bigToStr(prodInt, scale);
+    }
+    function roundToDpStr(xStr, dp){
+      const x = parseDec(xStr);
+      if(!x) return null;
+      const target = dp;
+
+      if(x.scale === target) return bigToStr(x.int, x.scale);
+
+      if(x.scale < target){
+        const mul = pow10(target - x.scale);
+        return bigToStr(x.int * mul, target);
+      }else{
+        const diff = x.scale - target;
+        const div = pow10(diff);
+        const half = div / 2n;
+
+        const neg = x.int < 0n;
+        let v = neg ? -x.int : x.int;
+
+        const q = v / div;
+        const r = v % div;
+
+        let qq = q;
+        if(r >= half) qq = q + 1n;
+
+        const outInt = neg ? -qq : qq;
+        return bigToStr(outInt, target);
+      }
+    }
+    function toFixedDpStr(xStr, dp){
+      const r = roundToDpStr(xStr, dp);
+      const p = parseDec(r);
+      if(p.scale === dp) return bigToStrFixed(p.int, p.scale);
+      // pad zeros
+      const mul = pow10(dp - p.scale);
+      return bigToStrFixed(p.int * mul, dp);
+    }
+
+    function sanitizeNumberInput(raw){
+      let s = String(raw || "").trim();
+      if(!s) return "";
+      s = s.replace(/\$/g,"");
+      s = s.replace(/[a-zA-Z]/g,"");
+      s = s.replace(/\s+/g,"");
+      return s;
+    }
+
+    /***********************
+     * Random helpers
+     ***********************/
+    function randInt(min,max){
+      return Math.floor(Math.random()*(max-min+1))+min;
+    }
+    function randChoice(arr){
+      return arr[Math.floor(Math.random()*arr.length)];
+    }
+    function randDigits(len, allowAllZero=false){
+      let s="";
+      for(let i=0;i<len;i++) s += String(randInt(0,9));
+      if(!allowAllZero && /^0+$/.test(s)) return randDigits(len, allowAllZero);
+      return s;
+    }
+    function makeDecimalStr(intMin,intMax, dpOptions, allowAllZeroFrac=false){
+      const intPart = randInt(intMin,intMax);
+      const dp = randChoice(dpOptions);
+      if(dp===0) return String(intPart);
+      const frac = randDigits(dp, allowAllZeroFrac);
+      return `${intPart}.${frac}`;
+    }
+    function makeSmallDecimalStr(intMin,intMax, dpOptions){
+      // avoids ugly leading zeros only; still can be 0.x
+      const intPart = randInt(intMin,intMax);
+      const dp = randChoice(dpOptions);
+      const frac = randDigits(dp, true);
+      return `${intPart}.${frac}`;
+    }
+
+    /***********************
+     * Question model
+     ***********************/
+    let QUESTIONS = [];
+    const PARTS = [
+      {part:1, title:"Part 1 — Multiplying Decimals by Powers of 10 (and 0.1, 0.01, 0.001)"},
+      {part:2, title:"Part 2 — Decimal × Integer / Decimal × Decimal / Using Laws (Distributive & Associative)"},
+      {part:3, title:"Part 3 — One-step Word Problems — Show your working"},
+      {part:4, title:"Part 4 — Multi-step Word Problems — Show your working"},
+    ];
+
+    function qId(){
+      return "q_" + Math.random().toString(16).slice(2) + "_" + Date.now();
+    }
+
+    /***********************
+     * Build question parts
+     ***********************/
+    function makeNumericQuestion({part, chip, promptHtml, answerStr, hintHtml, solutionHtml, answerKeyText, acceptMoney=false, acceptUnits=false}){
+      const ansNorm = stripTrailingZerosDec(answerStr);
+      return {
+        id:qId(),
+        part,
+        chip,
+        promptHtml,
+        inputType:"number",
+        answer: ansNorm,
+        hintHtml,
+        solutionHtml: solutionHtml || (()=>`Answer: <b>${ansNorm}</b>.`),
+        validate:(raw)=>{
+          const cleaned = sanitizeNumberInput(raw);
+          const p = parseDec(cleaned);
+          if(!p) return {ok:false, msg:"Please enter a number."};
+          const got = stripTrailingZerosDec(bigToStr(p.int,p.scale));
+          if(got === ansNorm) return {ok:true};
+
+          // also accept fixed 2dp money input like 14.10 vs 14.1 when answer is 14.1
+          if(acceptMoney){
+            const got2 = toFixedDpStr(got, 2);
+            const ans2 = toFixedDpStr(ansNorm, 2);
+            if(got2 === ans2) return {ok:true};
+          }
+
+          return {ok:false, msg:`Correct answer: ${ansNorm}`};
+        },
+        answerKeyText: answerKeyText || (()=>ansNorm)
+      };
+    }
+
+    function buildPart1(){
+      const out = [];
+      // 10 questions: 5 positive powers, 5 negative powers
+      const posPowers = [10,100,1000];
+      const negPowers = ["0.1","0.01","0.001"];
+
+      for(let i=0;i<5;i++){
+        const a = (Math.random()<0.35)
+          ? makeSmallDecimalStr(0,0,[2,3])  // 0.xx
+          : makeDecimalStr(0,9,[1,2,3], true);
+        const m = randChoice(posPowers);
+        const ans = mulDecStr(a, String(m));
+        out.push(makeNumericQuestion({
+          part:1,
+          chip:"× 10ⁿ",
+          promptHtml:`${a} &times; ${m} =`,
+          answerStr: ans,
+          hintHtml:`Multiplying by ${m} moves the decimal point <b>${String(m).length-1}</b> place(s) to the <b>right</b>.`,
+          solutionHtml: ()=>`Multiply by ${m}: move the decimal point right by <b>${String(m).length-1}</b> place(s).<br/>So ${a} &times; ${m} = <b>${stripTrailingZerosDec(ans)}</b>.`,
+          answerKeyText: ()=>stripTrailingZerosDec(ans)
+        }));
+      }
+
+      for(let i=0;i<5;i++){
+        const a = (Math.random()<0.35)
+          ? makeDecimalStr(1,9,[1,2,3], true)
+          : makeSmallDecimalStr(0,0,[2,3]);
+        const m = randChoice(negPowers);
+        const ans = mulDecStr(a, m);
+        out.push(makeNumericQuestion({
+          part:1,
+          chip:"× 10⁻ⁿ",
+          promptHtml:`${a} &times; ${m} =`,
+          answerStr: ans,
+          hintHtml:`Multiplying by ${m} moves the decimal point to the <b>left</b>. (0.1 = 1 place, 0.01 = 2 places, 0.001 = 3 places)`,
+          solutionHtml: ()=>`Because ${m} is a negative power of 10, move the decimal point <b>left</b> (0.1→1 place, 0.01→2 places, 0.001→3 places).<br/>So ${a} &times; ${m} = <b>${stripTrailingZerosDec(ans)}</b>.`,
+          answerKeyText: ()=>stripTrailingZerosDec(ans)
+        }));
+      }
+      return out;
+    }
+
+    function buildPart2(){
+      const out = [];
+
+      // 5: decimal × integer
+      for(let i=0;i<5;i++){
+        const a = (Math.random()<0.5) ? makeDecimalStr(0,9,[1], true) : makeDecimalStr(0,9,[2], true);
+        const b = randInt(3,12);
+        const ans = mulDecStr(a, String(b));
+        out.push(makeNumericQuestion({
+          part:2,
+          chip:"Decimal × Integer",
+          promptHtml:`${a} &times; ${b} =`,
+          answerStr: ans,
+          hintHtml:`Multiply as whole numbers first, then place the decimal point in the answer.`,
+          solutionHtml: ()=>`Compute ${a} &times; ${b}. The product is <b>${stripTrailingZerosDec(ans)}</b>.`,
+          answerKeyText: ()=>stripTrailingZerosDec(ans)
+        }));
+      }
+
+      // 5: decimal × decimal (keep manageable)
+      for(let i=0;i<5;i++){
+        const a = (Math.random()<0.5) ? makeSmallDecimalStr(0,0,[1]) : makeDecimalStr(0,9,[1,2], true);
+        const b = (Math.random()<0.45) ? makeSmallDecimalStr(0,0,[1]) : makeDecimalStr(0,9,[1,2], true);
+        const ans = mulDecStr(a,b);
+        const dpTotal = (a.split(".")[1]||"").length + (b.split(".")[1]||"").length;
+        out.push(makeNumericQuestion({
+          part:2,
+          chip:"Decimal × Decimal",
+          promptHtml:`${a} &times; ${b} =`,
+          answerStr: ans,
+          hintHtml:`Multiply as whole numbers, then the answer has <b>${dpTotal}</b> decimal place(s) in total.`,
+          solutionHtml: ()=>`Total decimal places: <b>${dpTotal}</b>. So ${a} &times; ${b} = <b>${stripTrailingZerosDec(ans)}</b>.`,
+          answerKeyText: ()=>stripTrailingZerosDec(ans)
+        }));
+      }
+
+      // 5: distributive / associative property
+      // A) a × (b + c)
+      {
+        const a = makeDecimalStr(1,9,[1], true);
+        const b = randInt(2,9);
+        const c = randChoice(["0.5","0.2","0.4","0.8","1.5"]);
+        const inside = addDecStr(String(b), c);
+        const ans = mulDecStr(a, inside);
+        out.push(makeNumericQuestion({
+          part:2,
+          chip:"Distributive",
+          promptHtml:`Calculate using the distributive law:<br/><b>${a} &times; (${b} + ${c})</b> =`,
+          answerStr: ans,
+          hintHtml:`First add inside brackets, then multiply. Or do: a×b + a×c.`,
+          solutionHtml: ()=>`Step 1: ${b} + ${c} = <b>${stripTrailingZerosDec(inside)}</b>.<br/>Step 2: ${a} &times; ${stripTrailingZerosDec(inside)} = <b>${stripTrailingZerosDec(ans)}</b>.`,
+          answerKeyText: ()=>stripTrailingZerosDec(ans)
+        }));
+      }
+      // B) (a + b) × c
+      {
+        const a = randChoice(["1.2","2.4","3.6","4.8"]);
+        const b = randChoice(["0.5","0.25","0.75","1.5"]);
+        const c = randInt(3,9);
+        const inside = addDecStr(a,b);
+        const ans = mulDecStr(inside, String(c));
+        out.push(makeNumericQuestion({
+          part:2,
+          chip:"Distributive",
+          promptHtml:`Calculate:<br/><b>(${a} + ${b}) &times; ${c}</b> =`,
+          answerStr: ans,
+          hintHtml:`Add inside brackets first, then multiply. Or do: a×c + b×c.`,
+          solutionHtml: ()=>`(${a} + ${b}) = <b>${stripTrailingZerosDec(inside)}</b>.<br/>Then ${stripTrailingZerosDec(inside)} &times; ${c} = <b>${stripTrailingZerosDec(ans)}</b>.`,
+          answerKeyText: ()=>stripTrailingZerosDec(ans)
+        }));
+      }
+      // C) a×b + a×c (factor a)
+      {
+        const a = randChoice(["1.5","2.5","3.2","4.1"]);
+        const b = randChoice(["4","6","8"]);
+        const c = randChoice(["0.5","0.25","1.2"]);
+        const left = addDecStr(mulDecStr(a,String(b)), mulDecStr(a,c));
+        out.push(makeNumericQuestion({
+          part:2,
+          chip:"Distributive",
+          promptHtml:`Calculate (hint: factor common factor):<br/><b>${a}&times;${b} + ${a}&times;${c}</b> =`,
+          answerStr: left,
+          hintHtml:`Factor out ${a}: ${a}×(${b} + ${c}).`,
+          solutionHtml: ()=>{
+            const inside = addDecStr(String(b), c);
+            return `Factor: ${a}&times;${b} + ${a}&times;${c} = ${a}×(${b} + ${c})<br/>${b} + ${c} = ${stripTrailingZerosDec(inside)}<br/>${a}×${stripTrailingZerosDec(inside)} = <b>${stripTrailingZerosDec(left)}</b>.`;
+          },
+          answerKeyText: ()=>stripTrailingZerosDec(left)
+        }));
+      }
+      // D) associative: (a×b)×c
+      {
+        const a = randChoice(["1.2","2.4","0.6","3.5"]);
+        const b = randChoice(["25","50","20"]);
+        const c = randChoice(["4","2","5"]);
+        const ans = mulDecStr(mulDecStr(a,b), c);
+        out.push(makeNumericQuestion({
+          part:2,
+          chip:"Associative",
+          promptHtml:`Calculate using the associative law:<br/><b>(${a} &times; ${b}) &times; ${c}</b> =`,
+          answerStr: ans,
+          hintHtml:`Rearrange: ${a} × (${b} × ${c}) to make it easier.`,
+          solutionHtml: ()=>{
+            const bc = mulDecStr(b,c);
+            return `Rearrange: (${a}×${b})×${c} = ${a}×(${b}×${c})<br/>${b}×${c} = <b>${stripTrailingZerosDec(bc)}</b><br/>${a}×${stripTrailingZerosDec(bc)} = <b>${stripTrailingZerosDec(ans)}</b>.`;
+          },
+          answerKeyText: ()=>stripTrailingZerosDec(ans)
+        }));
+      }
+      // E) mix with 10^n: (a×b)×100
+      {
+        const a = makeDecimalStr(0,9,[1,2], true);
+        const b = randChoice(["4","8","12"]);
+        const ans = mulDecStr(mulDecStr(a,b), "100");
+        out.push(makeNumericQuestion({
+          part:2,
+          chip:"Laws + 100",
+          promptHtml:`Calculate efficiently:<br/><b>(${a} &times; ${b}) &times; 100</b> =`,
+          answerStr: ans,
+          hintHtml:`You can multiply by 100 at the end (move decimal right 2 places).`,
+          solutionHtml: ()=>{
+            const first = mulDecStr(a,String(b));
+            return `Step 1: ${a}×${b} = ${stripTrailingZerosDec(first)}<br/>Step 2: ×100 moves decimal right 2 places → <b>${stripTrailingZerosDec(ans)}</b>.`;
+          },
+          answerKeyText: ()=>stripTrailingZerosDec(ans)
+        }));
+      }
+
+      return out;
+    }
+
+    function buildPart3(){
+      const out = [];
+      // 5 one-step multiplication word problems
+      const sets = [];
+
+      // A: litres in bottles
+      {
+        const per = makeDecimalStr(0,3,[2], true);
+        const n = randInt(4,12);
+        const ans = mulDecStr(per, String(n));
+        sets.push({
+          chip:"1-step",
+          prompt:`A bottle contains ${per} litres of juice. How much juice is in ${n} bottles?`,
+          ans: `${stripTrailingZerosDec(ans)} L`,
+          ansNum: stripTrailingZerosDec(ans),
+          hint:`Multiply: litres per bottle × number of bottles.`,
+          solution:`${per} × ${n} = <b>${stripTrailingZerosDec(ans)}</b> litres.`
+        });
+      }
+
+      // B: cost per item
+      {
+        const price = makeDecimalStr(1,5,[2], true);
+        const n = randInt(3,12);
+        const ans = mulDecStr(price, String(n));
+        sets.push({
+          chip:"1-step ($)",
+          prompt:`One snack costs $${price}. How much do ${n} snacks cost?`,
+          ans: `$${toFixedDpStr(ans,2)}`,
+          ansNum: stripTrailingZerosDec(ans),
+          hint:`Multiply: price × quantity. (Money usually to 2 decimal places.)`,
+          solution:`$${price} × ${n} = $${toFixedDpStr(ans,2)}.`
+        });
+      }
+
+      // C: weight per packet
+      {
+        const w = makeDecimalStr(0,1,[2], true);
+        const n = randInt(4,12);
+        const ans = mulDecStr(w, String(n));
+        sets.push({
+          chip:"1-step",
+          prompt:`A packet of biscuits weighs ${w} kg. Find the total weight of ${n} packets.`,
+          ans: `${stripTrailingZerosDec(ans)} kg`,
+          ansNum: stripTrailingZerosDec(ans),
+          hint:`Multiply: weight per packet × number of packets.`,
+          solution:`${w} × ${n} = <b>${stripTrailingZerosDec(ans)}</b> kg.`
+        });
+      }
+
+      // D: distance per lap
+      {
+        const d = makeDecimalStr(0,3,[1,2], true);
+        const n = randInt(5,15);
+        const ans = mulDecStr(d, String(n));
+        sets.push({
+          chip:"1-step",
+          prompt:`A runner runs ${d} km per lap. How far is ${n} laps in total?`,
+          ans: `${stripTrailingZerosDec(ans)} km`,
+          ansNum: stripTrailingZerosDec(ans),
+          hint:`Multiply: distance per lap × number of laps.`,
+          solution:`${d} × ${n} = <b>${stripTrailingZerosDec(ans)}</b> km.`
+        });
+      }
+
+      // E: paint per wall
+      {
+        const p = makeDecimalStr(0,2,[2], true);
+        const n = randInt(6,14);
+        const ans = mulDecStr(p, String(n));
+        sets.push({
+          chip:"1-step",
+          prompt:`A painter uses ${p} L of paint per wall. How much paint is needed for ${n} walls?`,
+          ans: `${stripTrailingZerosDec(ans)} L`,
+          ansNum: stripTrailingZerosDec(ans),
+          hint:`Multiply: paint per wall × number of walls.`,
+          solution:`${p} × ${n} = <b>${stripTrailingZerosDec(ans)}</b> L.`
+        });
+      }
+
+      // convert to questions
+      sets.slice(0,5).forEach(s=>{
+        out.push(makeNumericQuestion({
+          part:3,
+          chip:s.chip,
+          promptHtml:s.prompt,
+          answerStr:s.ansNum,
+          hintHtml:s.hint,
+          solutionHtml:()=>s.solution,
+          answerKeyText:()=>s.ans,
+          acceptMoney: s.chip.includes("$")
+        }));
+      });
+
+      return out;
+    }
+
+    function buildPart4(){
+      const out = [];
+
+      // 1) Shirt + pants 2.5 times + total
+      {
+        const shirt = makeDecimalStr(10,60,[2], true);
+        const mult = randChoice(["1.5","2","2.5","3"]);
+        const pants = mulDecStr(shirt, mult);
+        const total = addDecStr(shirt, pants);
+        const pantsMoney = toFixedDpStr(pants,2);
+        const totalMoney = toFixedDpStr(total,2);
+
+        out.push(makeNumericQuestion({
+          part:4,
+          chip:"2-step ($)",
+          promptHtml:`A shirt costs <b>$${shirt}</b>. A pair of pants costs <b>${mult}</b> times as much.<br/>How much do the pants cost, and what is the <b>total</b> cost for both items? <br/><span class="tiny">(Enter the total cost)</span>`,
+          answerStr: totalMoney,
+          hintHtml:`Step 1: pants = shirt × ${mult}. Step 2: total = shirt + pants.`,
+          solutionHtml:()=>`Step 1: Pants = $${shirt} × ${mult} = <b>$${pantsMoney}</b>.<br/>Step 2: Total = $${shirt} + $${pantsMoney} = <b>$${totalMoney}</b>.`,
+          answerKeyText:()=>`Pants $${pantsMoney}, Total $${totalMoney}`,
+          acceptMoney:true
+        }));
+      }
+
+      // 2) Tank litres per minute then weight per litre
+      {
+        const rate = makeDecimalStr(0,5,[1,2], true);
+        const mins = randInt(4,12);
+        const litres = mulDecStr(rate, String(mins));
+        const weightPerL = makeDecimalStr(0,2,[2], true); // kg per litre
+        const weight = mulDecStr(litres, weightPerL);
+
+        out.push(makeNumericQuestion({
+          part:4,
+          chip:"2-step",
+          promptHtml:`A tank is filled at <b>${rate} litres</b> per minute. How much water is poured in <b>${mins}</b> minutes, and what is the <b>weight</b> if each litre weighs <b>${weightPerL} kg</b>?<br/><span class="tiny">(Enter the weight)</span>`,
+          answerStr: stripTrailingZerosDec(weight),
+          hintHtml:`Step 1: litres = rate × minutes. Step 2: weight = litres × kg per litre.`,
+          solutionHtml:()=>{
+            return `Step 1: Litres = ${rate} × ${mins} = <b>${stripTrailingZerosDec(litres)}</b> L.<br/>Step 2: Weight = ${stripTrailingZerosDec(litres)} × ${weightPerL} = <b>${stripTrailingZerosDec(weight)}</b> kg.`;
+          },
+          answerKeyText:()=>`${stripTrailingZerosDec(litres)} L, ${stripTrailingZerosDec(weight)} kg`
+        }));
+      }
+
+      // 3) Books + pens total cost
+      {
+        const booksN = randInt(3,8);
+        const pensN = randInt(2,6);
+        const bookPrice = makeDecimalStr(4,15,[2], true);
+        const penPrice = makeDecimalStr(1,6,[2], true);
+        const booksCost = mulDecStr(bookPrice, String(booksN));
+        const pensCost = mulDecStr(penPrice, String(pensN));
+        const total = addDecStr(booksCost, pensCost);
+
+        out.push(makeNumericQuestion({
+          part:4,
+          chip:"2-step ($)",
+          promptHtml:`Emma bought <b>${booksN}</b> books for <b>$${bookPrice}</b> each and <b>${pensN}</b> pens for <b>$${penPrice}</b> each. How much did she spend altogether?`,
+          answerStr: toFixedDpStr(total,2),
+          hintHtml:`Step 1: books cost = ${booksN}×book price. Step 2: pens cost = ${pensN}×pen price. Then add.`,
+          solutionHtml:()=>{
+            return `Books: ${booksN}×$${bookPrice} = $${toFixedDpStr(booksCost,2)}<br/>Pens: ${pensN}×$${penPrice} = $${toFixedDpStr(pensCost,2)}<br/>Total = $${toFixedDpStr(booksCost,2)} + $${toFixedDpStr(pensCost,2)} = <b>$${toFixedDpStr(total,2)}</b>.`;
+          },
+          answerKeyText:()=>`$${toFixedDpStr(total,2)}`,
+          acceptMoney:true
+        }));
+      }
+
+      // 4) Worker earnings
+      {
+        const rate = makeDecimalStr(15,35,[2], true);
+        const hours = makeDecimalStr(6,10,[1], true);
+        const days = randInt(3,7);
+        const daily = mulDecStr(rate, hours);
+        const total = mulDecStr(daily, String(days));
+
+        out.push(makeNumericQuestion({
+          part:4,
+          chip:"2-step ($)",
+          promptHtml:`A worker earns <b>$${rate}</b> per hour. He works <b>${hours}</b> hours each day for <b>${days}</b> days. How much does he earn in total?`,
+          answerStr: toFixedDpStr(total,2),
+          hintHtml:`Step 1: daily pay = rate × hours. Step 2: total = daily pay × days.`,
+          solutionHtml:()=>{
+            return `Daily pay: $${rate} × ${hours} = $${toFixedDpStr(daily,2)}<br/>Total: $${toFixedDpStr(daily,2)} × ${days} = <b>$${toFixedDpStr(total,2)}</b>.`;
+          },
+          answerKeyText:()=>`$${toFixedDpStr(total,2)}`,
+          acceptMoney:true
+        }));
+      }
+
+      // 5) Fuel use and total cost (uses ×0.01 for /100)
+      {
+        const litresPer100 = makeDecimalStr(4,12,[1], true);
+        const distance = randInt(120,480);
+        const pricePerL = makeDecimalStr(1,4,[2], true);
+
+        // litres = litresPer100 * distance * 0.01
+        const temp = mulDecStr(litresPer100, String(distance));
+        const litres = mulDecStr(temp, "0.01");
+        const cost = mulDecStr(litres, pricePerL);
+
+        out.push(makeNumericQuestion({
+          part:4,
+          chip:"2-step ($)",
+          promptHtml:`A car uses <b>${litresPer100} litres</b> of fuel for every <b>100 km</b>. How much fuel will it use for a trip of <b>${distance} km</b>, and what is the total cost if fuel costs <b>$${pricePerL}</b> per litre?<br/><span class="tiny">(Enter the total cost)</span>`,
+          answerStr: toFixedDpStr(cost,2),
+          hintHtml:`Step 1: Fuel used = (litres per 100 km) × distance × 0.01. Step 2: Cost = litres × $ per litre.`,
+          solutionHtml:()=>{
+            const litresShown = stripTrailingZerosDec(litres);
+            return `Fuel used: ${litresPer100} × ${distance} × 0.01 = <b>${litresShown}</b> L<br/>Cost: ${litresShown} × $${pricePerL} = <b>$${toFixedDpStr(cost,2)}</b>.`;
+          },
+          answerKeyText:()=>`${stripTrailingZerosDec(litres)} L, $${toFixedDpStr(cost,2)}`,
+          acceptMoney:true
+        }));
+      }
+
+      return out;
+    }
+
+    function buildAllQuestions(){
+      const all = [];
+      all.push(...buildPart1());
+      all.push(...buildPart2());
+      all.push(...buildPart3());
+      all.push(...buildPart4());
+      all.forEach(q=>{
+        q._checked = false;
+        q._isCorrect = false;
+        q._revealed = false;
+        q._value = "";
+      });
+      return all;
+    }
+
+    /***********************
+     * Rendering
+     ***********************/
+    function renderPractice(){
+      const root = document.getElementById("practiceRoot");
+      root.innerHTML = "";
+
+      let globalIndex = 0;
+
+      PARTS.forEach(p=>{
+        const partQs = QUESTIONS.filter(q=>q.part===p.part);
+        if(!partQs.length) return;
+
+        const title = document.createElement("div");
+        title.className = "part-title";
+        title.textContent = p.title;
+        root.appendChild(title);
+
+        partQs.forEach(q=>{
+          globalIndex++;
+          q._globalNo = globalIndex;
+
+          const card = document.createElement("div");
+          card.className = "qCard";
+          card.dataset.qid = q.id;
+
+          const header = document.createElement("div");
+          header.className = "qHeader";
+
+          const qTitle = document.createElement("div");
+          qTitle.className = "qTitle";
+          qTitle.textContent = `Q${globalIndex}`;
+
+          const chip = document.createElement("div");
+          chip.className = "qChip";
+          chip.textContent = q.chip || "Practice";
+
+          header.appendChild(qTitle);
+          header.appendChild(chip);
+          card.appendChild(header);
+
+          const prompt = document.createElement("div");
+          prompt.className = "qPrompt";
+          prompt.innerHTML = q.promptHtml || "";
+          card.appendChild(prompt);
+
+          const answerRow = document.createElement("div");
+          answerRow.className = "answerRow";
+
+          const label = document.createElement("div");
+          label.className = "label";
+          label.textContent = "Answer:";
+          answerRow.appendChild(label);
+
+          const inp = document.createElement("input");
+          inp.type = "text";
+          inp.placeholder = q.placeholder || "Type your answer";
+          inp.value = q._value || "";
+          inp.addEventListener("input", ()=>{
+            q._value = inp.value;
+            hideMsg(q.id);
+          });
+          answerRow.appendChild(inp);
+
+          card.appendChild(answerRow);
+
+          const btnRow = document.createElement("div");
+          btnRow.className = "btnRow";
+
+          const btnCheck = document.createElement("button");
+          btnCheck.className = "btnSmall";
+          btnCheck.textContent = "Check";
+          btnCheck.addEventListener("click", ()=>doCheck(q.id));
+
+          const btnHint = document.createElement("button");
+          btnHint.className = "btnSmall hint";
+          btnHint.textContent = "Hint";
+          btnHint.addEventListener("click", ()=>showHint(q.id));
+
+          const btnReveal = document.createElement("button");
+          btnReveal.className = "btnSmall reveal";
+          btnReveal.textContent = "Reveal";
+          btnReveal.addEventListener("click", ()=>doReveal(q.id));
+
+          btnRow.appendChild(btnCheck);
+          btnRow.appendChild(btnHint);
+          btnRow.appendChild(btnReveal);
+
+          card.appendChild(btnRow);
+
+          const msg = document.createElement("div");
+          msg.className = "msgBox";
+          msg.id = "msg_" + q.id;
+          msg.innerHTML = `<div class="msgHead"></div><div class="msgBody"></div>`;
+          card.appendChild(msg);
+
+          root.appendChild(card);
+        });
+      });
+
+      document.getElementById("scoreText").textContent = "Score: —";
+    }
+
+    function hideMsg(qid){
+      const box = document.getElementById("msg_"+qid);
+      if(!box) return;
+      box.className = "msgBox";
+      box.classList.remove("show","solution","hint","wrong");
+      box.style.display = "none";
+    }
+
+    function showMsg(qid, mode, title, html){
+      const box = document.getElementById("msg_"+qid);
+      if(!box) return;
+      const head = box.querySelector(".msgHead");
+      const body = box.querySelector(".msgBody");
+      head.textContent = title;
+      body.innerHTML = html;
+
+      box.style.display = "block";
+      box.className = "msgBox show " + mode;
+    }
+
+    function getQuestion(qid){
+      return QUESTIONS.find(q=>q.id===qid);
+    }
+
+    function doCheck(qid){
+      const q = getQuestion(qid);
+      if(!q) return;
+
+      const res = q.validate((q._value || "").trim());
+      q._checked = true;
+      q._isCorrect = !!res.ok;
+
+      if(res.ok){
+        showMsg(qid, "solution", "Solution", q.solutionHtml ? q.solutionHtml() : "Correct.");
+      }else{
+        const extra = res.msg ? `<div style="margin-bottom:8px;"><b>Note:</b> ${escapeHtml(res.msg)}</div>` : "";
+        showMsg(qid, "wrong", "Solution", extra + (q.solutionHtml ? q.solutionHtml() : ""));
+      }
+    }
+
+    function showHint(qid){
+      const q = getQuestion(qid);
+      if(!q) return;
+      showMsg(qid, "hint", "Hint", q.hintHtml || "Think about decimal places.");
+    }
+
+    function doReveal(qid){
+      const q = getQuestion(qid);
+      if(!q) return;
+      q._revealed = true;
+      q._checked = true;
+      q._isCorrect = true;
+      showMsg(qid, "solution", "Solution", q.solutionHtml ? q.solutionHtml() : `Answer: ${q.answer}`);
+      updateScoreIfSubmitted(false);
+    }
+
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    /***********************
+     * Submit & score
+     ***********************/
+    function updateScoreIfSubmitted(forceShow){
+      const submitted = forceShow || window.__submitted;
+      if(!submitted) return;
+
+      let correct = 0;
+      let total = QUESTIONS.length;
+
+      for(const q of QUESTIONS){
+        if(!q._checked){
+          const res = q.validate((q._value || "").trim());
+          q._checked = true;
+          q._isCorrect = !!res.ok;
+
+          if(res.ok){
+            showMsg(q.id, "solution", "Solution", q.solutionHtml ? q.solutionHtml() : "Correct.");
+          }else{
+            const extra = res.msg ? `<div style="margin-bottom:8px;"><b>Note:</b> ${escapeHtml(res.msg)}</div>` : "";
+            showMsg(q.id, "wrong", "Solution", extra + (q.solutionHtml ? q.solutionHtml() : ""));
+          }
+        }
+        if(q._isCorrect) correct++;
+      }
+
+      document.getElementById("scoreText").textContent = `Score: ${correct} / ${total}`;
+    }
+
+    /***********************
+     * Export to PDF (questions first, answer key last page)
+     ***********************/
+    function exportToPdfViaPrint(){
+      const perPage = parseInt(document.getElementById("perPageSelect").value,10) || 4;
+      const student = getStudentName();
+      const today = new Date();
+      const dateStr = today.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"2-digit"});
+
+      let html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Decimal Multiplication Worksheet — DYAA</title>
+  <style>
+    body{font-family:Arial, sans-serif; margin:24px; color:#111;}
+    .head{display:flex; justify-content:space-between; align-items:flex-end; gap:12px; border-bottom:2px solid #ddd; padding-bottom:10px;}
+    .head h1{margin:0; font-size:18px;}
+    .meta{font-weight:700;}
+    .part{margin-top:16px;}
+    .part h2{font-size:14px; margin:0 0 8px 0; padding:8px 10px; background:#f2f6ff; border:1px solid #dbe6ff; border-radius:10px;}
+    .q{border:1px solid #e6e6ef; border-radius:10px; padding:10px; margin:10px 0;}
+    .q .qn{font-weight:900; margin-bottom:6px;}
+    .line{margin-top:10px; border-bottom:1px solid #111; height:22px;}
+    .small{font-size:12px; color:#444;}
+    .pagebreak{page-break-after:always;}
+    .ansKey h2{font-size:16px; margin:0 0 10px 0;}
+    .ansRow{border-bottom:1px solid #eee; padding:8px 0;}
+    .ansRow b{display:inline-block; width:56px;}
+  </style>
+</head>
+<body>
+  <div class="head">
+    <div>
+      <h1>Decimal Multiplication Worksheet — DYAA</h1>
+      <div class="small">Student: ${escapeHtml(student)} &nbsp;&nbsp;|&nbsp;&nbsp; Date: ${escapeHtml(dateStr)}</div>
+    </div>
+    <div class="meta">Questions first → Answer Key on last page</div>
+  </div>
+`;
+
+      let qOnPage = 0;
+      let globalNo = 0;
+
+      PARTS.forEach(p=>{
+        const list = QUESTIONS.filter(q=>q.part===p.part);
+        if(!list.length) return;
+
+        html += `<div class="part"><h2>${escapeHtml(p.title)}</h2>`;
+
+        list.forEach(q=>{
+          globalNo++;
+          html += `<div class="q">
+            <div class="qn">Q${globalNo}</div>
+            <div>${escapeHtml(stripHtml(q.promptHtml))}</div>
+            <div class="line"></div>
+          </div>`;
+
+          qOnPage++;
+          if(qOnPage >= perPage){
+            html += `<div class="pagebreak"></div>`;
+            qOnPage = 0;
+          }
+        });
+
+        html += `</div>`;
+      });
+
+      html += `<div class="pagebreak"></div>`;
+      html += `<div class="ansKey"><h2>Answer Key</h2>`;
+
+      globalNo = 0;
+      PARTS.forEach(p=>{
+        const list = QUESTIONS.filter(q=>q.part===p.part);
+        list.forEach(q=>{
+          globalNo++;
+          const ansText = (typeof q.answerKeyText === "function")
+            ? q.answerKeyText()
+            : (typeof q.answer === "string" ? q.answer : JSON.stringify(q.answer));
+          html += `<div class="ansRow"><b>Q${globalNo}</b> ${escapeHtml(String(ansText))}</div>`;
+        });
+      });
+
+      html += `</div></body></html>`;
+
+      const w = window.open("", "_blank");
+      w.document.open();
+      w.document.write(html);
+      w.document.close();
+      w.focus();
+      setTimeout(()=>w.print(), 300);
+    }
+
+    function stripHtml(html){
+      const tmp = document.createElement("div");
+      tmp.innerHTML = html;
+      return (tmp.textContent || tmp.innerText || "").trim();
+    }
+
+    /***********************
+     * New set confirm + reset
+     ***********************/
+    function openConfirm(){ document.getElementById("confirmBackdrop").classList.add("show"); }
+    function closeConfirm(){ document.getElementById("confirmBackdrop").classList.remove("show"); }
+
+    function generateNewSet(){
+      window.__submitted = false;
+      QUESTIONS = buildAllQuestions();
+      renderPractice();
+    }
+
+    function resetAnswers(){
+      window.__submitted = false;
+      QUESTIONS.forEach(q=>{
+        q._value = "";
+        q._checked = false;
+        q._isCorrect = false;
+        q._revealed = false;
+      });
+      renderPractice();
+    }
+
+    /***********************
+     * Tabs
+     ***********************/
+    function setTab(which){
+      const learnTab = document.getElementById("learnTab");
+      const practiceTab = document.getElementById("practiceTab");
+      const learnSection = document.getElementById("learnSection");
+      const practiceSection = document.getElementById("practiceSection");
+
+      if(which==="learn"){
+        learnTab.classList.add("active");
+        practiceTab.classList.remove("active");
+        learnSection.classList.add("active");
+        practiceSection.classList.remove("active");
+      }else{
+        practiceTab.classList.add("active");
+        learnTab.classList.remove("active");
+        practiceSection.classList.add("active");
+        learnSection.classList.remove("active");
+      }
+    }
+
+    /***********************
+     * Init bindings
+     ***********************/
+    document.getElementById("learnTab").addEventListener("click", ()=>setTab("learn"));
+    document.getElementById("practiceTab").addEventListener("click", ()=>setTab("practice"));
+
+    document.getElementById("newSetBtn").addEventListener("click", openConfirm);
+    document.getElementById("cancelNewSet").addEventListener("click", closeConfirm);
+    document.getElementById("confirmNewSet").addEventListener("click", ()=>{
+      closeConfirm();
+      generateNewSet();
+      setTab("practice");
+    });
+    document.getElementById("confirmBackdrop").addEventListener("click", (e)=>{
+      if(e.target.id==="confirmBackdrop") closeConfirm();
+    });
+
+    document.getElementById("exportBtn").addEventListener("click", ()=>{
+      setTab("practice");
+      exportToPdfViaPrint();
+    });
+
+    document.getElementById("submitBtn").addEventListener("click", ()=>{
+      window.__submitted = true;
+      updateScoreIfSubmitted(true);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", resetAnswers);
+
+    // Start
+    initStudent();
+    generateNewSet();
+  </script>
+</body>
+</html>
