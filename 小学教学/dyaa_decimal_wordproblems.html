@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Decimals — Word Problems (Learn + Practice) — DYAA</title>
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --radius:14px;
+    }
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-18deg);
+      pointer-events:none;
+      user-select:none;
+      z-index:0;
+      white-space:nowrap;
+    }
+    .container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:24px auto 60px;
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+    }
+
+    /* Header */
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo-icon{
+      width:42px;height:42px;
+      background:var(--blue);
+      border-radius:8px;
+      position:relative;
+      flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:22px;height:10px;
+      background:var(--orange);
+      top:-6px;left:10px;
+      border-radius:6px;
+    }
+    .logo-text{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .logo-text h1{
+      font-size:22px;
+      margin:0;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .logo-text .tag{
+      font-size:13px;
+      color:var(--orange);
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .student-pill{
+      margin-left:auto;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-size:13px;
+      font-weight:800;
+      color:#111;
+      white-space:nowrap;
+    }
+
+    /* Top bar */
+    .top-bar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:14px 0 10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .tabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .tab-btn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--blue);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+    }
+    .tab-btn.active{
+      background:var(--blue);
+      color:#fff;
+      border-color:var(--blue);
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:9px 10px;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn.primary{ background:var(--blue); color:#fff; }
+    .btn.secondary{ background:#eef2ff; color:var(--blue); border:1px solid #dbe3ff; }
+    .btn.warn{ background:#fff3e0; color:#8a4b00; border:1px solid #ffe0b2; }
+    .btn:active{ transform:translateY(1px); }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+
+    .status{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-weight:800;
+      color:#111;
+    }
+
+    /* Sections */
+    .section{ display:none; margin-top:16px; }
+    .section.active{ display:block; }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    @media (min-width: 860px){
+      .grid.two{ grid-template-columns:1fr 1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      padding:16px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:18px;
+    }
+    .muted{ color:var(--muted); }
+
+    /* Practice cards */
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      padding:14px;
+    }
+    .q-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+      flex-wrap:wrap;
+    }
+    .q-num{
+      font-weight:900;
+      color:var(--blue);
+      font-size:14px;
+    }
+    .q-topic{
+      font-size:11px;
+      font-weight:900;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fafafe;
+      color:#111;
+    }
+    .q-body{
+      font-size:14px;
+      line-height:1.45;
+      margin-bottom:10px;
+    }
+    .q-input{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:10px;
+    }
+    .q-input input{
+      width:180px;
+      max-width:100%;
+    }
+    .q-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .feedback{
+      margin-top:10px;
+      border-radius:12px;
+      padding:10px 12px;
+      display:none;
+      border:1px solid var(--line);
+      background:#fff;
+    }
+    .feedback.show{ display:block; }
+    .feedback.ok{ border-color:#c8e6c9; background:#f1fff2; }
+    .feedback.bad{ border-color:#ffcdd2; background:#fff1f1; }
+    .feedback .title{ font-weight:900; margin-bottom:4px; }
+
+    /* Modal (confirm new set if needed) */
+    .backdrop{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.28);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:99;
+      padding:18px;
+    }
+    .backdrop.show{ display:flex; }
+    .modal{
+      width:min(520px, 96vw);
+      background:#fff;
+      border-radius:16px;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      padding:16px;
+    }
+    .modal h3{ margin:0 0 8px; color:#111; }
+    .modal p{ margin:0 0 12px; color:var(--muted); }
+    .modal .row{
+      display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap;
+    }
+
+    /* PDF print area (rendered offscreen) */
+    #pdfPrintArea{
+      position:fixed;
+      left:-99999px;
+      top:-99999px;
+      width:794px; /* approx A4 at 96dpi */
+      background:#fff;
+    }
+    .pdf-page{
+      width:794px;
+      height:1123px;
+      padding:36px 38px;
+      background:#fff;
+      color:#111;
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      box-sizing:border-box;
+      page-break-after:always;
+    }
+    .pdf-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      margin-bottom:16px;
+      padding-bottom:10px;
+      border-bottom:2px solid #e6e6ef;
+    }
+    .pdf-title{
+      font-weight:900;
+      color:#0d47a1;
+      font-size:18px;
+      line-height:1.2;
+    }
+    .pdf-sub{
+      color:#666;
+      font-size:12px;
+      margin-top:4px;
+    }
+    .pdf-meta{
+      text-align:right;
+      font-size:12px;
+      color:#666;
+      white-space:nowrap;
+      line-height:1.35;
+    }
+
+    /* PDF: 2 columns × 3 rows (6 per page) */
+    .pdf-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+    .pdf-q{
+      border:1px solid #e6e6ef;
+      border-radius:12px;
+      padding:12px 12px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      min-height:300px;
+    }
+    .pdf-qhead{
+      margin-bottom:8px;
+    }
+    .pdf-qnum{
+      font-weight:900;
+      color:#0d47a1;
+      font-size:13px;
+    }
+    .pdf-level{
+      font-weight:900;
+      color:#111;
+    }
+    .pdf-qbody{
+      font-size:13px;
+      line-height:1.45;
+      margin-bottom:8px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    /* no "Answer ——", just blank space */
+    .pdf-blank{
+      margin-top:auto;
+      height:78px; /* ~4 lines */
+    }
+
+    .pdf-answers{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px 18px;
+      margin-top:14px;
+      font-size:13px;
+    }
+    .pdf-answers .a{
+      border:1px solid #e6e6ef;
+      border-radius:10px;
+      padding:8px 10px;
+      background:#fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="logo-text">
+        <h1>Decimals — Word Problems</h1>
+        <div class="tag">DYAA</div>
+      </div>
+      <div class="student-pill" id="studentPill">Student: <span id="studentNameLabel">DYAA</span></div>
+      <div class="subtitle">12 questions per set: Q1–Q5 (1-step), Q6–Q10 (2-step), Q11–Q12 (3-step). Numbers include decimals, but answers are integers.</div>
+    </div>
+
+    <div class="top-bar">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="learn">Learn</button>
+        <button class="tab-btn" data-tab="practice">Practice</button>
+      </div>
+      <div class="controls" id="practiceControls" style="display:none;">
+        <button class="btn secondary" id="newSetBtn">New Set</button>
+        <button class="btn secondary" id="resetBtn">Reset</button>
+        <button class="btn warn" id="showAllBtn">Show All Answers</button>
+        <button class="btn primary" id="exportPdfBtn">Export to PDF</button>
+      </div>
+    </div>
+
+    <div class="status" id="practiceStatus" style="display:none;">
+      <span class="badge" id="setLabel">Set: A</span>
+      <span class="badge" id="progressLabel">0 checked</span>
+      <span class="badge">Score: <span id="scoreValue">—</span></span>
+    </div>
+
+    <!-- Learn -->
+    <div class="section active" id="learnSection">
+      <div class="grid two">
+        <div class="card">
+          <h2>1-step problems</h2>
+          <div class="muted">
+            Use one operation with decimals: <b>+</b>, <b>−</b>, <b>×</b>, or <b>÷</b>.<br><br>Example: Each snack costs <b>$1.25</b>. You buy <b>8</b> snacks. Total = 1.25 × 8 = 10.
+          </div>
+        </div>
+        <div class="card">
+          <h2>2-step problems</h2>
+          <div class="muted">
+            Combine two operations in order (decimals may appear).<br><br>Example: A jug holds <b>1.5</b> L. Fill <b>8</b> jugs, then pour into cups of <b>0.5</b> L.<br>Total = 1.5 × 8 = 12 L, cups = 12 ÷ 0.5 = 24.
+          </div>
+        </div>
+        <div class="card">
+          <h2>3-step problems</h2>
+          <div class="muted">
+            Use three operations (decimals may appear), often includes <b>total</b>, <b>change</b>, or <b>sharing</b>.<br><br>Tip: Write a short plan before calculating.
+          </div>
+        </div>
+        <div class="card">
+          <h2>Answer format</h2>
+          <div class="muted">
+            Enter a whole number (integer) only.<br>
+            If a problem involves sharing, it is written so the answer is a whole number.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Practice -->
+    <div class="section" id="practiceSection">
+      <div class="grid" id="questionsWrap"></div>
+    </div>
+  </div>
+
+  <!-- Hidden print area for PDF -->
+  <div id="pdfPrintArea" aria-hidden="true"></div>
+
+  <!-- Confirm modal (optional, keeps UX consistent) -->
+  <div class="backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <h3 id="modalTitle">Start a new set?</h3>
+      <p>This will clear your current answers.</p>
+      <div class="row">
+        <button class="btn secondary" id="cancelModalBtn">Cancel</button>
+        <button class="btn primary" id="confirmModalBtn">New Set</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Utilities
+     ************************/
+    function randInt(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function pick(arr){ return arr[randInt(0, arr.length-1)]; }
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+      }
+      return a;
+    }
+    function esc(s){
+      return String(s)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+    function normSpaceText(html){
+      return String(html || "")
+        .replace(/\s+/g," ")
+        .replace(/<[^>]*>/g,"")
+        .trim();
+    }
+    function safeFileNamePart(s){
+      return String(s || "")
+        .trim()
+        .replace(/[\\/:*?"<>|]+/g, "-")
+        .replace(/\s+/g, "_")
+        .slice(0, 40);
+    }
+
+    /***********************
+     * Student name (default DYAA)
+     ************************/
+    function getNameFromUrl(){
+      const u = new URL(window.location.href);
+      const n = (u.searchParams.get("name") || "").trim();
+      return n;
+    }
+    let studentName = "DYAA";
+    const urlName = getNameFromUrl();
+    if(urlName) studentName = urlName;
+
+    document.getElementById("studentNameLabel").textContent = studentName;
+
+    /***********************
+     * Question data model
+     ************************/
+    function topicLabel(type){
+      if(type === "one") return "1-step";
+      if(type === "two") return "2-step";
+      if(type === "three") return "3-step";
+      return "Word problem";
+    }
+    function pdfLevelTag(type){
+      if(type === "one") return "B1";
+      if(type === "two") return "B2";
+      if(type === "three") return "C1";
+      return "B1";
+    }
+    function intInputHTML(){
+      return `<input type="text" inputmode="numeric" autocomplete="off" placeholder="Answer (integer)" aria-label="Answer (integer)" />`;
+    }
+    function parseUserInt(card){
+      const inp = card.querySelector("input");
+      const v = (inp.value || "").trim();
+      if(!/^-?\d+$/.test(v)) return null;
+      return parseInt(v, 10);
+    }
+    function makeQuestion(type, promptHTML, answerInt){
+      return {
+        type,
+        promptHTML,
+        answer: answerInt,
+        answerHTML: String(answerInt),
+        inputHTML: intInputHTML(),
+        getUser: (card)=> parseUserInt(card),
+        isCorrect: (user)=> (user !== null && user === answerInt)
+      };
+    }
+
+    /***********************
+     * Banks (bigger variety)
+     ************************/
+    const BANK = {
+      names: ["Mia","Noah","Olivia","Leo","Ava","Ethan","Sophie","Jack","Liam","Emma","Lucas","Amelia","Grace","Henry","Zoe","Ella","Mason","Ruby","Aria","Sam","Ben","Chloe","Daniel","Hannah","Isla","Nina","Oscar","Poppy","Quinn","Ryan","Tara","Will","Yuki","Zara"],
+      items: ["pencils","stickers","marbles","cookies","books","notebooks","bottles","cups","balls","cards","blocks","markers","erasers","candies","oranges","apples","bananas","toy cars","paper clips","spoons","flowers","posters","tickets","stamps","batteries","socks"],
+      groups: ["students","kids","teams","groups","tables","families","helpers","classes"],
+      places: ["school","library","park","sports centre","community hall","garden","canteen","classroom","market"],
+      vehicles: ["bus","train","bike","car"],
+      sports: ["laps","rounds","games","matches","sessions"],
+      foods: ["cupcake","muffin","sandwich","taco","pizza slice","cookie","bread roll"],
+      materials: ["tiles","bricks","planks","bags of soil","paint cans","rolls of tape"],
+      events: ["fundraiser","bake sale","sports day","book fair","field trip","class party"]
+    };
+
+    /***********************
+ * Decimal helpers
+ ************************/
+function fmtNum(n){
+  const x = Number(n);
+  if(!Number.isFinite(x)) return String(n);
+  if(Math.abs(x - Math.round(x)) < 1e-9) return String(Math.round(x));
+  let s = x.toFixed(2);
+  s = s.replace(/\.?0+$/,"");
+  return s;
+}
+function money(n){
+  const x = Number(n);
+  if(!Number.isFinite(x)) return `$${n}`;
+  return `$${x.toFixed(2)}`;
+}
+function isIntLike(x){
+  return Number.isFinite(x) && Math.abs(x - Math.round(x)) < 1e-9;
+}
+function randDec(min, max, step){
+  const kMin = Math.ceil(min / step);
+  const kMax = Math.floor(max / step);
+  const k = randInt(kMin, kMax);
+  return +(k * step).toFixed(10);
+}
+const DEC_STEPS = {
+  tenth: 0.1,
+  quarter: 0.25,
+  half: 0.5,
+  fifth: 0.2
+};
+
+/***********************
+ * Generators (Decimals in prompt, integer answers)
+ ************************/
+function makeQuestion(type, scenarioKey, promptHTML, answerInt){
+  const ans = Math.round(answerInt);
+  return {
+    type,
+    scenarioKey,
+    promptHTML,
+    answer: ans,
+    answerHTML: String(ans),
+    inputHTML: intInputHTML(),
+    getUser: (card)=> parseUserInt(card),
+    isCorrect: (user)=> (user !== null && user === ans)
+  };
+}
+
+// ---------- 1-step (Q1–Q5): decimals + one operation, answer integer ----------
+function gOne_AddLiquids(){
+  const place = pick(BANK.places);
+  const total = randInt(3, 24);
+  const a = randDec(0.4, total - 0.4, DEC_STEPS.tenth);
+  const b = +(total - a).toFixed(10);
+  const prompt = `
+    At the ${place}, a jug contains <b>${fmtNum(a)}</b> L of water and another jug contains <b>${fmtNum(b)}</b> L.<br>
+    How many litres of water are there altogether?
+  `;
+  return makeQuestion("one","one_add_liquids", prompt, total);
+}
+
+function gOne_SubtractFuel(){
+  const left = randInt(3, 22);
+  const used = randDec(0.5, 12.5, DEC_STEPS.half);
+  const start = left + used;
+  const prompt = `
+    A tank has <b>${fmtNum(start)}</b> L of fuel.<br>
+    After using <b>${fmtNum(used)}</b> L, how many litres of fuel are left?
+  `;
+  return makeQuestion("one","one_sub_fuel", prompt, left);
+}
+
+function gOne_MultiplyPrice(){
+  // price is decimal, total is integer dollars
+  const name = pick(BANK.names);
+  const item = pick(["snack","drink","ticket","notebook","sticker pack","juice"]);
+  const qty = pick([4,5,8,10,12,16,20]);
+  const priceChoices = [0.25,0.5,0.75,1.25,1.5,2.5,3.75,4.5,6.25];
+  let price = pick(priceChoices);
+  let total = price * qty;
+  let guard = 0;
+  while((!isIntLike(total) || isIntLike(price)) && guard++ < 200){
+    price = pick(priceChoices);
+    total = price * qty;
+  }
+  total = Math.round(total);
+  const prompt = `
+    Each ${item} costs <b>${money(price)}</b>.<br>
+    ${name} buys <b>${qty}</b> ${item}${qty>1 ? "s" : ""}.<br>
+    How much does ${name} pay in total (in dollars)?
+  `;
+  return makeQuestion("one","one_mul_price", prompt, total);
+}
+
+function gOne_DivideRibbon(){
+  const pieces = randInt(8, 40);
+  const per = pick([0.2,0.25,0.3,0.4,0.5,0.6,0.75]);
+  const total = pieces * per;
+  const prompt = `
+    A ribbon is <b>${fmtNum(total)}</b> m long.<br>
+    Each piece is <b>${fmtNum(per)}</b> m long.<br>
+    How many pieces can be cut?
+  `;
+  return makeQuestion("one","one_div_ribbon", prompt, pieces);
+}
+
+function gOne_DistanceFromSpeed(){
+  const speed = pick([12.5, 22.5, 37.5, 62.5]);
+  const hours = pick([2, 4, 6, 8]);
+  const dist = speed * hours;
+  const prompt = `
+    A cyclist travels at <b>${fmtNum(speed)}</b> km/h for <b>${hours}</b> hours.<br>
+    How far does the cyclist travel (in km)?
+  `;
+  return makeQuestion("one","one_speed_distance", prompt, dist);
+}
+
+function gOne_MultiplyArea(){
+  const L = pick([2.5, 3.2, 4.8, 6.25, 7.5]);
+  const W = pick([1.6, 2.5, 3.75, 4.0, 5.0]);
+  const area = L * W;
+  if(!isIntLike(area) || isIntLike(L) || isIntLike(W)) return gOne_MultiplyArea();
+  const prompt = `
+    A rectangle is <b>${fmtNum(L)}</b> m long and <b>${fmtNum(W)}</b> m wide.<br>
+    What is its area (in m²)?
+  `;
+  return makeQuestion("one","one_mul_area", prompt, area);
+}
+
+function gOne_DivideBottles(){
+  const bottles = randInt(6, 36);
+  const perBottle = pick([0.25, 0.5, 0.75, 1.2, 1.5]);
+  const total = bottles * perBottle;
+  const prompt = `
+    A cooler contains <b>${fmtNum(total)}</b> L of juice.<br>
+    It is poured into bottles of <b>${fmtNum(perBottle)}</b> L each.<br>
+    How many bottles can be filled?
+  `;
+  return makeQuestion("one","one_div_bottles", prompt, bottles);
+}
+
+function gOne_AddMoney(){
+  const total = randInt(6, 40);
+  const a = randDec(0.50, total - 0.50, DEC_STEPS.half);
+  const b = +(total - a).toFixed(10);
+  const prompt = `
+    A student pays <b>${money(a)}</b> for a drink and <b>${money(b)}</b> for a snack.<br>
+    What is the total cost (in dollars)?
+  `;
+  return makeQuestion("one","one_add_money", prompt, total);
+}
+
+function gOne_DivideTime(){
+  const sessions = randInt(6, 30);
+  const per = pick([0.25, 0.5, 0.75, 1.5]);
+  const total = sessions * per;
+  const prompt = `
+    A learner spends <b>${fmtNum(total)}</b> hours practising over several days.<br>
+    If each practice session is <b>${fmtNum(per)}</b> hours, how many sessions were completed?
+  `;
+  return makeQuestion("one","one_div_time", prompt, sessions);
+}
+
+function gOne_SubtractDistance(){
+  const left = randInt(5, 80);
+  const travelled = pick([2.5, 7.5, 12.5, 15.0, 22.5, 27.5]);
+  const total = left + travelled;
+  if(isIntLike(travelled)) return gOne_SubtractDistance();
+  const prompt = `
+    A walk is <b>${fmtNum(total)}</b> km long.<br>
+    After walking <b>${fmtNum(travelled)}</b> km, how many kilometres are left to walk?
+  `;
+  return makeQuestion("one","one_sub_distance", prompt, left);
+}
+
+const oneStepGenerators = [
+  gOne_AddLiquids,
+  gOne_SubtractFuel,
+  gOne_MultiplyPrice,
+  gOne_DivideRibbon,
+  gOne_DistanceFromSpeed,
+  gOne_MultiplyArea,
+  gOne_DivideBottles,
+  gOne_AddMoney,
+  gOne_DivideTime,
+  gOne_SubtractDistance
+];
+
+// ---------- 2-step (Q6–Q10): mixed operations with decimals, answer integer ----------
+function gTwo_FillThenPour(){
+  const jugs = randInt(4, 14);
+  const jugCap = pick([1.2, 1.5, 2.5]);
+  const total = jugs * jugCap; // decimal
+  const cup = pick([0.2, 0.25, 0.5]);
+  const cups = total / cup;
+  if(!isIntLike(cups)) return gTwo_FillThenPour();
+  const prompt = `
+    Each jug holds <b>${fmtNum(jugCap)}</b> L of water.<br>
+    <b>${jugs}</b> jugs are filled. The water is then poured into cups of <b>${fmtNum(cup)}</b> L each.<br>
+    How many cups can be filled?
+  `;
+  return makeQuestion("two","two_fill_pour", prompt, cups);
+}
+
+function gTwo_TravelTwoLegs(){
+  const v1 = pick([22.5, 37.5, 62.5]);
+  const t1 = pick([2,3,4]);
+  const v2 = pick([12.5, 22.5, 37.5, 62.5]);
+  const t2 = pick([1,2,3,4]);
+  const dist = v1*t1 + v2*t2;
+  if(!isIntLike(dist)) return gTwo_TravelTwoLegs();
+  const prompt = `
+    A trip has two parts.<br>
+    Part 1: travel at <b>${fmtNum(v1)}</b> km/h for <b>${t1}</b> hours.<br>
+    Part 2: travel at <b>${fmtNum(v2)}</b> km/h for <b>${t2}</b> hours.<br>
+    What is the total distance travelled (in km)?
+  `;
+  return makeQuestion("two","two_travel_two_legs", prompt, dist);
+}
+
+function gTwo_FuelCost(){
+  const distance = pick([25, 50, 75, 100, 125, 150]);
+  const rate = pick([0.08, 0.12, 0.16, 0.2]);
+  const litres = distance * rate;
+  if(!isIntLike(litres)) return gTwo_FuelCost();
+  const pricePerL = pick([2.5, 1.25, 3.75]);
+  const cost = litres * pricePerL;
+  if(!isIntLike(cost)) return gTwo_FuelCost();
+  const prompt = `
+    A car travels <b>${distance}</b> km and uses <b>${fmtNum(rate)}</b> L of fuel per km.<br>
+    Fuel costs <b>${money(pricePerL)}</b> per litre.<br>
+    What is the total fuel cost (in dollars)?
+  `;
+  return makeQuestion("two","two_fuel_cost", prompt, cost);
+}
+
+function gTwo_AreaThenTiles(){
+  const L = pick([2.5, 3.2, 4.8, 6.25]);
+  const W = pick([1.6, 2.5, 3.75, 4.0]);
+  const area = L * W; // may be integer
+  if(!isIntLike(area) || isIntLike(L) || isIntLike(W)) return gTwo_AreaThenTiles();
+  const cover = pick([0.5, 0.25, 0.2]);
+  const tiles = area / cover;
+  if(!isIntLike(tiles)) return gTwo_AreaThenTiles();
+  const prompt = `
+    A floor is <b>${fmtNum(L)}</b> m by <b>${fmtNum(W)}</b> m.<br>
+    Each tile covers <b>${fmtNum(cover)}</b> m².<br>
+    How many tiles are needed to cover the floor?
+  `;
+  return makeQuestion("two","two_area_tiles", prompt, tiles);
+}
+
+function gTwo_ShoppingChange(){
+  const name = pick(BANK.names);
+  const item1 = pick(["juice","sandwich","notebook","ticket","snack"]);
+  const item2 = pick(["sticker pack","drink","pen","cookie","muffin"]);
+  const q1 = pick([4,6,8,10,12]);
+  const q2 = pick([3,5,7,9,11]);
+  const p1 = pick([0.75, 1.25, 1.5, 2.5, 3.75]);
+  const p2 = pick([0.5, 1.25, 2.5, 3.2]);
+  const cost = p1*q1 + p2*q2;
+  if(!isIntLike(cost)) return gTwo_ShoppingChange();
+  const pay = Math.round(cost) + pick([5,10,15,20]);
+  const change = pay - Math.round(cost);
+  const prompt = `
+    ${name} buys <b>${q1}</b> ${item1}${q1>1?"s":""} at <b>${money(p1)}</b> each, and <b>${q2}</b> ${item2}${q2>1?"s":""} at <b>${money(p2)}</b> each.<br>
+    ${name} pays <b>${money(pay)}</b>.<br>
+    How much change does ${name} receive (in dollars)?
+  `;
+  return makeQuestion("two","two_change", prompt, change);
+}
+
+function gTwo_MixThenDivide(){
+  const a = randDec(1.2, 8.8, DEC_STEPS.tenth);
+  const b = randDec(1.2, 8.8, DEC_STEPS.tenth);
+  const total = a + b;
+  const cup = pick([0.2,0.25,0.5]);
+  const cups = total / cup;
+  if(!isIntLike(cups)) return gTwo_MixThenDivide();
+  const prompt = `
+    A drink is made by mixing <b>${fmtNum(a)}</b> L of juice with <b>${fmtNum(b)}</b> L of water.<br>
+    The mixture is poured into cups of <b>${fmtNum(cup)}</b> L each.<br>
+    How many cups can be filled?
+  `;
+  return makeQuestion("two","two_mix_divide", prompt, cups);
+}
+
+function gTwo_WorkPayPlusBonus(){
+  const hours = pick([4,6,8,10,12]);
+  const rate = pick([12.5, 15.0, 17.5, 22.5]);
+  const pay = hours * rate;
+  if(!isIntLike(pay)) return gTwo_WorkPayPlusBonus();
+  const bonus = pick([2.5, 7.5, 12.5, 15.0]);
+  const total = pay + bonus;
+  if(!isIntLike(total)) return gTwo_WorkPayPlusBonus();
+  const prompt = `
+    A helper works for <b>${hours}</b> hours at <b>${money(rate)}</b> per hour.<br>
+    They also receive a bonus of <b>${money(bonus)}</b>.<br>
+    What is the total amount earned (in dollars)?
+  `;
+  return makeQuestion("two","two_pay_bonus", prompt, total);
+}
+
+function gTwo_DiscountedTotal(){
+  const name = pick(BANK.names);
+  const price = pick([1.25, 2.5, 3.75, 4.5, 6.25]);
+  const qty = pick([4,8,12,16,20]);
+  const total = price*qty;
+  if(!isIntLike(total)) return gTwo_DiscountedTotal();
+  const discount = pick([2.5, 5.0, 7.5, 10.0]);
+  const pay = total - discount;
+  if(pay <= 0 || !isIntLike(pay)) return gTwo_DiscountedTotal();
+  const prompt = `
+    ${name} buys <b>${qty}</b> items at <b>${money(price)}</b> each.<br>
+    A discount of <b>${money(discount)}</b> is applied.<br>
+    How much does ${name} pay (in dollars)?
+  `;
+  return makeQuestion("two","two_discount_total", prompt, pay);
+}
+
+const twoStepGenerators = [
+  gTwo_FillThenPour,
+  gTwo_TravelTwoLegs,
+  gTwo_FuelCost,
+  gTwo_AreaThenTiles,
+  gTwo_ShoppingChange,
+  gTwo_MixThenDivide,
+  gTwo_WorkPayPlusBonus,
+  gTwo_DiscountedTotal
+];
+
+// ---------- 3-step (Q11–Q12): three operations, decimals included, answer integer ----------
+function gThree_FundraiserProfitShare(){
+  const event = pick(BANK.events);
+  const item = pick(["cupcake","muffin","cookie","bread roll"]);
+  const price = pick([1.25, 2.5, 3.75, 4.5]);
+  const sold1 = randInt(12, 40);
+  const sold2 = randInt(12, 40);
+  const revenue = price * (sold1 + sold2);
+  if(!isIntLike(revenue)) return gThree_FundraiserProfitShare();
+  const helpers = randInt(3, 9);
+  // choose share so that helpers*share is integer and revenue - cost positive
+  const share = pick([2,3,4,5,6,8,10]);
+  const profit = helpers * share;
+  const cost = revenue - profit;
+  if(cost <= 0 || !isIntLike(cost)) return gThree_FundraiserProfitShare();
+  const prompt = `
+    At a ${event}, each ${item} sells for <b>${money(price)}</b>.<br>
+    <b>${sold1}</b> are sold on Saturday and <b>${sold2}</b> on Sunday.<br>
+    The ingredients cost <b>${money(cost)}</b> in total.<br>
+    The profit is shared equally among <b>${helpers}</b> helpers.<br>
+    How much profit does each helper receive (in dollars)?
+  `;
+  return makeQuestion("three","three_profit_share", prompt, share);
+}
+
+function gThree_MakeBagsAfterUsingSome(){
+  const totalBags = randInt(10, 30);
+  const perBag = pick([0.5, 0.75, 1.25, 1.5]);
+  const total = totalBags * perBag;
+  const used = pick([1.5, 2.5, 3.5, 4.5, 5.5]);
+  const remaining = total - used;
+  if(remaining <= 0) return gThree_MakeBagsAfterUsingSome();
+  const smallBag = pick([0.25, 0.5]);
+  const smallBags = remaining / smallBag;
+  if(!isIntLike(smallBags)) return gThree_MakeBagsAfterUsingSome();
+  const prompt = `
+    A pantry has <b>${totalBags}</b> bags of rice. Each bag is <b>${fmtNum(perBag)}</b> kg.<br>
+    <b>${fmtNum(used)}</b> kg of rice is used for cooking.<br>
+    The remaining rice is packed into small bags of <b>${fmtNum(smallBag)}</b> kg each.<br>
+    How many small bags can be filled?
+  `;
+  return makeQuestion("three","three_bags_after_use", prompt, smallBags);
+}
+
+function gThree_TaxiSplit(){
+  const friends = randInt(2, 6);
+  const km = randInt(6, 20);
+  const base = pick([3.5, 4.5, 5.0, 6.5]);
+  const rate = pick([1.5, 2.5, 3.0]);
+  const total = base + rate * km;
+  if(!isIntLike(total)) return gThree_TaxiSplit();
+  const each = total / friends;
+  if(!isIntLike(each)) return gThree_TaxiSplit();
+  const prompt = `
+    A taxi charges a base fare of <b>${money(base)}</b> plus <b>${money(rate)}</b> per km.<br>
+    The trip is <b>${km}</b> km long.<br>
+    The total fare is shared equally among <b>${friends}</b> friends.<br>
+    How many dollars does each friend pay?
+  `;
+  return makeQuestion("three","three_taxi_split", prompt, each);
+}
+
+function gThree_PaintCans(){
+  const L = pick([2.5, 3.2, 4.8, 6.25]);
+  const W = pick([1.6, 2.5, 3.75, 4.0]);
+  const coats = pick([2,3]);
+  const area = L * W;
+  if(!isIntLike(area) || isIntLike(L) || isIntLike(W)) return gThree_PaintCans();
+  const coverPerCan = pick([0.5, 0.25, 0.2]); // m² per can
+  const totalArea = area * coats;
+  const cans = totalArea / coverPerCan;
+  if(!isIntLike(cans)) return gThree_PaintCans();
+  const prompt = `
+    A wall section is <b>${fmtNum(L)}</b> m by <b>${fmtNum(W)}</b> m.<br>
+    It needs <b>${coats}</b> coats of paint.<br>
+    One can covers <b>${fmtNum(coverPerCan)}</b> m² per coat.<br>
+    How many cans are needed in total?
+  `;
+  return makeQuestion("three","three_paint_cans", prompt, cans);
+}
+
+const threeStepGenerators = [
+  gThree_FundraiserProfitShare,
+  gThree_MakeBagsAfterUsingSome,
+  gThree_TaxiSplit,
+  gThree_PaintCans
+];
+/***********************
+     * Build a 12-question set with required structure
+     * Q1–Q5 one-step
+     * Q6–Q10 two-step
+     * Q11–Q12 three-step
+     *
+     * Requirements:
+     * - Large bank
+     * - No duplicates within a set
+     * - New set differs from last set (no repeated prompt text)
+     ************************/
+    const LAST_KEY = "DYAA_DEC_WP_LAST_SET_V1";
+function getLastSet(){
+  try{
+    const raw = localStorage.getItem(LAST_KEY);
+    const obj = JSON.parse(raw || "{}");
+    const prompts = Array.isArray(obj.prompts) ? obj.prompts : [];
+    const scenarios = Array.isArray(obj.scenarios) ? obj.scenarios : [];
+    return { prompts, scenarios };
+  }catch(e){
+    return { prompts: [], scenarios: [] };
+  }
+}
+function setLastSet(data){
+  try{ localStorage.setItem(LAST_KEY, JSON.stringify(data || {})); }catch(e){}
+}
+
+function buildQuestionSet(){
+  const qs = [];
+  const sig = new Set();
+  const scenSig = new Set();
+
+  const last = getLastSet();
+  const lastPrompts = new Set(last.prompts || []);
+  const lastScenarios = new Set(last.scenarios || []);
+
+  function pushUnique(gen, guardMax=700){
+    let guard = 0;
+    while(guard++ < guardMax){
+      const q = gen();
+      const s = normSpaceText(q.promptHTML);
+
+      if(!q || typeof q.scenarioKey !== "string") continue;
+      if(sig.has(s)) continue;
+      if(lastPrompts.has(s)) continue;
+      if(scenSig.has(q.scenarioKey)) continue;
+      if(lastScenarios.has(q.scenarioKey)) continue;
+
+      // Safety: ensure answer is an integer
+      if(!/^-?\d+$/.test(String(q.answer))) continue;
+
+      sig.add(s);
+      scenSig.add(q.scenarioKey);
+      qs.push(q);
+      return true;
+    }
+    return false;
+  }
+
+  // Q1–Q5 (one-step)
+  const g1 = shuffle(oneStepGenerators);
+  for(let i=0;i<5;i++) pushUnique(g1[i % g1.length]);
+
+  // Q6–Q10 (two-step)
+  const g2 = shuffle(twoStepGenerators);
+  for(let i=0;i<5;i++) pushUnique(g2[i % g2.length]);
+
+  // Q11–Q12 (three-step)
+  const g3 = shuffle(threeStepGenerators);
+  for(let i=0;i<2;i++) pushUnique(g3[i % g3.length]);
+
+  return qs.slice(0, 12);
+}
+
+    /***********************
+     * PDF helpers
+     ************************/
+    function loadScript(src){
+      return new Promise((resolve, reject)=>{
+        const s = document.createElement("script");
+        s.src = src;
+        s.onload = ()=> resolve();
+        s.onerror = ()=> reject(new Error("Failed to load " + src));
+        document.head.appendChild(s);
+      });
+    }
+    let pdfLibReady = false;
+    async function ensurePdfLibs(){
+      if(pdfLibReady) return;
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
+      pdfLibReady = true;
+    }
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function makeTimestamp(){
+      const now = new Date();
+      const stamp = `${now.getFullYear()}-${pad2(now.getMonth()+1)}-${pad2(now.getDate())}_${pad2(now.getHours())}-${pad2(now.getMinutes())}-${pad2(now.getSeconds())}`;
+      return { stamp };
+    }
+    function setNameFromIndex(i){
+      return String.fromCharCode(65 + (i % 26));
+    }
+
+    function buildPdfPages(stamp){
+      const perPage = 6; // fixed
+      const printArea = document.getElementById("pdfPrintArea");
+      printArea.innerHTML = "";
+
+      const total = state.questions.length;
+      const pagesQ = Math.ceil(total / perPage);
+      const totalPagesAll = pagesQ + 1; // +1 for answers page
+
+      const safeStudent = esc(studentName || "DYAA");
+      const setName = setNameFromIndex(state.setIndex-1);
+
+      // Question pages
+      for(let p=0; p<pagesQ; p++){
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const startIdx = p * perPage;
+        const endIdx = Math.min(total, startIdx + perPage);
+
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div>
+              <div class="pdf-title">Decimals — Word Problems • ${esc(stamp.stamp)}</div>
+              <div class="pdf-sub">Student: ${safeStudent} • Set ${esc(setName)}</div>
+            </div>
+            <div class="pdf-meta">
+              ${esc(stamp.stamp)}<br/>
+              Page ${p+1} / ${totalPagesAll}
+            </div>
+          </div>
+          <div class="pdf-grid"></div>
+        `;
+
+        const grid = page.querySelector(".pdf-grid");
+        for(let i=startIdx; i<endIdx; i++){
+          const q = state.questions[i];
+          const tag = pdfLevelTag(q.type);
+          const qBox = document.createElement("div");
+          qBox.className = "pdf-q";
+          qBox.innerHTML = `
+            <div class="pdf-qhead">
+              <div class="pdf-qnum">Q${i+1} <span class="pdf-level">(${esc(tag)})</span></div>
+            </div>
+            <div class="pdf-qbody">${q.promptHTML}</div>
+            <div class="pdf-blank"></div>
+          `;
+          grid.appendChild(qBox);
+        }
+
+        printArea.appendChild(page);
+      }
+
+      // Answers last page
+      const aPage = document.createElement("div");
+      aPage.className = "pdf-page";
+      aPage.innerHTML = `
+        <div class="pdf-header">
+          <div>
+            <div class="pdf-title">Answers • ${esc(stamp.stamp)}</div>
+            <div class="pdf-sub">Student: ${safeStudent} • Set ${esc(setName)}</div>
+          </div>
+          <div class="pdf-meta">
+            ${esc(stamp.stamp)}<br/>
+            Page ${totalPagesAll} / ${totalPagesAll}
+          </div>
+        </div>
+        <div class="pdf-answers"></div>
+      `;
+      const aGrid = aPage.querySelector(".pdf-answers");
+      for(let i=0;i<total;i++){
+        const q = state.questions[i];
+        const box = document.createElement("div");
+        box.className = "a";
+        box.innerHTML = `<b>Q${i+1}:</b> ${esc(q.answerHTML)}`;
+        aGrid.appendChild(box);
+      }
+      printArea.appendChild(aPage);
+    }
+
+    async function exportToPdf(){
+      await ensurePdfLibs();
+
+      // Always generate a fresh random set for each export
+      generateNewSet({silent:true});
+
+      const stamp = makeTimestamp();
+      buildPdfPages(stamp);
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+      const pages = Array.from(document.querySelectorAll("#pdfPrintArea .pdf-page"));
+
+      for(let i=0; i<pages.length; i++){
+        const pageEl = pages[i];
+        const canvas = await html2canvas(pageEl, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false
+        });
+
+        const imgData = canvas.toDataURL("image/png", 1.0);
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight, undefined, "FAST");
+        if(i < pages.length - 1) pdf.addPage();
+      }
+
+      const setName = setNameFromIndex(state.setIndex-1);
+      const fileStudent = safeFileNamePart(studentName || "DYAA");
+      pdf.save(`DYAA_Decimals_WordProblems_${fileStudent}_Set_${setName}_${stamp.stamp}.pdf`);
+    }
+
+    /***********************
+     * App state + rendering
+     ************************/
+    const tabs = document.querySelectorAll(".tab-btn");
+    const learnSection = document.getElementById("learnSection");
+    const practiceSection = document.getElementById("practiceSection");
+    const practiceControls = document.getElementById("practiceControls");
+    const practiceStatus = document.getElementById("practiceStatus");
+    const questionsWrap = document.getElementById("questionsWrap");
+
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const cancelModalBtn = document.getElementById("cancelModalBtn");
+    const confirmModalBtn = document.getElementById("confirmModalBtn");
+
+    const newSetBtn = document.getElementById("newSetBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const showAllBtn = document.getElementById("showAllBtn");
+    const exportPdfBtn = document.getElementById("exportPdfBtn");
+
+    const scoreValue = document.getElementById("scoreValue");
+    const progressLabel = document.getElementById("progressLabel");
+    const setLabel = document.getElementById("setLabel");
+
+    let state = {
+      setIndex: 0,
+      questions: [],
+      checked: new Set(),
+      results: new Map(),
+    };
+
+    function renderQuestions(){
+      questionsWrap.innerHTML = "";
+      state.questions.forEach((q, idx)=>{
+        const card = document.createElement("div");
+        card.className = "q-card";
+        card.dataset.qindex = String(idx);
+
+        card.innerHTML = `
+          <div class="q-head">
+            <div class="q-num">Q${idx+1}</div>
+            <div class="q-topic">${topicLabel(q.type)}</div>
+          </div>
+          <div class="q-body">${q.promptHTML}</div>
+          <div class="q-input">${q.inputHTML}</div>
+          <div class="q-actions">
+            <button class="btn primary" data-action="check">Check</button>
+            <button class="btn secondary" data-action="reveal">Reveal Answer</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+        `;
+        questionsWrap.appendChild(card);
+      });
+    }
+
+    function updateProgress(){
+      progressLabel.textContent = `${state.checked.size} checked`;
+    }
+
+    function showFeedback(card, ok, title, html){
+      const fb = card.querySelector(".feedback");
+      fb.classList.add("show");
+      fb.classList.toggle("ok", !!ok);
+      fb.classList.toggle("bad", !ok);
+      fb.innerHTML = `
+        <div class="title" style="color:${ok ? "var(--ok)" : "var(--bad)"}">${title}</div>
+        <div>${html}</div>
+      `;
+    }
+
+    function checkOne(card){
+      const idx = parseInt(card.dataset.qindex, 10);
+      const q = state.questions[idx];
+      const user = q.getUser(card);
+
+      if(user === null){
+        showFeedback(card, false, "⚠️ Enter an integer", "Please type a whole number.");
+        return false;
+      }
+
+      const ok = q.isCorrect(user);
+      state.checked.add(idx);
+      state.results.set(idx, ok);
+
+      if(ok){
+        showFeedback(card, true, "✅ Correct", `Answer: <b>${q.answerHTML}</b>`);
+      }else{
+        showFeedback(card, false, "❌ Not quite", `Answer: <b>${q.answerHTML}</b>`);
+      }
+
+      updateProgress();
+      return ok;
+    }
+
+    function resetAnswers(){
+      state.checked = new Set();
+      state.results = new Map();
+      scoreValue.textContent = "—";
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const fb = card.querySelector(".feedback");
+        fb.className = "feedback";
+        fb.innerHTML = "";
+        card.querySelectorAll("input").forEach(i => i.value = "");
+      });
+      updateProgress();
+    }
+
+    function computeScore(){
+      const total = state.questions.length;
+      let ok = 0;
+      for(const v of state.results.values()) if(v) ok++;
+      scoreValue.textContent = `${ok} / ${total}`;
+    }
+
+    function generateNewSet(opts){
+      const silent = !!(opts && opts.silent);
+      state.setIndex++;
+
+      // Ensure the whole set differs from last set prompts
+      // buildQuestionSet already avoids exact prompt repeats vs last set
+      state.questions = buildQuestionSet();
+      setLabel.textContent = `Set: ${setNameFromIndex(state.setIndex-1)}`;
+
+      // Save this set prompts & scenarios to localStorage
+      const prompts = state.questions.map(q => normSpaceText(q.promptHTML));
+      const scenarios = state.questions.map(q => q.scenarioKey);
+      setLastSet({ prompts, scenarios });
+      setLastSet(prompts);
+
+      renderQuestions();
+      resetAnswers();
+      if(!silent){
+        // focus first input
+        const first = document.querySelector(".q-card input");
+        if(first) first.focus();
+      }
+    }
+
+    // Tab switching
+    tabs.forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        tabs.forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        const tab = btn.dataset.tab;
+
+        if(tab === "learn"){
+          learnSection.classList.add("active");
+          practiceSection.classList.remove("active");
+          practiceControls.style.display = "none";
+          practiceStatus.style.display = "none";
+        }else{
+          learnSection.classList.remove("active");
+          practiceSection.classList.add("active");
+          practiceControls.style.display = "flex";
+          practiceStatus.style.display = "flex";
+          // lazy init
+          if(state.questions.length === 0) generateNewSet({silent:true});
+        }
+      });
+    });
+
+    // Card button actions
+    questionsWrap.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button");
+      if(!btn) return;
+      const card = e.target.closest(".q-card");
+      if(!card) return;
+      const action = btn.dataset.action;
+      if(action === "check"){
+        checkOne(card);
+        computeScore();
+      }else if(action === "reveal"){
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "Answer", `<b>${q.answerHTML}</b>`);
+      }
+    });
+
+    // Buttons
+    function openConfirmNewSet(){
+      modalBackdrop.classList.add("show");
+    }
+    function closeConfirmNewSet(){
+      modalBackdrop.classList.remove("show");
+    }
+    newSetBtn.addEventListener("click", ()=>{
+      // if any input has content, confirm
+      const hasInput = Array.from(document.querySelectorAll(".q-card input")).some(i => (i.value || "").trim() !== "");
+      if(hasInput){
+        openConfirmNewSet();
+      }else{
+        generateNewSet();
+        computeScore();
+      }
+    });
+    cancelModalBtn.addEventListener("click", closeConfirmNewSet);
+    confirmModalBtn.addEventListener("click", ()=>{
+      closeConfirmNewSet();
+      generateNewSet();
+      computeScore();
+    });
+
+    resetBtn.addEventListener("click", ()=>{
+      resetAnswers();
+      computeScore();
+    });
+
+    showAllBtn.addEventListener("click", ()=>{
+      document.querySelectorAll(".q-card").forEach(card=>{
+        const idx = parseInt(card.dataset.qindex, 10);
+        const q = state.questions[idx];
+        showFeedback(card, true, "Answer", `<b>${q.answerHTML}</b>`);
+      });
+    });
+
+    exportPdfBtn.addEventListener("click", async ()=>{
+      exportPdfBtn.disabled = true;
+      exportPdfBtn.textContent = "Exporting...";
+      try{
+        await exportToPdf();
+      }catch(err){
+        alert("Export failed: " + err.message);
+      }finally{
+        exportPdfBtn.disabled = false;
+        exportPdfBtn.textContent = "Export to PDF";
+      }
+    });
+
+    // Start on Learn; student name shown by default
+  </script>
+</body>
+</html>
