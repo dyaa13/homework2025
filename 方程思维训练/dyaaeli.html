@@ -474,13 +474,27 @@
       min-height:0;
       overflow:hidden;
     }
-    .export-q .qprompt{
+    .export-q .qnum{
+      font-weight:1000;
+      font-size:12px;
+      color:#111;
+      line-height:1.15;
+    }
+    .export-q .qtext{
       font-weight:900;
       font-size:12px;
       color:#111;
-      line-height:1.2;
+      line-height:1.25;
+      margin-top:2mm;
     }
-    .export-qgrid.six .qprompt{font-size:11px;}
+    .export-q .qline{ margin:0.8mm 0; }
+    .export-q .work-space{
+      flex:1;
+      margin-top:4mm;
+    }
+    .export-qgrid.two .export-q{height:120mm;}
+    .export-qgrid.three .export-q{height:86mm;}
+    .export-qgrid.six .export-q{height:62mm;}
 
     .export-diagram{
       border:1px solid #e6e6e6;
@@ -645,7 +659,7 @@
         <div class="learn-grid">
           <div class="muted">
             <b>Answer format in this quiz:</b><br>
-            Enter your answer as <b>x,y</b> (example: <b>7,3</b> or <b>x=7, y=3</b>).<br><br>
+            Enter your answer as <b>two values</b> separated by a comma (example: <b>7,3</b>).<br><br>
             This page uses elimination. Some questions include fractions and/or decimals, but the solutions are always integers.
           </div>
           <div class="svg-wrap" id="learnSvgWrap"></div>
@@ -658,7 +672,7 @@
       <div class="row" style="margin-top:6px;">
         <div class="pill">
           <b>Instructions:</b>
-          <span class="muted" id="instructionsText">Enter your answer as x,y (example: 7,3).</span>
+          <span class="muted" id="instructionsText">Enter your answer as two values separated by a comma (example: 7,3).</span>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
           <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
@@ -703,7 +717,7 @@
       title: "Systems of Linear Equations — Elimination Method — DYAA",
       subtitle: "Learn • Practice • Timer • PDF export",
       filePrefix: "DYAA_SLE_Elimination",
-      instructions: "Enter your answer as x,y (example: 7,3)."
+      instructions: "Enter your answers as two values separated by a comma (example: 7,3)."
     };
 
     /********************
@@ -914,32 +928,33 @@
       return fmtNum(coeff) + variable;
     }
 
-    function fmtEquation(ax, by, c){
-      const terms = [];
-      if(!isZero(ax)) terms.push({text: fmtCoeff(ax, "x")});
-      if(!isZero(by)) terms.push({text: fmtCoeff(by, "y")});
+    function fmtEquation(ax, by, c, v1="x", v2="y"){
+  const terms = [];
+  if(!isZero(ax)) terms.push({text: fmtCoeff(ax, v1)});
+  if(!isZero(by)) terms.push({text: fmtCoeff(by, v2)});
 
-      if(terms.length === 0){
-        return `0 = ${fmtNum(c)}`;
-      }
+  if(terms.length === 0){
+    return `0 = ${fmtNum(c)}`;
+  }
 
-      let out = "";
-      let first = true;
-      for(const t of terms){
-        if(!t.text) continue;
-        if(first){
-          out += t.text;
-          first = false;
-        }else{
-          if(t.text.startsWith("-")){
-            out += " − " + t.text.slice(1);
-          }else{
-            out += " + " + t.text;
-          }
-        }
+  let out = "";
+  let first = true;
+  for(const t of terms){
+    if(!t.text) continue;
+    if(first){
+      out += t.text;
+      first = false;
+    }else{
+      if(t.text.startsWith("-")){
+        out += " − " + t.text.slice(1);
+      }else{
+        out += " + " + t.text;
       }
-      return `${out} = ${fmtNum(c)}`;
     }
+  }
+  return `${out} = ${fmtNum(c)}`;
+}
+
 
 
     /********************
@@ -1111,13 +1126,13 @@
       `;
     }
 
-    function systemSvg(eq1, eq2){
-      return textCardSvg("Solve the system", [
-        { text:eq1, kind:"eq" },
-        { text:eq2, kind:"eq" },
-        { text:"Find (x, y).", kind:"line" }
-      ]);
-    }
+    function systemSvg(eq1, eq2, v1="x", v2="y"){
+  return textCardSvg("Solve the system", [
+    { text:eq1, kind:"eq" },
+    { text:eq2, kind:"eq" },
+    { text:`Find (${v1}, ${v2}).`, kind:"line" }
+  ]);
+}
 
     /********************
      * Elimination system generators (solutions are integers)
@@ -1488,6 +1503,281 @@
   };
 }
 
+
+    /********************
+     * Custom ordered question generators (per spec)
+     * Q1–Q2: No scaling needed (direct add/subtract)
+     * Q3–Q4: Only one equation needs scaling
+     * Q5–Q6: Both equations need scaling; integer coefficients
+     * Q7: Both equations need scaling; simple decimal coefficients
+     * Q8: Coefficients are simple fractions
+     ********************/
+    function lcmInt(a,b){
+      a = Math.abs(a); b = Math.abs(b);
+      if(a===0 || b===0) return 0;
+      return Math.abs(a*b) / gcd(a,b);
+    }
+
+    function makeNoScaleElimX(v1="x", v2="y"){
+      const x = randint(-8, 12);
+      const y = randint(-8, 12);
+      if(x===0 && y===0) return makeNoScaleElimX(v1, v2);
+
+      const a = choice([1,2,3,4,5,6]);
+      let b = choice([-6,-5,-4,-3,-2,2,3,4,5,6]);
+      let e = choice([-6,-5,-4,-3,-2,2,3,4,5,6]);
+      while(e === b) e = choice([-6,-5,-4,-3,-2,2,3,4,5,6]);
+
+      const c1 = a*x + b*y;
+      const c2 = a*x + e*y;
+
+      return {
+        difficulty:"easy",
+        eq1: fmtEquation(a, b, c1, v1, v2),
+        eq2: fmtEquation(a, e, c2, v1, v2),
+        answer:[x,y],
+        hint:`The ${v1}-coefficients are the same. Subtract one equation from the other to eliminate ${v1}.`
+      };
+    }
+
+    function makeNoScaleElimY(v1="x", v2="y"){
+      const x = randint(-8, 12);
+      const y = randint(-8, 12);
+      if(x===0 && y===0) return makeNoScaleElimY(v1, v2);
+
+      const b = choice([2,3,4,5,6]);   // y-coefficient
+      let a1 = choice([-6,-5,-4,-3,-2,2,3,4,5,6]);
+      let a2 = choice([-6,-5,-4,-3,-2,2,3,4,5,6]);
+      while(a2 === a1) a2 = choice([-6,-5,-4,-3,-2,2,3,4,5,6]);
+
+      const c1 = a1*x + b*y;
+      const c2 = a2*x - b*y; // opposite y-coefficient
+
+      return {
+        difficulty:"easy",
+        eq1: fmtEquation(a1, b, c1, v1, v2),
+        eq2: fmtEquation(a2, -b, c2, v1, v2),
+        answer:[x,y],
+        hint:`The ${v2}-coefficients are opposites. Add the equations to eliminate ${v2}.`
+      };
+    }
+
+    function makeOneScaleElimX(v1="x", v2="y"){
+      const x = randint(-9, 11);
+      const y = randint(-9, 11);
+      if(x===0 && y===0) return makeOneScaleElimX(v1, v2);
+
+      const k = choice([2,3]);
+      const base = choice([2,3,4,5]);
+      const aSmall = base;
+      const aLarge = base * k;
+
+      // Randomly swap which equation has the larger x coefficient
+      let a1 = aSmall, a2 = aLarge;
+      if(Math.random() < 0.5){ a1 = aLarge; a2 = aSmall; }
+
+      let b1 = choice([-6,-5,-4,-3,-2,2,3,4,5,6]);
+      let b2 = choice([-6,-5,-4,-3,-2,2,3,4,5,6]);
+      while(b2 === b1 || b2 === -b1) b2 = choice([-6,-5,-4,-3,-2,2,3,4,5,6]);
+
+      const c1 = a1*x + b1*y;
+      const c2 = a2*x + b2*y;
+
+      const hint = (Math.abs(a1) < Math.abs(a2))
+        ? `Multiply the first equation by ${k} so the ${v1}-coefficients match, then eliminate ${v1}.`
+        : `Multiply the second equation by ${k} so the ${v1}-coefficients match, then eliminate ${v1}.`;
+
+      return {
+        difficulty:"medium",
+        eq1: fmtEquation(a1, b1, c1, v1, v2),
+        eq2: fmtEquation(a2, b2, c2, v1, v2),
+        answer:[x,y],
+        hint
+      };
+    }
+
+    function makeOneScaleElimY(v1="x", v2="y"){
+      const x = randint(-9, 11);
+      const y = randint(-9, 11);
+      if(x===0 && y===0) return makeOneScaleElimY(v1, v2);
+
+      const k = choice([2,3]);
+      const base = choice([2,3,4,5]);
+      const bSmall = base;
+      const bLarge = base * k;
+
+      let b1 = bSmall, b2 = bLarge;
+      if(Math.random() < 0.5){ b1 = bLarge; b2 = bSmall; }
+
+      let a1 = choice([-6,-5,-4,-3,-2,2,3,4,5,6]);
+      let a2 = choice([-6,-5,-4,-3,-2,2,3,4,5,6]);
+      while(a2 === a1) a2 = choice([-6,-5,-4,-3,-2,2,3,4,5,6]);
+
+      const c1 = a1*x + b1*y;
+      const c2 = a2*x + b2*y;
+
+      const hint = (Math.abs(b1) < Math.abs(b2))
+        ? `Multiply the first equation by ${k} so the ${v2}-coefficients match, then eliminate ${v2}.`
+        : `Multiply the second equation by ${k} so the ${v2}-coefficients match, then eliminate ${v2}.`;
+
+      return {
+        difficulty:"medium",
+        eq1: fmtEquation(a1, b1, c1, v1, v2),
+        eq2: fmtEquation(a2, b2, c2, v1, v2),
+        answer:[x,y],
+        hint
+      };
+    }
+
+    function makeBothScaleDecimal(v1="x", v2="y"){
+      // Coefficients are 1 dp decimals (n/10). After clearing decimals, neither coefficient pair is a multiple,
+      // so students must scale BOTH equations to eliminate.
+      let tries = 0;
+      while(tries++ < 250){
+        const x = randint(2, 12);
+        const y = randint(2, 12);
+
+        let A1 = randint(2, 12);
+        let A2 = randint(2, 12);
+        let B1 = randint(2, 12);
+        let B2 = randint(2, 12);
+
+        if(A1 === A2 || B1 === B2) continue;
+        if(A1 % A2 === 0 || A2 % A1 === 0) continue;
+        if(B1 % B2 === 0 || B2 % B1 === 0) continue;
+
+        const a1 = A1 / 10;
+        const a2 = A2 / 10;
+        const b1 = B1 / 10;
+        const b2 = B2 / 10;
+
+        const c1 = a1*x + b1*y;
+        const c2 = a2*x + b2*y;
+
+        return {
+          difficulty:"medium",
+          eq1: fmtEquation(a1, b1, c1, v1, v2),
+          eq2: fmtEquation(a2, b2, c2, v1, v2),
+          answer:[x,y],
+          hint:`Multiply BOTH equations by 10 to remove decimals. Then use elimination (you may need to scale BOTH equations to eliminate ${v1} or ${v2}).`
+        };
+      }
+
+      // fallback
+      const x = 6, y = 8;
+      const a1 = 0.4, b1 = 0.3, a2 = 0.6, b2 = 0.5;
+      return {
+        difficulty:"medium",
+        eq1: fmtEquation(a1, b1, a1*x + b1*y, v1, v2),
+        eq2: fmtEquation(a2, b2, a2*x + b2*y, v1, v2),
+        answer:[x,y],
+        hint:`Multiply BOTH equations by 10 to remove decimals, then scale BOTH equations to eliminate ${v1} or ${v2}.`
+      };
+    }
+
+    function makeBothScaleInteger(v1="x", v2="y"){
+      // Both equations need scaling (no coefficient is a simple multiple of the other).
+      let tries = 0;
+      while(tries++ < 250){
+        const x = randint(2, 12);
+        const y = randint(2, 12);
+
+        const a1 = randint(2, 9);
+        const a2 = randint(2, 9);
+        const b1 = randint(2, 9);
+        const b2 = randint(2, 9);
+
+        if(a1===a2 || b1===b2) continue;
+        if(a1 % a2 === 0 || a2 % a1 === 0) continue;
+        if(b1 % b2 === 0 || b2 % b1 === 0) continue;
+
+        const c1 = a1*x + b1*y;
+        const c2 = a2*x + b2*y;
+
+        return {
+          difficulty:"hard",
+          eq1: fmtEquation(a1, b1, c1, v1, v2),
+          eq2: fmtEquation(a2, b2, c2, v1, v2),
+          answer:[x,y],
+          hint:`To eliminate ${v1} or ${v2}, you must scale BOTH equations (use the LCM of the chosen coefficients).`
+        };
+      }
+
+      const x = 5, y = 7;
+      return {
+        difficulty:"hard",
+        eq1: fmtEquation(4, 3, 4*x + 3*y, v1, v2),
+        eq2: fmtEquation(6, 5, 6*x + 5*y, v1, v2),
+        answer:[x,y],
+        hint:`Scale BOTH equations (use LCM) to eliminate ${v1} or ${v2}.`
+      };
+    }
+
+    function makeBothScaleFraction(v1="x", v2="y"){
+      // Simple fractional coefficients; solutions are integers.
+      const pool = [
+        makeFrac(1,2), makeFrac(1,3), makeFrac(2,3),
+        makeFrac(1,4), makeFrac(3,4),
+        makeFrac(2,5), makeFrac(3,5), makeFrac(4,5)
+      ];
+
+      let tries = 0;
+      while(tries++ < 500){
+        const ax1 = choice(pool);
+        const ax2 = choice(pool);
+        const by1 = choice(pool);
+        const by2 = choice(pool);
+
+        if(ax1.n===ax2.n && ax1.d===ax2.d) continue;
+        if(by1.n===by2.n && by1.d===by2.d) continue;
+
+        // Clear denominators first (both equations)
+        const L = lcmInt(lcmInt(ax1.d, by1.d), lcmInt(ax2.d, by2.d));
+        if(L === 0) continue;
+
+        const A1 = Math.abs(ax1.n * (L/ax1.d));
+        const A2 = Math.abs(ax2.n * (L/ax2.d));
+        const B1 = Math.abs(by1.n * (L/by1.d));
+        const B2 = Math.abs(by2.n * (L/by2.d));
+
+        if(A1===A2 || B1===B2) continue;
+        if(A1 % A2 === 0 || A2 % A1 === 0) continue;
+        if(B1 % B2 === 0 || B2 % B1 === 0) continue;
+
+        // Choose x,y so constants become integers (keep sizes reasonable)
+        const x = lcmInt(ax1.d, ax2.d) * randint(1, 2);
+        const y = lcmInt(by1.d, by2.d) * randint(1, 2);
+        if(x > 24 || y > 30) continue;
+
+        const c1 = add(mul(ax1, x), mul(by1, y));
+        const c2 = add(mul(ax2, x), mul(by2, y));
+
+        if(isFrac(c1) && c1.d !== 1) continue;
+        if(isFrac(c2) && c2.d !== 1) continue;
+
+        return {
+          difficulty:"hard",
+          eq1: fmtEquation(ax1, by1, c1, v1, v2),
+          eq2: fmtEquation(ax2, by2, c2, v1, v2),
+          answer:[x,y],
+          hint:`Clear denominators in BOTH equations first. Then use elimination (you may need to scale BOTH equations to eliminate ${v1} or ${v2}).`
+        };
+      }
+
+      // fallback
+      const x = 6, y = 10;
+      const ax1 = makeFrac(1,2), by1 = makeFrac(3,5);
+      const ax2 = makeFrac(2,3), by2 = makeFrac(1,4);
+      const c1 = add(mul(ax1, x), mul(by1, y));
+      const c2 = add(mul(ax2, x), mul(by2, y));
+      return {
+        difficulty:"hard",
+        eq1: fmtEquation(ax1, by1, c1, v1, v2),
+        eq2: fmtEquation(ax2, by2, c2, v1, v2),
+        answer:[x,y],
+        hint:`Clear denominators in BOTH equations first, then eliminate ${v1} or ${v2}.`
+      };
+    }
     /********************
      * Application bank (positive integer answers)
      ********************/
@@ -1506,10 +1796,10 @@
         title: "Money & Shopping — Two Item Prices",
         lines: [
           "A stationery shop sells notebooks and pens.",
-          "Let x be the price of one notebook (in dollars) and y be the price of one pen (in dollars).",
+          "",
           `${a1} notebook and ${b1} pens cost $${t1}.`,
           `${a2} notebooks and ${b2} pens cost $${t2}.`,
-          "Find x and y."
+          "Determine the price of one notebook and the price of one pen."
         ],
         hint: "Form two equations from the two purchases. Use elimination by matching coefficients and adding/subtracting.",
         answer:[x,y]
@@ -1531,10 +1821,10 @@
         title:"Money & Shopping — Two Purchases",
         lines:[
           "A cafe sells drinks and sandwiches.",
-          "Let x be the price of one drink (in dollars) and y be the price of one sandwich (in dollars).",
+          "",
           `Purchase 1: ${a1} drink(s) and ${b1} sandwich(es) cost $${t1}.`,
           `Purchase 2: ${a2} drink(s) and ${b2} sandwich(es) cost $${t2}.`,
-          "Find x and y."
+          "Determine the price of one drink and the price of one sandwich."
         ],
         hint:"Write a system for the two purchases, then eliminate one variable.",
         answer:[x,y]
@@ -1553,12 +1843,12 @@
         title:"People — Class Numbers",
         lines:[
           "A class has boys and girls.",
-          "Let x be the number of boys and y be the number of girls.",
+          "",
           `There are ${total} students in total.`,
           rel,
-          "Find x and y."
+          "Determine the number of boys and the number of girls."
         ],
-        hint:"Use x + y = total and a second equation from the 'more than' statement, then eliminate.",
+        hint:"Use (boys + girls) = total and the 'more than' statement to form a second equation. Then solve.",
         answer:[boys, girls]
       };
     }
@@ -1573,12 +1863,12 @@
         title:"People — Ages",
         lines:[
           "Two siblings have ages that add to a known total.",
-          "Let x be Alice's age (years) and y be Ben's age (years).",
+          "",
           `Alice is ${k} years older than Ben.`,
           `The sum of their ages is ${sum}.`,
-          "Find x and y."
+          "Determine Alice's age and Ben's age."
         ],
-        hint:"Use x = y + k and x + y = sum. You can eliminate by substitution or by adding/subtracting.",
+        hint: "Use (older) = (younger) + k and (older + younger) = sum. Then solve.",
         answer:[x, y]
       };
     }
@@ -1597,34 +1887,34 @@
         title:"Speed, Time, Distance — Meeting",
         lines:[
           "Two people start at opposite ends of a path and walk toward each other.",
-          "Let x be the speed of Person A (km/h) and y be the speed of Person B (km/h).",
+          "",
           `The distance between them is ${D} km and they meet after ${t} hour(s).`,
           extra,
-          "Find x and y."
+          "Determine the speed of Person A and the speed of Person B."
         ],
-        hint:"Meeting gives (x + y)·t = D. Use the second sentence for another equation, then eliminate.",
+        hint: "Meeting gives (A speed + B speed) × time = distance. Use the second sentence for another equation, then solve.",
         answer:[x,y]
       };
     }
 
     function speed_chase(){
-      const y = randint(6, 14);
-      const k = randint(2, 8);
-      const x = y + k;
+      const runner = randint(6, 14);
+      const ratio = choice([2,3]);
+      const cyclist = runner * ratio;
       const t = randint(1, 4);
-      const gap = (x - y) * t;
+      const gap = (cyclist - runner) * t;
 
       return {
         title:"Speed, Time, Distance — Chase (Catch-up)",
         lines:[
           "A cyclist chases a runner on the same straight road.",
-          "Let x be the cyclist's speed (km/h) and y be the runner's speed (km/h).",
           `At the start, the cyclist is ${gap} km behind the runner.`,
           `The cyclist catches up after ${t} hour(s).`,
-          "Find x and y."
+          `The cyclist's speed is ${ratio} times the runner's speed.`,
+          "Determine the cyclist's speed and the runner's speed."
         ],
-        hint:"Catch-up gives (x − y)·t = gap. Combine with x = y + k, then eliminate.",
-        answer:[x,y]
+        hint:"Use the catch-up condition (distance gained = gap) and the ratio statement. Then solve.",
+        answer:[cyclist, runner]
       };
     }
 
@@ -1640,12 +1930,12 @@
         title:"Sharing — Candies",
         lines:[
           "Two students have candies.",
-          "Let x be the number of candies Student A has and y be the number of candies Student B has.",
+          "",
           `Together they have ${total} candies.`,
           rel,
-          "Find x and y."
+          "Determine how many candies Student A has and how many Student B has."
         ],
-        hint:"Use x + y = total and a 'difference' equation, then eliminate.",
+        hint: "Use (A + B) = total and a 'difference' equation. Then solve.",
         answer:[x,y]
       };
     }
@@ -1665,10 +1955,10 @@
         title:"Work Rate — Amount of Work",
         lines:[
           "Two workers complete tasks at constant rates.",
-          "Let x be Worker A's rate (tasks/hour) and y be Worker B's rate (tasks/hour).",
+          "",
           `Together, they complete ${totalTasks} tasks in ${tTogether} hour(s).`,
           `Worker A alone completes ${tasksByA} tasks in ${tA} hour(s).`,
-          "Find x and y."
+          "Determine Worker A's rate and Worker B's rate."
         ],
         hint:"Convert each statement into an equation, then eliminate one variable.",
         answer:[x,y]
@@ -1692,12 +1982,12 @@
         title:"Capacity — Packing Boxes",
         lines:[
           "A warehouse uses two types of boxes.",
-          "Let x be the number of items in a big box and y be the number of items in a small box.",
+          "",
           `${big} big box(es) and ${small} small box(es) hold ${total} items.`,
           `${big2} big box(es) and ${small2} small box(es) hold ${total2} items.`,
-          "Find x and y."
+          "Determine how many items are in a big box and how many are in a small box."
         ],
-        hint:"Write a system from the two totals, then eliminate.",
+        hint: "Write a system from the two totals, then eliminate one variable.",
         answer:[x,y]
       };
     }
@@ -1712,12 +2002,12 @@
         title:"Geometry — Rectangle",
         lines:[
           "A rectangle has a given perimeter and a relationship between length and width.",
-          "Let x be the length (cm) and y be the width (cm).",
+          "",
           `The perimeter is ${P} cm.`,
           `The length is ${k} cm longer than the width.`,
-          "Find x and y."
+          "Determine the length and the width."
         ],
-        hint:"Use 2(x + y) = P and x = y + k, then eliminate.",
+        hint:"Use perimeter = 2(length + width) and the 'longer than' statement. Then solve.",
         answer:[x,y]
       };
     }
@@ -1732,12 +2022,12 @@
         title:"Heads and Legs — Cats and Chickens",
         lines:[
           "A farm has cats and chickens.",
-          "Let x be the number of cats and y be the number of chickens.",
+          "",
           `There are ${heads} animals in total.`,
           `There are ${legs} legs in total.`,
-          "Find x and y."
+          "Determine how many cats and how many chickens there are."
         ],
-        hint:"Use x + y = heads and 4x + 2y = legs, then eliminate.",
+        hint:"Use total animals and total legs to form two equations. Then solve.",
         answer:[cats,chickens]
       };
     }
@@ -1752,12 +2042,12 @@
         title:"Wheels — Bicycles and Tricycles",
         lines:[
           "A parking area contains bicycles and tricycles.",
-          "Let x be the number of bicycles and y be the number of tricycles.",
+          "",
           `There are ${vehicles} vehicles in total.`,
           `There are ${wheels} wheels in total.`,
-          "Find x and y."
+          "Determine how many bicycles and how many tricycles there are."
         ],
-        hint:"Use x + y = vehicles and 2x + 3y = wheels, then eliminate.",
+        hint:"Use total vehicles and total wheels to form two equations. Then solve.",
         answer:[bikes,trikes]
       };
     }
@@ -1772,12 +2062,12 @@
         title:"Furniture — Tables and Stools",
         lines:[
           "A hall contains tables and stools.",
-          "Let x be the number of tables and y be the number of stools.",
+          "",
           `There are ${total} pieces of furniture in total.`,
           `There are ${legs} legs in total.`,
-          "Find x and y."
+          "Determine how many tables and how many stools there are."
         ],
-        hint:"Use x + y = total and 4x + 3y = legs, then eliminate.",
+        hint:"Use total items and total legs to form two equations. Then solve.",
         answer:[tables,stools]
       };
     }
@@ -1797,11 +2087,11 @@
         lines:[
           "A store packs items into big boxes and small boxes.",
           `A big box holds ${capBig} items and a small box holds ${capSmall} items.`,
-          "Let x be the number of big boxes and y be the number of small boxes.",
+          "",
           `There are ${boxes} boxes in total and ${items} items in total.`,
-          "Find x and y."
+          "Determine how many big boxes and how many small boxes were used."
         ],
-        hint:"Use x + y = boxes and capBig·x + capSmall·y = items, then eliminate.",
+        hint:"Use total boxes and total items to form two equations. Then solve.",
         answer:[x,y]
       };
     }
@@ -1818,10 +2108,10 @@
         title:"River Current — Downstream and Upstream (Given Times)",
         lines:[
           "A boat travels the same distance downstream and upstream.",
-          "Let x be the boat speed in still water (km/h) and y be the current speed (km/h).",
+          "",
           `The boat travels ${d} km downstream in ${tDown} hour(s).`,
           `It travels ${d} km upstream in ${tUp} hour(s).`,
-          "Find x and y."
+          "Determine the boat speed in still water and the current speed."
         ],
         hint:"Convert each trip into a speed equation, then eliminate.",
         answer:[x,y]
@@ -1838,12 +2128,12 @@
         title:"River Current — Given Speeds",
         lines:[
           "A boat moves faster downstream than upstream due to the current.",
-          "Let x be the boat speed in still water (km/h) and y be the current speed (km/h).",
+          "",
           `The downstream speed is ${vDown} km/h.`,
           `The upstream speed is ${vUp} km/h.`,
-          "Find x and y."
+          "Determine the boat speed in still water and the current speed."
         ],
-        hint:"Use x + y = downstream speed and x − y = upstream speed, then eliminate.",
+        hint:"Use downstream = boat + current and upstream = boat − current. Add/subtract to solve.",
         answer:[x,y]
       };
     }
@@ -1861,12 +2151,12 @@
         title:"River Current — Given Distance and Total Time",
         lines:[
           "A boat travels downstream and then returns upstream.",
-          "Let x be the boat speed in still water (km/h) and y be the current speed (km/h).",
+          "",
           `The boat travels ${d} km downstream and ${d} km upstream.`,
           `The total travel time is ${totalTime} hour(s), and the downstream time is ${tDown} hour(s).`,
-          "Find x and y."
+          "Determine the boat speed in still water and the current speed."
         ],
-        hint:"Turn the times into equations for (x + y) and (x − y), then eliminate.",
+        hint: "Use downstream = boat + current and upstream = boat − current. Turn the times into equations, then solve.",
         answer:[x,y]
       };
     }
@@ -1881,12 +2171,12 @@
         title:"Plane — Tailwind and Headwind",
         lines:[
           "A plane flies with and against the wind.",
-          "Let x be the plane speed in still air (km/h) and y be the wind speed (km/h).",
+          "",
           `With a tailwind, the ground speed is ${withWind} km/h.`,
           `With a headwind, the ground speed is ${against} km/h.`,
-          "Find x and y."
+          "Determine the plane speed in still air and the wind speed."
         ],
-        hint:"Use x + y = withWind and x − y = against, then eliminate.",
+        hint:"Use with-wind speed = plane + wind and against-wind speed = plane − wind. Add/subtract to solve.",
         answer:[air, wind]
       };
     }
@@ -1911,12 +2201,12 @@
         title:"Fraction Change",
         lines:[
           "A fraction changes when the same number is added or subtracted from numerator and denominator.",
-          "Let x be the numerator and y be the denominator of the fraction x/y.",
+          "",
           `After adding ${a} to both: (x + ${a})/(y + ${a}) = ${p}/${q}.`,
           `After subtracting ${b} from both: (x − ${b})/(y − ${b}) = ${r}/${s}.`,
-          "Find x and y."
+          "Determine the numerator and the denominator."
         ],
-        hint:"Cross-multiply to form two linear equations, then eliminate.",
+        hint: "Cross-multiply to form two linear equations, then eliminate one variable.",
         answer:[num, den]
       };
     }
@@ -1931,12 +2221,12 @@
         title:"Coins — Two Types",
         lines:[
           "A purse contains $2 coins and $1 coins.",
-          "Let x be the number of $2 coins and y be the number of $1 coins.",
+          "",
           `There are ${totalCoins} coins in total.`,
           `The total value is $${totalValue}.`,
-          "Find x and y."
+          "Determine how many $2 coins and how many $1 coins there are."
         ],
-        hint:"Use x + y = totalCoins and 2x + y = totalValue, then eliminate.",
+        hint:"Use (number of $2 coins + number of $1 coins) and the total value equation. Then solve.",
         answer:[x,y]
       };
     }
@@ -1973,9 +2263,9 @@
       const qs = [];
       const usedKey = new Set();
 
-      // Reset per-set coefficient tracking (keeps Q3/Q4 fractions/decimals different each New Set)
+      // Reset per-set coefficient tracking (keeps coefficient variety across "New Set")
       window.__CURR_COEFFS = new Set();
-      if(!window.__DYAA_LAST_COEFFS) window.__DYAA_LAST_COEFFS = { q3:null, q4:null };
+      if(!window.__DYAA_LAST_COEFFS) window.__DYAA_LAST_COEFFS = { q5:null, q6:null, q8:null };
 
       function addQ(q){
         const key = q.svg || q.prompt;
@@ -1985,26 +2275,51 @@
         return true;
       }
 
-      const sys = [
-        makeIntSystemEasy(),
-        makeIntSystemEasy2(),
-        makeFractionSystem(),
-        makeDecimalSystem(),
-        makeMixedSystem(),
-        makeIntSystemHard()
-      ];
+      // Q1–Q2: no scaling needed (direct add/subtract)
+// Q3–Q4: only ONE equation needs scaling
+// Q5–Q6: BOTH equations need scaling; integer coefficients
+// Q7: BOTH equations need scaling; simple decimal coefficients
+// Q8: simple fraction coefficients
 
-      sys.forEach(s => {
-        const svg = systemSvg(s.eq1, s.eq2);
-        addQ({
-          difficulty: s.difficulty,
-          prompt: "Solve using elimination. Enter x,y.",
-          hint: s.hint,
-          answer: s.answer,
-          svg
-        });
-      });
+const VAR_PAIRS = shuffle([
+  ["x","y"], ["a","b"], ["m","n"], ["p","q"],
+  ["u","v"], ["r","s"], ["c","d"], ["h","k"],
+  ["s","t"], ["g","h"]
+]);
 
+const sysSpecs = [
+  { make:(v1,v2)=>makeNoScaleElimX(v1,v2) },
+  { make:(v1,v2)=>makeNoScaleElimY(v1,v2) },
+  { make:(v1,v2)=>makeOneScaleElimX(v1,v2) },
+  { make:(v1,v2)=>makeOneScaleElimY(v1,v2) },
+  { make:(v1,v2)=>makeBothScaleInteger(v1,v2) },
+  { make:(v1,v2)=>makeBothScaleInteger(v1,v2) },
+  { make:(v1,v2)=>makeBothScaleDecimal(v1,v2) },
+  { make:(v1,v2)=>makeBothScaleFraction(v1,v2) }
+];
+
+sysSpecs.forEach((spec, i) => {
+  const [v1, v2] = VAR_PAIRS[i % VAR_PAIRS.length];
+
+  let tries = 0;
+  while(tries++ < 120){
+    const s = spec.make(v1, v2);
+    const svg = systemSvg(s.eq1, s.eq2, v1, v2);
+
+    const ok = addQ({
+      difficulty: s.difficulty,
+      prompt: `Solve using elimination. Find (${v1}, ${v2}). Enter two values separated by a comma.`,
+      hint: s.hint,
+      answer: s.answer,
+      svg,
+      pdfLines: [s.eq1, s.eq2]
+    });
+
+    if(ok) break;
+  }
+});
+
+      // Q9–Q10: application problems (unchanged)
       const [sA, sB] = pickTwoDistinctScenarios();
       [sA, sB].forEach((s, idx) => {
         let tries = 0;
@@ -2012,12 +2327,16 @@
           const obj = s.gen();
           if(obj.answer[0] <= 0 || obj.answer[1] <= 0) continue;
 
-          const svg = textCardSvg(obj.title, obj.lines.map(t=>({text:t, kind:"line"})));
+          const svg = textCardSvg(
+            obj.title,
+            obj.lines.filter(t=>String(t).trim()!=="").map(t=>({text:t, kind:"line"}))
+          );
           const q = {
             difficulty: idx===0 ? "medium" : "hard",
-            prompt: "Application problem (use elimination). Enter x,y.",
+            prompt: "Application problem (use elimination). Enter two values separated by a comma.",
             hint: obj.hint,
             answer: obj.answer,
+            pdfLines: obj.lines.filter(t=>String(t).trim()!==""),
             svg
           };
           if(addQ(q)) break;
@@ -2066,7 +2385,7 @@
             <div class="answer-area">
               <div class="input-row">
                 <input type="text" autocomplete="off"
-                  id="ans-${idx}" placeholder="Answer (x,y) e.g., 7,3"
+                  id="ans-${idx}" placeholder="Answer (two values) e.g., 7,3"
                   value="${escapeHtml(userVal)}">
                 <button class="btn ghost" type="button" id="check-${idx}">Check</button>
                 <button class="btn ghost" type="button" id="hint-${idx}">${hintShown ? "Hide Hint" : "Hint"}</button>
@@ -2235,8 +2554,8 @@
         $("#studentNameValue").textContent = fromUrl;
         return;
       }
-      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", ""));
-      $("#studentNameValue").textContent = name ? name : "Anonymous";
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", "DYAA"));
+      $("#studentNameValue").textContent = name ? name : "DYAA";
     }
 
     function generateNewSet(){
@@ -2327,7 +2646,19 @@
       const y = d.getFullYear();
       const m = String(d.getMonth()+1).padStart(2,"0");
       const day = String(d.getDate()).padStart(2,"0");
-      return `${y}${m}${day}`;
+      const hh = String(d.getHours()).padStart(2,"0");
+      const mm = String(d.getMinutes()).padStart(2,"0");
+      return `${y}${m}${day}_${hh}${mm}`;
+    }
+
+    function timestampDisplay(){
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,"0");
+      const day = String(d.getDate()).padStart(2,"0");
+      const hh = String(d.getHours()).padStart(2,"0");
+      const mm = String(d.getMinutes()).padStart(2,"0");
+      return `${y}-${m}-${day} ${hh}:${mm}`;
     }
 
     function cleanFilePart(s){
@@ -2342,17 +2673,22 @@
 
     function buildQuestionPageHTML(group, pageIndex, totalPages, perPage){
       const rawTitle = TEMPLATE_META.title.replace(/\s*—\s*DYAA\s*$/i,"");
-      const student = safeName($("#studentNameValue").textContent) || "Anonymous";
-      const now = new Date();
-      const dateStr = now.toLocaleDateString();
+      const student = safeName($("#studentNameValue").textContent) || "DYAA";
+      const dateStr = timestampDisplay();
 
-      const qTiles = group.map((q, i) => {
+      const qTiles = group.map((q) => {
         const qNum = q.__num;
-        const svgSafe = (q.svg || "").replace(/var\(--stroke\)/g, "#111");
+        const lines = Array.isArray(q.pdfLines) && q.pdfLines.length ? q.pdfLines : [q.prompt || ""];
+        const safeLines = lines
+          .map(v => String(v))
+          .filter(s => s.trim() !== "")
+          .map(s => `<div class="qline">${escapeHtml(s)}</div>`)
+          .join("");
         return `
           <div class="export-q">
-            <div class="qprompt">Q${qNum}</div>
-            <div class="export-diagram">${svgSafe}</div>
+            <div class="qnum">Q${qNum}</div>
+            <div class="qtext">${safeLines}</div>
+            <div class="work-space"></div>
           </div>
         `;
       }).join("");
@@ -2365,7 +2701,7 @@
             <div>
               <div class="export-title">DYAA — ${escapeHtml(rawTitle)}</div>
               <div class="export-sub">
-                Student: <b>${escapeHtml(student)}</b> • Date: ${escapeHtml(dateStr)} • Answer format: (x, y)
+                Student: <b>${escapeHtml(student)}</b> • Generated: ${escapeHtml(dateStr)}
               </div>
             </div>
             <div style="text-align:right; font-size:11px; font-weight:900; color:#555;">
@@ -2386,9 +2722,8 @@
     
     function buildAnswersPageHTML(){
       const rawTitle = TEMPLATE_META.title.replace(/\s*—\s*DYAA\s*$/i,"");
-      const student = safeName($("#studentNameValue").textContent) || "Anonymous";
-      const now = new Date();
-      const dateStr = now.toLocaleDateString();
+      const student = safeName($("#studentNameValue").textContent) || "DYAA";
+      const dateStr = timestampDisplay();
 
       const ansItems = QUESTIONS.map((q, i) => {
         const a = Array.isArray(q.answer) ? q.answer : ["?", "?"];
@@ -2403,7 +2738,7 @@
             <div>
               <div class="export-title">DYAA — ${escapeHtml(rawTitle)}</div>
               <div class="export-sub">
-                Student: <b>${escapeHtml(student)}</b> • Date: ${escapeHtml(dateStr)} • Answers shown as (x, y)
+                Student: <b>${escapeHtml(student)}</b> • Generated: ${escapeHtml(dateStr)} • Answers shown as (first, second)
               </div>
             </div>
             <div style="text-align:right; font-size:11px; font-weight:900; color:#555;">
