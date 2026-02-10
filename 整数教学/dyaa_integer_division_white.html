@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DYAA | Integer Division (Quotient & Remainder)</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --panel:#ffffff;
+      --card:#ffffff;
+      --ink:#111827;
+      --muted:#6b7280;
+      --line:rgba(17,24,39,.14);
+      --accent:#2563eb;
+      --good:#16a34a;
+      --bad:#dc2626;
+      --warn:#d97706;
+      --shadow: 0 8px 22px rgba(17,24,39,.10);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: var(--bg);
+      color:var(--ink);
+    }
+    a{color:inherit}
+    .wrap{max-width:1100px;margin:0 auto;padding:22px 18px 60px}
+    .topbar{
+      display:flex;gap:14px;align-items:center;justify-content:space-between;
+      padding:16px 16px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.92);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(8px);
+      position:sticky;top:12px;z-index:5;
+    }
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo{
+      width:40px;height:40px;border-radius:12px;
+      background: linear-gradient(135deg, rgba(37,99,235,.95), rgba(16,185,129,.85));
+      box-shadow: 0 8px 18px rgba(110,168,254,.25);
+      display:grid;place-items:center;
+      font-weight:900;
+    }
+    .brand h1{margin:0;font-size:16px;letter-spacing:.2px}
+    .brand .sub{margin:2px 0 0 0;font-size:12px;color:var(--muted)}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:flex-end}
+    .pill{
+      display:flex;align-items:center;gap:8px;
+      padding:8px 10px;border-radius:999px;border:1px solid var(--line);
+      background:rgba(255,255,255,.92);
+    }
+    .pill label{font-size:12px;color:var(--muted)}
+    input[type="text"]{
+      width:150px;max-width:42vw;
+      background:transparent;border:none;outline:none;color:var(--ink);
+      font-weight:700;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.92);
+      color:var(--ink);
+      padding:10px 12px;border-radius:12px;
+      font-weight:750;cursor:pointer;
+      transition:.15s transform,.15s background,.15s border-color;
+      user-select:none;
+    }
+    .btn:hover{transform:translateY(-1px);border-color:rgba(110,168,254,.55)}
+    .btn.primary{background:rgba(37,99,235,.08);border-color:rgba(37,99,235,.25)}
+    .btn.primary:hover{background:rgba(37,99,235,.12)}
+    .btn.ghost{background:transparent}
+    .tabs{display:flex;gap:10px;margin:18px 0 14px}
+    .tab{
+      padding:10px 12px;border-radius:12px;border:1px solid var(--line);
+      background:rgba(255,255,255,.92);cursor:pointer;font-weight:800;
+      color:var(--muted);
+    }
+    .tab.active{color:var(--ink);border-color:rgba(37,99,235,.35);background:rgba(37,99,235,.06)}
+    .panel{
+      border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.92);
+      box-shadow:var(--shadow);backdrop-filter: blur(8px);
+      overflow:hidden;
+    }
+    .panelHeader{
+      padding:14px 16px;border-bottom:1px solid var(--line);
+      display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between
+    }
+    .panelHeader h2{margin:0;font-size:15px}
+    .panelHeader .hint{color:var(--muted);font-size:12px}
+    .panelBody{padding:16px}
+    .learnGrid{
+      display:grid;grid-template-columns: 1fr 1fr;gap:14px;
+    }
+    @media (max-width:900px){.learnGrid{grid-template-columns:1fr}}
+    .card{
+      border:1px solid var(--line);border-radius:var(--radius);
+      background:rgba(255,255,255,.96);
+      padding:14px 14px;
+    }
+    .card h3{margin:0 0 10px;font-size:14px}
+    .card p{margin:8px 0;color:var(--muted);line-height:1.5}
+    .kpi{
+      display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px
+    }
+    .kpi .mini{
+      border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.92);
+      padding:10px 10px;
+    }
+    .mini .t{font-size:12px;color:var(--muted)}
+    .mini .v{font-size:14px;font-weight:900;margin-top:4px}
+    code.inline{
+      background:rgba(37,99,235,.08);
+      border:1px solid rgba(37,99,235,.22);
+      padding:1px 6px;border-radius:8px;
+      color:var(--ink)
+    }
+    .practiceControls{
+      display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:flex-end
+    }
+    select{
+      background:rgba(255,255,255,.92);border:1px solid var(--line);
+      color:var(--ink);padding:10px 12px;border-radius:12px;font-weight:800;outline:none;
+    }
+    .sections{display:flex;flex-direction:column;gap:14px}
+    .secTitle{
+      display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+      margin:2px 2px 8px;
+    }
+    .secTitle .name{font-weight:950}
+    .secTitle .desc{font-size:12px;color:var(--muted)}
+    .qGrid{
+      display:grid;grid-template-columns: repeat(2, minmax(0, 1fr));gap:12px;
+    }
+    @media (max-width:900px){.qGrid{grid-template-columns:1fr}}
+    .qCard{
+      border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.92);
+      padding:12px 12px;
+    }
+    .qTop{
+      display:flex;gap:10px;align-items:flex-start;justify-content:space-between
+    }
+    .qNum{
+      font-weight:1000;
+      color:rgba(233,238,252,.92);
+      letter-spacing:.2px;
+    }
+    .qText{margin:6px 0 10px;color:var(--ink);line-height:1.45}
+    .qMeta{font-size:12px;color:var(--muted);margin-top:2px}
+    .answerRow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .ansBox{
+      display:flex;align-items:center;gap:8px;
+      border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.92);
+      padding:8px 10px;
+    }
+    .ansBox span{font-size:12px;color:var(--muted);white-space:nowrap}
+    .ansBox input{
+      width:70px;background:transparent;border:none;outline:none;color:var(--ink);
+      font-weight:950;
+    }
+    .badge{
+      padding:6px 10px;border-radius:999px;border:1px solid var(--line);
+      font-size:12px;font-weight:900;
+    }
+    .badge.good{border-color:rgba(46,204,113,.5);background:rgba(46,204,113,.12);color:#d9ffe6}
+    .badge.bad{border-color:rgba(255,107,107,.55);background:rgba(255,107,107,.12);color:#ffe1e1}
+    .badge.neutral{border-color:rgba(17,24,39,.18);background:rgba(17,24,39,.03);color:rgba(17,24,39,.85)}
+    .hintBox{
+      margin-top:10px;
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius:14px;
+      background:rgba(17,24,39,.03);
+      padding:10px 10px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+      display:none;
+    }
+    .qActions{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:10px}
+    .smallBtn{
+      padding:8px 10px;border-radius:12px;border:1px solid var(--line);
+      background:rgba(255,255,255,.92);color:var(--ink);font-weight:850;cursor:pointer;
+    }
+    .smallBtn:hover{border-color:rgba(110,168,254,.55)}
+    .smallBtn.link{background:transparent}
+    .footerNote{margin-top:14px;color:var(--muted);font-size:12px}
+    .hidden{display:none !important}
+
+    /* PDF staging (hidden) */
+    #pdfStaging{
+      position:fixed;left:-99999px;top:-99999px;
+      width:794px; /* ~A4 at 96 dpi */
+    }
+    .pdf-page{
+      width:794px;height:1123px;
+      background:#ffffff;color:#111;
+      padding:26px 26px 22px;
+      border:1px solid #ddd;
+      font-family: Arial, Helvetica, sans-serif;
+      position:relative;
+    }
+    .pdf-header{
+      display:flex;justify-content:space-between;align-items:flex-end;
+      margin-bottom:10px;
+    }
+    .pdf-header .title{font-weight:900;font-size:14px}
+    .pdf-header .meta{font-size:11px;color:#555;text-align:right}
+    .pdf-grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+    }
+    .pdf-card{
+      border:1px solid #cfcfcf;border-radius:10px;
+      padding:10px 10px 8px;
+      min-height:245px;
+      overflow:hidden;
+    }
+    .pdf-qnum{font-weight:900;font-size:12px;margin-bottom:4px}
+    .pdf-qtext{font-size:12px;line-height:1.35}
+    .pdf-space{height:42px}
+    .pdf-space.small{height:28px}
+    .pdf-water{position:absolute;right:18px;bottom:12px;font-size:10px;color:#777}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">DY</div>
+        <div>
+          <h1>DYAA Education</h1>
+          <div class="sub">Integer Division — Quotient & Remainder</div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="pill">
+          <label for="studentName">Student</label>
+          <input id="studentName" type="text" value="DYAA" />
+        </div>
+        <button class="btn ghost" id="btnNewSet" title="Generate a fresh set of numbers">Generate New Set</button>
+        <button class="btn primary" id="btnExportPdf" title="Export Practice Questions to PDF">Export Practice PDF</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="learn">Learn</div>
+      <div class="tab" data-tab="practice">Practice</div>
+    </div>
+
+    <!-- LEARN -->
+    <div class="panel" id="learnPanel">
+      <div class="panelHeader">
+        <div>
+          <h2>Key idea</h2>
+          <div class="hint">Division with remainder follows one rule every time.</div>
+        </div>
+        <div class="hint"><span class="badge neutral">Use</span> <span class="badge neutral">Check</span> <span class="badge neutral">Explain</span></div>
+      </div>
+      <div class="panelBody">
+        <div class="learnGrid">
+          <div class="card">
+            <h3>1) The division rule (always true)</h3>
+            <p>
+              For any whole-number division:
+              <br>
+              <code class="inline">dividend = divisor × quotient + remainder</code>
+            </p>
+            <p>
+              The remainder must satisfy:
+              <br>
+              <code class="inline">0 ≤ remainder &lt; divisor</code>
+            </p>
+            <p class="footerNote">
+              This rule is the key for every question on this page.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>2) Type 1 — Given dividend & divisor</h3>
+            <p><b>Goal:</b> Find <b>quotient</b> and <b>remainder</b>.</p>
+            <p>
+              Use:
+              <br>
+              <code class="inline">quotient = ⌊ dividend ÷ divisor ⌋</code>
+              <br>
+              <code class="inline">remainder = dividend − divisor × quotient</code>
+            </p>
+            <p class="footerNote">
+              Quick check: remainder must be smaller than the divisor.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>3) Type 2 — Given dividend, quotient & remainder</h3>
+            <p><b>Goal:</b> Find the <b>divisor</b>.</p>
+            <p>
+              Start from:
+              <code class="inline">dividend = divisor × quotient + remainder</code>
+              <br><br>
+              Rearrange to get:
+              <br>
+              <code class="inline">divisor = (dividend − remainder) ÷ quotient</code>
+            </p>
+            <p class="footerNote">
+              The result must be a whole number, and it should be greater than the remainder.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>4) Type 3 & word problems</h3>
+            <p><b>Type 3 goal:</b> Find the <b>dividend</b>.</p>
+            <p>
+              Use:
+              <br>
+              <code class="inline">dividend = divisor × quotient + remainder</code>
+            </p>
+            <p>
+              <b>Word problems:</b> Identify what each number means (total, group size, number of groups, left over),
+              then apply the same rule.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="panel hidden" id="practicePanel">
+      <div class="panelHeader">
+        <div>
+          <h2>Practice</h2>
+          <div class="hint">4 questions for each type. Numbers are kept small (divisor ≤ 30).</div>
+        </div>
+        <div class="practiceControls">
+          <select id="orderMode" title="Question order">
+            <option value="grouped">Grouped by type</option>
+            <option value="mixed">Mixed (shuffle)</option>
+          </select>
+          <button class="btn" id="btnReset">Reset Inputs</button>
+        </div>
+      </div>
+      <div class="panelBody">
+        <div id="practiceRoot"></div>
+        <div class="footerNote">Answers must be whole numbers. Remainder must be less than the divisor.</div>
+      </div>
+    </div>
+
+    <!-- PDF staging container -->
+    <div id="pdfStaging" aria-hidden="true"></div>
+  </div>
+
+  <!-- Libraries for PDF export -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+  <script>
+    /***********************
+     * Utilities
+     ***********************/
+    const $ = (sel, el=document) => el.querySelector(sel);
+    const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+
+    function pad2(n){ return String(n).padStart(2,'0'); }
+    function timestampStr(){
+      const d = new Date();
+      const yyyy = d.getFullYear();
+      const mm = pad2(d.getMonth()+1);
+      const dd = pad2(d.getDate());
+      const hh = pad2(d.getHours());
+      const mi = pad2(d.getMinutes());
+      return `${yyyy}${mm}${dd}_${hh}${mi}`;
+    }
+    function prettyStamp(){
+      const d = new Date();
+      return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+    }
+    function randInt(min, max){ // inclusive
+      return Math.floor(Math.random()*(max-min+1))+min;
+    }
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+      }
+      return a;
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    /***********************
+     * Student name via URL
+     ***********************/
+    function getParam(name){
+      const u = new URL(window.location.href);
+      return u.searchParams.get(name);
+    }
+    function setParam(name, value){
+      const u = new URL(window.location.href);
+      if(value && value.trim()) u.searchParams.set(name, value.trim());
+      else u.searchParams.delete(name);
+      history.replaceState(null, "", u.toString());
+    }
+    const studentNameInput = $("#studentName");
+    const defaultName = (getParam("name") || "DYAA").trim();
+    studentNameInput.value = defaultName;
+    studentNameInput.addEventListener("input", () => setParam("name", studentNameInput.value));
+
+    /***********************
+     * Question generation
+     ***********************/
+    function genType1(n=4){
+      // Given dividend and divisor -> find quotient and remainder
+      const out = [];
+      const seen = new Set();
+      while(out.length < n){
+        const divisor = randInt(2, 30);
+        const quotient = randInt(1, 20);
+        const remainder = randInt(0, divisor-1);
+        const dividend = divisor*quotient + remainder;
+        if(dividend > 320) continue;
+        const key = `T1|${dividend}|${divisor}`;
+        if(seen.has(key)) continue;
+        seen.add(key);
+
+        out.push({
+          type: "T1",
+          title: "Type 1 — Given dividend & divisor → find quotient & remainder",
+          text: `Compute: ${dividend} ÷ ${divisor}. Give the quotient and remainder.`,
+          meta: `Use: dividend = divisor × quotient + remainder`,
+          inputs: [
+            { key:"quotient", label:"Quotient" },
+            { key:"remainder", label:"Remainder" },
+          ],
+          answer: { quotient, remainder },
+          hint: `Divide ${dividend} by ${divisor}. Check using: ${dividend} = ${divisor} × q + r, with 0 ≤ r < ${divisor}.`
+        });
+      }
+      return out;
+    }
+
+    function genType2(n=4){
+      // Given dividend, quotient, remainder -> find divisor
+      const out = [];
+      const seen = new Set();
+      while(out.length < n){
+        const divisor = randInt(2, 30);
+        const quotient = randInt(2, 18);
+        const remainder = randInt(0, divisor-1);
+        const dividend = divisor*quotient + remainder;
+        if(dividend > 320) continue;
+
+        const key = `T2|${dividend}|${quotient}|${remainder}`;
+        if(seen.has(key)) continue;
+        seen.add(key);
+
+        out.push({
+          type: "T2",
+          title: "Type 2 — Given dividend, quotient & remainder → find divisor",
+          text: `A division gives: dividend = ${dividend}, quotient = ${quotient}, remainder = ${remainder}. Find the divisor.`,
+          meta: `Use: divisor = (dividend − remainder) ÷ quotient`,
+          inputs: [{ key:"divisor", label:"Divisor" }],
+          answer: { divisor },
+          hint: `Use ${dividend} = d × ${quotient} + ${remainder}. So d = (${dividend} − ${remainder}) ÷ ${quotient}.`
+        });
+      }
+      return out;
+    }
+
+    function genType3(n=4){
+      // Given divisor, quotient, remainder -> find dividend
+      const out = [];
+      const seen = new Set();
+      while(out.length < n){
+        const divisor = randInt(2, 30);
+        const quotient = randInt(2, 18);
+        const remainder = randInt(0, divisor-1);
+        const dividend = divisor*quotient + remainder;
+        if(dividend > 320) continue;
+
+        const key = `T3|${divisor}|${quotient}|${remainder}`;
+        if(seen.has(key)) continue;
+        seen.add(key);
+
+        out.push({
+          type: "T3",
+          title: "Type 3 — Given divisor, quotient & remainder → find dividend",
+          text: `A division has divisor = ${divisor}, quotient = ${quotient}, remainder = ${remainder}. Find the dividend.`,
+          meta: `Use: dividend = divisor × quotient + remainder`,
+          inputs: [{ key:"dividend", label:"Dividend" }],
+          answer: { dividend },
+          hint: `Compute ${divisor} × ${quotient} + ${remainder}.`
+        });
+      }
+      return out;
+    }
+
+    function genType4Word(n=4){
+      // Word problems based on the same relationship
+      const problems = [];
+
+      // 1) Find quotient & remainder
+      {
+        const divisor = randInt(4, 15);
+        const quotient = randInt(4, 14);
+        const remainder = randInt(1, divisor-1);
+        const dividend = divisor*quotient + remainder;
+        problems.push({
+          type:"T4", title:"Type 4 — Word problems",
+          text: `A baker has ${dividend} cookies and packs them into boxes of ${divisor}. How many full boxes can be made, and how many cookies are left over?`,
+          meta:"Answer with quotient (full groups) and remainder (left over).",
+          inputs:[{key:"quotient",label:"Full boxes"},{key:"remainder",label:"Left over"}],
+          answer:{quotient, remainder},
+          hint:`This is ${dividend} ÷ ${divisor}. Check: ${dividend} = ${divisor} × (full boxes) + (left over).`
+        });
+      }
+
+      // 2) Find divisor (number of groups)
+      {
+        const divisor = randInt(8, 18); // number of teams
+        const quotient = randInt(4, 11); // cones per team
+        const remainder = randInt(1, divisor-1);
+        const dividend = divisor*quotient + remainder;
+        problems.push({
+          type:"T4", title:"Type 4 — Word problems",
+          text: `A coach shares ${dividend} cones equally among teams. Each team receives ${quotient} cones, and ${remainder} cone(s) are left over. How many teams are there?`,
+          meta:"Find the divisor (number of groups).",
+          inputs:[{key:"divisor",label:"Teams"}],
+          answer:{divisor},
+          hint:`Use ${dividend} = d × ${quotient} + ${remainder}. So d = (${dividend} − ${remainder}) ÷ ${quotient}.`
+        });
+      }
+
+      // 3) Find dividend (total items)
+      {
+        const divisor = randInt(6, 16); // bottles per carton
+        const quotient = randInt(5, 14); // full cartons
+        const remainder = randInt(1, divisor-1); // left over
+        const dividend = divisor*quotient + remainder;
+        problems.push({
+          type:"T4", title:"Type 4 — Word problems",
+          text: `A factory packs bottles into cartons of ${divisor}. After filling ${quotient} full cartons, there are ${remainder} bottle(s) left. How many bottles are there in total?`,
+          meta:"Find the dividend (total).",
+          inputs:[{key:"dividend",label:"Total bottles"}],
+          answer:{dividend},
+          hint:`Total = ${divisor} × ${quotient} + ${remainder}.`
+        });
+      }
+
+      // 4) Another quotient & remainder context
+      {
+        const divisor = randInt(5, 17);
+        const quotient = randInt(3, 16);
+        const remainder = randInt(1, divisor-1);
+        const dividend = divisor*quotient + remainder;
+        problems.push({
+          type:"T4", title:"Type 4 — Word problems",
+          text: `A librarian arranges ${dividend} books on shelves. Each shelf holds ${divisor} books. How many shelves will be completely filled, and how many books will remain?`,
+          meta:"Answer with full shelves and remaining books.",
+          inputs:[{key:"quotient",label:"Full shelves"},{key:"remainder",label:"Remain"}],
+          answer:{quotient, remainder},
+          hint:`This is ${dividend} ÷ ${divisor}. Check: ${dividend} = ${divisor} × (full shelves) + (remain).`
+        });
+      }
+
+      return problems.slice(0, n);
+    }
+
+    function buildQuestionSet(){
+      return {
+        t1: genType1(4),
+        t2: genType2(4),
+        t3: genType3(4),
+        t4: genType4Word(4)
+      };
+    }
+
+    /***********************
+     * Render practice UI
+     ***********************/
+    let currentSet = buildQuestionSet();
+    let flatQuestions = [];
+
+    function flattenSet(setObj){
+      return [
+        {title:setObj.t1[0].title, items:setObj.t1},
+        {title:setObj.t2[0].title, items:setObj.t2},
+        {title:setObj.t3[0].title, items:setObj.t3},
+        {title:setObj.t4[0].title, items:setObj.t4},
+      ];
+    }
+
+    function renderPractice(){
+      const root = $("#practiceRoot");
+      root.innerHTML = "";
+
+      const grouped = flattenSet(currentSet);
+
+      // Flat list for mixed mode and PDF
+      flatQuestions = [];
+      grouped.forEach(g => g.items.forEach(q => flatQuestions.push(q)));
+
+      const mode = $("#orderMode").value;
+
+      if(mode === "mixed"){
+        const mixed = shuffle(flatQuestions);
+        root.appendChild(renderQuestionSection("Mixed questions", "Shuffled across all types.", mixed));
+      }else{
+        const frag = document.createDocumentFragment();
+        let running = 1;
+        grouped.forEach((g) => {
+          frag.appendChild(renderQuestionSection(g.title, "4 questions", g.items, running));
+          running += g.items.length;
+        });
+        root.appendChild(frag);
+      }
+      renumberQuestions();
+    }
+
+    function renumberQuestions(){
+      const cards = $$(".qCard");
+      cards.forEach((card, idx) => {
+        const numEl = card.querySelector(".qNum");
+        if(numEl) numEl.textContent = `Q${idx+1}`;
+      });
+    }
+
+    function renderQuestionSection(title, desc, items, startIndex=1){
+      const section = document.createElement("div");
+      section.className = "card";
+
+      const header = document.createElement("div");
+      header.className = "secTitle";
+      header.innerHTML = `<div class="name">${escapeHtml(title)}</div><div class="desc">${escapeHtml(desc)}</div>`;
+      section.appendChild(header);
+
+      const grid = document.createElement("div");
+      grid.className = "qGrid";
+
+      items.forEach((q, i) => grid.appendChild(renderQuestionCard(q, startIndex+i)));
+      section.appendChild(grid);
+
+      return section;
+    }
+
+    function renderQuestionCard(q, number){
+      const card = document.createElement("div");
+      card.className = "qCard";
+
+      const top = document.createElement("div");
+      top.className = "qTop";
+      top.innerHTML = `<div>
+        <div class="qNum">Q${number}</div>
+        <div class="qMeta">${escapeHtml(q.meta || "")}</div>
+      </div>
+      <div class="badge neutral" title="Question category">Type</div>`;
+      card.appendChild(top);
+
+      const text = document.createElement("div");
+      text.className = "qText";
+      text.textContent = q.text;
+      card.appendChild(text);
+
+      const ansRow = document.createElement("div");
+      ansRow.className = "answerRow";
+
+      q.inputs.forEach(inp => {
+        const box = document.createElement("div");
+        box.className = "ansBox";
+        box.innerHTML = `<span>${escapeHtml(inp.label)}</span>
+          <input inputmode="numeric" pattern="[0-9]*" data-key="${escapeHtml(inp.key)}" />`;
+        ansRow.appendChild(box);
+      });
+
+      card.appendChild(ansRow);
+
+      const hintBox = document.createElement("div");
+      hintBox.className = "hintBox";
+      hintBox.textContent = q.hint || "";
+      card.appendChild(hintBox);
+
+      const actions = document.createElement("div");
+      actions.className = "qActions";
+
+      const status = document.createElement("div");
+      status.className = "badge neutral";
+      status.textContent = "Not checked";
+
+      const btnHint = document.createElement("button");
+      btnHint.className = "smallBtn link";
+      btnHint.textContent = "Hint";
+      btnHint.addEventListener("click", () => {
+        hintBox.style.display = (hintBox.style.display === "block") ? "none" : "block";
+      });
+
+      const btnCheck = document.createElement("button");
+      btnCheck.className = "smallBtn";
+      btnCheck.textContent = "Check";
+      btnCheck.addEventListener("click", () => {
+        const inputs = $$("input[data-key]", card);
+        const user = {};
+        let ok = true;
+
+        inputs.forEach(el => {
+          const key = el.getAttribute("data-key");
+          const raw = (el.value || "").trim();
+          if(raw === "" || !/^\d+$/.test(raw)){
+            ok = false;
+            user[key] = null;
+          }else{
+            user[key] = parseInt(raw, 10);
+          }
+        });
+
+        if(!ok){
+          status.className = "badge bad";
+          status.textContent = "Check inputs";
+          return;
+        }
+
+        // Remainder validity when applicable
+        if("remainder" in user){
+          const div = extractDivisorFromText(q.text);
+          if(div !== null && user.remainder >= div){
+            status.className = "badge bad";
+            status.textContent = `Remainder must be < ${div}`;
+            return;
+          }
+        }
+
+        const correct = checkAnswer(q, user);
+        if(correct){
+          status.className = "badge good";
+          status.textContent = "Correct";
+        }else{
+          status.className = "badge bad";
+          status.textContent = "Not correct";
+        }
+      });
+
+      actions.appendChild(status);
+      actions.appendChild(btnHint);
+      actions.appendChild(btnCheck);
+      card.appendChild(actions);
+
+      return card;
+    }
+
+    function extractDivisorFromText(text){
+      const m1 = text.match(/÷\s*(\d{1,2})/);
+      if(m1) return parseInt(m1[1],10);
+
+      const m2 = text.match(/boxes of\s+(\d{1,2})/i);
+      if(m2) return parseInt(m2[1],10);
+
+      const m3 = text.match(/holds\s+(\d{1,2})\s+books/i);
+      if(m3) return parseInt(m3[1],10);
+
+      const m4 = text.match(/cartons of\s+(\d{1,2})/i);
+      if(m4) return parseInt(m4[1],10);
+
+      return null;
+    }
+
+    function checkAnswer(q, user){
+      const a = q.answer || {};
+      for(const k of Object.keys(a)){
+        if(!(k in user)) return false;
+        if(user[k] !== a[k]) return false;
+      }
+      return true;
+    }
+
+    function resetInputs(){
+      $$("#practicePanel input[data-key]").forEach(inp => inp.value = "");
+      $$("#practicePanel .qActions .badge").forEach(b => {
+        b.className = "badge neutral";
+        b.textContent = "Not checked";
+      });
+      $$("#practicePanel .hintBox").forEach(h => h.style.display = "none");
+    }
+
+    /***********************
+     * Tabs
+     ***********************/
+    const tabs = $$(".tab");
+    const learnPanel = $("#learnPanel");
+    const practicePanel = $("#practicePanel");
+    tabs.forEach(t => t.addEventListener("click", () => {
+      tabs.forEach(x => x.classList.remove("active"));
+      t.classList.add("active");
+      const which = t.getAttribute("data-tab");
+      if(which === "learn"){
+        learnPanel.classList.remove("hidden");
+        practicePanel.classList.add("hidden");
+      }else{
+        learnPanel.classList.add("hidden");
+        practicePanel.classList.remove("hidden");
+      }
+      window.scrollTo({top:0, behavior:"smooth"});
+    }));
+
+    $("#orderMode").addEventListener("change", renderPractice);
+    $("#btnReset").addEventListener("click", resetInputs);
+
+    $("#btnNewSet").addEventListener("click", () => {
+      currentSet = buildQuestionSet();
+      renderPractice();
+      resetInputs();
+    });
+
+    /***********************
+     * PDF Export
+     ***********************/
+    $("#btnExportPdf").addEventListener("click", async () => {
+      if(flatQuestions.length === 0){
+        const grouped = flattenSet(currentSet);
+        flatQuestions = [];
+        grouped.forEach(g => g.items.forEach(q => flatQuestions.push(q)));
+      }
+      await exportPdf(flatQuestions);
+    });
+
+    function chunk(arr, size){
+      const out = [];
+      for(let i=0;i<arr.length;i+=size) out.push(arr.slice(i,i+size));
+      return out;
+    }
+
+    function buildPdfPages(questions){
+      const staging = $("#pdfStaging");
+      staging.innerHTML = "";
+      const perPage = 12; // 3 x 4
+      const pages = chunk(questions, perPage);
+      const name = (studentNameInput.value || "DYAA").trim();
+      const stamp = prettyStamp();
+
+      pages.forEach((pageQs, pageIdx) => {
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const header = document.createElement("div");
+        header.className = "pdf-header";
+        header.innerHTML = `
+          <div class="title">Integer Division — Practice</div>
+          <div class="meta">
+            Student: ${escapeHtml(name)}<br>
+            ${escapeHtml(stamp)} &nbsp;|&nbsp; Page ${pageIdx+1}/${pages.length}
+          </div>`;
+        page.appendChild(header);
+
+        const grid = document.createElement("div");
+        grid.className = "pdf-grid";
+
+        pageQs.forEach((q, i) => {
+          const globalIndex = pageIdx*perPage + i;
+          const card = document.createElement("div");
+          card.className = "pdf-card";
+
+          const qnum = document.createElement("div");
+          qnum.className = "pdf-qnum";
+          qnum.textContent = `Q${globalIndex+1}`;
+          card.appendChild(qnum);
+
+          const qtext = document.createElement("div");
+          qtext.className = "pdf-qtext";
+          qtext.textContent = q.text;
+          card.appendChild(qtext);
+
+          const needsTwo = (q.inputs && q.inputs.length >= 2);
+          const space = document.createElement("div");
+          space.className = "pdf-space" + (needsTwo ? "" : " small");
+          card.appendChild(space);
+
+          grid.appendChild(card);
+        });
+
+        page.appendChild(grid);
+
+        const water = document.createElement("div");
+        water.className = "pdf-water";
+        water.textContent = "DYAA Education";
+        page.appendChild(water);
+
+        staging.appendChild(page);
+      });
+
+      return $$(".pdf-page", staging);
+    }
+
+    async function exportPdf(questions){
+      const pages = buildPdfPages(questions);
+
+      if(!window.html2canvas || !window.jspdf || !window.jspdf.jsPDF){
+        alert("PDF export libraries failed to load. Please check your internet connection and try again.");
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"portrait", unit:"mm", format:"a4" });
+
+      for(let i=0;i<pages.length;i++){
+        const pageEl = pages[i];
+
+        const canvas = await html2canvas(pageEl, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff"
+        });
+
+        const imgData = canvas.toDataURL("image/png");
+        const pageWidth = 210;
+        const pageHeight = 297;
+
+        if(i>0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight, undefined, "FAST");
+      }
+
+      const safeName = (studentNameInput.value || "DYAA").trim().replace(/[^\w\-]+/g, "_");
+      const filename = `DYAA_Integer_Division_${safeName}_${timestampStr()}.pdf`;
+      pdf.save(filename);
+    }
+
+    // Initial render
+    renderPractice();
+  </script>
+</body>
+</html>
