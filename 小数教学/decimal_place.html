@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Decimals & Fractions — Learn & Practice — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+    }
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI',Tahoma,sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-12deg);
+      pointer-events:none;
+      z-index:0;
+      user-select:none;
+    }
+
+    .container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:28px auto;
+      background:var(--card);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:26px;
+      border:1px solid var(--line);
+    }
+
+    #headerLogo{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:12px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:260px;}
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:8px;position:relative;flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:9px;background:var(--orange);
+      top:-6px;left:11px;border-radius:4px;
+    }
+    .logo-text{display:flex;flex-direction:column;line-height:1.1;}
+    .logo-text b{font-size:1.12rem;color:var(--blue);letter-spacing:.2px;}
+    .logo-text span{font-size:.92rem;color:var(--orange);font-weight:800;}
+    .title-block{flex:1 1 260px;min-width:260px;}
+    .title-block h1{margin:0;font-size:1.15rem;color:#111;letter-spacing:.2px;}
+    .title-block p{margin:4px 0 0 0;color:var(--muted);font-size:.95rem;}
+
+    .topbar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin:14px 0 18px;
+      flex-wrap:wrap;
+    }
+
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;}
+    .tab-btn{
+      border:1px solid var(--line);
+      background:#fff;
+      padding:10px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:700;
+      color:#333;
+      box-shadow:0 2px 10px rgba(0,0,0,.04);
+    }
+    .tab-btn.active{
+      background:rgba(13,71,161,0.10);
+      border-color:rgba(13,71,161,0.25);
+      color:var(--blue);
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      flex:1 1 360px;
+    }
+    .pill{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      min-width:240px;
+      flex:1 1 240px;
+    }
+    .pill label{font-weight:800;color:#333;font-size:.95rem;white-space:nowrap;}
+    .pill input{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:9px 10px;
+      outline:none;
+      width:100%;
+      font-size:.95rem;
+    }
+    .student-name{font-weight:800;color:#111;}
+
+    .btn{
+      border:none;
+      background:var(--blue);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:800;
+      box-shadow:0 4px 12px rgba(13,71,161,0.18);
+      white-space:nowrap;
+    }
+    .btn.secondary{
+      background:#fff;
+      color:#111;
+      border:1px solid var(--line);
+      box-shadow:0 2px 10px rgba(0,0,0,.05);
+    }
+    .btn.orange{
+      background:var(--orange);
+      box-shadow:0 4px 12px rgba(255,152,0,0.18);
+    }
+    .btn:active{transform:translateY(1px);}
+
+    select{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      background:#fff;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .section{display:none;margin-top:10px;}
+    .section.active{display:block;}
+
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;}
+    @media (min-width: 900px){ .grid.two{grid-template-columns:1fr 1fr;} }
+
+    .card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.05);
+    }
+    .card h2{margin:0 0 8px 0;font-size:1.05rem;color:var(--blue);}
+    .card p, .card li{color:#222;line-height:1.55;margin:6px 0;}
+    .muted{color:var(--muted);}
+    .tiny{font-size:.9rem;color:var(--muted);}
+
+    .mini-table{
+      width:100%;
+      border-collapse:collapse;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      margin-top:10px;
+    }
+    .mini-table th, .mini-table td{
+      border-bottom:1px solid var(--line);
+      padding:10px 10px;
+      text-align:left;
+      font-size:.95rem;
+    }
+    .mini-table th{background:rgba(13,71,161,0.06);color:#111;}
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    .practice-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .note{
+      background:rgba(255,152,0,0.12);
+      border:1px solid rgba(255,152,0,0.25);
+      padding:10px 12px;
+      border-radius:12px;
+      color:#222;
+      line-height:1.45;
+      flex:1 1 420px;
+    }
+
+    .part-title{
+      margin:18px 0 10px 0;
+      padding:10px 12px;
+      border-radius:12px;
+      background:rgba(13,71,161,0.06);
+      border:1px solid rgba(13,71,161,0.15);
+      color:#111;
+      font-weight:900;
+    }
+
+    .qCard{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.05);
+      margin:12px 0;
+    }
+    .qHeader{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+    .qHeader .qTitle{
+      font-weight:1000;
+      color:var(--blue);
+      font-size:1.05rem;
+      letter-spacing:.3px;
+    }
+    .qChip{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+      padding:6px 10px;
+      font-weight:900;
+      color:#111;
+      font-size:.85rem;
+      box-shadow:0 2px 10px rgba(0,0,0,.04);
+    }
+
+    .qPrompt{line-height:1.5;color:#111;margin:6px 0 10px 0;}
+
+    .answerRow{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:8px 0 10px 0;
+    }
+    .answerRow .label{
+      font-weight:900;
+      color:#111;
+      min-width:70px;
+      padding-top:8px;
+    }
+    .answerRow input{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      font-size:1rem;
+      outline:none;
+      width:min(520px, 100%);
+    }
+
+    .btnRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:2px;
+    }
+    .btnSmall{
+      border:none;
+      background:var(--blue);
+      color:#fff;
+      padding:10px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:900;
+      box-shadow:0 4px 12px rgba(13,71,161,0.18);
+    }
+    .btnSmall.hint,
+    .btnSmall.reveal{
+      background:#eef3ff;
+      color:var(--blue);
+      border:1px solid rgba(13,71,161,0.18);
+      box-shadow:none;
+    }
+
+    .msgBox{
+      margin-top:10px;
+      border-radius:14px;
+      padding:12px 12px;
+      border:1px solid var(--line);
+      display:none;
+    }
+    .msgBox.show{display:block;}
+    .msgBox .msgHead{font-weight:1000;margin-bottom:6px;}
+    .msgBox .msgBody{line-height:1.5;color:#111;}
+    .msgBox.solution{background:rgba(27,94,32,0.08);border-color:rgba(27,94,32,0.22);}
+    .msgBox.hint{background:rgba(13,71,161,0.07);border-color:rgba(13,71,161,0.20);}
+    .msgBox.wrong{background:rgba(183,28,28,0.07);border-color:rgba(183,28,28,0.22);}
+
+    .frac{
+      display:inline-block;
+      vertical-align:middle;
+      text-align:center;
+      line-height:1.1;
+      font-weight:900;
+      margin:0 2px;
+    }
+    .frac .top{display:block; padding:0 4px;}
+    .frac .bar{display:block; border-top:2px solid #111; margin:2px 0;}
+    .frac .bot{display:block; padding:0 4px;}
+
+    .footer-actions{
+      margin-top:18px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      border-top:1px solid var(--line);
+      padding-top:14px;
+    }
+    .score{font-weight:900;color:#111;}
+
+    .modal-backdrop{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:999;
+      padding:18px;
+    }
+    .modal-backdrop.show{display:flex;}
+    .modal{
+      background:#fff;
+      border-radius:18px;
+      border:1px solid var(--line);
+      box-shadow:0 10px 30px rgba(0,0,0,0.2);
+      max-width:520px;width:100%;
+      padding:18px;
+    }
+    .modal h4{margin:0 0 8px 0;color:#111;font-size:1.05rem;}
+    .modal p{margin:0 0 14px 0;color:#333;line-height:1.5;}
+    .modal .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div id="headerLogo">
+      <div class="brand">
+        <div class="logo-icon"></div>
+        <div class="logo-text">
+          <b>DYAA Education</b>
+          <span>Mathematics</span>
+        </div>
+      </div>
+      <div class="title-block">
+        <h1>Decimals & Fractions — Learn & Practice</h1>
+        <p>Decimal places • Rounding to decimal places • Fraction ⇄ Decimal • Simplifying fractions</p>
+      </div>
+    </div>
+
+    <div class="topbar">
+      <div class="tabs">
+        <button class="tab-btn active" id="learnTab">Learn</button>
+        <button class="tab-btn" id="practiceTab">Practice</button>
+      </div>
+
+      <div class="controls">
+        <div class="pill" id="studentPill">
+          <label>Student</label>
+          <span id="studentDisplay" class="student-name" style="display:none;"></span>
+          <input id="studentInput" type="text" placeholder="Enter student name" style="display:none;">
+        </div>
+
+        <select id="perPageSelect" title="Questions per page for Export to PDF">
+          <option value="3">3 / page</option>
+          <option value="4" selected>4 / page</option>
+          <option value="6">6 / page</option>
+          <option value="8">8 / page</option>
+          <option value="9">9 / page</option>
+        </select>
+
+        <button class="btn secondary" id="exportBtn" title="Opens the print dialog (Save as PDF)">
+          Export to PDF
+        </button>
+        <button class="btn orange" id="newSetBtn">Generate New Set</button>
+      </div>
+    </div>
+
+    <!-- LEARN -->
+    <div class="section active" id="learnSection">
+      <div class="grid two">
+        <div class="card">
+          <h2>1) Decimal places</h2>
+          <p><b>Decimal places</b> = how many digits are after the decimal point (including zeros).</p>
+          <ul>
+            <li><b>3.7</b> has <b>1</b> decimal place</li>
+            <li><b>0.125</b> has <b>3</b> decimal places</li>
+            <li><b>4.50</b> has <b>2</b> decimal places (because it is written as 4.50)</li>
+          </ul>
+          <p class="tiny">Tip: Only count digits after the decimal point.</p>
+        </div>
+
+        <div class="card">
+          <h2>2) Rounding to N decimal places</h2>
+          <p>To round to <b>n</b> decimal places, look at the <b>(n+1)</b>th digit.</p>
+          <ul>
+            <li>0–4: round down</li>
+            <li>5–9: round up</li>
+          </ul>
+          <table class="mini-table">
+            <thead><tr><th>Example</th><th>To 2 d.p.</th><th>Reason</th></tr></thead>
+            <tbody>
+              <tr><td>3.476</td><td>3.48</td><td>3rd digit is 6 → round up</td></tr>
+              <tr><td>5.431</td><td>5.43</td><td>3rd digit is 1 → stay the same</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>3) Fraction → decimal (then round)</h2>
+          <p>To convert a fraction to a decimal, do <b>numerator ÷ denominator</b>.</p>
+          <ul>
+            <li>Terminating decimals: e.g. <span class="frac"><span class="top">3</span><span class="bar"></span><span class="bot">8</span></span> = 0.375</li>
+            <li>Recurring decimals: e.g. <span class="frac"><span class="top">1</span><span class="bar"></span><span class="bot">3</span></span> = 0.333…</li>
+          </ul>
+          <p><b>If a question asks for a certain number of decimal places</b>, convert first, then round.</p>
+          <p class="tiny">Example: <span class="frac"><span class="top">5</span><span class="bar"></span><span class="bot">6</span></span> = 0.8333… → to 3 d.p. = <b>0.833</b></p>
+        </div>
+
+        <div class="card">
+          <h2>4) Decimal → fraction (then simplify)</h2>
+          <p>Steps:</p>
+          <ol>
+            <li>Write the decimal as an integer over a power of 10</li>
+            <li>Simplify the fraction (divide by the highest common factor)</li>
+          </ol>
+          <table class="mini-table">
+            <thead><tr><th>Decimal</th><th>As a fraction</th><th>Simplest form</th></tr></thead>
+            <tbody>
+              <tr><td>0.75</td><td>75/100</td><td>3/4</td></tr>
+              <tr><td>2.4</td><td>24/10</td><td>12/5</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>Practice mapping</h2>
+          <ul>
+            <li><b>Q1–Q2</b>: decimal places</li>
+            <li><b>Q3–Q4</b>: rounding to decimal places</li>
+            <li><b>Q5–Q8</b>: fraction → decimal (then round)</li>
+            <li><b>Q9–Q12</b>: decimal → fraction (simplest form)</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2>Answer format</h2>
+          <ul>
+            <li>For rounding, you may type <b>1.5</b> or <b>1.50</b> if both represent the same value.</li>
+            <li>For fractions, type <b>a/b</b> or a mixed number like <b>1 1/2</b>.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="section" id="practiceSection">
+      <div class="practice-head">
+        <div class="note">
+          <b>Instructions:</b> Each question has <b>Check</b>, <b>Hint</b>, and <b>Reveal</b>.
+          <div class="tiny">Export to PDF will place the <b>Answer Key</b> on a new page at the end.</div>
+        </div>
+      </div>
+
+      <div id="practiceRoot"></div>
+
+      <div class="footer-actions">
+        <div class="score" id="scoreText">Score: —</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;">
+          <button class="btn secondary" id="resetBtn">Reset Answers</button>
+          <button class="btn" id="submitBtn">Submit & View Result</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div class="modal-backdrop" id="confirmBackdrop" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h4>Generate a new set?</h4>
+      <p>This will replace all current questions and clear your answers.</p>
+      <div class="row">
+        <button class="btn secondary" id="cancelNewSet">Cancel</button>
+        <button class="btn orange" id="confirmNewSet">Yes, generate</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function initStudent(){
+      const n = getParam("name");
+      const studentDisplay = document.getElementById("studentDisplay");
+      const studentInput = document.getElementById("studentInput");
+      if(n && n.trim()){
+        studentDisplay.style.display = "inline";
+        studentInput.style.display = "none";
+        studentDisplay.textContent = n.trim();
+      }else{
+        studentDisplay.style.display = "none";
+        studentInput.style.display = "inline";
+        const saved = localStorage.getItem("dyaa_student_name") || "";
+        studentInput.value = saved;
+        studentInput.addEventListener("input", ()=>{
+          localStorage.setItem("dyaa_student_name", studentInput.value.trim());
+        });
+      }
+    }
+    function getStudentName(){
+      const n = getParam("name");
+      if(n && n.trim()) return n.trim();
+      const v = (document.getElementById("studentInput").value || "").trim();
+      return v || "________";
+    }
+
+    function pow10Big(n){
+      let x = 1n;
+      for(let i=0;i<n;i++) x *= 10n;
+      return x;
+    }
+
+    function parseDec(str){
+      str = String(str).trim();
+      if(!str) return null;
+      str = str.replace(/,/g,"");
+      if(str[0]==="+") str = str.slice(1);
+      if(!/^-?\d+(\.\d+)?$/.test(str)) return null;
+
+      const neg = str[0]==="-";
+      if(neg) str = str.slice(1);
+
+      const parts = str.split(".");
+      const intPart = parts[0] || "0";
+      const frac = parts[1] || "";
+      const scale = frac.length;
+      const bi = BigInt(intPart + frac);
+      return { int: (neg ? -bi : bi), scale };
+    }
+
+    function bigToStr(x, scale){
+      const neg = x < 0n;
+      let v = neg ? -x : x;
+      let s = v.toString();
+      if(scale === 0) return (neg ? "-" : "") + s;
+
+      if(s.length <= scale){
+        s = "0".repeat(scale - s.length + 1) + s;
+      }
+      const idx = s.length - scale;
+      let out = s.slice(0, idx) + "." + s.slice(idx);
+      out = out.replace(/^0+(?=\d)/,"0");
+      out = out.replace(/^\./,"0.");
+      return (neg ? "-" : "") + out;
+    }
+
+    function stripTrailingZerosDec(s){
+      return String(s).replace(/(\.\d*?)0+$/,"$1").replace(/\.$/,"");
+    }
+
+    function roundToDpStr(xStr, dp){
+      const x = parseDec(xStr);
+      if(!x) return null;
+
+      if(x.scale === dp) return bigToStr(x.int, x.scale);
+
+      if(x.scale < dp){
+        const mul = pow10Big(dp - x.scale);
+        return bigToStr(x.int * mul, dp);
+      }
+
+      const diff = x.scale - dp;
+      const div = pow10Big(diff);
+      const half = div / 2n;
+
+      const neg = x.int < 0n;
+      let v = neg ? -x.int : x.int;
+
+      const q = v / div;
+      const r = v % div;
+
+      let qq = q;
+      if(r >= half) qq = q + 1n;
+
+      const outInt = neg ? -qq : qq;
+      return bigToStr(outInt, dp);
+    }
+
+    function gcdBig(a,b){
+      a = a < 0n ? -a : a;
+      b = b < 0n ? -b : b;
+      while(b !== 0n){
+        const t = a % b;
+        a = b;
+        b = t;
+      }
+      return a;
+    }
+
+    function simplifyFrac(n,d){
+      if(d === 0n) return null;
+      if(d < 0n){ n = -n; d = -d; }
+      const g = gcdBig(n,d);
+      return { n: n/g, d: d/g };
+    }
+
+    function fracHtml(n,d){
+      return `<span class="frac"><span class="top">${n}</span><span class="bar"></span><span class="bot">${d}</span></span>`;
+    }
+
+    function fracToDecimalFixed(n, d, dp){
+      n = BigInt(n); d = BigInt(d);
+      if(d === 0n) return null;
+      let neg = false;
+      if(n < 0n){ neg = !neg; n = -n; }
+      if(d < 0n){ neg = !neg; d = -d; }
+
+      const scale = pow10Big(dp + 1);
+      const t = (n * scale) / d;
+      const last = t % 10n;
+      let main = t / 10n;
+      if(last >= 5n) main = main + 1n;
+
+      const s = main.toString();
+      let out;
+      if(dp === 0){
+        out = s;
+      }else{
+        let str = s;
+        if(str.length <= dp){
+          str = "0".repeat(dp - str.length + 1) + str;
+        }
+        const idx = str.length - dp;
+        out = str.slice(0, idx) + "." + str.slice(idx);
+      }
+      if(neg && out !== "0" && out !== "0." + "0".repeat(dp)) out = "-" + out;
+      if(out.startsWith(".")) out = "0" + out;
+      if(out.startsWith("-."))
+        out = out.replace("-.", "-0.");
+      return out;
+    }
+
+    function parseFractionInput(raw){
+      const s = String(raw).trim();
+      if(!s) return null;
+
+      if(/^-?\d+$/.test(s)){
+        return { n: BigInt(s), d: 1n };
+      }
+
+      const m = s.match(/^(-?\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+      if(m){
+        const whole = BigInt(m[1]);
+        const num = BigInt(m[2]);
+        const den = BigInt(m[3]);
+        if(den === 0n) return null;
+        const sign = whole < 0n ? -1n : 1n;
+        const absWhole = whole < 0n ? -whole : whole;
+        const improper = absWhole * den + num;
+        return { n: sign * improper, d: den };
+      }
+
+      const f = s.match(/^(-?\d+)\s*\/\s*(\d+)$/);
+      if(f){
+        const num = BigInt(f[1]);
+        const den = BigInt(f[2]);
+        if(den === 0n) return null;
+        return { n: num, d: den };
+      }
+
+      return null;
+    }
+
+    function decimalToFraction(decStr){
+      const x = parseDec(decStr);
+      if(!x) return null;
+      const d = pow10Big(x.scale);
+      const n = x.int;
+      return simplifyFrac(n, d);
+    }
+
+    function randInt(min,max){
+      return Math.floor(Math.random()*(max-min+1))+min;
+    }
+    function randChoice(arr){
+      return arr[Math.floor(Math.random()*arr.length)];
+    }
+    function randDigits(len, allowAllZero=false){
+      let s="";
+      for(let i=0;i<len;i++) s += String(randInt(0,9));
+      if(!allowAllZero && /^0+$/.test(s)) return randDigits(len, allowAllZero);
+      return s;
+    }
+    function makeDecimalFixed(intMin,intMax, dp){
+      const intPart = randInt(intMin,intMax);
+      if(dp === 0) return String(intPart);
+      const frac = randDigits(dp, true);
+      return `${intPart}.${frac}`;
+    }
+
+    let QUESTIONS = [];
+    const PARTS = [
+      {part:1, title:"Part 1 — Decimal places (Q1–Q2)"},
+      {part:2, title:"Part 2 — Rounding to decimal places (Q3–Q4)"},
+      {part:3, title:"Part 3 — Fraction → decimal (then round) (Q5–Q8)"},
+      {part:4, title:"Part 4 — Decimal → fraction (simplest form) (Q9–Q12)"},
+    ];
+
+    function qId(){
+      return "q_" + Math.random().toString(16).slice(2) + "_" + Date.now();
+    }
+
+    function buildAllQuestions(){
+      const out = [];
+
+      function qDecimalPlaces(){
+        const dp = randChoice([1,2,3,4]);
+        const intPart = randChoice([0, randInt(1,9), randInt(10,99)]);
+        const frac = randDigits(dp, true);
+        const num = `${intPart}.${frac}`;
+        return {
+          id:qId(),
+          part:1,
+          chip:"Decimal places",
+          promptHtml:`How many decimal places does <b>${num}</b> have?`,
+          answer:String(dp),
+          hintHtml:`Count the digits <b>after</b> the decimal point (including zeros).`,
+          solutionHtml:()=> `There are <b>${dp}</b> digits after the decimal point, so it has <b>${dp}</b> decimal place(s).`,
+          validate:(raw)=>{
+            const s = String(raw).trim();
+            if(!/^\d+$/.test(s)) return {ok:false, msg:"Please enter a whole number (e.g., 2)."};
+            return s===String(dp) ? {ok:true} : {ok:false, msg:`Correct answer: ${dp}`};
+          },
+          answerKeyText:()=> String(dp),
+          _checked:false,_isCorrect:false,_revealed:false,_value:""
+        };
+      }
+      out.push(qDecimalPlaces());
+      out.push(qDecimalPlaces());
+
+      function qRounding(){
+        const dpTarget = randChoice([1,2,3]);
+        const dpGiven = dpTarget + randChoice([1,2]);
+        const x = makeDecimalFixed(randInt(0,9), randInt(10,99), dpGiven);
+        const ans = roundToDpStr(x, dpTarget);
+        return {
+          id:qId(),
+          part:2,
+          chip:`Round to ${dpTarget} d.p.`,
+          promptHtml:`Round <b>${x}</b> to <b>${dpTarget}</b> decimal place(s).`,
+          answer:ans,
+          hintHtml:`Look at the <b>${dpTarget+1}</b>th digit after the decimal point: 0–4 down, 5–9 up.`,
+          solutionHtml:()=> `Rounded to ${dpTarget} d.p.: <b>${ans}</b>.`,
+          validate:(raw)=>{
+            const p = parseDec(String(raw).trim());
+            if(!p) return {ok:false, msg:"Please enter a decimal number."};
+            const got = stripTrailingZerosDec(bigToStr(p.int, p.scale));
+            const exp = stripTrailingZerosDec(ans);
+            return got===exp ? {ok:true} : {ok:false, msg:`Correct answer: ${ans}`};
+          },
+          answerKeyText:()=> ans,
+          _checked:false,_isCorrect:false,_revealed:false,_value:""
+        };
+      }
+      out.push(qRounding());
+      out.push(qRounding());
+
+      function qFracToDec(){
+        const dp = randChoice([1,2,3]);
+        const den = randChoice([3,6,7,8,9,12,16,20,25,40]);
+        let n;
+        if(randChoice([0,1])===0) n = randInt(1, den-1);
+        else n = randInt(den+1, den*2+3);
+        if(n % den === 0) n += 1;
+
+        const frac = fracHtml(n, den);
+        const ans = fracToDecimalFixed(n, den, dp);
+        return {
+          id:qId(),
+          part:3,
+          chip:"Fraction → decimal",
+          promptHtml:`Convert ${frac} to a decimal, correct to <b>${dp}</b> decimal place(s).`,
+          answer:ans,
+          hintHtml:`Do <b>numerator ÷ denominator</b>, then round to ${dp} d.p.`,
+          solutionHtml:()=> `Correct to ${dp} d.p.: <b>${ans}</b>.`,
+          validate:(raw)=>{
+            const p = parseDec(String(raw).trim());
+            if(!p) return {ok:false, msg:"Please enter a decimal number."};
+            const got = stripTrailingZerosDec(bigToStr(p.int, p.scale));
+            const exp = stripTrailingZerosDec(ans);
+            return got===exp ? {ok:true} : {ok:false, msg:`Correct answer: ${ans}`};
+          },
+          answerKeyText:()=> ans,
+          _checked:false,_isCorrect:false,_revealed:false,_value:""
+        };
+      }
+      out.push(qFracToDec());
+      out.push(qFracToDec());
+      out.push(qFracToDec());
+      out.push(qFracToDec());
+
+      function qDecToFrac(){
+        const dp = randChoice([1,2,3]);
+        const intPart = randChoice([0,0, randInt(0,5), randInt(1,9)]);
+        const dec = makeDecimalFixed(intPart, intPart, dp);
+        if(/^0\.0+$/.test(dec)) return qDecToFrac();
+
+        const simp = decimalToFraction(dec);
+        const ansText = `${simp.n.toString()}/${simp.d.toString()}`;
+
+        return {
+          id:qId(),
+          part:4,
+          chip:"Decimal → fraction",
+          promptHtml:`Convert <b>${dec}</b> to a fraction in simplest form.`,
+          answer:ansText,
+          hintHtml:`Write it as an integer over 10^${dp}, then simplify.`,
+          solutionHtml:()=> {
+            const baseDen = pow10Big(dp).toString();
+            const rawN = parseDec(dec).int.toString();
+            return `Write ${dec} as <b>${rawN}/${baseDen}</b>, then simplify → <b>${ansText}</b>.`;
+          },
+          validate:(raw)=>{
+            const f = parseFractionInput(raw);
+            if(!f) return {ok:false, msg:`Please enter a fraction (e.g., ${ansText}) or a mixed number (e.g., 1 1/2).`};
+            const simpIn = simplifyFrac(f.n, f.d);
+            const ok = (simpIn.n === simp.n && simpIn.d === simp.d);
+            return ok ? {ok:true} : {ok:false, msg:`Correct answer: ${ansText}`};
+          },
+          answerKeyText:()=> ansText,
+          _checked:false,_isCorrect:false,_revealed:false,_value:""
+        };
+      }
+      out.push(qDecToFrac());
+      out.push(qDecToFrac());
+      out.push(qDecToFrac());
+      out.push(qDecToFrac());
+
+      return out;
+    }
+
+    function renderPractice(){
+      const root = document.getElementById("practiceRoot");
+      root.innerHTML = "";
+
+      let globalIndex = 0;
+
+      PARTS.forEach(p=>{
+        const partQs = QUESTIONS.filter(q=>q.part===p.part);
+        if(!partQs.length) return;
+
+        const title = document.createElement("div");
+        title.className = "part-title";
+        title.textContent = p.title;
+        root.appendChild(title);
+
+        partQs.forEach(q=>{
+          globalIndex++;
+
+          const card = document.createElement("div");
+          card.className = "qCard";
+
+          const header = document.createElement("div");
+          header.className = "qHeader";
+
+          const qTitle = document.createElement("div");
+          qTitle.className = "qTitle";
+          qTitle.textContent = `Q${globalIndex}`;
+
+          const chip = document.createElement("div");
+          chip.className = "qChip";
+          chip.textContent = q.chip || "Practice";
+
+          header.appendChild(qTitle);
+          header.appendChild(chip);
+          card.appendChild(header);
+
+          const prompt = document.createElement("div");
+          prompt.className = "qPrompt";
+          prompt.innerHTML = q.promptHtml || "";
+          card.appendChild(prompt);
+
+          const answerRow = document.createElement("div");
+          answerRow.className = "answerRow";
+
+          const label = document.createElement("div");
+          label.className = "label";
+          label.textContent = "Answer:";
+          answerRow.appendChild(label);
+
+          const inp = document.createElement("input");
+          inp.type = "text";
+          inp.placeholder = "Type your answer";
+          inp.value = q._value || "";
+          inp.addEventListener("input", ()=>{
+            q._value = inp.value;
+            hideMsg(q.id);
+          });
+          answerRow.appendChild(inp);
+          card.appendChild(answerRow);
+
+          const btnRow = document.createElement("div");
+          btnRow.className = "btnRow";
+
+          const btnCheck = document.createElement("button");
+          btnCheck.className = "btnSmall";
+          btnCheck.textContent = "Check";
+          btnCheck.addEventListener("click", ()=>doCheck(q.id));
+
+          const btnHint = document.createElement("button");
+          btnHint.className = "btnSmall hint";
+          btnHint.textContent = "Hint";
+          btnHint.addEventListener("click", ()=>showHint(q.id));
+
+          const btnReveal = document.createElement("button");
+          btnReveal.className = "btnSmall reveal";
+          btnReveal.textContent = "Reveal";
+          btnReveal.addEventListener("click", ()=>doReveal(q.id));
+
+          btnRow.appendChild(btnCheck);
+          btnRow.appendChild(btnHint);
+          btnRow.appendChild(btnReveal);
+
+          card.appendChild(btnRow);
+
+          const msg = document.createElement("div");
+          msg.className = "msgBox";
+          msg.id = "msg_" + q.id;
+          msg.innerHTML = `<div class="msgHead"></div><div class="msgBody"></div>`;
+          card.appendChild(msg);
+
+          root.appendChild(card);
+        });
+      });
+
+      document.getElementById("scoreText").textContent = "Score: —";
+    }
+
+    function hideMsg(qid){
+      const box = document.getElementById("msg_"+qid);
+      if(!box) return;
+      box.className = "msgBox";
+      box.style.display = "none";
+    }
+
+    function showMsg(qid, mode, title, html){
+      const box = document.getElementById("msg_"+qid);
+      if(!box) return;
+      box.querySelector(".msgHead").textContent = title;
+      box.querySelector(".msgBody").innerHTML = html;
+      box.style.display = "block";
+      box.className = "msgBox show " + mode;
+    }
+
+    function getQuestion(qid){
+      return QUESTIONS.find(q=>q.id===qid);
+    }
+
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    function doCheck(qid){
+      const q = getQuestion(qid);
+      if(!q) return;
+
+      const res = q.validate((q._value || "").trim());
+      q._checked = true;
+      q._isCorrect = !!res.ok;
+
+      if(res.ok){
+        showMsg(qid, "solution", "Solution", q.solutionHtml ? q.solutionHtml() : "Correct.");
+      }else{
+        const extra = res.msg ? `<div style="margin-bottom:8px;"><b>Note:</b> ${escapeHtml(res.msg)}</div>` : "";
+        showMsg(qid, "wrong", "Solution", extra + (q.solutionHtml ? q.solutionHtml() : ""));
+      }
+    }
+
+    function showHint(qid){
+      const q = getQuestion(qid);
+      if(!q) return;
+      showMsg(qid, "hint", "Hint", q.hintHtml || "Think about decimal places and rounding rules.");
+    }
+
+    function doReveal(qid){
+      const q = getQuestion(qid);
+      if(!q) return;
+      q._revealed = true;
+      q._checked = true;
+      q._isCorrect = true;
+      showMsg(qid, "solution", "Solution", q.solutionHtml ? q.solutionHtml() : `Answer: ${q.answer}`);
+      updateScoreIfSubmitted(false);
+    }
+
+    function updateScoreIfSubmitted(forceShow){
+      const submitted = forceShow || window.__submitted;
+      if(!submitted) return;
+
+      let correct = 0;
+      let total = QUESTIONS.length;
+
+      for(const q of QUESTIONS){
+        if(!q._checked){
+          const res = q.validate((q._value || "").trim());
+          q._checked = true;
+          q._isCorrect = !!res.ok;
+
+          if(res.ok){
+            showMsg(q.id, "solution", "Solution", q.solutionHtml ? q.solutionHtml() : "Correct.");
+          }else{
+            const extra = res.msg ? `<div style="margin-bottom:8px;"><b>Note:</b> ${escapeHtml(res.msg)}</div>` : "";
+            showMsg(q.id, "wrong", "Solution", extra + (q.solutionHtml ? q.solutionHtml() : ""));
+          }
+        }
+        if(q._isCorrect) correct++;
+      }
+
+      document.getElementById("scoreText").textContent = `Score: ${correct} / ${total}`;
+    }
+
+    function exportToPdfViaPrint(){
+      const perPage = parseInt(document.getElementById("perPageSelect").value,10) || 4;
+      const student = getStudentName();
+      const today = new Date();
+      const dateStr = today.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"2-digit"});
+
+      const ordered = [];
+      PARTS.forEach(p=>{
+        QUESTIONS.filter(q=>q.part===p.part).forEach(q=>ordered.push(q));
+      });
+
+      const pages = [];
+      for(let i=0;i<ordered.length;i+=perPage){
+        pages.push(ordered.slice(i, i+perPage));
+      }
+
+      const layoutClass = (perPage===9) ? "per9" : (perPage===3 ? "per3" : (perPage===4 ? "per4" : (perPage===6 ? "per6" : (perPage===8 ? "per8" : "per4"))));
+
+      let html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Decimals & Fractions Worksheet — DYAA</title>
+  <style>
+    @page{ margin: 14mm; }
+    body{font-family:Arial, sans-serif; margin:0; color:#111;}
+    .head{
+      display:flex; justify-content:space-between; align-items:flex-end;
+      gap:12px; border-bottom:2px solid #ddd; padding:0 0 8px 0; margin:0 0 10px 0;
+    }
+    .head h1{margin:0; font-size:15.5px;}
+    .small{font-size:11.5px; color:#333; font-weight:700;}
+    .meta{font-size:11.5px; font-weight:800; color:#111; text-align:right;}
+
+    .page{page-break-after:always;}
+    .page:last-child{page-break-after:auto;}
+
+    .cards{display:grid; gap:10px;}
+    .cards.per4{grid-template-columns:1fr 1fr; --cardH: 118mm;}
+    .cards.per6{grid-template-columns:1fr 1fr; --cardH: 78mm;}
+    .cards.per8{grid-template-columns:1fr 1fr; --cardH: 58mm;}
+    .cards.per3{grid-template-columns:1fr;      --cardH: 82mm;}
+    .cards.per9{grid-template-columns:1fr 1fr 1fr; --cardH: 78mm;}
+
+    .qcard{
+      border:1px solid #e6e6ef; border-radius:12px; padding:10px;
+      height: var(--cardH);
+      box-sizing:border-box;
+      break-inside:avoid; page-break-inside:avoid;
+      overflow:hidden;
+    }
+    .qtop{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;}
+    .qn{font-weight:900; font-size:13px;}
+    .chip{
+      border:1px solid #e6e6ef; border-radius:999px; padding:4px 8px;
+      font-size:10.5px; font-weight:900; background:#fff;
+    }
+    .qprompt{font-size:12px; line-height:1.35; margin:0 0 8px 0;}
+    .qprompt b{font-weight:900;}
+    .line{border-bottom:1px solid #111; height:18px; margin-top:10px;}
+
+    .frac{display:inline-block; vertical-align:middle; text-align:center; line-height:1.1; font-weight:900;}
+    .frac .top{display:block; padding:0 4px;}
+    .frac .bar{display:block; border-top:2px solid #111; margin:2px 0;}
+    .frac .bot{display:block; padding:0 4px;}
+
+    .ansKey h2{font-size:15px; margin:0 0 10px 0;}
+    .ansRow{border-bottom:1px solid #eee; padding:6px 0; font-size:12px;}
+    .ansRow b{display:inline-block; width:52px;}
+  </style>
+</head>
+<body>
+`;
+
+      let globalNo = 0;
+
+      pages.forEach((chunk)=>{
+        html += `<div class="page">`;
+        html += `
+          <div class="head">
+            <div>
+              <h1>Decimals & Fractions Worksheet — DYAA</h1>
+              <div class="small">Student: ${escapeHtml(student)} &nbsp;&nbsp;|&nbsp;&nbsp; Date: ${escapeHtml(dateStr)}</div>
+            </div>
+            <div class="meta">Questions per page: ${perPage}</div>
+          </div>
+          <div class="cards ${layoutClass}">
+        `;
+
+        chunk.forEach(q=>{
+          globalNo++;
+          html += `
+            <div class="qcard">
+              <div class="qtop">
+                <div class="qn">Q${globalNo}</div>
+                <div class="chip">Part ${q.part}</div>
+              </div>
+              <div class="qprompt">${q.promptHtml || ""}</div>
+              <div class="line"></div>
+            </div>
+          `;
+        });
+
+        const missing = perPage - chunk.length;
+        for(let k=0;k<missing;k++){
+          html += `<div class="qcard" aria-hidden="true"></div>`;
+        }
+
+        html += `</div></div>`;
+      });
+
+      html += `<div class="page"><div class="head">
+          <div>
+            <h1>Answer Key — Decimals & Fractions (DYAA)</h1>
+            <div class="small">Student: ${escapeHtml(student)} &nbsp;&nbsp;|&nbsp;&nbsp; Date: ${escapeHtml(dateStr)}</div>
+          </div>
+          <div class="meta">Answer Key</div>
+        </div>
+        <div class="ansKey">`;
+
+      globalNo = 0;
+      PARTS.forEach(p=>{
+        QUESTIONS.filter(q=>q.part===p.part).forEach(q=>{
+          globalNo++;
+          const ansText = q.answerKeyText ? q.answerKeyText() : (q.answer || "");
+          html += `<div class="ansRow"><b>Q${globalNo}</b> ${escapeHtml(ansText)}</div>`;
+        });
+      });
+
+      html += `</div></div></body></html>`;
+
+      const w = window.open("", "_blank");
+      w.document.open();
+      w.document.write(html);
+      w.document.close();
+      w.focus();
+      setTimeout(()=>w.print(), 300);
+    }
+
+    function openConfirm(){ document.getElementById("confirmBackdrop").classList.add("show"); }
+    function closeConfirm(){ document.getElementById("confirmBackdrop").classList.remove("show"); }
+
+    function generateNewSet(){
+      window.__submitted = false;
+      QUESTIONS = buildAllQuestions();
+      renderPractice();
+    }
+
+    function resetAnswers(){
+      window.__submitted = false;
+      QUESTIONS.forEach(q=>{
+        q._value = "";
+        q._checked = false;
+        q._isCorrect = false;
+        q._revealed = false;
+      });
+      renderPractice();
+    }
+
+    function setTab(which){
+      const learnTab = document.getElementById("learnTab");
+      const practiceTab = document.getElementById("practiceTab");
+      const learnSection = document.getElementById("learnSection");
+      const practiceSection = document.getElementById("practiceSection");
+
+      if(which==="learn"){
+        learnTab.classList.add("active");
+        practiceTab.classList.remove("active");
+        learnSection.classList.add("active");
+        practiceSection.classList.remove("active");
+      }else{
+        practiceTab.classList.add("active");
+        learnTab.classList.remove("active");
+        practiceSection.classList.add("active");
+        learnSection.classList.remove("active");
+      }
+    }
+
+    document.getElementById("learnTab").addEventListener("click", ()=>setTab("learn"));
+    document.getElementById("practiceTab").addEventListener("click", ()=>setTab("practice"));
+
+    document.getElementById("newSetBtn").addEventListener("click", openConfirm);
+    document.getElementById("cancelNewSet").addEventListener("click", closeConfirm);
+    document.getElementById("confirmNewSet").addEventListener("click", ()=>{
+      closeConfirm();
+      generateNewSet();
+      setTab("practice");
+    });
+    document.getElementById("confirmBackdrop").addEventListener("click", (e)=>{
+      if(e.target.id==="confirmBackdrop") closeConfirm();
+    });
+
+    document.getElementById("exportBtn").addEventListener("click", ()=>{
+      setTab("practice");
+      exportToPdfViaPrint();
+    });
+
+    document.getElementById("submitBtn").addEventListener("click", ()=>{
+      window.__submitted = true;
+      updateScoreIfSubmitted(true);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", resetAnswers);
+
+    initStudent();
+    generateNewSet();
+  </script>
+</body>
+</html>
