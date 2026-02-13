@@ -1,0 +1,1010 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DYAA | Unit Measurement Conversions</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --ink:#111827;
+      --muted:#6b7280;
+      --line:rgba(17,24,39,.14);
+      --good:#16a34a;
+      --bad:#dc2626;
+      --shadow: 0 8px 22px rgba(17,24,39,.10);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: var(--bg);
+      color:var(--ink);
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:22px 18px 60px}
+    .topbar{
+      display:flex;gap:14px;align-items:center;justify-content:space-between;
+      padding:16px 16px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.92);
+      box-shadow:var(--shadow);
+      position:sticky;top:12px;z-index:5;
+    }
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo{
+      width:40px;height:40px;border-radius:12px;
+      background: linear-gradient(135deg, rgba(37,99,235,.95), rgba(16,185,129,.85));
+      box-shadow: 0 8px 18px rgba(37,99,235,.18);
+      display:grid;place-items:center;
+      font-weight:900;color:#fff;
+    }
+    .brand h1{margin:0;font-size:16px;letter-spacing:.2px}
+    .brand .sub{margin:2px 0 0 0;font-size:12px;color:var(--muted)}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:flex-end}
+    .pill{
+      display:flex;align-items:center;gap:8px;
+      padding:8px 10px;border-radius:999px;border:1px solid var(--line);
+      background:rgba(255,255,255,.92);
+    }
+    .pill label{font-size:12px;color:var(--muted)}
+    input[type="text"]{
+      width:150px;max-width:42vw;
+      background:transparent;border:none;outline:none;color:var(--ink);
+      font-weight:700;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.92);
+      color:var(--ink);
+      padding:10px 12px;border-radius:12px;
+      font-weight:750;cursor:pointer;
+      transition:.15s transform,.15s background,.15s border-color;
+      user-select:none;
+    }
+    .btn:hover{transform:translateY(-1px);border-color:rgba(37,99,235,.25)}
+    .btn.primary{background:rgba(37,99,235,.08);border-color:rgba(37,99,235,.25)}
+    .btn.primary:hover{background:rgba(37,99,235,.12)}
+    .btn.ghost{background:transparent}
+
+    .tabs{display:flex;gap:10px;margin:18px 0 14px}
+    .tab{
+      padding:10px 12px;border-radius:12px;border:1px solid var(--line);
+      background:rgba(255,255,255,.92);cursor:pointer;font-weight:800;
+      color:var(--muted);
+    }
+    .tab.active{color:var(--ink);border-color:rgba(37,99,235,.35);background:rgba(37,99,235,.06)}
+
+    .panel{
+      border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.92);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .panelHeader{
+      padding:14px 16px;border-bottom:1px solid var(--line);
+      display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between
+    }
+    .panelHeader h2{margin:0;font-size:15px}
+    .panelHeader .hint{color:var(--muted);font-size:12px}
+    .panelBody{padding:16px}
+
+    .learnGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width:900px){.learnGrid{grid-template-columns:1fr}}
+    .card{
+      border:1px solid var(--line);border-radius:var(--radius);
+      background:rgba(255,255,255,.96);
+      padding:14px 14px;
+    }
+    .card h3{margin:0 0 10px;font-size:14px}
+    .card p{margin:8px 0;color:var(--muted);line-height:1.55}
+    .card ul{margin:8px 0 0 18px;color:var(--muted);line-height:1.55}
+    code.inline{
+      background:rgba(37,99,235,.08);
+      border:1px solid rgba(37,99,235,.22);
+      padding:1px 6px;border-radius:8px;
+      color:var(--ink)
+    }
+
+    .practiceControls{
+      display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:flex-end
+    }
+    select{
+      background:rgba(255,255,255,.92);border:1px solid var(--line);
+      color:var(--ink);padding:10px 12px;border-radius:12px;font-weight:800;outline:none;
+    }
+
+    .infoBox{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:rgba(17,24,39,.02);
+      padding:12px 12px;
+      margin:0 0 14px 0;
+    }
+    .infoBox h3{margin:0 0 8px;font-size:14px}
+    .infoBox p{margin:8px 0;color:var(--muted);font-size:12px;line-height:1.55}
+    .infoBox ul{margin:8px 0 0 18px;color:var(--muted);font-size:12px;line-height:1.55}
+    .infoBox code{background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.22);padding:1px 6px;border-radius:8px;color:var(--ink)}
+
+    /* Practice layout */
+    .qGrid{display:grid;grid-template-columns: 1fr;gap:12px;}
+    .qCard{
+      border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.96);
+      padding:12px 12px;
+    }
+    .qTop{display:flex;gap:10px;align-items:center;justify-content:space-between}
+    .qNum{font-weight:1000;color:rgba(17,24,39,.78);letter-spacing:.2px;}
+    .qText{margin:10px 0 10px;color:var(--ink);line-height:1.45;font-weight:650;}
+    .answerRow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .ansBox{
+      display:flex;align-items:center;gap:8px;
+      border:1px solid var(--line);border-radius:14px;background:rgba(17,24,39,.02);
+      padding:8px 10px;
+    }
+    .ansBox span{font-size:12px;color:var(--muted);white-space:nowrap;min-width:22px}
+    .ansBox input{
+      width:90px;background:transparent;border:none;outline:none;color:var(--ink);
+      font-weight:950;
+    }
+    .badge{
+      padding:6px 10px;border-radius:999px;border:1px solid var(--line);
+      font-size:12px;font-weight:900;
+      background:rgba(17,24,39,.03);color:rgba(17,24,39,.85)
+    }
+    .badge.good{border-color:rgba(22,163,74,.35);background:rgba(22,163,74,.10);color:#0a4d23}
+    .badge.bad{border-color:rgba(220,38,38,.35);background:rgba(220,38,38,.10);color:#6b0f0f}
+    .hintBox{
+      margin-top:10px;
+      border:1px dashed rgba(17,24,39,.22);
+      border-radius:14px;
+      background:rgba(17,24,39,.03);
+      padding:10px 10px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+      display:none;
+    }
+    .qActions{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:10px}
+    .smallBtn{
+      padding:8px 10px;border-radius:12px;border:1px solid var(--line);
+      background:rgba(255,255,255,.92);color:var(--ink);font-weight:850;cursor:pointer;
+    }
+    .smallBtn:hover{border-color:rgba(37,99,235,.25)}
+    .smallBtn.link{background:transparent}
+
+    .answerKey{
+      margin-top:14px;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:rgba(17,24,39,.02);
+      padding:12px 12px;
+    }
+    .answerKey h3{margin:0 0 10px;font-size:14px}
+    .answerKey .akList{display:flex;flex-direction:column;gap:8px}
+    .answerKey .akItem{
+      border:1px solid rgba(17,24,39,.10);
+      border-radius:12px;
+      background:#fff;
+      padding:10px 10px;
+    }
+    .answerKey .akQ{font-weight:900;margin-bottom:6px}
+    .answerKey .akA{color:var(--muted);font-size:12px;line-height:1.4}
+
+    .footerNote{margin-top:14px;color:var(--muted);font-size:12px}
+    .hidden{display:none !important}
+
+    /* PDF staging (hidden) */
+    #pdfStaging{
+      position:fixed;left:-99999px;top:-99999px;
+      width:794px; /* ~A4 at 96 dpi */
+    }
+    .pdf-page{
+      width:794px;height:1123px;
+      background:#ffffff;color:#111;
+      padding:26px 26px 22px;
+      border:1px solid #ddd;
+      font-family: Arial, Helvetica, sans-serif;
+      position:relative;
+    }
+    .pdf-header{
+      display:flex;justify-content:space-between;align-items:flex-end;
+      margin-bottom:10px;
+    }
+    .pdf-header .title{font-weight:900;font-size:14px}
+    .pdf-header .meta{font-size:11px;color:#555;text-align:right}
+    .pdf-grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+    }
+    .pdf-card{
+      border:1px solid #cfcfcf;border-radius:10px;
+      padding:10px 10px 8px;
+      min-height:245px;
+      overflow:hidden;
+    }
+    .pdf-qnum{font-weight:900;font-size:12px;margin-bottom:4px}
+    .pdf-qtext{font-size:12px;line-height:1.35}
+    .pdf-space{height:44px}
+    .pdf-space.small{height:28px}
+    .pdf-water{position:absolute;right:18px;bottom:12px;font-size:10px;color:#777}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">DY</div>
+        <div>
+          <h1>DYAA Education</h1>
+          <div class="sub">Unit Measurement Conversions</div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="pill">
+          <label for="studentName">Student</label>
+          <input id="studentName" type="text" value="DYAA" />
+        </div>
+        <button class="btn ghost" id="btnNewSet" title="Generate a fresh set of questions">Generate New Set</button>
+        <button class="btn primary" id="btnExportPdf" title="Export Practice Questions to PDF">Export Practice PDF</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="learn">Learn</div>
+      <div class="tab" data-tab="practice">Practice</div>
+    </div>
+
+    <!-- LEARN -->
+    <div class="panel" id="learnPanel">
+      <div class="panelHeader">
+        <div>
+          <h2>Learn</h2>
+          <div class="hint">From a larger unit to a smaller unit: multiply. From a smaller unit to a larger unit: divide.</div>
+        </div>
+      </div>
+      <div class="panelBody">
+        <div class="learnGrid">
+          <div class="card">
+            <h3>1) Length</h3>
+            <p>
+              <code class="inline">1 km = 1000 m</code> &nbsp;&nbsp;
+              <code class="inline">1 m = 100 cm</code> &nbsp;&nbsp;
+              <code class="inline">1 cm = 10 mm</code>
+            </p>
+            <ul>
+              <li>Large → small: <code class="inline">km → m → cm → mm</code> (multiply).</li>
+              <li>Small → large: <code class="inline">mm → cm → m → km</code> (divide).</li>
+              <li>Example: <code class="inline">2.3 km = 2300 m</code> (×1000).</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>2) Mass</h3>
+            <p>
+              <code class="inline">1 t = 1000 kg</code> &nbsp;&nbsp;
+              <code class="inline">1 kg = 1000 g</code>
+            </p>
+            <ul>
+              <li>Large → small: <code class="inline">t → kg → g</code> (multiply).</li>
+              <li>Example: <code class="inline">2 t = 2000 kg = 2,000,000 g</code>.</li>
+              <li>Small → large: divide by 1000 each step.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>3) Capacity (Volume)</h3>
+            <p>
+              <code class="inline">1 L = 1000 mL</code>
+            </p>
+            <ul>
+              <li>Large → small: <code class="inline">L → mL</code> (×1000).</li>
+              <li>Example: <code class="inline">3 L 560 mL = 3560 mL</code>.</li>
+              <li>Small → large: <code class="inline">mL → L</code> (÷1000).</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>4) Time</h3>
+            <p>
+              <code class="inline">1 h = 60 min</code> &nbsp;&nbsp;
+              <code class="inline">1 min = 60 s</code> &nbsp;&nbsp;
+              <code class="inline">1 h = 3600 s</code>
+            </p>
+            <ul>
+              <li>Large → small: <code class="inline">h → min → s</code> (×60 each step).</li>
+              <li>Example: <code class="inline">2 h = 7200 s</code> (×3600).</li>
+              <li>Small → large: divide by 60 (or 3600).</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>5) Mixed units</h3>
+            <p>
+              To combine mixed units, convert everything to the same unit first.
+            </p>
+            <ul>
+              <li><code class="inline">4 m 7 cm = 4×100 + 7 = 407 cm</code></li>
+              <li><code class="inline">5 kg 90 g = 5×1000 + 90 = 5090 g</code></li>
+              <li><code class="inline">1 h 25 min = 1×60 + 25 = 85 min</code></li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>6) Speed</h3>
+            <p>
+              <code class="inline">1 m/s = 3.6 km/h</code> &nbsp;&nbsp;
+              <code class="inline">1 km/h = 5/18 m/s</code>
+            </p>
+            <ul>
+              <li>To convert <b>m/s → km/h</b>: multiply by <code class="inline">3.6</code>.</li>
+              <li>To convert <b>km/h → m/s</b>: divide by <code class="inline">3.6</code>.</li>
+              <li>Example: <code class="inline">72 km/h = 20 m/s</code>.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>7) Volume: cubic metres and litres</h3>
+            <p>
+              <code class="inline">1 m³ = 1000 L</code> &nbsp;&nbsp;
+              <code class="inline">1 L = 0.001 m³</code>
+            </p>
+            <ul>
+              <li>Large → small: <code class="inline">m³ → L</code> (×1000).</li>
+              <li>Example: <code class="inline">3 m³ = 3000 L</code>.</li>
+              <li>Small → large: <code class="inline">L → m³</code> (÷1000).</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>8) Area: square metres and square centimetres</h3>
+            <p>
+              <code class="inline">1 m² = 10,000 cm²</code> &nbsp;&nbsp;
+              <code class="inline">1 cm² = 100 mm²</code>
+            </p>
+            <ul>
+              <li>Large → small: <code class="inline">m² → cm²</code> (×10,000).</li>
+              <li>Example: <code class="inline">5 m² = 50,000 cm²</code>.</li>
+              <li>Small → large: divide by 10,000.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="panel hidden" id="practicePanel">
+      <div class="panelHeader">
+        <div>
+          <h2>Practice</h2>
+          <div class="hint">Enter numbers only (do not type the unit). Use the unit label next to each box.</div>
+        </div>
+        <div class="practiceControls">
+          <select id="orderMode" title="Question order">
+            <option value="ordered">In order</option>
+            <option value="mixed">Mixed (shuffle)</option>
+          </select>
+          <button class="btn" id="btnToggleAnswers">Show Answer Key</button>
+          <button class="btn" id="btnReset">Reset Inputs</button>
+        </div>
+      </div>
+      <div class="panelBody">
+        <div class="infoBox">
+          <h3>Input guide</h3>
+          <p>
+            Fill in the number only. The label tells you the unit.
+            If there are two boxes, write the mixed-unit answer (for example: <code>3</code> in the <code>kg</code> box and <code>250</code> in the <code>g</code> box).
+          </p>
+          <ul>
+            <li>Mixed units: keep the smaller unit in the correct range (e.g., 0–99 cm, 0–999 g, 0–999 mL, 0–59 min).</li>
+            <li>Speed questions use values that keep answers as whole numbers.</li>
+            <li>Comparison questions accept text answers like <code>A</code>, <code>B</code>, <code>Same</code>.</li>
+          </ul>
+        </div>
+
+        <div id="practiceRoot"></div>
+        <div id="answerKey" class="answerKey hidden"></div>
+        <div class="footerNote">Tip: always convert to the same unit before adding or comparing.</div>
+      </div>
+    </div>
+
+    <!-- PDF staging container -->
+    <div id="pdfStaging" aria-hidden="true"></div>
+  </div>
+
+  <!-- Libraries for PDF export -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+  <script>
+    const $ = (sel, el=document) => el.querySelector(sel);
+    const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+
+    function pad2(n){ return String(n).padStart(2,'0'); }
+    function timestampStr(){
+      const d = new Date();
+      return `${d.getFullYear()}${pad2(d.getMonth()+1)}${pad2(d.getDate())}_${pad2(d.getHours())}${pad2(d.getMinutes())}`;
+    }
+    function prettyStamp(){
+      const d = new Date();
+      return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+    }
+    function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+      }
+      return a;
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    /***********************
+     * Student name via URL
+     ***********************/
+    function getParam(name){
+      const u = new URL(window.location.href);
+      return u.searchParams.get(name);
+    }
+    function setParam(name, value){
+      const u = new URL(window.location.href);
+      if(value && value.trim()) u.searchParams.set(name, value.trim());
+      else u.searchParams.delete(name);
+      history.replaceState(null, "", u.toString());
+    }
+    const studentNameInput = $("#studentName");
+    const defaultName = (getParam("name") || "DYAA").trim();
+    studentNameInput.value = defaultName;
+    studentNameInput.addEventListener("input", () => setParam("name", studentNameInput.value));
+
+    /***********************
+     * Question generators
+     ***********************/
+    function genBasics(n=4){
+      const qs = [];
+      const seen = new Set();
+
+      const options = [
+        // length
+        () => {
+          const cm = randInt(12, 98);
+          return { text: `Convert ${cm} cm to mm.`, inputs:[{key:"ans",label:"mm"}], answer:{ans: cm*10}, hint:"1 cm = 10 mm, so multiply by 10." };
+        },
+        () => {
+          const m = randInt(2, 19);
+          return { text: `Convert ${m} m to cm.`, inputs:[{key:"ans",label:"cm"}], answer:{ans: m*100}, hint:"1 m = 100 cm, so multiply by 100." };
+        },
+        // mass
+        () => {
+          const kg = randInt(2, 12);
+          return { text: `Convert ${kg} kg to g.`, inputs:[{key:"ans",label:"g"}], answer:{ans: kg*1000}, hint:"1 kg = 1000 g, so multiply by 1000." };
+        },
+        () => {
+          const t = randInt(1, 3);
+          return { text: `Convert ${t} t to g.`, inputs:[{key:"ans",label:"g"}], answer:{ans: t*1000*1000}, hint:"1 t = 1000 kg and 1 kg = 1000 g, so 1 t = 1,000,000 g." };
+        },
+        // capacity
+        () => {
+          const L = randInt(1, 7);
+          return { text: `Convert ${L} L to mL.`, inputs:[{key:"ans",label:"mL"}], answer:{ans: L*1000}, hint:"1 L = 1000 mL, so multiply by 1000." };
+        },
+        // time (hours to seconds)
+        () => {
+          const h = randInt(1, 5);
+          return { text: `Convert ${h} h to seconds.`, inputs:[{key:"ans",label:"s"}], answer:{ans: h*3600}, hint:"1 h = 3600 s, so multiply by 3600." };
+        },
+        () => {
+          const s = randInt(2, 8) * 3600;
+          return { text: `Convert ${s} seconds to hours.`, inputs:[{key:"ans",label:"h"}], answer:{ans: s/3600}, hint:"Divide by 3600 to change seconds to hours." };
+        },
+        // area
+        () => {
+          const m2 = randInt(1, 9);
+          return { text: `Convert ${m2} m² to cm².`, inputs:[{key:"ans",label:"cm²"}], answer:{ans: m2*10000}, hint:"1 m² = 10,000 cm², so multiply by 10,000." };
+        },
+        () => {
+          const cm2 = randInt(1, 9) * 10000;
+          return { text: `Convert ${cm2} cm² to m².`, inputs:[{key:"ans",label:"m²"}], answer:{ans: cm2/10000}, hint:"Divide by 10,000 to change cm² to m²." };
+        },
+        // volume m^3 and L
+        () => {
+          const m3 = randInt(2, 9);
+          return { text: `Convert ${m3} m³ to L.`, inputs:[{key:"ans",label:"L"}], answer:{ans: m3*1000}, hint:"1 m³ = 1000 L, so multiply by 1000." };
+        },
+        () => {
+          const L = randInt(2, 9) * 1000;
+          return { text: `Convert ${L} L to m³.`, inputs:[{key:"ans",label:"m³"}], answer:{ans: L/1000}, hint:"Divide by 1000 to change litres to cubic metres." };
+        },
+        // speed (whole-number results only)
+        () => {
+          const kmh = choice([36, 54, 72, 90, 108]);
+          return { text: `Convert ${kmh} km/h to m/s.`, inputs:[{key:"ans",label:"m/s"}], answer:{ans: kmh/3.6}, hint:"To change km/h to m/s, divide by 3.6." };
+        },
+        () => {
+          const ms = choice([5, 10, 15, 20, 25]);
+          return { text: `Convert ${ms} m/s to km/h.`, inputs:[{key:"ans",label:"km/h"}], answer:{ans: ms*3.6}, hint:"To change m/s to km/h, multiply by 3.6." };
+        },
+      ];
+
+      while(qs.length < n){
+        const q = choice(options)();
+        if(seen.has(q.text)) continue;
+        seen.add(q.text);
+        qs.push(q);
+      }
+      return qs;
+    }
+
+    function genMixedToSingle(n=4){
+      const qs = [];
+      { const m=randInt(1, 9), cm=randInt(1, 99);
+        qs.push({ text:`Convert ${m} m ${cm} cm to centimetres.`, inputs:[{key:"ans",label:"cm"}], answer:{ans:m*100+cm}, hint:"Convert metres to centimetres (×100), then add." }); }
+      { const kg=randInt(1, 9), g=randInt(10, 990);
+        qs.push({ text:`Convert ${kg} kg ${g} g to grams.`, inputs:[{key:"ans",label:"g"}], answer:{ans:kg*1000+g}, hint:"Convert kilograms to grams (×1000), then add." }); }
+      { const L=randInt(1, 6), mL=randInt(20, 980);
+        qs.push({ text:`Convert ${L} L ${mL} mL to millilitres.`, inputs:[{key:"ans",label:"mL"}], answer:{ans:L*1000+mL}, hint:"Convert litres to millilitres (×1000), then add." }); }
+      { const h=randInt(1, 5), min=randInt(5, 55);
+        qs.push({ text:`Convert ${h} h ${min} min to minutes.`, inputs:[{key:"ans",label:"min"}], answer:{ans:h*60+min}, hint:"Convert hours to minutes (×60), then add." }); }
+      return qs.slice(0, n);
+    }
+
+    function genSingleToMixed(n=4){
+      const qs = [];
+      { const total=randInt(2,9)*100+randInt(1,99);
+        qs.push({ text:`Convert ${total} cm to metres and centimetres.`, inputs:[{key:"m",label:"m"},{key:"cm",label:"cm"}], answer:{m:Math.floor(total/100), cm:total%100}, hint:"Divide by 100. Quotient = metres, remainder = centimetres." }); }
+      { const total=randInt(2,9)*1000+randInt(10,990);
+        qs.push({ text:`Convert ${total} g to kilograms and grams.`, inputs:[{key:"kg",label:"kg"},{key:"g",label:"g"}], answer:{kg:Math.floor(total/1000), g:total%1000}, hint:"Divide by 1000. Quotient = kilograms, remainder = grams." }); }
+      { const total=randInt(2,8)*1000+randInt(20,980);
+        qs.push({ text:`Convert ${total} mL to litres and millilitres.`, inputs:[{key:"L",label:"L"},{key:"mL",label:"mL"}], answer:{L:Math.floor(total/1000), mL:total%1000}, hint:"Divide by 1000. Quotient = litres, remainder = millilitres." }); }
+      { const total=randInt(2,7)*60+randInt(5,55);
+        qs.push({ text:`Convert ${total} minutes to hours and minutes.`, inputs:[{key:"h",label:"h"},{key:"min",label:"min"}], answer:{h:Math.floor(total/60), min:total%60}, hint:"Divide by 60. Quotient = hours, remainder = minutes." }); }
+      return qs.slice(0, n);
+    }
+
+    function genWord(n=4){
+      const qs = [];
+      { const m=randInt(1,8), cm=randInt(5,95);
+        qs.push({ text:`A ribbon is ${m} m ${cm} cm long. What is its length in centimetres?`, inputs:[{key:"ans",label:"cm"}], answer:{ans:m*100+cm}, hint:"Change metres to centimetres, then add." }); }
+      { const kg=randInt(1,7), g=randInt(20,980);
+        qs.push({ text:`A bag of rice has a mass of ${kg} kg ${g} g. What is the mass in grams?`, inputs:[{key:"ans",label:"g"}], answer:{ans:kg*1000+g}, hint:"Change kilograms to grams, then add." }); }
+      { const L=randInt(1,5), mL=randInt(50,950);
+        qs.push({ text:`A drink bottle contains ${L} L ${mL} mL. What is the volume in millilitres?`, inputs:[{key:"ans",label:"mL"}], answer:{ans:L*1000+mL}, hint:"Change litres to millilitres, then add." }); }
+      { const h=randInt(1,4), min=randInt(10,55);
+        qs.push({ text:`A movie lasts ${h} h ${min} min. How many minutes is that?`, inputs:[{key:"ans",label:"min"}], answer:{ans:h*60+min}, hint:"Change hours to minutes, then add." }); }
+      return qs.slice(0, n);
+    }
+
+    function genAdvanced(n=4){
+      const qs = [];
+      // speed compare
+      {
+        const a = choice([36, 54, 72, 90]); // km/h
+        const b = choice([5, 10, 15, 20]);  // m/s
+        const faster = (a/3.6 > b) ? "A" : (a/3.6 < b ? "B" : "Same");
+        qs.push({
+          text: `Compare speeds: A = ${a} km/h, B = ${b} m/s. Which is faster? (A or B or Same)`,
+          inputs: [{key:"ans",label:""}],
+          answer: {ans: faster},
+          hint: "Convert km/h to m/s by dividing by 3.6, then compare."
+        });
+      }
+      // volume compare
+      {
+        const m3 = choice([2,3,4,5,6]);
+        const otherL = choice([1000,2000,3000,4000,5000,6000]);
+        const leftL = m3*1000;
+        const larger = (leftL > otherL) ? "m3 value" : (leftL < otherL ? "L value" : "Same");
+        qs.push({
+          text: `Which is larger: ${m3} m³ or ${otherL} L? (Write: m³ value / L value / Same)`,
+          inputs: [{key:"ans",label:""}],
+          answer: {ans: larger},
+          hint: "Convert m³ to litres (×1000), then compare."
+        });
+      }
+      // area compare
+      {
+        const m2 = choice([2,3,4,5,6]);
+        const cm2 = choice([20000,30000,40000,50000,60000]);
+        const left = m2*10000;
+        const larger = (left > cm2) ? "m2 value" : (left < cm2 ? "cm2 value" : "Same");
+        qs.push({
+          text: `Which is larger: ${m2} m² or ${cm2} cm²? (Write: m² value / cm² value / Same)`,
+          inputs: [{key:"ans",label:""}],
+          answer: {ans: larger},
+          hint: "Convert m² to cm² (×10,000), then compare."
+        });
+      }
+      // time compare
+      {
+        const h = choice([1,2,3,4]);
+        const s = choice([3600,7200,10800,14400,18000]);
+        const left = h*3600;
+        const larger = (left > s) ? "h value" : (left < s ? "s value" : "Same");
+        qs.push({
+          text: `Which is longer: ${h} h or ${s} s? (Write: h value / s value / Same)`,
+          inputs: [{key:"ans",label:""}],
+          answer: {ans: larger},
+          hint: "Convert hours to seconds (×3600), then compare."
+        });
+      }
+      return qs.slice(0, n);
+    }
+
+    function buildQuestionSet(){
+      // 20 questions total to include the new topics
+      return [
+        ...genBasics(4),
+        ...genMixedToSingle(4),
+        ...genSingleToMixed(4),
+        ...genWord(4),
+        ...genAdvanced(4),
+      ];
+    }
+
+    /***********************
+     * Render practice
+     ***********************/
+    let questions = buildQuestionSet();
+    let lastRendered = [];
+    let answersShown = false;
+
+    function renderPractice(){
+      const root = $("#practiceRoot");
+      root.innerHTML = "";
+
+      const mode = $("#orderMode").value;
+      const list = (mode === "mixed") ? shuffle(questions) : questions.slice();
+      lastRendered = list;
+
+      const grid = document.createElement("div");
+      grid.className = "qGrid";
+      list.forEach((q, idx) => grid.appendChild(renderQuestionCard(q, idx+1)));
+      root.appendChild(grid);
+
+      const ak = $("#answerKey");
+      if(answersShown){
+        ak.classList.remove("hidden");
+        renderAnswerKey(lastRendered);
+      }else{
+        ak.classList.add("hidden");
+        ak.innerHTML = "";
+      }
+    }
+
+    function renderQuestionCard(q, number){
+      const card = document.createElement("div");
+      card.className = "qCard";
+
+      const top = document.createElement("div");
+      top.className = "qTop";
+      top.innerHTML = `<div class="qNum">Q${number}</div>`;
+      card.appendChild(top);
+
+      const text = document.createElement("div");
+      text.className = "qText";
+      text.textContent = q.text;
+      card.appendChild(text);
+
+      const ansRow = document.createElement("div");
+      ansRow.className = "answerRow";
+      q.inputs.forEach(inp => {
+        const box = document.createElement("div");
+        box.className = "ansBox";
+        box.innerHTML = `<span>${escapeHtml(inp.label)}</span>
+          <input inputmode="text" autocomplete="off" spellcheck="false" data-key="${escapeHtml(inp.key)}" />`;
+        ansRow.appendChild(box);
+      });
+      card.appendChild(ansRow);
+
+      const hintBox = document.createElement("div");
+      hintBox.className = "hintBox";
+      hintBox.textContent = q.hint || "";
+      card.appendChild(hintBox);
+
+      const actions = document.createElement("div");
+      actions.className = "qActions";
+
+      const status = document.createElement("div");
+      status.className = "badge";
+      status.textContent = "Not checked";
+
+      const btnHint = document.createElement("button");
+      btnHint.className = "smallBtn link";
+      btnHint.textContent = "Hint";
+      btnHint.addEventListener("click", () => {
+        hintBox.style.display = (hintBox.style.display === "block") ? "none" : "block";
+      });
+
+      const btnCheck = document.createElement("button");
+      btnCheck.className = "smallBtn";
+      btnCheck.textContent = "Check";
+      btnCheck.addEventListener("click", () => {
+        const inputs = $$("input[data-key]", card);
+        const user = {};
+        let ok = true;
+
+        inputs.forEach(el => {
+          const key = el.getAttribute("data-key");
+          const raw0 = (el.value || "").trim().replace(/\u2212/g, "-");
+          const raw = raw0.replace(/\s+/g, " ").trim();
+          // allow text answers (A/B/Same etc.) if not a number
+          if(raw !== "" && !/^-?\d+$/.test(raw)){
+            user[key] = raw;
+            return;
+          }
+          if(raw === "" || !/^-?\d+$/.test(raw)){
+            ok = false;
+            user[key] = null;
+          }else{
+            user[key] = parseInt(raw, 10);
+          }
+        });
+
+        if(!ok){
+          status.className = "badge bad";
+          status.textContent = "Check inputs";
+          return;
+        }
+
+        // Mixed-unit validity
+        if(("cm" in user) && ("m" in user) && typeof user.cm === "number" && user.cm >= 100){
+          status.className = "badge bad";
+          status.textContent = "cm must be < 100";
+          return;
+        }
+        if(("g" in user) && ("kg" in user) && typeof user.g === "number" && user.g >= 1000){
+          status.className = "badge bad";
+          status.textContent = "g must be < 1000";
+          return;
+        }
+        if(("mL" in user) && ("L" in user) && typeof user.mL === "number" && user.mL >= 1000){
+          status.className = "badge bad";
+          status.textContent = "mL must be < 1000";
+          return;
+        }
+        if(("min" in user) && ("h" in user) && typeof user.min === "number" && user.min >= 60){
+          status.className = "badge bad";
+          status.textContent = "min must be < 60";
+          return;
+        }
+
+        const correct = checkAnswer(q, user);
+        if(correct){
+          status.className = "badge good";
+          status.textContent = "Correct";
+        }else{
+          status.className = "badge bad";
+          status.textContent = "Not correct";
+        }
+      });
+
+      actions.appendChild(status);
+      actions.appendChild(btnHint);
+      actions.appendChild(btnCheck);
+      card.appendChild(actions);
+
+      return card;
+    }
+
+    function normaliseText(s){
+      return String(s)
+        .trim()
+        .replace(/\s+/g," ")
+        .replaceAll("²","2")
+        .replaceAll("³","3")
+        .toLowerCase();
+    }
+
+    function checkAnswer(q, user){
+      const a = q.answer || {};
+      for(const k of Object.keys(a)){
+        if(!(k in user)) return false;
+        const expected = a[k];
+        const got = user[k];
+        if(typeof expected === "string"){
+          if(normaliseText(got) !== normaliseText(expected)) return false;
+        }else{
+          if(got !== expected) return false;
+        }
+      }
+      return true;
+    }
+
+    function resetInputs(){
+      $$("#practicePanel input[data-key]").forEach(inp => inp.value = "");
+      $$("#practicePanel .qActions .badge").forEach(b => {
+        b.className = "badge";
+        b.textContent = "Not checked";
+      });
+      $$("#practicePanel .hintBox").forEach(h => h.style.display = "none");
+    }
+
+    function renderAnswerKey(list){
+      const ak = $("#answerKey");
+      ak.innerHTML = `<h3>Answer Key</h3><div class="akList"></div>`;
+      const container = $(".akList", ak);
+
+      list.forEach((q, idx) => {
+        const item = document.createElement("div");
+        item.className = "akItem";
+
+        const qn = document.createElement("div");
+        qn.className = "akQ";
+        qn.textContent = `Q${idx+1}`;
+        item.appendChild(qn);
+
+        const ans = document.createElement("div");
+        ans.className = "akA";
+
+        const parts = (q.inputs||[]).map(inp => {
+          const k = inp.key;
+          const v = (q.answer && (k in q.answer)) ? q.answer[k] : "";
+          const label = inp.label ? `${inp.label}: ` : "";
+          return `${label}${v}`;
+        }).join("  |  ");
+
+        ans.textContent = parts;
+        item.appendChild(ans);
+
+        container.appendChild(item);
+      });
+    }
+
+    /***********************
+     * Tabs
+     ***********************/
+    const tabs = $$(".tab");
+    const learnPanel = $("#learnPanel");
+    const practicePanel = $("#practicePanel");
+    tabs.forEach(t => t.addEventListener("click", () => {
+      tabs.forEach(x => x.classList.remove("active"));
+      t.classList.add("active");
+      const which = t.getAttribute("data-tab");
+      if(which === "learn"){
+        learnPanel.classList.remove("hidden");
+        practicePanel.classList.add("hidden");
+      }else{
+        learnPanel.classList.add("hidden");
+        practicePanel.classList.remove("hidden");
+      }
+      window.scrollTo({top:0, behavior:"smooth"});
+    }));
+
+    $("#orderMode").addEventListener("change", () => { renderPractice(); resetInputs(); });
+
+    $("#btnToggleAnswers").addEventListener("click", () => {
+      answersShown = !answersShown;
+      const ak = $("#answerKey");
+      const btn = $("#btnToggleAnswers");
+      if(answersShown){
+        btn.textContent = "Hide Answer Key";
+        ak.classList.remove("hidden");
+        renderAnswerKey(lastRendered.length ? lastRendered : questions);
+      }else{
+        btn.textContent = "Show Answer Key";
+        ak.classList.add("hidden");
+        ak.innerHTML = "";
+      }
+    });
+
+    $("#btnReset").addEventListener("click", resetInputs);
+
+    $("#btnNewSet").addEventListener("click", () => {
+      questions = buildQuestionSet();
+      renderPractice();
+      resetInputs();
+    });
+
+    /***********************
+     * PDF Export
+     ***********************/
+    $("#btnExportPdf").addEventListener("click", async () => {
+      await exportPdf(questions);
+    });
+
+    function chunk(arr, size){
+      const out = [];
+      for(let i=0;i<arr.length;i+=size) out.push(arr.slice(i,i+size));
+      return out;
+    }
+
+    function buildPdfPages(questions){
+      const staging = $("#pdfStaging");
+      staging.innerHTML = "";
+      const perPage = 12; // 3 x 4
+      const pages = chunk(questions, perPage);
+      const name = (studentNameInput.value || "DYAA").trim();
+      const stamp = prettyStamp();
+
+      pages.forEach((pageQs, pageIdx) => {
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+
+        const header = document.createElement("div");
+        header.className = "pdf-header";
+        header.innerHTML = `
+          <div class="title">Unit Measurement Conversions — Practice</div>
+          <div class="meta">
+            Student: ${escapeHtml(name)}<br>
+            ${escapeHtml(stamp)} &nbsp;|&nbsp; Page ${pageIdx+1}/${pages.length}
+          </div>`;
+        page.appendChild(header);
+
+        const grid = document.createElement("div");
+        grid.className = "pdf-grid";
+
+        pageQs.forEach((q, i) => {
+          const globalIndex = pageIdx*perPage + i;
+          const card = document.createElement("div");
+          card.className = "pdf-card";
+
+          const qnum = document.createElement("div");
+          qnum.className = "pdf-qnum";
+          qnum.textContent = `Q${globalIndex+1}`;
+          card.appendChild(qnum);
+
+          const qtext = document.createElement("div");
+          qtext.className = "pdf-qtext";
+          qtext.textContent = q.text;
+          card.appendChild(qtext);
+
+          const needsMany = (q.inputs && q.inputs.length >= 2);
+          const space = document.createElement("div");
+          space.className = "pdf-space" + (needsMany ? "" : " small");
+          card.appendChild(space);
+
+          grid.appendChild(card);
+        });
+
+        page.appendChild(grid);
+
+        const water = document.createElement("div");
+        water.className = "pdf-water";
+        water.textContent = "DYAA Education";
+        page.appendChild(water);
+
+        staging.appendChild(page);
+      });
+
+      return $$(".pdf-page", staging);
+    }
+
+    async function exportPdf(questions){
+      const pages = buildPdfPages(questions);
+
+      if(!window.html2canvas || !window.jspdf || !window.jspdf.jsPDF){
+        alert("PDF export libraries failed to load. Please check your internet connection and try again.");
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"portrait", unit:"mm", format:"a4" });
+
+      for(let i=0;i<pages.length;i++){
+        const pageEl = pages[i];
+        const canvas = await html2canvas(pageEl, { scale: 2, useCORS: true, backgroundColor: "#ffffff" });
+        const imgData = canvas.toDataURL("image/png");
+        if(i>0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, 0, 210, 297, undefined, "FAST");
+      }
+
+      const safeName = (studentNameInput.value || "DYAA").trim().replace(/[^\w\-]+/g, "_");
+      pdf.save(`DYAA_Unit_Conversions_${safeName}_${timestampStr()}.pdf`);
+    }
+
+    // Initial render
+    renderPractice();
+  </script>
+</body>
+</html>
