@@ -421,11 +421,11 @@
         <div class="card">
           <h2>Divide by powers of 10 (as decimals)</h2>
           <ul>
-            <li>Dividing by <b>10.0</b> moves the decimal point <b>1 place left</b>.</li>
-            <li>Dividing by <b>100.0</b> moves it <b>2 places left</b>.</li>
-            <li>Dividing by <b>1000.0</b> moves it <b>3 places left</b>.</li>
+            <li>Dividing by <b>10</b> moves the decimal point <b>1 place left</b>.</li>
+            <li>Dividing by <b>100</b> moves it <b>2 places left</b>.</li>
+            <li>Dividing by <b>1000</b> moves it <b>3 places left</b>.</li>
           </ul>
-          <p class="math"><b>Example:</b> 0.46 ÷ 100.0 = 0.0046</p>
+          <p class="math"><b>Example:</b> 0.46 ÷ 100 = 0.0046</p>
 
           <h3>Divide by 0.1, 0.01, 0.001</h3>
           <ul>
@@ -459,17 +459,17 @@
             <tbody>
               <tr>
                 <td>Decimal ÷ Power of 10</td>
-                <td class="math">0.46 ÷ 100.0 = 0.0046</td>
+                <td class="math">0.46 ÷ 100 = 0.0046</td>
                 <td>Move decimal left</td>
               </tr>
               <tr>
                 <td>Decimal ÷ Multiple of 10</td>
-                <td class="math">7.2 ÷ 20.0 = 0.36</td>
+                <td class="math">7.2 ÷ 20 = 0.36</td>
                 <td>Divide by digit, then move decimal</td>
               </tr>
               <tr>
                 <td>Decimal ÷ Whole-number Divisor</td>
-                <td class="math">8.4 ÷ 4.0 = 2.1</td>
+                <td class="math">8.4 ÷ 4 = 2.1</td>
                 <td>Divide normally and place decimal</td>
               </tr>
               <tr>
@@ -802,12 +802,12 @@
         out.push(makeNumericQuestion({
           part:1,
           chip:"Divide by powers of 10",
-          promptHtml:`<span class="math">${a} &divide; ${d} =</span>`,
+          promptHtml:`<span class="math">${stripTrailingZerosDec(a)} &divide; ${stripTrailingZerosDec(d)} =</span>`,
           answerStr: ans,
           hintHtml: (moveDir==="left")
-            ? `Dividing by ${d} moves the decimal point <b>${places}</b> place(s) to the <b>left</b>.`
-            : `Dividing by ${d} moves the decimal point <b>${places}</b> place(s) to the <b>right</b>.`,
-          solutionHtml: ()=>`Move the decimal point <b>${places}</b> place(s) to the <b>${moveDir}</b>.<br/>So ${a} &divide; ${d} = <b>${stripTrailingZerosDec(ans)}</b>.`,
+            ? `Dividing by ${stripTrailingZerosDec(d)} moves the decimal point <b>${places}</b> place(s) to the <b>left</b>.`
+            : `Dividing by ${stripTrailingZerosDec(d)} moves the decimal point <b>${places}</b> place(s) to the <b>right</b>.`,
+          solutionHtml: ()=>`Move the decimal point <b>${places}</b> place(s) to the <b>${moveDir}</b>.<br/>So ${stripTrailingZerosDec(a)} &divide; ${stripTrailingZerosDec(d)} = <b>${stripTrailingZerosDec(ans)}</b>.`,
           answerKeyText: ()=>stripTrailingZerosDec(ans)
         }));
       }
@@ -836,7 +836,7 @@
         out.push(makeNumericQuestion({
           part:2,
           chip:"Decimal ÷ Decimal",
-          promptHtml:`<span class="math">${stripTrailingZerosDec(dividend)} &divide; ${d} =</span>`,
+          promptHtml:`<span class="math">${stripTrailingZerosDec(dividend)} &divide; ${stripTrailingZerosDec(d)} =</span>`,
           answerStr: q,
           hintHtml:`Make the divisor a whole number by shifting decimals in BOTH numbers, then divide.`,
           solutionHtml: ()=>{
@@ -845,8 +845,8 @@
             const div2 = mulDecStr(stripTrailingZerosDec(dividend), factor);
             const d2 = mulDecStr(d, factor);
             const ans = divDecStr(stripTrailingZerosDec(dividend), d);
-            return `Shift decimals (${dp} place(s)) by multiplying both numbers by <b>${factor}</b>.<br/>` +
-                   `${stripTrailingZerosDec(dividend)} &divide; ${d} = ${stripTrailingZerosDec(div2)} &divide; ${stripTrailingZerosDec(d2)}<br/>` +
+            return `Shift decimals (${dp} place(s)) by multiplying both numbers by <b>${stripTrailingZerosDec(factor)}</b>.<br/>` +
+                   `${stripTrailingZerosDec(dividend)} &divide; ${stripTrailingZerosDec(d)} = ${stripTrailingZerosDec(div2)} &divide; ${stripTrailingZerosDec(d2)}<br/>` +
                    `= <b>${stripTrailingZerosDec(ans)}</b>.`;
           },
           answerKeyText: ()=>stripTrailingZerosDec(q)
@@ -875,7 +875,7 @@
           promptHtml:`A rope is <b>${stripTrailingZerosDec(total)} m</b> long. It is cut into <b>${parts}</b> equal parts. How long is each piece?`,
           answerStr: pieceLen,
           hintHtml:`Share equally → divide total length by the number of parts.`,
-          solutionHtml: ()=>`${stripTrailingZerosDec(total)} &divide; ${div} = <b>${stripTrailingZerosDec(pieceLen)}</b> m.`,
+          solutionHtml: ()=>`${stripTrailingZerosDec(total)} &divide; ${stripTrailingZerosDec(div)} = <b>${stripTrailingZerosDec(pieceLen)}</b> m.`,
           answerKeyText: ()=>`${stripTrailingZerosDec(pieceLen)} m`
         }));
       }
@@ -893,7 +893,7 @@
           promptHtml:`A tank contains <b>${stripTrailingZerosDec(total)} L</b> of water. It is shared equally among <b>${buckets}</b> buckets. How much water is in each bucket?`,
           answerStr: each,
           hintHtml:`Divide total litres by number of buckets.`,
-          solutionHtml: ()=>`${stripTrailingZerosDec(total)} &divide; ${div} = <b>${stripTrailingZerosDec(each)}</b> L.`,
+          solutionHtml: ()=>`${stripTrailingZerosDec(total)} &divide; ${stripTrailingZerosDec(div)} = <b>${stripTrailingZerosDec(each)}</b> L.`,
           answerKeyText: ()=>`${stripTrailingZerosDec(each)} L`
         }));
       }
@@ -908,10 +908,10 @@
         out.push(makeNumericQuestion({
           part:3,
           chip:"1-step",
-          promptHtml:`A car travels <b>${stripTrailingZerosDec(km)} km</b> using <b>${litres} L</b> of petrol. How many kilometres does it travel per litre?`,
+          promptHtml:`A car travels <b>${stripTrailingZerosDec(km)} km</b> using <b>${stripTrailingZerosDec(litres)} L</b> of petrol. How many kilometres does it travel per litre?`,
           answerStr: kmPerL,
           hintHtml:`Divide kilometres by litres.`,
-          solutionHtml: ()=>`${stripTrailingZerosDec(km)} &divide; ${div} = <b>${stripTrailingZerosDec(kmPerL)}</b> km/L.`,
+          solutionHtml: ()=>`${stripTrailingZerosDec(km)} &divide; ${stripTrailingZerosDec(div)} = <b>${stripTrailingZerosDec(kmPerL)}</b> km/L.`,
           answerKeyText: ()=>`${stripTrailingZerosDec(kmPerL)} km/L`
         }));
       }
@@ -929,7 +929,7 @@
           promptHtml:`A baker has <b>${stripTrailingZerosDec(total)} kg</b> of flour. He divides it equally into <b>${bags}</b> bags. How much flour is in each bag?`,
           answerStr: each,
           hintHtml:`Divide total kg by number of bags.`,
-          solutionHtml: ()=>`${stripTrailingZerosDec(total)} &divide; ${div} = <b>${stripTrailingZerosDec(each)}</b> kg.`,
+          solutionHtml: ()=>`${stripTrailingZerosDec(total)} &divide; ${stripTrailingZerosDec(div)} = <b>${stripTrailingZerosDec(each)}</b> kg.`,
           answerKeyText: ()=>`${stripTrailingZerosDec(each)} kg`
         }));
       }
@@ -972,7 +972,7 @@
           promptHtml:`A <b>${stripTrailingZerosDec(total)} m</b> wire is cut into <b>${piece} m</b> pieces. How many pieces can be made, and how long are <b>5</b> pieces together?<br/><span class="tiny">(Enter the number of pieces)</span>`,
           answerStr: String(pieces),
           hintHtml:`Step 1: pieces = total ÷ piece length. Step 2: length of 5 pieces = 5 × piece length.`,
-          solutionHtml: ()=>`Pieces: ${stripTrailingZerosDec(total)} &divide; ${divPiece} = <b>${pieces}</b>.<br/>Length of 5 pieces: 5.0 × ${piece} = <b>${stripTrailingZerosDec(fiveLen)}</b> m.`,
+          solutionHtml: ()=>`Pieces: ${stripTrailingZerosDec(total)} &divide; ${stripTrailingZerosDec(divPiece)} = <b>${pieces}</b>.<br/>Length of 5 pieces: 5.0 × ${piece} = <b>${stripTrailingZerosDec(fiveLen)}</b> m.`,
           answerKeyText: ()=>`Pieces ${pieces}, 5 pieces = ${stripTrailingZerosDec(fiveLen)} m`
         }));
       }
@@ -989,15 +989,15 @@
         out.push(makeNumericQuestion({
           part:4,
           chip:"2-step ($)",
-          promptHtml:`A <b>${stripTrailingZerosDec(totalL)} L</b> container of juice is shared equally into <b>${bottles}</b> bottles. Each bottle is then sold for <b>$${price}</b>.<br/>How much money will be made in total?<br/><span class="tiny">(Enter the total money)</span>`,
+          promptHtml:`A <b>${stripTrailingZerosDec(totalL)} L</b> container of juice is shared equally into <b>${bottles}</b> bottles. Each bottle is then sold for <b>$${stripTrailingZerosDec(price)}</b>.<br/>How much money will be made in total?<br/><span class="tiny">(Enter the total money)</span>`,
           answerStr: money2,
           hintHtml:`Step 1: litres per bottle = total ÷ bottles. Step 2: total money = bottles × price.`,
           solutionHtml: ()=>{
             const perBottle = divDecStr(stripTrailingZerosDec(totalL), asDotZero(bottles));
-            return `Juice per bottle: ${stripTrailingZerosDec(totalL)} &divide; ${asDotZero(bottles)} = <b>${stripTrailingZerosDec(perBottle)}</b> L.<br/>` +
-                   `Total money: ${asDotZero(bottles)} ÷ 1.0 × $${price} = <b>$${money2}</b>.`;
+            return `Juice per bottle: ${stripTrailingZerosDec(totalL)} &divide; ${stripTrailingZerosDec(asDotZero(bottles))} = <b>${stripTrailingZerosDec(perBottle)}</b> L.<br/>` +
+                   `Total money: ${bottles} × $${stripTrailingZerosDec(price)} = <b>$${stripTrailingZerosDec(money2)}</b>.`;
           },
-          answerKeyText: ()=>`$${money2}`,
+          answerKeyText: ()=>`$${stripTrailingZerosDec(money2)}`,
           acceptMoney:true
         }));
       }
@@ -1013,10 +1013,10 @@
         out.push(makeNumericQuestion({
           part:4,
           chip:"2-step",
-          promptHtml:`A car travels <b>${km} km</b> in <b>${hours}</b> hours. How far will it go in <b>${newHours}</b> hours at the same speed?<br/><span class="tiny">(Enter the distance in km)</span>`,
+          promptHtml:`A car travels <b>${stripTrailingZerosDec(km)} km</b> in <b>${stripTrailingZerosDec(hours)}</b> hours. How far will it go in <b>${newHours}</b> hours at the same speed?<br/><span class="tiny">(Enter the distance in km)</span>`,
           answerStr: stripTrailingZerosDec(dist),
           hintHtml:`Step 1: speed = distance ÷ time. Step 2: distance = speed × new time.`,
-          solutionHtml: ()=>`Speed: ${asDotZero(km)} &divide; ${hours} = <b>${stripTrailingZerosDec(speed)}</b> km/h.<br/>` +
+          solutionHtml: ()=>`Speed: ${stripTrailingZerosDec(asDotZero(km))} &divide; ${stripTrailingZerosDec(hours)} = <b>${stripTrailingZerosDec(speed)}</b> km/h.<br/>` +
                             `Distance: ${stripTrailingZerosDec(speed)} × ${newHours} = <b>${stripTrailingZerosDec(dist)}</b> km.`,
           answerKeyText: ()=>`${stripTrailingZerosDec(dist)} km`
         }));
@@ -1036,15 +1036,15 @@
         out.push(makeNumericQuestion({
           part:4,
           chip:"2-step ($)",
-          promptHtml:`A shop bought <b>${kg} kg</b> of sugar for <b>$${totalCost2}</b>.<br/>How much does <b>1 kg</b> cost, and what is the cost of <b>${targetKg} kg</b>?<br/><span class="tiny">(Enter the cost of ${targetKg} kg)</span>`,
+          promptHtml:`A shop bought <b>${stripTrailingZerosDec(kg)} kg</b> of sugar for <b>$${stripTrailingZerosDec(totalCost2)}</b>.<br/>How much does <b>1 kg</b> cost, and what is the cost of <b>${targetKg} kg</b>?<br/><span class="tiny">(Enter the cost of ${targetKg} kg)</span>`,
           answerStr: targetCost2,
           hintHtml:`Step 1: $ per kg = total cost ÷ kg. Step 2: cost = (per kg) × ${targetKg}.`,
           solutionHtml: ()=>{
             const perKg = divDecStr(totalCost2, asDotZero(kg));
-            return `Cost per kg: $${totalCost2} &divide; ${asDotZero(kg)} = <b>$${toFixedDpStr(perKg,2)}</b> per kg.<br/>` +
-                   `Cost of ${targetKg} kg: $${toFixedDpStr(perKg,2)} × ${targetKg} = <b>$${targetCost2}</b>.`;
+            return `Cost per kg: $${stripTrailingZerosDec(totalCost2)} &divide; ${stripTrailingZerosDec(asDotZero(kg))} = <b>$${stripTrailingZerosDec(toFixedDpStr(perKg,2))}</b> per kg.<br/>` +
+                   `Cost of ${targetKg} kg: $${stripTrailingZerosDec(toFixedDpStr(perKg,2))} × ${targetKg} = <b>$${stripTrailingZerosDec(targetCost2)}</b>.`;
           },
-          answerKeyText: ()=>`$ per kg = $${toFixedDpStr(unitCost,2)}, cost of ${targetKg} kg = $${targetCost2}`,
+          answerKeyText: ()=>`$ per kg = $${stripTrailingZerosDec(toFixedDpStr(unitCost,2))}, cost of ${targetKg} kg = $${stripTrailingZerosDec(targetCost2)}`,
           acceptMoney:true
         }));
       }
@@ -1065,8 +1065,8 @@
           solutionHtml: ()=>{
             const onePart = divDecStr(stripTrailingZerosDec(total), asDotZero(parts));
             const per = divDecStr(stripTrailingZerosDec(onePart), asDotZero(machines));
-            return `One part: ${stripTrailingZerosDec(total)} &divide; ${asDotZero(parts)} = <b>${stripTrailingZerosDec(onePart)}</b> m.<br/>` +
-                   `Each machine: ${stripTrailingZerosDec(onePart)} &divide; ${asDotZero(machines)} = <b>${stripTrailingZerosDec(per)}</b> m.`;
+            return `One part: ${stripTrailingZerosDec(total)} &divide; ${stripTrailingZerosDec(asDotZero(parts))} = <b>${stripTrailingZerosDec(onePart)}</b> m.<br/>` +
+                   `Each machine: ${stripTrailingZerosDec(onePart)} &divide; ${stripTrailingZerosDec(asDotZero(machines))} = <b>${stripTrailingZerosDec(per)}</b> m.`;
           },
           answerKeyText: ()=>`${stripTrailingZerosDec(perMachine)} m`
         }));
