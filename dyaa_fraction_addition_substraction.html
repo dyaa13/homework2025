@@ -1863,9 +1863,9 @@ function escapeHTML(s){
       const ans = subFrac(addFrac(A,B), C);
 
       const contexts = [
-        (a,b,c)=> `A water tank contained ${a} litres of water. Then ${b} litres were added. After that, ${c} litres were used. How many litres of water are in the tank now?`,
-        (a,b,c)=> `A builder had ${a} metres of rope. The builder bought another ${b} metres. Then ${c} metres were cut off. How many metres of rope are there now?`,
-        (a,b,c)=> `A cyclist rode ${a} km in the morning. The cyclist rode another ${b} km in the afternoon, then took a shortcut that was ${c} km shorter. How many kilometres did the cyclist travel in total?`,
+        (a,b,c)=> `A class read a book. By Wednesday, they had read ${a} of the book. On Thursday, they read ${b} more. Later they realised ${c} of what they counted was a repeated section and should not be included. What fraction of the book was read in total?`,
+        (a,b,c)=> `A cake was shared. In the morning, ${a} of the cake was eaten. In the afternoon, ${b} was eaten. Later, it turned out that ${c} of the cake had been counted twice. What fraction of the cake was eaten altogether?`,
+        (a,b,c)=> `A hiker walked ${a} of a trail in the morning and ${b} in the afternoon. The hiker then walked back ${c} of the trail to find a lost item. What fraction of the trail is the hiker from the start now?`,
       ];
 
       const prompt = pick(contexts)(fracHTML(A.n,A.d), fracHTML(B.n,B.d), fracHTML(C.n,C.d));
@@ -1915,9 +1915,9 @@ function escapeHTML(s){
       const ans = addFrac(subFrac(A,B), C);
 
       const contexts = [
-        (a,b,c)=> `A bucket contained ${a} litres of water. ${b} litres were poured out, then ${c} litres were poured in. How many litres of water are in the bucket now?`,
-        (a,b,c)=> `A gardener had ${a} bags of soil. The gardener used ${b} of a bag, then bought ${c} of a bag. How many bags of soil does the gardener have now?`,
-        (a,b,c)=> `A student read ${a} of a book by Wednesday. The student read ${b} of a book less on Thursday, then read another ${c} of a book on Friday. What fraction of a book did the student read in total by Friday?`,
+        (a,b,c)=> `A student had completed ${a} of an assignment. They then removed ${b} because it was incorrect, and completed another ${c}. What fraction of the assignment is complete now?`,
+        (a,b,c)=> `A jug was full. First, ${b} of the jug was poured out. Then ${c} of the jug was poured in. If the jug originally contained ${a} of a jug of juice (not necessarily full), what fraction of a jug does it contain now?`,
+        (a,b,c)=> `A team had finished ${a} of a project. They lost ${b} of the work due to an error, then completed another ${c}. What fraction of the project is finished now?`,
       ];
 
       const prompt = pick(contexts)(fracHTML(A.n,A.d), fracHTML(B.n,B.d), fracHTML(C.n,C.d));
