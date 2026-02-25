@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model 23 — Rope-Around-Circles Model (Circles & Sectors) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+
+      /* textbook line-art */
+      --stroke:#111;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:700;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:700;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:800;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card p{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+
+    .learn-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:14px;
+      margin-top:12px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .learn-grid{grid-template-columns:1fr;}
+    }
+
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .mini-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .mini-table th, .mini-table td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+    }
+    .mini-table th{
+      background:#f5f8ff;
+      color:var(--blue);
+      font-weight:900;
+    }
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:900;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .q-body{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:12px;
+      margin-top:10px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .q-body{grid-template-columns:1fr;}
+    }
+
+    /* diagram wrapper -> note is OUTSIDE svg, so never overlaps */
+    .svg-wrap{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:10px 10px 8px 10px;
+      overflow:hidden;
+    }
+    .svg-wrap svg{display:block;width:100%;height:auto;}
+    .svg-note{
+      margin-top:6px;
+      font-size:12px;
+      color:rgba(0,0,0,0.55);
+      font-weight:700;
+    }
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      min-width:220px;
+      max-width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+    .feedback.ok{color:var(--ok);font-weight:900;}
+    .feedback.bad{color:var(--bad);font-weight:900;}
+
+    .hint-box{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(13,71,161,0.35);
+      background:#f5f8ff;
+      color:#1a2b55;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .hint-box.show{display:block;}
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    .muted{color:var(--muted);}
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    /* Print support */
+    @media print{
+      body{background:#fff;padding:0;}
+      body:before{display:none;}
+      .quiz-container{box-shadow:none;border:none;margin:0;border-radius:0;}
+      .tabs,.row,.btn,.overlay{display:none !important;}
+      .panel{display:block !important;}
+      .q-card{break-inside:avoid; page-break-inside:avoid;}
+      .svg-wrap{border:1px solid #ccc;}
+      .answer-area .input-row, .answer-area .feedback, .answer-area .hint-box{display:none !important;}
+      #resultsBox{display:none !important;}
+      body.print-results .answer-area .feedback{display:block !important;}
+      body.print-results #resultsBox{display:block !important;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1>Model 23 — Rope-Around-Circles Model (Circles & Sectors)</h1>
+        <div class="sub">Textbook-style diagrams (line art) • Hint button • 2 Easy + 2 Medium + 2 Hard • π = 3.14</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="pill" id="studentPill">
+        <b>Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <small>URL format: <span class="muted">.../model23_rope_circles.html?name=Tiger</span></small>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn secondary" id="printQuestionsBtn" type="button">Print / Save PDF (Questions)</button>
+        <button class="btn secondary" id="printResultsBtn" type="button">Print / Save PDF (Results)</button>
+        <button class="btn" id="newSetBtn" type="button">Generate New Set</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    <!-- LEARN -->
+    <div class="panel active" id="panel-learn">
+      <div class="learn-card">
+        <h2>Key Idea</h2>
+        <p>
+          When equal circles are tightly packed and you wrap a rope around the outside, the boundary is made of
+          <b>straight tangents</b> + <b>circular arcs</b>.
+        </p>
+
+        <div class="note">
+          For equal circles of diameter <b>d</b>, the total arc part always adds up to a full turn:
+          <b>arc length = πd</b> (because the rope turns 360° in total).<br/>
+          So: <b>Rope length = (sum of outside straight parts) + πd</b>, with <b>π = 3.14</b>.
+        </div>
+
+        <table class="mini-table" aria-label="Common layouts">
+          <thead>
+            <tr>
+              <th>Layout</th>
+              <th>Straight-part total</th>
+              <th>Total rope length</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>2×2 (4 circles)</td><td>4d</td><td>(4 + π)d</td></tr>
+            <tr><td>3 in a row</td><td>4d</td><td>(4 + π)d</td></tr>
+            <tr><td>2×3 (6 circles)</td><td>6d</td><td>(6 + π)d</td></tr>
+            <tr><td>Triangle (3 circles)</td><td>3d</td><td>(3 + π)d</td></tr>
+          </tbody>
+        </table>
+
+        <div class="learn-grid">
+          <div class="muted">
+            Diagram style follows the workbook: hollow circles + one outer rope outline (rounded).
+          </div>
+          <div class="svg-wrap" id="learnSvgWrap"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted">Enter a number only (you may round to 2 decimals). Use</span> <b>π = 3.14</b>.
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3>Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /********************
+     * Helpers
+     ********************/
+    const PI = 3.14;
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;");
+    }
+    function parseNumber(input){
+      if(input == null) return NaN;
+      const s = String(input).trim()
+        .replace(/,/g,"")
+        .replace(/cm|m|meter|metre|meters|metres/ig,"")
+        .replace(/\s/g,"");
+      if(!s) return NaN;
+      const v = Number(s);
+      return Number.isFinite(v) ? v : NaN;
+    }
+    function roundTo(n, dp=2){
+      const p = Math.pow(10, dp);
+      return Math.round(n*p)/p;
+    }
+    function fmt(n){
+      const v = roundTo(n, 2);
+      const s = v.toFixed(2);
+      return s.replace(/\.?0+$/,"");
+    }
+    function nearlyEqual(a,b,eps=0.05){
+      return Math.abs(a-b) <= eps;
+    }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * Diagram math (textbook line-art)
+     * Fix self-intersection by ALWAYS using convex hull for polygon layouts.
+     ********************/
+    function degToRad(d){ return d * Math.PI / 180; }
+    function norm(v){
+      const len = Math.hypot(v.x,v.y) || 1;
+      return {x:v.x/len, y:v.y/len};
+    }
+    function bboxOf(points){
+      let minX=Infinity, minY=Infinity, maxX=-Infinity, maxY=-Infinity;
+      for(const p of points){
+        minX = Math.min(minX, p.x);
+        minY = Math.min(minY, p.y);
+        maxX = Math.max(maxX, p.x);
+        maxY = Math.max(maxY, p.y);
+      }
+      return {minX,minY,maxX,maxY,w:maxX-minX,h:maxY-minY};
+    }
+
+    function convexHullCW(points){
+      // Monotonic chain -> CCW, then reverse to CW
+      const pts = points.map(p=>({x:p.x,y:p.y})).sort((a,b)=> a.x===b.x ? a.y-b.y : a.x-b.x);
+      const cross = (o,a,b)=> (a.x-o.x)*(b.y-o.y) - (a.y-o.y)*(b.x-o.x);
+      const lower = [];
+      for(const p of pts){
+        while(lower.length>=2 && cross(lower[lower.length-2], lower[lower.length-1], p) <= 0) lower.pop();
+        lower.push(p);
+      }
+      const upper = [];
+      for(let i=pts.length-1;i>=0;i--){
+        const p = pts[i];
+        while(upper.length>=2 && cross(upper[upper.length-2], upper[upper.length-1], p) <= 0) upper.pop();
+        upper.push(p);
+      }
+      upper.pop(); lower.pop();
+      const hullCCW = lower.concat(upper);
+      return hullCCW.slice().reverse(); // CW
+    }
+
+    // Rope path for clockwise convex polygon of centers (rounded by arcs of radius r)
+    function ropePathRoundedPolygonCW(vertices, r){
+      const n = vertices.length;
+      const normals = [];
+      for(let i=0;i<n;i++){
+        const a = vertices[i];
+        const b = vertices[(i+1)%n];
+        const e = {x:b.x-a.x, y:b.y-a.y};
+        const u = norm(e);
+        // clockwise polygon: interior is to the right -> outward is to the left
+        const out = {x:-u.y, y:u.x};
+        normals.push(out);
+      }
+      const tanFromEdge = (i, vIndex) => {
+        const v = vertices[vIndex];
+        const out = normals[i];
+        return {x: v.x + out.x*r, y: v.y + out.y*r};
+      };
+
+      const start = tanFromEdge(0, 0);
+      let d = `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} `;
+      for(let i=0;i<n;i++){
+        const vNext = (i+1)%n;
+        const endOnNext = tanFromEdge(i, vNext);
+        d += `L ${endOnNext.x.toFixed(2)} ${endOnNext.y.toFixed(2)} `;
+        const nextEdge = (i+1)%n;
+        const nextTan = tanFromEdge(nextEdge, vNext);
+        d += `A ${r.toFixed(2)} ${r.toFixed(2)} 0 0 1 ${nextTan.x.toFixed(2)} ${nextTan.y.toFixed(2)} `;
+      }
+      d += "Z";
+      return d;
+    }
+
+    // centers for each layout (unit: pixels)
+    function centersForLayout(layout, dPx){
+      const hTri = Math.sqrt(3)/2 * dPx;
+
+      if(layout === "2x2"){
+        return [
+          {x:0, y:0}, {x:dPx, y:0},
+          {x:0, y:dPx}, {x:dPx, y:dPx}
+        ];
+      }
+      if(layout === "3row"){
+        return [{x:0,y:0},{x:dPx,y:0},{x:2*dPx,y:0}];
+      }
+      if(layout === "2x3"){
+        return [
+          {x:0,y:0},{x:dPx,y:0},{x:2*dPx,y:0},
+          {x:0,y:dPx},{x:dPx,y:dPx},{x:2*dPx,y:dPx}
+        ];
+      }
+      if(layout === "triangle3"){
+        return [
+          {x:dPx/2, y:0},
+          {x:0, y:hTri},
+          {x:dPx, y:hTri}
+        ];
+      }
+      if(layout === "pyramid5"){
+        return [
+          {x:0.5*dPx, y:0},
+          {x:1.5*dPx, y:0},
+          {x:0, y:hTri},
+          {x:dPx, y:hTri},
+          {x:2*dPx, y:hTri}
+        ];
+      }
+      if(layout === "hex7"){
+        const R = dPx;
+        const angles = [90, 30, -30, -90, -150, 150];
+        const outer = angles.map(a=>{
+          const t = degToRad(a);
+          return {x: Math.cos(t)*R, y: -Math.sin(t)*R};
+        });
+        return [{x:0,y:0}, ...outer];
+      }
+      return [];
+    }
+
+    function buildBundleSvg(layout){
+      const rPx = 22;       // circle radius
+      const dPx = rPx * 2;  // touching distance
+      const centers = centersForLayout(layout, dPx);
+
+      const b0 = bboxOf(centers);
+      const margin = 34;
+
+      const shifted = centers.map(p => ({x: p.x - b0.minX + margin, y: p.y - b0.minY + margin}));
+      const bb = bboxOf(shifted);
+
+      const W = bb.w + margin*2;
+      const H = bb.h + margin*2;
+
+      // Rope outline
+      let rope = "";
+      if(layout === "2x2" || layout === "2x3"){
+        const x = bb.minX - rPx;
+        const y = bb.minY - rPx;
+        const w = (bb.maxX - bb.minX) + 2*rPx;
+        const h = (bb.maxY - bb.minY) + 2*rPx;
+        rope = `<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${w.toFixed(2)}" height="${h.toFixed(2)}"
+                      rx="${rPx.toFixed(2)}" ry="${rPx.toFixed(2)}" class="rope" />`;
+      }else if(layout === "3row"){
+        const x = bb.minX - rPx;
+        const y = (bb.minY + bb.maxY)/2 - rPx;
+        const w = (bb.maxX - bb.minX) + 2*rPx;
+        const h = 2*rPx;
+        rope = `<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${w.toFixed(2)}" height="${h.toFixed(2)}"
+                      rx="${rPx.toFixed(2)}" ry="${rPx.toFixed(2)}" class="rope" />`;
+      }else{
+        // Use convex hull to avoid self-intersection (fixes the "star" bug)
+        const hullCW = convexHullCW(shifted);
+        const d = ropePathRoundedPolygonCW(hullCW, rPx);
+        rope = `<path d="${d}" class="rope" />`;
+      }
+
+      const circles = shifted.map(c=>{
+        return `<circle cx="${c.x.toFixed(2)}" cy="${c.y.toFixed(2)}" r="${rPx.toFixed(2)}" class="log" />`;
+      }).join("\n");
+
+      const svg = `
+<svg viewBox="0 0 ${W.toFixed(0)} ${H.toFixed(0)}" role="img" aria-label="Tied circles (not to scale)">
+  <defs>
+    <style>
+      .rope{fill:none;stroke:var(--stroke);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round;}
+      .log{fill:none;stroke:var(--stroke);stroke-width:2.0;}
+    </style>
+  </defs>
+  ${rope}
+  ${circles}
+</svg>`.trim();
+
+      // NOTE: Not-to-scale is outside svg so it never overlaps.
+      return `
+        ${svg}
+        <div class="svg-note">Not to scale</div>
+      `.trim();
+    }
+
+    /********************
+     * Math for answers
+     * Rope length = (k + π) * d
+     ********************/
+    function kForLayout(layout){
+      if(layout === "2x2") return 4;
+      if(layout === "3row") return 4;
+      if(layout === "hex7") return 6;
+      if(layout === "2x3") return 6;
+      if(layout === "pyramid5") return 5;
+      if(layout === "triangle3") return 3;
+      return 0;
+    }
+    function ropeLengthSingleLoop(d, k){
+      return (k + PI) * d;
+    }
+
+    /********************
+     * Questions (2 Easy + 2 Medium + 2 Hard)
+     ********************/
+    function makeQuestions(){
+      const qs = [];
+
+      // Easy 1 — 4 circles (2x2), diameter cm
+      (function(){
+        const d = choice([6,8,10,12,14]);
+        const k = kForLayout("2x2");
+        qs.push({
+          layout:"2x2",
+          difficulty:"easy",
+          unit:"cm",
+          answer: roundTo(ropeLengthSingleLoop(d, k), 2),
+          hint:`Arc part adds to πd. For 2×2, the outside straight parts total 4d. So length = (4 + π)d.`,
+          prompt:`A wire is used to tie 4 identical circular logs tightly together as shown (cross-section). Each log has diameter ${d} cm. Find the minimum wire length for one loop. Ignore the knot overlap. Use π = 3.14.`,
+          svg: buildBundleSvg("2x2")
+        });
+      })();
+
+      // Easy 2 — 3 in a row, diameter cm
+      (function(){
+        const d = choice([10,12,15,20,30]);
+        const k = kForLayout("3row");
+        qs.push({
+          layout:"3row",
+          difficulty:"easy",
+          unit:"cm",
+          answer: roundTo(ropeLengthSingleLoop(d, k), 2),
+          hint:`Arc part is πd. For 3 in a row, straight parts total 4d (two long + two short).`,
+          prompt:`Three identical logs are tied tightly in a straight row as shown. Each log has diameter ${d} cm. What is the minimum rope length for one loop? Ignore the knot overlap. Use π = 3.14.`,
+          svg: buildBundleSvg("3row")
+        });
+      })();
+
+      // Medium 1 — 7 (1 center + 6 around), diameter cm
+      (function(){
+        const d = choice([8,10,12,14]);
+        const k = kForLayout("hex7");
+        qs.push({
+          layout:"hex7",
+          difficulty:"medium",
+          unit:"cm",
+          answer: roundTo(ropeLengthSingleLoop(d, k), 2),
+          hint:`The outer rope behaves like a rounded hexagon. Straight parts total 6d, arc part is πd.`,
+          prompt:`Seven identical logs are tied tightly together (one in the center) as shown. Each log has diameter ${d} cm. Find the minimum rope length for one loop. Ignore the knot overlap. Use π = 3.14.`,
+          svg: buildBundleSvg("hex7")
+        });
+      })();
+
+      // Medium 2 — 6 (2×3), diameter meters
+      (function(){
+        const d = choice([0.6, 0.8, 1.0, 1.2]);
+        const k = kForLayout("2x3");
+        qs.push({
+          layout:"2x3",
+          difficulty:"medium",
+          unit:"m",
+          answer: roundTo(ropeLengthSingleLoop(d, k), 2),
+          hint:`Arc part is πd. For 2×3, the outside straight parts total 6d. So length = (6 + π)d.`,
+          prompt:`Six identical circular pipes are tied tightly together in a 2×3 layout as shown. Each pipe has diameter ${fmt(d)} m. Find the minimum rope length for one loop. Ignore the knot overlap. Use π = 3.14.`,
+          svg: buildBundleSvg("2x3")
+        });
+      })();
+
+      // Hard 1 — 5 (3 bottom + 2 top), diameter cm
+      (function(){
+        const d = choice([6,8,10,12]);
+        const k = kForLayout("pyramid5");
+        qs.push({
+          layout:"pyramid5",
+          difficulty:"hard",
+          unit:"cm",
+          answer: roundTo(ropeLengthSingleLoop(d, k), 2),
+          hint:`Treat the outline as a rounded trapezoid. Straight parts total 5d, arc part is πd.`,
+          prompt:`Five identical logs are tied tightly together as shown (3 on the bottom, 2 on the top). Each log has diameter ${d} cm. Find the minimum rope length for one loop. Ignore the knot overlap. Use π = 3.14.`,
+          svg: buildBundleSvg("pyramid5")
+        });
+      })();
+
+      // Hard 2 — triangle (3 logs), radius cm, two loops total
+      (function(){
+        const r = choice([8,10,12,15]);
+        const d = 2*r;
+        const k = kForLayout("triangle3");
+        const total = 2 * ropeLengthSingleLoop(d, k);
+        qs.push({
+          layout:"triangle3",
+          difficulty:"hard",
+          unit:"cm",
+          answer: roundTo(total, 2),
+          hint:`One loop: straight parts total 3d and arcs total πd → (3 + π)d. Two loops → 2(3 + π)d.`,
+          prompt:`Three identical logs (radius ${r} cm) are tied tightly together in a triangle as shown. For stability, the rope is looped once at each end (two identical loops in total). Find the minimum total rope length needed. Ignore knot overlap. Use π = 3.14.`,
+          svg: buildBundleSvg("triangle3")
+        });
+      })();
+
+      return qs;
+    }
+
+    /********************
+     * UI State + Rendering
+     ********************/
+    let QUESTIONS = [];
+    let STATE = { answers:[], checked:[], correct:[], hintShown:[], submitted:false };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+    function niceDiff(d){
+      if(d==="easy") return "Easy";
+      if(d==="medium") return "Medium";
+      return "Hard";
+    }
+
+    function renderQuestions(){
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const userVal = STATE.answers[idx] ?? "";
+        const checked = !!STATE.checked[idx];
+        const correct = !!STATE.correct[idx];
+        const hintShown = !!STATE.hintShown[idx];
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${escapeHtml(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="q-body">
+            <div class="svg-wrap">${q.svg}</div>
+
+            <div class="answer-area">
+              <div class="input-row">
+                <input type="text" inputmode="decimal" autocomplete="off"
+                  id="ans-${idx}" placeholder="Answer (${q.unit})"
+                  value="${escapeHtml(userVal)}">
+                <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+                <button class="btn ghost" type="button" id="hint-${idx}">${hintShown ? "Hide Hint" : "Hint"}</button>
+              </div>
+
+              <div class="hint-box ${hintShown ? "show" : ""}" id="hintBox-${idx}">
+                ${escapeHtml(q.hint)}
+              </div>
+
+              <div class="feedback ${checked ? (correct ? "ok" : "bad") : ""}" id="fb-${idx}">
+                ${checked
+                  ? (correct
+                      ? "Correct ✅"
+                      : `Not correct ❌  (Correct answer: ${fmt(q.answer)} ${q.unit})`)
+                  : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        const inp = $(`#ans-${idx}`, card);
+        inp.addEventListener("input", () => {
+          STATE.answers[idx] = inp.value;
+          STATE.checked[idx] = false;
+          STATE.correct[idx] = false;
+          if(STATE.submitted){
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+          }
+          const fb = $(`#fb-${idx}`, card);
+          fb.className = "feedback";
+          fb.textContent = "";
+        });
+
+        $(`#check-${idx}`, card).addEventListener("click", () => checkOne(idx));
+        $(`#hint-${idx}`, card).addEventListener("click", () => {
+          STATE.hintShown[idx] = !STATE.hintShown[idx];
+          renderQuestions();
+        });
+      });
+
+      $("#resultsBox").style.display = "none";
+      document.body.classList.remove("print-results");
+    }
+
+    function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const v = parseNumber(STATE.answers[idx]);
+      STATE.checked[idx] = true;
+
+      if(!Number.isFinite(v)){
+        STATE.correct[idx] = false;
+        renderQuestions();
+        const fb = $(`#fb-${idx}`);
+        fb.className = "feedback bad";
+        fb.textContent = "Please enter a valid number.";
+        return;
+      }
+
+      STATE.correct[idx] = nearlyEqual(v, q.answer, 0.05);
+      renderQuestions();
+    }
+
+    function submitAll(){
+      let correctCount = 0;
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const v = parseNumber(STATE.answers[i]);
+        STATE.checked[i] = true;
+        STATE.correct[i] = Number.isFinite(v) && nearlyEqual(v, q.answer, 0.05);
+        if(STATE.correct[i]) correctCount++;
+      }
+
+      STATE.submitted = true;
+      renderQuestions();
+
+      const total = QUESTIONS.length;
+      const pct = Math.round((correctCount/total)*100);
+
+      const lines = QUESTIONS.map((q,i)=>(
+        `<div style="margin:6px 0;"><b>Q${i+1}:</b> ${fmt(q.answer)} ${q.unit}</div>`
+      )).join("");
+
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:8px;"><b>Correct Answers:</b></div>
+        <div style="margin-top:6px;">${lines}</div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+    function resetAnswers(){
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    function saveResult(){
+      const name = safeName($("#studentNameValue").textContent) || "Student";
+      const data = {
+        title: "Model 23 — Rope-Around-Circles Model",
+        student: name,
+        piUsed: PI,
+        timestamp: new Date().toISOString(),
+        questions: QUESTIONS.map((q,i)=>({
+          index: i+1,
+          difficulty: q.difficulty,
+          prompt: q.prompt,
+          unit: q.unit,
+          correctAnswer: q.answer,
+          yourAnswer: parseNumber(STATE.answers[i]),
+          isCorrect: !!STATE.correct[i]
+        }))
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `DYAA_Model23_${name.replace(/\s+/g,"_")}_result.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    /********************
+     * Tabs + Student name
+     ********************/
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $(`#panel-${tab}`).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", ""));
+      $("#studentNameValue").textContent = name ? name : "Anonymous";
+    }
+
+    /********************
+     * Print
+     ********************/
+    $("#printQuestionsBtn").addEventListener("click", () => {
+      document.body.classList.remove("print-results");
+      window.print();
+    });
+    $("#printResultsBtn").addEventListener("click", () => {
+      if(!STATE.submitted) submitAll();
+      document.body.classList.add("print-results");
+      window.print();
+      document.body.classList.remove("print-results");
+    });
+
+    /********************
+     * Generate New Set
+     ********************/
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set? This will clear your current answers.", () => {
+        generateNewSet();
+        // go to practice automatically
+        $$('.tab').forEach(b=>b.classList.remove('active'));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$('.panel').forEach(p=>p.classList.remove('active'));
+        $('#panel-practice').classList.add('active');
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    /********************
+     * Learn diagram
+     ********************/
+    function renderLearnDiagram(){
+      $("#learnSvgWrap").innerHTML = buildBundleSvg("2x2");
+    }
+
+    /********************
+     * Init
+     ********************/
+    ensureStudentName();
+    renderLearnDiagram();
+    generateNewSet();
+  </script>
+</body>
+</html>

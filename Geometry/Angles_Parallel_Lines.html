@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Angles — Parallel Lines (Quiz)</title>
+
+  <style>
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:#f4f4f9;
+      margin:0; padding:20px;
+      color:#333;
+    }
+    .quiz-container{
+      max-width:980px;
+      margin:40px auto;
+      background:#fff;
+      padding:30px;
+      border-radius:12px;
+      box-shadow:0 6px 15px rgba(0,0,0,0.1);
+      position:relative;
+    }
+    #headerLogo{
+      display:flex; align-items:center;
+      margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:10px;
+      gap:12px;
+    }
+    .logo-icon{
+      width:40px; height:40px;
+      background:#0d47a1; border-radius:6px;
+      position:relative;
+      flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:20px;height:9px;
+      background:#ff9800;
+      top:-6px; left:22px;
+      border-radius:3px;
+    }
+    .logo-text span.edu{
+      font-size:0.95em;
+      color:#ff9800;
+      font-weight:900;
+      letter-spacing:0.8px;
+    }
+
+    .top-bar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin:10px 0 10px;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .top-left{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      font-weight:800;
+      color:#333;
+    }
+    .top-right{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .top-right button{
+      padding:10px 18px;
+      border:none;
+      color:#fff;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:1em;
+      font-weight:800;
+    }
+    #pauseResumeButton{ background:#ff9800; display:none; }
+    #generateButton{ background:#ff9800; display:none; }
+
+    .quiz-main{ display:flex; gap:20px; }
+    .sidebar{
+      width:260px;
+      border-right:1px solid #ddd;
+      padding-right:10px;
+      display:none;
+    }
+    .sidebar h4{
+      margin:0 0 8px;
+      font-size:0.95em;
+      border-bottom:1px solid #eee;
+      padding-bottom:4px;
+    }
+    .sidebar ul{ list-style:none; padding:0; margin:0; }
+    .sidebar li{
+      padding:6px;
+      cursor:pointer;
+      border-radius:4px;
+      font-size:0.9em;
+      user-select:none;
+      margin-bottom:4px;
+    }
+    .sidebar li.active{ outline:2px solid #1976d2; font-weight:800; }
+    .sidebar li.correct{ background:#d4edda; border-left:4px solid #28a745; }
+    .sidebar li.incorrect{ background:#f8d7da; border-left:4px solid #f44336; }
+    .sidebar li.answered{ border-left:4px solid #4caf50; }
+
+    #quizContent{ flex:1; }
+
+    .question-text{ font-size:1.1em; margin-bottom:6px; }
+    .instructions{ font-size:0.92em; color:#555; margin-bottom:10px; line-height:1.4; }
+    .part-title{ font-weight:900; margin:10px 0 8px; }
+    .single-question{
+      margin-top:6px; margin-bottom:6px;
+      line-height:1.55;
+    }
+    .answer-box{
+      width:320px;
+      padding:7px 9px;
+      font-size:1em;
+      margin-left:8px;
+    }
+
+    .diagram{ margin:10px 0 8px; }
+    .diagram svg{
+      width:100%;
+      max-width:720px;
+      height:auto;
+      border:1px solid #eee;
+      border-radius:12px;
+      background:#fff;
+      display:block;
+    }
+
+    .desc{
+      font-size:0.92em;
+      color:#555;
+      margin-top:8px;
+      line-height:1.4;
+    }
+
+    .hint-box{
+      margin-top:10px;
+      padding:10px 12px;
+      background:#f7f7ff;
+      border:1px solid #e6e6ff;
+      border-radius:10px;
+      font-size:0.92em;
+      color:#444;
+      line-height:1.45;
+    }
+    .hint-box b{ color:#111; }
+
+    .check-feedback{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid #e0e0e0;
+      background:#fafafa;
+      font-size:0.95em;
+      display:none;
+      white-space:pre-wrap;
+    }
+    .check-feedback.neutral{ display:block; background:#f6f7fb; border-color:#e2e6ff; }
+    .check-feedback.correct{ display:block; background:#d4edda; border-color:#28a745; }
+    .check-feedback.incorrect{ display:block; background:#f8d7da; border-color:#f44336; }
+
+    .question-buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+      align-items:center;
+    }
+    .question-buttons button{
+      padding:10px 18px;
+      border:none;
+      color:#fff;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:1em;
+      font-weight:800;
+    }
+    #nextButton{ background:#4caf50; }
+    #backButton{ background:#039be5; }
+    #submitButton{ background:#9c27b0; }
+    #saveButton{ background:#607d8b; }
+    #checkButton{ background:#00897b; }
+
+    table.review-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:20px;
+    }
+    .review-table th, .review-table td{
+      border:1px solid #ccc;
+      padding:6px;
+      font-size:0.85em;
+      text-align:center;
+      vertical-align:top;
+    }
+    .review-table th{ background:#f2f2f2; }
+    .correct-answer{ background:#d4edda; }
+    .incorrect-answer{ background:#f8d7da; }
+
+    @media (max-width:760px){
+      .quiz-main{ flex-direction:column; }
+      .sidebar{
+        width:100%;
+        border-right:none;
+        border-bottom:1px solid #ddd;
+        margin-bottom:10px;
+        padding-bottom:10px;
+      }
+      .answer-box{ width:240px; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text"><span class="edu">DYAA EDUCATION</span></div>
+  </div>
+
+  <div class="top-bar">
+    <div class="top-left">
+      <div id="timeLine">Time: 00:00</div>
+      <div id="studentLine">Student: Student</div>
+      <div id="setLine">Set: 1</div>
+    </div>
+
+    <div class="top-right">
+      <button id="pauseResumeButton">Pause</button>
+      <button id="generateButton">Generate New Set</button>
+    </div>
+  </div>
+
+  <h2>Angles — Parallel Lines (Corresponding / Alternate / Co-interior)</h2>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ==========================================================
+   ✅ Same UI structure
+   ✅ Part A = 2 questions
+   ✅ Part B = 4 questions
+   ✅ Part C = 4 questions
+   ✅ New Set: Part B & Part C template IDs do NOT repeat (vs last set)
+   ✅ Every question includes a clear text description (can solve without the diagram)
+   ✅ Diagrams: realistic acute/obtuse + labels inside angle sectors
+   ✅ No Export-to-PDF
+========================================================== */
+
+/* ---------------- Student name from URL (?name=Tiger) ---------------- */
+function getStudentNameFromURL(){
+  try{
+    const params = new URLSearchParams(window.location.search || "");
+    const raw = params.get("name");
+    if (!raw) return "";
+    return decodeURIComponent(raw.replace(/\\+/g, "%20")).trim();
+  }catch(e){
+    return "";
+  }
+}
+const URL_STUDENT_NAME = getStudentNameFromURL();
+
+/* ---------------- Utilities ---------------- */
+function randInt(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+function choice(arr){ return arr[randInt(0, arr.length - 1)]; }
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i=a.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function stripHTML(html){
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return (tmp.textContent || tmp.innerText || "").trim();
+}
+
+/* ---------------- Answer parsing + compare ---------------- */
+function parseNumber(str){
+  let s = (str || "").trim();
+  if (!s) return NaN;
+  s = s.replace(/−/g,"-").replace(/,/g,"");
+  s = s.replace(/°/g,"").replace(/\\bdeg\\b/gi,"").trim();
+  const v = Number(s);
+  return Number.isFinite(v) ? v : NaN;
+}
+function normalizeWord(s){
+  return (s||"")
+    .trim()
+    .toLowerCase()
+    .replace(/\\s+/g," ")
+    .replace(/[^a-z0-9\\s\\-]/g,"");
+}
+function compareByType(userStr, correct){
+  const eps = 1e-6;
+  const ansRaw = (userStr || "").trim();
+  if (ansRaw === "") return { ok:false, empty:true };
+
+  if (correct.type === "integer"){
+    const u = parseNumber(ansRaw);
+    if (!Number.isFinite(u) || Math.abs(u - Math.round(u)) > eps) return { ok:false, empty:false };
+    return { ok: Math.abs(u - correct.value) < eps, empty:false };
+  }
+  if (correct.type === "mc"){
+    const u = ansRaw.toUpperCase();
+    const c = String(correct.value || "").toUpperCase();
+    return { ok: u === c, empty:false };
+  }
+  if (correct.type === "word"){
+    const u = normalizeWord(ansRaw);
+    const list = (correct.accept || []).map(normalizeWord);
+    return { ok: list.includes(u), empty:false };
+  }
+  return { ok:false, empty:false };
+}
+
+/* ---------------- Question model ---------------- */
+function makeQ(partIndex, indexInPart, html, correct, displayCorrect, answerHint){
+  return {
+    partIndex, indexInPart,
+    html,
+    plain: stripHTML(html),
+    correct,
+    displayCorrect,
+    answerHint,
+    userValue:"",
+    isCorrect:false,
+    checked:false
+  };
+}
+
+/* ==========================================================
+   SVG helpers
+   Angle system (screen coords): degrees increase CLOCKWISE
+   0°=right, 90°=down, 180°=left, 270°=up
+========================================================== */
+function degNorm(d){
+  let a = d % 360;
+  if (a < 0) a += 360;
+  return a;
+}
+function cwDiff(fromDeg, toDeg){
+  return degNorm(toDeg - fromDeg);
+}
+function polar(cx, cy, r, deg){
+  const rad = (deg * Math.PI) / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+function arcPath(cx, cy, r, startDeg, endDeg){
+  const s = polar(cx, cy, r, startDeg);
+  const e = polar(cx, cy, r, endDeg);
+  const d = cwDiff(startDeg, endDeg);
+  const large = d > 180 ? 1 : 0;
+  const sweep = 1; // clockwise
+  return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${r} ${r} 0 ${large} ${sweep} ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
+}
+function angleLabelPos(cx, cy, r, startDeg, endDeg){
+  const d = cwDiff(startDeg, endDeg);
+  const mid = degNorm(startDeg + d/2);
+  return polar(cx, cy, r, mid);
+}
+function fontSizeForLabel(label){
+  const n = (label || "").length;
+  if (n >= 10) return 11;
+  if (n >= 7)  return 12;
+  return 13;
+}
+function svgText(x, y, text, color){
+  const fs = fontSizeForLabel(text);
+  return `<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" fill="${color}" font-size="${fs}" font-weight="800"
+    text-anchor="middle" dominant-baseline="middle">${text}</text>`;
+}
+function svgAngleMarkAt(vx, vy, startDeg, endDeg, label, color){
+  const arcR = 24;
+  const textR = 42;
+  const p = angleLabelPos(vx, vy, textR, startDeg, endDeg);
+  return `
+    <path d="${arcPath(vx, vy, arcR, startDeg, endDeg)}" fill="none" stroke="${color}" stroke-width="3"/>
+    ${svgText(p.x, p.y, label, color)}
+  `;
+}
+
+/* ==========================================================
+   Parallel lines diagram generator
+   - Two parallel horizontal lines + one transversal
+   - Labels placed inside angle sectors
+========================================================== */
+function sectorForPos(pos, tDeg){
+  const t = degNorm(tDeg);
+  const up = degNorm(t + 180);
+  if (pos === "SE") return { start: 0,  end: t };
+  if (pos === "SW") return { start: t,  end: 180 };
+  if (pos === "NW") return { start: 180, end: up };
+  // NE
+  return { start: up, end: 0 };
+}
+
+function pickParallelGeometry(){
+  // Pick a realistic transversal angle (acute with horizontal)
+  const t = randInt(35, 70); // down-right
+  const yTop = 85;
+  const yBot = 210;
+
+  // Choose center so intersection x stays in view
+  for (let tries=0; tries<40; tries++){
+    const cx = randInt(230, 290);
+    const cy = randInt(135, 155);
+    const sin = Math.sin(t*Math.PI/180);
+    if (Math.abs(sin) < 0.2) continue;
+    const cos = Math.cos(t*Math.PI/180);
+
+    const sTop = (yTop - cy) / sin;
+    const sBot = (yBot - cy) / sin;
+    const xTop = cx + sTop * cos;
+    const xBot = cx + sBot * cos;
+
+    if (xTop > 110 && xTop < 410 && xBot > 110 && xBot < 410){
+      return { tDeg: t, yTop, yBot, cx, cy, xTop, xBot };
+    }
+  }
+  // Fallback
+  return { tDeg: 55, yTop: 85, yBot: 210, cx: 260, cy: 145, xTop: 220, xBot: 300 };
+}
+
+function svgParallelTransversal(cfg){
+  const geom = cfg.geom || pickParallelGeometry();
+  const tDeg = geom.tDeg;
+  const yTop = geom.yTop, yBot = geom.yBot;
+  const xTop = geom.xTop, xBot = geom.xBot;
+
+  const leftX = 40, rightX = 480;
+
+  // Transversal endpoints
+  const cx = geom.cx, cy = geom.cy;
+  const R = 420;
+  const p1 = polar(cx, cy, R, tDeg);
+  const p2 = polar(cx, cy, R, degNorm(tDeg + 180));
+
+  // Small arrows to show parallel
+  function arrowAt(x, y, dir){
+    const len = 14;
+    const a = polar(x, y, len, dir + 160);
+    const b = polar(x, y, len, dir - 160);
+    return `<path d="M ${a.x.toFixed(2)} ${a.y.toFixed(2)} L ${x.toFixed(2)} ${y.toFixed(2)} L ${b.x.toFixed(2)} ${b.y.toFixed(2)}"
+      fill="none" stroke="#111" stroke-width="3" stroke-linecap="round"/>`;
+  }
+
+  // Labels
+  const topLabels = (cfg.labelsTop || []).map(L => {
+    const sec = sectorForPos(L.pos, tDeg);
+    return svgAngleMarkAt(xTop, yTop, sec.start, sec.end, L.label, L.color);
+  }).join("\\n");
+
+  const botLabels = (cfg.labelsBot || []).map(L => {
+    const sec = sectorForPos(L.pos, tDeg);
+    return svgAngleMarkAt(xBot, yBot, sec.start, sec.end, L.label, L.color);
+  }).join("\\n");
+
+  return `
+  <svg viewBox="0 0 520 280" xmlns="http://www.w3.org/2000/svg" aria-label="Parallel lines with transversal">
+    <!-- parallel lines -->
+    <line x1="${leftX}" y1="${yTop}" x2="${rightX}" y2="${yTop}" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+    <line x1="${leftX}" y1="${yBot}" x2="${rightX}" y2="${yBot}" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+    ${arrowAt(160, yTop, 0)}
+    ${arrowAt(360, yTop, 0)}
+    ${arrowAt(160, yBot, 0)}
+    ${arrowAt(360, yBot, 0)}
+
+    <!-- transversal -->
+    <line x1="${p1.x.toFixed(2)}" y1="${p1.y.toFixed(2)}" x2="${p2.x.toFixed(2)}" y2="${p2.y.toFixed(2)}"
+      stroke="#111" stroke-width="6" stroke-linecap="round"/>
+
+    <!-- intersection points -->
+    <circle cx="${xTop.toFixed(2)}" cy="${yTop.toFixed(2)}" r="6.5" fill="#111"/>
+    <circle cx="${xBot.toFixed(2)}" cy="${yBot.toFixed(2)}" r="6.5" fill="#111"/>
+    <text x="${(xTop+14).toFixed(2)}" y="${(yTop-12).toFixed(2)}" font-size="14" font-weight="900">P</text>
+    <text x="${(xBot+14).toFixed(2)}" y="${(yBot-12).toFixed(2)}" font-size="14" font-weight="900">Q</text>
+
+    ${topLabels}
+    ${botLabels}
+  </svg>`;
+}
+
+/* ==========================================================
+   Parts + question banks
+========================================================== */
+const PART_TITLES = [
+  "Part A: Basic Concepts (Parallel Lines)",
+  "Part B: Diagram Questions (Simple)",
+  "Part C: Challenge Diagrams (Harder)"
+];
+
+function hintForPart(partIndex){
+  if (partIndex === 0){
+    return `
+      <div class="hint-box">
+        <b>Key facts (parallel lines):</b><br>
+        • Corresponding angles are equal<br>
+        • Alternate (interior) angles are equal<br>
+        • Co-interior (same-side interior) angles add to 180°
+      </div>`;
+  }
+  if (partIndex === 1){
+    return `
+      <div class="hint-box">
+        <b>Tip:</b><br>
+        Identify the relationship (corresponding / alternate / co-interior), then form an equation for <b>x</b>.
+      </div>`;
+  }
+  return `
+    <div class="hint-box">
+      <b>Challenge:</b><br>
+      Some questions need 2 steps (e.g., vertical opposite + corresponding), or solving an algebra equation.
+    </div>`;
+}
+
+/* --- Part A (2 questions) --- */
+const CONCEPT_BANK = [
+  {
+    id:"A1",
+    build:(partIndex, idx) => makeQ(partIndex, idx,
+      `Two parallel lines are cut by a transversal. Which statement is correct?<br>
+       <b>A.</b> Corresponding angles are equal.<br>
+       <b>B.</b> Alternate angles add up to 180°.<br>
+       <b>C.</b> Co-interior angles are equal.<br>
+       <b>D.</b> Corresponding angles add up to 360°.`,
+      {type:"mc", value:"A"},
+      "A",
+      "Answer with a single letter: A, B, C or D."
+    )
+  },
+  {
+    id:"A2",
+    build:(partIndex, idx) => makeQ(partIndex, idx,
+      `Co-interior angles (same-side interior angles) between two parallel lines add up to <b>__°</b>.`,
+      {type:"integer", value:180},
+      "180°",
+      "Enter an integer."
+    )
+  },
+  {
+    id:"A3",
+    build:(partIndex, idx) => makeQ(partIndex, idx,
+      `If two parallel lines are cut by a transversal, alternate interior angles are:<br>
+       <b>A.</b> equal<br>
+       <b>B.</b> supplementary (sum 180°)<br>
+       <b>C.</b> always acute<br>
+       <b>D.</b> always reflex`,
+      {type:"mc", value:"A"},
+      "A",
+      "Answer with a single letter."
+    )
+  },
+  {
+    id:"A4",
+    build:(partIndex, idx) => makeQ(partIndex, idx,
+      `In parallel lines, corresponding angles are <b>__</b> (equal / supplementary).`,
+      {type:"word", accept:["equal", "the same", "same"]},
+      "equal",
+      "Type the word: equal."
+    )
+  },
+  {
+    id:"A5",
+    build:(partIndex, idx) => makeQ(partIndex, idx,
+      `If two lines are parallel, then the angle facts (corresponding / alternate / co-interior) can be used because the lines are parallel.<br>
+       Which pair of angles are on the <b>same side</b> of the transversal and <b>inside</b> the two lines?<br>
+       <b>A.</b> Corresponding<br>
+       <b>B.</b> Alternate interior<br>
+       <b>C.</b> Co-interior<br>
+       <b>D.</b> Vertically opposite`,
+      {type:"mc", value:"C"},
+      "C",
+      "Answer with a single letter."
+    )
+  }
+];
+
+/* --- Part B (Simple) templates: choose 4 --- */
+const SIMPLE_BANK = [
+  {
+    id:"B1_corr_equal_topSE_botSE",
+    build:(partIndex, idx) => {
+      const A = randInt(35, 145);
+      const geom = pickParallelGeometry();
+      const svg = svgParallelTransversal({
+        geom,
+        labelsTop:[{pos:"SE", label:`${A}°`, color:"#d32f2f"}],
+        labelsBot:[{pos:"SE", label:"x°", color:"#2e7d32"}]
+      });
+      const desc = `AB ∥ CD. A transversal meets AB at P and CD at Q. The given angle is the angle between AB (to the right) and the transversal (going down). The unknown x is the angle in the same position at Q (corresponding).`;
+      return makeQ(partIndex, idx,
+        `<div class="diagram">${svg}</div>
+         <div class="desc"><b>Text description:</b> ${desc}</div>
+         Find <b>x</b>.`,
+        {type:"integer", value:A},
+        `${A}°`,
+        "Use corresponding angles (equal). Enter an integer."
+      );
+    }
+  },
+  {
+    id:"B2_alt_equal_topSE_botNW",
+    build:(partIndex, idx) => {
+      const A = randInt(30, 80); // make it clearly acute
+      const geom = pickParallelGeometry();
+      const svg = svgParallelTransversal({
+        geom,
+        labelsTop:[{pos:"SE", label:`${A}°`, color:"#1565c0"}],
+        labelsBot:[{pos:"NW", label:"x°", color:"#7b1fa2"}]
+      });
+      const desc = `AB ∥ CD. The angle at P is an interior angle on the right side of the transversal. Angle x at Q is the interior angle on the left side of the transversal. These are alternate interior angles.`;
+      return makeQ(partIndex, idx,
+        `<div class="diagram">${svg}</div>
+         <div class="desc"><b>Text description:</b> ${desc}</div>
+         Find <b>x</b>.`,
+        {type:"integer", value:A},
+        `${A}°`,
+        "Use alternate interior angles (equal). Enter an integer."
+      );
+    }
+  },
+  {
+    id:"B3_cointerior_sum180_topSE_botSW",
+    build:(partIndex, idx) => {
+      const A = randInt(40, 130);
+      const x = 180 - A;
+      const geom = pickParallelGeometry();
+      const svg = svgParallelTransversal({
+        geom,
+        labelsTop:[{pos:"SE", label:`${A}°`, color:"#d32f2f"}],
+        labelsBot:[{pos:"SW", label:"x°", color:"#2e7d32"}]
+      });
+      const desc = `AB ∥ CD. The given angle at P and angle x at Q are interior angles on the same side of the transversal (co-interior).`;
+      return makeQ(partIndex, idx,
+        `<div class="diagram">${svg}</div>
+         <div class="desc"><b>Text description:</b> ${desc} Co-interior angles add to 180°.</div>
+         Find <b>x</b>.`,
+        {type:"integer", value:x},
+        `${x}°`,
+        "Use co-interior angles: sum = 180°. Enter an integer."
+      );
+    }
+  },
+  {
+    id:"B4_corr_equal_topNE_botNE",
+    build:(partIndex, idx) => {
+      const A = randInt(35, 145);
+      const geom = pickParallelGeometry();
+      const svg = svgParallelTransversal({
+        geom,
+        labelsTop:[{pos:"NE", label:`${A}°`, color:"#f57c00"}],
+        labelsBot:[{pos:"NE", label:"x°", color:"#2e7d32"}]
+      });
+      const desc = `AB ∥ CD. The marked angles are both the “top-right” angles at P and Q, so they are corresponding angles.`;
+      return makeQ(partIndex, idx,
+        `<div class="diagram">${svg}</div>
+         <div class="desc"><b>Text description:</b> ${desc}</div>
+         Find <b>x</b>.`,
+        {type:"integer", value:A},
+        `${A}°`,
+        "Use corresponding angles (equal). Enter an integer."
+      );
+    }
+  },
+  {
+    id:"B5_alt_equal_topSW_botNE",
+    build:(partIndex, idx) => {
+      const A = randInt(35, 125);
+      const geom = pickParallelGeometry();
+      const svg = svgParallelTransversal({
+        geom,
+        labelsTop:[{pos:"SW", label:`${A}°`, color:"#1565c0"}],
+        labelsBot:[{pos:"NE", label:"x°", color:"#7b1fa2"}]
+      });
+      const desc = `AB ∥ CD. The given angle at P is an interior angle on the left side of the transversal. Angle x at Q is an interior angle on the right side of the transversal. These are alternate interior angles.`;
+      return makeQ(partIndex, idx,
+        `<div class="diagram">${svg}</div>
+         <div class="desc"><b>Text description:</b> ${desc}</div>
+         Find <b>x</b>.`,
+        {type:"integer", value:A},
+        `${A}°`,
+        "Use alternate interior angles (equal). Enter an integer."
+      );
+    }
+  },
+  {
+    id:"B6_cointerior_sum180_topSW_botNW",
+    build:(partIndex, idx) => {
+      const A = randInt(35, 130);
+      const x = 180 - A;
+      const geom = pickParallelGeometry();
+      const svg = svgParallelTransversal({
+        geom,
+        labelsTop:[{pos:"SW", label:`${A}°`, color:"#d32f2f"}],
+        labelsBot:[{pos:"NW", label:"x°", color:"#2e7d32"}]
+      });
+      const desc = `AB ∥ CD. The given angle at P and angle x at Q are interior angles on the same side of the transversal (co-interior).`;
+      return makeQ(partIndex, idx,
+        `<div class="diagram">${svg}</div>
+         <div class="desc"><b>Text description:</b> ${desc} Co-interior angles add to 180°.</div>
+         Find <b>x</b>.`,
+        {type:"integer", value:x},
+        `${x}°`,
+        "Use co-interior angles: sum = 180°. Enter an integer."
+      );
+    }
+  }
+];
+
+/* --- Part C (Challenge) templates: choose 4 --- */
+const CHALLENGE_BANK = [
+  {
+    id:"C1_corr_algebra_equal",
+    build:(partIndex, idx) => {
+      const x = randInt(12, 38);
+      const a = 2*x + 14;         // angle value for expr1
+      const expr1 = `2x + 14°`;
+      const expr2 = `${a}°`;      // numeric on corresponding
+      const geom = pickParallelGeometry();
+      const svg = svgParallelTransversal({
+        geom,
+        labelsTop:[{pos:"SE", label:expr1, color:"#d32f2f"}],
+        labelsBot:[{pos:"SE", label:expr2, color:"#1565c0"}]
+      });
+      const desc = `AB ∥ CD. The two labelled angles are corresponding (same position at P and Q), so they are equal. Solve 2x + 14 = ${a}.`;
+      return makeQ(partIndex, idx,
+        `<div class="diagram">${svg}</div>
+         <div class="desc"><b>Text description:</b> ${desc}</div>
+         Find <b>x</b>.`,
+        {type:"integer", value:x},
+        `${x}`,
+        "Set corresponding angles equal, then solve for x."
+      );
+    }
+  },
+  {
+    id:"C2_alt_algebra_equal",
+    build:(partIndex, idx) => {
+      const x = randInt(15, 45);
+      const A = 3*x - 10;
+      const B = A; // equal
+      const expr1 = `3x - 10°`;
+      const expr2 = `${B}°`;
+      const geom = pickParallelGeometry();
+      const svg = svgParallelTransversal({
+        geom,
+        labelsTop:[{pos:"SW", label:expr1, color:"#7b1fa2"}],
+        labelsBot:[{pos:"NE", label:expr2, color:"#1565c0"}]
+      });
+      const desc = `AB ∥ CD. The labelled angles are alternate interior angles, so they are equal. Solve 3x - 10 = ${B}.`;
+      return makeQ(partIndex, idx,
+        `<div class="diagram">${svg}</div>
+         <div class="desc"><b>Text description:</b> ${desc}</div>
+         Find <b>x</b>.`,
+        {type:"integer", value:x},
+        `${x}`,
+        "Use alternate interior angles (equal), then solve for x."
+      );
+    }
+  },
+  {
+    id:"C3_cointerior_algebra_sum180",
+    build:(partIndex, idx) => {
+      const x = randInt(10, 32);
+      const a = x + 25;
+      const b = 2*x + 5;
+      // a + b should be 180; choose x so it works by constructing b from 180-a
+      // We'll override b to guarantee solution:
+      const bTrue = 180 - a; // numeric
+      // now solve: 2x + 5 = bTrue  => 2x = bTrue-5
+      const xTrue = (bTrue - 5)/2;
+      if (!Number.isInteger(xTrue) || xTrue < 8 || xTrue > 40){
+        // fallback to a deterministic solvable one
+        const x2 = 25;
+        const a2 = x2 + 25;          // 50
+        const b2 = 180 - a2;         // 130
+        const geom2 = pickParallelGeometry();
+        const svg2 = svgParallelTransversal({
+          geom: geom2,
+          labelsTop:[{pos:"SE", label:`x + 25°`, color:"#d32f2f"}],
+          labelsBot:[{pos:"SW", label:`${b2}°`, color:"#1565c0"}]
+        });
+        const desc2 = `AB ∥ CD. The two labelled angles are co-interior (inside the lines on the same side of the transversal), so they add to 180°. Solve (x + 25) + ${b2} = 180.`;
+        return makeQ(partIndex, idx,
+          `<div class="diagram">${svg2}</div>
+           <div class="desc"><b>Text description:</b> ${desc2}</div>
+           Find <b>x</b>.`,
+          {type:"integer", value:x2},
+          `${x2}`,
+          "Use co-interior angles: sum = 180°, then solve for x."
+        );
+      }
+
+      const geom = pickParallelGeometry();
+      const svg = svgParallelTransversal({
+        geom,
+        labelsTop:[{pos:"SE", label:`x + 25°`, color:"#d32f2f"}],
+        labelsBot:[{pos:"SW", label:`2x + 5°`, color:"#1565c0"}]
+      });
+      const desc = `AB ∥ CD. The labelled angles are co-interior (same-side interior), so they add to 180°. Solve (x + 25) + (2x + 5) = 180.`;
+      return makeQ(partIndex, idx,
+        `<div class="diagram">${svg}</div>
+         <div class="desc"><b>Text description:</b> ${desc}</div>
+         Find <b>x</b>.`,
+        {type:"integer", value:50},
+        "50",
+        "Use co-interior angles: sum = 180°, then solve for x."
+      );
+    }
+  },
+  {
+    id:"C4_two_step_vertical_then_corr",
+    build:(partIndex, idx) => {
+      // Two-step: Given an angle at P is A (NE). The vertically opposite at P is also A (SW).
+      // That SW at P corresponds to NW at Q => x = A
+      const A = randInt(40, 140);
+      const geom = pickParallelGeometry();
+      const svg = svgParallelTransversal({
+        geom,
+        labelsTop:[
+          {pos:"NE", label:`${A}°`, color:"#d32f2f"},
+          {pos:"SW", label:`${A}°`, color:"#999999"} // show the vertical opposite as a hint
+        ],
+        labelsBot:[
+          {pos:"NW", label:"x°", color:"#2e7d32"}
+        ]
+      });
+      const desc = `AB ∥ CD. At P, the top-right angle is ${A}°. The angle vertically opposite to it at P is also ${A}°. Angle x at Q is corresponding to that vertically opposite angle.`;
+      return makeQ(partIndex, idx,
+        `<div class="diagram">${svg}</div>
+         <div class="desc"><b>Text description:</b> ${desc}</div>
+         Find <b>x</b>.`,
+        {type:"integer", value:A},
+        `${A}°`,
+        "Step 1: vertically opposite angles are equal. Step 2: use corresponding angles."
+      );
+    }
+  },
+  {
+    id:"C5_alt_then_straight_line",
+    build:(partIndex, idx) => {
+      // Two-step: Use alternate interior to find an interior angle, then use straight line at Q to get x.
+      const A = randInt(35, 85);     // acute
+      const x = 180 - A;             // adjacent on straight line
+      const geom = pickParallelGeometry();
+      const svg = svgParallelTransversal({
+        geom,
+        labelsTop:[{pos:"SE", label:`${A}°`, color:"#1565c0"}],   // interior-right at P
+        labelsBot:[{pos:"NW", label:`${A}°`, color:"#999999"}, {pos:"NE", label:"x°", color:"#d32f2f"}]
+      });
+      const desc = `AB ∥ CD. The interior angle at P (right side) is ${A}°. The alternate interior angle at Q (left side, inside the lines) is also ${A}°. Angle x at Q is adjacent to that angle on a straight line, so x = 180 - ${A}.`;
+      return makeQ(partIndex, idx,
+        `<div class="diagram">${svg}</div>
+         <div class="desc"><b>Text description:</b> ${desc}</div>
+         Find <b>x</b>.`,
+        {type:"integer", value:x},
+        `${x}°`,
+        "Use alternate interior angles, then straight line sum = 180°."
+      );
+    }
+  },
+  {
+    id:"C6_corr_algebra_both_sides",
+    build:(partIndex, idx) => {
+      // Corresponding: (4x - 12) equals (2x + 48)
+      const x = randInt(15, 45);
+      const leftVal = 4*x - 12;
+      const rightVal = 2*x + 48;
+      // Ensure within 20..160
+      if (leftVal < 20 || leftVal > 160 || rightVal < 20 || rightVal > 160){
+        const x2 = 30;
+        const geom2 = pickParallelGeometry();
+        const svg2 = svgParallelTransversal({
+          geom: geom2,
+          labelsTop:[{pos:"NE", label:`4x - 12°`, color:"#7b1fa2"}],
+          labelsBot:[{pos:"NE", label:`2x + 48°`, color:"#1565c0"}]
+        });
+        const desc2 = `AB ∥ CD. The labelled angles are corresponding, so they are equal. Solve 4x - 12 = 2x + 48.`;
+        return makeQ(partIndex, idx,
+          `<div class="diagram">${svg2}</div>
+           <div class="desc"><b>Text description:</b> ${desc2}</div>
+           Find <b>x</b>.`,
+          {type:"integer", value:30},
+          "30",
+          "Set corresponding angles equal and solve for x."
+        );
+      }
+
+      const geom = pickParallelGeometry();
+      const svg = svgParallelTransversal({
+        geom,
+        labelsTop:[{pos:"NE", label:`4x - 12°`, color:"#7b1fa2"}],
+        labelsBot:[{pos:"NE", label:`2x + 48°`, color:"#1565c0"}]
+      });
+      const desc = `AB ∥ CD. The labelled angles are corresponding (same position), so they are equal. Solve 4x - 12 = 2x + 48.`;
+      return makeQ(partIndex, idx,
+        `<div class="diagram">${svg}</div>
+         <div class="desc"><b>Text description:</b> ${desc}</div>
+         Find <b>x</b>.`,
+        {type:"integer", value:x},
+        `${x}`,
+        "Set corresponding angles equal and solve for x."
+      );
+    }
+  }
+];
+
+/* ==========================================================
+   State
+========================================================== */
+let questions = [];
+let currentQuestionIndex = 0;
+let studentName = "Student";
+let quizSubmitted = false;
+
+let setNumber = 1;
+let lastBCSignature = ""; // to prevent repeating Part B/C template IDs
+
+const quizContent = document.getElementById("quizContent");
+const sidebarEl   = document.getElementById("sidebar");
+
+const pauseResumeBtn = document.getElementById("pauseResumeButton");
+const generateBtn = document.getElementById("generateButton");
+
+const timeLine = document.getElementById("timeLine");
+const studentLine = document.getElementById("studentLine");
+const setLine = document.getElementById("setLine");
+
+/* ==========================================================
+   Timer (Pause/Resume without popup)
+========================================================== */
+let timerInterval = null;
+let elapsedMs = 0;
+let lastTickMs = 0;
+let timerPaused = false;
+let timerRunning = false;
+
+function pad2(n){ return String(n).padStart(2,"0"); }
+function formatElapsed(ms){
+  const totalSec = Math.floor(ms / 1000);
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${pad2(m)}:${pad2(s)}`;
+}
+function updateTimerUI(){
+  timeLine.textContent = `Time: ${formatElapsed(elapsedMs)}`;
+}
+function startTimer(){
+  stopTimer();
+  elapsedMs = 0;
+  timerPaused = false;
+  timerRunning = true;
+  lastTickMs = Date.now();
+  updateTimerUI();
+  timerInterval = setInterval(() => {
+    if (!timerRunning || timerPaused) return;
+    const now = Date.now();
+    elapsedMs += (now - lastTickMs);
+    lastTickMs = now;
+    updateTimerUI();
+  }, 250);
+  pauseResumeBtn.textContent = "Pause";
+}
+function stopTimer(){
+  timerRunning = false;
+  timerPaused = false;
+  if (timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+}
+function pauseTimer(){
+  if (!timerRunning) return;
+  timerPaused = true;
+  lastTickMs = Date.now();
+  pauseResumeBtn.textContent = "Resume";
+  setControlsLocked(true);
+}
+function resumeTimer(){
+  if (!timerRunning) return;
+  timerPaused = false;
+  lastTickMs = Date.now();
+  pauseResumeBtn.textContent = "Pause";
+  setControlsLocked(false);
+}
+function setControlsLocked(lock){
+  const input = document.getElementById("answerInput");
+  if (input) input.disabled = !!lock;
+
+  const btnIds = ["nextButton","backButton","submitButton","checkButton","saveButton"];
+  btnIds.forEach(id => {
+    const b = document.getElementById(id);
+    if (b) b.disabled = !!lock;
+  });
+
+  if (sidebarEl){
+    sidebarEl.style.pointerEvents = lock ? "none" : "auto";
+    sidebarEl.style.opacity = lock ? "0.6" : "1";
+  }
+}
+
+/* ==========================================================
+   Generate Quiz (Part A=2, Part B=4, Part C=4)
+========================================================== */
+function pickTemplates(bank, count, avoidSet){
+  const arr = bank.slice();
+  const picked = [];
+  const used = new Set(avoidSet || []);
+  // shuffle indices
+  const shuffled = shuffle(arr);
+  for (const t of shuffled){
+    if (picked.length >= count) break;
+    if (used.has(t.id)) continue;
+    picked.push(t);
+    used.add(t.id);
+  }
+  // if not enough, allow repeats only within the same part as last resort
+  if (picked.length < count){
+    for (const t of shuffled){
+      if (picked.length >= count) break;
+      if (picked.some(p => p.id === t.id)) continue;
+      picked.push(t);
+    }
+  }
+  return picked;
+}
+
+function generateQuiz(){
+  // We try a few times to ensure Part B/C template IDs are not identical to the previous set
+  for (let attempt=0; attempt<25; attempt++){
+    const partA = pickTemplates(CONCEPT_BANK, 2, []);
+    const usedAcross = new Set();
+    const partB = pickTemplates(SIMPLE_BANK, 4, usedAcross);
+    partB.forEach(t => usedAcross.add(t.id));
+    const partC = pickTemplates(CHALLENGE_BANK, 4, usedAcross);
+
+    const sig = "B:" + partB.map(t => t.id).sort().join("|") + "||C:" + partC.map(t => t.id).sort().join("|");
+    if (sig === lastBCSignature) continue; // try again
+    lastBCSignature = sig;
+
+    // build questions
+    questions = [];
+    quizSubmitted = false;
+
+    let idxA = 0;
+    for (const t of partA){ questions.push(t.build(0, idxA++)); }
+
+    let idxB = 0;
+    for (const t of partB){ questions.push(t.build(1, idxB++)); }
+
+    let idxC = 0;
+    for (const t of partC){ questions.push(t.build(2, idxC++)); }
+
+    return;
+  }
+
+  // fallback (should almost never happen)
+  questions = [];
+  quizSubmitted = false;
+  let idxA = 0; pickTemplates(CONCEPT_BANK, 2, []).forEach(t => questions.push(t.build(0, idxA++)));
+  let idxB = 0; pickTemplates(SIMPLE_BANK, 4, []).forEach(t => questions.push(t.build(1, idxB++)));
+  let idxC = 0; pickTemplates(CHALLENGE_BANK, 4, []).forEach(t => questions.push(t.build(2, idxC++)));
+}
+
+/* ==========================================================
+   Save input / grade
+========================================================== */
+function saveCurrentInput(){
+  const input = document.getElementById("answerInput");
+  if (input) questions[currentQuestionIndex].userValue = input.value.trim();
+}
+function gradeAll(){
+  let correctCount = 0;
+  questions.forEach(q => {
+    const res = compareByType(q.userValue || "", q.correct);
+    q.isCorrect = (!!res.ok);
+    if (q.isCorrect) correctCount++;
+  });
+  return correctCount;
+}
+
+/* ==========================================================
+   Sidebar
+========================================================== */
+function renderSidebar(){
+  sidebarEl.style.display = "block";
+  sidebarEl.innerHTML = `<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul = document.getElementById("qList");
+
+  for (let i = 0; i < questions.length; i++){
+    const q = questions[i];
+    const li = document.createElement("li");
+    li.textContent = `Q${i + 1} (P${q.partIndex+1}-${q.indexInPart + 1})`;
+    li.dataset.index = String(i);
+    li.addEventListener("click", () => {
+      if (timerPaused) return;
+      saveCurrentInput();
+      currentQuestionIndex = i;
+      renderQuestion();
+    });
+    ul.appendChild(li);
+  }
+  updateSidebarStatus();
+}
+function updateSidebarStatus(){
+  const items = document.querySelectorAll("#qList li");
+  items.forEach(li => {
+    li.classList.remove("active","answered","correct","incorrect");
+
+    const idx = Number(li.dataset.index);
+    const q = questions[idx];
+
+    li.classList.toggle("active", idx === currentQuestionIndex);
+
+    const ans = (q.userValue || "").trim();
+    if (ans !== ""){
+      if (!quizSubmitted){
+        if (q.checked){
+          li.classList.add(q.isCorrect ? "correct" : "incorrect");
+        } else {
+          li.classList.add("answered");
+        }
+      } else {
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ==========================================================
+   Check Answer
+========================================================== */
+function checkCurrentAnswer(){
+  if (timerPaused) return;
+
+  saveCurrentInput();
+  const q = questions[currentQuestionIndex];
+  const fb = document.getElementById("checkFeedback");
+  if (!fb) return;
+
+  const ans = (q.userValue || "").trim();
+  if (ans === ""){
+    fb.textContent = "Please enter an answer first.";
+    fb.className = "check-feedback neutral";
+    return;
+  }
+
+  const res = compareByType(ans, q.correct);
+  q.isCorrect = !!res.ok;
+  q.checked = true;
+
+  if (!q.isCorrect){
+    fb.textContent = "❌ Incorrect. Try again.";
+    fb.className = "check-feedback incorrect";
+    updateSidebarStatus();
+    return;
+  }
+
+  fb.textContent = "✅ Correct!";
+  fb.className = "check-feedback correct";
+  updateSidebarStatus();
+}
+
+/* ==========================================================
+   Render Question
+========================================================== */
+function renderQuestion(){
+  const q = questions[currentQuestionIndex];
+  const fullLabel = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+  const total = questions.length;
+
+  const showPrev = currentQuestionIndex > 0;
+  const showNext = currentQuestionIndex < total - 1;
+
+  const isLastQuestion = (currentQuestionIndex === total - 1);
+  const showSubmit = (!quizSubmitted && isLastQuestion);
+
+  const answerHelp = q.answerHint || "Enter your answer.";
+
+  quizContent.innerHTML = `
+    <p class="question-text">Question ${currentQuestionIndex + 1} of ${total}</p>
+    <p class="instructions">${answerHelp}</p>
+
+    <div class="part-title">${PART_TITLES[q.partIndex] || ("Part " + (q.partIndex+1))}</div>
+
+    <div class="single-question">
+      <span><b>${fullLabel}.</b></span>
+      <span style="margin-left:6px;">${q.html}</span>
+      <input id="answerInput" class="answer-box" type="text" value="${(q.userValue || "").replace(/"/g,'&quot;')}">
+    </div>
+
+    ${hintForPart(q.partIndex)}
+
+    <div id="checkFeedback" class="check-feedback"></div>
+
+    <div class="question-buttons">
+      <button id="backButton" style="${showPrev ? "" : "display:none;"}">Previous</button>
+      <button id="checkButton">Check Answer</button>
+      <button id="submitButton" style="${showSubmit ? "" : "display:none;"}">Submit &amp; View Results</button>
+      <button id="nextButton" style="${showNext ? "" : "display:none;"}">Next</button>
+    </div>
+  `;
+
+  const nextBtn = document.getElementById("nextButton");
+  const backBtn = document.getElementById("backButton");
+  const submitBtn = document.getElementById("submitButton");
+  const checkBtn = document.getElementById("checkButton");
+
+  if (nextBtn) nextBtn.addEventListener("click", onNext);
+  if (backBtn) backBtn.addEventListener("click", onPrev);
+  if (submitBtn) submitBtn.addEventListener("click", onSubmit);
+  if (checkBtn) checkBtn.addEventListener("click", checkCurrentAnswer);
+
+  updateSidebarStatus();
+  setControlsLocked(timerPaused);
+}
+
+/* ==========================================================
+   Results + Save TXT
+========================================================== */
+function formatDateForFilename(date){
+  const pad = n => String(n).padStart(2,"0");
+  return (
+    date.getFullYear() +
+    pad(date.getMonth() + 1) +
+    pad(date.getDate()) + "_" +
+    pad(date.getHours()) +
+    pad(date.getMinutes()) +
+    pad(date.getSeconds())
+  );
+}
+function downloadBlob(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function saveResultAsTxt(){
+  saveCurrentInput();
+  const correctCount = gradeAll();
+  const lines = [];
+  lines.push("DYAA Education — Angles (Parallel Lines) — Result");
+  lines.push("Student: " + studentName);
+  lines.push("Set: " + setNumber);
+  lines.push("Time taken: " + formatElapsed(elapsedMs));
+  lines.push("Score: " + correctCount + " / " + questions.length);
+  lines.push("");
+  lines.push("Details:");
+  lines.push("----------");
+
+  questions.forEach((q, i) => {
+    const partLbl = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+    const userAns = (q.userValue || "").trim() === "" ? "Not answered" : q.userValue;
+    const resultText = (q.userValue || "").trim() === ""
+      ? "Not answered"
+      : (q.isCorrect ? "Correct" : "Incorrect");
+
+    lines.push(
+      `Q${i + 1} (${partLbl})` +
+      "\\nQuestion: " + q.plain +
+      "\\nYour answer: " + userAns +
+      "\\nCorrect answer: " + stripHTML(q.displayCorrect) +
+      "\\nResult: " + resultText
+    );
+    lines.push("");
+  });
+
+  const content = lines.join("\\n");
+  const blob = new Blob([content], { type:"text/plain;charset=utf-8" });
+  const safeName = studentName.replace(/[^a-z0-9_\\-]/gi,"_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  downloadBlob(blob, `Angles_ParallelLines_${safeName}_Set${setNumber}_${ts}.txt`);
+}
+
+function onSubmit(){
+  if (timerPaused) return;
+
+  saveCurrentInput();
+  stopTimer();
+  quizSubmitted = true;
+  gradeAll();
+
+  const correctCount = questions.filter(q => q.isCorrect).length;
+  const diffSec = Math.floor(elapsedMs / 1000);
+  const min = Math.floor(diffSec / 60);
+  const sec = diffSec % 60;
+
+  let html = `
+    <h3>Results for ${studentName}</h3>
+    <p>Set: <strong>${setNumber}</strong></p>
+    <p>Time taken: <strong>${min}m ${sec}s</strong></p>
+    <p>Score: <strong>${correctCount} / ${questions.length}</strong></p>
+
+    <div class="question-buttons">
+      <button id="saveButton">Save Current Result</button>
+    </div>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th>
+        <th>Part</th>
+        <th>Question</th>
+        <th>Your Answer</th>
+        <th>Correct</th>
+        <th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q, i) => {
+    const partLbl = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+    const yourAns = (q.userValue || "").trim() === "" ? "—" : q.userValue;
+    html += `
+      <tr class="${q.isCorrect ? "correct-answer" : "incorrect-answer"}">
+        <td>${i + 1}</td>
+        <td>${partLbl}</td>
+        <td style="text-align:left;">${q.html}</td>
+        <td>${yourAns}</td>
+        <td>${q.displayCorrect}</td>
+        <td>${q.isCorrect ? "Correct" : "Incorrect"}</td>
+      </tr>
+    `;
+  });
+  html += `</table>`;
+
+  quizContent.innerHTML = html;
+
+  const saveBtn = document.getElementById("saveButton");
+  if (saveBtn) saveBtn.addEventListener("click", saveResultAsTxt);
+
+  pauseResumeBtn.style.display = "none";
+  generateBtn.style.display = "inline-block";
+  updateSidebarStatus();
+}
+
+/* ==========================================================
+   Navigation
+========================================================== */
+function onNext(){
+  if (timerPaused) return;
+  saveCurrentInput();
+  if (currentQuestionIndex < questions.length - 1){
+    currentQuestionIndex++;
+    renderQuestion();
+  }
+}
+function onPrev(){
+  if (timerPaused) return;
+  saveCurrentInput();
+  if (currentQuestionIndex > 0){
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+}
+
+/* ==========================================================
+   Start Screen
+========================================================== */
+function showStartScreen(){
+  sidebarEl.style.display = "none";
+  generateBtn.style.display = "none";
+  pauseResumeBtn.style.display = "none";
+
+  timeLine.textContent = "Time: 00:00";
+  studentLine.textContent = "Student: Student";
+  setLine.textContent = "Set: 1";
+
+  quizContent.innerHTML = `
+    <p>This quiz covers angles formed by <b>parallel lines</b> and a <b>transversal</b>:</p>
+    <ul>
+      <li>Corresponding angles (equal)</li>
+      <li>Alternate interior angles (equal)</li>
+      <li>Co-interior angles (sum 180°)</li>
+    </ul>
+
+    <p><b>Step 1:</b> Enter your name</p>
+    <input id="nameInput" type="text"
+      style="padding:10px; width:280px; font-size:1.05em; border-radius:10px; border:1px solid #ddd;"
+      placeholder="Your name">
+
+    <div class="question-buttons" style="margin-top:18px;">
+      <button id="startButton" style="background:#4caf50;">Start Quiz</button>
+    </div>
+  `;
+
+  const nameInput = document.getElementById("nameInput");
+  if (nameInput && URL_STUDENT_NAME){
+    nameInput.value = URL_STUDENT_NAME;
+  }
+
+  document.getElementById("startButton").addEventListener("click", startQuiz);
+}
+
+function startQuiz(){
+  const nameInput = document.getElementById("nameInput");
+  studentName = (nameInput.value || "Student").trim();
+
+  setNumber = 1;
+  setLine.textContent = `Set: ${setNumber}`;
+  studentLine.textContent = `Student: ${studentName}`;
+
+  generateQuiz();
+  currentQuestionIndex = 0;
+
+  startTimer();
+
+  sidebarEl.style.display = "block";
+  generateBtn.style.display = "inline-block";
+  pauseResumeBtn.style.display = "inline-block";
+
+  generateBtn.onclick = () => {
+    if (timerPaused) return;
+
+    if (!confirm("Generate a new random set? All answers will be lost.")) return;
+
+    setNumber++;
+    setLine.textContent = `Set: ${setNumber}`;
+
+    generateQuiz();
+    currentQuestionIndex = 0;
+    quizSubmitted = false;
+
+    startTimer();
+    pauseResumeBtn.style.display = "inline-block";
+
+    renderSidebar();
+    renderQuestion();
+  };
+
+  renderSidebar();
+  renderQuestion();
+}
+
+/* ==========================================================
+   Pause button
+========================================================== */
+pauseResumeBtn.addEventListener("click", () => {
+  if (!timerRunning) return;
+  if (timerPaused) resumeTimer();
+  else pauseTimer();
+});
+
+/* Init */
+showStartScreen();
+</script>
+</body>
+</html>

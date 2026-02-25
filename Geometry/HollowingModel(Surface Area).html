@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model 21 — Hollowing Model (Surface Area) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --radius:14px;
+
+      --faceTop:#f3f6ff;
+      --faceFront:#e6ecff;
+      --faceRight:#d8e2ff;
+
+      --innerTop:#e9f0ff;
+      --innerFront:#d5e2ff;
+      --innerRight:#c8d8ff;
+
+      --stroke:#1f2a44;
+      --cut:#1e88e5;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    /* subtle DYAA watermark */
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:700;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:700;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:800;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card p{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+    .learn-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:14px;
+      margin-top:12px;
+    }
+    @media (max-width:860px){
+      .learn-grid{grid-template-columns:1fr;}
+    }
+
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:800;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .q-body{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:12px;
+      margin-top:10px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .q-body{grid-template-columns:1fr;}
+    }
+
+    .svg-wrap{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fcfdff;
+      padding:8px;
+      overflow:hidden;
+    }
+    .svg-wrap svg{display:block;width:100%;height:auto;}
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"], input[type="number"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      min-width:220px;
+      max-width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus, input[type="number"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+    .feedback.ok{color:var(--ok);font-weight:800;}
+    .feedback.bad{color:var(--bad);font-weight:800;}
+
+    .footer-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin-top:14px;
+      padding-top:12px;
+      border-top:1px solid var(--line);
+    }
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    .muted{color:var(--muted);}
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    /* Print support */
+    @media print{
+      body{background:#fff;padding:0;}
+      body:before{display:none;}
+      .quiz-container{box-shadow:none;border:none;margin:0;border-radius:0;}
+      .tabs,.row,.footer-actions,.btn,.overlay{display:none !important;}
+      .panel{display:block !important;}
+      .q-card{break-inside:avoid; page-break-inside:avoid;}
+      .svg-wrap{border:1px solid #ccc;}
+      .answer-area .input-row, .answer-area .feedback{display:none !important;}
+      #resultsBox{display:none !important;}
+      /* If printing results mode */
+      body.print-results .q-card .answer-area .feedback{display:block !important;}
+      body.print-results .answer-area .input-row{display:none !important;}
+      body.print-results #resultsBox{display:block !important;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1>Model 21 — Hollowing Model (3D Solids • Surface Area)</h1>
+        <div class="sub">Same DYAA structure • crisp 3D diagrams (SVG) • 2 Easy + 2 Medium + 2 Hard • Generate New Set</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="pill" id="studentPill">
+        <b id="studentNameLabel">Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <small>URL format: <span class="muted">.../model21_hollowing.html?name=Tiger</span></small>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn secondary" id="printQuestionsBtn" type="button">Print / Save PDF (Questions)</button>
+        <button class="btn secondary" id="printResultsBtn" type="button">Print / Save PDF (Results)</button>
+        <button class="btn" id="newSetBtn" type="button">Generate New Set</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    <!-- LEARN -->
+    <div class="panel active" id="panel-learn">
+      <div class="learn-card">
+        <h2>Key Idea: Surface Area Change After Cutting a “Hole”</h2>
+        <p>
+          When you cut out a small cube/cuboid from a solid, some <b>outside faces disappear</b>,
+          but new <b>inside faces appear</b> (the walls and “floor” of the hole).
+        </p>
+        <p>
+          A reliable method is:
+          <b>New Surface Area = Original Surface Area − (area removed from outside) + (new inside area exposed)</b>.
+        </p>
+
+        <div class="learn-grid">
+          <div>
+            <p><b>Shortcut (for a cut-out cuboid of size a × b × c):</b></p>
+            <p class="muted" style="margin-top:6px;">
+              Surface area of the removed cuboid is <b>2(ab + ac + bc)</b>.
+              If the removed cuboid is flush with some outer faces of the big solid, those flush faces were “outside”
+              and will be removed. The other faces become inside walls.
+            </p>
+            <div class="note">
+              <b>Classic cube notch (small cube side = t):</b><br/>
+              • Cut at a <b>corner</b> (touches 3 faces) → surface area change = <b>0</b><br/>
+              • Cut on an <b>edge</b> (touches 2 faces) → surface area change = <b>+2t²</b><br/>
+              • Cut on a <b>face</b> (touches 1 face) → surface area change = <b>+4t²</b><br/>
+              (Because more inside walls are added than outside squares removed.)
+            </div>
+          </div>
+
+          <div class="svg-wrap" id="learnSvgWrap" aria-label="Learn diagram"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted">Answer in</span> <b>cm²</b>.
+          <span class="muted">Use numbers only (e.g.,</span> <b>96</b><span class="muted">).</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3 id="overlayTitle">Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /********************
+     * Helpers
+     ********************/
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+    function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+    function randInt(a, b){ return Math.floor(Math.random()*(b-a+1))+a; }
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+
+    function parseNumber(input){
+      if(input == null) return NaN;
+      const s = String(input).trim().replace(/cm2|cm²|\s/g,"");
+      if(!s) return NaN;
+      const v = Number(s);
+      return Number.isFinite(v) ? v : NaN;
+    }
+
+    function nearlyEqual(a,b,eps=1e-9){
+      return Math.abs(a-b) <= eps;
+    }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * 3D SVG (Isometric) — Prism with Notches
+     * Orientation: visible faces = Top (+z), Right (+x), Front (-y)
+     ********************/
+    function isoProjectorFactory(L,W,H, notches, targetW=320, targetH=220, pad=16){
+      // y is inverted so that the front face is visible
+      const projectUnit = (x,y,z,scale) => {
+        const X = (x + y) * scale;
+        const Y = (x - y) * scale * 0.5 - z * scale;
+        return {x:X, y:Y};
+      };
+
+      const pts = [];
+      // prism corners
+      const corners = [
+        [0,0,0],[L,0,0],[L,W,0],[0,W,0],
+        [0,0,H],[L,0,H],[L,W,H],[0,W,H]
+      ];
+      corners.forEach(p => pts.push(p));
+      // notch corners (for bbox)
+      (notches||[]).forEach(n=>{
+        const x0=n.x0, y0=n.y0, z0=n.z0, a=n.a, b=n.b, c=n.c;
+        const nn = [
+          [x0,y0,z0],[x0+a,y0,z0],[x0+a,y0+b,z0],[x0,y0+b,z0],
+          [x0,y0,z0+c],[x0+a,y0,z0+c],[x0+a,y0+b,z0+c],[x0,y0+b,z0+c]
+        ];
+        nn.forEach(p=>pts.push(p));
+      });
+
+      // bbox with scale=1
+      let minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity;
+      for(const [x,y,z] of pts){
+        const p = projectUnit(x,y,z,1);
+        minX = Math.min(minX, p.x);
+        maxX = Math.max(maxX, p.x);
+        minY = Math.min(minY, p.y);
+        maxY = Math.max(maxY, p.y);
+      }
+      const bw = maxX - minX || 1;
+      const bh = maxY - minY || 1;
+      const scale = Math.min((targetW - pad*2)/bw, (targetH - pad*2)/bh);
+
+      // bbox again with real scale (for translation)
+      minX=Infinity; maxX=-Infinity; minY=Infinity; maxY=-Infinity;
+      for(const [x,y,z] of pts){
+        const p = projectUnit(x,y,z,scale);
+        minX = Math.min(minX, p.x);
+        maxX = Math.max(maxX, p.x);
+        minY = Math.min(minY, p.y);
+        maxY = Math.max(maxY, p.y);
+      }
+      const tx = pad - minX;
+      const ty = pad - minY;
+
+      const P = (x,y,z) => {
+        const p = projectUnit(x,y,z,scale);
+        return {x: p.x + tx, y: p.y + ty};
+      };
+
+      return {P, w: targetW, h: targetH};
+    }
+
+    function svgPoly(points2d){
+      return points2d.map(p => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(" ");
+    }
+
+    function svgPathWithHoles(outer2d, holes2dArr){
+      // evenodd fill rule path: outer then each hole subpath
+      const toSubpath = (poly) => {
+        const first = poly[0];
+        let d = `M ${first.x.toFixed(2)} ${first.y.toFixed(2)} `;
+        for(let i=1;i<poly.length;i++){
+          d += `L ${poly[i].x.toFixed(2)} ${poly[i].y.toFixed(2)} `;
+        }
+        d += "Z ";
+        return d;
+      };
+      let d = toSubpath(outer2d);
+      for(const hole of holes2dArr){
+        d += toSubpath(hole);
+      }
+      return d.trim();
+    }
+
+    function prismSvg(L,W,H, notches, labels){
+      const {P,w,h} = isoProjectorFactory(L,W,H, notches, 340, 230, 16);
+
+      // faces (3D points)
+      const topFace3D   = [[0,0,H],[L,0,H],[L,W,H],[0,W,H]];
+      const rightFace3D = [[L,0,0],[L,W,0],[L,W,H],[L,0,H]];
+      const frontFace3D = [[0,0,0],[L,0,0],[L,0,H],[0,0,H]];
+
+      // holes per face
+      const holesTop = [];
+      const holesRight = [];
+      const holesFront = [];
+
+      (notches||[]).forEach(n=>{
+        const x0=n.x0, y0=n.y0, z0=n.z0, a=n.a, b=n.b, c=n.c;
+        const touchTop   = (z0 + c) === H;
+        const touchRight = (x0 + a) === L;
+        const touchFront = (y0 === 0);
+
+        if(touchTop){
+          holesTop.push([
+            P(x0,y0,H), P(x0+a,y0,H), P(x0+a,y0+b,H), P(x0,y0+b,H)
+          ]);
+        }
+        if(touchRight){
+          holesRight.push([
+            P(L,y0,z0), P(L,y0+b,z0), P(L,y0+b,z0+c), P(L,y0,z0+c)
+          ]);
+        }
+        if(touchFront){
+          holesFront.push([
+            P(x0,0,z0), P(x0+a,0,z0), P(x0+a,0,z0+c), P(x0,0,z0+c)
+          ]);
+        }
+      });
+
+      // outer 2D polys
+      const top2d   = topFace3D.map(p=>P(...p));
+      const right2d = rightFace3D.map(p=>P(...p));
+      const front2d = frontFace3D.map(p=>P(...p));
+
+      // Internal faces for each notch (only the ones that are usually visible in this view)
+      const innerPolys = [];
+      (notches||[]).forEach(n=>{
+        const x0=n.x0, y0=n.y0, z0=n.z0, a=n.a, b=n.b, c=n.c;
+
+        // bottom of notch (z=z0)
+        innerPolys.push({
+          cls:"innerTop",
+          pts:[ P(x0,y0,z0), P(x0+a,y0,z0), P(x0+a,y0+b,z0), P(x0,y0+b,z0) ]
+        });
+
+        // inner right-wall of notch opening (x=x0) — normal +x
+        innerPolys.push({
+          cls:"innerRight",
+          pts:[ P(x0,y0,z0), P(x0,y0+b,z0), P(x0,y0+b,z0+c), P(x0,y0,z0+c) ]
+        });
+
+        // inner back-wall (visible front-facing wall) at y=y0+b — normal -y
+        innerPolys.push({
+          cls:"innerFront",
+          pts:[ P(x0,y0+b,z0), P(x0+a,y0+b,z0), P(x0+a,y0+b,z0+c), P(x0,y0+b,z0+c) ]
+        });
+      });
+
+      // Edges for outline (prism)
+      const edges = [
+        [[0,0,0],[L,0,0]], [[L,0,0],[L,W,0]], [[L,W,0],[0,W,0]], [[0,W,0],[0,0,0]],
+        [[0,0,H],[L,0,H]], [[L,0,H],[L,W,H]], [[L,W,H],[0,W,H]], [[0,W,H],[0,0,H]],
+        [[0,0,0],[0,0,H]], [[L,0,0],[L,0,H]], [[L,W,0],[L,W,H]], [[0,W,0],[0,W,H]],
+      ];
+
+      // Labels
+      const labelEls = [];
+      if(labels){
+        // L label on top-front edge (0,0,H) -> (L,0,H)
+        const pL1 = P(0,0,H), pL2 = P(L,0,H);
+        labelEls.push(svgTextMid(pL1,pL2, String(labels.L), 12, -6));
+
+        // W label on top-right edge (L,0,H) -> (L,W,H)
+        const pW1 = P(L,0,H), pW2 = P(L,W,H);
+        labelEls.push(svgTextMid(pW1,pW2, String(labels.W), 12, -6));
+
+        // H label on right-front vertical (L,0,0) -> (L,0,H)
+        const pH1 = P(L,0,0), pH2 = P(L,0,H);
+        labelEls.push(svgTextMid(pH1,pH2, String(labels.H), 12, 0));
+
+        if(labels.notch){
+          // place near the notch top corner if provided
+          const t = labels.notch;
+          const pN = P(t.x, t.y, H);
+          labelEls.push(`<text x="${(pN.x+8).toFixed(2)}" y="${(pN.y-6).toFixed(2)}"
+              font-size="12" font-weight="800" fill="var(--cut)">${escapeXml(t.text)}</text>`);
+        }
+      }
+
+      const svg = `
+<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="3D solid with cut-out (not to scale)">
+  <defs>
+    <style>
+      .faceTop{fill:var(--faceTop);stroke:var(--stroke);stroke-width:1.2;}
+      .faceFront{fill:var(--faceFront);stroke:var(--stroke);stroke-width:1.2;}
+      .faceRight{fill:var(--faceRight);stroke:var(--stroke);stroke-width:1.2;}
+      .innerTop{fill:var(--innerTop);stroke:var(--stroke);stroke-width:1.1;}
+      .innerFront{fill:var(--innerFront);stroke:var(--stroke);stroke-width:1.1;}
+      .innerRight{fill:var(--innerRight);stroke:var(--stroke);stroke-width:1.1;}
+      .edge{stroke:var(--stroke);stroke-width:1.2;fill:none;opacity:0.95;}
+      .note{font-size:11px;fill:rgba(31,42,68,0.65);font-weight:700;}
+      .label{font-size:12px;fill:rgba(31,42,68,0.95);font-weight:800;}
+    </style>
+  </defs>
+
+  <!-- Outer faces (with holes) -->
+  <path class="faceFront" fill-rule="evenodd" d="${svgPathWithHoles(front2d, holesFront)}"></path>
+  <path class="faceRight" fill-rule="evenodd" d="${svgPathWithHoles(right2d, holesRight)}"></path>
+
+  <!-- Inner faces -->
+  ${innerPolys.map(o=>`<polygon class="${o.cls}" points="${svgPoly(o.pts)}"></polygon>`).join("\n")}
+
+  <path class="faceTop" fill-rule="evenodd" d="${svgPathWithHoles(top2d, holesTop)}"></path>
+
+  <!-- Edges -->
+  ${edges.map(e=>{
+    const a=P(...e[0]), b=P(...e[1]);
+    return `<path class="edge" d="M ${a.x.toFixed(2)} ${a.y.toFixed(2)} L ${b.x.toFixed(2)} ${b.y.toFixed(2)}"></path>`;
+  }).join("\n")}
+
+  <!-- Labels -->
+  ${labelEls.join("\n")}
+
+  <text class="note" x="10" y="${(h-10)}">Not to scale</text>
+</svg>`.trim();
+
+      return svg;
+    }
+
+    function svgTextMid(p1,p2,text,fontSize=12,dy=0){
+      const mx = (p1.x+p2.x)/2;
+      const my = (p1.y+p2.y)/2 + dy;
+      return `<text class="label" x="${mx.toFixed(2)}" y="${my.toFixed(2)}" text-anchor="middle">${escapeXml(text)}</text>`;
+    }
+
+    function escapeXml(s){
+      return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+
+    /********************
+     * Voxel SVG (for the “remove edge cubes” hard question)
+     ********************/
+    function voxelSvg(n, removedKeys){
+      const removed = new Set(removedKeys || []);
+      const cubes = [];
+      for(let x=0;x<n;x++){
+        for(let y=0;y<n;y++){
+          for(let z=0;z<n;z++){
+            cubes.push({x,y,z, removed: removed.has(`${x},${y},${z}`)});
+          }
+        }
+      }
+
+      // projector for unit cube model
+      const L=n, W=n, H=n;
+      const {P,w,h} = isoProjectorFactory(L,W,H, [], 340, 230, 16);
+
+      // Painter order: draw far -> near
+      cubes.sort((a,b)=>{
+        const da = (a.x + (n-1-a.y) + a.z); // prioritize back first
+        const db = (b.x + (n-1-b.y) + b.z);
+        return da - db;
+      });
+
+      function cubeFaces(x,y,z){
+        // cube occupies [x,x+1] [y,y+1] [z,z+1]
+        const top = [P(x,y,z+1), P(x+1,y,z+1), P(x+1,y+1,z+1), P(x,y+1,z+1)];
+        const right= [P(x+1,y,z), P(x+1,y+1,z), P(x+1,y+1,z+1), P(x+1,y,z+1)];
+        const front= [P(x,y,z), P(x+1,y,z), P(x+1,y,z+1), P(x,y,z+1)]; // y face at y
+        return {top,right,front};
+      }
+
+      const parts = [];
+      for(const c of cubes){
+        const {x,y,z} = c;
+        const f = cubeFaces(x,y,z);
+
+        // Only draw cubes that are on/near visible shell to keep SVG lighter
+        // (Still shows the pattern clearly)
+        const onShell = (x===n-1) || (y===0) || (z===n-1) || (x===0) || (y===n-1);
+        if(!onShell && !c.removed) continue;
+
+        if(c.removed){
+          // show removed cubes as translucent "blue markers"
+          parts.push(`<polygon points="${svgPoly(f.top)}" fill="var(--cut)" opacity="0.22" stroke="var(--cut)" stroke-width="1.0" stroke-dasharray="3 2"></polygon>`);
+          parts.push(`<polygon points="${svgPoly(f.right)}" fill="var(--cut)" opacity="0.18" stroke="var(--cut)" stroke-width="1.0" stroke-dasharray="3 2"></polygon>`);
+          parts.push(`<polygon points="${svgPoly(f.front)}" fill="var(--cut)" opacity="0.18" stroke="var(--cut)" stroke-width="1.0" stroke-dasharray="3 2"></polygon>`);
+        }else{
+          parts.push(`<polygon points="${svgPoly(f.front)}" fill="rgba(230,236,255,0.95)" stroke="var(--stroke)" stroke-width="0.8"></polygon>`);
+          parts.push(`<polygon points="${svgPoly(f.right)}" fill="rgba(216,226,255,0.95)" stroke="var(--stroke)" stroke-width="0.8"></polygon>`);
+          parts.push(`<polygon points="${svgPoly(f.top)}" fill="rgba(243,246,255,0.95)" stroke="var(--stroke)" stroke-width="0.8"></polygon>`);
+        }
+      }
+
+      return `
+<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Voxel cube (removed cubes shaded)">
+  <text x="10" y="18" font-size="12" font-weight="800" fill="rgba(31,42,68,0.9)">Removed cubes are shaded (blue)</text>
+  ${parts.join("\n")}
+  <text x="10" y="${h-10}" font-size="11" font-weight="700" fill="rgba(31,42,68,0.65)">Not to scale</text>
+</svg>`.trim();
+    }
+
+    /********************
+     * Surface Area Calculations
+     ********************/
+    function prismSurfaceArea(L,W,H){
+      return 2*(L*W + L*H + W*H);
+    }
+
+    // SA after removing multiple non-overlapping notches from a prism
+    // Notch is a cuboid inside, described by x0,y0,z0,a,b,c.
+    // This formula works when each notch touches ONLY outer faces (no “floating” hole).
+    function prismSurfaceAreaAfterNotches(L,W,H, notches){
+      let sa = prismSurfaceArea(L,W,H);
+      for(const n of notches){
+        const a=n.a, b=n.b, c=n.c;
+        const x0=n.x0, y0=n.y0, z0=n.z0;
+
+        const touchX0 = (x0 === 0);
+        const touchXL = (x0 + a === L);
+        const touchY0 = (y0 === 0);
+        const touchYW = (y0 + b === W);
+        const touchZ0 = (z0 === 0);
+        const touchZH = (z0 + c === H);
+
+        const SA_removed = 2*(a*b + a*c + b*c);
+        let flush = 0;
+
+        if(touchX0) flush += b*c;
+        if(touchXL) flush += b*c;
+
+        if(touchY0) flush += a*c;
+        if(touchYW) flush += a*c;
+
+        if(touchZ0) flush += a*b;
+        if(touchZH) flush += a*b;
+
+        const change = SA_removed - 2*flush;
+        sa += change;
+      }
+      return sa;
+    }
+
+    function computeSurfaceAreaVoxels(n, removedKeys){
+      const removed = new Set(removedKeys || []);
+      const has = (x,y,z) => removed.has(`${x},${y},${z}`) ? false : (x>=0&&x<n&&y>=0&&y<n&&z>=0&&z<n);
+
+      let area = 0;
+      for(let x=0;x<n;x++){
+        for(let y=0;y<n;y++){
+          for(let z=0;z<n;z++){
+            if(removed.has(`${x},${y},${z}`)) continue;
+            // neighbor checks for 6 faces
+            if(!has(x+1,y,z)) area += 1;
+            if(!has(x-1,y,z)) area += 1;
+            if(!has(x,y+1,z)) area += 1;
+            if(!has(x,y-1,z)) area += 1;
+            if(!has(x,y,z+1)) area += 1;
+            if(!has(x,y,z-1)) area += 1;
+          }
+        }
+      }
+      return area;
+    }
+
+    /********************
+     * Question Generator (2 Easy + 2 Medium + 2 Hard)
+     ********************/
+    function makeQuestions(){
+      const questions = [];
+
+      // EASY 1: cube, remove small cube at corner/edge/face (random)
+      (function(){
+        const S = randInt(5, 10);
+        const t = randInt(1, Math.max(1, Math.min(3, S-2)));
+        const kind = choice(["corner","edge","face"]);
+
+        let notches = [];
+        let desc = "";
+        if(kind==="corner"){
+          // top-front-right corner
+          notches = [{x0:S-t, y0:0, z0:S-t, a:t, b:t, c:t}];
+          desc = "from a top corner (touching 3 faces)";
+        }else if(kind==="edge"){
+          const y0 = randInt(1, S-t-1);
+          notches = [{x0:S-t, y0:y0, z0:S-t, a:t, b:t, c:t}];
+          desc = "from a top edge (touching 2 faces)";
+        }else{
+          const x0 = randInt(1, S-t-1);
+          const y0 = randInt(1, S-t-1);
+          notches = [{x0:x0, y0:y0, z0:S-t, a:t, b:t, c:t}];
+          desc = "from the top face (touching 1 face)";
+        }
+
+        const answer = prismSurfaceAreaAfterNotches(S,S,S,notches);
+        const svg = prismSvg(S,S,S, notches, {
+          L:`${S}`, W:`${S}`, H:`${S}`,
+          notch:{x:notches[0].x0, y:notches[0].y0, text:`${t}`}
+        });
+
+        questions.push({
+          difficulty:"easy",
+          prompt:`A cube has side length ${S} cm. A smaller cube of side length ${t} cm is cut out ${desc} as shown. Find the surface area of the new solid (cm²).`,
+          svg,
+          answer
+        });
+      })();
+
+      // EASY 2: rectangular prism, remove 1×1×1 at corner/edge/face
+      (function(){
+        const L = randInt(6, 12);
+        const W = randInt(4, 10);
+        const H = randInt(4, 9);
+
+        const kind = choice(["corner","edge","face"]);
+        let notches = [];
+        let desc = "";
+        if(kind==="corner"){
+          notches = [{x0:L-1, y0:0, z0:H-1, a:1, b:1, c:1}];
+          desc = "at a top corner";
+        }else if(kind==="edge"){
+          const y0 = (W>=3) ? randInt(1, W-2) : 1;
+          notches = [{x0:L-1, y0:y0, z0:H-1, a:1, b:1, c:1}];
+          desc = "on a top edge (not at a corner)";
+        }else{
+          const x0 = (L>=3) ? randInt(1, L-2) : 1;
+          const y0 = (W>=3) ? randInt(1, W-2) : 1;
+          notches = [{x0:x0, y0:y0, z0:H-1, a:1, b:1, c:1}];
+          desc = "on the top face (not on an edge)";
+        }
+
+        const answer = prismSurfaceAreaAfterNotches(L,W,H,notches);
+        const svg = prismSvg(L,W,H, notches, { L:`${L}`, W:`${W}`, H:`${H}`, notch:{x:notches[0].x0, y:notches[0].y0, text:"1"} });
+
+        questions.push({
+          difficulty:"easy",
+          prompt:`A rectangular prism is ${L} cm × ${W} cm × ${H} cm. A 1 cm × 1 cm × 1 cm cube is removed ${desc} as shown. Find the surface area of the new solid (cm²).`,
+          svg,
+          answer
+        });
+      })();
+
+      // MEDIUM 1: cube, remove 3 small cubes (corner + edge + face), same size t
+      (function(){
+        const S = randInt(8, 12);
+        const t = randInt(1, 2);
+
+        // Corner notch (top-front-right)
+        const n1 = {x0:S-t, y0:0, z0:S-t, a:t, b:t, c:t};
+
+        // Edge notch (touch top+right only)
+        const yEdge = randInt(1, S-t-1);
+        const n2 = {x0:S-t, y0:yEdge, z0:S-t, a:t, b:t, c:t};
+
+        // Face notch (top only), keep away from edge notch area
+        let xF, yF;
+        let attempts=0;
+        do{
+          xF = randInt(1, S-t-1);
+          yF = randInt(1, S-t-1);
+          attempts++;
+        }while(attempts<50 && (
+          // avoid overlapping with corner notch footprint on top
+          (xF >= S-t && yF < t) ||
+          // avoid overlapping with edge notch footprint on top
+          (xF >= S-t && yF >= yEdge && yF < yEdge+t)
+        ));
+        const n3 = {x0:xF, y0:yF, z0:S-t, a:t, b:t, c:t};
+
+        const notches = [n1,n2,n3];
+        const answer = prismSurfaceAreaAfterNotches(S,S,S,notches);
+        const svg = prismSvg(S,S,S, notches, { L:`${S}`, W:`${S}`, H:`${S}`, notch:{x:n1.x0, y:n1.y0, text:`${t}`} });
+
+        questions.push({
+          difficulty:"medium",
+          prompt:`A cube has side length ${S} cm. Three identical cubes of side length ${t} cm are removed: one from a top corner, one from a top edge (not at a corner), and one from the top face (not on an edge), as shown. Find the surface area of the new solid (cm²).`,
+          svg,
+          answer
+        });
+      })();
+
+      // MEDIUM 2: rectangular prism, remove a × b × c from the top-right edge (touch top + right, not corner)
+      (function(){
+        const L = randInt(10, 14);
+        const W = randInt(6, 10);
+        const H = randInt(6, 10);
+
+        const a = randInt(2, Math.min(5, L-2));
+        const b = randInt(2, Math.min(4, W-2));
+        const c = randInt(2, Math.min(4, H-2));
+
+        const y0 = randInt(1, W-b-1);      // not front corner
+        const x0 = L - a;                  // touch right
+        const z0 = H - c;                  // touch top
+
+        const notches = [{x0,y0,z0,a,b,c}];
+        const answer = prismSurfaceAreaAfterNotches(L,W,H,notches);
+        const svg = prismSvg(L,W,H, notches, {
+          L:`${L}`, W:`${W}`, H:`${H}`,
+          notch:{x:x0, y:y0, text:`${a}×${b}×${c}`}
+        });
+
+        questions.push({
+          difficulty:"medium",
+          prompt:`A rectangular prism is ${L} cm × ${W} cm × ${H} cm. A smaller cuboid of size ${a} cm × ${b} cm × ${c} cm is cut out from the top-right edge (not at a corner), as shown. Find the surface area of the new solid (cm²).`,
+          svg,
+          answer
+        });
+      })();
+
+      // HARD 1: cube, remove a “step” trench of size S × b × c from the top-front (touch top + front + both x-faces)
+      (function(){
+        const S = randInt(4, 7);
+        const b = randInt(1, S-1); // front depth
+        const c = randInt(1, S-1); // down depth
+        const notches = [{x0:0, y0:0, z0:S-c, a:S, b:b, c:c}];
+
+        const answer = prismSurfaceAreaAfterNotches(S,S,S,notches);
+        const svg = prismSvg(S,S,S, notches, { L:`${S}`, W:`${S}`, H:`${S}`, notch:{x:0, y:0, text:`${S}×${b}×${c}`} });
+
+        questions.push({
+          difficulty:"hard",
+          prompt:`A cube has side length ${S} cm. A cuboid of size ${S} cm × ${b} cm × ${c} cm is cut out from the top-front part of the cube (forming a step), as shown. Find the surface area of the new solid (cm²).`,
+          svg,
+          answer
+        });
+      })();
+
+      // HARD 2: remove 1×1×1 cubes on all corners and edges of an n×n×n cube
+      (function(){
+        const n = choice([5,6]); // keep diagram readable
+        const removed = [];
+        for(let x=0;x<n;x++){
+          for(let y=0;y<n;y++){
+            for(let z=0;z<n;z++){
+              const onX = (x===0 || x===n-1);
+              const onY = (y===0 || y===n-1);
+              const onZ = (z===0 || z===n-1);
+              // edge or corner: at least two boundary coordinates
+              const boundaryCount = (onX?1:0)+(onY?1:0)+(onZ?1:0);
+              if(boundaryCount >= 2){
+                removed.push(`${x},${y},${z}`);
+              }
+            }
+          }
+        }
+        const answer = computeSurfaceAreaVoxels(n, removed);
+        const svg = voxelSvg(n, removed);
+
+        questions.push({
+          difficulty:"hard",
+          prompt:`A cube is made of ${n}×${n}×${n} unit cubes (each unit cube is 1 cm on an edge). One unit cube is removed from every corner and from every position on each edge (the removed unit cubes are shaded in the diagram). Find the surface area of the remaining solid (cm²).`,
+          svg,
+          answer
+        });
+      })();
+
+      return questions;
+    }
+
+    /********************
+     * UI State + Rendering
+     ********************/
+    let QUESTIONS = [];
+    let STATE = {
+      answers: [],     // user answers (number or null)
+      checked: [],     // whether checked per question
+      correct: [],     // correctness per question
+      submitted: false
+    };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+
+    function niceDiff(d){
+      if(d==="easy") return "Easy";
+      if(d==="medium") return "Medium";
+      return "Hard";
+    }
+
+    function renderQuestions(){
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const userVal = STATE.answers[idx];
+        const checked = STATE.checked[idx];
+        const correct = STATE.correct[idx];
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${escapeHtml(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="q-body">
+            <div class="svg-wrap">${q.svg}</div>
+
+            <div class="answer-area">
+              <div class="input-row">
+                <input type="text" inputmode="decimal" autocomplete="off"
+                  id="ans-${idx}" placeholder="Answer (cm²)"
+                  value="${(userVal==null || Number.isNaN(userVal)) ? "" : userVal}">
+                <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+              </div>
+
+              <div class="feedback ${checked ? (correct ? "ok" : "bad") : ""}" id="fb-${idx}">
+                ${checked
+                  ? (correct
+                      ? "Correct ✅"
+                      : `Not correct ❌  (Correct answer: ${q.answer} cm²)`)
+                  : "Tip: Think about outside area removed vs inside area exposed."}
+              </div>
+
+              <div class="muted" style="font-size:12px;">
+                <b>Note:</b> All diagrams are <b>not to scale</b>.
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        // bind events
+        const inp = $(`#ans-${idx}`, card);
+        inp.addEventListener("input", () => {
+          STATE.answers[idx] = inp.value;
+          STATE.checked[idx] = false;
+          STATE.correct[idx] = false;
+          if(STATE.submitted) {
+            // if already submitted, keep feedback visible but update later on submit
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+          }
+          const fb = $(`#fb-${idx}`, card);
+          fb.className = "feedback";
+          fb.textContent = "Tip: Think about outside area removed vs inside area exposed.";
+        });
+
+        $(`#check-${idx}`, card).addEventListener("click", () => checkOne(idx));
+      });
+
+      $("#resultsBox").style.display = "none";
+      $("body").classList.remove("print-results");
+    }
+
+    function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const raw = STATE.answers[idx];
+      const v = parseNumber(raw);
+      STATE.checked[idx] = true;
+
+      if(!Number.isFinite(v)){
+        STATE.correct[idx] = false;
+        renderQuestions(); // re-render to update message
+        // override feedback for this specific case
+        const fb = $(`#fb-${idx}`);
+        fb.className = "feedback bad";
+        fb.textContent = "Please enter a valid number.";
+        return;
+      }
+
+      const ok = nearlyEqual(v, q.answer, 1e-9);
+      STATE.correct[idx] = ok;
+      renderQuestions();
+    }
+
+    function submitAll(){
+      // check all
+      let correctCount = 0;
+      for(let i=0;i<QUESTIONS.length;i++){
+        const v = parseNumber(STATE.answers[i]);
+        STATE.checked[i] = true;
+        STATE.correct[i] = Number.isFinite(v) && nearlyEqual(v, QUESTIONS[i].answer, 1e-9);
+        if(STATE.correct[i]) correctCount++;
+      }
+      STATE.submitted = true;
+      renderQuestions();
+
+      const total = QUESTIONS.length;
+      const pct = Math.round((correctCount/total)*100);
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:6px;">
+          If you got stuck: for each cut-out, compare <b>outside area removed</b> with <b>inside area added</b>.
+        </div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+    function resetAnswers(){
+      STATE.answers = Array(QUESTIONS.length).fill(null);
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    function saveResult(){
+      const name = safeName($("#studentNameValue").textContent) || "Student";
+      const data = {
+        title: "Model 21 — Hollowing Model (Surface Area)",
+        student: name,
+        timestamp: new Date().toISOString(),
+        questions: QUESTIONS.map((q,i)=>({
+          index: i+1,
+          difficulty: q.difficulty,
+          prompt: q.prompt,
+          correctAnswer: q.answer,
+          yourAnswer: parseNumber(STATE.answers[i]),
+          isCorrect: !!STATE.correct[i]
+        }))
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `DYAA_Model21_${name.replace(/\s+/g,"_")}_result.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+
+    /********************
+     * Tabs + Student name
+     ********************/
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $(`#panel-${tab}`).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      // ask once (simple prompt)
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", ""));
+      if(name){
+        $("#studentNameValue").textContent = name;
+      }else{
+        $("#studentNameValue").textContent = "Anonymous";
+      }
+    }
+
+    /********************
+     * Print
+     ********************/
+    $("#printQuestionsBtn").addEventListener("click", () => {
+      document.body.classList.remove("print-results");
+      window.print();
+    });
+    $("#printResultsBtn").addEventListener("click", () => {
+      // Ensure results exist
+      if(!STATE.submitted) submitAll();
+      document.body.classList.add("print-results");
+      window.print();
+      document.body.classList.remove("print-results");
+    });
+
+    /********************
+     * Generate New Set
+     ********************/
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+      STATE.answers = Array(QUESTIONS.length).fill(null);
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set? This will clear your current answers.", () => {
+        generateNewSet();
+        // go to practice automatically
+        $$('.tab').forEach(b=>b.classList.remove('active'));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$('.panel').forEach(p=>p.classList.remove('active'));
+        $('#panel-practice').classList.add('active');
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    /********************
+     * Learn diagram
+     ********************/
+    function renderLearnDiagram(){
+      // show a classic “edge notch” example
+      const S = 6, t = 2;
+      const notches = [{x0:S-t, y0:2, z0:S-t, a:t, b:t, c:t}]; // edge
+      const svg = prismSvg(S,S,S, notches, {L:`${S}`, W:`${S}`, H:`${S}`, notch:{x:notches[0].x0, y:notches[0].y0, text:`${t}`}});
+      $("#learnSvgWrap").innerHTML = svg;
+    }
+
+    /********************
+     * Init
+     ********************/
+    ensureStudentName();
+    renderLearnDiagram();
+    generateNewSet();
+  </script>
+</body>
+</html>

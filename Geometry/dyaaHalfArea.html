@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model 12 — Half Model (Area) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 8px 22px rgba(0,0,0,0.10);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    /* subtle DYAA watermark */
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 6% -12%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:10px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-12deg);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .container{
+      max-width:1100px;
+      margin:26px auto;
+      background:var(--card);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      padding:26px 26px 18px;
+      position:relative;
+      z-index:1;
+    }
+
+    /* Header / brand */
+    .brandbar{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding-bottom:10px;
+      border-bottom:2px solid var(--line);
+      margin-bottom:12px;
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:9px;background:var(--orange);
+      top:-6px;left:22px;border-radius:4px;
+    }
+    .logo-text{display:flex;flex-direction:column;line-height:1.05;}
+    .logo-text .brand{font-weight:900;letter-spacing:1px;color:var(--orange);font-size:16px;}
+    .logo-text .edu{font-size:12px;color:var(--blue);font-weight:800;}
+
+    .toprow{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:14px;
+      flex-wrap:wrap;
+      margin:10px 0 8px;
+    }
+
+    .titlewrap h1{
+      margin:6px 0 2px 0;
+      color:#123;
+      font-size:22px;
+    }
+    .subtitle{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+    }
+    .subtitle .note{
+      display:inline-block;
+      margin-left:8px;
+      padding:2px 8px;
+      border-radius:999px;
+      background:#fff7e6;
+      border:1px solid #ffe0b2;
+      color:#5d4037;
+      font-weight:800;
+      font-size:12px;
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .pill{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      color:#1f2a44;
+      font-weight:700;
+      font-size:13px;
+      white-space:nowrap;
+    }
+
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      font-weight:800;
+      cursor:pointer;
+      color:#fff;
+      font-size:13px;
+    }
+    .btn:disabled{opacity:.55;cursor:not-allowed;}
+    .btn.orange{background:var(--orange);}
+    .btn.blue{background:var(--blue);}
+    .btn.gray{background:#546e7a;}
+    .btn.purple{background:#6a1b9a;}
+    .btn.green{background:#2e7d32;}
+
+    select{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      background:#fff;
+      font-weight:800;
+      color:#1f2a44;
+      font-size:13px;
+      outline:none;
+    }
+
+    /* Tabs */
+    .tabs{
+      display:flex;
+      gap:10px;
+      margin-top:14px;
+      border-bottom:2px solid var(--line);
+      padding-bottom:10px;
+    }
+    .tab{
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      font-weight:900;
+      color:#1f2a44;
+      font-size:13px;
+    }
+    .tab.active{
+      background:#e8f0fe;
+      border-color:#cddcff;
+      outline:2px solid rgba(13,71,161,0.35);
+    }
+
+    .panel{display:none; padding-top:14px;}
+    .panel.active{display:block;}
+
+    /* Learn panel */
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px 16px 14px;
+      background:#fff;
+      box-shadow:0 3px 10px rgba(0,0,0,0.05);
+      margin-bottom:14px;
+    }
+    .learn-card h3{margin:0 0 8px 0;color:#123;}
+    .learn-card p,.learn-card li{color:#334;line-height:1.6;}
+    .learn-grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+    }
+    @media(max-width:900px){ .learn-grid{grid-template-columns:1fr;} }
+
+    .mini{
+      background:#f7fbff;
+      border:1px solid #dfe7f2;
+      border-radius:16px;
+      padding:12px;
+    }
+    .mini .k{
+      display:inline-block;
+      background:#fff7e6;
+      border:1px solid #ffe0b2;
+      color:#5d4037;
+      font-weight:900;
+      border-radius:999px;
+      padding:2px 8px;
+      font-size:12px;
+      margin-right:6px;
+    }
+
+    /* Practice panel */
+    .practice-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:4px 0 12px;
+    }
+    .practice-actions .left{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+    }
+    .practice-actions .right{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end;
+    }
+
+    .qgrid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    .qcard{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 3px 10px rgba(0,0,0,0.05);
+    }
+    .qcard.correct{border-color:#cbe7d1; background:#f2fbf4;}
+    .qcard.incorrect{border-color:#f1c7cc; background:#fff5f6;}
+
+    .qhead{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .qtitle{
+      font-weight:1000;
+      color:#1f2a44;
+      font-size:14px;
+    }
+    .qmeta{
+      color:var(--muted);
+      font-weight:800;
+      font-size:12px;
+      margin-top:2px;
+    }
+    .qhead .btnrow{
+      display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;
+    }
+
+    .svg-wrap{
+      border:1px solid #e5e5e5;
+      border-radius:14px;
+      padding:10px;
+      background:#fff;
+      overflow:hidden;
+    }
+    .svg-wrap svg{width:100%; height:auto; display:block;}
+    .svg-wrap img{width:100%; height:auto; display:block;}
+
+    .answerrow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .answerrow input{
+      width:360px; max-width:100%;
+      border:1px solid #cfd6e6;
+      border-radius:12px;
+      padding:10px 12px;
+      font-size:14px;
+      outline:none;
+    }
+    .feedback{
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fafafa;
+      font-weight:900;
+      font-size:13px;
+      color:#1f2a44;
+      display:none;
+    }
+    .feedback.ok{
+      display:inline-block;
+      border-color:#cbe7d1;
+      background:#d4edda;
+      color:#1b5e20;
+    }
+    .feedback.bad{
+      display:inline-block;
+      border-color:#f1c7cc;
+      background:#f8d7da;
+      color:#b71c1c;
+    }
+
+    .hintbox{
+      display:none;
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      background:#fff7e6;
+      border:1px solid #ffe0b2;
+      color:#5d4037;
+      font-size:13px;
+      line-height:1.6;
+    }
+    .hintbox svg{width:100%;height:auto;display:block;margin-top:10px;}
+
+    /* Results */
+    .results{
+      margin-top:14px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 3px 10px rgba(0,0,0,0.05);
+      display:none;
+    }
+    .results h3{margin:0 0 8px 0;color:#123;}
+    .rline{color:#334;line-height:1.7;margin:0;}
+    table.rtable{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .rtable th,.rtable td{
+      border:1px solid #d8d8e6;
+      padding:8px;
+      text-align:left;
+      vertical-align:top;
+    }
+    .rtable th{background:#f2f2f7;}
+    .tag{
+      display:inline-block;
+      padding:2px 8px;
+      border-radius:999px;
+      font-weight:900;
+      font-size:12px;
+      border:1px solid transparent;
+    }
+    .tag.ok{background:#d4edda;border-color:#cbe7d1;color:#1b5e20;}
+    .tag.bad{background:#f8d7da;border-color:#f1c7cc;color:#b71c1c;}
+    .tag.na{background:#f7f7f7;border-color:#e0e0e0;color:#445;}
+
+    /* Overlays */
+    .overlay{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:50;
+      padding:18px;
+    }
+    .modal{
+      width:min(520px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(255,255,255,0.4);
+    }
+    .modal h3{margin:0 0 8px 0;}
+    .modal p{margin:0 0 12px 0;color:#445;line-height:1.6;}
+    .modal .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end;}
+    .modal input{
+      width:100%;
+      border:1px solid #cfd6e6;
+      border-radius:12px;
+      padding:10px 12px;
+      font-size:14px;
+      outline:none;
+      margin-bottom:10px;
+    }
+
+    /* Print */
+    #printArea{display:none;}
+    @media print{
+      body{background:#fff;padding:0;}
+      body:before{display:none;}
+      .container{display:none !important;}
+      #printArea{display:block;}
+      .p-page{page-break-after:always;}
+      .p-page:last-child{page-break-after:auto;}
+      .p-head{
+        display:flex;
+        align-items:flex-end;
+        justify-content:space-between;
+        gap:10px;
+        border-bottom:2px solid #e6e6ef;
+        padding-bottom:8px;
+        margin-bottom:10px;
+      }
+      .p-brand{
+        display:flex;align-items:center;gap:10px;
+      }
+      .p-logo{
+        width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;
+      }
+      .p-logo:before{
+        content:"";position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;
+      }
+      .p-btxt{line-height:1.1;}
+      .p-btxt .b1{font-weight:900;color:#ff9800;font-size:12px;letter-spacing:1px;}
+      .p-btxt .b2{font-weight:900;color:#0d47a1;font-size:10px;}
+      .p-ttl{font-weight:900;color:#1f2a44;font-size:14px;margin:0;}
+      .p-sub{color:#546e7a;font-weight:800;font-size:11px;margin:2px 0 0 0;}
+      .p-meta{color:#334;font-size:11px;text-align:right;}
+      .p-qblock{margin:10px 0 12px 0;}
+      .p-qblock .qno{font-weight:900;color:#1f2a44;margin:0 0 6px 0;}
+      .p-svg{
+        border:1px solid #e5e5e5;border-radius:12px;padding:8px;background:#fff;
+      }
+      .p-svg svg{width:100%;height:auto;display:block;}
+      .p-answers{
+        border:1px solid #e6e6ef;border-radius:14px;padding:10px;background:#fff;
+      }
+      .ans-grid{
+        display:grid;
+        grid-template-columns:repeat(2, 1fr);
+        gap:8px 12px;
+        font-size:12px;
+      }
+      .ans-item{
+        border:1px solid #e6e6ef;border-radius:12px;padding:8px;background:#fafbff;
+      }
+      .ans-item b{color:#1f2a44;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="brandbar">
+      <div class="logo-icon"></div>
+      <div class="logo-text">
+        <div class="brand">DYAA</div>
+        <div class="edu">EDUCATION</div>
+      </div>
+    </div>
+
+    <div class="toprow">
+      <div class="titlewrap">
+        <h1>Model 12 — Half Model (Area)</h1>
+        <p class="subtitle">
+          Find missing areas using the <b>Half Model</b> and the <b>Opposite-sum Model</b>.
+          <span class="note">Not to scale</span>
+        </p>
+      </div>
+
+      <div class="controls">
+        <div class="pill" id="studentPill">Student: —</div>
+        <div class="pill" id="setPill">Set: —</div>
+        <div class="pill" id="timerPill">Time: 00:00</div>
+
+        <button class="btn gray" id="pauseBtn" disabled>Pause</button>
+
+        <button class="btn orange" id="newSetBtn" disabled>Generate New Set</button>
+
+        <select id="perPageSelect" disabled>
+          <option value="2" selected>2 questions / page</option>
+          <option value="3">3 questions / page</option>
+          <option value="6">6 questions / page</option>
+        </select>
+
+        <button class="btn purple" id="exportBtn" disabled>Export Questions PDF</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" id="tabLearn">Learn</button>
+      <button class="tab" id="tabPractice">Practice</button>
+    </div>
+
+    <section class="panel active" id="panelLearn">
+      <div class="learn-grid">
+        <div class="learn-card">
+          <h3>What is the Half Model?</h3>
+          <p>
+            The <b>Half Model</b> is a quick way to find areas when a shape is split into two equal parts.
+            If two regions have the <b>same base</b> and the <b>same height</b>, then they have the <b>same area</b>
+            (even if they look slanted).
+          </p>
+          <ul>
+            <li><span class="k">Key idea</span> If a region is <b>half</b> of a shape, then <b>Whole = 2 × Half</b>.</li>
+            <li><span class="k">Triangles</span> Area = (base × height) ÷ 2.</li>
+            <li><span class="k">Rectangles</span> Diagonal splits a rectangle into <b>two equal triangles</b>.</li>
+          </ul>
+        </div>
+
+        <div class="learn-card">
+          <h3>Opposite-sum Model (Rectangle / Parallelogram)</h3>
+          <p>
+            If you join an interior point to the four corners of a rectangle (or any parallelogram),
+            it creates four triangles. A powerful fact is:
+          </p>
+          <div class="mini">
+            <p style="margin:0;">
+              <b>Top + Bottom = Left + Right</b> (both equal <b>half</b> of the whole area).
+            </p>
+            <p style="margin:8px 0 0 0;color:#445;">
+              So if you know three triangle areas, you can find the fourth using:
+              <b>Blue = (Yellow + Green) − Red</b> (matching the diagram style in this quiz).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="learn-card">
+        <h3>How to use this page</h3>
+        <ul style="margin:0;">
+          <li>Open <b>Practice</b>, answer each question, and press <b>Check</b> if you want instant feedback.</li>
+          <li>Press <b>Submit</b> to see your score and a summary table.</li>
+          <li><b>Export Questions PDF</b> will export questions in pages (2/3/6 per page) and put <b>answers on the last page</b>.</li>
+          <li>You can start with a name in the URL: <b>?name=Tiger</b></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panel" id="panelPractice">
+      <div class="practice-actions">
+        <div class="left">
+          <button class="btn blue" id="submitBtn" disabled>Submit</button>
+          <button class="btn gray" id="resetBtn" disabled>Reset Answers</button>
+          <button class="btn green" id="saveBtn" disabled>Save Current Result</button>
+        </div>
+        <div class="right">
+          <div class="pill" id="progressPill">Score: —</div>
+        </div>
+      </div>
+
+      <div class="qgrid" id="questionsHost"></div>
+
+      <div class="results" id="resultsBox"></div>
+    </section>
+  </div>
+
+  <!-- Name overlay -->
+  <div class="overlay" id="nameOverlay">
+    <div class="modal">
+      <h3>Enter your name</h3>
+      <p>This quiz has <b>6 questions</b> (Basic / Composite / Advanced). Your name will appear on exports and saved results.</p>
+      <input id="nameInput" type="text" placeholder="Your name (e.g., Tiger)" />
+      <div class="row">
+        <button class="btn green" id="startBtn">Start</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm new set overlay -->
+  <div class="overlay" id="confirmOverlay">
+    <div class="modal">
+      <h3>Generate a new set?</h3>
+      <p>Your current answers will be cleared and the timer will restart.</p>
+      <div class="row">
+        <button class="btn gray" id="cancelNewSetBtn">Cancel</button>
+        <button class="btn orange" id="confirmNewSetBtn">Generate New Set</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Print area -->
+  <div id="printArea"></div>
+
+<script>
+/* =========================================================
+   Model 12 — Half Model (Area)
+   Template page + question content adapted from your HalfArea.html
+   ========================================================= */
+
+/* ===================== CONFIG ===================== */
+const SVG_TITLE = "Model 12 — Half Model (Area)";
+const LESSON_TITLE = "Model 12 — Half Model (Area)";
+const PART_TITLES = [
+  "Part 1 (Basic) — Half of a shape (2 questions)",
+  "Part 2 (Composite) — Half of a composite shape (2 questions)",
+  "Part 3 (Advanced) — Half model + opposite-sum model (2 questions)"
+];
+const PART_LABELS = ["Basic","Composite","Advanced"];
+const NUM_PARTS = 3;
+const QUESTIONS_PER_PART = 2;
+const TOTAL_QUESTIONS = NUM_PARTS * QUESTIONS_PER_PART;
+
+/* ===================== Utils ===================== */
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+function formatMs(ms){
+  const totalSec=Math.floor(ms/1000);
+  const min=Math.floor(totalSec/60);
+  const sec=totalSec%60;
+  return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+function escapeXml(s){
+  return String(s)
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&apos;");
+}
+function wrapLines(lines, maxChars=70){
+  const out=[];
+  function pushWrapped(line){
+    const words=String(line).split(/\s+/).filter(Boolean);
+    if(words.length===0){ out.push(""); return; }
+    let cur="";
+    for(const w of words){
+      if(w.length>maxChars){
+        if(cur){ out.push(cur); cur=""; }
+        for(let i=0;i<w.length;i+=maxChars) out.push(w.slice(i,i+maxChars));
+        continue;
+      }
+      if(!cur) cur=w;
+      else if((cur+" "+w).length<=maxChars) cur+=" "+w;
+      else { out.push(cur); cur=w; }
+    }
+    if(cur) out.push(cur);
+  }
+  for(const line of lines) pushWrapped(line);
+  return out;
+}
+
+/* Parse numbers from user input (supports integers, decimals, fractions) */
+function parseNumbersFromInput(str){
+  const s=(str||"").trim();
+  if(!s) return [];
+  const out=[];
+  const re=/([+-]?\d+\s*\/\s*[+-]?\d+)|([+-]?\d+(?:\.\d+)?)/g;
+  let m;
+  while((m=re.exec(s))!==null){
+    const token=(m[1]||m[2]||"").replace(/\s+/g,"");
+    if(token.includes("/")){
+      const [a,b]=token.split("/");
+      const n=Number(a), d=Number(b);
+      if(Number.isFinite(n)&&Number.isFinite(d)&&d!==0) out.push(n/d);
+    }else{
+      const v=Number(token);
+      if(Number.isFinite(v)) out.push(v);
+    }
+  }
+  return out;
+}
+function approxEqual(a,b,tol=1e-6){ return Math.abs(a-b)<=tol; }
+
+/* ===================== SVG Question Card (INLINE SVG, not data-uri) ===================== */
+function makeSvgQuestionCard(lines, diagramMarkup, titleText=SVG_TITLE){
+  const W=980, headerH=72, padX=44, textLineH=36, topY=headerH+48;
+  const wrapped=wrapLines(lines, 72);
+  const textBlockH = wrapped.length * textLineH;
+  const diagramY = topY + textBlockH + 18;
+  const diagramH = 360;
+  const padBottom = 54;
+  const H = diagramY + diagramH + padBottom;
+
+  const textSpans=wrapped.map((t,i)=>{
+    const y=topY + i*textLineH;
+    return `<text x="${padX}" y="${y}" font-size="28" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+  }).join("");
+
+  const svg=`
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f7fbff"/>
+        <stop offset="1" stop-color="#ffffff"/>
+      </linearGradient>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#000" flood-opacity="0.12"/>
+      </filter>
+      <clipPath id="clipBox">
+        <rect x="44" y="0" width="${W-88}" height="${diagramH}" rx="16" ry="16"></rect>
+      </clipPath>
+    </defs>
+
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
+          fill="url(#g)" stroke="#dfe7f2" stroke-width="3" filter="url(#shadow)"/>
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${headerH}"
+          fill="#0d47a1" opacity="0.10"/>
+
+    <text x="${padX}" y="56" font-size="28" fill="#0d47a1" font-weight="700"
+          font-family="Segoe UI, Arial">${escapeXml(titleText)}</text>
+
+    ${textSpans}
+
+    <g transform="translate(0, ${diagramY})">
+      <rect x="44" y="0" width="${W-88}" height="${diagramH}" rx="16" ry="16"
+            fill="#ffffff" stroke="#e5e5e5" stroke-width="3"/>
+      <g clip-path="url(#clipBox)">
+        ${diagramMarkup}
+      </g>
+    </g>
+  </svg>`.trim();
+
+  return svg;
+}
+
+function hintCardSvg(lines, title="Hint"){
+  const W=980, headerH=60, padX=44, lineH=34, firstLineY=headerH+44, padBottom=44;
+  const wrapped=wrapLines(lines, 84);
+  const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
+
+  const textSpans=wrapped.map((t,i)=>{
+    const y=firstLineY + i*lineH;
+    return `<text x="${padX}" y="${y}" font-size="24" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+  }).join("");
+
+  const svg=`
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff"/>
+        <stop offset="1" stop-color="#fff7e6"/>
+      </linearGradient>
+      <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="2" stdDeviation="5" flood-color="#000" flood-opacity="0.10"/>
+      </filter>
+    </defs>
+
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
+          fill="url(#bg)" stroke="#ffe0b2" stroke-width="3" filter="url(#shadow2)"/>
+
+    <text x="${padX}" y="52" font-size="26" fill="#8d6e63" font-weight="800"
+          font-family="Segoe UI, Arial">${escapeXml(title)}</text>
+
+    ${textSpans}
+  </svg>`.trim();
+
+  return svg;
+}
+
+/* ===================== Diagram builders (from your HalfArea.html) ===================== */
+function diagramParallelogramHalf(totalArea){
+  const x0=240, y0=285, w=520, h=160, skew=120;
+  const A={x:x0+skew,y:y0-h}, B={x:x0,y:y0}, C={x:x0+w,y:y0}, D={x:x0+w+skew,y:y0-h};
+  const styleText = `font-family="Segoe UI, Arial" paint-order="stroke" stroke="#ffffff" stroke-width="6" fill="#1f2a44"`;
+
+  let g=``;
+  g+=`<polygon points="${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y} ${D.x},${D.y}"
+      fill="none" stroke="#1f2a44" stroke-width="4"/>`;
+  g+=`<line x1="${B.x}" y1="${B.y}" x2="${D.x}" y2="${D.y}" stroke="#1f2a44" stroke-width="4"/>`;
+
+  g+=`<polygon points="${B.x},${B.y} ${C.x},${C.y} ${D.x},${D.y}"
+       fill="rgba(33,150,243,0.18)" stroke="none"/>`;
+
+  g+=`<text x="${(A.x+C.x)/2}" y="${y0+58}" text-anchor="middle" font-size="26" ${styleText}>Parallelogram area = ${totalArea} cm²</text>`;
+  g+=`<text x="${(B.x+C.x+D.x)/3}" y="${(B.y+C.y+D.y)/3}" text-anchor="middle" font-size="28" ${styleText}>Shaded</text>`;
+  g+=`<text x="${A.x-18}" y="${A.y-14}" font-size="26" ${styleText}>A</text>`;
+  g+=`<text x="${B.x-18}" y="${B.y+30}" font-size="26" ${styleText}>B</text>`;
+  g+=`<text x="${C.x+10}" y="${C.y+30}" font-size="26" ${styleText}>C</text>`;
+  g+=`<text x="${D.x+10}" y="${D.y-14}" font-size="26" ${styleText}>D</text>`;
+  return `<g>${g}</g>`;
+}
+
+function diagramShearedRectangle(totalArea){
+  const x0=220, y0=290, w=560, h=170, shear=120;
+  const A={x:x0,y:y0-h}, B={x:x0,y:y0}, C={x:x0+w,y:y0}, D={x:x0+w,y:y0-h};
+  const A2={x:A.x+shear,y:A.y}, D2={x:D.x+shear,y:D.y};
+  const styleText = `font-family="Segoe UI, Arial" paint-order="stroke" stroke="#ffffff" stroke-width="6" fill="#1f2a44"`;
+
+  let g=``;
+  g+=`<rect x="${x0}" y="${y0-h}" width="${w}" height="${h}" fill="none" stroke="#1f2a44" stroke-width="4"/>`;
+  g+=`<polygon points="${A2.x},${A2.y} ${B.x},${B.y} ${C.x},${C.y} ${D2.x},${D2.y}"
+       fill="none" stroke="#1f2a44" stroke-width="4"/>`;
+  g+=`<polygon points="${A2.x},${A2.y} ${B.x},${B.y} ${C.x},${C.y}"
+       fill="rgba(76,175,80,0.18)" stroke="none"/>`;
+  g+=`<line x1="${B.x}" y1="${B.y}" x2="${D2.x}" y2="${D2.y}" stroke="#1f2a44" stroke-width="4"/>`;
+
+  g+=`<text x="${x0+w/2}" y="${y0+58}" text-anchor="middle" font-size="26" ${styleText}>Rectangle area = ${totalArea} cm²</text>`;
+  g+=`<text x="${(A2.x+B.x+C.x)/3}" y="${(A2.y+B.y+C.y)/3}" text-anchor="middle" font-size="28" ${styleText}>Shaded</text>`;
+  return `<g>${g}</g>`;
+}
+
+function diagramZigzagRectangle(totalArea){
+  const x0=220, y0=290, w=560, h=170;
+  const styleText = `font-family="Segoe UI, Arial" paint-order="stroke" stroke="#ffffff" stroke-width="6" fill="#1f2a44"`;
+
+  const left = {x:x0, y:y0-h};
+  const right= {x:x0+w, y:y0-h};
+  const bottomLeft={x:x0, y:y0};
+  const bottomRight={x:x0+w, y:y0};
+
+  const p1={x:x0+w*0.35, y:y0-h*0.10};
+  const p2={x:x0+w*0.60, y:y0-h*0.55};
+
+  let g=``;
+  g+=`<rect x="${x0}" y="${y0-h}" width="${w}" height="${h}" fill="none" stroke="#1f2a44" stroke-width="4"/>`;
+  g+=`<polyline points="${left.x},${left.y} ${p1.x},${p1.y} ${p2.x},${p2.y} ${bottomRight.x},${bottomRight.y}"
+       fill="none" stroke="#1f2a44" stroke-width="4"/>`;
+  g+=`<polygon points="${left.x},${left.y} ${p1.x},${p1.y} ${p2.x},${p2.y} ${bottomRight.x},${bottomRight.y} ${right.x},${right.y}"
+       fill="rgba(33,150,243,0.18)" stroke="none"/>`;
+
+  g+=`<text x="${x0+w/2}" y="${y0+58}" text-anchor="middle" font-size="26" ${styleText}>Rectangle area = ${totalArea} cm²</text>`;
+  g+=`<text x="${x0+w*0.60}" y="${y0-h*0.70}" text-anchor="middle" font-size="28" ${styleText}>Shaded</text>`;
+  return `<g>${g}</g>`;
+}
+
+function diagramFourRectanglesHalf(){
+  const x0=230, y0=295, W=540, H=170;
+  const styleText = `font-family="Segoe UI, Arial" paint-order="stroke" stroke="#ffffff" stroke-width="6" fill="#1f2a44"`;
+
+  const x1=x0+W*0.55;
+  const y1=y0-H*0.55;
+
+  let g=``;
+  g+=`<rect x="${x0}" y="${y0-H}" width="${W}" height="${H}" fill="none" stroke="#1f2a44" stroke-width="4"/>`;
+  g+=`<line x1="${x1}" y1="${y0-H}" x2="${x1}" y2="${y0}" stroke="#1f2a44" stroke-width="4"/>`;
+  g+=`<line x1="${x0}" y1="${y1}" x2="${x0+W}" y2="${y1}" stroke="#1f2a44" stroke-width="4"/>`;
+
+  // triangles: shade one in each small rectangle
+  // TL
+  g+=`<polygon points="${x0},${y0-H} ${x1},${y0-H} ${x0},${y1}"
+       fill="rgba(33,150,243,0.18)" stroke="none"/>`;
+  // TR
+  g+=`<polygon points="${x1},${y0-H} ${x0+W},${y0-H} ${x0+W},${y1}"
+       fill="rgba(76,175,80,0.18)" stroke="none"/>`;
+  // BL
+  g+=`<polygon points="${x0},${y1} ${x1},${y0} ${x0},${y0}"
+       fill="rgba(76,175,80,0.18)" stroke="none"/>`;
+  // BR
+  g+=`<polygon points="${x1},${y0} ${x0+W},${y1} ${x0+W},${y0}"
+       fill="rgba(33,150,243,0.18)" stroke="none"/>`;
+
+  g+=`<text x="${x0+W/2}" y="${y0+58}" text-anchor="middle" font-size="26" ${styleText}>Rectangle ABCD (area given)</text>`;
+  g+=`<text x="${x0+W/2}" y="${y0-H-18}" text-anchor="middle" font-size="24" ${styleText}>Shaded triangles</text>`;
+  return `<g>${g}</g>`;
+}
+
+function diagramSquareFourRectsHalfModel(){
+  const x0=270, y0=305, S=420;
+  const styleText = `font-family="Segoe UI, Arial" paint-order="stroke" stroke="#ffffff" stroke-width="6" fill="#1f2a44"`;
+
+  const x1=x0+S/2;
+  const y1=y0-S/2;
+
+  let g=``;
+  g+=`<rect x="${x0}" y="${y0-S}" width="${S}" height="${S}" fill="none" stroke="#1f2a44" stroke-width="4"/>`;
+  g+=`<line x1="${x1}" y1="${y0-S}" x2="${x1}" y2="${y0}" stroke="#1f2a44" stroke-width="4"/>`;
+  g+=`<line x1="${x0}" y1="${y1}" x2="${x0+S}" y2="${y1}" stroke="#1f2a44" stroke-width="4"/>`;
+
+  // shade half in each small rectangle
+  // TL
+  g+=`<polygon points="${x0},${y0-S} ${x1},${y0-S} ${x0},${y1}"
+       fill="rgba(33,150,243,0.18)" stroke="none"/>`;
+  // TR
+  g+=`<polygon points="${x1},${y0-S} ${x0+S},${y0-S} ${x0+S},${y1}"
+       fill="rgba(76,175,80,0.18)" stroke="none"/>`;
+  // BL
+  g+=`<polygon points="${x0},${y1} ${x1},${y0} ${x0},${y0}"
+       fill="rgba(76,175,80,0.18)" stroke="none"/>`;
+  // BR
+  g+=`<polygon points="${x1},${y0} ${x0+S},${y1} ${x0+S},${y0}"
+       fill="rgba(33,150,243,0.18)" stroke="none"/>`;
+
+  g+=`<text x="${x0+S/2}" y="${y0+58}" text-anchor="middle" font-size="26" ${styleText}>Big square split into 4 equal rectangles</text>`;
+  g+=`<text x="${x0+S/2}" y="${y0-S-18}" text-anchor="middle" font-size="24" ${styleText}>Shaded triangles</text>`;
+  return `<g>${g}</g>`;
+}
+
+function diagramFourColorRect(yellow, red, green, blue){
+  const x0=250, y0=295, W=500, H=170;
+  const styleText = `font-family="Segoe UI, Arial" paint-order="stroke" stroke="#ffffff" stroke-width="6" fill="#1f2a44"`;
+
+  const P={x:x0+W*0.54, y:y0-H*0.52};
+  const A={x:x0,y:y0-H}, B={x:x0,y:y0}, C={x:x0+W,y:y0}, D={x:x0+W,y:y0-H};
+
+  let g=``;
+  g+=`<rect x="${x0}" y="${y0-H}" width="${W}" height="${H}" fill="none" stroke="#1f2a44" stroke-width="4"/>`;
+
+  g+=`<line x1="${P.x}" y1="${P.y}" x2="${A.x}" y2="${A.y}" stroke="#1f2a44" stroke-width="4"/>`;
+  g+=`<line x1="${P.x}" y1="${P.y}" x2="${B.x}" y2="${B.y}" stroke="#1f2a44" stroke-width="4"/>`;
+  g+=`<line x1="${P.x}" y1="${P.y}" x2="${C.x}" y2="${C.y}" stroke="#1f2a44" stroke-width="4"/>`;
+  g+=`<line x1="${P.x}" y1="${P.y}" x2="${D.x}" y2="${D.y}" stroke="#1f2a44" stroke-width="4"/>`;
+
+  // Color areas: top (yellow), left (red), bottom (green), right (blue)
+  g+=`<polygon points="${A.x},${A.y} ${D.x},${D.y} ${P.x},${P.y}" fill="rgba(255,193,7,0.30)" stroke="none"/>`;
+  g+=`<polygon points="${A.x},${A.y} ${B.x},${B.y} ${P.x},${P.y}" fill="rgba(244,67,54,0.22)" stroke="none"/>`;
+  g+=`<polygon points="${B.x},${B.y} ${C.x},${C.y} ${P.x},${P.y}" fill="rgba(76,175,80,0.22)" stroke="none"/>`;
+  g+=`<polygon points="${D.x},${D.y} ${C.x},${C.y} ${P.x},${P.y}" fill="rgba(33,150,243,0.22)" stroke="none"/>`;
+
+  g+=`<text x="${x0+W/2}" y="${y0-H-18}" text-anchor="middle" font-size="24" ${styleText}>Opposite-sum model</text>`;
+
+  g+=`<text x="${x0+W*0.50}" y="${y0-H*0.82}" text-anchor="middle" font-size="26" ${styleText}>Yellow = ${yellow}</text>`;
+  g+=`<text x="${x0+W*0.17}" y="${y0-H*0.52}" text-anchor="middle" font-size="26" ${styleText}>Red = ${red}</text>`;
+  g+=`<text x="${x0+W*0.50}" y="${y0-H*0.12}" text-anchor="middle" font-size="26" ${styleText}>Green = ${green}</text>`;
+  g+=`<text x="${x0+W*0.83}" y="${y0-H*0.52}" text-anchor="middle" font-size="26" ${styleText}>Blue = ?</text>`;
+
+  return `<g>${g}</g>`;
+}
+
+/* ===================== Question Generators (exactly 6, from HalfArea.html) ===================== */
+function genQ1ParallelogramHalf(){
+  const totalArea = randInt(18,70)*2;
+  const shaded = totalArea/2;
+
+  const lines = [
+    "(Basic) Half Model — Parallelogram split by a diagonal",
+    `The area of parallelogram ABCD is ${totalArea} cm².`,
+    "BD is a diagonal. The shaded triangle is shown.",
+    "Find the shaded area.",
+    "(Enter one integer, in cm².)"
+  ];
+
+  const hint = hintCardSvg([
+    "A diagonal of a parallelogram splits it into two equal-area triangles.",
+    "So shaded area = (total area) ÷ 2."
+  ], "Hint (Diagonal halves)");
+
+  return {
+    svg: makeSvgQuestionCard(lines, diagramParallelogramHalf(totalArea)),
+    hintSvg: hint,
+    hintText: "Diagonal splits a parallelogram into two equal areas ⇒ shaded is half.",
+    answer: { type:"single", values:[shaded], label:`${shaded}` }
+  };
+}
+
+function genQ2ShearedRectHalf(){
+  const totalArea = randInt(20,80)*2;
+  const shaded = totalArea/2;
+
+  const lines = [
+    "(Basic) Half Model — Rectangle & sheared parallelogram",
+    `The rectangle has area ${totalArea} cm².`,
+    "A sheared parallelogram is formed. The diagonal shown splits it into two equal parts.",
+    "Find the shaded area.",
+    "(Enter one integer, in cm².)"
+  ];
+
+  const hint = hintCardSvg([
+    "Shearing does not change base × height, so the area is unchanged.",
+    "A diagonal of a parallelogram halves the area.",
+    "So shaded area = (total area) ÷ 2."
+  ], "Hint (Shear + diagonal)");
+
+  return {
+    svg: makeSvgQuestionCard(lines, diagramShearedRectangle(totalArea)),
+    hintSvg: hint,
+    hintText: "Shearing keeps area; diagonal halves it ⇒ shaded is half of the rectangle area.",
+    answer: { type:"single", values:[shaded], label:`${shaded}` }
+  };
+}
+
+function genQ3ZigzagRectHalf(){
+  const totalArea = randInt(18,90)*2;
+  const shaded = totalArea/2;
+
+  const lines = [
+    "(Composite) Half Model — Zigzag split in a rectangle",
+    `The rectangle has area ${totalArea} cm².`,
+    "A zigzag line splits the rectangle into two equal areas (shaded and unshaded).",
+    "Find the shaded area.",
+    "(Enter one integer, in cm².)"
+  ];
+
+  const hint = hintCardSvg([
+    "The zigzag is arranged so the shaded and unshaded parts can be rearranged into two equal halves.",
+    "So shaded area = (total area) ÷ 2."
+  ], "Hint (Equal halves)");
+
+  return {
+    svg: makeSvgQuestionCard(lines, diagramZigzagRectangle(totalArea)),
+    hintSvg: hint,
+    hintText: "The split forms two equal halves ⇒ shaded is half of the rectangle.",
+    answer: { type:"single", values:[shaded], label:`${shaded}` }
+  };
+}
+
+function genQ4FourRectsHalf(){
+  const totalArea = randInt(18,90)*2;
+  const shaded = totalArea/2;
+
+  const lines = [
+    "(Composite) Half Model — 4 rectangles with shaded triangles",
+    `Rectangle ABCD has area ${totalArea} cm².`,
+    "It is divided into 4 smaller rectangles. In each small rectangle, a triangle is shaded.",
+    "Find the total shaded area.",
+    "(Enter one integer, in cm².)"
+  ];
+
+  const hint = hintCardSvg([
+    "Each shaded triangle is half of its small rectangle (same base and same height).",
+    "Adding the halves gives half of the whole rectangle.",
+    "So shaded area = (total area) ÷ 2."
+  ], "Hint (Add halves)");
+
+  return {
+    svg: makeSvgQuestionCard(lines, diagramFourRectanglesHalf()),
+    hintSvg: hint,
+    hintText: "Each small rectangle contributes a half; total shaded is half of ABCD.",
+    answer: { type:"single", values:[shaded], label:`${shaded}` }
+  };
+}
+
+function genQ5BigSquareFourRects(){
+  const totalArea = pick([20,24,28,32,36,40,44,48,52,56,60]);
+  const shaded = totalArea/2;
+
+  const lines = [
+    "(Advanced) Half Model — Big square split into 4 small rectangles",
+    `A big square is divided into 4 equal small rectangles. The area of the big square is ${totalArea} cm².`,
+    "The shaded parts are shown in the diagram.",
+    "Find the total shaded area.",
+    "(Enter one integer, in cm².)"
+  ];
+
+  const hint = hintCardSvg([
+    "The 4 small rectangles have equal area.",
+    "In each small rectangle, the shaded triangle is exactly half of that small rectangle.",
+    "So total shaded area = 1/2 of the big square area."
+  ], "Hint (Half in each part)");
+
+  return {
+    svg: makeSvgQuestionCard(lines, diagramSquareFourRectsHalfModel()),
+    hintSvg: hint,
+    hintText: "Each small rectangle contributes half its area → overall shaded is half of the big square.",
+    answer: { type:"single", values:[shaded], label:`${shaded}` }
+  };
+}
+
+function genQ6FourColorRectangle(){
+  const yellow = randInt(12,30);
+  const green  = randInt(6,20);
+  const halfTotal = yellow + green;
+
+  const red = randInt(4, Math.max(4, halfTotal-2));
+  const blue = halfTotal - red;
+
+  const lines = [
+    "(Advanced) Opposite-sum model in a rectangle",
+    "A rectangle is divided into 4 triangles by joining an interior point to the 4 corners.",
+    `Red triangle area = ${red} cm², Yellow triangle area = ${yellow} cm², Green triangle area = ${green} cm².`,
+    "Find the area of the Blue triangle.",
+    "(Enter one integer, in cm².)"
+  ];
+
+  const hint = hintCardSvg([
+    "In a rectangle (or any parallelogram):",
+    "Area(Top) + Area(Bottom) = Area(Left) + Area(Right) = half of the rectangle area.",
+    "So Blue = (Yellow + Green) − Red."
+  ], "Hint (Opposite sums)");
+
+  return {
+    svg: makeSvgQuestionCard(lines, diagramFourColorRect(yellow, red, green, blue)),
+    hintSvg: hint,
+    hintText: "Use: Yellow + Green = Red + Blue ⇒ Blue = (Yellow + Green) − Red.",
+    answer: { type:"single", values:[blue], label:`${blue}` }
+  };
+}
+
+function buildSixQuestions(){
+  return [
+    genQ1ParallelogramHalf(),
+    genQ2ShearedRectHalf(),
+    genQ3ZigzagRectHalf(),
+    genQ4FourRectsHalf(),
+    genQ5BigSquareFourRects(),
+    genQ6FourColorRectangle()
+  ];
+}
+
+/* ===================== Grading ===================== */
+function gradeAnswer(userText, answer){
+  const nums = parseNumbersFromInput(userText);
+  if(answer.type==="single"){
+    if(nums.length<1) return false;
+    return approxEqual(nums[0], answer.values[0]);
+  }
+  return false;
+}
+
+/* ===================== State ===================== */
+let studentName="Student";
+let setCounter=0;
+let lastSignature="";
+let questions=[];
+let submitted=false;
+
+/* Timer state */
+let timerInterval=null;
+let elapsedMs=0;
+let isPaused=false;
+let startStamp=null;
+let firstAttemptMs=null;
+
+/* ===================== DOM ===================== */
+const tabLearn = document.getElementById("tabLearn");
+const tabPractice = document.getElementById("tabPractice");
+const panelLearn = document.getElementById("panelLearn");
+const panelPractice = document.getElementById("panelPractice");
+
+const studentPill = document.getElementById("studentPill");
+const setPill = document.getElementById("setPill");
+const timerPill = document.getElementById("timerPill");
+const progressPill = document.getElementById("progressPill");
+
+const pauseBtn = document.getElementById("pauseBtn");
+const newSetBtn = document.getElementById("newSetBtn");
+const perPageSelect = document.getElementById("perPageSelect");
+const exportBtn = document.getElementById("exportBtn");
+
+const submitBtn = document.getElementById("submitBtn");
+const resetBtn = document.getElementById("resetBtn");
+const saveBtn = document.getElementById("saveBtn");
+
+const questionsHost = document.getElementById("questionsHost");
+const resultsBox = document.getElementById("resultsBox");
+
+const nameOverlay = document.getElementById("nameOverlay");
+const nameInput = document.getElementById("nameInput");
+const startBtn = document.getElementById("startBtn");
+
+const confirmOverlay = document.getElementById("confirmOverlay");
+const cancelNewSetBtn = document.getElementById("cancelNewSetBtn");
+const confirmNewSetBtn = document.getElementById("confirmNewSetBtn");
+
+const printArea = document.getElementById("printArea");
+
+/* ===================== Tabs ===================== */
+function setActiveTab(which){
+  const isLearn = which==="learn";
+  tabLearn.classList.toggle("active", isLearn);
+  tabPractice.classList.toggle("active", !isLearn);
+  panelLearn.classList.toggle("active", isLearn);
+  panelPractice.classList.toggle("active", !isLearn);
+}
+tabLearn.addEventListener("click", ()=>setActiveTab("learn"));
+tabPractice.addEventListener("click", ()=>setActiveTab("practice"));
+
+/* ===================== Timer ===================== */
+function updateTimer(){
+  let total = elapsedMs;
+  if(startStamp && !isPaused) total += (new Date() - startStamp);
+  let text = `Time: ${formatMs(total)}`;
+  if(firstAttemptMs!==null) text += ` (First: ${formatMs(firstAttemptMs)})`;
+  timerPill.textContent = text;
+}
+function startTimer(){
+  elapsedMs=0;
+  isPaused=false;
+  startStamp=new Date();
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval=setInterval(updateTimer, 1000);
+  updateTimer();
+  pauseBtn.textContent="Pause";
+  pauseBtn.disabled=false;
+}
+function pauseTimer(){
+  if(isPaused || !startStamp) return;
+  elapsedMs += (new Date() - startStamp);
+  isPaused=true;
+  startStamp=null;
+  pauseBtn.textContent="Resume";
+  updateTimer();
+}
+function resumeTimer(){
+  if(!isPaused) return;
+  isPaused=false;
+  startStamp=new Date();
+  pauseBtn.textContent="Pause";
+  updateTimer();
+}
+pauseBtn.addEventListener("click", ()=>{
+  if(pauseBtn.disabled) return;
+  if(isPaused) resumeTimer();
+  else pauseTimer();
+});
+
+/* ===================== Quiz Generation ===================== */
+function signatureOf(built){
+  return built.map(q=>q.answer.label).join("|");
+}
+
+function generateNewSetInternal(){
+  submitted=false;
+  resultsBox.style.display="none";
+  resultsBox.innerHTML="";
+  progressPill.textContent="Score: —";
+
+  let tries=0;
+  let built=null;
+
+  while(tries<60){
+    built = buildSixQuestions();
+    const sig = signatureOf(built);
+    if(sig !== lastSignature){
+      lastSignature = sig;
+      break;
+    }
+    tries++;
+  }
+
+  setCounter++;
+  setPill.textContent = `Set: ${setCounter}`;
+
+  questions = built.map((b, i)=>{
+    const partIndex = Math.floor(i/QUESTIONS_PER_PART);
+    const indexInPart = i%QUESTIONS_PER_PART;
+    return {
+      idx:i,
+      partIndex,
+      indexInPart,
+      partTitle: PART_TITLES[partIndex],
+      label: `${PART_LABELS[partIndex]} ${indexInPart+1}`,
+      svg: b.svg,
+      hintText: b.hintText || "Use the half model: identify two equal areas.",
+      hintSvg: b.hintSvg || "",
+      answer: b.answer,
+      userValue:"",
+      isCorrect:false,
+      checked:false
+    };
+  });
+
+  renderQuestions();
+  enableActions(true);
+}
+
+function enableActions(on){
+  pauseBtn.disabled = !on;
+  newSetBtn.disabled = !on;
+  perPageSelect.disabled = !on;
+  exportBtn.disabled = !on;
+  submitBtn.disabled = !on;
+  resetBtn.disabled = !on;
+  saveBtn.disabled = !on;
+}
+
+function hasAnyAnswer(){
+  return questions.some(q => (q.userValue||"").trim()!=="");
+}
+
+/* Generate new set (with confirm overlay if needed) */
+newSetBtn.addEventListener("click", ()=>{
+  if(hasAnyAnswer() && !submitted){
+    confirmOverlay.style.display="flex";
+  }else{
+    startTimer();
+    firstAttemptMs=null;
+    generateNewSetInternal();
+  }
+});
+cancelNewSetBtn.addEventListener("click", ()=>{ confirmOverlay.style.display="none"; });
+confirmNewSetBtn.addEventListener("click", ()=>{
+  confirmOverlay.style.display="none";
+  startTimer();
+  firstAttemptMs=null;
+  generateNewSetInternal();
+});
+
+/* ===================== Render ===================== */
+function renderQuestions(){
+  const html = questions.map((q)=>{
+    const qNo = q.idx+1;
+    const pid = q.partIndex;
+    const partPill = `${PART_LABELS[pid]} • Q${q.indexInPart+1}`;
+    return `
+      <div class="qcard" id="qcard-${q.idx}">
+        <div class="qhead">
+          <div>
+            <div class="qtitle">Question ${qNo} <span style="color:#546e7a;font-weight:900;">(${partPill})</span></div>
+            <div class="qmeta">${escapeXml(q.partTitle)}</div>
+          </div>
+          <div class="btnrow">
+            <button class="btn gray" id="hintBtn-${q.idx}">Hint</button>
+            <button class="btn blue" id="checkBtn-${q.idx}">Check</button>
+          </div>
+        </div>
+
+        <div class="svg-wrap" id="svg-${q.idx}">
+          ${q.svg}
+        </div>
+
+        <div class="answerrow">
+          <input id="ans-${q.idx}" type="text" placeholder="e.g., 24" value="${escapeXml(q.userValue||"")}" />
+          <div class="feedback" id="fb-${q.idx}"></div>
+        </div>
+
+        <div class="hintbox" id="hintBox-${q.idx}">
+          <div><b>Hint:</b> ${escapeXml(q.hintText)}</div>
+          ${q.hintSvg ? `<div style="margin-top:10px;">${q.hintSvg}</div>` : ``}
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  questionsHost.innerHTML = html;
+
+  // bind events
+  questions.forEach((q)=>{
+    const inp = document.getElementById(`ans-${q.idx}`);
+    const hintBtn = document.getElementById(`hintBtn-${q.idx}`);
+    const checkBtn = document.getElementById(`checkBtn-${q.idx}`);
+    const hintBox = document.getElementById(`hintBox-${q.idx}`);
+
+    inp.addEventListener("input", ()=>{
+      q.userValue = inp.value;
+      // live reset feedback style
+      const fb = document.getElementById(`fb-${q.idx}`);
+      if(fb){
+        fb.style.display="none";
+        fb.className="feedback";
+      }
+      const card = document.getElementById(`qcard-${q.idx}`);
+      if(card){
+        card.classList.remove("correct","incorrect");
+      }
+    });
+
+    hintBtn.addEventListener("click", ()=>{
+      const shown = hintBox.style.display==="block";
+      hintBox.style.display = shown ? "none" : "block";
+      hintBtn.textContent = shown ? "Hint" : "Hide Hint";
+    });
+
+    checkBtn.addEventListener("click", ()=>{
+      checkOne(q.idx);
+    });
+  });
+}
+
+/* ===================== Check / Submit ===================== */
+function checkOne(i){
+  const q = questions[i];
+  const fb = document.getElementById(`fb-${i}`);
+  const card = document.getElementById(`qcard-${i}`);
+
+  const ua = (q.userValue||"").trim();
+  if(ua===""){
+    fb.className="feedback bad";
+    fb.style.display="inline-block";
+    fb.textContent="Please enter an answer.";
+    card.classList.remove("correct"); card.classList.add("incorrect");
+    q.isCorrect=false;
+    q.checked=true;
+    return false;
+  }
+
+  const ok = gradeAnswer(ua, q.answer);
+  q.isCorrect = ok;
+  q.checked = true;
+
+  if(ok){
+    fb.className="feedback ok";
+    fb.style.display="inline-block";
+    fb.textContent="✅ Correct";
+    card.classList.remove("incorrect"); card.classList.add("correct");
+  }else{
+    fb.className="feedback bad";
+    fb.style.display="inline-block";
+    fb.innerHTML = `❌ Not correct. Correct answer: <b>${escapeXml(q.answer.label)}</b>`;
+    card.classList.remove("correct"); card.classList.add("incorrect");
+  }
+  return ok;
+}
+
+function finalizeSubmit(){
+  // compute attempt time
+  let attemptMs = elapsedMs;
+  if(startStamp && !isPaused) attemptMs += (new Date() - startStamp);
+  if(firstAttemptMs===null) firstAttemptMs = attemptMs;
+  updateTimer();
+
+  // check all questions
+  let correct = 0;
+  questions.forEach((q)=>{ if(checkOne(q.idx)) correct++; });
+  submitted=true;
+  progressPill.textContent = `Score: ${correct} / ${TOTAL_QUESTIONS}`;
+
+  // show results table
+  const now = new Date();
+  const startTimeStr = now.toLocaleString(); // simple
+  const html = `
+    <h3>Results for ${escapeXml(studentName)}</h3>
+    <p class="rline">Set: <b>${setCounter}</b></p>
+    <p class="rline">Score: <b>${correct} / ${TOTAL_QUESTIONS}</b></p>
+    <p class="rline">Time taken (this attempt): <b>${formatMs(attemptMs)}</b></p>
+    <p class="rline">First attempt time: <b>${formatMs(firstAttemptMs)}</b></p>
+
+    <table class="rtable">
+      <tr>
+        <th>#</th>
+        <th>Part</th>
+        <th>Your Answer</th>
+        <th>Correct Answer</th>
+        <th>Result</th>
+      </tr>
+      ${questions.map((q,idx)=>{
+        const ua = (q.userValue||"").trim();
+        const resTag = ua==="" ? `<span class="tag na">Not answered</span>` : (q.isCorrect ? `<span class="tag ok">Correct</span>` : `<span class="tag bad">Incorrect</span>`);
+        return `
+          <tr>
+            <td>${idx+1}</td>
+            <td>${escapeXml(PART_LABELS[q.partIndex])}</td>
+            <td>${ua==="" ? "—" : escapeXml(ua)}</td>
+            <td><b>${escapeXml(q.answer.label)}</b></td>
+            <td>${resTag}</td>
+          </tr>
+        `;
+      }).join("")}
+    </table>
+  `;
+  resultsBox.innerHTML = html;
+  resultsBox.style.display="block";
+}
+
+submitBtn.addEventListener("click", finalizeSubmit);
+
+resetBtn.addEventListener("click", ()=>{
+  questions.forEach(q=>{ q.userValue=""; q.isCorrect=false; q.checked=false; });
+  submitted=false;
+  progressPill.textContent="Score: —";
+  resultsBox.style.display="none";
+  resultsBox.innerHTML="";
+  renderQuestions();
+});
+
+/* ===================== Save result (TXT) ===================== */
+function pad2(n){ return String(n).padStart(2,"0"); }
+function formatDateForFilename(date){
+  if(!date) return "no_time";
+  return date.getFullYear()+pad2(date.getMonth()+1)+pad2(date.getDate())+"_"+pad2(date.getHours())+pad2(date.getMinutes())+pad2(date.getSeconds());
+}
+function saveCurrentResultAsTxt(){
+  // ensure grading up to date (but don't force submit)
+  let correctCount=0;
+  questions.forEach(q=>{
+    const ua=(q.userValue||"").trim();
+    q.isCorrect = ua!=="" && gradeAnswer(ua, q.answer);
+    if(q.isCorrect) correctCount++;
+  });
+
+  const lines=[];
+  lines.push("DYAA — Model 12 — Half Model (Area) — Result");
+  lines.push("Student: "+studentName);
+  lines.push("Set: "+setCounter);
+  lines.push("Score: "+correctCount+" / "+TOTAL_QUESTIONS);
+  if(firstAttemptMs!==null) lines.push("First attempt time: "+formatMs(firstAttemptMs));
+  lines.push("");
+
+  questions.forEach((q,i)=>{
+    const partLbl=PART_LABELS[q.partIndex]+(q.indexInPart+1);
+    const userAns=(q.userValue||"").trim()==="" ? "Not answered" : q.userValue.trim();
+    const resultText=(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect?"Correct":"Incorrect");
+    lines.push(`Q${i+1} (${partLbl})`);
+    lines.push("Your answer: "+userAns);
+    lines.push("Correct answer: "+q.answer.label);
+    lines.push("Result: "+resultText);
+    lines.push("");
+  });
+
+  const content=lines.join("\n");
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_")||"Student";
+  const ts=formatDateForFilename(new Date());
+  a.href=url;
+  a.download=`DYAA_HalfModel_${safeName}_Set${setCounter}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+saveBtn.addEventListener("click", saveCurrentResultAsTxt);
+
+/* ===================== Export Questions PDF (via Print) ===================== */
+function buildPrintPages(perPage){
+  const safeStudent = escapeXml(studentName || "Student");
+  const now = new Date();
+  const metaRight = `Student: ${safeStudent}<br>Set: ${setCounter}<br>${escapeXml(now.toLocaleDateString())}`;
+
+  const chunks=[];
+  for(let i=0;i<questions.length;i+=perPage){
+    chunks.push(questions.slice(i,i+perPage));
+  }
+
+  const pages = chunks.map((chunk, pageIdx)=>{
+    const qBlocks = chunk.map((q)=>{
+      return `
+        <div class="p-qblock">
+          <p class="qno">Q${q.idx+1}</p>
+          <div class="p-svg">${q.svg}</div>
+        </div>
+      `;
+    }).join("");
+
+    return `
+      <div class="p-page">
+        <div class="p-head">
+          <div>
+            <div class="p-brand">
+              <div class="p-logo"></div>
+              <div class="p-btxt">
+                <div class="b1">DYAA</div>
+                <div class="b2">EDUCATION</div>
+              </div>
+            </div>
+            <p class="p-ttl">${escapeXml(LESSON_TITLE)}</p>
+            <p class="p-sub">Questions (Not to scale)</p>
+          </div>
+          <div class="p-meta">${metaRight}<br>Page: ${pageIdx+1} / ${chunks.length+1}</div>
+        </div>
+
+        ${qBlocks}
+      </div>
+    `;
+  }).join("");
+
+  const answers = `
+    <div class="p-page">
+      <div class="p-head">
+        <div>
+          <div class="p-brand">
+            <div class="p-logo"></div>
+            <div class="p-btxt">
+              <div class="b1">DYAA</div>
+              <div class="b2">EDUCATION</div>
+            </div>
+          </div>
+          <p class="p-ttl">${escapeXml(LESSON_TITLE)}</p>
+          <p class="p-sub">Answers (Set ${setCounter})</p>
+        </div>
+        <div class="p-meta">${metaRight}<br>Page: ${chunks.length+1} / ${chunks.length+1}</div>
+      </div>
+
+      <div class="p-answers">
+        <div class="ans-grid">
+          ${questions.map(q=>`
+            <div class="ans-item"><b>Q${q.idx+1}:</b> ${escapeXml(q.answer.label)}</div>
+          `).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+
+  return pages + answers;
+}
+
+exportBtn.addEventListener("click", ()=>{
+  const perPage = Number(perPageSelect.value || 2);
+  printArea.innerHTML = buildPrintPages(perPage);
+
+  // print, then cleanup
+  const cleanup = ()=>{
+    printArea.innerHTML="";
+    window.removeEventListener("afterprint", cleanup);
+  };
+  window.addEventListener("afterprint", cleanup);
+
+  window.print();
+});
+
+/* ===================== Start logic (+ optional ?name=Tiger) ===================== */
+function getNameFromUrl(){
+  try{
+    const url=new URL(window.location.href);
+    const name=url.searchParams.get("name");
+    return name ? name.trim() : "";
+  }catch(e){ return ""; }
+}
+
+function startQuiz(){
+  studentPill.textContent = `Student: ${studentName}`;
+  setPill.textContent = `Set: —`;
+  enableActions(true);
+
+  // start in Practice by default after start
+  setActiveTab("practice");
+
+  // reset timer and state
+  firstAttemptMs=null;
+  startTimer();
+  generateNewSetInternal();
+}
+
+startBtn.addEventListener("click", ()=>{
+  const v = (nameInput.value||"").trim();
+  studentName = v || "Student";
+  nameOverlay.style.display="none";
+  startQuiz();
+});
+
+function init(){
+  enableActions(false);
+  studentPill.textContent="Student: —";
+  setPill.textContent="Set: —";
+  timerPill.textContent="Time: 00:00";
+  progressPill.textContent="Score: —";
+
+  const preset=getNameFromUrl();
+  if(preset){
+    studentName=preset;
+    startQuiz();
+  }else{
+    nameOverlay.style.display="flex";
+    setActiveTab("learn");
+    setTimeout(()=>nameInput.focus(), 50);
+  }
+}
+
+init();
+</script>
+</body>
+</html>

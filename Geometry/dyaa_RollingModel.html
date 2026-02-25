@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model 24 — Rolling Model (Swept Area) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+
+      --stroke:#111; /* textbook line-art */
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:700;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:700;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:800;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card p{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .learn-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:14px;
+      margin-top:12px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .learn-grid{grid-template-columns:1fr;}
+    }
+
+    .mini-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .mini-table th, .mini-table td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+    }
+    .mini-table th{
+      background:#f5f8ff;
+      color:var(--blue);
+      font-weight:900;
+    }
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:900;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .q-body{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:12px;
+      margin-top:10px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .q-body{grid-template-columns:1fr;}
+    }
+
+    .svg-wrap{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:10px 10px 8px 10px;
+      overflow:hidden;
+    }
+    .svg-wrap svg{display:block;width:100%;height:auto;}
+    .svg-note{
+      margin-top:6px;
+      font-size:12px;
+      color:rgba(0,0,0,0.55);
+      font-weight:700;
+    }
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      min-width:220px;
+      max-width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .hint-box{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(13,71,161,0.35);
+      background:#f5f8ff;
+      color:#1a2b55;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .hint-box.show{display:block;}
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+    .feedback.ok{color:var(--ok);font-weight:900;}
+    .feedback.bad{color:var(--bad);font-weight:900;}
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    /* Print */
+    @media print{
+      body{background:#fff;padding:0;}
+      body:before{display:none;}
+      .quiz-container{box-shadow:none;border:none;margin:0;border-radius:0;}
+      .tabs,.row,.btn,.overlay{display:none !important;}
+      .panel{display:block !important;}
+      .q-card{break-inside:avoid; page-break-inside:avoid;}
+      .answer-area .input-row,
+      .answer-area .hint-box{display:none !important;}
+      .feedback{display:none !important;}
+      #resultsBox{display:none !important;}
+      body.print-results .feedback{display:block !important;}
+      body.print-results #resultsBox{display:block !important;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1>Model 24 — Rolling Model (Swept Area)</h1>
+        <div class="sub">Same layout • Textbook line diagrams • Hint button • 2 Easy + 2 Medium + 2 Hard • π = 3.14</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="pill">
+        <b>Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <small>URL format: <span class="muted">.../model24_rolling.html?name=Tiger</span></small>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn secondary" id="printQuestionsBtn" type="button">Print / Save PDF (Questions)</button>
+        <button class="btn secondary" id="printResultsBtn" type="button">Print / Save PDF (Results)</button>
+        <button class="btn" id="newSetBtn" type="button">Generate New Set</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    <!-- LEARN -->
+    <div class="panel active" id="panel-learn">
+      <div class="learn-card">
+        <h2>Key Idea</h2>
+        <p>
+          A circle of radius <b>r</b> rolls once around the <b>outside</b> of a polygon and returns to the start.
+          The circle “sweeps” a band around the shape.
+        </p>
+
+        <div class="note">
+          <b>Swept area</b> depends only on the polygon perimeter <b>P</b>:
+          <br><br>
+          <b>Swept Area = (Perimeter × Diameter) + Area of the circle</b>
+          <br>
+          <b>A = P × (2r) + πr²</b>  (use π = 3.14)
+        </div>
+
+        <table class="mini-table" aria-label="Examples">
+          <thead>
+            <tr>
+              <th>Shape</th>
+              <th>Perimeter P</th>
+              <th>Swept Area</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Square (side s)</td>
+              <td>4s</td>
+              <td>4s·(2r) + πr²</td>
+            </tr>
+            <tr>
+              <td>Rectangle (L × W)</td>
+              <td>2(L + W)</td>
+              <td>2(L+W)·(2r) + πr²</td>
+            </tr>
+            <tr>
+              <td>Any convex polygon</td>
+              <td>sum of side lengths</td>
+              <td>P·(2r) + πr²</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="learn-grid">
+          <div class="muted">
+            Remember: you do <b>not</b> need the angles. Just find the perimeter, then use
+            <b>A = P·(2r) + πr²</b>.
+          </div>
+          <div class="svg-wrap" id="learnSvgWrap"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted">Enter a number only. Round to 2 decimals if needed. Use</span> <b>π = 3.14</b>.
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3>Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /********************
+     * Helpers
+     ********************/
+    const PI = 3.14;
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;");
+    }
+
+    function parseNumber(input){
+      if(input == null) return NaN;
+      const s = String(input).trim()
+        .replace(/,/g,"")
+        .replace(/cm\^?2|cm²|m\^?2|m²|cm|m|square/ig,"")
+        .replace(/\s/g,"");
+      if(!s) return NaN;
+      const v = Number(s);
+      return Number.isFinite(v) ? v : NaN;
+    }
+    function roundTo(n, dp=2){
+      const p = Math.pow(10, dp);
+      return Math.round(n*p)/p;
+    }
+    function fmt(n){
+      const v = roundTo(n, 2);
+      const s = v.toFixed(2);
+      return s.replace(/\.?0+$/,"");
+    }
+    function nearlyEqual(a,b,eps=0.05){
+      return Math.abs(a-b) <= eps;
+    }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * Rolling diagrams (textbook style)
+     ********************/
+    function svgWrap(svg){
+      return `
+        ${svg}
+        <div class="svg-note">Not to scale</div>
+      `.trim();
+    }
+
+    function baseSvgStart(viewW=260, viewH=200){
+      return `<svg viewBox="0 0 ${viewW} ${viewH}" role="img" aria-label="Rolling circle diagram">
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L8,3 L0,6 Z" fill="var(--stroke)"></path>
+          </marker>
+          <style>
+            .shape{fill:none;stroke:var(--stroke);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;}
+            .circle{fill:none;stroke:var(--stroke);stroke-width:2;}
+            .arrow{fill:none;stroke:var(--stroke);stroke-width:2;marker-end:url(#arrow);stroke-linecap:round;}
+          </style>
+        </defs>`;
+    }
+
+    function svgEnd(){ return `</svg>`; }
+
+    function diagramSquare(){
+      // square + circle on top
+      const W=260, H=200;
+      const x=95, y=70, s=80;
+      const r=16;
+      const cx = x + s*0.55, cy = y - r; // tangent to top side
+      const arrow = `M ${cx+20} ${cy-4} C ${cx+30} ${cy-20}, ${cx+5} ${cy-28}, ${cx-6} ${cy-14}`;
+      const svg = `
+        ${baseSvgStart(W,H)}
+          <rect class="shape" x="${x}" y="${y}" width="${s}" height="${s}"></rect>
+          <circle class="circle" cx="${cx}" cy="${cy}" r="${r}"></circle>
+          <path class="arrow" d="${arrow}"></path>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    function diagramRectangle(){
+      const W=260, H=200;
+      const x=70, y=85, w=120, h=70;
+      const r=16;
+      const cx = x+25, cy = y - r;
+      const arrow = `M ${cx+18} ${cy-2} C ${cx+30} ${cy-18}, ${cx+6} ${cy-26}, ${cx-6} ${cy-12}`;
+      const svg = `
+        ${baseSvgStart(W,H)}
+          <rect class="shape" x="${x}" y="${y}" width="${w}" height="${h}"></rect>
+          <circle class="circle" cx="${cx}" cy="${cy}" r="${r}"></circle>
+          <path class="arrow" d="${arrow}"></path>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    function diagramEquilateralTriangle(){
+      const W=260, H=200;
+      const ax=130, ay=60, bx=70, by=155, cx=190, cy=155;
+      const r=16;
+      const ccx = ax + 30, ccy = ay + 10; // outside near top vertex
+      const arrow = `M ${ccx+16} ${ccy-6} C ${ccx+34} ${ccy-20}, ${ccx+10} ${ccy-32}, ${ccx-4} ${ccy-14}`;
+      const svg = `
+        ${baseSvgStart(W,H)}
+          <path class="shape" d="M ${ax} ${ay} L ${cx} ${cy} L ${bx} ${by} Z"></path>
+          <circle class="circle" cx="${ccx}" cy="${ccy}" r="${r}"></circle>
+          <path class="arrow" d="${arrow}"></path>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    function diagramTriangleScalene(){
+      const W=260, H=200;
+      const ax=70, ay=150, bx=190, by=150, cx=210, cy=90;
+      const r=16;
+      const ccx = cx + 20, ccy = cy + 10;
+      const arrow = `M ${ccx+14} ${ccy-6} C ${ccx+28} ${ccy-18}, ${ccx+8} ${ccy-30}, ${ccx-4} ${ccy-14}`;
+      const svg = `
+        ${baseSvgStart(W,H)}
+          <path class="shape" d="M ${ax} ${ay} L ${bx} ${by} L ${cx} ${cy} Z"></path>
+          <circle class="circle" cx="${ccx}" cy="${ccy}" r="${r}"></circle>
+          <path class="arrow" d="${arrow}"></path>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    function diagramPolygon(){
+      // generic convex quadrilateral
+      const W=260, H=200;
+      const p = [
+        {x:70,y:145},
+        {x:175,y:155},
+        {x:210,y:105},
+        {x:120,y:75}
+      ];
+      const r=16;
+      const ccx = p[3].x + 30, ccy = p[3].y + 8;
+      const arrow = `M ${ccx+14} ${ccy-6} C ${ccx+28} ${ccy-18}, ${ccx+8} ${ccy-30}, ${ccx-4} ${ccy-14}`;
+      const d = `M ${p[0].x} ${p[0].y} L ${p[1].x} ${p[1].y} L ${p[2].x} ${p[2].y} L ${p[3].x} ${p[3].y} Z`;
+      const svg = `
+        ${baseSvgStart(W,H)}
+          <path class="shape" d="${d}"></path>
+          <circle class="circle" cx="${ccx}" cy="${ccy}" r="${r}"></circle>
+          <path class="arrow" d="${arrow}"></path>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    /********************
+     * Math
+     * Swept area A = P*(2r) + πr^2
+     ********************/
+    function sweptArea(perimeter, r){
+      return perimeter * (2*r) + PI * r * r;
+    }
+
+    /********************
+     * Question generator (2 Easy + 2 Medium + 2 Hard)
+     ********************/
+    function makeQuestions(){
+      const qs = [];
+
+      // Easy 1: square
+      (function(){
+        const r = 1;
+        const s = choice([6,8,10,12,14,16]);
+        const P = 4*s;
+        const ans = roundTo(sweptArea(P, r), 2);
+        qs.push({
+          difficulty:"easy",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramSquare(),
+          prompt: `A circle of radius ${r} cm rolls once around the outside of a square with side length ${s} cm and returns to the start. Find the area swept by the circle. (Use π = 3.14)`,
+          hint: `Step 1: Find the perimeter P = 4s. Step 2: Use A = P·(2r) + πr².`
+        });
+      })();
+
+      // Easy 2: rectangle
+      (function(){
+        const r = 1;
+        let L = choice([14,16,18,20,22,24]);
+        let W = choice([10,12,13,14,15]);
+        if(W >= L) [L,W] = [W+4, L-2];
+        const P = 2*(L+W);
+        const ans = roundTo(sweptArea(P, r), 2);
+        qs.push({
+          difficulty:"easy",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramRectangle(),
+          prompt: `A circle of radius ${r} cm rolls once around the outside of a rectangle of length ${L} cm and width ${W} cm, returning to the start. Find the area swept by the circle. (Use π = 3.14)`,
+          hint: `Perimeter P = 2(L + W). Then A = P·(2r) + πr².`
+        });
+      })();
+
+      // Medium 1: equilateral triangle
+      (function(){
+        const side = choice([6,8,9,10,12]);
+        const r = choice([2,2,3]); // bias to 2 like the worksheet
+        const P = 3*side;
+        const ans = roundTo(sweptArea(P, r), 2);
+        qs.push({
+          difficulty:"medium",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramEquilateralTriangle(),
+          prompt: `A circle of radius ${r} cm rolls once around the outside of an equilateral triangle with side length ${side} cm and returns to the start. Find the area swept by the circle. (Use π = 3.14)`,
+          hint: `For an equilateral triangle, P = 3 × side. Then A = P·(2r) + πr².`
+        });
+      })();
+
+      // Medium 2: triangle with given perimeter
+      (function(){
+        const r = 2;
+        const P = choice([12,15,18,20,24,27]);
+        const ans = roundTo(sweptArea(P, r), 2);
+        qs.push({
+          difficulty:"medium",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramTriangleScalene(),
+          prompt: `A circle of radius ${r} cm rolls once around the outside of a triangle whose perimeter is ${P} cm and returns to the start. Find the area swept by the circle. (Use π = 3.14)`,
+          hint: `You are given P directly. Use A = P·(2r) + πr².`
+        });
+      })();
+
+      // Hard 1: regular polygon
+      (function(){
+        const r = choice([2,3,4]);
+        const n = choice([5,6,7,8]);
+        const side = choice([6,7,8,9,10,12]);
+        const P = n * side;
+        const ans = roundTo(sweptArea(P, r), 2);
+        qs.push({
+          difficulty:"hard",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramPolygon(),
+          prompt: `A circle of radius ${r} cm rolls once around the outside of a regular ${n}-sided polygon. Each side is ${side} cm. Find the area swept by the circle. (Use π = 3.14)`,
+          hint: `Perimeter P = n × side. Then A = P·(2r) + πr².`
+        });
+      })();
+
+      // Hard 2: convex quadrilateral (side lengths given)
+      (function(){
+        const r = choice([2,3]);
+        const a = randInt(6,14);
+        const b = randInt(6,14);
+        const c = randInt(6,14);
+        const d = randInt(6,14);
+        const P = a+b+c+d;
+        const ans = roundTo(sweptArea(P, r), 2);
+        qs.push({
+          difficulty:"hard",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramPolygon(),
+          prompt: `A circle of radius ${r} cm rolls once around the outside of a convex quadrilateral with side lengths ${a} cm, ${b} cm, ${c} cm, and ${d} cm. Find the area swept by the circle. (Use π = 3.14)`,
+          hint: `First add the side lengths to get P. Then A = P·(2r) + πr².`
+        });
+      })();
+
+      return qs;
+    }
+
+    /********************
+     * UI state
+     ********************/
+    let QUESTIONS = [];
+    let STATE = { answers:[], checked:[], correct:[], hintShown:[], submitted:false };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+    function niceDiff(d){
+      if(d==="easy") return "Easy";
+      if(d==="medium") return "Medium";
+      return "Hard";
+    }
+
+    function renderQuestions(){
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const userVal = STATE.answers[idx] ?? "";
+        const checked = !!STATE.checked[idx];
+        const correct = !!STATE.correct[idx];
+        const hintShown = !!STATE.hintShown[idx];
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${escapeHtml(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="q-body">
+            <div class="svg-wrap">${q.svg}</div>
+
+            <div class="answer-area">
+              <div class="input-row">
+                <input type="text" inputmode="decimal" autocomplete="off"
+                  id="ans-${idx}" placeholder="Answer (${q.unit})"
+                  value="${escapeHtml(userVal)}">
+                <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+                <button class="btn ghost" type="button" id="hint-${idx}">${hintShown ? "Hide Hint" : "Hint"}</button>
+              </div>
+
+              <div class="hint-box ${hintShown ? "show" : ""}" id="hintBox-${idx}">
+                ${escapeHtml(q.hint)}
+              </div>
+
+              <div class="feedback ${checked ? (correct ? "ok" : "bad") : ""}" id="fb-${idx}">
+                ${checked
+                  ? (correct
+                      ? "Correct ✅"
+                      : `Not correct ❌  (Correct answer: ${fmt(q.answer)} ${q.unit})`)
+                  : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        const inp = $(`#ans-${idx}`, card);
+        inp.addEventListener("input", () => {
+          STATE.answers[idx] = inp.value;
+          STATE.checked[idx] = false;
+          STATE.correct[idx] = false;
+          if(STATE.submitted){
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+          }
+          const fb = $(`#fb-${idx}`, card);
+          fb.className = "feedback";
+          fb.textContent = "";
+        });
+
+        $(`#check-${idx}`, card).addEventListener("click", () => checkOne(idx));
+        $(`#hint-${idx}`, card).addEventListener("click", () => {
+          STATE.hintShown[idx] = !STATE.hintShown[idx];
+          renderQuestions();
+        });
+      });
+
+      $("#resultsBox").style.display = "none";
+      document.body.classList.remove("print-results");
+    }
+
+    function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const v = parseNumber(STATE.answers[idx]);
+      STATE.checked[idx] = true;
+
+      if(!Number.isFinite(v)){
+        STATE.correct[idx] = false;
+        renderQuestions();
+        const fb = $(`#fb-${idx}`);
+        fb.className = "feedback bad";
+        fb.textContent = "Please enter a valid number.";
+        return;
+      }
+
+      STATE.correct[idx] = nearlyEqual(v, q.answer, 0.05);
+      renderQuestions();
+    }
+
+    function submitAll(){
+      let correctCount = 0;
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const v = parseNumber(STATE.answers[i]);
+        STATE.checked[i] = true;
+        STATE.correct[i] = Number.isFinite(v) && nearlyEqual(v, q.answer, 0.05);
+        if(STATE.correct[i]) correctCount++;
+      }
+
+      STATE.submitted = true;
+      renderQuestions();
+
+      const total = QUESTIONS.length;
+      const pct = Math.round((correctCount/total)*100);
+
+      const lines = QUESTIONS.map((q,i)=>(
+        `<div style="margin:6px 0;"><b>Q${i+1}:</b> ${fmt(q.answer)} ${q.unit}</div>`
+      )).join("");
+
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:8px;"><b>Correct Answers:</b></div>
+        <div style="margin-top:6px;">${lines}</div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+    function resetAnswers(){
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    function saveResult(){
+      const name = safeName($("#studentNameValue").textContent) || "Student";
+      const data = {
+        title: "Model 24 — Rolling Model (Swept Area)",
+        student: name,
+        piUsed: PI,
+        timestamp: new Date().toISOString(),
+        questions: QUESTIONS.map((q,i)=>({
+          index: i+1,
+          difficulty: q.difficulty,
+          prompt: q.prompt,
+          unit: q.unit,
+          correctAnswer: q.answer,
+          yourAnswer: parseNumber(STATE.answers[i]),
+          isCorrect: !!STATE.correct[i]
+        }))
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `DYAA_Model24_${name.replace(/\s+/g,"_")}_result.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    /********************
+     * Tabs + Student name
+     ********************/
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $(`#panel-${tab}`).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", ""));
+      $("#studentNameValue").textContent = name ? name : "Anonymous";
+    }
+
+    /********************
+     * Print
+     ********************/
+    $("#printQuestionsBtn").addEventListener("click", () => {
+      document.body.classList.remove("print-results");
+      window.print();
+    });
+    $("#printResultsBtn").addEventListener("click", () => {
+      if(!STATE.submitted) submitAll();
+      document.body.classList.add("print-results");
+      window.print();
+      document.body.classList.remove("print-results");
+    });
+
+    /********************
+     * Generate New Set
+     ********************/
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set? This will clear your current answers.", () => {
+        generateNewSet();
+        // go to practice
+        $$('.tab').forEach(b=>b.classList.remove('active'));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$('.panel').forEach(p=>p.classList.remove('active'));
+        $('#panel-practice').classList.add('active');
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    /********************
+     * Learn diagram
+     ********************/
+    function renderLearnDiagram(){
+      $("#learnSvgWrap").innerHTML = diagramSquare();
+    }
+
+    /********************
+     * Init
+     ********************/
+    ensureStudentName();
+    renderLearnDiagram();
+    generateNewSet();
+  </script>
+</body>
+</html>

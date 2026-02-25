@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model 26 — Curved Corner Model — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --stroke:#111;
+      --shade:#d9d9d9;
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:700;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:700;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:800;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card p{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .learn-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:14px;
+      margin-top:12px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .learn-grid{grid-template-columns:1fr;}
+    }
+
+    .mini-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .mini-table th, .mini-table td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    .mini-table th{
+      background:#f5f8ff;
+      color:var(--blue);
+      font-weight:900;
+    }
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:900;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .q-body{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:12px;
+      margin-top:10px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .q-body{grid-template-columns:1fr;}
+    }
+
+.svg-wrap{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+  padding:12px 12px 10px 12px;
+  overflow: visible;   /* ✅ important: don't crop */
+}
+.svg-wrap svg{
+  display:block;
+  width:100%;
+  height:auto;
+  overflow: visible;   /* ✅ important: don't crop */
+}
+
+    .svg-wrap svg{display:block;width:100%;height:auto;}
+    .svg-note{
+      margin-top:6px;
+      font-size:12px;
+      color:rgba(0,0,0,0.55);
+      font-weight:700;
+    }
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      min-width:220px;
+      max-width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .hint-box{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(13,71,161,0.35);
+      background:#f5f8ff;
+      color:#1a2b55;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .hint-box.show{display:block;}
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+    .feedback.ok{color:var(--ok);font-weight:900;}
+    .feedback.bad{color:var(--bad);font-weight:900;}
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    @media print{
+      body{background:#fff;padding:0;}
+      body:before{display:none;}
+      .quiz-container{box-shadow:none;border:none;margin:0;border-radius:0;}
+      .tabs,.row,.btn,.overlay{display:none !important;}
+      .panel{display:block !important;}
+      .q-card{break-inside:avoid; page-break-inside:avoid;}
+      .answer-area .input-row,
+      .answer-area .hint-box{display:none !important;}
+      .feedback{display:none !important;}
+      #resultsBox{display:none !important;}
+      body.print-results .feedback{display:block !important;}
+      body.print-results #resultsBox{display:block !important;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1>Model 26 — Curved Corner Model</h1>
+        <div class="sub">Textbook-style diagrams • Hint button • 2 Easy + 2 Medium + 2 Hard • Use π = 3.14</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="pill">
+        <b>Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <small>URL format: <span class="muted">.../model26_curved_corner.html?name=Tiger</span></small>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn secondary" id="printQuestionsBtn" type="button">Print / Save PDF (Questions)</button>
+        <button class="btn secondary" id="printResultsBtn" type="button">Print / Save PDF (Results)</button>
+        <button class="btn" id="newSetBtn" type="button">Generate New Set</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    <!-- LEARN -->
+    <div class="panel active" id="panel-learn">
+      <div class="learn-card">
+        <h2>Core Ideas</h2>
+        <p>
+          The “curved corner” problems usually come from subtracting a <b>quarter-circle</b> from a <b>square</b>.
+          When the radius equals the side length <b>s</b>, the quarter-circle area is <b>πs²/4</b>.
+        </p>
+
+        <div class="note">
+          <b>Common result:</b> Shaded (square minus quarter-circle) <br>
+          = s² − πs²/4 = s²(1 − π/4) &nbsp;&nbsp;(use π = 3.14)
+        </div>
+
+        <table class="mini-table" aria-label="Common patterns">
+          <thead>
+            <tr>
+              <th>Pattern</th>
+              <th>Area Formula</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Square − quarter circle</td>
+              <td>s²(1 − π/4)</td>
+              <td>Radius = side length</td>
+            </tr>
+            <tr>
+              <td>Two identical curved corners</td>
+              <td>2·s²(1 − π/4)</td>
+              <td>Often appears in a 2×2 big square</td>
+            </tr>
+            <tr>
+              <td>Square − 90° circular segment</td>
+              <td>s² − s²(π − 2)/4</td>
+              <td>Segment = (sector − right triangle)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="learn-grid">
+          <div class="muted">
+            Tip: When you see a curved boundary inside a square, ask:
+            “Is it a quarter circle?” If yes, find its radius and subtract from the square.
+          </div>
+          <div class="svg-wrap" id="learnSvgWrap"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted">Enter a number only. Round to 2 decimals if needed. Use</span> <b>π = 3.14</b>.
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3>Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /********************
+     * Helpers
+     ********************/
+    const PI = 3.14;
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;");
+    }
+
+    function parseNumber(input){
+      if(input == null) return NaN;
+      const s = String(input).trim()
+        .replace(/,/g,"")
+        .replace(/cm\^?2|cm²|m\^?2|m²|cm|m|square/ig,"")
+        .replace(/\s/g,"");
+      if(!s) return NaN;
+      const v = Number(s);
+      return Number.isFinite(v) ? v : NaN;
+    }
+    function roundTo(n, dp=2){
+      const p = Math.pow(10, dp);
+      return Math.round(n*p)/p;
+    }
+    function fmt(n){
+      const v = roundTo(n, 2);
+      const s = v.toFixed(2);
+      return s.replace(/\.?0+$/,"");
+    }
+    function nearlyEqual(a,b,eps=0.05){
+      return Math.abs(a-b) <= eps;
+    }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * SVG utilities
+     ********************/
+    function ang(cx,cy,x,y){
+      return Math.atan2(y-cy, x-cx);
+    }
+    function mod2pi(t){
+      const two = Math.PI*2;
+      t = t % two;
+      return t < 0 ? t + two : t;
+    }
+    function arcCmdFromCenter(cx,cy,r,x1,y1,x2,y2,dir){
+      const a1 = ang(cx,cy,x1,y1);
+      const a2 = ang(cx,cy,x2,y2);
+
+      let delta, sweep;
+      if(dir === "cw"){
+        delta = mod2pi(a2 - a1);
+        sweep = 1;
+      }else{
+        delta = mod2pi(a1 - a2);
+        sweep = 0;
+      }
+      const large = delta > Math.PI ? 1 : 0;
+      return `A ${r} ${r} 0 ${large} ${sweep} ${x2} ${y2}`;
+    }
+
+    function svgWrap(svg){
+      return `${svg}<div class="svg-note">Not to scale</div>`;
+    }
+
+function svgStart(viewW=260, viewH=210, margin=14){
+  const vbX = -margin;
+  const vbY = -margin;
+  const vbW = viewW + margin*2;
+  const vbH = viewH + margin*2;
+
+  return `<svg viewBox="${vbX} ${vbY} ${vbW} ${vbH}" preserveAspectRatio="xMidYMid meet"
+        role="img" aria-label="Diagram">
+    <defs>
+      <style>
+        .line{fill:none;stroke:var(--stroke);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;}
+        .thin{fill:none;stroke:var(--stroke);stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round;}
+        .shade{fill:var(--shade);stroke:none;}
+        .white{fill:#fff;stroke:none;}
+        .txt{font: 14px 'Segoe UI', Tahoma, sans-serif; fill:var(--stroke); font-weight:700;}
+        .txt2{font: 13px 'Segoe UI', Tahoma, sans-serif; fill:var(--stroke); font-weight:700;}
+      </style>
+    </defs>`;
+}
+   
+   function svgEnd(){ return `</svg>`; }
+
+    function rightAngleMark(x,y){
+      // x,y = corner point
+      return `<path class="thin" d="M ${x} ${y} L ${x+16} ${y} L ${x+16} ${y-16} L ${x} ${y-16}"></path>`;
+    }
+
+    /********************
+     * Diagrams (match workbook style)
+     ********************/
+    function diagramSquareMinusQuarterCircle(sideLabel, centerCorner){
+      // centerCorner: "BL" or "TL" (workbook Q1/Q2 style)
+      const W=260, H=210;
+      const x=80, y=55, s=110; // drawing square
+      const TL={x:x,y:y}, TR={x:x+s,y:y}, BR={x:x+s,y:y+s}, BL={x:x,y:y+s};
+
+      let C, start, end, shadePath, arcPath, rightMark="";
+      if(centerCorner==="BL"){
+        C = BL; // center at bottom-left
+        start = TL; // arc from top-left
+        end = BR;   // to bottom-right
+        const arc = arcCmdFromCenter(C.x,C.y,s, start.x,start.y, end.x,end.y,"cw");
+        // shaded region outside quarter circle: TL -> TR -> BR -> arc back to TL
+        shadePath = `M ${TL.x} ${TL.y} L ${TR.x} ${TR.y} L ${BR.x} ${BR.y} ${arc} Z`;
+        arcPath = `M ${start.x} ${start.y} ${arc}`;
+        rightMark = rightAngleMark(BL.x, BL.y);
+      }else{
+        C = TL; // center at top-left
+        start = BL; // arc from bottom-left
+        end = TR;   // to top-right
+        const arc = arcCmdFromCenter(C.x,C.y,s, start.x,start.y, end.x,end.y,"ccw");
+        // shaded region outside quarter circle: BL -> BR -> TR -> arc back to BL
+        shadePath = `M ${BL.x} ${BL.y} L ${BR.x} ${BR.y} L ${TR.x} ${TR.y} ${arc} Z`;
+        arcPath = `M ${start.x} ${start.y} ${arc}`;
+      }
+
+      const svg = `
+        ${svgStart(W,H)}
+          <path class="shade" d="${shadePath}"></path>
+
+          <rect class="line" x="${x}" y="${y}" width="${s}" height="${s}"></rect>
+          ${rightMark}
+          <path class="line" d="${arcPath}"></path>
+
+          <text class="txt" x="${x-22}" y="${y+s/2+5}">${sideLabel}</text>
+          <text class="txt" x="${x+s/2-6}" y="${y+s+26}">${sideLabel}</text>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    function diagramTwoCurvedCornersBigSquare(aLabel){
+      // big square side 2a, divided into 4. Shaded: top-right and bottom-right curved corners.
+      // arcs:
+      //  - top-right arc centered at top midpoint (left boundary of top-right quadrant), from TR to center O
+      //  - bottom-right arc centered at bottom midpoint (left boundary of bottom-right quadrant), from BR to center O
+      const W=260, H=210;
+      const x=60, y=35, S=140; // big square
+      const a = S/2;
+
+      const TL={x:x,y:y}, TR={x:x+S,y:y}, BR={x:x+S,y:y+S}, BL={x:x,y:y+S};
+      const O ={x:x+a, y:y+a};
+      const topMid={x:x+a, y:y};
+      const botMid={x:x+a, y:y+S};
+
+      // Top-right shaded region: TR -> (x+S,y+a) -> O -> arc back to TR (center=topMid, r=a)
+      const Rmid={x:x+S, y:y+a};
+      const arcTR = arcCmdFromCenter(topMid.x, topMid.y, a, O.x,O.y, TR.x,TR.y, "cw");
+      const shadeTR = `M ${TR.x} ${TR.y} L ${Rmid.x} ${Rmid.y} L ${O.x} ${O.y} ${arcTR} Z`;
+      const arcTRline = `M ${TR.x} ${TR.y} ${arcCmdFromCenter(topMid.x, topMid.y, a, TR.x,TR.y, O.x,O.y, "ccw")}`;
+
+      // Bottom-right shaded region: BR -> (x+S,y+a)?? (same Rmid) -> O -> arc back to BR (center=botMid, r=a)
+      // For bottom-right quadrant, use point at (x+S, y+a) and (x+S, y+S) and (x+a, y+S)
+      const botLeftOfBR={x:x+a, y:y+S};
+      const arcBR = arcCmdFromCenter(botMid.x, botMid.y, a, BR.x,BR.y, O.x,O.y, "ccw");
+      const shadeBR = `M ${BR.x} ${BR.y} L ${botLeftOfBR.x} ${botLeftOfBR.y} L ${O.x} ${O.y} ${arcBR} Z`;
+      const arcBRline = `M ${O.x} ${O.y} ${arcCmdFromCenter(botMid.x, botMid.y, a, O.x,O.y, BR.x,BR.y, "cw")}`;
+
+      const svg = `
+        ${svgStart(W,H)}
+          <path class="shade" d="${shadeTR}"></path>
+          <path class="shade" d="${shadeBR}"></path>
+
+          <rect class="line" x="${x}" y="${y}" width="${S}" height="${S}"></rect>
+          <path class="thin" d="M ${x+a} ${y} L ${x+a} ${y+S}"></path>
+          <path class="thin" d="M ${x} ${y+a} L ${x+S} ${y+a}"></path>
+
+          <path class="line" d="${arcTRline}"></path>
+          <path class="line" d="${arcBRline}"></path>
+
+          <text class="txt" x="${x-24}" y="${y+S/2+5}">${aLabel*2}</text>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    function diagramCenterDiamond(sideLabel){
+      // central shaded region = square - four corner quarter circles (radius = s/2)
+      const W=260, H=210;
+      const x=70, y=40, S=130;
+      const r = S/2;
+
+      const TL={x:x,y:y}, TR={x:x+S,y:y}, BR={x:x+S,y:y+S}, BL={x:x,y:y+S};
+
+      // Fill square shaded, then carve out 4 white quarter circles at corners.
+      const svg = `
+        ${svgStart(W,H)}
+          <rect class="shade" x="${x}" y="${y}" width="${S}" height="${S}"></rect>
+
+          <!-- carve white quarter circles -->
+          <path class="white" d="M ${TL.x} ${TL.y} L ${TL.x+r} ${TL.y} ${arcCmdFromCenter(TL.x,TL.y,r, TL.x+r,TL.y, TL.x,TL.y+r, "cw")} Z"></path>
+          <path class="white" d="M ${TR.x} ${TR.y} L ${TR.x} ${TR.y+r} ${arcCmdFromCenter(TR.x,TR.y,r, TR.x,TR.y+r, TR.x-r,TR.y, "cw")} Z"></path>
+          <path class="white" d="M ${BR.x} ${BR.y} L ${BR.x-r} ${BR.y} ${arcCmdFromCenter(BR.x,BR.y,r, BR.x-r,BR.y, BR.x,BR.y-r, "cw")} Z"></path>
+          <path class="white" d="M ${BL.x} ${BL.y} L ${BL.x} ${BL.y-r} ${arcCmdFromCenter(BL.x,BL.y,r, BL.x,BL.y-r, BL.x+r,BL.y, "cw")} Z"></path>
+
+          <!-- outlines -->
+          <rect class="line" x="${x}" y="${y}" width="${S}" height="${S}"></rect>
+
+          <!-- arc boundaries -->
+          <path class="line" d="M ${TL.x+r} ${TL.y} ${arcCmdFromCenter(TL.x,TL.y,r, TL.x+r,TL.y, TL.x,TL.y+r, "cw")}"></path>
+          <path class="line" d="M ${TR.x} ${TR.y+r} ${arcCmdFromCenter(TR.x,TR.y,r, TR.x,TR.y+r, TR.x-r,TR.y, "cw")}"></path>
+          <path class="line" d="M ${BR.x-r} ${BR.y} ${arcCmdFromCenter(BR.x,BR.y,r, BR.x-r,BR.y, BR.x,BR.y-r, "cw")}"></path>
+          <path class="line" d="M ${BL.x} ${BL.y-r} ${arcCmdFromCenter(BL.x,BL.y,r, BL.x,BL.y-r, BL.x+r,BL.y, "cw")}"></path>
+
+          <text class="txt" x="${x+S/2-6}" y="${y+S+28}">${sideLabel}</text>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    function diagramSquareSegmentSubtract(sideLabel){
+      // workbook Q5 style: whole square shaded, white circular segment between diagonal AC and arc (center at B)
+      const W=260, H=210;
+      const x=80, y=45, S=120;
+
+      const A={x:x,y:y};
+      const B={x:x+S,y:y};
+      const C={x:x+S,y:y+S};
+      const D={x:x,y:y+S};
+
+      // arc from C -> A centered at B (radius S)
+      const arcCA = arcCmdFromCenter(B.x,B.y,S, C.x,C.y, A.x,A.y, "cw");
+      const whiteSeg = `M ${A.x} ${A.y} L ${C.x} ${C.y} ${arcCA} Z`;
+
+      const svg = `
+        ${svgStart(W,H)}
+          <rect class="shade" x="${x}" y="${y}" width="${S}" height="${S}"></rect>
+          <path class="white" d="${whiteSeg}"></path>
+
+          <rect class="line" x="${x}" y="${y}" width="${S}" height="${S}"></rect>
+          <path class="thin" d="M ${A.x} ${A.y} L ${C.x} ${C.y}"></path>
+          <path class="line" d="M ${A.x} ${A.y} ${arcCmdFromCenter(B.x,B.y,S, A.x,A.y, C.x,C.y, "ccw")}"></path>
+
+          <text class="txt2" x="${A.x-14}" y="${A.y+14}">A</text>
+          <text class="txt2" x="${B.x+6}" y="${B.y+14}">B</text>
+          <text class="txt2" x="${C.x+6}" y="${C.y+6}">C</text>
+          <text class="txt2" x="${D.x-14}" y="${D.y+6}">D</text>
+
+          <text class="txt" x="${x-22}" y="${y+S/2+5}">${sideLabel}</text>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    function diagramSquareSegmentOnly(sideLabel){
+      // same geometry as Q5 but shade ONLY the segment between diagonal and arc
+      const W=260, H=210;
+      const x=80, y=45, S=120;
+
+      const A={x:x,y:y};
+      const B={x:x+S,y:y};
+      const C={x:x+S,y:y+S};
+      const D={x:x,y:y+S};
+
+      const arcCA = arcCmdFromCenter(B.x,B.y,S, C.x,C.y, A.x,A.y, "cw");
+      const segPath = `M ${A.x} ${A.y} L ${C.x} ${C.y} ${arcCA} Z`;
+
+      const svg = `
+        ${svgStart(W,H)}
+          <path class="shade" d="${segPath}"></path>
+
+          <rect class="line" x="${x}" y="${y}" width="${S}" height="${S}"></rect>
+          <path class="thin" d="M ${A.x} ${A.y} L ${C.x} ${C.y}"></path>
+          <path class="line" d="M ${A.x} ${A.y} ${arcCmdFromCenter(B.x,B.y,S, A.x,A.y, C.x,C.y, "ccw")}"></path>
+
+          <text class="txt2" x="${A.x-14}" y="${A.y+14}">A</text>
+          <text class="txt2" x="${B.x+6}" y="${B.y+14}">B</text>
+          <text class="txt2" x="${C.x+6}" y="${C.y+6}">C</text>
+          <text class="txt2" x="${D.x-14}" y="${D.y+6}">D</text>
+
+          <text class="txt" x="${x-22}" y="${y+S/2+5}">${sideLabel}</text>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    /********************
+     * Math formulas (π fixed)
+     ********************/
+    function squareMinusQuarter(s){ return s*s - (PI*s*s)/4; }            // s^2(1 - π/4)
+    function twoCorners(a){ return 2*(a*a - (PI*a*a)/4); }                // 2*a^2(1 - π/4)
+    function seg90(r){ return (r*r*(PI-2))/4; }                           // 90° segment
+    function squareMinusSeg(s){ return s*s - seg90(s); }                  // shaded in Q5
+
+    /********************
+     * Question generator (2 Easy + 2 Medium + 2 Hard)
+     ********************/
+    function makeQuestions(){
+      const qs = [];
+
+      // Easy 1 (workbook Q1 style): side given, center at bottom-left
+      (function(){
+        const s = choice([8,10,12,14,16,18]);
+        const ans = roundTo(squareMinusQuarter(s), 2);
+        qs.push({
+          difficulty:"easy",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramSquareMinusQuarterCircle(s, "BL"),
+          prompt: `Find the area of the shaded region. (Unit: cm², use π = 3.14)`,
+          hint: `Square area = ${s}². Quarter circle radius = ${s}. Shaded = s² − πs²/4.`
+        });
+      })();
+
+      // Easy 2 (workbook Q2 style): square area given (perfect square), center at top-left
+      (function(){
+        const side = choice([5,6,7,8,9,10,12]);
+        const area = side*side;
+        const ans = roundTo(squareMinusQuarter(side), 2);
+        qs.push({
+          difficulty:"easy",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramSquareMinusQuarterCircle(side, "TL"),
+          prompt: `A square has area ${area} cm². Find the area of the shaded region. (Use π = 3.14)`,
+          hint: `Side length s = √${area} = ${side}. Shaded = s² − πs²/4.`
+        });
+      })();
+
+      // Medium 1 (workbook Q3 style): big square side = 2a, shaded = two curved corners on the right
+      (function(){
+        const bigSide = choice([12,16,20,24]);
+        const a = bigSide/2;
+        const ans = roundTo(twoCorners(a), 2);
+        qs.push({
+          difficulty:"medium",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramTwoCurvedCornersBigSquare(a),
+          prompt: `The big square has side length ${bigSide} cm and is divided into 4 equal squares. Find the area of the shaded region. (Use π = 3.14)`,
+          hint: `Each small square has side a = ${a}. Each shaded corner = a² − (πa²/4). There are 2 of them.`
+        });
+      })();
+
+      // Medium 2 (workbook Q4 style): central diamond shaded (square minus 4 quarter circles of radius s/2)
+      (function(){
+        const s = choice([4,6,8,10,12]);
+        const ans = roundTo(squareMinusQuarter(s), 2);
+        qs.push({
+          difficulty:"medium",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramCenterDiamond(s),
+          prompt: `Find the area of the shaded region in the square. (Side length = ${s} cm, use π = 3.14)`,
+          hint: `Four corner quarter circles have radius r = s/2. Total removed area = π(s/2)² = πs²/4. Shaded = s² − πs²/4.`
+        });
+      })();
+
+      // Hard 1 (workbook Q5 style): square shaded except a 90° circular segment (between diagonal and arc)
+      (function(){
+        const s = choice([4,6,8,10]);
+        const ans = roundTo(squareMinusSeg(s), 2);
+        qs.push({
+          difficulty:"hard",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramSquareSegmentSubtract(s),
+          prompt: `In square ABCD (side = ${s} cm), the curved line is a quarter circle centered at B and the diagonal is AC. Find the area of the shaded region. (Use π = 3.14)`,
+          hint: `White part is a 90° circular segment: (πs²/4) − (s²/2) = s²(π−2)/4. Shaded = s² − that.`
+        });
+      })();
+
+      // Hard 2: find the area of the curved segment itself (between diagonal and arc)
+      (function(){
+        const s = choice([4,6,8,10]);
+        const ans = roundTo(seg90(s), 2);
+        qs.push({
+          difficulty:"hard",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramSquareSegmentOnly(s),
+          prompt: `In square ABCD (side = ${s} cm), the curved line is a quarter circle centered at B and the diagonal is AC. Find the area of the shaded segment. (Use π = 3.14)`,
+          hint: `Segment area = (sector) − (triangle) = (πs²/4) − (s²/2) = s²(π−2)/4.`
+        });
+      })();
+
+      return qs;
+    }
+
+    /********************
+     * UI state + rendering
+     ********************/
+    let QUESTIONS = [];
+    let STATE = { answers:[], checked:[], correct:[], hintShown:[], submitted:false };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+    function niceDiff(d){
+      if(d==="easy") return "Easy";
+      if(d==="medium") return "Medium";
+      return "Hard";
+    }
+
+    function renderQuestions(){
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const userVal = STATE.answers[idx] ?? "";
+        const checked = !!STATE.checked[idx];
+        const correct = !!STATE.correct[idx];
+        const hintShown = !!STATE.hintShown[idx];
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${escapeHtml(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="q-body">
+            <div class="svg-wrap">${q.svg}</div>
+
+            <div class="answer-area">
+              <div class="input-row">
+                <input type="text" inputmode="decimal" autocomplete="off"
+                  id="ans-${idx}" placeholder="Answer (${q.unit})"
+                  value="${escapeHtml(userVal)}">
+                <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+                <button class="btn ghost" type="button" id="hint-${idx}">${hintShown ? "Hide Hint" : "Hint"}</button>
+              </div>
+
+              <div class="hint-box ${hintShown ? "show" : ""}" id="hintBox-${idx}">
+                ${escapeHtml(q.hint)}
+              </div>
+
+              <div class="feedback ${checked ? (correct ? "ok" : "bad") : ""}" id="fb-${idx}">
+                ${checked
+                  ? (correct
+                      ? "Correct ✅"
+                      : `Not correct ❌  (Correct answer: ${fmt(q.answer)} ${q.unit})`)
+                  : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        const inp = $(`#ans-${idx}`, card);
+        inp.addEventListener("input", () => {
+          STATE.answers[idx] = inp.value;
+          STATE.checked[idx] = false;
+          STATE.correct[idx] = false;
+          if(STATE.submitted){
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+          }
+          const fb = $(`#fb-${idx}`, card);
+          fb.className = "feedback";
+          fb.textContent = "";
+        });
+
+        $(`#check-${idx}`, card).addEventListener("click", () => checkOne(idx));
+        $(`#hint-${idx}`, card).addEventListener("click", () => {
+          STATE.hintShown[idx] = !STATE.hintShown[idx];
+          renderQuestions();
+        });
+      });
+
+      $("#resultsBox").style.display = "none";
+      document.body.classList.remove("print-results");
+    }
+
+    function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const v = parseNumber(STATE.answers[idx]);
+      STATE.checked[idx] = true;
+
+      if(!Number.isFinite(v)){
+        STATE.correct[idx] = false;
+        renderQuestions();
+        const fb = $(`#fb-${idx}`);
+        fb.className = "feedback bad";
+        fb.textContent = "Please enter a valid number.";
+        return;
+      }
+
+      STATE.correct[idx] = nearlyEqual(v, q.answer, 0.05);
+      renderQuestions();
+    }
+
+    function submitAll(){
+      let correctCount = 0;
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const v = parseNumber(STATE.answers[i]);
+        STATE.checked[i] = true;
+        STATE.correct[i] = Number.isFinite(v) && nearlyEqual(v, q.answer, 0.05);
+        if(STATE.correct[i]) correctCount++;
+      }
+
+      STATE.submitted = true;
+      renderQuestions();
+
+      const total = QUESTIONS.length;
+      const pct = Math.round((correctCount/total)*100);
+
+      const lines = QUESTIONS.map((q,i)=>(
+        `<div style="margin:6px 0;"><b>Q${i+1}:</b> ${fmt(q.answer)} ${q.unit}</div>`
+      )).join("");
+
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:8px;"><b>Correct Answers:</b></div>
+        <div style="margin-top:6px;">${lines}</div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+    function resetAnswers(){
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    function saveResult(){
+      const name = safeName($("#studentNameValue").textContent) || "Student";
+      const data = {
+        title: "Model 26 — Curved Corner Model",
+        student: name,
+        piUsed: PI,
+        timestamp: new Date().toISOString(),
+        questions: QUESTIONS.map((q,i)=>({
+          index: i+1,
+          difficulty: q.difficulty,
+          prompt: q.prompt,
+          unit: q.unit,
+          correctAnswer: q.answer,
+          yourAnswer: parseNumber(STATE.answers[i]),
+          isCorrect: !!STATE.correct[i]
+        }))
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `DYAA_Model26_${name.replace(/\s+/g,"_")}_result.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    /********************
+     * Tabs + Student name
+     ********************/
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $(`#panel-${tab}`).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", ""));
+      $("#studentNameValue").textContent = name ? name : "Anonymous";
+    }
+
+    /********************
+     * Print
+     ********************/
+    $("#printQuestionsBtn").addEventListener("click", () => {
+      document.body.classList.remove("print-results");
+      window.print();
+    });
+    $("#printResultsBtn").addEventListener("click", () => {
+      if(!STATE.submitted) submitAll();
+      document.body.classList.add("print-results");
+      window.print();
+      document.body.classList.remove("print-results");
+    });
+
+    /********************
+     * Generate New Set
+     ********************/
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set? This will clear your current answers.", () => {
+        generateNewSet();
+        // go to practice
+        $$('.tab').forEach(b=>b.classList.remove('active'));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$('.panel').forEach(p=>p.classList.remove('active'));
+        $('#panel-practice').classList.add('active');
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    /********************
+     * Learn diagram
+     ********************/
+    function renderLearnDiagram(){
+      $("#learnSvgWrap").innerHTML = diagramSquareMinusQuarterCircle(12, "BL");
+    }
+
+    /********************
+     * Init
+     ********************/
+    ensureStudentName();
+    renderLearnDiagram();
+    generateNewSet();
+  </script>
+</body>
+</html>

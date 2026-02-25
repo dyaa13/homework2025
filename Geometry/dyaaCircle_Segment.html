@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model 25 — Circle Segment Model (Arches) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --stroke:#111;
+      --shade:#d9d9d9;
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.06);
+      transform:rotate(-12deg);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .quiz-container{
+      position:relative;
+      z-index:1;
+      max-width:980px;
+      margin:30px auto;
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    header{
+      padding:18px 22px 10px 22px;
+      border-bottom:2px solid var(--line);
+      background:linear-gradient(180deg, rgba(13,71,161,0.08), rgba(255,255,255,0));
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      margin-bottom:8px;
+    }
+    .logo-icon{
+      width:42px;height:42px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 12px rgba(13,71,161,0.25);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:10px;border-radius:6px;
+    }
+    .brand{
+      display:flex;flex-direction:column;line-height:1.1;
+    }
+    .brand .name{font-weight:800;letter-spacing:0.5px}
+    .brand .tag{font-size:12px;color:var(--muted)}
+    .header-row{
+      display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    }
+    .titles{
+      display:flex;flex-direction:column;gap:4px;
+    }
+    h1{margin:0;font-size:20px;}
+    .subtitle{color:var(--muted);font-size:13px;}
+    .meta-right{
+      display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .pill{
+      background:#fff;border:1px solid var(--line);
+      border-radius:999px;padding:6px 10px;font-size:12px;color:var(--muted);
+      display:flex;gap:8px;align-items:center;
+    }
+    .pill b{color:var(--ink)}
+    .tabs{
+      display:flex;gap:8px;margin-top:12px;
+    }
+    .tab{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+      padding:8px 12px;
+      font-weight:700;
+      font-size:13px;
+      cursor:pointer;
+      transition:0.15s;
+    }
+    .tab.active{
+      background:var(--blue);
+      color:#fff;
+      border-color:var(--blue);
+    }
+
+    .content{padding:18px 22px 22px 22px;}
+    .panel{display:none;}
+    .panel.active{display:block;}
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fff;
+    }
+
+    .bullets{margin:10px 0 0 18px;color:var(--ink)}
+    .bullets li{margin:6px 0;}
+    .note{
+      margin-top:10px;
+      padding:10px 12px;
+      border-left:4px solid var(--orange);
+      background:rgba(255,152,0,0.10);
+      border-radius:12px;
+      color:#5a3b00;
+      font-size:13px;
+    }
+
+    .mini-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .mini-table th,.mini-table td{
+      border:1px solid var(--line);
+      padding:8px 10px;
+      text-align:left;
+      vertical-align:top;
+    }
+    .mini-table th{background:rgba(13,71,161,0.06)}
+    .math{font-weight:800}
+
+    .example{
+      margin-top:12px;border:1px dashed var(--line);border-radius:14px;padding:12px;
+      background:rgba(13,71,161,0.04);
+    }
+    .ex-title{font-weight:900;color:var(--blue);margin-bottom:6px}
+    .ex-body p{margin:6px 0;color:var(--ink);font-size:13px}
+
+    .learn-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+      align-items:start;
+    }
+    @media (max-width: 820px){
+      .learn-grid{grid-template-columns:1fr;}
+    }
+
+    /* Practice */
+    .controls{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;
+      margin-bottom:12px;
+    }
+    .left-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+    .right-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end;}
+    .btn{
+      border:none;
+      background:var(--blue);
+      color:#fff;
+      font-weight:800;
+      padding:10px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+      transition:0.15s;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid var(--blue);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+    }
+    .btn.danger{
+      background:var(--bad);
+      box-shadow:0 6px 14px rgba(183,28,28,0.18);
+    }
+    .select{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:9px 10px;
+      background:#fff;
+      font-weight:700;
+      color:var(--ink);
+    }
+    .namebox{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:9px 10px;
+      min-width:220px;
+      font-weight:700;
+      color:var(--ink);
+      background:#fff;
+    }
+
+    .hint{
+      margin:10px 0 0 0;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      margin-top:12px;
+      background:#fff;
+    }
+    .q-head{
+      display:flex;justify-content:space-between;align-items:flex-start;gap:10px;
+      flex-wrap:wrap;
+    }
+    .badge{
+      font-size:12px;
+      font-weight:900;
+      padding:5px 10px;
+      border-radius:999px;
+      background:rgba(13,71,161,0.08);
+      color:var(--blue);
+      border:1px solid rgba(13,71,161,0.20);
+    }
+    .badge--easy{background:rgba(27,94,32,0.10); color:var(--ok); border-color:rgba(27,94,32,0.18);}
+    .badge--medium{background:rgba(255,152,0,0.14); color:#a35a00; border-color:rgba(255,152,0,0.24);}
+    .badge--hard{background:rgba(183,28,28,0.10); color:var(--bad); border-color:rgba(183,28,28,0.18);}
+
+    .q-prompt{margin:8px 0 10px 0;font-size:14px;color:var(--ink);line-height:1.35}
+    .q-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      align-items:start;
+    }
+    @media (max-width: 820px){
+      .q-grid{grid-template-columns:1fr;}
+    }
+
+    .svg-wrap{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px;
+      background:rgba(0,0,0,0.02);
+      text-align:center;
+    }
+    .svg-note{margin-top:6px;color:var(--muted);font-size:12px}
+    .svg-wrap svg{max-width:100%;height:auto}
+
+    .answer-row{
+      display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+      margin-top:6px;
+    }
+    .ans{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      font-size:14px;
+      min-width:220px;
+      outline:none;
+    }
+    .unit{
+      font-weight:900;color:var(--muted);font-size:13px;
+    }
+    .mini-btn{
+      padding:9px 12px;border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .mini-btn:hover{border-color:#c7c7d8}
+    .feedback{margin-top:8px;font-size:13px;}
+    .feedback.ok{color:var(--ok);font-weight:900}
+    .feedback.bad{color:var(--bad);font-weight:900}
+    .hintbox{
+      margin-top:10px;
+      padding:10px 12px;
+      border:1px dashed var(--line);
+      border-radius:12px;
+      color:var(--muted);
+      font-size:13px;
+      background:rgba(13,71,161,0.03);
+    }
+
+    .footer-actions{
+      display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;
+      margin-top:14px;
+    }
+
+    .result-box{
+      margin-top:14px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px;
+      background:rgba(27,94,32,0.06);
+      display:none;
+    }
+    .result-box.bad{background:rgba(183,28,28,0.06);}
+    .result-box h3{margin:0 0 6px 0;}
+    .result-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:8px;
+      font-size:13px;
+    }
+    .result-table th,.result-table td{
+      border:1px solid var(--line);
+      padding:8px 10px;
+      text-align:left;
+      vertical-align:top;
+    }
+    .result-table th{background:rgba(0,0,0,0.03)}
+
+    /* confirmation modal */
+    .modal-backdrop{
+      position:fixed;inset:0;background:rgba(0,0,0,0.45);
+      display:none;align-items:center;justify-content:center;
+      z-index:999;
+      padding:18px;
+    }
+    .modal{
+      width:min(560px, 96vw);
+      background:#fff;border-radius:18px;
+      box-shadow:0 12px 28px rgba(0,0,0,0.25);
+      padding:16px 16px 14px 16px;
+    }
+    .modal h3{margin:0 0 8px 0}
+    .modal p{margin:6px 0;color:var(--muted);font-size:13px;line-height:1.4}
+    .modal-actions{
+      margin-top:12px;
+      display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <header>
+      <div id="headerLogo">
+        <div class="logo-icon"></div>
+        <div class="brand">
+          <div class="name">DYAA Education</div>
+          <div class="tag">Learn • Practice • Review</div>
+        </div>
+      </div>
+
+      <div class="header-row">
+        <div class="titles">
+          <h1 id="pageTitle">Template Title</h1>
+          <div class="subtitle" id="pageSubtitle">Template subtitle</div>
+        </div>
+
+        <div class="meta-right">
+          <div class="pill"><span>⏱</span> <span>Time:</span> <b id="timer">00:00</b></div>
+          <div class="pill"><span>👤</span> <span>Student:</span> <b id="studentLabel">—</b></div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" id="tabLearn">Learn</button>
+        <button class="tab" id="tabPractice">Practice</button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- LEARN -->
+      <div class="panel active" id="panel-learn">
+      <div class="card">
+        <h3>Key idea</h3>
+        <ul class="bullets">
+          <li><b>Circular segment area</b> = <b>sector area</b> − <b>triangle area</b> (triangle is made by the two radii and the chord).</li>
+          <li>Sector area: <span class="math">(θ/360) × π × r²</span> where θ is the central angle (degrees).</li>
+          <li>Triangle area (two sides r and included angle θ): <span class="math">½ × r² × sin(θ)</span>.</li>
+          <li>For a <b>90° segment</b>: <span class="math">¼ × π × r² − ½ × r²</span> = <span class="math">r²(π − 2)/4</span>.</li>
+          <li>Many “arched / petal / lens” shapes are built from <b>multiple identical 90° segments</b> plus simple shapes (square/rectangle/circle).</li>
+        </ul>
+
+        <h3>Common patterns (use π = 3.14)</h3>
+        <table class="mini-table">
+          <tr><th>Pattern</th><th>Formula</th><th>Notes</th></tr>
+          <tr><td>90° sector</td><td><span class="math">¼ × π × r²</span></td><td>Quarter of a circle</td></tr>
+          <tr><td>90° right triangle</td><td><span class="math">½ × r²</span></td><td>Legs are both r</td></tr>
+          <tr><td>90° segment</td><td><span class="math">¼ × π × r² − ½ × r²</span></td><td>Sector − triangle</td></tr>
+          <tr><td>Lens from 2 segments</td><td><span class="math">2 × (90° segment)</span></td><td>Often appears in squares</td></tr>
+        </table>
+
+        <div class="example">
+          <div class="ex-title">Worked example</div>
+          <div class="ex-body">
+            <p>A 90° segment has radius <b>10 cm</b>. Find the shaded area.</p>
+            <div class="math">Area = ¼ × 3.14 × 10² − ½ × 10²</div>
+            <div class="math">= 78.50 − 50.00 = <b>28.50 cm²</b></div>
+          </div>
+        </div>
+
+        <div class="note"><b>Reminder:</b> Use π = 3.14 and round your <b>final</b> answer to <b>2 decimal places</b>.</div>
+
+        <div class="learn-grid">
+          <div class="muted">
+            Example diagram (segment shaded). “Not to scale”.
+          </div>
+          <div class="svg-wrap" id="learnSvgWrap"></div>
+        </div>
+      </div>
+    </div>
+
+
+      <!-- PRACTICE -->
+      <div class="panel" id="panel-practice">
+        <div class="controls">
+          <div class="left-controls">
+            <input class="namebox" id="studentName" placeholder="Enter student name" />
+            <button class="btn ghost" id="applyNameBtn">Apply Name</button>
+          </div>
+
+          <div class="right-controls">
+            <label class="pill">
+              PDF / page:
+              <select class="select" id="perPageSelect">
+                <option value="2">2</option>
+                <option value="3" selected>3</option>
+                <option value="4">4</option>
+                <option value="6">6</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+              </select>
+            </label>
+            <button class="btn secondary" id="exportBtn">Export to PDF</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="hint" id="practiceHint">
+            Use π = 3.14. Round answers to 2 decimal places.
+          </div>
+
+          <div id="questions"></div>
+
+          <div class="footer-actions">
+            <button class="btn" id="submitBtn">Submit & View Result</button>
+            <button class="btn secondary" id="saveBtn">Save Current Result</button>
+          </div>
+
+          <div class="result-box" id="resultBox">
+            <h3 id="resultTitle">Result</h3>
+            <div id="resultSummary"></div>
+            <table class="result-table" id="resultTable"></table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div class="modal-backdrop" id="confirmBackdrop">
+    <div class="modal">
+      <h3>Start Practice?</h3>
+      <p>This page will generate a new set of questions for <b>Model 25 — Circle Segment Model</b>.</p>
+      <p>Make sure the student name is set correctly before exporting the PDF.</p>
+      <div class="modal-actions">
+        <button class="btn ghost" id="cancelConfirmBtn">Cancel</button>
+        <button class="btn" id="startConfirmBtn">Start</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- jsPDF + html2canvas -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <script>
+  /********************
+   * Template meta
+   ********************/
+  const TEMPLATE_META = {
+    title: "Model 25 — Circle Segment Model (Arches)",
+    subtitle: "Circular segment • sector − triangle • composite shaded areas",
+    instructions: [
+      "Use π = 3.14.",
+      "Round your FINAL answer to 2 decimal places.",
+      "All areas are in cm² unless stated."
+    ],
+    // used for exported filenames
+    filePrefix: "DYAA_Model25_CircleSegment",
+  };
+
+  /********************
+   * State + utilities
+   ********************/
+  const STATE = {
+    started: false,
+    startTime: null,
+    timerInt: null,
+    student: "",
+    answers: [],
+    correct: [],
+  };
+
+  function qs(sel, root=document){ return root.querySelector(sel); }
+  function qsa(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
+
+  function setText(id, text){
+    const el = document.getElementById(id);
+    if(el) el.textContent = text;
+  }
+
+  function fmtTime(ms){
+    const s = Math.floor(ms/1000);
+    const mm = String(Math.floor(s/60)).padStart(2,"0");
+    const ss = String(s%60).padStart(2,"0");
+    return `${mm}:${ss}`;
+  }
+
+  function startTimer(){
+    STATE.startTime = Date.now();
+    clearInterval(STATE.timerInt);
+    STATE.timerInt = setInterval(()=>{
+      setText("timer", fmtTime(Date.now() - STATE.startTime));
+    }, 250);
+  }
+
+  function stopTimer(){
+    clearInterval(STATE.timerInt);
+    STATE.timerInt = null;
+  }
+
+  function getStudentFromURL(){
+    const url = new URL(window.location.href);
+    const n = url.searchParams.get("name");
+    return n ? String(n).trim() : "";
+  }
+
+  function parseAnswer(input){
+      const s = String(input||"").trim().replace(/,/g,"");
+      if(!s) return null;
+      // Accept integers or decimals like -12, 3.5, +0.25
+      if(!/^[+-]?\d+(?:\.\d+)?$/.test(s)) return null;
+      const v = Number(s);
+      return Number.isFinite(v) ? v : null;
+    }
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+  function svgWrap(svg){
+    return `<div class="svg-wrap">${svg}<div class="svg-note">Not to scale</div></div>`;
+  }
+
+  // ===== Model 25: Circle Segment (use π = 3.14) =====
+    const PI = 3.14;
+
+    function roundTo(n, dp=2){
+      const p = Math.pow(10, dp);
+      return Math.round((n + Number.EPSILON) * p) / p;
+    }
+    function fmt2(n){ return roundTo(Number(n), 2).toFixed(2); }
+    function fmtAns(q){ return `${fmt2(q.answer)}${q.unit ? " " + q.unit : ""}`; }
+
+    function isCorrectValue(user, correct){
+      if(!Number.isFinite(user) || !Number.isFinite(correct)) return false;
+      return roundTo(user, 2) === roundTo(correct, 2);
+    }
+
+    /********************
+     * SVG helpers (ported from Circle_Segment.html, with unique clip IDs)
+     ********************/
+    function svgStart(w=260,h=210){
+      return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" aria-label="diagram" role="img">
+        <style>
+          .line{stroke:#111;stroke-width:2.5;fill:none;}
+          .thin{stroke:#111;stroke-width:1.8;fill:none;}
+          .shade{fill:#d9d9d9;stroke:#111;stroke-width:2.2;}
+          .txt{font:16px 'Segoe UI',sans-serif;fill:#111;}
+          .txt2{font:14px 'Segoe UI',sans-serif;fill:#111;}
+        </style>`;
+    }
+    function svgEnd(){ return `</svg>`; }
+
+    // arc command around a given center from point P1 to P2 (cw/ccw)
+    function mod2pi(x){
+      const t = 2*Math.PI;
+      x = x % t;
+      return x < 0 ? x + t : x;
+    }
+    function ang(cx,cy,x,y){
+      // y-down coordinate system is fine for SVG arcs
+      return Math.atan2(y - cy, x - cx);
+    }
+    function arcCmdFromCenter(cx,cy,r,x1,y1,x2,y2,dir){
+      // dir: "cw" or "ccw" (clockwise increases angle in y-down)
+      const a1 = ang(cx,cy,x1,y1);
+      const a2 = ang(cx,cy,x2,y2);
+
+      let delta, sweep;
+      if(dir === "cw"){
+        delta = mod2pi(a2 - a1);
+        sweep = 1;
+      }else{
+        delta = mod2pi(a1 - a2);
+        sweep = 0;
+      }
+      const large = delta > Math.PI ? 1 : 0;
+      return `A ${r} ${r} 0 ${large} ${sweep} ${x2} ${y2}`;
+    }
+
+    function diagramQuarterSegment(rLabel){
+      // quarter-circle segment shaded (radius label shown)
+      const W=260, H=210;
+      const cx=85, cy=160, r=70;
+      const A={x:cx+r, y:cy};
+      const B={x:cx, y:cy-r};
+
+      // sector arc from B to A (cw)
+      const arc = arcCmdFromCenter(cx,cy,r, B.x,B.y, A.x,A.y, "cw");
+
+      const segPath = `M ${B.x} ${B.y} ${arc} L ${A.x} ${A.y} Z`;  // approximates the segment region
+      const svg = `
+        ${svgStart(W,H)}
+          <path class="shade" d="${segPath}"></path>
+          <path class="line" d="M ${B.x} ${B.y} ${arc}"></path>
+          <path class="line" d="M ${cx} ${cy} L ${A.x} ${A.y}"></path>
+          <path class="line" d="M ${cx} ${cy} L ${B.x} ${B.y}"></path>
+          <path class="line" d="M ${A.x} ${A.y} L ${B.x} ${B.y}"></path>
+
+          <text class="txt" x="${(cx+A.x)/2-8}" y="${(cy+A.y)/2-6}">${rLabel}</text>
+          <text class="txt" x="${(cx+B.x)/2-16}" y="${(cy+B.y)/2-4}">${rLabel}</text>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    function diagramLensSquare(sLabel){
+      // lens in a square: two quarter-circles from opposite corners, lens shaded
+      const W=260, H=210;
+      const x=70, y=45, s=120;
+      const TL={x:x,y:y}, TR={x:x+s,y:y}, BL={x:x,y:y+s}, BR={x:x+s,y:y+s};
+
+      // centers at BL and TR, radius = s
+      const c1=BL, c2=TR, r=s;
+
+      const arc1 = arcCmdFromCenter(c1.x,c1.y,r, TL.x,TL.y, BR.x,BR.y, "cw");   // TL -> BR around BL
+      const arc2 = arcCmdFromCenter(c2.x,c2.y,r, BR.x,BR.y, TL.x,TL.y, "cw");   // BR -> TL around TR
+
+      const lens = `M ${TL.x} ${TL.y} ${arc1} ${arc2} Z`;
+
+      const svg = `
+        ${svgStart(W,H)}
+          <path class="shade" d="${lens}"></path>
+          <rect class="line" x="${x}" y="${y}" width="${s}" height="${s}"></rect>
+          <path class="line" d="M ${TL.x} ${TL.y} ${arc1}"></path>
+          <path class="line" d="M ${BR.x} ${BR.y} ${arc2}"></path>
+
+          <text class="txt" x="${x-22}" y="${y+s/2+5}">${sLabel}</text>
+          <text class="txt" x="${x+s/2-6}" y="${y+s+26}">${sLabel}</text>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    // petal helper paths (ported)
+    function petalPathTL(x,y,s){
+      const R=s/2;
+      const TL={x:x,y:y};
+      const O ={x:x+R,y:y+R};
+      const topMid={x:x+R,y:y};
+      const leftMid={x:x,y:y+R};
+      const a1 = arcCmdFromCenter(topMid.x, topMid.y, R, TL.x,TL.y, O.x,O.y, "cw");
+      const a2 = arcCmdFromCenter(leftMid.x,leftMid.y,R, O.x,O.y, TL.x,TL.y, "cw");
+      return `M ${TL.x} ${TL.y} ${a1} ${a2} Z`;
+    }
+    function petalPathTR(x,y,s){
+      const R=s/2;
+      const TR={x:x+s,y:y};
+      const O ={x:x+R,y:y+R};
+      const topMid={x:x+R,y:y};
+      const rightMid={x:x+s,y:y+R};
+      const a1 = arcCmdFromCenter(topMid.x, topMid.y, R, O.x,O.y, TR.x,TR.y, "cw");
+      const a2 = arcCmdFromCenter(rightMid.x,rightMid.y,R, TR.x,TR.y, O.x,O.y, "cw");
+      return `M ${O.x} ${O.y} ${a1} ${a2} Z`;
+    }
+    function petalPathBR(x,y,s){
+      const R=s/2;
+      const BR={x:x+s,y:y+s};
+      const O ={x:x+R,y:y+R};
+      const rightMid={x:x+s,y:y+R};
+      const botMid={x:x+R,y:y+s};
+      const a1 = arcCmdFromCenter(rightMid.x,rightMid.y,R, O.x,O.y, BR.x,BR.y, "cw");
+      const a2 = arcCmdFromCenter(botMid.x, botMid.y, R, BR.x,BR.y, O.x,O.y, "cw");
+      return `M ${O.x} ${O.y} ${a1} ${a2} Z`;
+    }
+    function petalPathBL(x,y,s){
+      const R=s/2;
+      const BL={x:x,y:y+s};
+      const O ={x:x+R,y:y+R};
+      const leftMid={x:x,y:y+R};
+      const botMid={x:x+R,y:y+s};
+      const a1 = arcCmdFromCenter(leftMid.x,leftMid.y,R, BL.x,BL.y, O.x,O.y, "cw");
+      const a2 = arcCmdFromCenter(botMid.x,  botMid.y, R, O.x,O.y, BL.x,BL.y, "cw");
+      return `M ${BL.x} ${BL.y} ${a1} ${a2} Z`;
+    }
+
+    function diagramFourPetals(sLabel){
+      const W=260, H=210;
+      const x=70, y=45, s=120;
+      const p1 = petalPathTL(x,y,s);
+      const p2 = petalPathTR(x,y,s);
+      const p3 = petalPathBR(x,y,s);
+      const p4 = petalPathBL(x,y,s);
+
+      const R = s/2;
+      const topMid={x:x+R, y:y};
+      const rightMid={x:x+s, y:y+R};
+      const botMid={x:x+R, y:y+s};
+      const leftMid={x:x, y:y+R};
+
+      const clipId = `clipSq_${Math.random().toString(16).slice(2)}`;
+
+      const svg = `
+        ${svgStart(W,H)}
+          <defs>
+            <clipPath id="${clipId}">
+              <rect x="${x}" y="${y}" width="${s}" height="${s}"></rect>
+            </clipPath>
+          </defs>
+
+          <path class="shade" d="${p1}"></path>
+          <path class="shade" d="${p2}"></path>
+          <path class="shade" d="${p3}"></path>
+          <path class="shade" d="${p4}"></path>
+
+          <rect class="line" x="${x}" y="${y}" width="${s}" height="${s}"></rect>
+
+          <g clip-path="url(#${clipId})">
+            <circle class="line" cx="${topMid.x}" cy="${topMid.y}" r="${R}"></circle>
+            <circle class="line" cx="${rightMid.x}" cy="${rightMid.y}" r="${R}"></circle>
+            <circle class="line" cx="${botMid.x}" cy="${botMid.y}" r="${R}"></circle>
+            <circle class="line" cx="${leftMid.x}" cy="${leftMid.y}" r="${R}"></circle>
+          </g>
+
+          <text class="txt" x="${x-22}" y="${y+s/2+5}">${sLabel}</text>
+          <text class="txt" x="${x+s/2-6}" y="${y+s+26}">${sLabel}</text>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    function diagramOnePetal(sLabel){
+      const W=260, H=210;
+      const x=70, y=45, s=120;
+      const p1 = petalPathTL(x,y,s);
+      const R=s/2;
+      const topMid={x:x+R, y:y};
+      const rightMid={x:x+s, y:y+R};
+      const botMid={x:x+R, y:y+s};
+      const leftMid={x:x, y:y+R};
+
+      const clipId = `clipSq_${Math.random().toString(16).slice(2)}`;
+
+      const svg = `
+        ${svgStart(W,H)}
+          <defs>
+            <clipPath id="${clipId}">
+              <rect x="${x}" y="${y}" width="${s}" height="${s}"></rect>
+            </clipPath>
+          </defs>
+
+          <path class="shade" d="${p1}"></path>
+
+          <rect class="line" x="${x}" y="${y}" width="${s}" height="${s}"></rect>
+
+          <g clip-path="url(#${clipId})">
+            <circle class="line" cx="${topMid.x}" cy="${topMid.y}" r="${R}"></circle>
+            <circle class="line" cx="${rightMid.x}" cy="${rightMid.y}" r="${R}"></circle>
+            <circle class="line" cx="${botMid.x}" cy="${botMid.y}" r="${R}"></circle>
+            <circle class="line" cx="${leftMid.x}" cy="${leftMid.y}" r="${R}"></circle>
+          </g>
+
+          <text class="txt" x="${x-22}" y="${y+s/2+5}">${sLabel}</text>
+          <text class="txt" x="${x+s/2-6}" y="${y+s+26}">${sLabel}</text>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    function diagramComposite(aLabel){
+      // big square divided into 4, two segments shaded (big + small)
+      const W=260, H=210;
+      const x=70, y=40, s=130;     // big square pixel side
+      const mid = s/2;
+
+      const A={x:x, y:y};
+      const B={x:x+s, y:y};
+      const C={x:x+s, y:y+s};
+      const D={x:x, y:y+s};
+
+      const E={x:x, y:y+mid};
+      const F={x:x+mid, y:y+s};
+      const O={x:x+mid, y:y+mid};
+
+      // big segment: arc centered at D with radius s, from A to C
+      const bigArc = arcCmdFromCenter(D.x, D.y, s, A.x,A.y, C.x,C.y, "cw");
+      const bigSeg = `M ${A.x} ${A.y} ${bigArc} L ${A.x} ${A.y} Z`;
+
+      // small segment: center O radius mid, from E to F
+      const smallArc = arcCmdFromCenter(O.x,O.y, mid, E.x,E.y, F.x,F.y, "ccw");
+      const smallSeg = `M ${E.x} ${E.y} ${smallArc} L ${E.x} ${E.y} Z`;
+
+      const svg = `
+        ${svgStart(W,H)}
+          <path class="shade" d="${bigSeg}"></path>
+          <path class="shade" d="${smallSeg}"></path>
+
+          <rect class="line" x="${x}" y="${y}" width="${s}" height="${s}"></rect>
+
+          <path class="thin" d="M ${x+mid} ${y} L ${x+mid} ${y+s}"></path>
+          <path class="thin" d="M ${x} ${y+mid} L ${x+s} ${y+mid}"></path>
+
+          <path class="thin" d="M ${A.x} ${A.y} L ${C.x} ${C.y}"></path>
+          <path class="thin" d="M ${E.x} ${E.y} L ${x+mid} ${y+s}"></path>
+
+          <path class="line" d="M ${A.x} ${A.y} ${bigArc}"></path>
+          <path class="line" d="M ${E.x} ${E.y} ${smallArc}"></path>
+
+          <text class="txt2" x="${A.x-14}" y="${A.y+14}">A</text>
+          <text class="txt2" x="${B.x+6}" y="${B.y+14}">B</text>
+          <text class="txt2" x="${C.x+6}" y="${C.y+6}">C</text>
+          <text class="txt2" x="${D.x-14}" y="${D.y+6}">D</text>
+          <text class="txt2" x="${E.x-14}" y="${E.y+6}">E</text>
+          <text class="txt2" x="${F.x-2}" y="${F.y+16}">F</text>
+          <text class="txt2" x="${O.x+6}" y="${O.y+6}">O</text>
+
+          <text class="txt" x="${x-24}" y="${y+s/2+5}">${aLabel}</text>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    /********************
+     * Math formulas (π fixed)
+     ********************/
+    // 90° segment with radius r: r^2(π-2)/4
+    function seg90(r){ return (r*r*(PI-2))/4; }
+
+    // lens in square side s (two opposite-corner quarter circles): s^2(π-2)/2
+    function lensOppCorners(s){ return (s*s*(PI-2))/2; }
+
+    // 4 petals total in square side s: s^2(π-2)/2
+    function fourPetals(s){ return (s*s*(PI-2))/2; }
+
+    // one petal in that square: s^2(π-2)/8
+    function onePetal(s){ return (s*s*(PI-2))/8; }
+
+    // composite: (5/4)a^2(π-2)
+    function composite(a){ return (5*(a*a)*(PI-2))/4; }
+
+    // unshaded in 4-petal square: s^2(4-π)/2
+    function unshadedInFourPetals(s){ return (s*s*(4-PI))/2; }
+
+    function diagramPlaceholder(label="Diagram"){
+      // used by the Learn tab
+      return diagramQuarterSegment("r");
+    }
+
+
+  function makeQuestions(){
+      const qs = [];
+
+      // Easy 1: quarter-circle segment
+      (function(){
+        const r = choice([4,5,6,7,8,9,10,12]);
+        const ans = roundTo(seg90(r), 2);
+        qs.push({
+          difficulty:"easy",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramQuarterSegment(r),
+          prompt: `Find the area of the shaded region. (Unit: cm², use π = 3.14)`,
+          hint: `This is a 90° circular segment with radius r = ${r}. Segment = (πr²/4) − (r²/2) = r²(π − 2)/4.`
+        });
+      })();
+
+      // Easy 2: lens in square
+      (function(){
+        const s = choice([3,4,5,6,7,8,10]);
+        const ans = roundTo(lensOppCorners(s), 2);
+        qs.push({
+          difficulty:"easy",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramLensSquare(s),
+          prompt: `Find the area of the shaded region inside the square. (Unit: cm², use π = 3.14)`,
+          hint: `The shaded lens is made of 2 identical 90° segments (radius = side length ${s}). Total = s²(π − 2)/2.`
+        });
+      })();
+
+      // Medium 1: 4 petals total
+      (function(){
+        const s = choice([8,10,12,14,16,18]);
+        const ans = roundTo(fourPetals(s), 2);
+        qs.push({
+          difficulty:"medium",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramFourPetals(s),
+          prompt: `Find the total area of the shaded region. (Unit: cm², use π = 3.14)`,
+          hint: `Each petal = s²(π − 2)/8. There are 4 petals, so total = s²(π − 2)/2. Here s = ${s}.`
+        });
+      })();
+
+      // Medium 2: one petal only
+      (function(){
+        const s = choice([8,10,12,14,16,18]);
+        const ans = roundTo(onePetal(s), 2);
+        qs.push({
+          difficulty:"medium",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramOnePetal(s),
+          prompt: `Find the area of the shaded petal. (Unit: cm², use π = 3.14)`,
+          hint: `One petal = s²(π − 2)/8. Here s = ${s}.`
+        });
+      })();
+
+      // Hard 1: composite like workbook
+      (function(){
+        const a = choice([2,3,4,5,6]);
+        const ans = roundTo(composite(a), 2);
+        qs.push({
+          difficulty:"hard",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramComposite(a),
+          prompt: `The side length of the big square is ${2*a} cm, and it is divided into 4 equal squares. Find the area of the shaded region. (Unit: cm², use π = 3.14)`,
+          hint: `Let a be the side of a small square (${a} cm). Shaded = big segment (radius 2a) + small segment (radius a) = a²(π − 2) + a²(π − 2)/4 = (5/4)a²(π − 2).`
+        });
+      })();
+
+      // Hard 2: unshaded in 4-petal square
+      (function(){
+        const s = choice([8,10,12,14,16,18]);
+        const ans = roundTo(unshadedInFourPetals(s), 2);
+        qs.push({
+          difficulty:"hard",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramFourPetals(s),
+          prompt: `Find the area of the unshaded region. (Unit: cm², use π = 3.14)`,
+          hint: `Unshaded = square − shaded petals. Shaded petals total = s²(π − 2)/2, so unshaded = s² − s²(π − 2)/2 = s²(4 − π)/2. Here s = ${s}.`
+        });
+      })();
+
+      return qs;
+    }
+
+  let QUESTIONS = [];
+
+  function renderQuestions(){
+    const container = qs("#questions");
+    container.innerHTML = "";
+
+    STATE.answers = Array(QUESTIONS.length).fill("");
+    STATE.correct = Array(QUESTIONS.length).fill(false);
+
+    QUESTIONS.forEach((q, idx)=>{
+      const badgeClass = `badge--${q.difficulty}`;
+      const card = document.createElement("div");
+      card.className = "q-card";
+      card.innerHTML = `
+        <div class="q-head">
+          <div class="badge ${badgeClass}">Q${idx+1} • ${q.difficulty.toUpperCase()}</div>
+        </div>
+        <div class="q-prompt">${q.prompt}</div>
+        <div class="q-grid">
+          <div>${q.svg || ""}</div>
+          <div>
+            <div class="answer-row">
+              <input class="ans" id="ans_${idx}" placeholder="e.g., 28.50" inputmode="decimal" />
+              <span class="unit">${q.unit||""}</span>
+              <button class="mini-btn" id="check_${idx}">Check</button>
+              <button class="mini-btn" id="hint_${idx}">Hint</button>
+            </div>
+            <div class="feedback" id="fb_${idx}"></div>
+            <div class="hintbox" id="hb_${idx}" style="display:none;"></div>
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+
+      qs(`#check_${idx}`).addEventListener("click", ()=>checkOne(idx));
+      qs(`#hint_${idx}`).addEventListener("click", ()=>toggleHint(idx));
+      qs(`#ans_${idx}`).addEventListener("input", (e)=>{
+        STATE.answers[idx] = e.target.value;
+        // clear per-question feedback on edit
+        const fb = qs(`#fb_${idx}`);
+        fb.textContent = "";
+        fb.className = "feedback";
+      });
+    });
+  }
+
+  function toggleHint(idx){
+    const hb = qs(`#hb_${idx}`);
+    const q = QUESTIONS[idx];
+    if(hb.style.display === "none"){
+      hb.style.display = "block";
+      hb.textContent = q.hint || "No hint for this question.";
+    }else{
+      hb.style.display = "none";
+    }
+  }
+
+  function checkOne(idx){
+    const q = QUESTIONS[idx];
+    const input = STATE.answers[idx];
+    const v = parseAnswer(input);
+    const fb = qs(`#fb_${idx}`);
+
+    if(v===null){
+      fb.className = "feedback bad";
+      fb.textContent = "⚠️ Please enter a valid number.";
+      STATE.correct[idx] = false;
+      return;
+    }
+
+    STATE.correct[idx] = isCorrectValue(v, q.answer);
+    const ok = STATE.correct[idx];
+    fb.className = ok ? "feedback ok" : "feedback bad";
+    fb.innerHTML = ok ? "✅ Correct!" : `❌ Correct answer: <b>${fmtAns(q)}</b>`;
+  }
+
+  function submitAll(){
+    let correctCount = 0;
+    const rows = [];
+
+    QUESTIONS.forEach((q,i)=>{
+      const v = parseAnswer(STATE.answers[i]);
+      const valid = (v!==null);
+      STATE.correct[i] = valid && isCorrectValue(v, q.answer);
+      if(STATE.correct[i]) correctCount++;
+
+      const userText = valid ? v : "(invalid)";
+      rows.push({
+        q: `Q${i+1}`,
+        difficulty: q.difficulty,
+        your: userText,
+        correct: fmtAns(q),
+        ok: STATE.correct[i] ? "✅" : "❌"
+      });
+    });
+
+    const box = qs("#resultBox");
+    const title = qs("#resultTitle");
+    const summary = qs("#resultSummary");
+    const table = qs("#resultTable");
+
+    const total = QUESTIONS.length;
+    title.textContent = `Result: ${correctCount} / ${total}`;
+    summary.innerHTML = `Student: <b>${STATE.student || "—"}</b> • Time: <b>${qs("#timer").textContent}</b>`;
+
+    box.style.display = "block";
+    box.className = "result-box" + (correctCount===total ? "" : " bad");
+
+    table.innerHTML = `
+      <tr>
+        <th>Q</th><th>Difficulty</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th>
+      </tr>
+      ${rows.map(r=>`
+        <tr>
+          <td>${r.q}</td>
+          <td>${r.difficulty}</td>
+          <td>${r.your}</td>
+          <td>${r.correct}</td>
+          <td>${r.ok}</td>
+        </tr>
+      `).join("")}
+    `;
+  }
+
+  function saveResultsTxt(){
+    const now = new Date();
+    const timeSpent = qs("#timer").textContent;
+    const lines = [];
+    lines.push(`DYAA Results — ${TEMPLATE_META.title}`);
+    lines.push(`Student: ${STATE.student || "-"}`);
+    lines.push(`Time: ${timeSpent}`);
+    lines.push(`Date: ${now.toLocaleString()}`);
+    lines.push("");
+    QUESTIONS.forEach((q,i)=>{
+      const v = parseAnswer(STATE.answers[i]);
+      const valid = (v!==null);
+      const isCorrect = valid && isCorrectValue(v, q.answer);
+      lines.push(`Q${i+1} (${q.difficulty}):`);
+      lines.push(`  Your answer: ${valid ? v : "(invalid)"}`);
+      lines.push(`  Correct answer: ${fmtAns(q)}`);
+      lines.push(`  Result: ${isCorrect ? "Correct" : "Not correct"}`);
+      lines.push("");
+    });
+
+    const blob = new Blob([lines.join("\n")], {type:"text/plain;charset=utf-8"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    const safeName = (STATE.student || "Student").replace(/[^\w\-]+/g,"_");
+    a.download = `${TEMPLATE_META.filePrefix}_${safeName}_result.txt`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  async function waitForImages(container){
+    const imgs = Array.from(container.querySelectorAll("img"));
+    return Promise.all(imgs.map(img => {
+      if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+      return new Promise(resolve => {
+        img.onload = () => resolve();
+        img.onerror = () => resolve();
+      });
+    }));
+  }
+
+  /** Add a canvas into jsPDF, auto-splitting into multiple pages if needed */
+  function addCanvasAutoPagedToPdf(pdf, canvas, marginMm = 10){
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const usableW = pageWidth - marginMm * 2;
+    const usableH = pageHeight - marginMm * 2;
+
+    // scale to fit page width
+    const ratio = usableW / canvas.width;
+    const scaledH = canvas.height * ratio;
+
+    // If fits in one page, add directly
+    if(scaledH <= usableH){
+      const imgData = canvas.toDataURL("image/png", 1.0);
+      pdf.addImage(imgData, "PNG", marginMm, marginMm, usableW, scaledH);
+      return;
+    }
+
+    // Otherwise slice into multiple pages
+    const sliceCanvas = document.createElement("canvas");
+    const sliceCtx = sliceCanvas.getContext("2d");
+
+    const sliceHpx = Math.floor((usableH / ratio)); // height in px that fits one page
+    let y = 0;
+    while(y < canvas.height){
+      const h = Math.min(sliceHpx, canvas.height - y);
+      sliceCanvas.width = canvas.width;
+      sliceCanvas.height = h;
+      sliceCtx.clearRect(0,0, sliceCanvas.width, sliceCanvas.height);
+      sliceCtx.drawImage(canvas, 0, y, canvas.width, h, 0, 0, canvas.width, h);
+
+      const imgData = sliceCanvas.toDataURL("image/png", 1.0);
+      pdf.addImage(imgData, "PNG", marginMm, marginMm, usableW, h * ratio);
+
+      y += h;
+      if(y < canvas.height) pdf.addPage();
+    }
+  }
+
+  async function exportToPDF(){
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit:"mm", format:"a4" });
+
+    const perPage = Number(qs("#perPageSelect").value || 3);
+    const safeName = (STATE.student || "Student").replace(/[^\w\-]+/g,"_");
+    const filename = `${TEMPLATE_META.filePrefix}_${safeName}.pdf`;
+
+    // Build pages: questions, then last page answers
+    const qWrap = document.createElement("div");
+    qWrap.style.width = "900px";
+    qWrap.style.padding = "18px";
+    qWrap.style.background = "#fff";
+    qWrap.style.color = "#000";
+    qWrap.style.fontFamily = "'Segoe UI', Tahoma, sans-serif";
+
+    // Header
+    qWrap.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #eee;padding-bottom:10px;margin-bottom:12px;">
+        <div>
+          <div style="font-weight:900;font-size:18px;">${TEMPLATE_META.title}</div>
+          <div style="color:#666;font-size:12px;margin-top:2px;">${TEMPLATE_META.subtitle}</div>
+        </div>
+        <div style="text-align:right;font-size:12px;color:#333;">
+          <div><b>Student:</b> ${STATE.student || "—"}</div>
+          <div><b>Date:</b> ${new Date().toLocaleDateString()}</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#444;margin-bottom:10px;">
+        <b>Instructions:</b> ${TEMPLATE_META.instructions.join(" • ")}
+      </div>
+    `;
+
+    // Render question blocks with current SVGs, but no input boxes
+    const blocks = QUESTIONS.map((q,i)=>`
+      <div style="border:1px solid #ddd;border-radius:14px;padding:12px;margin:10px 0;">
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+          <div style="font-weight:900;">Q${i+1}</div>
+          <div style="font-size:11px;color:#666;">${q.difficulty.toUpperCase()}</div>
+        </div>
+        <div style="margin-top:6px;font-size:13px;line-height:1.35;">${q.prompt}</div>
+        <div style="display:grid;grid-template-columns: 1fr 1fr;gap:10px;margin-top:10px;align-items:start;">
+          <div style="border:1px solid #eee;border-radius:12px;padding:8px;background:#fafafa;text-align:center;">
+            ${q.svg || ""}
+          </div>
+          <div style="font-size:13px;">
+            <div style="margin-top:4px;"><b>Answer:</b> ____________ ${q.unit||""}</div>
+          </div>
+        </div>
+      </div>
+    `);
+
+    // Split into pages by perPage
+    let pageIndex = 0;
+    for(let i=0; i<blocks.length; i+=perPage){
+      const chunk = blocks.slice(i, i+perPage).join("");
+      const pageDiv = document.createElement("div");
+      pageDiv.innerHTML = qWrap.innerHTML + chunk;
+      document.body.appendChild(pageDiv);
+
+      await waitForImages(pageDiv);
+
+      const canvas = await html2canvas(pageDiv, { scale: 2, useCORS: true, backgroundColor: "#fff" });
+      if(pageIndex>0) pdf.addPage();
+      addCanvasAutoPagedToPdf(pdf, canvas, 10);
+
+      document.body.removeChild(pageDiv);
+      pageIndex++;
+    }
+
+    // Answers page (last page)
+    const ansDiv = document.createElement("div");
+    ansDiv.style.width = "900px";
+    ansDiv.style.padding = "18px";
+    ansDiv.style.background = "#fff";
+    ansDiv.style.color = "#000";
+    ansDiv.style.fontFamily = "'Segoe UI', Tahoma, sans-serif";
+    ansDiv.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #eee;padding-bottom:10px;margin-bottom:12px;">
+        <div>
+          <div style="font-weight:900;font-size:18px;">${TEMPLATE_META.title} — Answers</div>
+          <div style="color:#666;font-size:12px;margin-top:2px;">Student: ${STATE.student || "—"}</div>
+        </div>
+        <div style="text-align:right;font-size:12px;color:#333;">
+          <div><b>Date:</b> ${new Date().toLocaleDateString()}</div>
+        </div>
+      </div>
+
+      <div style="font-size:13px;line-height:1.6;">
+        ${QUESTIONS.map((q,i)=>`<div><b>Q${i+1}:</b> ${fmt2(QUESTIONS[i].answer)}${QUESTIONS[i].unit ? " " + QUESTIONS[i].unit : ""}</div>`).join("")}
+      </div>
+    `;
+    document.body.appendChild(ansDiv);
+    const ansCanvas = await html2canvas(ansDiv, { scale: 2, useCORS: true, backgroundColor:"#fff" });
+    pdf.addPage();
+    addCanvasAutoPagedToPdf(pdf, ansCanvas, 10);
+    document.body.removeChild(ansDiv);
+
+    pdf.save(filename);
+  }
+
+  /********************
+   * Tabs + init
+   ********************/
+  function showPanel(which){
+    qs("#tabLearn").classList.toggle("active", which==="learn");
+    qs("#tabPractice").classList.toggle("active", which==="practice");
+    qs("#panel-learn").classList.toggle("active", which==="learn");
+    qs("#panel-practice").classList.toggle("active", which==="practice");
+  }
+
+  function openConfirm(){
+    qs("#confirmBackdrop").style.display = "flex";
+  }
+  function closeConfirm(){
+    qs("#confirmBackdrop").style.display = "none";
+  }
+
+  function startPractice(){
+    STATE.started = true;
+    startTimer();
+    QUESTIONS = makeQuestions();
+    renderQuestions();
+    showPanel("practice");
+  }
+
+  function applyStudentName(){
+    const name = String(qs("#studentName").value||"").trim();
+    if(!name) return;
+    STATE.student = name;
+    setText("studentLabel", name);
+  }
+
+  function init(){
+    setText("pageTitle", TEMPLATE_META.title);
+    setText("pageSubtitle", TEMPLATE_META.subtitle);
+
+    // Learn SVG
+    const learnSvgWrap = qs("#learnSvgWrap");
+    if(learnSvgWrap) learnSvgWrap.innerHTML = diagramPlaceholder("Example diagram");
+
+    // Student from URL
+    const urlName = getStudentFromURL();
+    if(urlName){
+      STATE.student = urlName;
+      setText("studentLabel", urlName);
+      qs("#studentName").value = urlName;
+      // auto start practice
+      startPractice();
+    }else{
+      // require confirm before starting practice
+      openConfirm();
+    }
+
+    // Tabs
+    qs("#tabLearn").addEventListener("click", ()=>showPanel("learn"));
+    qs("#tabPractice").addEventListener("click", ()=>showPanel("practice"));
+
+    // Confirm modal
+    qs("#cancelConfirmBtn").addEventListener("click", ()=>{
+      closeConfirm();
+      showPanel("learn");
+    });
+    qs("#startConfirmBtn").addEventListener("click", ()=>{
+      closeConfirm();
+      startPractice();
+    });
+    qs("#confirmBackdrop").addEventListener("click",(e)=>{
+      if(e.target.id==="confirmBackdrop"){
+        closeConfirm();
+        showPanel("learn");
+      }
+    });
+
+    // Buttons
+    qs("#applyNameBtn").addEventListener("click", applyStudentName);
+    qs("#submitBtn").addEventListener("click", submitAll);
+    qs("#saveBtn").addEventListener("click", saveResultsTxt);
+    qs("#exportBtn").addEventListener("click", exportToPDF);
+
+    // If user edits name, reflect on label when they click Apply
+    qs("#studentName").addEventListener("keydown",(e)=>{
+      if(e.key==="Enter") applyStudentName();
+    });
+  }
+
+  init();
+  </script>
+</body>
+</html>

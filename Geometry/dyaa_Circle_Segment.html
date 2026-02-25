@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model 25 — Circular Segment Model (Arches) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --stroke:#111;
+      --shade:#d9d9d9;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:700;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:700;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:800;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card p{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .learn-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:14px;
+      margin-top:12px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .learn-grid{grid-template-columns:1fr;}
+    }
+
+    .mini-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .mini-table th, .mini-table td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    .mini-table th{
+      background:#f5f8ff;
+      color:var(--blue);
+      font-weight:900;
+    }
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:900;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .q-body{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:12px;
+      margin-top:10px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .q-body{grid-template-columns:1fr;}
+    }
+
+    .svg-wrap{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:10px 10px 8px 10px;
+      overflow:hidden;
+    }
+    .svg-wrap svg{display:block;width:100%;height:auto;}
+    .svg-note{
+      margin-top:6px;
+      font-size:12px;
+      color:rgba(0,0,0,0.55);
+      font-weight:700;
+    }
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      min-width:220px;
+      max-width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .hint-box{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(13,71,161,0.35);
+      background:#f5f8ff;
+      color:#1a2b55;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .hint-box.show{display:block;}
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+    .feedback.ok{color:var(--ok);font-weight:900;}
+    .feedback.bad{color:var(--bad);font-weight:900;}
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    @media print{
+      body{background:#fff;padding:0;}
+      body:before{display:none;}
+      .quiz-container{box-shadow:none;border:none;margin:0;border-radius:0;}
+      .tabs,.row,.btn,.overlay{display:none !important;}
+      .panel{display:block !important;}
+      .q-card{break-inside:avoid; page-break-inside:avoid;}
+      .answer-area .input-row,
+      .answer-area .hint-box{display:none !important;}
+      .feedback{display:none !important;}
+      #resultsBox{display:none !important;}
+      body.print-results .feedback{display:block !important;}
+      body.print-results #resultsBox{display:block !important;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1>Model 25 — Circular Segment Model (Arches)</h1>
+        <div class="sub">Textbook-style diagrams • Hint button • 2 Easy + 2 Medium + 2 Hard • Use π = 3.14</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="pill">
+        <b>Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <small>URL format: <span class="muted">.../model25_segment.html?name=Tiger</span></small>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn secondary" id="printQuestionsBtn" type="button">Print / Save PDF (Questions)</button>
+        <button class="btn secondary" id="printResultsBtn" type="button">Print / Save PDF (Results)</button>
+        <button class="btn" id="newSetBtn" type="button">Generate New Set</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    <!-- LEARN -->
+    <div class="panel active" id="panel-learn">
+      <div class="learn-card">
+        <h2>Core Ideas</h2>
+        <p>
+          A <b>circular segment</b> (an “arch” shape) is often found by:
+          <b>Segment Area = Sector Area − Triangle Area</b>.
+        </p>
+
+        <div class="note">
+          For a <b>90° sector</b> with radius <b>r</b>:<br>
+          Sector Area = πr² / 4<br>
+          Right Triangle Area = r² / 2<br>
+          <b>Segment Area = r²(π − 2) / 4</b> &nbsp;(use π = 3.14)
+        </div>
+
+        <table class="mini-table" aria-label="Common patterns">
+          <thead>
+            <tr>
+              <th>Pattern</th>
+              <th>Shaded Area Formula</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1 quarter-circle segment</td>
+              <td>r²(π − 2)/4</td>
+              <td>90° sector minus right triangle</td>
+            </tr>
+            <tr>
+              <td>Lens in a square (two quarter circles)</td>
+              <td>s²(π − 2)/2</td>
+              <td>Two identical 90° segments</td>
+            </tr>
+            <tr>
+              <td>One “petal” in the 4-petal square</td>
+              <td>s²(π − 2)/8</td>
+              <td>Side length is s; each circle radius is s/2</td>
+            </tr>
+            <tr>
+              <td>All 4 petals together</td>
+              <td>s²(π − 2)/2</td>
+              <td>4 × (one petal)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="learn-grid">
+          <div class="muted">
+            Tip: If you can break the shaded shape into repeated identical segments, compute one and multiply.
+          </div>
+          <div class="svg-wrap" id="learnSvgWrap"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted">Enter a number only. Round to 2 decimals if needed. Use</span> <b>π = 3.14</b>.
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3>Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /********************
+     * Helpers
+     ********************/
+    const PI = 3.14;
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;");
+    }
+
+    function parseNumber(input){
+      if(input == null) return NaN;
+      const s = String(input).trim()
+        .replace(/,/g,"")
+        .replace(/cm\^?2|cm²|m\^?2|m²|cm|m|square/ig,"")
+        .replace(/\s/g,"");
+      if(!s) return NaN;
+      const v = Number(s);
+      return Number.isFinite(v) ? v : NaN;
+    }
+    function roundTo(n, dp=2){
+      const p = Math.pow(10, dp);
+      return Math.round(n*p)/p;
+    }
+    function fmt(n){
+      const v = roundTo(n, 2);
+      const s = v.toFixed(2);
+      return s.replace(/\.?0+$/,"");
+    }
+    function nearlyEqual(a,b,eps=0.05){
+      return Math.abs(a-b) <= eps;
+    }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * SVG utilities (center-based arc -> correct flags)
+     ********************/
+    function ang(cx,cy,x,y){
+      return Math.atan2(y-cy, x-cx); // y-down coordinate works fine for sweep logic below
+    }
+    function mod2pi(t){
+      const two = Math.PI*2;
+      t = t % two;
+      return t < 0 ? t + two : t;
+    }
+    function arcCmdFromCenter(cx,cy,r,x1,y1,x2,y2,dir){
+      // dir: "cw" or "ccw" (clockwise increases angle in y-down)
+      const a1 = ang(cx,cy,x1,y1);
+      const a2 = ang(cx,cy,x2,y2);
+
+      let delta, sweep;
+      if(dir === "cw"){
+        delta = mod2pi(a2 - a1);
+        sweep = 1;
+      }else{
+        delta = mod2pi(a1 - a2);
+        sweep = 0;
+      }
+      const large = delta > Math.PI ? 1 : 0;
+      return `A ${r} ${r} 0 ${large} ${sweep} ${x2} ${y2}`;
+    }
+
+    function svgWrap(svg){
+      return `${svg}<div class="svg-note">Not to scale</div>`;
+    }
+
+    function svgStart(viewW=260, viewH=210){
+      return `<svg viewBox="0 0 ${viewW} ${viewH}" role="img" aria-label="Diagram">
+        <defs>
+          <style>
+            .line{fill:none;stroke:var(--stroke);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;}
+            .thin{fill:none;stroke:var(--stroke);stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round;}
+            .shade{fill:var(--shade);stroke:none;}
+            .txt{font: 14px 'Segoe UI', Tahoma, sans-serif; fill:var(--stroke); font-weight:700;}
+            .txt2{font: 13px 'Segoe UI', Tahoma, sans-serif; fill:var(--stroke); font-weight:700;}
+          </style>
+        </defs>`;
+    }
+    function svgEnd(){ return `</svg>`; }
+
+    /********************
+     * Diagrams (match workbook style)
+     ********************/
+    function diagramQuarterSegment(rLabel){
+      // like Q1: right angle, legs r, quarter arc, diagonal chord, shaded segment
+      const W=260, H=210;
+      const x0=80, y0=170;      // bottom-left corner of the right angle
+      const s=90;               // drawing size (px)
+      const A={x:x0, y:y0-s};   // top-left
+      const C={x:x0+s, y:y0};   // bottom-right
+      const O={x:x0, y:y0};     // center for quarter arc
+
+      // Shaded segment between arc A->C and chord A->C
+      const arc = arcCmdFromCenter(O.x,O.y,s, A.x,A.y, C.x,C.y, "cw");
+      const shadePath = `M ${A.x} ${A.y} ${arc} L ${A.x} ${A.y} Z`;
+
+      const svg = `
+        ${svgStart(W,H)}
+          <path class="shade" d="${shadePath}"></path>
+          <!-- legs -->
+          <path class="line" d="M ${x0} ${y0} L ${x0} ${y0-s}"></path>
+          <path class="line" d="M ${x0} ${y0} L ${x0+s} ${y0}"></path>
+          <!-- quarter arc -->
+          <path class="line" d="M ${A.x} ${A.y} ${arc}"></path>
+          <!-- diagonal chord -->
+          <path class="thin" d="M ${A.x} ${A.y} L ${C.x} ${C.y}"></path>
+          <!-- right angle mark -->
+          <path class="thin" d="M ${x0} ${y0} L ${x0+16} ${y0} L ${x0+16} ${y0-16} L ${x0} ${y0-16}"></path>
+
+          <!-- labels -->
+          <text class="txt" x="${x0-18}" y="${y0-s/2+5}">${rLabel}</text>
+          <text class="txt" x="${x0+s/2-6}" y="${y0+22}">${rLabel}</text>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    function diagramLensSquare(sLabel){
+      // like Q2: square, two quarter circles centered at bottom-left and top-right, shaded lens
+      const W=260, H=210;
+      const x=70, y=55, s=110;
+      const TL={x:x, y:y};
+      const BR={x:x+s, y:y+s};
+      const BL={x:x, y:y+s};
+      const TR={x:x+s, y:y};
+
+      const arc1 = arcCmdFromCenter(BL.x,BL.y,s, TL.x,TL.y, BR.x,BR.y, "cw");
+      const arc2 = arcCmdFromCenter(TR.x,TR.y,s, BR.x,BR.y, TL.x,TL.y, "cw");
+      const lens = `M ${TL.x} ${TL.y} ${arc1} ${arc2} Z`;
+
+      // outline arcs
+      const arc1Line = `M ${TL.x} ${TL.y} ${arc1}`;
+      const arc2Line = `M ${BR.x} ${BR.y} ${arc2}`;
+
+      const svg = `
+        ${svgStart(W,H)}
+          <path class="shade" d="${lens}"></path>
+          <rect class="line" x="${x}" y="${y}" width="${s}" height="${s}"></rect>
+          <path class="line" d="${arc1Line}"></path>
+          <path class="line" d="${arc2Line}"></path>
+
+          <!-- labels -->
+          <text class="txt" x="${x-22}" y="${y+s/2+5}">${sLabel}</text>
+          <text class="txt" x="${x+s/2-6}" y="${y+s+26}">${sLabel}</text>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    function petalPathTL(x,y,s){
+      // square top-left at (x,y), side s (px)
+      const R = s/2;
+      const TL={x:x, y:y};
+      const O ={x:x+R, y:y+R};
+      const topMid ={x:x+R, y:y};
+      const leftMid={x:x, y:y+R};
+
+      const a1 = arcCmdFromCenter(topMid.x, topMid.y, R, TL.x,TL.y, O.x,O.y, "ccw");
+      const a2 = arcCmdFromCenter(leftMid.x,leftMid.y,R, O.x,O.y, TL.x,TL.y, "ccw");
+      return `M ${TL.x} ${TL.y} ${a1} ${a2} Z`;
+    }
+    function petalPathTR(x,y,s){
+      const R=s/2;
+      const TR={x:x+s, y:y};
+      const O ={x:x+R, y:y+R};
+      const topMid={x:x+R, y:y};
+      const rightMid={x:x+s, y:y+R};
+
+      const a1 = arcCmdFromCenter(topMid.x, topMid.y, R, TR.x,TR.y, O.x,O.y, "cw");
+      const a2 = arcCmdFromCenter(rightMid.x,rightMid.y,R, O.x,O.y, TR.x,TR.y, "cw");
+      return `M ${TR.x} ${TR.y} ${a1} ${a2} Z`;
+    }
+    function petalPathBR(x,y,s){
+      const R=s/2;
+      const BR={x:x+s, y:y+s};
+      const O ={x:x+R, y:y+R};
+      const rightMid={x:x+s, y:y+R};
+      const botMid={x:x+R, y:y+s};
+
+      const a1 = arcCmdFromCenter(rightMid.x, rightMid.y, R, BR.x,BR.y, O.x,O.y, "ccw");
+      const a2 = arcCmdFromCenter(botMid.x,   botMid.y,   R, O.x,O.y, BR.x,BR.y, "ccw");
+      return `M ${BR.x} ${BR.y} ${a1} ${a2} Z`;
+    }
+    function petalPathBL(x,y,s){
+      const R=s/2;
+      const BL={x:x, y:y+s};
+      const O ={x:x+R, y:y+R};
+      const leftMid={x:x, y:y+R};
+      const botMid={x:x+R, y:y+s};
+
+      const a1 = arcCmdFromCenter(leftMid.x, leftMid.y, R, BL.x,BL.y, O.x,O.y, "cw");
+      const a2 = arcCmdFromCenter(botMid.x,  botMid.y,  R, O.x,O.y, BL.x,BL.y, "cw");
+      return `M ${BL.x} ${BL.y} ${a1} ${a2} Z`;
+    }
+
+    function diagramFourPetals(sLabel){
+      // like Q3: square + four petals (all shaded)
+      const W=260, H=210;
+      const x=70, y=45, s=120;
+
+      const p1 = petalPathTL(x,y,s);
+      const p2 = petalPathTR(x,y,s);
+      const p3 = petalPathBR(x,y,s);
+      const p4 = petalPathBL(x,y,s);
+
+      // draw supporting arcs (4 circles centered at side midpoints), clipped to square
+      const R = s/2;
+      const topMid={x:x+R, y:y};
+      const rightMid={x:x+s, y:y+R};
+      const botMid={x:x+R, y:y+s};
+      const leftMid={x:x, y:y+R};
+
+      const svg = `
+        ${svgStart(W,H)}
+          <defs>
+            <clipPath id="clipSq">
+              <rect x="${x}" y="${y}" width="${s}" height="${s}"></rect>
+            </clipPath>
+          </defs>
+
+          <!-- shaded petals -->
+          <path class="shade" d="${p1}"></path>
+          <path class="shade" d="${p2}"></path>
+          <path class="shade" d="${p3}"></path>
+          <path class="shade" d="${p4}"></path>
+
+          <!-- square -->
+          <rect class="line" x="${x}" y="${y}" width="${s}" height="${s}"></rect>
+
+          <!-- arcs (clipped) -->
+          <g clip-path="url(#clipSq)">
+            <circle class="line" cx="${topMid.x}" cy="${topMid.y}" r="${R}"></circle>
+            <circle class="line" cx="${rightMid.x}" cy="${rightMid.y}" r="${R}"></circle>
+            <circle class="line" cx="${botMid.x}" cy="${botMid.y}" r="${R}"></circle>
+            <circle class="line" cx="${leftMid.x}" cy="${leftMid.y}" r="${R}"></circle>
+          </g>
+
+          <!-- labels -->
+          <text class="txt" x="${x-22}" y="${y+s/2+5}">${sLabel}</text>
+          <text class="txt" x="${x+s/2-6}" y="${y+s+26}">${sLabel}</text>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    function diagramOnePetal(sLabel){
+      // same as four-petal, but shade only top-left petal
+      const W=260, H=210;
+      const x=70, y=45, s=120;
+
+      const p1 = petalPathTL(x,y,s);
+      const R=s/2;
+      const topMid={x:x+R, y:y};
+      const rightMid={x:x+s, y:y+R};
+      const botMid={x:x+R, y:y+s};
+      const leftMid={x:x, y:y+R};
+
+      const svg = `
+        ${svgStart(W,H)}
+          <defs>
+            <clipPath id="clipSq2">
+              <rect x="${x}" y="${y}" width="${s}" height="${s}"></rect>
+            </clipPath>
+          </defs>
+
+          <path class="shade" d="${p1}"></path>
+
+          <rect class="line" x="${x}" y="${y}" width="${s}" height="${s}"></rect>
+
+          <g clip-path="url(#clipSq2)">
+            <circle class="line" cx="${topMid.x}" cy="${topMid.y}" r="${R}"></circle>
+            <circle class="line" cx="${rightMid.x}" cy="${rightMid.y}" r="${R}"></circle>
+            <circle class="line" cx="${botMid.x}" cy="${botMid.y}" r="${R}"></circle>
+            <circle class="line" cx="${leftMid.x}" cy="${leftMid.y}" r="${R}"></circle>
+          </g>
+
+          <text class="txt" x="${x-22}" y="${y+s/2+5}">${sLabel}</text>
+          <text class="txt" x="${x+s/2-6}" y="${y+s+26}">${sLabel}</text>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    function diagramComposite(aLabel){
+      // like Q4: big square divided into 4, diagonal AC, small diagonal EF, big quarter circle (center D), small quarter circle (center O)
+      const W=260, H=210;
+      const x=70, y=40, s=130;     // big square pixel side
+      const mid = s/2;
+
+      const A={x:x, y:y};
+      const B={x:x+s, y:y};
+      const C={x:x+s, y:y+s};
+      const D={x:x, y:y+s};
+
+      const E={x:x, y:y+mid};
+      const F={x:x+mid, y:y+s};
+      const O={x:x+mid, y:y+mid};
+
+      // big segment: arc centered at D with radius s, from A to C, chord AC
+      const bigArc = arcCmdFromCenter(D.x, D.y, s, A.x,A.y, C.x,C.y, "cw");
+      const bigSeg = `M ${A.x} ${A.y} ${bigArc} L ${A.x} ${A.y} Z`;
+
+      // small segment in bottom-left small square: center O radius mid, from E to F
+      const smallArc = arcCmdFromCenter(O.x,O.y, mid, E.x,E.y, F.x,F.y, "ccw");
+      const smallSeg = `M ${E.x} ${E.y} ${smallArc} L ${E.x} ${E.y} Z`;
+
+      const svg = `
+        ${svgStart(W,H)}
+          <path class="shade" d="${bigSeg}"></path>
+          <path class="shade" d="${smallSeg}"></path>
+
+          <!-- big square -->
+          <rect class="line" x="${x}" y="${y}" width="${s}" height="${s}"></rect>
+
+          <!-- mid lines -->
+          <path class="thin" d="M ${x+mid} ${y} L ${x+mid} ${y+s}"></path>
+          <path class="thin" d="M ${x} ${y+mid} L ${x+s} ${y+mid}"></path>
+
+          <!-- diagonals -->
+          <path class="thin" d="M ${A.x} ${A.y} L ${C.x} ${C.y}"></path>
+          <path class="thin" d="M ${E.x} ${E.y} L ${x+mid} ${y+s}"></path>
+
+          <!-- arcs -->
+          <path class="line" d="M ${A.x} ${A.y} ${bigArc}"></path>
+          <path class="line" d="M ${E.x} ${E.y} ${smallArc}"></path>
+
+          <!-- point labels -->
+          <text class="txt2" x="${A.x-14}" y="${A.y+14}">A</text>
+          <text class="txt2" x="${B.x+6}" y="${B.y+14}">B</text>
+          <text class="txt2" x="${C.x+6}" y="${C.y+6}">C</text>
+          <text class="txt2" x="${D.x-14}" y="${D.y+6}">D</text>
+          <text class="txt2" x="${E.x-14}" y="${E.y+6}">E</text>
+          <text class="txt2" x="${F.x-2}" y="${F.y+16}">F</text>
+          <text class="txt2" x="${O.x+6}" y="${O.y+6}">O</text>
+
+          <!-- side label -->
+          <text class="txt" x="${x-24}" y="${y+s/2+5}">${aLabel}</text>
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    /********************
+     * Math formulas (π fixed)
+     ********************/
+    // 90° segment with radius r: r^2(π-2)/4
+    function seg90(r){ return (r*r*(PI-2))/4; }
+
+    // lens in square side s with two opposite-corner quarter circles: s^2(π-2)/2
+    function lensOppCorners(s){ return (s*s*(PI-2))/2; }
+
+    // 4 petals total in square side s: s^2(π-2)/2
+    function fourPetals(s){ return (s*s*(PI-2))/2; }
+
+    // one petal in that square: s^2(π-2)/8
+    function onePetal(s){ return (s*s*(PI-2))/8; }
+
+    // composite like workbook: let a be the small-square side (half of big square side)
+    // shaded = big segment (radius 2a) + small segment (radius a) = a^2(π-2) + a^2(π-2)/4 = (5/4)a^2(π-2)
+    function composite(a){ return (5*(a*a)*(PI-2))/4; }
+
+    // unshaded in 4-petal square: s^2 - fourPetals(s) = s^2(4-π)/2
+    function unshadedInFourPetals(s){ return (s*s*(4-PI))/2; }
+
+    /********************
+     * Question generator (2 Easy + 2 Medium + 2 Hard)
+     ********************/
+    function makeQuestions(){
+      const qs = [];
+
+      // Easy 1: quarter-circle segment (like Q1)
+      (function(){
+        const r = choice([4,5,6,7,8,9,10,12]);
+        const ans = roundTo(seg90(r), 2);
+        qs.push({
+          difficulty:"easy",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramQuarterSegment(r),
+          prompt: `Find the area of the shaded region. (Unit: cm², use π = 3.14)`,
+          hint: `This is a 90° circular segment with radius r = ${r}. Segment = (πr²/4) − (r²/2) = r²(π − 2)/4.`
+        });
+      })();
+
+      // Easy 2: lens in square (like Q2)
+      (function(){
+        const s = choice([3,4,5,6,7,8,10]);
+        const ans = roundTo(lensOppCorners(s), 2);
+        qs.push({
+          difficulty:"easy",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramLensSquare(s),
+          prompt: `Find the area of the shaded region inside the square. (Unit: cm², use π = 3.14)`,
+          hint: `The shaded lens is made of 2 identical 90° segments (radius = side length ${s}). Total = s²(π − 2)/2.`
+        });
+      })();
+
+      // Medium 1: 4 petals total (like Q3)
+      (function(){
+        const s = choice([8,10,12,14,16,18]);
+        const ans = roundTo(fourPetals(s), 2);
+        qs.push({
+          difficulty:"medium",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramFourPetals(s),
+          prompt: `Find the total area of the shaded region. (Unit: cm², use π = 3.14)`,
+          hint: `Each petal = s²(π − 2)/8. There are 4 petals, so total = s²(π − 2)/2. Here s = ${s}.`
+        });
+      })();
+
+      // Medium 2: one petal only
+      (function(){
+        const s = choice([8,10,12,14,16,18]);
+        const ans = roundTo(onePetal(s), 2);
+        qs.push({
+          difficulty:"medium",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramOnePetal(s),
+          prompt: `Find the area of the shaded petal. (Unit: cm², use π = 3.14)`,
+          hint: `One petal = s²(π − 2)/8. Here s = ${s}.`
+        });
+      })();
+
+      // Hard 1: composite like workbook Q4
+      (function(){
+        const a = choice([2,3,4,5,6]);
+        const bigSide = 2*a;
+        const ans = roundTo(composite(a), 2);
+        qs.push({
+          difficulty:"hard",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramComposite(bigSide),
+          prompt: `The big square has side length ${bigSide} cm and is divided into 4 equal smaller squares. Two shaded circular segments are shown. Find the total shaded area. (Unit: cm², use π = 3.14)`,
+          hint: `Let a = half of the big side = ${a}. Big segment (radius 2a): a²(π−2). Small segment (radius a): a²(π−2)/4. Total = (5/4)a²(π−2).`
+        });
+      })();
+
+      // Hard 2: unshaded area in 4-petal square
+      (function(){
+        const s = choice([8,10,12,14,16,18]);
+        const ans = roundTo(unshadedInFourPetals(s), 2);
+        qs.push({
+          difficulty:"hard",
+          unit:"cm²",
+          answer: ans,
+          svg: diagramFourPetals(s),
+          prompt: `In the diagram, the 4 petals are shaded. Find the area of the unshaded part of the square. (Unit: cm², use π = 3.14)`,
+          hint: `Square area = s². Shaded petals total = s²(π−2)/2. Unshaded = s² − s²(π−2)/2 = s²(4−π)/2. Here s = ${s}.`
+        });
+      })();
+
+      return qs;
+    }
+
+    /********************
+     * UI state + rendering
+     ********************/
+    let QUESTIONS = [];
+    let STATE = { answers:[], checked:[], correct:[], hintShown:[], submitted:false };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+    function niceDiff(d){
+      if(d==="easy") return "Easy";
+      if(d==="medium") return "Medium";
+      return "Hard";
+    }
+
+    function renderQuestions(){
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const userVal = STATE.answers[idx] ?? "";
+        const checked = !!STATE.checked[idx];
+        const correct = !!STATE.correct[idx];
+        const hintShown = !!STATE.hintShown[idx];
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${escapeHtml(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="q-body">
+            <div class="svg-wrap">${q.svg}</div>
+
+            <div class="answer-area">
+              <div class="input-row">
+                <input type="text" inputmode="decimal" autocomplete="off"
+                  id="ans-${idx}" placeholder="Answer (${q.unit})"
+                  value="${escapeHtml(userVal)}">
+                <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+                <button class="btn ghost" type="button" id="hint-${idx}">${hintShown ? "Hide Hint" : "Hint"}</button>
+              </div>
+
+              <div class="hint-box ${hintShown ? "show" : ""}" id="hintBox-${idx}">
+                ${escapeHtml(q.hint)}
+              </div>
+
+              <div class="feedback ${checked ? (correct ? "ok" : "bad") : ""}" id="fb-${idx}">
+                ${checked
+                  ? (correct
+                      ? "Correct ✅"
+                      : `Not correct ❌  (Correct answer: ${fmt(q.answer)} ${q.unit})`)
+                  : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        const inp = $(`#ans-${idx}`, card);
+        inp.addEventListener("input", () => {
+          STATE.answers[idx] = inp.value;
+          STATE.checked[idx] = false;
+          STATE.correct[idx] = false;
+          if(STATE.submitted){
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+          }
+          const fb = $(`#fb-${idx}`, card);
+          fb.className = "feedback";
+          fb.textContent = "";
+        });
+
+        $(`#check-${idx}`, card).addEventListener("click", () => checkOne(idx));
+        $(`#hint-${idx}`, card).addEventListener("click", () => {
+          STATE.hintShown[idx] = !STATE.hintShown[idx];
+          renderQuestions();
+        });
+      });
+
+      $("#resultsBox").style.display = "none";
+      document.body.classList.remove("print-results");
+    }
+
+    function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const v = parseNumber(STATE.answers[idx]);
+      STATE.checked[idx] = true;
+
+      if(!Number.isFinite(v)){
+        STATE.correct[idx] = false;
+        renderQuestions();
+        const fb = $(`#fb-${idx}`);
+        fb.className = "feedback bad";
+        fb.textContent = "Please enter a valid number.";
+        return;
+      }
+
+      STATE.correct[idx] = nearlyEqual(v, q.answer, 0.05);
+      renderQuestions();
+    }
+
+    function submitAll(){
+      let correctCount = 0;
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const v = parseNumber(STATE.answers[i]);
+        STATE.checked[i] = true;
+        STATE.correct[i] = Number.isFinite(v) && nearlyEqual(v, q.answer, 0.05);
+        if(STATE.correct[i]) correctCount++;
+      }
+
+      STATE.submitted = true;
+      renderQuestions();
+
+      const total = QUESTIONS.length;
+      const pct = Math.round((correctCount/total)*100);
+
+      const lines = QUESTIONS.map((q,i)=>(
+        `<div style="margin:6px 0;"><b>Q${i+1}:</b> ${fmt(q.answer)} ${q.unit}</div>`
+      )).join("");
+
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:8px;"><b>Correct Answers:</b></div>
+        <div style="margin-top:6px;">${lines}</div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+    function resetAnswers(){
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    function saveResult(){
+      const name = safeName($("#studentNameValue").textContent) || "Student";
+      const data = {
+        title: "Model 25 — Circular Segment Model (Arches)",
+        student: name,
+        piUsed: PI,
+        timestamp: new Date().toISOString(),
+        questions: QUESTIONS.map((q,i)=>({
+          index: i+1,
+          difficulty: q.difficulty,
+          prompt: q.prompt,
+          unit: q.unit,
+          correctAnswer: q.answer,
+          yourAnswer: parseNumber(STATE.answers[i]),
+          isCorrect: !!STATE.correct[i]
+        }))
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `DYAA_Model25_${name.replace(/\s+/g,"_")}_result.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    /********************
+     * Tabs + Student name
+     ********************/
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $(`#panel-${tab}`).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", ""));
+      $("#studentNameValue").textContent = name ? name : "Anonymous";
+    }
+
+    /********************
+     * Print
+     ********************/
+    $("#printQuestionsBtn").addEventListener("click", () => {
+      document.body.classList.remove("print-results");
+      window.print();
+    });
+    $("#printResultsBtn").addEventListener("click", () => {
+      if(!STATE.submitted) submitAll();
+      document.body.classList.add("print-results");
+      window.print();
+      document.body.classList.remove("print-results");
+    });
+
+    /********************
+     * Generate New Set
+     ********************/
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set? This will clear your current answers.", () => {
+        generateNewSet();
+        // go to practice
+        $$('.tab').forEach(b=>b.classList.remove('active'));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$('.panel').forEach(p=>p.classList.remove('active'));
+        $('#panel-practice').classList.add('active');
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    /********************
+     * Learn diagram
+     ********************/
+    function renderLearnDiagram(){
+      $("#learnSvgWrap").innerHTML = diagramQuarterSegment(6);
+    }
+
+    /********************
+     * Init
+     ********************/
+    ensureStudentName();
+    renderLearnDiagram();
+    generateNewSet();
+  </script>
+</body>
+</html>

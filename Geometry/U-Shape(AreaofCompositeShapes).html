@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model 10 — U-Shape (Area of Composite Shapes) — Image Quiz</title>
+
+  <style>
+    body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f4f9;margin:0;padding:20px;color:#333;}
+    .quiz-container{max-width:900px;margin:40px auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 6px 15px rgba(0,0,0,0.1);}
+    #headerLogo{display:flex;align-items:center;gap:12px;margin-bottom:10px;border-bottom:2px solid #e0e0e0;padding-bottom:10px;}
+    .logo-icon{width:40px;height:40px;background:#0d47a1;border-radius:6px;position:relative;}
+    .logo-icon:before{content:"";position:absolute;width:20px;height:9px;background:#ff9800;top:-6px;left:20px;border-radius:3px;}
+    .logo-text{display:flex;flex-direction:column;line-height:1.1;}
+    .logo-text .brand{font-weight:900;letter-spacing:1px;color:#ff9800;}
+    .logo-text .edu{font-size:.9em;color:#0d47a1;font-weight:700;}
+
+    .top-bar{display:flex;justify-content:space-between;align-items:center;margin:10px 0 6px 0;gap:10px;flex-wrap:wrap;}
+    #timerDisplay{font-size:.95em;color:#333;}
+    #studentLine{font-size:.95em;color:#555;}
+    #setLine{font-size:.9em;color:#777;margin-top:2px;}
+
+    .quiz-main{display:flex;gap:20px;margin-top:10px;}
+    .sidebar{width:170px;border-right:1px solid #ddd;padding-right:10px;display:none;}
+    .sidebar h4{margin:0 0 8px;font-size:.95em;border-bottom:1px solid #eee;padding-bottom:4px;}
+    .sidebar ul{list-style:none;padding:0;margin:0;}
+    .sidebar li{padding:6px;cursor:pointer;border-radius:6px;font-size:.9em;margin-bottom:6px;border:1px solid #eee;background:#fafafa;}
+    .sidebar li.active{outline:2px solid #1976d2;font-weight:700;background:#fff;}
+    .sidebar li.answered{border-left:5px solid #4caf50;}
+    .sidebar li.correct{background:#d4edda;border-left:5px solid #28a745;border-color:#cbe7d1;}
+    .sidebar li.incorrect{background:#f8d7da;border-left:5px solid #f44336;border-color:#f1c7cc;}
+
+    #quizContent{flex:1;}
+    .question-text{font-size:1.05em;margin-bottom:8px;}
+    .part-title{font-weight:800;margin:8px 0 10px 0;}
+    .single-question{margin:6px 0;line-height:1.7;}
+    .answer-row{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+    .answer-box{width:520px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
+
+    .img-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px;box-shadow:0 3px 8px rgba(0,0,0,0.05);max-width:100%;}
+    .q-img{width:100%;height:auto;display:block;border-radius:10px;}
+
+    .hint-row{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    .hint-btn{background:#ff9800;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:0.95em;}
+    .hint-btn:disabled{opacity:.55;cursor:not-allowed;}
+
+    .hint{
+      display:none;margin-top:10px;padding:10px 12px;border-radius:10px;
+      background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;
+      max-width:100%;overflow:auto;
+    }
+    .hint *{max-width:100%;}
+    .hint img{max-width:100%;height:auto;display:block;}
+    .hint table{width:100%;max-width:100%;border-collapse:collapse;table-layout:fixed;}
+    .hint td,.hint th{border:1px solid #ffe0b2;padding:6px;word-wrap:break-word;}
+
+    .hint-diagram-wrap{margin-top:10px;border:1px solid #ffe0b2;background:#ffffff;border-radius:10px;padding:10px;}
+    .hint-diagram-wrap img{width:100%;height:auto;display:block;border-radius:8px;}
+
+    .button-container{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;}
+    button{padding:10px 18px;border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:1em;}
+    #nextButton{background:#4caf50;}
+    #backButton{background:#039be5;}
+    #generateButton{background:#ff9800;}
+    #submitButton{background:#9c27b0;}
+    #saveButton{background:#607d8b;}
+    #pauseButton{background:#f57c00;}
+    #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
+    button:disabled{opacity:.55;cursor:not-allowed;}
+
+    .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
+
+    table.review-table{width:100%;border-collapse:collapse;margin-top:18px;}
+    .review-table th,.review-table td{border:1px solid #ccc;padding:6px;font-size:.85em;text-align:center;vertical-align:top;}
+    .review-table th{background:#f2f2f2;}
+    .correct-answer{background:#d4edda;}
+    .incorrect-answer{background:#f8d7da;}
+    .thumb{width:160px;max-width:160px;height:auto;border-radius:8px;border:1px solid #ddd;background:#fff;}
+
+    @media (max-width:760px){
+      .quiz-main{flex-direction:column;}
+      .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
+      .thumb{width:120px;max-width:120px;}
+      .answer-box{width:100%;}
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text">
+      <div class="brand">DYAA</div>
+      <div class="edu">EDUCATION</div>
+    </div>
+  </div>
+
+  <div class="top-bar">
+    <div>
+      <div id="timerDisplay">Time: 00:00</div>
+      <div id="studentLine"></div>
+      <div id="setLine"></div>
+    </div>
+    <div>
+      <button id="pauseButton" style="display:none;">Pause</button>
+      <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
+    </div>
+  </div>
+
+  <h2 style="margin:6px 0 0 0;">Model 10 — U-Shape: Area of Composite Shapes</h2>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+
+  <div id="navButtons" class="button-container" style="display:none;">
+    <button id="backButton" style="display:none;">Previous</button>
+    <button id="submitButton" style="display:none;">Submit &amp; View Results</button>
+    <button id="nextButton" style="display:none;">Next</button>
+    <button id="checkButton" style="display:none;">Check</button>
+    <button id="saveButton" style="display:none;">Save Current Result</button>
+  </div>
+</div>
+
+<!-- Export-to-PDF libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+/* ===================== CONFIG ===================== */
+const SVG_TITLE = "Model 10 — U-Shape Area";
+const LESSON_TITLE = "Model 10 — U-Shape: Area of Composite Shapes";
+
+const PART_TITLES = [
+  "Part 1 (Warm-up) — Cut-out rectangles & step shapes (2 questions)",
+  "Part 2 (Core) — Irregular polygons (2 questions)",
+  "Part 3 (Apply) — Notches & shaded area (2 questions)"
+];
+
+const NUM_PARTS = 3;
+const QUESTIONS_PER_PART = 2;
+const TOTAL_QUESTIONS = NUM_PARTS * QUESTIONS_PER_PART;
+
+/* ===================== Utils ===================== */
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function evenInt(min,max){
+  let x=randInt(min,max);
+  if(x%2!==0) x++;
+  if(x>max) x=max-(max%2);
+  return x;
+}
+
+function formatMs(ms){
+  const totalSec=Math.floor(ms/1000), min=Math.floor(totalSec/60), sec=totalSec%60;
+  return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+function escapeXml(s){
+  return String(s)
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&apos;");
+}
+function wrapLines(lines, maxChars=70){
+  const out=[];
+  function pushWrapped(line){
+    const words=String(line).split(/\s+/).filter(Boolean);
+    if(words.length===0){ out.push(""); return; }
+    let cur="";
+    for(const w of words){
+      if(w.length>maxChars){
+        if(cur){ out.push(cur); cur=""; }
+        for(let i=0;i<w.length;i+=maxChars) out.push(w.slice(i,i+maxChars));
+        continue;
+      }
+      if(!cur) cur=w;
+      else if((cur+" "+w).length<=maxChars) cur+=" "+w;
+      else { out.push(cur); cur=w; }
+    }
+    if(cur) out.push(cur);
+  }
+  for(const line of lines) pushWrapped(line);
+  return out;
+}
+function svgDataUri(svg){
+  const encoded=encodeURIComponent(svg)
+    .replaceAll("%0A","").replaceAll("%20"," ")
+    .replaceAll("%3D","=").replaceAll("%3A",":")
+    .replaceAll("%2F","/").replaceAll("%2C",",");
+  return "data:image/svg+xml;charset=utf-8," + encoded;
+}
+function parseNumbersFromInput(str){
+  const s=(str||"").trim();
+  if(!s) return [];
+  const out=[];
+  const re=/([+-]?\d+\s*\/\s*[+-]?\d+)|([+-]?\d+(?:\.\d+)?)/g;
+  let m;
+  while((m=re.exec(s))!==null){
+    const token=(m[1]||m[2]||"").replace(/\s+/g,"");
+    if(token.includes("/")){
+      const [a,b]=token.split("/");
+      const n=Number(a), d=Number(b);
+      if(Number.isFinite(n)&&Number.isFinite(d)&&d!==0) out.push(n/d);
+    }else{
+      const v=Number(token);
+      if(Number.isFinite(v)) out.push(v);
+    }
+  }
+  return out;
+}
+function approxEqual(a,b,tol=1e-6){ return Math.abs(a-b)<=tol; }
+
+function polygonArea(pts){
+  let s=0;
+  for(let i=0;i<pts.length;i++){
+    const j=(i+1)%pts.length;
+    s += pts[i].x*pts[j].y - pts[j].x*pts[i].y;
+  }
+  return Math.abs(s)/2;
+}
+
+/* ===================== SVG Card ===================== */
+function makeSvgQuestionCard(lines, diagramMarkup, titleText=SVG_TITLE){
+  const W=980, headerH=72, padX=44, textLineH=36, topY=headerH+48;
+  const wrapped=wrapLines(lines, 72);
+  const textBlockH = wrapped.length * textLineH;
+  const diagramY = topY + textBlockH + 18;
+  const diagramH = 360;
+  const padBottom = 54;
+  const H = diagramY + diagramH + padBottom;
+
+  const textSpans=wrapped.map((t,i)=>{
+    const y=topY + i*textLineH;
+    return `<text x="${padX}" y="${y}" font-size="28" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+  }).join("");
+
+  const svg=`
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f7fbff"/>
+        <stop offset="1" stop-color="#ffffff"/>
+      </linearGradient>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#000" flood-opacity="0.12"/>
+      </filter>
+      <clipPath id="clipBox">
+        <rect x="44" y="0" width="${W-88}" height="${diagramH}" rx="16" ry="16"></rect>
+      </clipPath>
+    </defs>
+
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
+          fill="url(#g)" stroke="#dfe7f2" stroke-width="3" filter="url(#shadow)"/>
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${headerH}"
+          fill="#0d47a1" opacity="0.10"/>
+
+    <text x="${padX}" y="56" font-size="28" fill="#0d47a1" font-weight="700"
+          font-family="Segoe UI, Arial">${escapeXml(titleText)}</text>
+
+    ${textSpans}
+
+    <g transform="translate(0, ${diagramY})">
+      <rect x="44" y="0" width="${W-88}" height="${diagramH}" rx="16" ry="16"
+            fill="#ffffff" stroke="#e5e5e5" stroke-width="3"/>
+      <g clip-path="url(#clipBox)">
+        ${diagramMarkup}
+      </g>
+    </g>
+  </svg>`.trim();
+
+  return svgDataUri(svg);
+}
+
+function hintCardSvg(lines, title="Hint"){
+  const W=980, headerH=60, padX=44, lineH=34, firstLineY=headerH+44, padBottom=44;
+  const wrapped=wrapLines(lines, 84);
+  const H=firstLineY + (wrapped.length-1)*lineH + padBottom;
+
+  const textSpans=wrapped.map((t,i)=>{
+    const y=firstLineY + i*lineH;
+    return `<text x="${padX}" y="${y}" font-size="24" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+  }).join("");
+
+  const svg=`
+  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff"/>
+        <stop offset="1" stop-color="#fff7e6"/>
+      </linearGradient>
+      <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="2" stdDeviation="5" flood-color="#000" flood-opacity="0.10"/>
+      </filter>
+    </defs>
+
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
+          fill="url(#bg)" stroke="#ffe0b2" stroke-width="3" filter="url(#shadow2)"/>
+
+    <text x="${padX}" y="52" font-size="26" fill="#8d6e63" font-weight="800"
+          font-family="Segoe UI, Arial">${escapeXml(title)}</text>
+
+    ${textSpans}
+  </svg>`.trim();
+
+  return svgDataUri(svg);
+}
+
+/* ===================== Diagram helpers ===================== */
+function fitToBox(points, boxW=880, boxH=320, pad=60){
+  let minX=1e9, maxX=-1e9, minY=1e9, maxY=-1e9;
+  points.forEach(p=>{
+    minX=Math.min(minX,p.x); maxX=Math.max(maxX,p.x);
+    minY=Math.min(minY,p.y); maxY=Math.max(maxY,p.y);
+  });
+  if(!isFinite(minX)){ minX=0; maxX=1; minY=0; maxY=1; }
+  const w=maxX-minX || 1;
+  const h=maxY-minY || 1;
+  const sx=(boxW-2*pad)/w;
+  const sy=(boxH-2*pad)/h;
+  const s=Math.min(sx,sy);
+
+  // map (x,y) with y-up to svg y-down
+  const x0=(boxW - w*s)/2 - minX*s;
+  const y0=(boxH - h*s)/2 + maxY*s;
+
+  function map(p){
+    return { x: x0 + p.x*s, y: y0 - p.y*s };
+  }
+  return {s, map};
+}
+
+function svgPolygon(points, fill="rgba(33,150,243,0.12)", stroke="#1f2a44", sw=4){
+  const ptsStr = points.map(p=>`${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(" ");
+  return `<polygon points="${ptsStr}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" />`;
+}
+
+function svgText(x,y,text,opts={}){
+  const anchor=opts.anchor||"middle";
+  const size=opts.size||24;
+  const weight=opts.weight||700;
+  const fill=opts.fill||"#1f2a44";
+  const styleText = `font-family="Segoe UI, Arial" paint-order="stroke" stroke="#ffffff" stroke-width="6" fill="${fill}"`;
+  return `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="${size}" font-weight="${weight}" ${styleText}>${escapeXml(text)}</text>`;
+}
+
+function svgLine(x1,y1,x2,y2,opts={}){
+  const stroke=opts.stroke||"#1f2a44";
+  const sw=opts.sw||4;
+  const dash=opts.dash ? `stroke-dasharray="${opts.dash}"` : "";
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${stroke}" stroke-width="${sw}" ${dash} stroke-linecap="round"/>`;
+}
+
+/* ===================== Diagrams ===================== */
+function diagramUShape(W,H,w,d){
+  const x1=(W-w)/2, x2=x1+w;
+
+  // y-up coordinates (bottom at 0, top at H), notch goes down from top to H-d
+  const pts=[
+    {x:0,y:0},{x:W,y:0},{x:W,y:H},{x:x2,y:H},{x:x2,y:H-d},{x:x1,y:H-d},{x:x1,y:H},{x:0,y:H}
+  ];
+  const {map}=fitToBox(pts);
+
+  const mpts=pts.map(map);
+
+  // labels positions in original coords
+  const labels=[
+    {x:W/2,y:-0.5,text:`${W}`,anchor:"middle"},
+    {x:W+0.6,y:H/2,text:`${H}`,anchor:"start"},
+    {x:(x1+x2)/2,y:H-d-0.6,text:`${w}`,anchor:"middle"},
+    {x:x2+0.6,y:H-d/2,text:`${d}`,anchor:"start"}
+  ];
+
+  const boxW=880, boxH=320;
+  let g=``;
+
+  // faint grid line
+  g+=svgLine(60,290,820,290,{stroke:"#e6eef7",sw:10});
+
+  // shape
+  g+=svgPolygon(mpts,"rgba(33,150,243,0.10)","#1f2a44",4);
+
+  // notch outline hint (thin)
+  const notchRect=[
+    map({x:x1,y:H}),
+    map({x:x2,y:H}),
+    map({x:x2,y:H-d}),
+    map({x:x1,y:H-d})
+  ];
+  g+=`<polygon points="${notchRect.map(p=>`${p.x},${p.y}`).join(" ")}" fill="rgba(255,152,0,0.08)" stroke="rgba(31,42,68,0.35)" stroke-width="2"/>`;
+
+  // dimension lines (simple)
+  const bottomY = map({x:0,y:0}).y + 26;
+  g+=svgLine(map({x:0,y:0}).x, bottomY, map({x:W,y:0}).x, bottomY, {stroke:"#455a64",sw:3});
+  g+=svgText((map({x:0,y:0}).x+map({x:W,y:0}).x)/2, bottomY-8, `${W}`, {size:22});
+
+  const rightX = map({x:W,y:0}).x + 26;
+  g+=svgLine(rightX, map({x:W,y:0}).y, rightX, map({x:W,y:H}).y, {stroke:"#455a64",sw:3});
+  g+=svgText(rightX+8, (map({x:W,y:0}).y+map({x:W,y:H}).y)/2, `${H}`, {size:22,anchor:"start"});
+
+  // notch width
+  const notchY = map({x:0,y:H-d}).y + 22;
+  g+=svgLine(map({x:x1,y:H-d}).x, notchY, map({x:x2,y:H-d}).x, notchY, {stroke:"#455a64",sw:3});
+  g+=svgText((map({x:x1,y:H-d}).x+map({x:x2,y:H-d}).x)/2, notchY-8, `${w}`, {size:22});
+
+  // notch depth
+  const depthX = map({x:x2,y:H}).x + 18;
+  g+=svgLine(depthX, map({x:x2,y:H}).y, depthX, map({x:x2,y:H-d}).y, {stroke:"#455a64",sw:3});
+  g+=svgText(depthX+8, (map({x:x2,y:H}).y+map({x:x2,y:H-d}).y)/2, `${d}`, {size:22,anchor:"start"});
+
+  return `<g transform="translate(50,20)">${g}</g>`;
+}
+
+function diagramPolyQ2(L,h,t,v){
+  // A(0,0), B(L,0), C(L,h), D(L-t,h), E(L-t,h+v)
+  const pts=[{x:0,y:0},{x:L,y:0},{x:L,y:h},{x:L-t,y:h},{x:L-t,y:h+v}];
+  const allPts=[...pts];
+
+  const {map}=fitToBox(allPts);
+
+  const mpts=pts.map(map);
+
+  let g=``;
+  g+=svgLine(60,290,820,290,{stroke:"#e6eef7",sw:10});
+  g+=svgPolygon(mpts,"rgba(76,175,80,0.10)","#1f2a44",4);
+
+  // key edges labels
+  const A=map({x:0,y:0}), B=map({x:L,y:0}), C=map({x:L,y:h}), D=map({x:L-t,y:h}), E=map({x:L-t,y:h+v});
+
+  // bottom L
+  const yB=B.y+26;
+  g+=svgLine(A.x,yB,B.x,yB,{stroke:"#455a64",sw:3});
+  g+=svgText((A.x+B.x)/2,yB-8,`${L}`,{size:22});
+  // right vertical h
+  const xR=B.x+26;
+  g+=svgLine(xR,B.y,xR,C.y,{stroke:"#455a64",sw:3});
+  g+=svgText(xR+8,(B.y+C.y)/2,`${h}`,{size:22,anchor:"start"});
+  // top small horizontal t
+  const yT=C.y-26;
+  g+=svgLine(D.x,yT,C.x,yT,{stroke:"#455a64",sw:3});
+  g+=svgText((D.x+C.x)/2,yT-8,`${t}`,{size:22});
+  // inner vertical v
+  const xV=D.x-26;
+  g+=svgLine(xV,D.y,xV,E.y,{stroke:"#455a64",sw:3});
+  g+=svgText(xV-8,(D.y+E.y)/2,`${v}`,{size:22,anchor:"end"});
+
+  return `<g transform="translate(50,20)">${g}</g>`;
+}
+
+function diagramNotchedBoat(base, a, n, b, H, d){
+  const T=a+n+b;
+  const bottomLeft=(T-base)/2;
+  const bottomRight=bottomLeft+base;
+
+  // outline, start at top-left -> notch -> top-right -> bottom-right -> bottom-left
+  const pts=[
+    {x:0,y:H},
+    {x:a,y:H},
+    {x:a,y:H-d},
+    {x:a+n,y:H-d},
+    {x:a+n,y:H},
+    {x:T,y:H},
+    {x:bottomRight,y:0},
+    {x:bottomLeft,y:0}
+  ];
+
+  const {map}=fitToBox(pts);
+  const mpts=pts.map(map);
+
+  let g=``;
+  g+=svgLine(60,290,820,290,{stroke:"#e6eef7",sw:10});
+  g+=svgPolygon(mpts,"rgba(33,150,243,0.10)","#1f2a44",4);
+
+  // dashed helper: show total height
+  const y0=map({x:bottomLeft,y:0}).y;
+  const yH=map({x:0,y:H}).y;
+  const xHelp=map({x:T,y:H}).x + 26;
+  g+=svgLine(xHelp,y0,xHelp,yH,{stroke:"#455a64",sw:3});
+  g+=svgText(xHelp+8,(y0+yH)/2,`${H}`,{size:22,anchor:"start"});
+
+  // bottom base
+  const BL=map({x:bottomLeft,y:0}), BR=map({x:bottomRight,y:0});
+  const yB=BL.y+26;
+  g+=svgLine(BL.x,yB,BR.x,yB,{stroke:"#455a64",sw:3});
+  g+=svgText((BL.x+BR.x)/2,yB-8,`${base}`,{size:22});
+
+  // notch depth d
+  const xNd=map({x:a+n,y:H}).x + 18;
+  const yTop=map({x:0,y:H}).y;
+  const yBot=map({x:0,y:H-d}).y;
+  g+=svgLine(xNd,yTop,xNd,yBot,{stroke:"#455a64",sw:3});
+  g+=svgText(xNd+8,(yTop+yBot)/2,`${d}`,{size:22,anchor:"start"});
+
+  // top left a, top right b, notch width n
+  const yTopLine=yTop-26;
+  const x0=map({x:0,y:H}).x, xA=map({x:a,y:H}).x, xAN=map({x:a+n,y:H}).x, xT=map({x:T,y:H}).x;
+  g+=svgLine(x0,yTopLine,xA,yTopLine,{stroke:"#455a64",sw:3});
+  g+=svgText((x0+xA)/2,yTopLine-8,`${a}`,{size:22});
+  g+=svgLine(xA,yTopLine,xAN,yTopLine,{stroke:"#455a64",sw:3});
+  g+=svgText((xA+xAN)/2,yTopLine-8,`${n}`,{size:22});
+  g+=svgLine(xAN,yTopLine,xT,yTopLine,{stroke:"#455a64",sw:3});
+  g+=svgText((xAN+xT)/2,yTopLine-8,`${b}`,{size:22});
+
+  // small note
+  g+=svgText(440,36,"Notch depth shown in the middle", {size:18,weight:700,fill:"#546e7a"});
+
+  return `<g transform="translate(50,20)">${g}</g>`;
+}
+
+function diagramIrregular4(topW,leftH,rightDrop,insetL,insetR){
+  // F(0,0) -> E(insetL,0) -> D(topW-insetR,leftH-rightDrop) -> C(topW,leftH-rightDrop) -> B(topW,leftH) -> A(0,leftH)
+  const pts=[
+    {x:0,y:0},
+    {x:insetL,y:0},
+    {x:topW-insetR,y:leftH-rightDrop},
+    {x:topW,y:leftH-rightDrop},
+    {x:topW,y:leftH},
+    {x:0,y:leftH}
+  ];
+
+  const {map}=fitToBox(pts);
+  const mpts=pts.map(map);
+
+  let g=``;
+  g+=svgLine(60,290,820,290,{stroke:"#e6eef7",sw:10});
+  g+=svgPolygon(mpts,"rgba(76,175,80,0.10)","#1f2a44",4);
+
+  const A=map({x:0,y:leftH}), B=map({x:topW,y:leftH}), C=map({x:topW,y:leftH-rightDrop});
+  const D=map({x:topW-insetR,y:leftH-rightDrop});
+  const E=map({x:insetL,y:0}), F=map({x:0,y:0});
+
+  // topW label
+  const yTop=A.y-26;
+  g+=svgLine(A.x,yTop,B.x,yTop,{stroke:"#455a64",sw:3});
+  g+=svgText((A.x+B.x)/2,yTop-8,`${topW}`,{size:22});
+
+  // leftH label
+  const xLeft=A.x-26;
+  g+=svgLine(xLeft,F.y,xLeft,A.y,{stroke:"#455a64",sw:3});
+  g+=svgText(xLeft-8,(F.y+A.y)/2,`${leftH}`,{size:22,anchor:"end"});
+
+  // rightDrop label
+  const xR=B.x+26;
+  g+=svgLine(xR,C.y,xR,B.y,{stroke:"#455a64",sw:3});
+  g+=svgText(xR+8,(C.y+B.y)/2,`${rightDrop}`,{size:22,anchor:"start"});
+
+  // insetR label (small horizontal)
+  const yMid=C.y-18;
+  g+=svgLine(D.x,yMid,C.x,yMid,{stroke:"#455a64",sw:3});
+  g+=svgText((D.x+C.x)/2,yMid-8,`${insetR}`,{size:22});
+
+  // insetL label
+  const yBot=F.y+26;
+  g+=svgLine(F.x,yBot,E.x,yBot,{stroke:"#455a64",sw:3});
+  g+=svgText((F.x+E.x)/2,yBot-8,`${insetL}`,{size:22});
+
+  return `<g transform="translate(50,20)">${g}</g>`;
+}
+
+function diagramStep5(a,b,c,h1,h2,h3){
+  const W=a+b+c;
+  const pts=[
+    {x:0,y:0},
+    {x:W,y:0},
+    {x:W,y:h3},
+    {x:a+b,y:h3},
+    {x:a+b,y:h2},
+    {x:a,y:h2},
+    {x:a,y:h1},
+    {x:0,y:h1}
+  ];
+
+  const {map}=fitToBox(pts);
+  const mpts=pts.map(map);
+
+  let g=``;
+  g+=svgLine(60,290,820,290,{stroke:"#e6eef7",sw:10});
+  g+=svgPolygon(mpts,"rgba(33,150,243,0.10)","#1f2a44",4);
+
+  const P0=map({x:0,y:0}), PW=map({x:W,y:0});
+  const yBot=P0.y+26;
+  g+=svgLine(P0.x,yBot,PW.x,yBot,{stroke:"#455a64",sw:3});
+  g+=svgText((P0.x+PW.x)/2,yBot-8,`${W}`,{size:22});
+
+  // heights labels (simple)
+  const xL=P0.x-26;
+  g+=svgLine(xL,map({x:0,y:0}).y,xL,map({x:0,y:h1}).y,{stroke:"#455a64",sw:3});
+  g+=svgText(xL-8,(map({x:0,y:0}).y+map({x:0,y:h1}).y)/2,`${h1}`,{size:22,anchor:"end"});
+
+  const xM=map({x:a,y:0}).x-26;
+  g+=svgLine(xM,map({x:a,y:h1}).y,xM,map({x:a,y:h2}).y,{stroke:"#455a64",sw:3});
+  g+=svgText(xM-8,(map({x:a,y:h1}).y+map({x:a,y:h2}).y)/2,`${h2-h1}`,{size:22,anchor:"end"});
+
+  const xR=map({x:a+b,y:0}).x+26;
+  g+=svgLine(xR,map({x:a+b,y:h2}).y,xR,map({x:a+b,y:h3}).y,{stroke:"#455a64",sw:3});
+  g+=svgText(xR+8,(map({x:a+b,y:h2}).y+map({x:a+b,y:h3}).y)/2,`${h2-h3}`,{size:22,anchor:"start"});
+
+  // widths a,b,c at top line
+  const yTop=map({x:0,y:h2}).y-26;
+  const x0=map({x:0,y:h2}).x, xA=map({x:a,y:h2}).x, xAB=map({x:a+b,y:h2}).x, xW=map({x:W,y:h2}).x;
+  g+=svgLine(x0,yTop,xA,yTop,{stroke:"#455a64",sw:3});
+  g+=svgText((x0+xA)/2,yTop-8,`${a}`,{size:22});
+  g+=svgLine(xA,yTop,xAB,yTop,{stroke:"#455a64",sw:3});
+  g+=svgText((xA+xAB)/2,yTop-8,`${b}`,{size:22});
+  g+=svgLine(xAB,yTop,xW,yTop,{stroke:"#455a64",sw:3});
+  g+=svgText((xAB+xW)/2,yTop-8,`${c}`,{size:22});
+
+  return `<g transform="translate(50,20)">${g}</g>`;
+}
+
+function diagramShaded6(a,h1,b,h2){
+  // Two rectangles: [0,a]x[0,h1] and [a,a+b]x[0,h2]
+  // Diagonal from (0,h1) to (a+b,0). Shade area above diagonal within the union.
+  const W=a+b;
+
+  // key intersection at x=a: yA = h1*b/(a+b)
+  const yA = h1*b/W;
+
+  // outline points (y-up):
+  const outline=[
+    {x:0,y:0},
+    {x:W,y:0},
+    {x:W,y:h2},
+    {x:a,y:h2},
+    {x:a,y:h1},
+    {x:0,y:h1}
+  ];
+
+  const {map}=fitToBox(outline);
+  const outM=outline.map(map);
+
+  const TL=map({x:0,y:h1});
+  const BR=map({x:W,y:0});
+  const splitTop=map({x:a,y:h1});
+  const splitBottom=map({x:a,y:0});
+  const splitAt=map({x:a,y:yA});
+
+  // shading polygons (y-up coordinates)
+  const shadeLeft=[ {x:0,y:h1},{x:a,y:h1},{x:a,y:yA} ];
+  const shadeRight=[ {x:a,y:h2},{x:W,y:h2},{x:W,y:0},{x:a,y:yA} ];
+
+  const shadeLeftM=shadeLeft.map(map);
+  const shadeRightM=shadeRight.map(map);
+
+  let g=``;
+  g+=svgLine(60,290,820,290,{stroke:"#e6eef7",sw:10});
+
+  // shaded
+  g+=svgPolygon(shadeLeftM,"rgba(76,175,80,0.20)","none",0);
+  g+=svgPolygon(shadeRightM,"rgba(76,175,80,0.20)","none",0);
+
+  // outline and divider
+  g+=svgPolygon(outM,"rgba(33,150,243,0.05)","#1f2a44",4);
+  g+=svgLine(map({x:a,y:0}).x, map({x:a,y:0}).y, map({x:a,y:h1}).x, map({x:a,y:h1}).y, {stroke:"#1f2a44",sw:4});
+
+  // diagonal
+  g+=svgLine(TL.x,TL.y,BR.x,BR.y,{stroke:"#1f2a44",sw:4});
+
+  // labels
+  const yTop = map({x:0,y:h1}).y - 26;
+  g+=svgLine(map({x:0,y:h1}).x, yTop, map({x:a,y:h1}).x, yTop, {stroke:"#455a64",sw:3});
+  g+=svgText((map({x:0,y:h1}).x+map({x:a,y:h1}).x)/2, yTop-8, `${a}`, {size:22});
+  g+=svgLine(map({x:a,y:h2}).x, yTop, map({x:W,y:h2}).x, yTop, {stroke:"#455a64",sw:3});
+  g+=svgText((map({x:a,y:h2}).x+map({x:W,y:h2}).x)/2, yTop-8, `${b}`, {size:22});
+
+  const xL = map({x:0,y:0}).x - 26;
+  g+=svgLine(xL, map({x:0,y:0}).y, xL, map({x:0,y:h1}).y, {stroke:"#455a64",sw:3});
+  g+=svgText(xL-8, (map({x:0,y:0}).y+map({x:0,y:h1}).y)/2, `${h1}`, {size:22,anchor:"end"});
+
+  const xR = map({x:W,y:0}).x + 26;
+  g+=svgLine(xR, map({x:W,y:0}).y, xR, map({x:W,y:h2}).y, {stroke:"#455a64",sw:3});
+  g+=svgText(xR+8, (map({x:W,y:0}).y+map({x:W,y:h2}).y)/2, `${h2}`, {size:22,anchor:"start"});
+
+  // small star marker
+  g+=`<text x="${map({x:a/2,y:h1/2}).x}" y="${map({x:a/2,y:h1/2}).y}" font-size="26">★</text>`;
+
+  return `<g transform="translate(50,20)">${g}</g>`;
+}
+
+/* ===================== Question Generators (6) ===================== */
+/* Answer format: type:"single", values:[number], label:"..." */
+
+function genQ1_UShape(){
+  const W = evenInt(12,20);
+  const H = evenInt(10,16);
+  const w = evenInt(4, Math.max(6, W-4));
+  const d = evenInt(4, Math.max(6, H-4));
+
+  // ensure notch fits: w <= W-4, d <= H-4
+  const ww = Math.min(w, W-4);
+  const dd = Math.min(d, H-4);
+
+  const area = W*H - ww*dd;
+
+  const lines=[
+    "(Warm-up) Find the area (unit: cm²)",
+    "The shape is a rectangle with a rectangular notch cut out from the top.",
+    `Outer rectangle: width ${W} cm, height ${H} cm.`,
+    `Notch: width ${ww} cm, depth ${dd} cm.`,
+    "Find the area of the shape."
+  ];
+
+  const hint = hintCardSvg([
+    "Area(composite) = Area(outer rectangle) − Area(cut-out rectangle).",
+    "Outer area = W × H.",
+    "Cut-out area = w × d."
+  ], "Hint (Cut-out method)");
+
+  return {
+    img: makeSvgQuestionCard(lines, diagramUShape(W,H,ww,dd)),
+    diagram: hint,
+    hintText: "Use outer area minus cut-out area.",
+    answer: {type:"single", values:[area], label:`${area}`}
+  };
+}
+
+function genQ2_PolygonStairTriangle(){
+  // use even numbers so area becomes integer
+  const L = pick([22,24,26,28,30]);
+  const h = pick([8,10,12,14]);
+  const t = pick([8,10,12]);
+  const v = pick([8,10,12,14]);
+
+  // keep t < L
+  const tt = Math.min(t, L-8);
+
+  const pts=[{x:0,y:0},{x:L,y:0},{x:L,y:h},{x:L-tt,y:h},{x:L-tt,y:h+v}];
+  const area = polygonArea(pts);
+  const ans = Math.round(area); // should be integer
+
+  const lines=[
+    "(Core) Find the area (unit: cm²)",
+    `The polygon has the labelled sides: bottom ${L} cm, right vertical ${h} cm,`,
+    `top short side ${tt} cm, and inner vertical ${v} cm.`,
+    "Find the area of the polygon."
+  ];
+
+  const hint = hintCardSvg([
+    "Split it into simpler shapes:",
+    "• A rectangle on the right.",
+    "• A triangle (or trapezoid) on the left.",
+    "Or use coordinates and the shoelace formula if you like."
+  ], "Hint (Split into parts)");
+
+  return {
+    img: makeSvgQuestionCard(lines, diagramPolyQ2(L,h,tt,v)),
+    diagram: hint,
+    hintText: "Split into a rectangle + a triangle/trapezoid, or use coordinates.",
+    answer: {type:"single", values:[ans], label:`${ans}`}
+  };
+}
+
+function genQ3_NotchedBoat(){
+  // imitate the picture: base ~20, top parts ~12, notch depth ~6, total height ~12
+  const base = pick([18,20,22,24,26]);       // bottom middle
+  const a = pick([10,12,14]);                // left top segment
+  const b = pick([10,12,14]);                // right top segment
+  const n = pick([6,8,10,12]);               // notch width
+  const H = pick([10,12,14]);                // total height
+  const d = pick([4,6,8]);                   // notch depth
+
+  // ensure top wider than base
+  const T = a+n+b;
+  const base2 = Math.min(base, T-2);
+
+  const bottomLeft=(T-base2)/2;
+  const bottomRight=bottomLeft+base2;
+
+  const pts=[
+    {x:0,y:H},
+    {x:a,y:H},
+    {x:a,y:H-d},
+    {x:a+n,y:H-d},
+    {x:a+n,y:H},
+    {x:T,y:H},
+    {x:bottomRight,y:0},
+    {x:bottomLeft,y:0}
+  ];
+  const area = polygonArea(pts);
+  const ans = Math.round(area);
+
+  const lines=[
+    "(Apply) Find the area (unit: cm²)",
+    `Bottom base = ${base2} cm. Total height = ${H} cm.`,
+    `Top is split into ${a} cm, ${n} cm, ${b} cm, and the notch depth is ${d} cm.`,
+    "Find the area of the whole shape."
+  ];
+
+  const hint = hintCardSvg([
+    "Idea 1: Enclose it in a big trapezoid/rectangle and subtract the missing parts.",
+    "Idea 2: Split into 2 trapezoids + a rectangle notch area to subtract.",
+    "Work systematically (no guessing)."
+  ], "Hint (Add & subtract)");
+
+  return {
+    img: makeSvgQuestionCard(lines, diagramNotchedBoat(base2,a,n,b,H,d)),
+    diagram: hint,
+    hintText: "Use add/subtract: split into simple parts, and subtract the notch.",
+    answer: {type:"single", values:[ans], label:`${ans}`}
+  };
+}
+
+function genQ4_IrregularMeters(){
+  // match the pictured style: top 9, left 7, right drop 4, insets 2 and 3
+  const topW = pick([8,9,10,11,12]);
+  const leftH = pick([6,7,8,9]);
+  const rightDrop = pick([3,4,5,6]);
+  const insetL = pick([2,3]);
+  const insetR = pick([2,3,4]);
+
+  const pts=[
+    {x:0,y:0},
+    {x:insetL,y:0},
+    {x:topW-insetR,y:leftH-rightDrop},
+    {x:topW,y:leftH-rightDrop},
+    {x:topW,y:leftH},
+    {x:0,y:leftH}
+  ];
+  const area = polygonArea(pts);
+  const ans = Math.round(area);
+
+  const lines=[
+    "(Core) Find the area (unit: m²)",
+    `Top length = ${topW} m, left height = ${leftH} m.`,
+    `Right vertical drop = ${rightDrop} m, bottom-left segment = ${insetL} m, inner top segment = ${insetR} m.`,
+    "Find the area of the polygon."
+  ];
+
+  const hint = hintCardSvg([
+    "Make a rectangle of size (topW × leftH) around it,",
+    "then subtract the missing triangle on the bottom-right.",
+    "Triangle area = (base × height) ÷ 2."
+  ], "Hint (Rectangle − triangle)");
+
+  return {
+    img: makeSvgQuestionCard(lines, diagramIrregular4(topW,leftH,rightDrop,insetL,insetR)),
+    diagram: hint,
+    hintText: "Use rectangle minus triangle (or split into rectangle + trapezoid).",
+    answer: {type:"single", values:[ans], label:`${ans}`}
+  };
+}
+
+function genQ5_StepShape(){
+  const W = pick([8,10,12,14]);
+
+  // split W into a+b+c
+  let a=randInt(2, Math.max(2, W-6));
+  let b=randInt(2, Math.max(2, W-a-2));
+  let c=W-a-b;
+  if(c<2){ c=2; b=W-a-c; }
+
+  const h1=randInt(3,6);
+  const rise=randInt(2,4);
+  const h2=h1+rise;
+  const drop=randInt(1,3);
+  const h3=h2-drop;
+
+  const area = a*h1 + b*h2 + c*h3;
+
+  const lines=[
+    "(Warm-up) Find the area (unit: cm²)",
+    "A step-shaped figure can be split into 3 rectangles.",
+    `Bottom width = ${W} cm, and the step widths are ${a} cm, ${b} cm, ${c} cm.`,
+    `Heights: left = ${h1} cm, middle = ${h2} cm, right = ${h3} cm.`,
+    "Find the area."
+  ];
+
+  const hint = hintCardSvg([
+    "Split it into 3 rectangles.",
+    "Area = a×h1 + b×h2 + c×h3."
+  ], "Hint (3 rectangles)");
+
+  return {
+    img: makeSvgQuestionCard(lines, diagramStep5(a,b,c,h1,h2,h3)),
+    diagram: hint,
+    hintText: "Split into 3 rectangles and add their areas.",
+    answer: {type:"single", values:[area], label:`${area}`}
+  };
+}
+
+function genQ6_ShadedArea(){
+  // choose values so answer is integer:
+  // shaded = h1*(a+b)/2 + (h2-h1)*b
+  let a,b,h1,h2,ans,tries=0;
+
+  while(true){
+    a=randInt(3,6);
+    b=randInt(2,5);
+    h1=randInt(3,6);
+    h2=randInt(2,5);
+    if(h2>h1) { const tmp=h1; h1=h2; h2=tmp; } // keep left not shorter than right, similar to picture
+
+    const W=a+b;
+    const num = h1*W; // need even
+    if(num%2!==0){ tries++; if(tries>40) break; continue; }
+
+    ans = (h1*W)/2 + (h2-h1)*b;
+    if(Number.isInteger(ans) && ans>0) break;
+
+    tries++;
+    if(tries>60) break;
+  }
+
+  const lines=[
+    "(Apply) Find the shaded area (unit: cm²)",
+    `Left rectangle: ${a} cm by ${h1} cm. Right rectangle: ${b} cm by ${h2} cm.`,
+    "A diagonal is drawn from the top-left corner to the bottom-right corner.",
+    "Find the total shaded area."
+  ];
+
+  const hint = hintCardSvg([
+    "Think of 'area above the diagonal' as: (top area) − (area under the line).",
+    "A useful shortcut here:",
+    "Shaded = h1×(a+b)/2 + (h2−h1)×b  (works for this layout).",
+    "You can also split the shaded part into triangles."
+  ], "Hint (Shaded area)");
+
+  return {
+    img: makeSvgQuestionCard(lines, diagramShaded6(a,h1,b,h2)),
+    diagram: hint,
+    hintText: "Split shaded region into simple triangles, or use the shortcut formula.",
+    answer: {type:"single", values:[ans], label:`${ans}`}
+  };
+}
+
+/* ===================== Build exactly 6 questions ===================== */
+function buildSixQuestions(){
+  return [
+    genQ1_UShape(),
+    genQ5_StepShape(),
+    genQ2_PolygonStairTriangle(),
+    genQ4_IrregularMeters(),
+    genQ3_NotchedBoat(),
+    genQ6_ShadedArea()
+  ];
+}
+
+/* ===================== State ===================== */
+let questions=[];
+let currentQuestionIndex=0;
+let studentName="Student";
+let quizStartTime=null;
+let quizEndTime=null;
+let quizSubmitted=false;
+
+let timerInterval=null;
+let elapsedMs=0;
+let isPaused=false;
+let firstAttemptMs=null;
+
+let setCounter=0;
+let lastSignature="";
+
+/* DOM */
+const quizContent=document.getElementById("quizContent");
+const sidebarEl=document.getElementById("sidebar");
+
+const buttonContainer=document.getElementById("navButtons");
+const backButton=document.getElementById("backButton");
+const nextButton=document.getElementById("nextButton");
+const submitButton=document.getElementById("submitButton");
+const checkButton=document.getElementById("checkButton");
+const saveButton=document.getElementById("saveButton");
+
+const generateBtn=document.getElementById("generateButton");
+const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
+
+const timerDisplay=document.getElementById("timerDisplay");
+const studentLine=document.getElementById("studentLine");
+const setLine=document.getElementById("setLine");
+
+/* ===================== Timer ===================== */
+function updateTimerDisplay(){
+  let totalMs=elapsedMs;
+  if(!isPaused && quizStartTime) totalMs+=(new Date()-quizStartTime);
+  let text=`Time: ${formatMs(totalMs)}`;
+  if(firstAttemptMs!==null) text+=` (First: ${formatMs(firstAttemptMs)})`;
+  timerDisplay.textContent=text;
+}
+function startTimerInterval(){
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval=setInterval(updateTimerDisplay, 1000);
+}
+function pauseTimer(){
+  if(isPaused || !quizStartTime) return;
+  const now=new Date();
+  elapsedMs+=now-quizStartTime;
+  isPaused=true;
+  quizStartTime=null;
+  updateTimerDisplay();
+}
+function resumeTimer(){
+  if(!isPaused) return;
+  isPaused=false;
+  quizStartTime=new Date();
+  updateTimerDisplay();
+}
+
+/* ===================== Grading ===================== */
+function gradeAnswer(userText, answer){
+  const nums = parseNumbersFromInput(userText);
+  if(answer.type==="single"){
+    if(nums.length<1) return false;
+    return approxEqual(nums[0], answer.values[0]);
+  }
+  return false;
+}
+
+/* ===================== Generate Quiz ===================== */
+function signatureOf(built){
+  return built.map(q=>q.answer.label).join("|");
+}
+function generateQuiz(){
+  questions=[];
+  quizSubmitted=false;
+
+  let tries=0;
+  let built=null;
+
+  while(tries<50){
+    built = buildSixQuestions();
+    const sig = signatureOf(built);
+    if(sig !== lastSignature){
+      lastSignature = sig;
+      break;
+    }
+    tries++;
+  }
+
+  setCounter++;
+  setLine.textContent = `Set: ${setCounter}`;
+
+  for(let i=0;i<built.length;i++){
+    const partIndex=Math.floor(i/QUESTIONS_PER_PART);
+    const indexInPart=i%QUESTIONS_PER_PART;
+    questions.push({
+      partIndex,
+      indexInPart,
+      img: built[i].img,
+      diagram: built[i].diagram || "",
+      hint: built[i].hintText || "Split into rectangles/triangles and calculate carefully.",
+      answer: built[i].answer,
+      userValue:"",
+      isCorrect:false
+    });
+  }
+}
+
+/* ===================== Sidebar ===================== */
+function renderSidebar(){
+  sidebarEl.style.display="block";
+  sidebarEl.innerHTML=`<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul=document.getElementById("qList");
+  for(let i=0;i<TOTAL_QUESTIONS;i++){
+    const q=questions[i];
+    const li=document.createElement("li");
+    const label=["Warm-up","Core","Apply"][q.partIndex]+(q.indexInPart+1);
+    li.textContent=`Q${i+1} (${label})`;
+    li.dataset.index=i;
+    li.addEventListener("click",()=>{
+      saveCurrentInput();
+      currentQuestionIndex=i;
+      renderQuestion();
+    });
+    ul.appendChild(li);
+  }
+  updateSidebarStatus();
+}
+function updateSidebarStatus(){
+  const items=document.querySelectorAll("#qList li");
+  items.forEach(li=>{
+    const idx=Number(li.dataset.index);
+    const q=questions[idx];
+    li.classList.remove("active","answered","correct","incorrect");
+
+    if(!quizSubmitted){
+      li.classList.toggle("active", idx===currentQuestionIndex);
+      if((q.userValue||"").trim()!=="") li.classList.add("answered");
+    }else{
+      if((q.userValue||"").trim()!==""){
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ===================== Helpers ===================== */
+function saveCurrentInput(){
+  const input=document.getElementById("answerInput");
+  if(input){
+    questions[currentQuestionIndex].userValue=input.value.trim();
+    if(quizSubmitted){
+      const q=questions[currentQuestionIndex];
+      q.isCorrect = gradeAnswer(q.userValue, q.answer);
+      updateSidebarStatus();
+    }
+  }
+}
+function mountNavButtonsInto(slotId){
+  const slot=document.getElementById(slotId);
+  if(!slot) return;
+  slot.appendChild(buttonContainer);
+  buttonContainer.style.display="flex";
+}
+
+/* ===================== Render Question ===================== */
+function renderQuestion(){
+  const q=questions[currentQuestionIndex];
+
+  const hintDiagramHtml = q.diagram
+    ? `<div class="hint-diagram-wrap"><img src="${q.diagram}" alt="Hint diagram"></div>`
+    : "";
+
+  const placeholder = "e.g., 120";
+
+  quizContent.innerHTML=`
+    <p class="question-text">Question ${currentQuestionIndex+1} of ${TOTAL_QUESTIONS}</p>
+    <div class="part-title">${escapeXml(PART_TITLES[q.partIndex])}</div>
+
+    <div class="single-question">
+      <div style="font-weight:800;margin-bottom:8px;">Question ${currentQuestionIndex+1}</div>
+
+      <div class="img-wrap">
+        <img class="q-img" src="${q.img}" alt="Question image">
+      </div>
+
+      <div class="answer-row">
+        <div style="font-weight:700;">Answer:</div>
+        <input id="answerInput" class="answer-box" type="text"
+               placeholder="${escapeXml(placeholder)}"
+               value="${escapeXml(q.userValue||"")}">
+      </div>
+
+      <div id="checkFeedback" style="display:none;"></div>
+
+      <div class="hint-row">
+        <button id="hintBtn" class="hint-btn">Hint</button>
+      </div>
+
+      <div id="hintBox" class="hint">
+        <div>${escapeXml(q.hint)}</div>
+        ${hintDiagramHtml}
+      </div>
+    </div>
+
+    <div id="navSlot"></div>
+  `;
+
+  mountNavButtonsInto("navSlot");
+
+  const hintBtn=document.getElementById("hintBtn");
+  const hintBox=document.getElementById("hintBox");
+  hintBtn.addEventListener("click", ()=>{
+    const shown=hintBox.style.display==="block";
+    hintBox.style.display = shown ? "none" : "block";
+    hintBtn.textContent = shown ? "Hint" : "Hide Hint";
+  });
+
+  backButton.style.display="inline-block";
+  backButton.style.visibility=(currentQuestionIndex===0)?"hidden":"visible";
+
+  const isLast=(currentQuestionIndex===TOTAL_QUESTIONS-1);
+  nextButton.style.display=isLast?"none":"inline-block";
+  submitButton.style.display=isLast?"inline-block":"none";
+
+  saveButton.style.display=quizSubmitted?"inline-block":"none";
+  checkButton.style.display=(quizSubmitted && !q.isCorrect)?"inline-block":"none";
+
+  updateSidebarStatus();
+}
+
+/* ===================== Results + Submit ===================== */
+function calculateAndShowResults(){
+  saveCurrentInput();
+
+  const now=new Date();
+  let attemptMs=elapsedMs;
+  if(!isPaused && quizStartTime) attemptMs+=now-quizStartTime;
+  if(firstAttemptMs===null) firstAttemptMs=attemptMs;
+
+  const attemptStartTime=quizStartTime || now;
+  quizEndTime=now;
+  quizSubmitted=true;
+
+  let correctCount=0;
+  questions.forEach((q)=>{
+    q.isCorrect = gradeAnswer(q.userValue, q.answer);
+    if(q.isCorrect) correctCount++;
+  });
+
+  updateSidebarStatus();
+
+  let html=`
+    <h3>Results for ${escapeXml(studentName)}</h3>
+    <p>Set: <strong>${setCounter}</strong></p>
+    <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
+    <p>Start time: <strong>${attemptStartTime.toLocaleTimeString()}</strong></p>
+    <p>Submit time: <strong>${quizEndTime.toLocaleTimeString()}</strong></p>
+    <p>Time taken (this attempt): <strong>${formatMs(attemptMs)}</strong></p>
+    <p>First attempt time: <strong>${formatMs(firstAttemptMs)}</strong></p>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th><th>Part</th><th>Image</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q,i)=>{
+    const partLbl=["Warm-up","Core","Apply"][q.partIndex]+(q.indexInPart+1);
+    const ua=(q.userValue||"").trim();
+    const correctText = q.answer.label;
+
+    html+=`
+      <tr class="${q.isCorrect ? "correct-answer":"incorrect-answer"}">
+        <td>${i+1}</td>
+        <td>${escapeXml(partLbl)}</td>
+        <td><img class="thumb" src="${q.img}" alt="Q${i+1}"></td>
+        <td>${ua==="" ? "—" : escapeXml(ua)}</td>
+        <td><strong>${escapeXml(correctText)}</strong></td>
+        <td>${ua==="" ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
+      </tr>
+    `;
+  });
+
+  html+=`</table><div id="navSlot"></div>`;
+  quizContent.innerHTML=html;
+
+  mountNavButtonsInto("navSlot");
+
+  backButton.style.display="none";
+  nextButton.style.display="none";
+  submitButton.style.display="none";
+  checkButton.style.display="none";
+  saveButton.style.display="inline-block";
+
+  // reset timer for review attempt
+  elapsedMs=0; isPaused=false; quizStartTime=new Date();
+  pauseButton.textContent="Pause";
+  startTimerInterval();
+  updateTimerDisplay();
+}
+
+/* ===================== Buttons ===================== */
+nextButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex<TOTAL_QUESTIONS-1){
+    currentQuestionIndex++;
+    renderQuestion();
+  }
+});
+backButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex>0){
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+});
+submitButton.addEventListener("click", ()=>{
+  if(currentQuestionIndex===TOTAL_QUESTIONS-1){
+    calculateAndShowResults();
+  }
+});
+checkButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  const q=questions[currentQuestionIndex];
+  if(!quizSubmitted) return;
+
+  q.isCorrect = gradeAnswer(q.userValue, q.answer);
+  updateSidebarStatus();
+
+  const box=document.getElementById("checkFeedback");
+  if(!box) return;
+
+  box.className="check-feedback";
+  box.style.display="block";
+
+  if(q.isCorrect){
+    box.innerHTML=`✅ Correct!`;
+    checkButton.style.display="none";
+  }else{
+    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${escapeXml(q.answer.label)}</strong>`;
+    checkButton.style.display="inline-block";
+  }
+});
+
+/* Save TXT */
+function formatDateForFilename(date){
+  if(!date) return "no_time";
+  const pad=n=>String(n).padStart(2,"0");
+  return date.getFullYear()+pad(date.getMonth()+1)+pad(date.getDate())+"_"+pad(date.getHours())+pad(date.getMinutes())+pad(date.getSeconds());
+}
+function saveCurrentResultAsTxt(){
+  saveCurrentInput();
+
+  let correctCount=0;
+  questions.forEach(q=>{ if(q.isCorrect) correctCount++; });
+
+  const lines=[];
+  lines.push("Model 10 — U-Shape: Area of Composite Shapes — Current Result");
+  lines.push("Student: "+studentName);
+  lines.push("Set: "+setCounter);
+  if(quizStartTime) lines.push("Start time: "+quizStartTime.toLocaleString());
+  if(quizEndTime) lines.push("Last submit time: "+quizEndTime.toLocaleString());
+  lines.push("Score: "+correctCount+" / "+TOTAL_QUESTIONS);
+  if(firstAttemptMs!==null) lines.push("First attempt time: "+formatMs(firstAttemptMs));
+  lines.push("");
+
+  questions.forEach((q,i)=>{
+    const partLbl=["Warm-up","Core","Apply"][q.partIndex]+(q.indexInPart+1);
+    const userAns=(q.userValue||"").trim()==="" ? "Not answered" : q.userValue;
+    const resultText=(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect?"Correct":"Incorrect");
+    lines.push(`Q${i+1} (${partLbl})`);
+    lines.push("Your answer: "+userAns);
+    lines.push("Correct answer: "+q.answer.label);
+    lines.push("Result: "+resultText);
+    lines.push("");
+  });
+
+  const content=lines.join("\n");
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
+  const ts=formatDateForFilename(new Date());
+  a.href=url;
+  a.download=`UShapeArea_${safeName}_Set${setCounter}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+saveButton.addEventListener("click", saveCurrentResultAsTxt);
+
+/* Pause/Resume (no pop-up) */
+pauseButton.addEventListener("click", ()=>{
+  if(!quizStartTime && elapsedMs===0 && !quizSubmitted) return;
+  if(isPaused){ resumeTimer(); pauseButton.textContent="Pause"; }
+  else { pauseTimer(); pauseButton.textContent="Resume"; }
+});
+
+/* Generate new set */
+generateBtn.addEventListener("click", ()=>{
+  if(!quizSubmitted && !confirm("Generate a new random set? All answers will be lost.")) return;
+
+  if(timerInterval) clearInterval(timerInterval);
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=new Date(); quizEndTime=null;
+  updateTimerDisplay(); startTimerInterval();
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+});
+
+/* ===================== Export Questions PDF (2 per page, DYAA header) ===================== */
+function waitForImages(container){
+  const imgs = Array.from(container.querySelectorAll("img"));
+  return Promise.all(imgs.map(img => {
+    if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve => {
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+    });
+  }));
+}
+exportQuestionsBtn.addEventListener("click", async ()=>{
+  if(!questions || questions.length===0){
+    alert("Please start a quiz first.");
+    return;
+  }
+  if(!window.jspdf || !window.html2canvas){
+    alert("PDF libraries failed to load. If you opened this file offline, export may not work.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p","mm","a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const wrapper=document.createElement("div");
+  wrapper.style.position="fixed";
+  wrapper.style.left="-9999px";
+  wrapper.style.top="0";
+  wrapper.style.width="800px";
+  wrapper.style.background="#ffffff";
+  document.body.appendChild(wrapper);
+
+  try{
+    let groupDiv=null;
+
+    questions.forEach((q, idx)=>{
+      if(idx%2===0){
+        groupDiv=document.createElement("div");
+        groupDiv.style.padding="20px";
+        groupDiv.style.marginBottom="20px";
+        groupDiv.style.boxSizing="border-box";
+
+        const header=document.createElement("div");
+        header.innerHTML=`
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+              <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;line-height:1.1;">
+              <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+              <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+            </div>
+          </div>
+          <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">${LESSON_TITLE}</div>
+          <div style="color:#546e7a;font-weight:800;margin:0 0 10px 0;">Questions (Set ${setCounter})</div>
+        `;
+        groupDiv.appendChild(header);
+        wrapper.appendChild(groupDiv);
+      }
+
+      const qDiv=document.createElement("div");
+      qDiv.style.marginBottom="18px";
+      qDiv.innerHTML=`
+        <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx+1}</div>
+        <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+          <img src="${q.img}" style="width:100%;height:auto;border-radius:10px;" />
+        </div>
+      `;
+      groupDiv.appendChild(qDiv);
+    });
+
+    const groups=Array.from(wrapper.children);
+
+    for(let i=0;i<groups.length;i++){
+      await waitForImages(groups[i]);
+      const canvas = await html2canvas(groups[i], { scale: 2, useCORS: true, backgroundColor: "#ffffff" });
+      const imgData = canvas.toDataURL("image/png");
+
+      const imgWidth = pageWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      if(i>0) pdf.addPage();
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, Math.min(imgHeight, pageHeight - 20));
+    }
+
+    const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+    const ts=formatDateForFilename(new Date());
+    pdf.save(`UShapeArea_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
+  } finally {
+    document.body.removeChild(wrapper);
+  }
+});
+
+/* ===================== Start Screen (+ optional ?name=Tiger) ===================== */
+function getNameFromUrl(){
+  const url=new URL(window.location.href);
+  const name=url.searchParams.get("name");
+  return name ? name.trim() : "";
+}
+function showStartScreen(){
+  sidebarEl.style.display="none";
+  buttonContainer.style.display="none";
+  generateBtn.style.display="none";
+  saveButton.style.display="none";
+  pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
+
+  studentLine.textContent="";
+  setLine.textContent="";
+
+  if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=null; quizEndTime=null;
+  updateTimerDisplay();
+
+  const preset=getNameFromUrl();
+  if(preset){
+    studentName=preset;
+    studentLine.textContent=`Student: ${studentName}`;
+    startQuiz(true);
+    return;
+  }
+
+  quizContent.innerHTML=`
+    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> questions.</p>
+    <ul style="margin-top:6px;color:#555;line-height:1.7;">
+      <li><strong>Warm-up:</strong> cut-out rectangles & step shapes</li>
+      <li><strong>Core:</strong> irregular polygons</li>
+      <li><strong>Apply:</strong> notches & shaded area</li>
+    </ul>
+    <p style="margin-top:10px;">Enter your name to begin:</p>
+
+    <input id="nameInput" type="text"
+      style="padding:10px;width:260px;font-size:1.05em;border:1px solid #ccc;border-radius:10px;"
+      placeholder="Your name">
+
+    <button id="startButton"
+      style="margin-left:10px;background:#4caf50;padding:10px 20px;color:white;border:none;border-radius:8px;">
+      Start Quiz
+    </button>
+  `;
+  document.getElementById("startButton").addEventListener("click", ()=>startQuiz(false));
+}
+function startQuiz(skipReadName){
+  if(!skipReadName){
+    const nameInput=document.getElementById("nameInput");
+    studentName=(nameInput.value || "Student").trim();
+  }
+  studentLine.textContent=`Student: ${studentName}`;
+
+  quizStartTime=new Date();
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  updateTimerDisplay(); startTimerInterval();
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+
+  generateBtn.style.display="inline-block";
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
+  buttonContainer.style.display="flex";
+}
+
+/* ===================== Init ===================== */
+showStartScreen();
+</script>
+</body>
+</html>

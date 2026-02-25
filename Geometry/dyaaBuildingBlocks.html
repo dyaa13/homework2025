@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model 3 — Stacking Blocks Model (Counting Unit Cubes) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --purple:#6a1b9a;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --stroke:#111;
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .select{
+      appearance:none;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:10px;
+      padding:7px 10px;
+      font-weight:900;
+      color:var(--ink);
+      cursor:pointer;
+      outline:none;
+    }
+    .select:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:900;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+      white-space:nowrap;
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:900;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+      font-weight:900;
+    }
+    .btn.orange{
+      background:var(--orange);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(255,152,0,0.20);
+    }
+    .btn.purple{
+      background:var(--purple);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(106,27,154,0.20);
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:1000;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card p{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+      white-space:pre-line;
+    }
+
+    .learn-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:14px;
+      margin-top:12px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .learn-grid{grid-template-columns:1fr;}
+    }
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+      white-space:pre-line; /* IMPORTANT for multi-line prompts */
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:1000;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .q-body{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:12px;
+      margin-top:10px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .q-body{grid-template-columns:1fr;}
+    }
+
+    .svg-wrap{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:12px 12px 10px 12px;
+      overflow: visible;
+    }
+    .svg-wrap svg{
+      display:block;
+      width:100%;
+      height:auto;
+      overflow: visible;
+    }
+    .svg-note{
+      margin-top:6px;
+      font-size:12px;
+      color:rgba(0,0,0,0.55);
+      font-weight:900;
+      display:flex;
+      justify-content:flex-end;
+      letter-spacing:0.5px;
+    }
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      min-width:220px;
+      max-width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .hint-box{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(13,71,161,0.35);
+      background:#f5f8ff;
+      color:#1a2b55;
+      font-size:13px;
+      line-height:1.5;
+      white-space:pre-line;
+    }
+    .hint-box.show{display:block;}
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+    .feedback.ok{color:var(--ok);font-weight:1000;}
+    .feedback.bad{color:var(--bad);font-weight:1000;}
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;white-space:pre-line;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    /* =========================
+       PDF Export (offscreen pages)
+       ========================= */
+    .export-root{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:210mm;
+      height:auto;
+      overflow:hidden;
+      background:#fff;
+    }
+    .export-page{
+      width:210mm;
+      height:297mm;
+      background:#fff;
+      padding:12mm;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .export-header{
+      height:20mm;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10mm;
+    }
+    .export-title{
+      font-weight:1000;
+      font-size:16px;
+      color:#111;
+      line-height:1.1;
+    }
+    .export-sub{
+      margin-top:2mm;
+      font-size:11px;
+      color:#555;
+      font-weight:900;
+      line-height:1.25;
+      white-space:pre-line;
+    }
+    .export-content{
+      height: calc(297mm - 12mm - 12mm - 20mm);
+      overflow:hidden;
+    }
+    .export-qgrid{
+      width:100%;
+      height:100%;
+      display:grid;
+      min-height:0;
+    }
+    .export-qgrid.two{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:8mm;
+    }
+    .export-qgrid.three{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:4mm;
+    }
+    .export-qgrid.six{
+      grid-template-columns:1fr 1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:5mm;
+    }
+    .export-q{
+      border:1px solid #ddd;
+      border-radius:10px;
+      padding:6mm;
+      display:flex;
+      flex-direction:column;
+      gap:3mm;
+      min-height:0;
+      overflow:hidden;
+    }
+    .export-q .qprompt{
+      font-weight:900;
+      font-size:12px;
+      color:#111;
+      line-height:1.2;
+      white-space:pre-line; /* IMPORTANT */
+    }
+    .export-qgrid.six .qprompt{font-size:11px;}
+
+    .export-diagram{
+      border:1px solid #e6e6e6;
+      border-radius:9px;
+      padding:3mm;
+      flex:1;
+      min-height:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .export-diagram svg{
+      width:100%;
+      height:100%;
+      max-height:100%;
+      display:block;
+      overflow:visible;
+    }
+    .export-diagram .svg-note{ display:none !important; }
+
+    .export-answerline{
+      margin-top:2mm;
+      font-size:12px;
+      font-weight:900;
+      color:#111;
+    }
+    .export-answerline span{
+      display:inline-block;
+      border-bottom:1px solid #111;
+      min-width:62mm;
+      height:0.95em;
+      vertical-align:baseline;
+    }
+    .export-qgrid.six .export-answerline{font-size:11px;}
+    .export-qgrid.six .export-answerline span{min-width:35mm;}
+
+    .answers-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:4mm 10mm;
+      align-content:start;
+      font-size:13px;
+      font-weight:900;
+      color:#111;
+    }
+    .answers-note{
+      margin-top:3mm;
+      font-size:11px;
+      color:#666;
+      font-weight:900;
+      white-space:pre-line;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1>Model 3 — Stacking Blocks Model</h1>
+        <div class="sub">Counting unit cubes • 3D isometric diagram (visible lines only) • Overlap edges highlighted • Timer • PDF export</div>
+      </div>
+    </div>
+
+    <!-- TEMPLATE TOP BAR -->
+    <div class="row">
+      <div class="pill">
+        <b>Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <b>Time:</b>
+        <span id="timerValue">00:00</span>
+        <span id="timerStatus" class="muted" style="font-weight:900;"></span>
+        <span class="muted">•</span>
+        <small>URL: <span class="muted">.../model03_stacking_blocks.html?name=Tiger</span></small>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <div class="pill">
+          <b>PDF per page</b>
+          <select id="pdfPerPage" class="select" aria-label="PDF per page">
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+
+        <button class="btn orange" id="pauseBtn" type="button">Pause</button>
+        <button class="btn orange" id="newSetBtn" type="button">Generate New Set</button>
+        <button class="btn purple" id="exportQuestionsBtn" type="button">Export Questions PDF</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    <!-- LEARN -->
+    <div class="panel active" id="panel-learn">
+      <div class="learn-card">
+        <h2>How to Count Unit Cubes (Simple)</h2>
+        <p><b>Method 1: Count by layers.</b> Count cubes on each layer and add.</p>
+        <p><b>Method 2: Full box − missing part.</b> Count the big box, then subtract the removed cubes.</p>
+
+        <div class="note"><b>Overlap lines:</b> Sometimes different 3D edges project onto the same 2D segment. Those segments are highlighted.</div>
+
+        <div class="learn-grid">
+          <div class="muted">Example diagram</div>
+          <div class="svg-wrap" id="learnSvgWrap"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted">Enter an integer. (No units needed.)</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result (TXT)</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3>Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    /********************
+     * Helpers
+     ********************/
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function randint(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;");
+    }
+    function parseIntStrict(input){
+      if(input == null) return NaN;
+      const s = String(input).trim().replace(/,/g,"").replace(/\s+/g,"");
+      if(!s) return NaN;
+      if(!/^-?\d+$/.test(s)) return NaN;
+      const v = Number(s);
+      return Number.isFinite(v) ? v : NaN;
+    }
+    function stripSvgNote(html){
+      return String(html).replace(/<div class="svg-note">[\s\S]*?<\/div>/g, "");
+    }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * Timer + Pause/Resume
+     ********************/
+    const TIMER = { seconds: 0, running: true, id: null };
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function formatTime(sec){
+      sec = Math.max(0, Math.floor(sec));
+      const m = Math.floor(sec/60);
+      const s = sec % 60;
+      return `${pad2(m)}:${pad2(s)}`;
+    }
+    function updateTimerUI(){
+      $("#timerValue").textContent = formatTime(TIMER.seconds);
+      $("#timerStatus").textContent = TIMER.running ? "" : "(Paused)";
+      $("#pauseBtn").textContent = TIMER.running ? "Pause" : "Resume";
+    }
+    function startTimerTick(){
+      if(TIMER.id) clearInterval(TIMER.id);
+      TIMER.id = setInterval(() => {
+        if(TIMER.running){
+          TIMER.seconds += 1;
+          updateTimerUI();
+        }
+      }, 1000);
+    }
+    function resetTimer(){
+      TIMER.seconds = 0;
+      TIMER.running = true;
+      updateTimerUI();
+    }
+    function togglePause(){
+      TIMER.running = !TIMER.running;
+      updateTimerUI();
+    }
+    $("#pauseBtn").addEventListener("click", togglePause);
+
+    /******************************************************************
+     * 3D VISUAL (isometric) renderer
+     * - Visible faces only (TOP, X+, Y+)
+     * - Two-pass: faces then edges
+     * - Overlap edges (same 2D segment) highlighted
+     ******************************************************************/
+    const ISO = { sx: 24, sy: 13, sz: 24 };
+    const LINE_COLOR = "#777";
+    const LINE_W = 1.4;
+    const OVERLAP_COLOR = getComputedStyle(document.documentElement).getPropertyValue("--orange").trim() || "#ff9800";
+
+    function proj(x,y,z){
+      return { x: (x - y) * ISO.sx, y: (x + y) * ISO.sy - z * ISO.sz };
+    }
+    function ptsToStr(pts){
+      return pts.map(p => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(" ");
+    }
+    function edgeKey3D(a,b){
+      const sa = a.join(",");
+      const sb = b.join(",");
+      return (sa < sb) ? `${sa}|${sb}` : `${sb}|${sa}`;
+    }
+    function edgeKey2D(p, q){
+      const ax = Math.round(p.x * 10) / 10;
+      const ay = Math.round(p.y * 10) / 10;
+      const bx = Math.round(q.x * 10) / 10;
+      const by = Math.round(q.y * 10) / 10;
+      const a = `${ax},${ay}`;
+      const b = `${bx},${by}`;
+      return (a < b) ? `${a}|${b}` : `${b}|${a}`;
+    }
+    function makeFace(V){
+      const P = V.map(v => proj(v[0], v[1], v[2]));
+      const depth = V.reduce((s,v)=>s+(v[0]+v[1]+v[2]),0)/V.length;
+      return { V, P, depth };
+    }
+
+    function buildVisibleFaces(cubes){
+      const occ = new Set(cubes.map(c => `${c.x},${c.y},${c.z}`));
+      const faces = [];
+
+      for(const c of cubes){
+        const x=c.x, y=c.y, z=c.z;
+
+        const topVisible    = !occ.has(`${x},${y},${z+1}`);
+        const xPlusVisible  = !occ.has(`${x+1},${y},${z}`);
+        const yPlusVisible  = !occ.has(`${x},${y+1},${z}`);
+
+        if(topVisible){
+          faces.push(makeFace([[x,y,z+1],[x+1,y,z+1],[x+1,y+1,z+1],[x,y+1,z+1]]));
+        }
+        if(xPlusVisible){
+          faces.push(makeFace([[x+1,y,z],[x+1,y+1,z],[x+1,y+1,z+1],[x+1,y,z+1]]));
+        }
+        if(yPlusVisible){
+          faces.push(makeFace([[x,y+1,z],[x+1,y+1,z],[x+1,y+1,z+1],[x,y+1,z+1]]));
+        }
+      }
+
+      faces.sort((a,b)=> a.depth - b.depth);
+      return faces;
+    }
+
+    function boundsFromFaces(faces){
+      let minX=Infinity, minY=Infinity, maxX=-Infinity, maxY=-Infinity;
+      for(const f of faces){
+        for(const p of f.P){
+          minX = Math.min(minX, p.x);
+          minY = Math.min(minY, p.y);
+          maxX = Math.max(maxX, p.x);
+          maxY = Math.max(maxY, p.y);
+        }
+      }
+      if(!Number.isFinite(minX)) return {minX:0,minY:0,maxX:1,maxY:1};
+      return {minX,minY,maxX,maxY};
+    }
+
+    function renderCubesSvg(cubes){
+      const faces = buildVisibleFaces(cubes);
+
+      const owner3D = new Map(); // 3D edge ownership by nearest face
+      faces.forEach((f,i)=>{
+        for(let k=0;k<4;k++){
+          owner3D.set(edgeKey3D(f.V[k], f.V[(k+1)%4]), i);
+        }
+      });
+
+      const vb = boundsFromFaces(faces);
+      const margin = 18;
+      const vx = vb.minX - margin;
+      const vy = vb.minY - margin;
+      const vw = (vb.maxX - vb.minX) + margin*2;
+      const vh = (vb.maxY - vb.minY) + margin*2;
+
+      let out = `
+      <svg viewBox="${vx} ${vy} ${vw} ${vh}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="3D blocks">
+        <defs>
+          <style>
+            .f{ fill:#fff; }
+            .e{ stroke:${LINE_COLOR}; stroke-width:${LINE_W}; fill:none; stroke-linejoin:round; stroke-linecap:round; }
+            .ov{ stroke:${OVERLAP_COLOR}; }
+          </style>
+        </defs>
+      `;
+
+      // PASS 1: fills
+      for(const f of faces){
+        out += `<polygon class="f" points="${ptsToStr(f.P)}"></polygon>`;
+      }
+
+      // PASS 2: edges (owned by nearest face), then detect overlaps in 2D and highlight
+      const edgeList = [];
+      for(let i=0;i<faces.length;i++){
+        const f = faces[i];
+        for(let k=0;k<4;k++){
+          const a3 = f.V[k];
+          const b3 = f.V[(k+1)%4];
+          const k3 = edgeKey3D(a3,b3);
+          if(owner3D.get(k3) !== i) continue;
+
+          const a2 = f.P[k];
+          const b2 = f.P[(k+1)%4];
+          const k2 = edgeKey2D(a2,b2);
+          edgeList.push({ faceIndex:i, a2, b2, k2 });
+        }
+      }
+
+      const count2d = new Map();
+      for(const e of edgeList) count2d.set(e.k2, (count2d.get(e.k2)||0)+1);
+
+      const bestBy2d = new Map();
+      for(const e of edgeList){
+        const prev = bestBy2d.get(e.k2);
+        if(!prev || e.faceIndex > prev.faceIndex) bestBy2d.set(e.k2, e);
+      }
+
+      const finalEdges = Array.from(bestBy2d.values()).sort((a,b)=>a.faceIndex-b.faceIndex);
+      for(const e of finalEdges){
+        const cls = (count2d.get(e.k2) > 1) ? "e ov" : "e";
+        out += `<path class="${cls}" d="M ${e.a2.x.toFixed(2)} ${e.a2.y.toFixed(2)} L ${e.b2.x.toFixed(2)} ${e.b2.y.toFixed(2)}"></path>`;
+      }
+
+      out += `</svg>`;
+      return `${out}<div class="svg-note">NOT TO SCALE</div>`;
+    }
+
+    /********************
+     * Build cube sets (from your Model 3)
+     ********************/
+    function addBlock(cubes, x0,y0,z0, L,W,H){
+      for(let x=x0; x<x0+L; x++){
+        for(let y=y0; y<y0+W; y++){
+          for(let z=z0; z<z0+H; z++){
+            cubes.push({x,y,z});
+          }
+        }
+      }
+    }
+
+    // Q1: 9-unit "step" model
+    function buildQ1(){
+      const cubes=[];
+      addBlock(cubes,0,0,0,2,2,2);
+      cubes.push({x:1,y:1,z:2});
+      return {
+        cubes,
+        answer:cubes.length,
+        prompt:"How many unit cubes are in the solid below?",
+        hint:"Count by layers (bottom + middle + top)."
+      };
+    }
+
+    // Q2: two towers + walkway
+    function buildQ2(){
+      const cubes=[];
+      const walkway = choice([4,5,6]);
+      addBlock(cubes,0,0,0,walkway,1,1);
+      addBlock(cubes,0,0,1,1,1,2);
+      addBlock(cubes,walkway-1,0,1,1,1,2);
+      if(Math.random()<0.65){
+        addBlock(cubes,1,1,0,walkway-2,1,1);
+      }
+      return {
+        cubes,
+        answer:cubes.length,
+        prompt:"How many unit cubes are in the solid below?",
+        hint:"Split into walkway cubes + extra cubes in each tower."
+      };
+    }
+
+    // Q3: staircase (depth 2)
+    function buildQ3(){
+      const steps = choice([4,5,6]);
+      const depth = 2;
+      const cubes=[];
+      for(let x=0; x<steps; x++){
+        const h = steps - x;
+        addBlock(cubes, x, 0, 0, 1, depth, h);
+      }
+      return {
+        cubes,
+        answer:cubes.length,
+        prompt:"Count the unit cubes in this staircase solid.",
+        hint:`Add the column heights, then multiply by the depth (${depth}).`
+      };
+    }
+
+    // Q4: hollow box — size made clear
+    function buildQ4(){
+      const L = choice([5,6,7]);
+      const W = choice([5,6,7]);
+      const H = choice([3,4,5]);
+      const cubes = [];
+
+      // 1-unit-thick walls, hollow through full height
+      for(let x=0; x<L; x++){
+        for(let y=0; y<W; y++){
+          const isWall = (x===0 || x===L-1 || y===0 || y===W-1);
+          if(!isWall) continue;
+          for(let z=0; z<H; z++) cubes.push({x,y,z});
+        }
+      }
+
+      const innerL = L - 2;
+      const innerW = W - 2;
+
+      return {
+        cubes,
+        answer: cubes.length,
+        prompt:
+          `A hollow rectangular prism is built from unit cubes.\n` +
+          `Outside size: ${L} × ${W} × ${H}.\n` +
+          `Wall thickness: 1 unit cube.\n` +
+          `The hollow space goes from bottom to top (full height),\n` +
+          `so the inside hollow size is ${innerL} × ${innerW} × ${H}.\n\n` +
+          `How many unit cubes are used?`,
+        hint:
+          `Big solid − hollow solid:\n` +
+          `${L}×${W}×${H} − ${innerL}×${innerW}×${H}.`
+      };
+    }
+
+    // Q5: corner cut-out
+    function buildQ5(){
+      const L=choice([5,6,7]), W=choice([3,4,5]), H=choice([3,4,5]);
+      const a=choice([2,3]), b=choice([1,2]), c=choice([1,2]);
+
+      const all=[];
+      addBlock(all,0,0,0,L,W,H);
+
+      const keep=[];
+      for(const cu of all){
+        const inNotch = (cu.x < a) && (cu.y < b) && (cu.z >= H-c);
+        if(!inNotch) keep.push(cu);
+      }
+
+      return {
+        cubes:keep,
+        answer:keep.length,
+        prompt:`A ${L}×${W}×${H} block is made of unit cubes.\nA ${a}×${b}×${c} corner piece is removed from the top-front-left.\nHow many cubes remain?`,
+        hint:`Remaining = (${L}×${W}×${H}) − (${a}×${b}×${c}).`
+      };
+    }
+
+    // Q6: add cubes to make smallest cube
+    function buildQ6(){
+      const cubes=[
+        {x:0,y:0,z:0},
+        {x:1,y:0,z:0},
+        {x:0,y:1,z:0},
+        {x:0,y:0,z:1}
+      ];
+      let maxX=0,maxY=0,maxZ=0;
+      for(const c of cubes){
+        maxX=Math.max(maxX,c.x);
+        maxY=Math.max(maxY,c.y);
+        maxZ=Math.max(maxZ,c.z);
+      }
+      const N=Math.max(maxX,maxY,maxZ)+1;
+      return {
+        cubes,
+        answer:(N*N*N)-cubes.length,
+        prompt:`At least how many unit cubes must be added to make this shape into a ${N}×${N}×${N} cube?`,
+        hint:`A ${N}×${N}×${N} cube has ${N*N*N} unit cubes.\nSubtract the cubes shown.`
+      };
+    }
+
+    function makeQuestions(){
+      const q1=buildQ1(), q2=buildQ2(), q3=buildQ3(), q4=buildQ4(), q5=buildQ5(), q6=buildQ6();
+      return [
+        { difficulty:"easy",   answer:q1.answer, svg:renderCubesSvg(q1.cubes), prompt:q1.prompt, hint:q1.hint },
+        { difficulty:"easy",   answer:q2.answer, svg:renderCubesSvg(q2.cubes), prompt:q2.prompt, hint:q2.hint },
+        { difficulty:"medium", answer:q3.answer, svg:renderCubesSvg(q3.cubes), prompt:q3.prompt, hint:q3.hint },
+        { difficulty:"medium", answer:q4.answer, svg:renderCubesSvg(q4.cubes), prompt:q4.prompt, hint:q4.hint },
+        { difficulty:"hard",   answer:q5.answer, svg:renderCubesSvg(q5.cubes), prompt:q5.prompt, hint:q5.hint },
+        { difficulty:"hard",   answer:q6.answer, svg:renderCubesSvg(q6.cubes), prompt:q6.prompt, hint:q6.hint },
+      ];
+    }
+
+    /********************
+     * UI state + rendering
+     ********************/
+    let QUESTIONS = [];
+    let STATE = { answers:[], checked:[], correct:[], hintShown:[], submitted:false };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+    function niceDiff(d){
+      if(d==="easy") return "Easy";
+      if(d==="medium") return "Medium";
+      return "Hard";
+    }
+
+    function renderQuestions(){
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const userVal = STATE.answers[idx] ?? "";
+        const checked = !!STATE.checked[idx];
+        const correct = !!STATE.correct[idx];
+        const hintShown = !!STATE.hintShown[idx];
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${escapeHtml(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="q-body">
+            <div class="svg-wrap">${q.svg}</div>
+
+            <div class="answer-area">
+              <div class="input-row">
+                <input type="text" inputmode="numeric" autocomplete="off"
+                  id="ans-${idx}" placeholder="Answer (integer)"
+                  value="${escapeHtml(userVal)}">
+                <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+                <button class="btn ghost" type="button" id="hint-${idx}">${hintShown ? "Hide Hint" : "Hint"}</button>
+              </div>
+
+              <div class="hint-box ${hintShown ? "show" : ""}" id="hintBox-${idx}">
+                ${escapeHtml(q.hint)}
+              </div>
+
+              <div class="feedback ${checked ? (correct ? "ok" : "bad") : ""}" id="fb-${idx}">
+                ${checked
+                  ? (correct
+                      ? "Correct ✅"
+                      : `Not correct ❌  (Correct answer: ${q.answer})`)
+                  : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        const inp = $(`#ans-${idx}`, card);
+        inp.addEventListener("input", () => {
+          STATE.answers[idx] = inp.value;
+          STATE.checked[idx] = false;
+          STATE.correct[idx] = false;
+          if(STATE.submitted){
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+          }
+          const fb = $(`#fb-${idx}`, card);
+          fb.className = "feedback";
+          fb.textContent = "";
+        });
+
+        $(`#check-${idx}`, card).addEventListener("click", () => checkOne(idx));
+        $(`#hint-${idx}`, card).addEventListener("click", () => {
+          STATE.hintShown[idx] = !STATE.hintShown[idx];
+          renderQuestions();
+        });
+      });
+
+      $("#resultsBox").style.display = "none";
+    }
+
+    function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const v = parseIntStrict(STATE.answers[idx]);
+      STATE.checked[idx] = true;
+
+      if(!Number.isFinite(v)){
+        STATE.correct[idx] = false;
+        renderQuestions();
+        const fb = $(`#fb-${idx}`);
+        fb.className = "feedback bad";
+        fb.textContent = "Please enter a valid integer.";
+        return;
+      }
+
+      STATE.correct[idx] = (v === q.answer);
+      renderQuestions();
+    }
+
+    function submitAll(){
+      let correctCount = 0;
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const v = parseIntStrict(STATE.answers[i]);
+        STATE.checked[i] = true;
+        STATE.correct[i] = Number.isFinite(v) && (v === q.answer);
+        if(STATE.correct[i]) correctCount++;
+      }
+
+      STATE.submitted = true;
+      renderQuestions();
+
+      const total = QUESTIONS.length;
+      const pct = Math.round((correctCount/total)*100);
+
+      const lines = QUESTIONS.map((q,i)=>(
+        `<div style="margin:6px 0;"><b>Q${i+1}:</b> ${q.answer}</div>`
+      )).join("");
+
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:8px;"><b>Correct Answers:</b></div>
+        <div style="margin-top:6px;">${lines}</div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+    function resetAnswers(){
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    /********************
+     * Save Current Result as TXT (template-style)
+     ********************/
+    function saveResult(){
+      const title = "Model 3 — Stacking Blocks Model";
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const when = new Date();
+      const dateStr = when.toLocaleString();
+      const elapsed = formatTime(TIMER.seconds);
+
+      let correctCount = 0;
+      const out = [];
+
+      out.push(`DYAA — Save Current Result`);
+      out.push(`Title: ${title}`);
+      out.push(`Student: ${student}`);
+      out.push(`Date: ${dateStr}`);
+      out.push(`Elapsed Time: ${elapsed}`);
+      out.push(``);
+
+      QUESTIONS.forEach((q, i) => {
+        const raw = (STATE.answers[i] ?? "").toString().trim();
+        const v = parseIntStrict(raw);
+        const valid = Number.isFinite(v);
+        const isCorrect = valid && (v === q.answer);
+        if(isCorrect) correctCount++;
+
+        out.push(`Q${i+1} (${q.difficulty.toUpperCase()}): ${q.prompt}`);
+        out.push(`Your answer: ${valid ? v : (raw ? raw : "(blank)")}`);
+        out.push(`Correct answer: ${q.answer}`);
+        out.push(`Result: ${isCorrect ? "Correct" : "Not correct"}`);
+        out.push(``);
+      });
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+      out.splice(5, 0, `Score: ${correctCount} / ${total} (${pct}%)`);
+
+      const text = out.join("\r\n");
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `DYAA_Model03_${student.replace(/\s+/g,"_")}_result.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    /********************
+     * Tabs + Student name
+     ********************/
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $(`#panel-${tab}`).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", ""));
+      $("#studentNameValue").textContent = name ? name : "Anonymous";
+    }
+
+    /********************
+     * Generate New Set (resets timer)
+     ********************/
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+
+      resetTimer();   // requirement
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set?\nThis will clear your current answers and reset the timer.", () => {
+        generateNewSet();
+        // go to practice
+        $$('.tab').forEach(b=>b.classList.remove('active'));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$('.panel').forEach(p=>p.classList.remove('active'));
+        $('#panel-practice').classList.add('active');
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    /********************
+     * Learn diagram
+     ********************/
+    function renderLearnDiagram(){
+      const q = buildQ1();
+      $("#learnSvgWrap").innerHTML = renderCubesSvg(q.cubes);
+    }
+
+    /********************
+     * Export Questions PDF
+     * - PDF per page: 2 / 3 / 6
+     * - Answers at the end (separate page(s), auto paged)
+     ********************/
+    function layoutClass(perPage){
+      if(perPage === 6) return "six";
+      if(perPage === 3) return "three";
+      return "two";
+    }
+
+    function buildQuestionPageDOM(indexGroup, perPage, meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">${escapeHtml(meta.title)}</div>
+          <div class="export-sub">Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)} • Time: ${escapeHtml(meta.timeStr)}</div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const grid = document.createElement("div");
+      grid.className = `export-qgrid ${layoutClass(perPage)}`;
+
+      indexGroup.forEach(i => {
+        const q = QUESTIONS[i];
+        const box = document.createElement("div");
+        box.className = "export-q";
+        box.innerHTML = `
+          <div class="qprompt">Q${i+1}. ${escapeHtml(q.prompt)}</div>
+          <div class="export-diagram">${stripSvgNote(q.svg)}</div>
+          <div class="export-answerline">Answer: <span></span></div>
+        `;
+        grid.appendChild(box);
+      });
+
+      content.appendChild(grid);
+      page.appendChild(header);
+      page.appendChild(content);
+      return page;
+    }
+
+    function createAnswerPage(meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">Answers — ${escapeHtml(meta.title)}</div>
+          <div class="export-sub">Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)}</div>
+          <div class="answers-note">These are the correct answers for the exported question set.</div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const list = document.createElement("div");
+      list.className = "answers-list";
+      content.appendChild(list);
+
+      page.appendChild(header);
+      page.appendChild(content);
+
+      return { page, content, list };
+    }
+
+    async function exportQuestionsPdf(){
+      const perPage = Number($("#pdfPerPage").value) || 2;
+
+      const libsOk = (window.html2canvas && window.jspdf && window.jspdf.jsPDF);
+      if(!libsOk){
+        alert("PDF export needs html2canvas + jsPDF. Please check your connection (CDN) or include the libraries locally.");
+        return;
+      }
+
+      const title = "Model 3 — Stacking Blocks Model";
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+      const timeStr = $("#timerValue").textContent;
+
+      const exportRoot = document.createElement("div");
+      exportRoot.className = "export-root";
+      document.body.appendChild(exportRoot);
+
+      // Question pages
+      const idxs = QUESTIONS.map((_,i)=>i);
+      for(let i=0;i<idxs.length;i+=perPage){
+        const group = idxs.slice(i, i+perPage);
+        exportRoot.appendChild(buildQuestionPageDOM(group, perPage, { title, student, dateStr, timeStr }));
+      }
+
+      // Answer pages (auto paged)
+      let ap = createAnswerPage({ title, student, dateStr });
+      exportRoot.appendChild(ap.page);
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const item = document.createElement("div");
+        item.textContent = `Q${i+1}: ${QUESTIONS[i].answer}`;
+        ap.list.appendChild(item);
+
+        if(ap.content.scrollHeight > ap.content.clientHeight){
+          ap.list.removeChild(item);
+          ap = createAnswerPage({ title, student, dateStr });
+          exportRoot.appendChild(ap.page);
+          ap.list.appendChild(item);
+        }
+      }
+
+      // Render to PDF (higher scale for sharper 3D lines)
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+
+      const pages = Array.from(exportRoot.querySelectorAll(".export-page"));
+      const marginMm = 8;
+
+      for(let i=0;i<pages.length;i++){
+        const pageEl = pages[i];
+
+        const canvas = await window.html2canvas(pageEl, {
+          scale: 3,
+          backgroundColor: "#ffffff",
+          useCORS: true
+        });
+
+        const imgData = canvas.toDataURL("image/png", 1.0);
+
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = pdf.internal.pageSize.getHeight();
+        const usableW = pageW - marginMm*2;
+        const usableH = pageH - marginMm*2;
+
+        const imgH = canvas.height * (usableW / canvas.width);
+
+        let drawW = usableW;
+        let drawH = imgH;
+
+        if(drawH > usableH){
+          drawH = usableH;
+          drawW = canvas.width * (drawH / canvas.height);
+        }
+
+        const x = (pageW - drawW) / 2;
+        const y = marginMm;
+
+        if(i > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", x, y, drawW, drawH, undefined, "FAST");
+      }
+
+      pdf.save(`DYAA_Model03_${student.replace(/\s+/g,"_")}_Questions.pdf`);
+      exportRoot.remove();
+    }
+
+    $("#exportQuestionsBtn").addEventListener("click", exportQuestionsPdf);
+
+    /********************
+     * Init
+     ********************/
+    function ensureStudentAndStart(){
+      ensureStudentName();
+      renderLearnDiagram();
+      updateTimerUI();
+      startTimerTick();
+      generateNewSet();
+    }
+
+    ensureStudentAndStart();
+  </script>
+</body>
+</html>

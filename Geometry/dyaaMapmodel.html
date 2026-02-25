@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model 2 — Map Model (Counting Rectangles & Squares) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --purple:#6a1b9a;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --stroke:#111;
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .select{
+      appearance:none;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:10px;
+      padding:7px 10px;
+      font-weight:900;
+      color:var(--ink);
+      cursor:pointer;
+      outline:none;
+    }
+    .select:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:900;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:900;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+    }
+    .btn.orange{
+      background:var(--orange);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(255,152,0,0.20);
+    }
+    .btn.purple{
+      background:var(--purple);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(106,27,154,0.20);
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:1000;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card p{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .learn-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:14px;
+      margin-top:12px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .learn-grid{grid-template-columns:1fr;}
+    }
+
+    .mini-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .mini-table th, .mini-table td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    .mini-table th{
+      background:#f5f8ff;
+      color:var(--blue);
+      font-weight:1000;
+    }
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:1000;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .q-body{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:12px;
+      margin-top:10px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .q-body{grid-template-columns:1fr;}
+    }
+
+    /* IMPORTANT: no cropping on screen */
+    .svg-wrap{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:12px 12px 10px 12px;
+      overflow: visible;
+    }
+    .svg-wrap svg{
+      display:block;
+      width:100%;
+      height:auto;
+      overflow: visible;
+    }
+    .svg-note{
+      margin-top:6px;
+      font-size:12px;
+      color:rgba(0,0,0,0.55);
+      font-weight:900;
+    }
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      min-width:220px;
+      max-width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .hint-box{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(13,71,161,0.35);
+      background:#f5f8ff;
+      color:#1a2b55;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .hint-box.show{display:block;}
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+    .feedback.ok{color:var(--ok);font-weight:1000;}
+    .feedback.bad{color:var(--bad);font-weight:1000;}
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    /* =========================
+       PDF Export (offscreen pages)
+       ========================= */
+    .export-root{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:210mm;
+      height:auto;
+      overflow:hidden;
+      background:#fff;
+    }
+    .export-page{
+      width:210mm;
+      height:297mm;
+      background:#fff;
+      padding:12mm;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .export-header{
+      height:20mm;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10mm;
+    }
+    .export-title{
+      font-weight:1000;
+      font-size:16px;
+      color:#111;
+      line-height:1.1;
+    }
+    .export-sub{
+      margin-top:2mm;
+      font-size:11px;
+      color:#555;
+      font-weight:900;
+      line-height:1.25;
+    }
+    .export-content{
+      height: calc(297mm - 12mm - 12mm - 20mm);
+      overflow:hidden;
+    }
+    .export-qgrid{
+      width:100%;
+      height:100%;
+      display:grid;
+      min-height:0;
+    }
+    .export-qgrid.two{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:8mm;
+    }
+    /* FIX: 3-per-page no overlap */
+    .export-qgrid.three{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:4mm;
+    }
+    .export-qgrid.six{
+      grid-template-columns:1fr 1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:5mm;
+    }
+    .export-q{
+      border:1px solid #ddd;
+      border-radius:10px;
+      padding:6mm;
+      display:flex;
+      flex-direction:column;
+      gap:3mm;
+      min-height:0;
+      overflow:hidden;
+    }
+    .export-q .qprompt{
+      font-weight:900;
+      font-size:12px;
+      color:#111;
+      line-height:1.2;
+    }
+    .export-qgrid.six .qprompt{font-size:11px;}
+
+    .export-diagram{
+      border:1px solid #e6e6e6;
+      border-radius:9px;
+      padding:3mm;
+      flex:1;
+      min-height:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .export-diagram svg{
+      width:100%;
+      height:100%;
+      max-height:100%;
+      display:block;
+      overflow:visible;
+    }
+    .export-diagram .svg-note{ display:none !important; }
+
+    .export-answerline{
+      margin-top:2mm;
+      font-size:12px;
+      font-weight:900;
+      color:#111;
+    }
+    .export-answerline span{
+      display:inline-block;
+      border-bottom:1px solid #111;
+      min-width:62mm;
+      height:0.95em;
+      vertical-align:baseline;
+    }
+    .export-qgrid.six .export-answerline{font-size:11px;}
+    .export-qgrid.six .export-answerline span{min-width:35mm;}
+
+    .answers-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:4mm 10mm;
+      align-content:start;
+      font-size:13px;
+      font-weight:900;
+      color:#111;
+    }
+    .answers-note{
+      margin-top:3mm;
+      font-size:11px;
+      color:#666;
+      font-weight:900;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1>Model 2 — Map Model</h1>
+        <div class="sub">Counting rectangles • “☆ rectangles” • Counting squares (all sizes) • Timer • PDF export</div>
+      </div>
+    </div>
+
+    <!-- SAME TOP BAR STRUCTURE AS MODEL 1 -->
+    <div class="row">
+      <div class="pill">
+        <b>Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <b>Time:</b>
+        <span id="timerValue">00:00</span>
+        <span id="timerStatus" class="muted" style="font-weight:900;"></span>
+        <span class="muted">•</span>
+        <small>URL: <span class="muted">.../model02_map_counting.html?name=Tiger</span></small>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <div class="pill">
+          <b>PDF per page</b>
+          <select id="pdfPerPage" class="select" aria-label="PDF per page">
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+
+        <button class="btn orange" id="pauseBtn" type="button">Pause</button>
+        <button class="btn orange" id="newSetBtn" type="button">Generate New Set</button>
+        <button class="btn purple" id="exportQuestionsBtn" type="button">Export Questions PDF</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    <!-- LEARN -->
+    <div class="panel active" id="panel-learn">
+      <div class="learn-card">
+        <h2>Core Ideas</h2>
+        <p>
+          These problems are about counting <b>all rectangles</b> or <b>all squares</b> in a grid.
+          A grid with <b>m rows</b> and <b>n columns</b> has <b>(m+1)</b> horizontal grid lines and <b>(n+1)</b> vertical grid lines.
+        </p>
+
+        <table class="mini-table" aria-label="Simple methods">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Easy method (student-friendly)</th>
+              <th>What to do</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Count all rectangles</b> in an m×n grid</td>
+              <td>
+                1) Count horizontal lines: <b>m + 1</b><br>
+                2) Count vertical lines: <b>n + 1</b><br>
+                3) Rectangles = (ways to pick <b>2</b> horizontal lines)
+                × (ways to pick <b>2</b> vertical lines)
+              </td>
+              <td>
+                Pick the <b>top & bottom</b> first, then pick the <b>left & right</b>.
+              </td>
+            </tr>
+
+            <tr>
+              <td><b>Rectangles that contain ☆</b></td>
+              <td>
+                Count choices:<br>
+                • Top boundary choices = number of rows <b>above or at ☆</b><br>
+                • Bottom boundary choices = number of rows <b>below or at ☆</b><br>
+                • Left boundary choices = number of columns <b>left of or at ☆</b><br>
+                • Right boundary choices = number of columns <b>right of or at ☆</b><br>
+                Multiply all four numbers.
+              </td>
+              <td>
+                Think: “How many ways can I make a rectangle around ☆?”
+              </td>
+            </tr>
+
+            <tr>
+              <td><b>Count all squares</b> in an m×n grid</td>
+              <td>
+                Count by size:<br>
+                • 1×1 squares: <b>m × n</b><br>
+                • 2×2 squares: <b>(m−1) × (n−1)</b><br>
+                • 3×3 squares: <b>(m−2) × (n−2)</b><br>
+                Continue until you cannot fit the size.
+              </td>
+              <td>
+                Add them up: 1×1 + 2×2 + 3×3 + …
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="note">
+          <b>Example: 3×3 grid (count squares)</b><br>
+          1×1: 3×3 = 9<br>
+          2×2: 2×2 = 4<br>
+          3×3: 1×1 = 1<br>
+          Total squares = 9 + 4 + 1 = <b>14</b>
+        </div>
+
+        <div class="learn-grid">
+          <div class="muted">
+            Tip: Write down m and n first. Then decide whether you are counting rectangles, ☆-rectangles, or squares.
+          </div>
+          <div class="svg-wrap" id="learnSvgWrap"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted">Enter an integer. (No units needed.)</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result (TXT)</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3>Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    /********************
+     * Helpers
+     ********************/
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function randint(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;");
+    }
+    function parseIntStrict(input){
+      if(input == null) return NaN;
+      const s = String(input).trim().replace(/,/g,"").replace(/\s+/g,"");
+      if(!s) return NaN;
+      if(!/^-?\d+$/.test(s)) return NaN;
+      const v = Number(s);
+      return Number.isFinite(v) ? v : NaN;
+    }
+    function stripSvgNote(html){
+      return String(html).replace(/<div class="svg-note">[\s\S]*?<\/div>/g, "");
+    }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * Timer + Pause/Resume (same as Model 1)
+     ********************/
+    const TIMER = { seconds: 0, running: true, id: null };
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function formatTime(sec){
+      sec = Math.max(0, Math.floor(sec));
+      const m = Math.floor(sec/60);
+      const s = sec % 60;
+      return `${pad2(m)}:${pad2(s)}`;
+    }
+    function updateTimerUI(){
+      $("#timerValue").textContent = formatTime(TIMER.seconds);
+      $("#timerStatus").textContent = TIMER.running ? "" : "(Paused)";
+      $("#pauseBtn").textContent = TIMER.running ? "Pause" : "Resume";
+    }
+    function startTimerTick(){
+      if(TIMER.id) clearInterval(TIMER.id);
+      TIMER.id = setInterval(() => {
+        if(TIMER.running){
+          TIMER.seconds += 1;
+          updateTimerUI();
+        }
+      }, 1000);
+    }
+    function resetTimer(){
+      TIMER.seconds = 0;
+      TIMER.running = true;
+      updateTimerUI();
+    }
+    function togglePause(){
+      TIMER.running = !TIMER.running;
+      updateTimerUI();
+    }
+    $("#pauseBtn").addEventListener("click", togglePause);
+
+    /********************
+     * Math helpers
+     ********************/
+    function comb2(t){ return t*(t-1)/2; }
+    function rectCount(m,n){ return comb2(m+1) * comb2(n+1); } // m rows, n cols
+    function starRectCount(m,n,r,c){ return r*(m-r+1)*c*(n-c+1); } // r,c are 1-based
+    function squareCount(m,n){
+      const kmax = Math.min(m,n);
+      let sum = 0;
+      for(let k=1;k<=kmax;k++){
+        sum += (m-k+1)*(n-k+1);
+      }
+      return sum;
+    }
+
+    /********************
+     * SVG (grids)
+     ********************/
+    function svgStart(viewW=260, viewH=210, margin=14){
+      const vbX = -margin, vbY = -margin;
+      const vbW = viewW + margin*2, vbH = viewH + margin*2;
+
+      return `<svg viewBox="${vbX} ${vbY} ${vbW} ${vbH}" preserveAspectRatio="xMidYMid meet"
+        role="img" aria-label="Grid diagram">
+        <defs>
+          <style>
+            .line{fill:none;stroke:var(--stroke);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;}
+            .thin{fill:none;stroke:var(--stroke);stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round;}
+            .star{font: 18px 'Segoe UI', Tahoma, sans-serif; fill:var(--stroke); font-weight:1000;}
+            .lab{font: 12px 'Segoe UI', Tahoma, sans-serif; fill:rgba(0,0,0,0.65); font-weight:900;}
+          </style>
+        </defs>`;
+    }
+    function svgEnd(){ return `</svg>`; }
+    function svgWrap(svg){
+      return `${svg}<div class="svg-note">Not to scale</div>`;
+    }
+
+    function diagramGrid(m,n, starCell=null, showLabel=true){
+  const W=260, H=210;
+
+  // Make each cell a true square (so squares look like squares, not rectangles).
+  // Choose the largest square cell size that fits the SVG box.
+  const pad = 36; // visual padding inside the SVG
+  const maxCell = Math.floor(Math.min((W - pad) / n, (H - pad) / m));
+  const cell = Math.max(18, Math.min(40, maxCell)); // clamp for readability
+  const cellW = cell;
+  const cellH = cell;
+
+  const gridW = n*cellW;
+  const gridH = m*cellH;
+
+  const x = (W-gridW)/2;
+  const y = (H-gridH)/2 + 6;
+
+
+      let lines = '';
+      lines += `<rect class="line" x="${x}" y="${y}" width="${gridW}" height="${gridH}"></rect>`;
+
+      for(let c=1;c<n;c++){
+        const xx = x + c*cellW;
+        lines += `<path class="thin" d="M ${xx} ${y} L ${xx} ${y+gridH}"></path>`;
+      }
+      for(let r=1;r<m;r++){
+        const yy = y + r*cellH;
+        lines += `<path class="thin" d="M ${x} ${yy} L ${x+gridW} ${yy}"></path>`;
+      }
+
+      let star = '';
+      if(starCell){
+        const {r,c} = starCell;
+        const sx = x + (c-0.5)*cellW;
+        const sy = y + (r-0.5)*cellH + 6;
+        star = `<text class="star" x="${sx}" y="${sy}" text-anchor="middle">☆</text>`;
+      }
+
+      const label = showLabel ? `<text class="lab" x="${x}" y="${y-8}">${m} × ${n}</text>` : '';
+
+      const svg = `
+        ${svgStart(W,H)}
+          ${label}
+          ${lines}
+          ${star}
+        ${svgEnd()}
+      `;
+      return svgWrap(svg);
+    }
+
+    /********************
+     * Question generator (2 Easy + 2 Medium + 2 Hard)
+     ********************/
+    function makeQuestions(){
+      const qs = [];
+
+      (function(){
+        const m = choice([2,2,3]);
+        const n = choice([2,3,4]);
+        qs.push({
+          difficulty:"easy",
+          answer: rectCount(m,n),
+          svg: diagramGrid(m,n, null, true),
+          prompt: `Count how many rectangles are in the grid.`,
+          hint: `Rectangles = C(m+1,2) × C(n+1,2). Here m=${m}, n=${n}.`
+        });
+      })();
+
+      (function(){
+        const m = choice([2,3,4]);
+        const n = choice([2,3]);
+        qs.push({
+          difficulty:"easy",
+          answer: rectCount(m,n),
+          svg: diagramGrid(m,n, null, true),
+          prompt: `Count how many rectangles are in the grid.`,
+          hint: `Choose 2 horizontal lines and 2 vertical lines: C(m+1,2)×C(n+1,2). Here m=${m}, n=${n}.`
+        });
+      })();
+
+      (function(){
+        const m = choice([2,3,3,4]);
+        const n = choice([2,3,4]);
+        const r = randint(1,m);
+        const c = randint(1,n);
+        qs.push({
+          difficulty:"medium",
+          answer: starRectCount(m,n,r,c),
+          svg: diagramGrid(m,n, {r,c}, true),
+          prompt: `Count how many rectangles in the grid contain the ☆.`,
+          hint: `Rectangles containing ☆ = r(m−r+1) × c(n−c+1). Here r=${r}, c=${c}, m=${m}, n=${n}.`
+        });
+      })();
+
+      (function(){
+        const pick = choice([[3,3],[3,3],[4,4],[5,5]]);
+        const m = pick[0], n = pick[1];
+        qs.push({
+          difficulty:"medium",
+          answer: squareCount(m,n),
+          svg: diagramGrid(m,n, null, true),
+          prompt: `Count how many squares (of all sizes) are in the ${m}×${n} grid.`,
+          hint: `Count 1×1, 2×2, 3×3, ... and add them up.`
+        });
+      })();
+
+      (function(){
+        const pick = choice([[5,6],[5,6],[4,6],[5,7],[3,6]]);
+        const m = pick[0], n = pick[1];
+        qs.push({
+          difficulty:"hard",
+          answer: squareCount(m,n),
+          svg: diagramGrid(m,n, null, true),
+          prompt: `Count how many squares (of all sizes) are in the ${m}×${n} grid.`,
+          hint: `Add squares by size: (m)(n) + (m−1)(n−1) + ... until size min(m,n).`
+        });
+      })();
+
+      (function(){
+        const m = choice([3,4,5]);
+        const n = choice([4,5,6]);
+        const r = randint(1,m);
+        const c = randint(1,n);
+        qs.push({
+          difficulty:"hard",
+          answer: starRectCount(m,n,r,c),
+          svg: diagramGrid(m,n, {r,c}, true),
+          prompt: `Count how many rectangles in the grid contain the ☆.`,
+          hint: `Rectangles containing ☆ = r(m−r+1) × c(n−c+1). Here r=${r}, c=${c}, m=${m}, n=${n}.`
+        });
+      })();
+
+      return qs;
+    }
+
+    /********************
+     * UI state + rendering
+     ********************/
+    let QUESTIONS = [];
+    let STATE = { answers:[], checked:[], correct:[], hintShown:[], submitted:false };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+    function niceDiff(d){
+      if(d==="easy") return "Easy";
+      if(d==="medium") return "Medium";
+      return "Hard";
+    }
+
+    function renderQuestions(){
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const userVal = STATE.answers[idx] ?? "";
+        const checked = !!STATE.checked[idx];
+        const correct = !!STATE.correct[idx];
+        const hintShown = !!STATE.hintShown[idx];
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${escapeHtml(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="q-body">
+            <div class="svg-wrap">${q.svg}</div>
+
+            <div class="answer-area">
+              <div class="input-row">
+                <input type="text" inputmode="numeric" autocomplete="off"
+                  id="ans-${idx}" placeholder="Answer (integer)"
+                  value="${escapeHtml(userVal)}">
+                <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+                <button class="btn ghost" type="button" id="hint-${idx}">${hintShown ? "Hide Hint" : "Hint"}</button>
+              </div>
+
+              <div class="hint-box ${hintShown ? "show" : ""}" id="hintBox-${idx}">
+                ${escapeHtml(q.hint)}
+              </div>
+
+              <div class="feedback ${checked ? (correct ? "ok" : "bad") : ""}" id="fb-${idx}">
+                ${checked
+                  ? (correct
+                      ? "Correct ✅"
+                      : `Not correct ❌  (Correct answer: ${q.answer})`)
+                  : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        const inp = $(`#ans-${idx}`, card);
+        inp.addEventListener("input", () => {
+          STATE.answers[idx] = inp.value;
+          STATE.checked[idx] = false;
+          STATE.correct[idx] = false;
+          if(STATE.submitted){
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+          }
+          const fb = $(`#fb-${idx}`, card);
+          fb.className = "feedback";
+          fb.textContent = "";
+        });
+
+        $(`#check-${idx}`, card).addEventListener("click", () => checkOne(idx));
+        $(`#hint-${idx}`, card).addEventListener("click", () => {
+          STATE.hintShown[idx] = !STATE.hintShown[idx];
+          renderQuestions();
+        });
+      });
+
+      $("#resultsBox").style.display = "none";
+    }
+
+    function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const v = parseIntStrict(STATE.answers[idx]);
+      STATE.checked[idx] = true;
+
+      if(!Number.isFinite(v)){
+        STATE.correct[idx] = false;
+        renderQuestions();
+        const fb = $(`#fb-${idx}`);
+        fb.className = "feedback bad";
+        fb.textContent = "Please enter a valid integer.";
+        return;
+      }
+
+      STATE.correct[idx] = (v === q.answer);
+      renderQuestions();
+    }
+
+    function submitAll(){
+      let correctCount = 0;
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const v = parseIntStrict(STATE.answers[i]);
+        STATE.checked[i] = true;
+        STATE.correct[i] = Number.isFinite(v) && (v === q.answer);
+        if(STATE.correct[i]) correctCount++;
+      }
+
+      STATE.submitted = true;
+      renderQuestions();
+
+      const total = QUESTIONS.length;
+      const pct = Math.round((correctCount/total)*100);
+
+      const lines = QUESTIONS.map((q,i)=>(
+        `<div style="margin:6px 0;"><b>Q${i+1}:</b> ${q.answer}</div>`
+      )).join("");
+
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:8px;"><b>Correct Answers:</b></div>
+        <div style="margin-top:6px;">${lines}</div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+    function resetAnswers(){
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    /********************
+     * Save Current Result as TXT (same as Model 1 style)
+     ********************/
+    function saveResult(){
+      const title = "Model 2 — Map Model";
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const when = new Date();
+      const dateStr = when.toLocaleString();
+      const elapsed = formatTime(TIMER.seconds);
+
+      let correctCount = 0;
+      const out = [];
+
+      out.push(`DYAA — Save Current Result`);
+      out.push(`Title: ${title}`);
+      out.push(`Student: ${student}`);
+      out.push(`Date: ${dateStr}`);
+      out.push(`Elapsed Time: ${elapsed}`);
+      out.push(``);
+
+      QUESTIONS.forEach((q, i) => {
+        const raw = (STATE.answers[i] ?? "").toString().trim();
+        const v = parseIntStrict(raw);
+        const valid = Number.isFinite(v);
+        const isCorrect = valid && (v === q.answer);
+        if(isCorrect) correctCount++;
+
+        out.push(`Q${i+1} (${q.difficulty.toUpperCase()}): ${q.prompt}`);
+        out.push(`Your answer: ${valid ? v : (raw ? raw : "(blank)")}`);
+        out.push(`Correct answer: ${q.answer}`);
+        out.push(`Result: ${isCorrect ? "Correct" : "Not correct"}`);
+        out.push(``);
+      });
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+      out.splice(5, 0, `Score: ${correctCount} / ${total} (${pct}%)`);
+
+      const text = out.join("\r\n");
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `DYAA_Model02_${student.replace(/\s+/g,"_")}_result.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    /********************
+     * Tabs + Student name
+     ********************/
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $(`#panel-${tab}`).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", ""));
+      $("#studentNameValue").textContent = name ? name : "Anonymous";
+    }
+
+    /********************
+     * Generate New Set (resets timer, same as Model 1)
+     ********************/
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+
+      resetTimer();   // key requirement
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set? This will clear your current answers and reset the timer.", () => {
+        generateNewSet();
+        // go to practice
+        $$('.tab').forEach(b=>b.classList.remove('active'));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$('.panel').forEach(p=>p.classList.remove('active'));
+        $('#panel-practice').classList.add('active');
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    /********************
+     * Learn diagram
+     ********************/
+    function renderLearnDiagram(){
+      $("#learnSvgWrap").innerHTML = diagramGrid(3,3,{r:2,c:2},true);
+    }
+
+    /********************
+     * Export Questions PDF
+     * - PDF per page: 2 / 3 / 6 (default 2)
+     * - Answers at the end (separate page(s), auto paged)
+     ********************/
+    function layoutClass(perPage){
+      if(perPage === 6) return "six";
+      if(perPage === 3) return "three";
+      return "two";
+    }
+
+    function buildQuestionPageDOM(indexGroup, perPage, meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">${escapeHtml(meta.title)}</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)} • Time: ${escapeHtml(meta.timeStr)}
+          </div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const grid = document.createElement("div");
+      grid.className = `export-qgrid ${layoutClass(perPage)}`;
+
+      indexGroup.forEach(i => {
+        const q = QUESTIONS[i];
+        const box = document.createElement("div");
+        box.className = "export-q";
+        box.innerHTML = `
+          <div class="qprompt">Q${i+1}. ${escapeHtml(q.prompt)}</div>
+          <div class="export-diagram">${stripSvgNote(q.svg)}</div>
+          <div class="export-answerline">Answer: <span></span></div>
+        `;
+        grid.appendChild(box);
+      });
+
+      content.appendChild(grid);
+      page.appendChild(header);
+      page.appendChild(content);
+      return page;
+    }
+
+    function createAnswerPage(meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">Answers — ${escapeHtml(meta.title)}</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)}
+          </div>
+          <div class="answers-note">These are the correct answers for the exported question set.</div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const list = document.createElement("div");
+      list.className = "answers-list";
+      content.appendChild(list);
+
+      page.appendChild(header);
+      page.appendChild(content);
+
+      return { page, content, list };
+    }
+
+    async function exportQuestionsPdf(){
+      const perPage = Number($("#pdfPerPage").value) || 2;
+
+      const libsOk = (window.html2canvas && window.jspdf && window.jspdf.jsPDF);
+      if(!libsOk){
+        alert("PDF export needs html2canvas + jsPDF. Please check your connection (CDN) or include the libraries locally.");
+        return;
+      }
+
+      const title = "Model 2 — Map Model";
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+      const timeStr = $("#timerValue").textContent;
+
+      const exportRoot = document.createElement("div");
+      exportRoot.className = "export-root";
+      document.body.appendChild(exportRoot);
+
+      // Question pages
+      const idxs = QUESTIONS.map((_,i)=>i);
+      for(let i=0;i<idxs.length;i+=perPage){
+        const group = idxs.slice(i, i+perPage);
+        exportRoot.appendChild(buildQuestionPageDOM(group, perPage, { title, student, dateStr, timeStr }));
+      }
+
+      // Answer pages (auto paged)
+      let ap = createAnswerPage({ title, student, dateStr });
+      exportRoot.appendChild(ap.page);
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const item = document.createElement("div");
+        item.textContent = `Q${i+1}: ${QUESTIONS[i].answer}`;
+        ap.list.appendChild(item);
+
+        if(ap.content.scrollHeight > ap.content.clientHeight){
+          ap.list.removeChild(item);
+          ap = createAnswerPage({ title, student, dateStr });
+          exportRoot.appendChild(ap.page);
+          ap.list.appendChild(item);
+        }
+      }
+
+      // Render to PDF
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+
+      const pages = Array.from(exportRoot.querySelectorAll(".export-page"));
+      const marginMm = 8;
+
+      for(let i=0;i<pages.length;i++){
+        const pageEl = pages[i];
+
+        const canvas = await window.html2canvas(pageEl, {
+          scale: 2,
+          backgroundColor: "#ffffff",
+          useCORS: true
+        });
+
+        const imgData = canvas.toDataURL("image/png", 1.0);
+
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = pdf.internal.pageSize.getHeight();
+        const usableW = pageW - marginMm*2;
+        const usableH = pageH - marginMm*2;
+
+        const imgH = canvas.height * (usableW / canvas.width);
+
+        let drawW = usableW;
+        let drawH = imgH;
+
+        if(drawH > usableH){
+          drawH = usableH;
+          drawW = canvas.width * (drawH / canvas.height);
+        }
+
+        const x = (pageW - drawW) / 2;
+        const y = marginMm;
+
+        if(i > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", x, y, drawW, drawH, undefined, "FAST");
+      }
+
+      pdf.save(`DYAA_Model02_${student.replace(/\s+/g,"_")}_Questions.pdf`);
+      exportRoot.remove();
+    }
+
+    $("#exportQuestionsBtn").addEventListener("click", exportQuestionsPdf);
+
+    /********************
+     * Init
+     ********************/
+    ensureStudentName();
+    renderLearnDiagram();
+    updateTimerUI();
+    startTimerTick();
+    generateNewSet();
+  </script>
+</body>
+</html>

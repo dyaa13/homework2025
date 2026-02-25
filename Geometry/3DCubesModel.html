@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model 20 — 3D View Model (Unit Cubes • Surface Area) — DYAA</title>
+
+  <style>
+    body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f4f9;margin:0;padding:20px;color:#333;}
+    .quiz-container{max-width:900px;margin:40px auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 6px 15px rgba(0,0,0,0.1);}
+    #headerLogo{display:flex;align-items:center;gap:12px;margin-bottom:10px;border-bottom:2px solid #e0e0e0;padding-bottom:10px;}
+    .logo-icon{width:40px;height:40px;background:#0d47a1;border-radius:6px;position:relative;}
+    .logo-icon:before{content:"";position:absolute;width:20px;height:9px;background:#ff9800;top:-6px;left:20px;border-radius:3px;}
+    .logo-text{display:flex;flex-direction:column;line-height:1.1;}
+    .logo-text .brand{font-weight:900;letter-spacing:1px;color:#ff9800;}
+    .logo-text .edu{font-size:.9em;color:#0d47a1;font-weight:700;}
+
+    .top-bar{display:flex;justify-content:space-between;align-items:center;margin:10px 0 6px 0;gap:10px;flex-wrap:wrap;}
+    #timerDisplay{font-size:.95em;color:#333;}
+    #studentLine{font-size:.95em;color:#555;}
+    #setLine{font-size:.9em;color:#777;margin-top:2px;}
+    .right-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+    .mini-label{font-size:.9em;color:#555;font-weight:700;}
+    select{padding:8px 10px;border:1px solid #ccc;border-radius:10px;background:#fff;}
+
+    .quiz-main{display:flex;gap:20px;margin-top:10px;}
+    .sidebar{width:170px;border-right:1px solid #ddd;padding-right:10px;display:none;}
+    .sidebar h4{margin:0 0 8px;font-size:.95em;border-bottom:1px solid #eee;padding-bottom:4px;}
+    .sidebar ul{list-style:none;padding:0;margin:0;}
+    .sidebar li{padding:6px;cursor:pointer;border-radius:6px;font-size:.9em;margin-bottom:6px;border:1px solid #eee;background:#fafafa;}
+    .sidebar li.active{outline:2px solid #1976d2;font-weight:700;background:#fff;}
+    .sidebar li.answered{border-left:5px solid #4caf50;}
+    .sidebar li.correct{background:#d4edda;border-left:5px solid #28a745;border-color:#cbe7d1;}
+    .sidebar li.incorrect{background:#f8d7da;border-left:5px solid #f44336;border-color:#f1c7cc;}
+
+    #quizContent{flex:1;}
+    .question-text{font-size:1.05em;margin-bottom:8px;}
+    .part-title{font-weight:800;margin:8px 0 10px 0;}
+    .single-question{margin:6px 0;line-height:1.7;}
+    .answer-row{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+    .answer-box{width:520px;max-width:100%;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:8px;}
+
+    .img-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px;box-shadow:0 3px 8px rgba(0,0,0,0.05);max-width:100%;}
+    .svg-host{width:100%;}
+    .svg-host svg{width:100%;height:auto;display:block;}
+
+    .hint-row{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    .hint-btn{background:#ff9800;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:0.95em;}
+    .hint-btn:disabled{opacity:.55;cursor:not-allowed;}
+    .hint{
+      display:none;margin-top:10px;padding:10px 12px;border-radius:10px;
+      background:#fff7e6;border:1px solid #ffe0b2;color:#5d4037;font-size:0.95em;
+      max-width:100%;overflow:auto;
+    }
+
+    .button-container{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;}
+    button{padding:10px 18px;border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:1em;}
+    #nextButton{background:#4caf50;}
+    #backButton{background:#039be5;}
+    #generateButton{background:#ff9800;}
+    #submitButton{background:#9c27b0;}
+    #saveButton{background:#607d8b;}
+    #pauseButton{background:#f57c00;}
+    #checkButton{background:#455a64;}
+    #exportQuestionsBtn{background:#6a1b9a;}
+    button:disabled{opacity:.55;cursor:not-allowed;}
+
+    .check-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f7;border:1px solid #e0e0e0;color:#333;font-size:0.95em;}
+
+    table.review-table{width:100%;border-collapse:collapse;margin-top:18px;}
+    .review-table th,.review-table td{border:1px solid #ccc;padding:6px;font-size:.85em;text-align:center;vertical-align:top;}
+    .review-table th{background:#f2f2f2;}
+    .correct-answer{background:#d4edda;}
+    .incorrect-answer{background:#f8d7da;}
+
+    .thumbBox{width:160px;max-width:160px;}
+    .thumbBox svg{width:160px;height:auto;display:block;border-radius:8px;border:1px solid #ddd;background:#fff;}
+
+    @media (max-width:760px){
+      .quiz-main{flex-direction:column;}
+      .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
+      .thumbBox{width:120px;max-width:120px;}
+      .thumbBox svg{width:120px;}
+      .answer-box{width:100%;}
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text">
+      <div class="brand">DYAA</div>
+      <div class="edu">EDUCATION</div>
+    </div>
+  </div>
+
+  <div class="top-bar">
+    <div>
+      <div id="timerDisplay">Time: 00:00</div>
+      <div id="studentLine"></div>
+      <div id="setLine"></div>
+    </div>
+    <div class="right-tools">
+      <span class="mini-label">PDF per page</span>
+      <select id="pdfPerPage">
+        <option value="2">2</option>
+        <option value="3" selected>3</option>
+        <option value="4">4</option>
+        <option value="6">6</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+      </select>
+      <button id="pauseButton" style="display:none;">Pause</button>
+      <button id="generateButton" style="display:none;">Generate New Set</button>
+      <button id="exportQuestionsBtn" style="display:none;">Export Questions PDF</button>
+    </div>
+  </div>
+
+  <h2 style="margin:6px 0 0 0;">Model 20 — 3D View Model (Unit Cubes • Surface Area)</h2>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+
+  <div id="navButtons" class="button-container" style="display:none;">
+    <button id="backButton" style="display:none;">Previous</button>
+    <button id="submitButton" style="display:none;">Submit &amp; View Results</button>
+    <button id="nextButton" style="display:none;">Next</button>
+    <button id="checkButton" style="display:none;">Check</button>
+    <button id="saveButton" style="display:none;">Save Current Result</button>
+  </div>
+</div>
+
+<!-- Export-to-PDF libs (needs internet). -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+/* ===================== CONFIG ===================== */
+const QUIZ_TITLE  = "Model 20 — 3D View Model (Surface Area)";
+const LESSON_TITLE= "Model 20 — 3D View Model (Surface Area)";
+
+const PARTS = [
+  { title: "Easy (2 questions)",   level: "Easy",   count: 2 },
+  { title: "Medium (2 questions)", level: "Medium", count: 2 },
+  { title: "Hard (2 questions)",   level: "Hard",   count: 2 }
+];
+const TOTAL_QUESTIONS = PARTS.reduce((s,p)=>s+p.count,0);
+
+/* ===================== Utils ===================== */
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function formatMs(ms){
+  const totalSec=Math.floor(ms/1000), min=Math.floor(totalSec/60), sec=totalSec%60;
+  return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+function escapeXml(s){
+  return String(s)
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&apos;");
+}
+function wrapLines(lines, maxChars=78){
+  const out=[];
+  function pushWrapped(line){
+    const words=String(line).split(/\s+/).filter(Boolean);
+    if(words.length===0){ out.push(""); return; }
+    let cur="";
+    for(const w of words){
+      if(w.length>maxChars){
+        if(cur){ out.push(cur); cur=""; }
+        for(let i=0;i<w.length;i+=maxChars) out.push(w.slice(i,i+maxChars));
+        continue;
+      }
+      if(!cur) cur=w;
+      else if((cur+" "+w).length<=maxChars) cur+=" "+w;
+      else { out.push(cur); cur=w; }
+    }
+    if(cur) out.push(cur);
+  }
+  for(const line of lines) pushWrapped(line);
+  return out;
+}
+function parseNumbersFromInput(str){
+  const s=(str||"").trim();
+  if(!s) return [];
+  const out=[];
+  const re=/([+-]?\d+\s*\/\s*[+-]?\d+)|([+-]?\d+(?:\.\d+)?)/g;
+  let m;
+  while((m=re.exec(s))!==null){
+    const token=(m[1]||m[2]||"").replace(/\s+/g,"");
+    if(token.includes("/")){
+      const [a,b]=token.split("/");
+      const n=Number(a), d=Number(b);
+      if(Number.isFinite(n)&&Number.isFinite(d)&&d!==0) out.push(n/d);
+    }else{
+      const v=Number(token);
+      if(Number.isFinite(v)) out.push(v);
+    }
+  }
+  return out;
+}
+function approxEqual(a,b,tol=1e-6){ return Math.abs(a-b)<=tol; }
+
+/* ===================== SVG Card ===================== */
+function makeSvgQuestionCardMarkup(lines, diagramMarkup, titleText=QUIZ_TITLE){
+  const W=1200, headerH=78, padX=52, textLineH=42, topY=headerH+54;
+  const wrapped=wrapLines(lines, 78);
+  const textBlockH = wrapped.length * textLineH;
+  const diagramY = topY + textBlockH + 18;
+  const diagramH = 620;
+  const padBottom = 58;
+  const H = diagramY + diagramH + padBottom;
+
+  const textSpans=wrapped.map((t,i)=>{
+    const y=topY + i*textLineH;
+    return `<text x="${padX}" y="${y}" font-size="30" fill="#1f2a44" font-family="Segoe UI, Arial">${escapeXml(t)}</text>`;
+  }).join("");
+
+  return `
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f7fbff"/>
+        <stop offset="1" stop-color="#ffffff"/>
+      </linearGradient>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#000" flood-opacity="0.12"/>
+      </filter>
+      <clipPath id="clipBox">
+        <rect x="52" y="0" width="${W-104}" height="${diagramH}" rx="16" ry="16"></rect>
+      </clipPath>
+    </defs>
+
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${H-36}"
+          fill="url(#g)" stroke="#dfe7f2" stroke-width="3" filter="url(#shadow)"/>
+    <rect x="18" y="18" rx="18" ry="18" width="${W-36}" height="${headerH}"
+          fill="#0d47a1" opacity="0.10"/>
+
+    <text x="${padX}" y="58" font-size="30" fill="#0d47a1" font-weight="800"
+          font-family="Segoe UI, Arial">${escapeXml(titleText)}</text>
+
+    ${textSpans}
+
+    <g transform="translate(0, ${diagramY})">
+      <rect x="52" y="0" width="${W-104}" height="${diagramH}" rx="16" ry="16"
+            fill="#ffffff" stroke="#e5e5e5" stroke-width="3"/>
+      <g clip-path="url(#clipBox)">
+        ${diagramMarkup}
+      </g>
+    </g>
+  </svg>`.trim();
+}
+
+/* ===================== Isometric cubes (book-like line art) ===================== */
+const COS30 = Math.cos(Math.PI/6);
+const SIN30 = Math.sin(Math.PI/6);
+
+function proj(p, scale){
+  const x=p.x, y=p.y, z=p.z;
+  return {
+    X: (x - y) * COS30 * scale,
+    Y: (x + y) * SIN30 * scale - z * scale
+  };
+}
+
+function computeVoxelSurfaceArea(voxels){
+  const set=new Set(voxels.map(v=>`${v.x},${v.y},${v.z}`));
+  const dirs=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+  let exposed=0;
+  for(const v of voxels){
+    for(const [dx,dy,dz] of dirs){
+      if(!set.has(`${v.x+dx},${v.y+dy},${v.z+dz}`)) exposed++;
+    }
+  }
+  return exposed; // each face = 1 cm^2
+}
+
+function countBottomFacesOnTable(voxels){
+  // number of cubes that sit on table (z=0) => each contributes one bottom face that is NOT painted
+  let count=0;
+  for(const v of voxels) if(v.z===0) count++;
+  return count;
+}
+
+function renderVoxelsIsometric(voxels, options={}){
+  const caption = options.caption ?? "Unit cubes (edge = 1 cm)";
+  const showNts = options.showNotToScale ?? true;
+
+  // bounds
+  const verts=[];
+  for(const v of voxels){
+    const x=v.x, y=v.y, z=v.z;
+    const corners=[
+      {x:x,   y:y,   z:z},   {x:x+1, y:y,   z:z},
+      {x:x,   y:y+1, z:z},   {x:x+1, y:y+1, z:z},
+      {x:x,   y:y,   z:z+1}, {x:x+1, y:y,   z:z+1},
+      {x:x,   y:y+1, z:z+1}, {x:x+1, y:y+1, z:z+1},
+    ];
+    verts.push(...corners);
+  }
+
+  let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+  for(const p of verts){
+    const t=proj(p,1);
+    minX=Math.min(minX,t.X); maxX=Math.max(maxX,t.X);
+    minY=Math.min(minY,t.Y); maxY=Math.max(maxY,t.Y);
+  }
+
+  const targetW=900, targetH=470;
+  const rangeX=Math.max(1e-6, maxX-minX);
+  const rangeY=Math.max(1e-6, maxY-minY);
+  const scale = Math.min(targetW/rangeX, targetH/rangeY);
+
+  const centerX=620;
+  const centerY=330;
+  const ox = centerX - (minX+maxX)/2 * scale;
+  const oy = centerY - (minY+maxY)/2 * scale;
+
+  function P(p){
+    const t=proj(p,scale);
+    return {x:t.X + ox, y:t.Y + oy};
+  }
+
+  const stroke="#111827";
+  const sw=2.6;
+
+  // subtle shading, still looks like textbook line art
+  const fillTop ="#ffffff";
+  const fillLeft="#f2f2f2";
+  const fillRight="#e9e9e9";
+
+  function poly(points, fill){
+    return `<polygon points="${points.map(q=>`${q.x},${q.y}`).join(" ")}"
+      fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round"/>`;
+  }
+
+  // draw far to near
+  const cubes=[...voxels].sort((a,b)=>{
+    const da=(a.x+a.y+a.z), db=(b.x+b.y+b.z);
+    if(da!==db) return da-db;
+    if(a.y!==b.y) return a.y-b.y;
+    return a.x-b.x;
+  });
+
+  let s="";
+  for(const v of cubes){
+    const x=v.x, y=v.y, z=v.z;
+
+    const p000=P({x:x,y:y,z:z});
+    const p100=P({x:x+1,y:y,z:z});
+    const p010=P({x:x,y:y+1,z:z});
+    const p110=P({x:x+1,y:y+1,z:z});
+
+    const p001=P({x:x,y:y,z:z+1});
+    const p101=P({x:x+1,y:y,z:z+1});
+    const p011=P({x:x,y:y+1,z:z+1});
+    const p111=P({x:x+1,y:y+1,z:z+1});
+
+    const top   = [p001,p101,p111,p011];
+    const right = [p101,p111,p110,p100];
+    const left  = [p011,p111,p110,p010];
+
+    s += poly(left,  fillLeft);
+    s += poly(right, fillRight);
+    s += poly(top,   fillTop);
+  }
+
+  s += `<text x="110" y="590" font-size="24" font-family="Segoe UI, Arial" fill="#0b1020"
+            paint-order="stroke" stroke="#ffffff" stroke-width="6">${escapeXml(caption)}</text>`;
+  if(showNts){
+    s += `<text x="980" y="590" font-size="22" font-style="italic"
+              font-family="Segoe UI, Arial" fill="#546e7a"
+              paint-order="stroke" stroke="#ffffff" stroke-width="6">NOT TO SCALE</text>`;
+  }
+
+  return `<g>${s}</g>`;
+}
+
+/* ===================== Book-style step pyramids (9 / 14 / 30 cubes) ===================== */
+function buildCornerStepPyramid(layerSizes){
+  // layerSizes: e.g. [4,3,2,1] => 30 cubes
+  const base = layerSizes[0];
+  const anchors = ["NW","NE","SW","SE"];
+  const anchor = pick(anchors);
+
+  function offsetFor(size){
+    // anchor determines where each layer sits inside the base footprint
+    const dx = (anchor.includes("E")) ? (base - size) : 0;
+    const dy = (anchor.includes("S")) ? (base - size) : 0;
+    return {dx,dy};
+  }
+
+  const voxels=[];
+  for(let z=0; z<layerSizes.length; z++){
+    const size = layerSizes[z];
+    const {dx,dy} = offsetFor(size);
+    for(let x=0; x<size; x++){
+      for(let y=0; y<size; y++){
+        voxels.push({x:x+dx, y:y+dy, z:z});
+      }
+    }
+  }
+  return {voxels, anchor};
+}
+
+/* ===================== Different-size cubes (like the book) ===================== */
+function renderSizedCubesIsometric(blocks, options={}){
+  const caption = options.caption ?? "Cubes of different sizes";
+  const showNts = options.showNotToScale ?? true;
+
+  const verts=[];
+  for(const b of blocks){
+    const x=b.x, y=b.y, z=b.z, s=b.size;
+    const corners=[
+      {x:x,   y:y,   z:z},   {x:x+s, y:y,   z:z},
+      {x:x,   y:y+s, z:z},   {x:x+s, y:y+s, z:z},
+      {x:x,   y:y,   z:z+s}, {x:x+s, y:y,   z:z+s},
+      {x:x,   y:y+s, z:z+s}, {x:x+s, y:y+s, z:z+s},
+    ];
+    verts.push(...corners);
+  }
+
+  let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+  for(const p of verts){
+    const t=proj(p,1);
+    minX=Math.min(minX,t.X); maxX=Math.max(maxX,t.X);
+    minY=Math.min(minY,t.Y); maxY=Math.max(maxY,t.Y);
+  }
+
+  const targetW=900, targetH=470;
+  const rangeX=Math.max(1e-6, maxX-minX);
+  const rangeY=Math.max(1e-6, maxY-minY);
+  const scale = Math.min(targetW/rangeX, targetH/rangeY);
+
+  const centerX=620;
+  const centerY=330;
+  const ox = centerX - (minX+maxX)/2 * scale;
+  const oy = centerY - (minY+maxY)/2 * scale;
+
+  function P(p){
+    const t=proj(p,scale);
+    return {x:t.X + ox, y:t.Y + oy};
+  }
+
+  const stroke="#111827";
+  const sw=3.0;
+  const fillTop ="#ffffff";
+  const fillLeft="#f2f2f2";
+  const fillRight="#e9e9e9";
+
+  function poly(points, fill){
+    return `<polygon points="${points.map(q=>`${q.x},${q.y}`).join(" ")}"
+      fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round"/>`;
+  }
+
+  const sorted=[...blocks].sort((a,b)=>{
+    const da=(a.x+a.y+a.z+a.size), db=(b.x+b.y+b.z+b.size);
+    if(da!==db) return da-db;
+    return a.size-b.size;
+  });
+
+  let s="";
+  for(const b of sorted){
+    const x=b.x, y=b.y, z=b.z, size=b.size;
+
+    const p000=P({x:x,y:y,z:z});
+    const p100=P({x:x+size,y:y,z:z});
+    const p010=P({x:x,y:y+size,z:z});
+    const p110=P({x:x+size,y:y+size,z:z});
+
+    const p001=P({x:x,y:y,z:z+size});
+    const p101=P({x:x+size,y:y,z:z+size});
+    const p011=P({x:x,y:y+size,z:z+size});
+    const p111=P({x:x+size,y:y+size,z:z+size});
+
+    const top   = [p001,p101,p111,p011];
+    const right = [p101,p111,p110,p100];
+    const left  = [p011,p111,p110,p010];
+
+    s += poly(left,  fillLeft);
+    s += poly(right, fillRight);
+    s += poly(top,   fillTop);
+  }
+
+  s += `<text x="110" y="590" font-size="24" font-family="Segoe UI, Arial" fill="#0b1020"
+            paint-order="stroke" stroke="#ffffff" stroke-width="6">${escapeXml(caption)}</text>`;
+  if(showNts){
+    s += `<text x="980" y="590" font-size="22" font-style="italic"
+              font-family="Segoe UI, Arial" fill="#546e7a"
+              paint-order="stroke" stroke="#ffffff" stroke-width="6">NOT TO SCALE</text>`;
+  }
+
+  return `<g>${s}</g>`;
+}
+
+/* ===================== Grading ===================== */
+function gradeAnswer(userText, answer){
+  const nums = parseNumbersFromInput(userText);
+  if(answer.type==="single"){
+    if(nums.length<1) return false;
+    return approxEqual(nums[0], answer.values[0], answer.tol ?? 1e-6);
+  }
+  return false;
+}
+
+/* ===================== Question builders ===================== */
+function qUnitCubesSurface(partIndex, layerSizes, label){
+  const {voxels, anchor} = buildCornerStepPyramid(layerSizes);
+  const cubes = voxels.length;
+  const sa = computeVoxelSurfaceArea(voxels);
+  const sig = `U|${label}|${anchor}`;
+
+  const lines=[
+    `(Q) A solid is built from ${cubes} unit cubes (edge length = 1 cm), as shown.`,
+    "Find the surface area of the solid (in cm²).",
+    "(Enter one integer.)"
+  ];
+
+  return {
+    partIndex,
+    placeholder:"e.g., 54",
+    svg: makeSvgQuestionCardMarkup(
+      lines,
+      renderVoxelsIsometric(voxels, {caption:`${cubes} unit cubes (step model)`})
+    ),
+    hintText:"Surface area = number of exposed faces. Faces that touch another cube are not exposed.",
+    answer:{type:"single", values:[sa], label:String(sa)},
+    sig
+  };
+}
+
+function qUnitCubesPaintNoBottom(partIndex, layerSizes, label){
+  const {voxels, anchor} = buildCornerStepPyramid(layerSizes);
+  const cubes = voxels.length;
+  const sa = computeVoxelSurfaceArea(voxels);
+  const bottom = countBottomFacesOnTable(voxels);
+  const painted = sa - bottom;
+  const sig = `PB|${label}|${anchor}`;
+
+  const lines=[
+    `(Q) A solid is built from ${cubes} unit cubes (edge length = 1 cm), as shown.`,
+    "All outside faces are painted, except the faces on the table (the bottom faces).",
+    "Find the painted area (in cm²).",
+    "(Enter one integer.)"
+  ];
+
+  return {
+    partIndex,
+    placeholder:"e.g., 80",
+    svg: makeSvgQuestionCardMarkup(
+      lines,
+      renderVoxelsIsometric(voxels, {caption:`Painted area = surface area − bottom faces on the table`})
+    ),
+    hintText:"Painted area = surface area − (number of cubes on the bottom layer).",
+    answer:{type:"single", values:[painted], label:String(painted)},
+    sig
+  };
+}
+
+function qThreeCubesPaint(partIndex){
+  // random but always a < b < c
+  const c = pick([4,5,6]);
+  let b = pick([2,3,4]);
+  while(b >= c) b = pick([2,3,4]);
+
+  let a = pick([1,2,3]);
+  while(a >= b) a = pick([1,2,3]);
+
+  // stacked: c bottom, b on top, a on top
+  // Outer SA = 6(c^2+b^2+a^2) - 2*(b^2 + a^2) (two contacts)
+  // Painted excludes bottom face of largest => subtract c^2
+  const outer = 6*(c*c + b*b + a*a) - 2*(b*b + a*a);
+  const painted = outer - c*c;
+
+  const blocks=[
+    {x:0, y:0, z:0, size:c},
+    {x:(c-b)/2, y:(c-b)/2, z:c, size:b},
+    {x:(c-a)/2, y:(c-a)/2, z:c+b, size:a},
+  ];
+  const sig = `T|${a},${b},${c}`;
+
+  const lines=[
+    `(Q) Three cubes are glued together. Their edge lengths are ${a} cm, ${b} cm, and ${c} cm, as shown.`,
+    "All outside faces are painted, but the bottom face of the largest cube is NOT painted.",
+    "Find the painted area (in cm²).",
+    "(Enter one integer.)"
+  ];
+
+  return {
+    partIndex,
+    placeholder:"e.g., 200",
+    svg: makeSvgQuestionCardMarkup(
+      lines,
+      renderSizedCubesIsometric(blocks, {caption:`Stacked cubes: ${a} cm, ${b} cm, ${c} cm`})
+    ),
+    hintText:"Painted area = (total outside area after gluing) − (bottom face of the largest cube).",
+    answer:{type:"single", values:[painted], label:String(painted)},
+    sig
+  };
+}
+
+function qFourCubesSurface(partIndex){
+  // 4 cubes glued in a book-like stack/cluster
+  const D = pick([5,6,7]);
+  let C = pick([3,4,5]); while(C>=D) C = pick([3,4,5]);
+  let B = pick([2,3,4]); while(B>=D) B = pick([2,3,4]);
+  let A = pick([1,2,3]); while(A>=B) A = pick([1,2,3]);
+
+  // arrangement: D base; C on top at one corner; B on top at opposite corner; A on top of B
+  const blocks=[
+    {x:0, y:0, z:0, size:D},
+    {x:0, y:0, z:D, size:C},
+    {x:D-B, y:D-B, z:D, size:B},
+    {x:D-B + (B-A)/2, y:D-B + (B-A)/2, z:D+B, size:A},
+  ];
+
+  // SA = sum 6s^2 - 2*(contact areas)
+  // contacts: D-C (C^2), D-B (B^2), B-A (A^2)
+  const sa = 6*(D*D + C*C + B*B + A*A) - 2*(C*C + B*B + A*A);
+  const sig = `F|${A},${B},${C},${D}`;
+
+  const lines=[
+    `(Q) Four cubes (edge lengths ${A} cm, ${B} cm, ${C} cm, and ${D} cm) are glued together as shown.`,
+    "Find the surface area of the new solid (in cm²).",
+    "(Enter one integer.)"
+  ];
+
+  return {
+    partIndex,
+    placeholder:"e.g., 400",
+    svg: makeSvgQuestionCardMarkup(
+      lines,
+      renderSizedCubesIsometric(blocks, {caption:`Glued cubes: ${A}, ${B}, ${C}, ${D} cm`})
+    ),
+    hintText:"Surface area = (sum of cube surface areas) − 2 × (sum of glued contact areas).",
+    answer:{type:"single", values:[sa], label:String(sa)},
+    sig
+  };
+}
+
+/* ===================== Build Questions (2 easy, 2 medium, 2 hard) ===================== */
+function buildQuestions(){
+  // Easy: classic step models (book-like)
+  const q1 = qUnitCubesSurface(0, [2,2,1], "9-cubes");      // 9 cubes
+  const q2 = qUnitCubesSurface(0, [3,2,1], "14-cubes");     // 14 cubes
+
+  // Medium
+  const q3 = qUnitCubesSurface(1, [4,3,2,1], "30-cubes");   // 30 cubes (very book-like)
+  const q4 = qThreeCubesPaint(1);                           // sizes 1/2/4-like
+
+  // Hard
+  const q5 = qUnitCubesPaintNoBottom(2, [4,3,2,1], "30-paint-no-bottom");
+  const q6 = qFourCubesSurface(2);
+
+  return [q1,q2,q3,q4,q5,q6];
+}
+
+/* ===================== State ===================== */
+let questions=[];
+let currentQuestionIndex=0;
+let studentName="Student";
+let quizStartTime=null;
+let quizEndTime=null;
+let quizSubmitted=false;
+
+let timerInterval=null;
+let elapsedMs=0;
+let isPaused=false;
+let firstAttemptMs=null;
+
+let setCounter=0;
+let lastSignature="";
+
+/* DOM */
+const quizContent=document.getElementById("quizContent");
+const sidebarEl=document.getElementById("sidebar");
+
+const buttonContainer=document.getElementById("navButtons");
+const backButton=document.getElementById("backButton");
+const nextButton=document.getElementById("nextButton");
+const submitButton=document.getElementById("submitButton");
+const checkButton=document.getElementById("checkButton");
+const saveButton=document.getElementById("saveButton");
+
+const generateBtn=document.getElementById("generateButton");
+const pauseButton=document.getElementById("pauseButton");
+const exportQuestionsBtn=document.getElementById("exportQuestionsBtn");
+const pdfPerPageSel=document.getElementById("pdfPerPage");
+
+const timerDisplay=document.getElementById("timerDisplay");
+const studentLine=document.getElementById("studentLine");
+const setLine=document.getElementById("setLine");
+
+/* ===================== Timer ===================== */
+function updateTimerDisplay(){
+  let totalMs=elapsedMs;
+  if(!isPaused && quizStartTime) totalMs+=(new Date()-quizStartTime);
+  let text=`Time: ${formatMs(totalMs)}`;
+  if(firstAttemptMs!==null) text+=` (First: ${formatMs(firstAttemptMs)})`;
+  timerDisplay.textContent=text;
+}
+function startTimerInterval(){
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval=setInterval(updateTimerDisplay, 1000);
+}
+function pauseTimer(){
+  if(isPaused || !quizStartTime) return;
+  const now=new Date();
+  elapsedMs+=now-quizStartTime;
+  isPaused=true;
+  quizStartTime=null;
+  updateTimerDisplay();
+}
+function resumeTimer(){
+  if(!isPaused) return;
+  isPaused=false;
+  quizStartTime=new Date();
+  updateTimerDisplay();
+}
+
+/* ===================== Generate Quiz ===================== */
+function signatureOf(built){
+  return built.map(q=>q.sig).join("|");
+}
+function generateQuiz(){
+  questions=[];
+  quizSubmitted=false;
+
+  let tries=0;
+  let built=null;
+
+  while(tries<120){
+    built = buildQuestions();
+    const sig = signatureOf(built);
+    if(sig !== lastSignature){
+      lastSignature = sig;
+      break;
+    }
+    tries++;
+  }
+
+  setCounter++;
+  setLine.textContent = `Set: ${setCounter}`;
+
+  const partCounters = PARTS.map(()=>0);
+
+  for(let i=0;i<built.length;i++){
+    const pi = built[i].partIndex ?? 0;
+    partCounters[pi]++;
+
+    questions.push({
+      partIndex: pi,
+      indexInPart: partCounters[pi],
+      svg: built[i].svg,
+      hint: built[i].hintText || "Count exposed faces carefully.",
+      answer: built[i].answer,
+      placeholder: built[i].placeholder || "Enter your answer",
+      userValue:"",
+      isCorrect:false
+    });
+  }
+}
+
+/* ===================== Sidebar ===================== */
+function renderSidebar(){
+  sidebarEl.style.display="block";
+  sidebarEl.innerHTML=`<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul=document.getElementById("qList");
+
+  for(let i=0;i<TOTAL_QUESTIONS;i++){
+    const li=document.createElement("li");
+    li.textContent=`Q${i+1}`;
+    li.dataset.index=i;
+    li.addEventListener("click",()=>{
+      saveCurrentInput();
+      currentQuestionIndex=i;
+      renderQuestion();
+    });
+    ul.appendChild(li);
+  }
+  updateSidebarStatus();
+}
+function updateSidebarStatus(){
+  const items=document.querySelectorAll("#qList li");
+  items.forEach(li=>{
+    const idx=Number(li.dataset.index);
+    const q=questions[idx];
+    li.classList.remove("active","answered","correct","incorrect");
+
+    if(!quizSubmitted){
+      li.classList.toggle("active", idx===currentQuestionIndex);
+      if((q.userValue||"").trim()!=="") li.classList.add("answered");
+    }else{
+      if((q.userValue||"").trim()!==""){
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ===================== Helpers ===================== */
+function saveCurrentInput(){
+  const input=document.getElementById("answerInput");
+  if(input){
+    questions[currentQuestionIndex].userValue=input.value.trim();
+    if(quizSubmitted){
+      const q=questions[currentQuestionIndex];
+      q.isCorrect = gradeAnswer(q.userValue, q.answer);
+      updateSidebarStatus();
+    }
+  }
+}
+function mountNavButtonsInto(slotId){
+  const slot=document.getElementById(slotId);
+  if(!slot) return;
+  slot.appendChild(buttonContainer);
+  buttonContainer.style.display="flex";
+}
+
+/* ===================== Render Question ===================== */
+function renderQuestion(){
+  const q=questions[currentQuestionIndex];
+  const part = PARTS[q.partIndex] || PARTS[0];
+
+  quizContent.innerHTML=`
+    <p class="question-text">Question ${currentQuestionIndex+1} of ${TOTAL_QUESTIONS}</p>
+    <div class="part-title">${escapeXml(part.title)}</div>
+
+    <div class="single-question">
+      <div style="font-weight:800;margin-bottom:8px;">${escapeXml(part.level)} — Question ${q.indexInPart}</div>
+
+      <div class="img-wrap">
+        <div class="svg-host" id="svgHost"></div>
+      </div>
+
+      <div class="answer-row">
+        <div style="font-weight:700;">Answer:</div>
+        <input id="answerInput" class="answer-box" type="text"
+               placeholder="${escapeXml(q.placeholder)}"
+               value="${escapeXml(q.userValue||"")}">
+      </div>
+
+      <div id="checkFeedback" style="display:none;"></div>
+
+      <div class="hint-row">
+        <button id="hintBtn" class="hint-btn">Hint</button>
+      </div>
+
+      <div id="hintBox" class="hint">${escapeXml(q.hint)}</div>
+    </div>
+
+    <div id="navSlot"></div>
+  `;
+
+  document.getElementById("svgHost").innerHTML = q.svg;
+
+  mountNavButtonsInto("navSlot");
+
+  const hintBtn=document.getElementById("hintBtn");
+  const hintBox=document.getElementById("hintBox");
+  hintBtn.addEventListener("click", ()=>{
+    const shown=hintBox.style.display==="block";
+    hintBox.style.display = shown ? "none" : "block";
+    hintBtn.textContent = shown ? "Hint" : "Hide Hint";
+  });
+
+  backButton.style.display="inline-block";
+  backButton.style.visibility=(currentQuestionIndex===0)?"hidden":"visible";
+
+  const isLast=(currentQuestionIndex===TOTAL_QUESTIONS-1);
+  nextButton.style.display=isLast?"none":"inline-block";
+  submitButton.style.display=isLast?"inline-block":"none";
+
+  if(!quizSubmitted){
+    checkButton.style.display="inline-block";
+  }else{
+    checkButton.style.display = (q.userValue||"").trim()!=="" && !q.isCorrect ? "inline-block" : "none";
+  }
+
+  saveButton.style.display=quizSubmitted?"inline-block":"none";
+  updateSidebarStatus();
+}
+
+/* ===================== Results + Submit ===================== */
+function calculateAndShowResults(){
+  saveCurrentInput();
+
+  const now=new Date();
+  let attemptMs=elapsedMs;
+  if(!isPaused && quizStartTime) attemptMs+=now-quizStartTime;
+  if(firstAttemptMs===null) firstAttemptMs=attemptMs;
+
+  const attemptStartTime=quizStartTime || now;
+  quizEndTime=now;
+  quizSubmitted=true;
+
+  let correctCount=0;
+  questions.forEach((q)=>{
+    q.isCorrect = gradeAnswer(q.userValue, q.answer);
+    if(q.isCorrect) correctCount++;
+  });
+
+  updateSidebarStatus();
+
+  let html=`
+    <h3>Results for ${escapeXml(studentName)}</h3>
+    <p>Set: <strong>${setCounter}</strong></p>
+    <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
+    <p>Start time: <strong>${attemptStartTime.toLocaleTimeString()}</strong></p>
+    <p>Submit time: <strong>${quizEndTime.toLocaleTimeString()}</strong></p>
+    <p>Time taken (this attempt): <strong>${formatMs(attemptMs)}</strong></p>
+    <p>First attempt time: <strong>${formatMs(firstAttemptMs)}</strong></p>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th><th>Image</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q,i)=>{
+    const ua=(q.userValue||"").trim();
+    const correctText = q.answer.label;
+
+    html+=`
+      <tr class="${q.isCorrect ? "correct-answer":"incorrect-answer"}">
+        <td>${i+1}</td>
+        <td><div class="thumbBox" id="thumb_${i}"></div></td>
+        <td>${ua==="" ? "—" : escapeXml(ua)}</td>
+        <td><strong>${escapeXml(correctText)}</strong></td>
+        <td>${ua==="" ? "Not answered" : (q.isCorrect ? "Correct":"Incorrect")}</td>
+      </tr>
+    `;
+  });
+
+  html+=`</table><div id="navSlot"></div>`;
+  quizContent.innerHTML=html;
+
+  questions.forEach((q,i)=>{
+    const box=document.getElementById("thumb_"+i);
+    if(box) box.innerHTML=q.svg;
+  });
+
+  mountNavButtonsInto("navSlot");
+
+  backButton.style.display="none";
+  nextButton.style.display="none";
+  submitButton.style.display="none";
+  checkButton.style.display="none";
+  saveButton.style.display="inline-block";
+}
+
+/* ===================== Buttons ===================== */
+nextButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex<TOTAL_QUESTIONS-1){
+    currentQuestionIndex++;
+    renderQuestion();
+  }
+});
+backButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  if(currentQuestionIndex>0){
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+});
+submitButton.addEventListener("click", ()=>{
+  if(currentQuestionIndex===TOTAL_QUESTIONS-1){
+    calculateAndShowResults();
+  }
+});
+
+checkButton.addEventListener("click", ()=>{
+  saveCurrentInput();
+  const q=questions[currentQuestionIndex];
+
+  q.isCorrect = gradeAnswer(q.userValue, q.answer);
+  updateSidebarStatus();
+
+  const box=document.getElementById("checkFeedback");
+  if(!box) return;
+
+  box.className="check-feedback";
+  box.style.display="block";
+
+  if(q.isCorrect){
+    box.innerHTML=`✅ Correct!`;
+    if(quizSubmitted) checkButton.style.display="none";
+  }else{
+    box.innerHTML=`❌ Incorrect. Correct answer: <strong>${escapeXml(q.answer.label)}</strong>`;
+    if(quizSubmitted) checkButton.style.display="inline-block";
+  }
+});
+
+/* Save TXT */
+function formatDateForFilename(date){
+  if(!date) return "no_time";
+  const pad=n=>String(n).padStart(2,"0");
+  return date.getFullYear()+pad(date.getMonth()+1)+pad(date.getDate())+"_"+pad(date.getHours())+pad(date.getMinutes())+pad(date.getSeconds());
+}
+function saveCurrentResultAsTxt(){
+  saveCurrentInput();
+
+  let correctCount=0;
+  questions.forEach(q=>{ if(q.isCorrect) correctCount++; });
+
+  const lines=[];
+  lines.push(QUIZ_TITLE + " — Current Result");
+  lines.push("Student: "+studentName);
+  lines.push("Set: "+setCounter);
+  if(quizEndTime) lines.push("Last submit time: "+quizEndTime.toLocaleString());
+  lines.push("Score: "+correctCount+" / "+TOTAL_QUESTIONS);
+  if(firstAttemptMs!==null) lines.push("First attempt time: "+formatMs(firstAttemptMs));
+  lines.push("");
+
+  questions.forEach((q,i)=>{
+    const userAns=(q.userValue||"").trim()==="" ? "Not answered" : q.userValue;
+    const resultText=(q.userValue||"").trim()==="" ? "Not answered" : (q.isCorrect?"Correct":"Incorrect");
+    lines.push(`Q${i+1}`);
+    lines.push("Your answer: "+userAns);
+    lines.push("Correct answer: "+q.answer.label);
+    lines.push("Result: "+resultText);
+    lines.push("");
+  });
+
+  const content=lines.join("\n");
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  const safeName=studentName.replace(/[^a-z0-9_\-]/gi,"_")||"Student";
+  const ts=formatDateForFilename(new Date());
+  a.href=url;
+  a.download=`Model20_3DView_${safeName}_Set${setCounter}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+saveButton.addEventListener("click", saveCurrentResultAsTxt);
+
+/* Pause/Resume */
+pauseButton.addEventListener("click", ()=>{
+  if(!quizStartTime && elapsedMs===0 && !quizSubmitted) return;
+  if(isPaused){ resumeTimer(); pauseButton.textContent="Pause"; }
+  else { pauseTimer(); pauseButton.textContent="Resume"; }
+});
+
+/* ===================== Generate new set (WITH confirm) ===================== */
+generateBtn.addEventListener("click", ()=>{
+  const ok = window.confirm("Generate a new random set? All answers will be lost.");
+  if(!ok) return;
+  doGenerateNewSet();
+});
+
+function doGenerateNewSet(){
+  if(timerInterval) clearInterval(timerInterval);
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=new Date(); quizEndTime=null;
+  updateTimerDisplay(); startTimerInterval();
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+}
+
+/* ===================== Export Questions PDF ===================== */
+exportQuestionsBtn.addEventListener("click", async ()=>{
+  if(!questions || questions.length===0){
+    alert("Please start a quiz first.");
+    return;
+  }
+  if(!window.jspdf || !window.jspdf.jsPDF){
+    alert("PDF export needs internet to load jsPDF/html2canvas (CDN).");
+    return;
+  }
+
+  const perPage = Number(pdfPerPageSel.value || 3);
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p","mm","a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const wrapper=document.createElement("div");
+  wrapper.style.position="fixed";
+  wrapper.style.left="-9999px";
+  wrapper.style.top="0";
+  wrapper.style.width="860px";
+  wrapper.style.background="#ffffff";
+  document.body.appendChild(wrapper);
+
+  try{
+    let pageDiv=null;
+
+    questions.forEach((q, idx)=>{
+      if(idx%perPage===0){
+        pageDiv=document.createElement("div");
+        pageDiv.style.padding="20px";
+        pageDiv.style.marginBottom="20px";
+        pageDiv.style.boxSizing="border-box";
+
+        const header=document.createElement("div");
+        header.innerHTML=`
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="width:24px;height:24px;background:#0d47a1;border-radius:6px;position:relative;">
+              <div style="position:absolute;width:12px;height:5px;background:#ff9800;top:-4px;left:12px;border-radius:3px;"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;line-height:1.1;">
+              <div style="font-weight:900;letter-spacing:1px;color:#ff9800;font-size:14px;">DYAA</div>
+              <div style="font-size:11px;color:#0d47a1;font-weight:700;">EDUCATION</div>
+            </div>
+          </div>
+          <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 12px 0;">
+          <div style="font-weight:800;color:#1f2a44;margin:0 0 4px 0;">${LESSON_TITLE}</div>
+          <div style="color:#546e7a;font-weight:800;margin:0 0 10px 0;">Questions (Set ${setCounter})</div>
+        `;
+        pageDiv.appendChild(header);
+        wrapper.appendChild(pageDiv);
+      }
+
+      const qDiv=document.createElement("div");
+      qDiv.style.marginBottom="18px";
+      qDiv.innerHTML=`
+        <div style="font-weight:700;margin:4px 0 6px 0;">Q${idx+1}</div>
+        <div style="border-radius:12px;border:1px solid #e5e5e5;padding:12px;">
+          ${q.svg}
+        </div>
+      `;
+      pageDiv.appendChild(qDiv);
+    });
+
+    const pages=Array.from(wrapper.children);
+
+    for(let i=0;i<pages.length;i++){
+      const canvas = await html2canvas(pages[i], {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: "#ffffff"
+      });
+      const imgData = canvas.toDataURL("image/png");
+
+      const imgWidth = pageWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      if(i>0) pdf.addPage();
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, Math.min(imgHeight, pageHeight - 20));
+    }
+
+    const safeName=(studentName||"Student").replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+    const ts=formatDateForFilename(new Date());
+    pdf.save(`Model20_3DView_Questions_${safeName}_Set${setCounter}_${ts}.pdf`);
+  } finally {
+    document.body.removeChild(wrapper);
+  }
+});
+
+/* ===================== Start Screen (+ optional ?name=Tiger) ===================== */
+function getNameFromUrl(){
+  const url=new URL(window.location.href);
+  const name=url.searchParams.get("name");
+  return name ? name.trim() : "";
+}
+function showStartScreen(){
+  sidebarEl.style.display="none";
+  buttonContainer.style.display="none";
+  generateBtn.style.display="none";
+  saveButton.style.display="none";
+  pauseButton.style.display="none";
+  exportQuestionsBtn.style.display="none";
+
+  studentLine.textContent="";
+  setLine.textContent="";
+
+  if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  quizStartTime=null; quizEndTime=null;
+  updateTimerDisplay();
+
+  const preset=getNameFromUrl();
+  if(preset){
+    studentName=preset;
+    studentLine.textContent=`Student: ${studentName}`;
+    startQuiz(true);
+    return;
+  }
+
+  quizContent.innerHTML=`
+    <p>This quiz has <strong>${TOTAL_QUESTIONS}</strong> questions:</p>
+    <ul style="margin:6px 0 10px 18px;">
+      <li>2 Easy</li>
+      <li>2 Medium</li>
+      <li>2 Hard</li>
+    </ul>
+    <p style="margin-top:10px;">Enter your name to begin:</p>
+
+    <input id="nameInput" type="text"
+      style="padding:10px;width:260px;font-size:1.05em;border:1px solid #ccc;border-radius:10px;"
+      placeholder="Your name">
+
+    <button id="startButton"
+      style="margin-left:10px;background:#4caf50;padding:10px 20px;color:white;border:none;border-radius:8px;">
+      Start Quiz
+    </button>
+  `;
+  document.getElementById("startButton").addEventListener("click", ()=>startQuiz(false));
+}
+function startQuiz(skipReadName){
+  if(!skipReadName){
+    const nameInput=document.getElementById("nameInput");
+    studentName=(nameInput.value || "Student").trim();
+  }
+  studentLine.textContent=`Student: ${studentName}`;
+
+  quizStartTime=new Date();
+  elapsedMs=0; isPaused=false; firstAttemptMs=null;
+  updateTimerDisplay(); startTimerInterval();
+
+  generateQuiz();
+  currentQuestionIndex=0;
+  renderSidebar();
+  renderQuestion();
+
+  generateBtn.style.display="inline-block";
+  pauseButton.style.display="inline-block";
+  pauseButton.textContent="Pause";
+  exportQuestionsBtn.style.display="inline-block";
+}
+
+/* ===================== Init ===================== */
+showStartScreen();
+</script>
+</body>
+</html>

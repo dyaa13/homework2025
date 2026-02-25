@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Angles — Parallel Lines — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --purple:#6a1b9a;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --stroke:#111;
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .select{
+      appearance:none;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:10px;
+      padding:7px 10px;
+      font-weight:900;
+      color:var(--ink);
+      cursor:pointer;
+      outline:none;
+    }
+    .select:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:900;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:900;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+    }
+    .btn.orange{
+      background:var(--orange);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(255,152,0,0.20);
+    }
+    .btn.purple{
+      background:var(--purple);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(106,27,154,0.20);
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:1000;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card p{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .learn-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:14px;
+      margin-top:12px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .learn-grid{grid-template-columns:1fr;}
+    }
+
+    .mini-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .mini-table th, .mini-table td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    .mini-table th{
+      background:#f5f8ff;
+      color:var(--blue);
+      font-weight:1000;
+    }
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:1000;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .q-body{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:12px;
+      margin-top:10px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .q-body{grid-template-columns:1fr;}
+    }
+
+    /* IMPORTANT: no cropping on screen */
+    .svg-wrap{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:12px 12px 10px 12px;
+      overflow: visible;
+    }
+    .svg-wrap svg{
+      display:block;
+      width:100%;
+      height:auto;
+      overflow: visible;
+    }
+    .svg-note{
+      margin-top:6px;
+      font-size:12px;
+      color:rgba(0,0,0,0.55);
+      font-weight:900;
+    }
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      min-width:220px;
+      max-width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .hint-box{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(13,71,161,0.35);
+      background:#f5f8ff;
+      color:#1a2b55;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .hint-box.show{display:block;}
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+      overflow-wrap:anywhere;
+    }
+    .feedback.ok{color:var(--ok);font-weight:1000;}
+    .feedback.bad{color:var(--bad);font-weight:1000;}
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    /* =========================
+       PDF Export (offscreen pages)
+       ========================= */
+    .export-root{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:210mm;
+      height:auto;
+      overflow:hidden;
+      background:#fff;
+    }
+    .export-page{
+      width:210mm;
+      height:297mm;
+      background:#fff;
+      padding:12mm;
+      box-sizing:border-box;
+      position:relative;
+    }
+    .export-header{
+      height:20mm;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10mm;
+    }
+    .export-title{
+      font-weight:1000;
+      font-size:16px;
+      color:#111;
+      line-height:1.1;
+    }
+    .export-sub{
+      margin-top:2mm;
+      font-size:11px;
+      color:#555;
+      font-weight:900;
+      line-height:1.25;
+    }
+    .export-content{
+      height: calc(297mm - 12mm - 12mm - 20mm);
+      overflow:hidden;
+    }
+    .export-qgrid{
+      width:100%;
+      height:100%;
+      display:grid;
+      min-height:0;
+    }
+    .export-qgrid.two{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:8mm;
+    }
+    .export-qgrid.three{
+      grid-template-columns:1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:4mm;
+    }
+    .export-qgrid.six{
+      grid-template-columns:1fr 1fr;
+      grid-auto-rows:minmax(0, 1fr);
+      gap:5mm;
+    }
+    .export-q{
+      border:1px solid #ddd;
+      border-radius:10px;
+      padding:6mm;
+      display:flex;
+      flex-direction:column;
+      gap:3mm;
+      min-height:0;
+      overflow:hidden;
+    }
+    .export-q .qprompt{
+      font-weight:900;
+      font-size:12px;
+      color:#111;
+      line-height:1.2;
+    }
+    .export-qgrid.six .qprompt{font-size:11px;}
+
+    .export-diagram{
+      border:1px solid #e6e6e6;
+      border-radius:9px;
+      padding:3mm;
+      flex:1;
+      min-height:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .export-diagram svg{
+      width:100%;
+      height:100%;
+      max-height:100%;
+      display:block;
+      overflow:visible;
+    }
+    .export-diagram .svg-note{ display:none !important; }
+
+    .export-answerline{
+      margin-top:2mm;
+      font-size:12px;
+      font-weight:900;
+      color:#111;
+    }
+    .export-answerline span{
+      display:inline-block;
+      border-bottom:1px solid #111;
+      min-width:62mm;
+      height:0.95em;
+      vertical-align:baseline;
+    }
+    .export-qgrid.six .export-answerline{font-size:11px;}
+    .export-qgrid.six .export-answerline span{min-width:35mm;}
+
+    .answers-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:4mm 10mm;
+      align-content:start;
+      font-size:13px;
+      font-weight:900;
+      color:#111;
+    }
+    .answers-note{
+      margin-top:3mm;
+      font-size:11px;
+      color:#666;
+      font-weight:900;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1 id="pageTitle">Angles — Parallel Lines</h1>
+        <div class="sub" id="pageSubtitle">Corresponding • Alternate • Co-interior • Timer • PDF export</div>
+      </div>
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="row">
+      <div class="pill">
+        <b>Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <b>Time:</b>
+        <span id="timerValue">00:00</span>
+        <span id="timerStatus" class="muted" style="font-weight:900;"></span>
+        <span class="muted">•</span>
+        <small>URL: <span class="muted">.../your_page.html?name=Tiger</span></small>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <div class="pill">
+          <b>PDF per page</b>
+          <select id="pdfPerPage" class="select" aria-label="PDF per page">
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+
+        <button class="btn orange" id="pauseBtn" type="button">Pause</button>
+        <button class="btn orange" id="newSetBtn" type="button">Generate New Set</button>
+        <button class="btn purple" id="exportQuestionsBtn" type="button">Export Questions PDF</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    <!-- LEARN -->
+    <div class="panel active" id="panel-learn">
+      <div class="learn-card">
+        <h2>Core Ideas</h2>
+
+        <p>
+          When a <b>transversal</b> cuts two <b>parallel lines</b>, special angle relationships appear.
+          Your job is to <b>identify the angle relationship</b>, then calculate the missing angle (or solve for x).
+        </p>
+
+        <table class="mini-table" aria-label="Key methods">
+          <thead>
+            <tr>
+              <th>Skill</th>
+              <th>Simple method</th>
+              <th>Reminder</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Corresponding</b></td>
+              <td>Same “corner position” → <b>equal</b></td>
+              <td>Works only if the lines are parallel.</td>
+            </tr>
+            <tr>
+              <td><b>Alternate interior</b></td>
+              <td>Inside the lines, opposite sides of transversal → <b>equal</b></td>
+              <td>Look for the angles “in between” the two lines.</td>
+            </tr>
+            <tr>
+              <td><b>Co-interior</b></td>
+              <td>Inside the lines, same side of transversal → <b>sum = 180°</b></td>
+              <td>Often a 2-step question with straight-line angles.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="note">
+          <b>Quick example</b><br>
+          If two angles are co-interior and one is 112°, then the other is 180° − 112° = <b>68°</b>.
+        </div>
+
+        <div class="learn-grid">
+          <div class="muted">
+            Tip: In harder questions, you may need 2 steps, e.g. <b>vertical opposite</b> first, then use
+            corresponding / alternate / co-interior.
+          </div>
+          <div class="svg-wrap" id="learnSvgWrap"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted" id="instructionsText">Enter an integer (degrees), a letter (A–D), or a word.</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result (TXT)</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3>Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    /********************
+     * META
+     ********************/
+    const TEMPLATE_META = {
+      title: "Angles — Parallel Lines",
+      subtitle: "Corresponding • Alternate • Co-interior • Timer • PDF export",
+      filePrefix: "DYAA_Angles_ParallelLines",
+      instructions: "Enter an integer (degrees), a letter (A–D), or a word."
+    };
+
+    /********************
+     * Helpers
+     ********************/
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function randint(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+      }
+      return a;
+    }
+
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;");
+    }
+
+    function stripSvgNote(html){
+      return String(html).replace(/<div class="svg-note">[\s\S]*?<\/div>/g, "");
+    }
+
+    /********************
+     * Answer checking (supports int / mc / word)
+     ********************/
+    function parseDegInteger(raw){
+      let s = String(raw || "").trim();
+      if(!s) return NaN;
+      s = s.replace(/−/g,"-").replace(/,/g,"");
+      s = s.replace(/°/g,"").replace(/\bdeg\b/gi,"").trim();
+      const v = Number(s);
+      if(!Number.isFinite(v)) return NaN;
+      if(Math.abs(v - Math.round(v)) > 1e-9) return NaN;
+      return Math.round(v);
+    }
+    function normalizeWord(s){
+      return String(s||"")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g," ")
+        .replace(/[^a-z0-9\s\-]/g,"");
+    }
+
+    function compareAnswer(userRaw, spec){
+      const ans = String(userRaw || "").trim();
+      if(ans === "") return { ok:false, empty:true };
+
+      if(spec.type === "integer"){
+        const u = parseDegInteger(ans);
+        if(!Number.isFinite(u)) return { ok:false, empty:false, msg:"Please enter a whole number (you may include °)." };
+        return { ok: u === spec.value, empty:false };
+      }
+
+      if(spec.type === "mc"){
+        const u = ans.toUpperCase();
+        const c = String(spec.value || "").toUpperCase();
+        return { ok: u === c, empty:false, msg:"Answer with A, B, C or D." };
+      }
+
+      if(spec.type === "word"){
+        const u = normalizeWord(ans);
+        const list = (spec.accept || []).map(normalizeWord);
+        return { ok: list.includes(u), empty:false, msg:"Type the correct word." };
+      }
+
+      return { ok:false, empty:false };
+    }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * Timer + Pause/Resume
+     ********************/
+    const TIMER = { seconds: 0, running: true, id: null };
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function formatTime(sec){
+      sec = Math.max(0, Math.floor(sec));
+      const m = Math.floor(sec/60);
+      const s = sec % 60;
+      return `${pad2(m)}:${pad2(s)}`;
+    }
+    function updateTimerUI(){
+      $("#timerValue").textContent = formatTime(TIMER.seconds);
+      $("#timerStatus").textContent = TIMER.running ? "" : "(Paused)";
+      $("#pauseBtn").textContent = TIMER.running ? "Pause" : "Resume";
+    }
+    function startTimerTick(){
+      if(TIMER.id) clearInterval(TIMER.id);
+      TIMER.id = setInterval(() => {
+        if(TIMER.running){
+          TIMER.seconds += 1;
+          updateTimerUI();
+        }
+      }, 1000);
+    }
+    function resetTimer(){
+      TIMER.seconds = 0;
+      TIMER.running = true;
+      updateTimerUI();
+    }
+    function togglePause(){
+      TIMER.running = !TIMER.running;
+      updateTimerUI();
+      // lock/unlock inputs
+      const lock = !TIMER.running;
+      $$("#questionList input, #questionList button").forEach(el=>{
+        if(el.id && el.id.startsWith("ans-")) el.disabled = lock;
+        if(el.id && (el.id.startsWith("check-") || el.id.startsWith("hint-"))) el.disabled = lock;
+      });
+      $("#submitBtn").disabled = lock;
+      $("#saveBtn").disabled = lock;
+      $("#resetBtn").disabled = lock;
+    }
+    $("#pauseBtn").addEventListener("click", togglePause);
+
+    /********************
+     * SVG helpers (parallel lines + transversal)
+     ********************/
+    function svgWrap(svg){
+      return `${svg}<div class="svg-note">Not to scale</div>`;
+    }
+
+    function degNorm(d){
+      let a = d % 360;
+      if (a < 0) a += 360;
+      return a;
+    }
+    function cwDiff(fromDeg, toDeg){
+      return degNorm(toDeg - fromDeg);
+    }
+    function polar(cx, cy, r, deg){
+      const rad = (deg * Math.PI) / 180;
+      return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+    }
+    function arcPath(cx, cy, r, startDeg, endDeg){
+      const s = polar(cx, cy, r, startDeg);
+      const e = polar(cx, cy, r, endDeg);
+      const d = cwDiff(startDeg, endDeg);
+      const large = d > 180 ? 1 : 0;
+      const sweep = 1; // clockwise
+      return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${r} ${r} 0 ${large} ${sweep} ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
+    }
+    function angleLabelPos(cx, cy, r, startDeg, endDeg){
+      const d = cwDiff(startDeg, endDeg);
+      const mid = degNorm(startDeg + d/2);
+      return polar(cx, cy, r, mid);
+    }
+    function fontSizeForLabel(label){
+      const n = String(label||"").length;
+      if (n >= 10) return 11;
+      if (n >= 7)  return 12;
+      return 13;
+    }
+    function svgText(x, y, text, color){
+      const fs = fontSizeForLabel(text);
+      return `<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" fill="${color}" font-size="${fs}" font-weight="900"
+        text-anchor="middle" dominant-baseline="middle">${escapeHtml(text)}</text>`;
+    }
+    function svgAngleMarkAt(vx, vy, startDeg, endDeg, label, color){
+      const arcR = 24;
+      const textR = 42;
+      const p = angleLabelPos(vx, vy, textR, startDeg, endDeg);
+      return `
+        <path d="${arcPath(vx, vy, arcR, startDeg, endDeg)}" fill="none" stroke="${color}" stroke-width="3"/>
+        ${svgText(p.x, p.y, label, color)}
+      `;
+    }
+    function sectorForPos(pos, tDeg){
+      const t = degNorm(tDeg);
+      const up = degNorm(t + 180);
+      if (pos === "SE") return { start: 0,  end: t };
+      if (pos === "SW") return { start: t,  end: 180 };
+      if (pos === "NW") return { start: 180, end: up };
+      // NE
+      return { start: up, end: 0 };
+    }
+
+    function pickParallelGeometry(){
+      const t = randint(35, 70); // down-right
+      const yTop = 85;
+      const yBot = 210;
+
+      for (let tries=0; tries<40; tries++){
+        const cx = randint(230, 290);
+        const cy = randint(135, 155);
+        const sin = Math.sin(t*Math.PI/180);
+        if (Math.abs(sin) < 0.2) continue;
+        const cos = Math.cos(t*Math.PI/180);
+
+        const sTop = (yTop - cy) / sin;
+        const sBot = (yBot - cy) / sin;
+        const xTop = cx + sTop * cos;
+        const xBot = cx + sBot * cos;
+
+        if (xTop > 110 && xTop < 410 && xBot > 110 && xBot < 410){
+          return { tDeg: t, yTop, yBot, cx, cy, xTop, xBot };
+        }
+      }
+      return { tDeg: 55, yTop: 85, yBot: 210, cx: 260, cy: 145, xTop: 220, xBot: 300 };
+    }
+
+    function svgParallelTransversal(cfg){
+      const geom = cfg.geom || pickParallelGeometry();
+      const tDeg = geom.tDeg;
+      const yTop = geom.yTop, yBot = geom.yBot;
+      const xTop = geom.xTop, xBot = geom.xBot;
+
+      const leftX = 40, rightX = 480;
+
+      // Transversal endpoints
+      const cx = geom.cx, cy = geom.cy;
+      const R = 420;
+      const p1 = polar(cx, cy, R, tDeg);
+      const p2 = polar(cx, cy, R, degNorm(tDeg + 180));
+
+      // parallel arrows
+      function arrowAt(x, y, dir){
+        const len = 14;
+        const a = polar(x, y, len, dir + 160);
+        const b = polar(x, y, len, dir - 160);
+        return `<path d="M ${a.x.toFixed(2)} ${a.y.toFixed(2)} L ${x.toFixed(2)} ${y.toFixed(2)} L ${b.x.toFixed(2)} ${b.y.toFixed(2)}"
+          fill="none" stroke="#111" stroke-width="3" stroke-linecap="round"/>`;
+      }
+
+      const topLabels = (cfg.labelsTop || []).map(L => {
+        const sec = sectorForPos(L.pos, tDeg);
+        return svgAngleMarkAt(xTop, yTop, sec.start, sec.end, L.label, L.color);
+      }).join("\n");
+
+      const botLabels = (cfg.labelsBot || []).map(L => {
+        const sec = sectorForPos(L.pos, tDeg);
+        return svgAngleMarkAt(xBot, yBot, sec.start, sec.end, L.label, L.color);
+      }).join("\n");
+
+      return `
+      <svg viewBox="0 0 520 280" xmlns="http://www.w3.org/2000/svg" aria-label="Parallel lines with transversal">
+        <line x1="${leftX}" y1="${yTop}" x2="${rightX}" y2="${yTop}" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+        <line x1="${leftX}" y1="${yBot}" x2="${rightX}" y2="${yBot}" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+
+        ${arrowAt(160, yTop, 0)}
+        ${arrowAt(360, yTop, 0)}
+        ${arrowAt(160, yBot, 0)}
+        ${arrowAt(360, yBot, 0)}
+
+        <line x1="${p1.x.toFixed(2)}" y1="${p1.y.toFixed(2)}" x2="${p2.x.toFixed(2)}" y2="${p2.y.toFixed(2)}"
+          stroke="#111" stroke-width="6" stroke-linecap="round"/>
+
+        <circle cx="${xTop.toFixed(2)}" cy="${yTop.toFixed(2)}" r="6.5" fill="#111"/>
+        <circle cx="${xBot.toFixed(2)}" cy="${yBot.toFixed(2)}" r="6.5" fill="#111"/>
+
+        <text x="${(xTop+14).toFixed(2)}" y="${(yTop-12).toFixed(2)}" font-size="14" font-weight="900">P</text>
+        <text x="${(xBot+14).toFixed(2)}" y="${(yBot-12).toFixed(2)}" font-size="14" font-weight="900">Q</text>
+
+        ${topLabels}
+        ${botLabels}
+      </svg>`;
+    }
+
+    function diagramPlaceholder(label="Diagram"){
+      const svg = `
+        <svg viewBox="-10 -10 280 200" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Diagram placeholder">
+          <rect x="0" y="0" width="260" height="180" fill="none" stroke="#111" stroke-width="2" rx="10"></rect>
+          <text x="130" y="95" text-anchor="middle"
+            style="font: 16px 'Segoe UI', Tahoma, sans-serif; fill: rgba(0,0,0,0.65); font-weight: 900;">
+            ${escapeHtml(label)}
+          </text>
+        </svg>
+      `;
+      return svgWrap(svg);
+    }
+
+    /********************
+     * Question banks (2 + 4 + 4 = 10)
+     ********************/
+    const CONCEPT_BANK = [
+      {
+        id:"A1",
+        diff:"easy",
+        build:() => ({
+          difficulty:"easy",
+          prompt:`Two parallel lines are cut by a transversal. Which statement is correct?
+A. Corresponding angles are equal.
+B. Alternate angles add up to 180°.
+C. Co-interior angles are equal.
+D. Corresponding angles add up to 360°.`,
+          hint:`If the lines are parallel: corresponding are equal, alternate interior are equal, co-interior sum to 180°.`,
+          answerSpec:{ type:"mc", value:"A" },
+          displayAnswer:"A",
+          svg: diagramPlaceholder("Parallel lines + transversal")
+        })
+      },
+      {
+        id:"A2",
+        diff:"easy",
+        build:() => ({
+          difficulty:"easy",
+          prompt:`Co-interior angles (same-side interior angles) between two parallel lines add up to __°.`,
+          hint:`Co-interior angles always add to 180° (when lines are parallel).`,
+          answerSpec:{ type:"integer", value:180 },
+          displayAnswer:"180°",
+          svg: diagramPlaceholder("No diagram needed")
+        })
+      },
+      {
+        id:"A3",
+        diff:"easy",
+        build:() => ({
+          difficulty:"easy",
+          prompt:`If two parallel lines are cut by a transversal, alternate interior angles are:
+A. equal
+B. sum to 180°
+C. always acute
+D. always reflex`,
+          hint:`Alternate interior angles are equal (only when the lines are parallel).`,
+          answerSpec:{ type:"mc", value:"A" },
+          displayAnswer:"A",
+          svg: diagramPlaceholder("Parallel lines + transversal")
+        })
+      },
+      {
+        id:"A4",
+        diff:"easy",
+        build:() => ({
+          difficulty:"easy",
+          prompt:`In parallel lines, corresponding angles are __ (equal / sum to 180).`,
+          hint:`Corresponding angles are equal (the same size).`,
+          answerSpec:{ type:"word", accept:["equal","the same","same"] },
+          displayAnswer:"equal",
+          svg: diagramPlaceholder("No diagram needed")
+        })
+      },
+      {
+        id:"A5",
+        diff:"easy",
+        build:() => ({
+          difficulty:"easy",
+          prompt:`Which pair of angles are on the same side of the transversal and inside the two lines?
+A. Corresponding
+B. Alternate interior
+C. Co-interior
+D. Vertically opposite`,
+          hint:`Co-interior = inside + same side.`,
+          answerSpec:{ type:"mc", value:"C" },
+          displayAnswer:"C",
+          svg: diagramPlaceholder("No diagram needed")
+        })
+      }
+    ];
+
+    const SIMPLE_BANK = [
+      {
+        id:"B1_corr_SE_SE",
+        build:() => {
+          const A = randint(35,145);
+          const geom = pickParallelGeometry();
+          const svg = svgParallelTransversal({
+            geom,
+            labelsTop:[{pos:"SE", label:`${A}°`, color:"#d32f2f"}],
+            labelsBot:[{pos:"SE", label:"x°", color:"#2e7d32"}]
+          });
+          return {
+            difficulty:"medium",
+            prompt:`AB ∥ CD. Use the diagram (or the description) to find x.
+Text description: The given angle at P and x at Q are in the same position (corresponding).`,
+            hint:`Corresponding angles are equal.`,
+            answerSpec:{ type:"integer", value:A },
+            displayAnswer:`${A}°`,
+            svg: svgWrap(svg)
+          };
+        }
+      },
+      {
+        id:"B2_alt_SE_NW",
+        build:() => {
+          const A = randint(30,80);
+          const geom = pickParallelGeometry();
+          const svg = svgParallelTransversal({
+            geom,
+            labelsTop:[{pos:"SE", label:`${A}°`, color:"#1565c0"}],
+            labelsBot:[{pos:"NW", label:"x°", color:"#7b1fa2"}]
+          });
+          return {
+            difficulty:"medium",
+            prompt:`AB ∥ CD. Find x.
+Text description: The given angle and x are alternate interior angles (inside the lines, opposite sides).`,
+            hint:`Alternate interior angles are equal.`,
+            answerSpec:{ type:"integer", value:A },
+            displayAnswer:`${A}°`,
+            svg: svgWrap(svg)
+          };
+        }
+      },
+      {
+        id:"B3_coin_SE_SW",
+        build:() => {
+          const A = randint(40,130);
+          const x = 180 - A;
+          const geom = pickParallelGeometry();
+          const svg = svgParallelTransversal({
+            geom,
+            labelsTop:[{pos:"SE", label:`${A}°`, color:"#d32f2f"}],
+            labelsBot:[{pos:"SW", label:"x°", color:"#2e7d32"}]
+          });
+          return {
+            difficulty:"medium",
+            prompt:`AB ∥ CD. Find x.
+Text description: The given angle and x are co-interior angles (inside the lines, same side).`,
+            hint:`Co-interior angles add to 180° (so x = 180 − given).`,
+            answerSpec:{ type:"integer", value:x },
+            displayAnswer:`${x}°`,
+            svg: svgWrap(svg)
+          };
+        }
+      },
+      {
+        id:"B4_corr_NE_NE",
+        build:() => {
+          const A = randint(35,145);
+          const geom = pickParallelGeometry();
+          const svg = svgParallelTransversal({
+            geom,
+            labelsTop:[{pos:"NE", label:`${A}°`, color:"#f57c00"}],
+            labelsBot:[{pos:"NE", label:"x°", color:"#2e7d32"}]
+          });
+          return {
+            difficulty:"medium",
+            prompt:`AB ∥ CD. Find x.
+Text description: Both marked angles are top-right angles at P and Q (corresponding).`,
+            hint:`Corresponding angles are equal.`,
+            answerSpec:{ type:"integer", value:A },
+            displayAnswer:`${A}°`,
+            svg: svgWrap(svg)
+          };
+        }
+      },
+      {
+        id:"B5_alt_SW_NE",
+        build:() => {
+          const A = randint(35,125);
+          const geom = pickParallelGeometry();
+          const svg = svgParallelTransversal({
+            geom,
+            labelsTop:[{pos:"SW", label:`${A}°`, color:"#1565c0"}],
+            labelsBot:[{pos:"NE", label:"x°", color:"#7b1fa2"}]
+          });
+          return {
+            difficulty:"medium",
+            prompt:`AB ∥ CD. Find x.
+Text description: The marked angles are alternate interior angles.`,
+            hint:`Alternate interior angles are equal.`,
+            answerSpec:{ type:"integer", value:A },
+            displayAnswer:`${A}°`,
+            svg: svgWrap(svg)
+          };
+        }
+      },
+      {
+        id:"B6_coin_SW_NW",
+        build:() => {
+          const A = randint(35,130);
+          const x = 180 - A;
+          const geom = pickParallelGeometry();
+          const svg = svgParallelTransversal({
+            geom,
+            labelsTop:[{pos:"SW", label:`${A}°`, color:"#d32f2f"}],
+            labelsBot:[{pos:"NW", label:"x°", color:"#2e7d32"}]
+          });
+          return {
+            difficulty:"medium",
+            prompt:`AB ∥ CD. Find x.
+Text description: The given angle and x are co-interior angles.`,
+            hint:`Co-interior angles add to 180°.`,
+            answerSpec:{ type:"integer", value:x },
+            displayAnswer:`${x}°`,
+            svg: svgWrap(svg)
+          };
+        }
+      }
+    ];
+
+    const CHALLENGE_BANK = [
+      {
+        id:"C1_corr_expr_eq_num",
+        build:() => {
+          const x = randint(12,38);
+          const A = 2*x + 14;
+          const geom = pickParallelGeometry();
+          const svg = svgParallelTransversal({
+            geom,
+            labelsTop:[{pos:"SE", label:`2x + 14°`, color:"#d32f2f"}],
+            labelsBot:[{pos:"SE", label:`${A}°`, color:"#1565c0"}]
+          });
+          return {
+            difficulty:"hard",
+            prompt:`AB ∥ CD. The labelled angles are corresponding, so they are equal. Solve for x.`,
+            hint:`Set 2x + 14 = ${A}, then solve.`,
+            answerSpec:{ type:"integer", value:x },
+            displayAnswer:`${x}`,
+            svg: svgWrap(svg)
+          };
+        }
+      },
+      {
+        id:"C2_alt_expr_eq_num",
+        build:() => {
+          const x = randint(10,40);
+          const A = 3*x - 10;
+          const geom = pickParallelGeometry();
+          const svg = svgParallelTransversal({
+            geom,
+            labelsTop:[{pos:"SW", label:`3x - 10°`, color:"#7b1fa2"}],
+            labelsBot:[{pos:"NE", label:`${A}°`, color:"#1565c0"}]
+          });
+          return {
+            difficulty:"hard",
+            prompt:`AB ∥ CD. The labelled angles are alternate interior angles, so they are equal. Solve for x.`,
+            hint:`Set 3x − 10 = ${A}, then solve.`,
+            answerSpec:{ type:"integer", value:x },
+            displayAnswer:`${x}`,
+            svg: svgWrap(svg)
+          };
+        }
+      },
+      {
+        id:"C3_coin_two_expr_sum180",
+        build:() => {
+          // Build (x + k) + (2x + m) = 180 with integer solution x
+          let x = randint(12,40);
+          let k = 0, m = 0;
+          for(let tries=0; tries<50; tries++){
+            x = randint(12,40);
+            k = randint(10,90);
+            m = 180 - 3*x - k;
+            if(m >= 5 && m <= 120) break;
+          }
+          if(m < 5 || m > 120){
+            x = 30; k = 25; m = 180 - 3*x - k; // safe fallback
+          }
+          const geom = pickParallelGeometry();
+          const svg = svgParallelTransversal({
+            geom,
+            labelsTop:[{pos:"SE", label:`x + ${k}°`, color:"#d32f2f"}],
+            labelsBot:[{pos:"SW", label:`2x + ${m}°`, color:"#1565c0"}]
+          });
+          return {
+            difficulty:"hard",
+            prompt:`AB ∥ CD. The labelled angles are co-interior, so they add to 180°. Solve for x.`,
+            hint:`(x + ${k}) + (2x + ${m}) = 180.`,
+            answerSpec:{ type:"integer", value:x },
+            displayAnswer:`${x}`,
+            svg: svgWrap(svg)
+          };
+        }
+      },
+      {
+        id:"C4_two_step_vert_then_corr",
+        build:() => {
+          const A = randint(40,140);
+          const geom = pickParallelGeometry();
+          const svg = svgParallelTransversal({
+            geom,
+            labelsTop:[
+              {pos:"NE", label:`${A}°`, color:"#d32f2f"},
+              {pos:"SW", label:`${A}°`, color:"#999999"}
+            ],
+            labelsBot:[{pos:"NW", label:"x°", color:"#2e7d32"}]
+          });
+          return {
+            difficulty:"hard",
+            prompt:`AB ∥ CD. Two-step: use vertically opposite angles first, then corresponding angles. Find x.`,
+            hint:`Vertical opposite angles are equal, then use corresponding angles.`,
+            answerSpec:{ type:"integer", value:A },
+            displayAnswer:`${A}°`,
+            svg: svgWrap(svg)
+          };
+        }
+      },
+      {
+        id:"C5_alt_then_straight",
+        build:() => {
+          const A = randint(35,85);
+          const x = 180 - A;
+          const geom = pickParallelGeometry();
+          const svg = svgParallelTransversal({
+            geom,
+            labelsTop:[{pos:"SE", label:`${A}°`, color:"#1565c0"}],
+            labelsBot:[
+              {pos:"NW", label:`${A}°`, color:"#999999"},
+              {pos:"NE", label:"x°", color:"#d32f2f"}
+            ]
+          });
+          return {
+            difficulty:"hard",
+            prompt:`AB ∥ CD. Two-step: use alternate interior angles, then straight-line angles. Find x.`,
+            hint:`Alternate interior angles are equal, then adjacent angles on a straight line sum to 180°.`,
+            answerSpec:{ type:"integer", value:x },
+            displayAnswer:`${x}°`,
+            svg: svgWrap(svg)
+          };
+        }
+      },
+      {
+        id:"C6_corr_two_expr_equal",
+        build:() => {
+          // Build solvable: (a1 x + b1) = (a2 x + b2), unique solution integer
+          let x = randint(12,40);
+          let a1=0,a2=0,b1=0,b2=0, val=0;
+          for(let tries=0; tries<80; tries++){
+            x = randint(12,40);
+            a1 = choice([2,3,4,5]);
+            a2 = choice([1,2,3,4]);
+            if(a1 === a2) continue;
+            b1 = randint(-20,40);
+            val = a1*x + b1;
+            b2 = val - a2*x;
+            if(val >= 25 && val <= 160 && b2 >= -30 && b2 <= 90) break;
+          }
+          if(!(val >= 25 && val <= 160)){
+            x=30; a1=4; a2=2; b1=-12; val=a1*x+b1; b2=val-a2*x; // classic
+          }
+
+          const geom = pickParallelGeometry();
+          const svg = svgParallelTransversal({
+            geom,
+            labelsTop:[{pos:"NE", label:`${a1}x ${b1>=0?"+":"-"} ${Math.abs(b1)}°`, color:"#7b1fa2"}],
+            labelsBot:[{pos:"NE", label:`${a2}x ${b2>=0?"+":"-"} ${Math.abs(b2)}°`, color:"#1565c0"}]
+          });
+
+          return {
+            difficulty:"hard",
+            prompt:`AB ∥ CD. The labelled angles are corresponding, so they are equal. Solve for x.`,
+            hint:`Set the two expressions equal, then solve.`,
+            answerSpec:{ type:"integer", value:x },
+            displayAnswer:`${x}`,
+            svg: svgWrap(svg)
+          };
+        }
+      }
+    ];
+
+    let LAST_SIG = "";
+
+    function pickTemplates(bank, count, avoidIds){
+      const avoid = new Set(avoidIds || []);
+      const shuffled = shuffle(bank);
+      const picked = [];
+      for(const t of shuffled){
+        if(picked.length >= count) break;
+        if(avoid.has(t.id)) continue;
+        picked.push(t);
+        avoid.add(t.id);
+      }
+      // if still not enough, allow repeats (rare)
+      if(picked.length < count){
+        for(const t of shuffled){
+          if(picked.length >= count) break;
+          if(picked.some(p=>p.id===t.id)) continue;
+          picked.push(t);
+        }
+      }
+      return picked;
+    }
+
+    /********************
+     * Build question set
+     ********************/
+    function makeQuestions(){
+      // Try to avoid repeating the same B/C selection as last time
+      for(let attempt=0; attempt<30; attempt++){
+        const used = new Set();
+        const A = pickTemplates(CONCEPT_BANK, 2, used);
+        A.forEach(t=>used.add(t.id));
+        const B = pickTemplates(SIMPLE_BANK, 4, used);
+        B.forEach(t=>used.add(t.id));
+        const C = pickTemplates(CHALLENGE_BANK, 4, used);
+
+        const sig = "A:"+A.map(x=>x.id).sort().join("|")+
+                    "||B:"+B.map(x=>x.id).sort().join("|")+
+                    "||C:"+C.map(x=>x.id).sort().join("|");
+        if(sig === LAST_SIG) continue;
+        LAST_SIG = sig;
+
+        const qs = [];
+        A.forEach(t => qs.push(t.build()));
+        B.forEach(t => qs.push(t.build()));
+        C.forEach(t => qs.push(t.build()));
+        return qs;
+      }
+
+      // Fallback
+      const qs = [];
+      pickTemplates(CONCEPT_BANK, 2, []).forEach(t=>qs.push(t.build()));
+      pickTemplates(SIMPLE_BANK, 4, []).forEach(t=>qs.push(t.build()));
+      pickTemplates(CHALLENGE_BANK, 4, []).forEach(t=>qs.push(t.build()));
+      return qs;
+    }
+
+    /********************
+     * UI state + rendering
+     ********************/
+    let QUESTIONS = [];
+    let STATE = { answers:[], checked:[], correct:[], hintShown:[], submitted:false };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+    function niceDiff(d){
+      if(d==="easy") return "Easy";
+      if(d==="medium") return "Medium";
+      return "Hard";
+    }
+
+    function renderQuestions(){
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const userVal = STATE.answers[idx] ?? "";
+        const checked = !!STATE.checked[idx];
+        const correct = !!STATE.correct[idx];
+        const hintShown = !!STATE.hintShown[idx];
+
+        const correctText = q.displayAnswer ?? (q.answerSpec && q.answerSpec.value != null ? String(q.answerSpec.value) : "");
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${escapeHtml(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="q-body">
+            <div class="svg-wrap">${q.svg || ""}</div>
+
+            <div class="answer-area">
+              <div class="input-row">
+                <input type="text" autocomplete="off"
+                  id="ans-${idx}" placeholder="Answer"
+                  value="${escapeHtml(userVal)}">
+                <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+                <button class="btn ghost" type="button" id="hint-${idx}">${hintShown ? "Hide Hint" : "Hint"}</button>
+              </div>
+
+              <div class="hint-box ${hintShown ? "show" : ""}" id="hintBox-${idx}">
+                ${escapeHtml(q.hint || "")}
+              </div>
+
+              <div class="feedback ${checked ? (correct ? "ok" : "bad") : ""}" id="fb-${idx}">
+                ${checked
+                  ? (correct
+                      ? "Correct ✅"
+                      : `Not correct ❌  (Correct answer: ${escapeHtml(correctText)})`)
+                  : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        const inp = $(`#ans-${idx}`, card);
+        inp.addEventListener("input", () => {
+          STATE.answers[idx] = inp.value;
+          STATE.checked[idx] = false;
+          STATE.correct[idx] = false;
+          if(STATE.submitted){
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+          }
+          const fb = $(`#fb-${idx}`, card);
+          fb.className = "feedback";
+          fb.textContent = "";
+        });
+
+        $(`#check-${idx}`, card).addEventListener("click", () => checkOne(idx));
+        $(`#hint-${idx}`, card).addEventListener("click", () => {
+          STATE.hintShown[idx] = !STATE.hintShown[idx];
+          renderQuestions();
+        });
+      });
+
+      $("#resultsBox").style.display = "none";
+    }
+
+    function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const res = compareAnswer(STATE.answers[idx], q.answerSpec);
+      STATE.checked[idx] = true;
+
+      if(res.empty){
+        STATE.correct[idx] = false;
+        renderQuestions();
+        const fb = $(`#fb-${idx}`);
+        fb.className = "feedback bad";
+        fb.textContent = "Please enter an answer.";
+        return;
+      }
+
+      // if invalid format for this type, show a helpful message
+      if(!res.ok && res.msg){
+        STATE.correct[idx] = false;
+        renderQuestions();
+        const fb = $(`#fb-${idx}`);
+        fb.className = "feedback bad";
+        fb.textContent = res.msg;
+        return;
+      }
+
+      STATE.correct[idx] = !!res.ok;
+      renderQuestions();
+    }
+
+    function submitAll(){
+      let correctCount = 0;
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const res = compareAnswer(STATE.answers[i], q.answerSpec);
+        STATE.checked[i] = true;
+        STATE.correct[i] = !!res.ok;
+        if(STATE.correct[i]) correctCount++;
+      }
+
+      STATE.submitted = true;
+      renderQuestions();
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+
+      const lines = QUESTIONS.map((q,i)=>(
+        `<div style="margin:6px 0;"><b>Q${i+1}:</b> ${escapeHtml(q.displayAnswer || "")}</div>`
+      )).join("");
+
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:8px;"><b>Correct Answers:</b></div>
+        <div style="margin-top:6px;">${lines}</div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+    function resetAnswers(){
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    /********************
+     * Save Current Result as TXT
+     ********************/
+    function saveResult(){
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const when = new Date();
+      const dateStr = when.toLocaleString();
+      const elapsed = formatTime(TIMER.seconds);
+
+      let correctCount = 0;
+      const out = [];
+
+      out.push(`DYAA — Save Current Result`);
+      out.push(`Title: ${title}`);
+      out.push(`Student: ${student}`);
+      out.push(`Date: ${dateStr}`);
+      out.push(`Elapsed Time: ${elapsed}`);
+      out.push(``);
+
+      QUESTIONS.forEach((q, i) => {
+        const raw = (STATE.answers[i] ?? "").toString().trim();
+        const res = compareAnswer(raw, q.answerSpec);
+        const isCorrect = !!res.ok;
+        if(isCorrect) correctCount++;
+
+        out.push(`Q${i+1} (${String(q.difficulty||"").toUpperCase()}): ${q.prompt}`);
+        out.push(`Your answer: ${raw ? raw : "(blank)"}`);
+        out.push(`Correct answer: ${q.displayAnswer || ""}`);
+        out.push(`Result: ${raw ? (isCorrect ? "Correct" : "Not correct") : "Not answered"}`);
+        out.push(``);
+      });
+
+      const total = QUESTIONS.length;
+      const pct = total ? Math.round((correctCount/total)*100) : 0;
+      out.splice(5, 0, `Score: ${correctCount} / ${total} (${pct}%)`);
+
+      const text = out.join("\r\n");
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_result.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    /********************
+     * Tabs + Student name
+     ********************/
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $(`#panel-${tab}`).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", ""));
+      $("#studentNameValue").textContent = name ? name : "Anonymous";
+    }
+
+    /********************
+     * Generate New Set (resets timer)
+     ********************/
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+
+      STATE.answers = Array(QUESTIONS.length).fill("");
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.hintShown = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+
+      resetTimer();
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set? This will clear your current answers and reset the timer.", () => {
+        generateNewSet();
+        // go to practice
+        $$('.tab').forEach(b=>b.classList.remove('active'));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$('.panel').forEach(p=>p.classList.remove('active'));
+        $('#panel-practice').classList.add('active');
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    /********************
+     * Learn diagram
+     ********************/
+    function renderLearnDiagram(){
+      const geom = pickParallelGeometry();
+      const svg = svgParallelTransversal({
+        geom,
+        labelsTop:[
+          {pos:"NE", label:"a°", color:"#1565c0"},
+          {pos:"SE", label:"b°", color:"#d32f2f"}
+        ],
+        labelsBot:[
+          {pos:"NE", label:"a°", color:"#1565c0"},
+          {pos:"SW", label:"180° − b", color:"#2e7d32"}
+        ]
+      });
+      $("#learnSvgWrap").innerHTML = svgWrap(svg);
+    }
+
+    /********************
+     * Export Questions PDF
+     * - PDF per page: 2 / 3 / 6
+     * - Answers at the end (separate page(s), auto paged)
+     ********************/
+    function layoutClass(perPage){
+      if(perPage === 6) return "six";
+      if(perPage === 3) return "three";
+      return "two";
+    }
+
+    function buildQuestionPageDOM(indexGroup, perPage, meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">${escapeHtml(meta.title)}</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)} • Time: ${escapeHtml(meta.timeStr)}
+          </div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const grid = document.createElement("div");
+      grid.className = `export-qgrid ${layoutClass(perPage)}`;
+
+      indexGroup.forEach(i => {
+        const q = QUESTIONS[i];
+        const box = document.createElement("div");
+        box.className = "export-q";
+        box.innerHTML = `
+          <div class="qprompt">Q${i+1}. ${escapeHtml(q.prompt)}</div>
+          <div class="export-diagram">${stripSvgNote(q.svg || "")}</div>
+          <div class="export-answerline">Answer: <span></span></div>
+        `;
+        grid.appendChild(box);
+      });
+
+      content.appendChild(grid);
+      page.appendChild(header);
+      page.appendChild(content);
+      return page;
+    }
+
+    function createAnswerPage(meta){
+      const page = document.createElement("div");
+      page.className = "export-page";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      header.innerHTML = `
+        <div>
+          <div class="export-title">Answers — ${escapeHtml(meta.title)}</div>
+          <div class="export-sub">
+            Student: ${escapeHtml(meta.student)} • Date: ${escapeHtml(meta.dateStr)}
+          </div>
+          <div class="answers-note">These are the correct answers for the exported question set.</div>
+        </div>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "export-content";
+
+      const list = document.createElement("div");
+      list.className = "answers-list";
+      content.appendChild(list);
+
+      page.appendChild(header);
+      page.appendChild(content);
+
+      return { page, content, list };
+    }
+
+    async function exportQuestionsPdf(){
+      const perPage = Number($("#pdfPerPage").value) || 2;
+
+      const libsOk = (window.html2canvas && window.jspdf && window.jspdf.jsPDF);
+      if(!libsOk){
+        alert("PDF export needs html2canvas + jsPDF. Please check your connection (CDN) or include the libraries locally.");
+        return;
+      }
+
+      const title = TEMPLATE_META.title;
+      const student = safeName($("#studentNameValue").textContent) || "Student";
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+      const timeStr = $("#timerValue").textContent;
+
+      const exportRoot = document.createElement("div");
+      exportRoot.className = "export-root";
+      document.body.appendChild(exportRoot);
+
+      // Question pages
+      const idxs = QUESTIONS.map((_,i)=>i);
+      for(let i=0;i<idxs.length;i+=perPage){
+        const group = idxs.slice(i, i+perPage);
+        exportRoot.appendChild(buildQuestionPageDOM(group, perPage, { title, student, dateStr, timeStr }));
+      }
+
+      // Answer pages (auto paged)
+      let ap = createAnswerPage({ title, student, dateStr });
+      exportRoot.appendChild(ap.page);
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const item = document.createElement("div");
+        item.textContent = `Q${i+1}: ${QUESTIONS[i].displayAnswer || ""}`;
+        ap.list.appendChild(item);
+
+        if(ap.content.scrollHeight > ap.content.clientHeight){
+          ap.list.removeChild(item);
+          ap = createAnswerPage({ title, student, dateStr });
+          exportRoot.appendChild(ap.page);
+          ap.list.appendChild(item);
+        }
+      }
+
+      // Render to PDF
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+
+      const pages = Array.from(exportRoot.querySelectorAll(".export-page"));
+      const marginMm = 8;
+
+      for(let i=0;i<pages.length;i++){
+        const pageEl = pages[i];
+
+        const canvas = await window.html2canvas(pageEl, {
+          scale: 2,
+          backgroundColor: "#ffffff",
+          useCORS: true
+        });
+
+        const imgData = canvas.toDataURL("image/png", 1.0);
+
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = pdf.internal.pageSize.getHeight();
+        const usableW = pageW - marginMm*2;
+        const usableH = pageH - marginMm*2;
+
+        const imgH = canvas.height * (usableW / canvas.width);
+
+        let drawW = usableW;
+        let drawH = imgH;
+
+        if(drawH > usableH){
+          drawH = usableH;
+          drawW = canvas.width * (drawH / canvas.height);
+        }
+
+        const x = (pageW - drawW) / 2;
+        const y = marginMm;
+
+        if(i > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", x, y, drawW, drawH, undefined, "FAST");
+      }
+
+      pdf.save(`${TEMPLATE_META.filePrefix}_${student.replace(/\s+/g,"_")}_Questions.pdf`);
+      exportRoot.remove();
+    }
+
+    $("#exportQuestionsBtn").addEventListener("click", exportQuestionsPdf);
+
+    /********************
+     * Init
+     ********************/
+    function applyTemplateMeta(){
+      document.title = TEMPLATE_META.title;
+      $("#pageTitle").textContent = TEMPLATE_META.title;
+      $("#pageSubtitle").textContent = TEMPLATE_META.subtitle;
+      $("#instructionsText").textContent = TEMPLATE_META.instructions;
+    }
+
+    applyTemplateMeta();
+    ensureStudentName();
+    renderLearnDiagram();
+    updateTimerUI();
+    startTimerTick();
+    generateNewSet();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Angles — Straight Line / At a Point / Vertically Opposite (Quiz)</title>
+
+  <style>
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:#f4f4f9;
+      margin:0; padding:20px;
+      color:#333;
+    }
+    .quiz-container{
+      max-width:980px;
+      margin:40px auto;
+      background:#fff;
+      padding:30px;
+      border-radius:12px;
+      box-shadow:0 6px 15px rgba(0,0,0,0.1);
+      position:relative;
+    }
+    #headerLogo{
+      display:flex; align-items:center;
+      margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:10px;
+      gap:12px;
+    }
+    .logo-icon{
+      width:40px; height:40px;
+      background:#0d47a1; border-radius:6px;
+      position:relative;
+      flex:0 0 auto;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:20px;height:9px;
+      background:#ff9800;
+      top:-6px; left:22px;
+      border-radius:3px;
+    }
+    .logo-text span.edu{
+      font-size:0.95em;
+      color:#ff9800;
+      font-weight:900;
+      letter-spacing:0.8px;
+    }
+
+    .top-bar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin:10px 0 10px;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .top-left{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      font-weight:800;
+      color:#333;
+    }
+    .top-right{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .top-right button{
+      padding:10px 18px;
+      border:none;
+      color:#fff;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:1em;
+      font-weight:800;
+    }
+    #pauseResumeButton{ background:#ff9800; display:none; }
+    #generateButton{ background:#ff9800; display:none; }
+    #exportPdfButton{ background:#6a1b9a; display:none; }
+
+    .quiz-main{ display:flex; gap:20px; }
+    .sidebar{
+      width:260px;
+      border-right:1px solid #ddd;
+      padding-right:10px;
+      display:none;
+    }
+    .sidebar h4{
+      margin:0 0 8px;
+      font-size:0.95em;
+      border-bottom:1px solid #eee;
+      padding-bottom:4px;
+    }
+    .sidebar ul{ list-style:none; padding:0; margin:0; }
+    .sidebar li{
+      padding:6px;
+      cursor:pointer;
+      border-radius:4px;
+      font-size:0.9em;
+      user-select:none;
+      margin-bottom:4px;
+    }
+    .sidebar li.active{ outline:2px solid #1976d2; font-weight:800; }
+    .sidebar li.correct{ background:#d4edda; border-left:4px solid #28a745; }
+    .sidebar li.incorrect{ background:#f8d7da; border-left:4px solid #f44336; }
+    .sidebar li.answered{ border-left:4px solid #4caf50; }
+
+    #quizContent{ flex:1; }
+
+    .question-text{ font-size:1.1em; margin-bottom:6px; }
+    .instructions{ font-size:0.92em; color:#555; margin-bottom:10px; line-height:1.4; }
+    .part-title{ font-weight:900; margin:10px 0 8px; }
+    .single-question{
+      margin-top:6px; margin-bottom:6px;
+      line-height:1.55;
+    }
+    .answer-box{
+      width:320px;
+      padding:7px 9px;
+      font-size:1em;
+      margin-left:8px;
+    }
+
+    .diagram{ margin:10px 0 8px; }
+    .diagram svg{
+      width:100%;
+      max-width:620px;
+      height:auto;
+      border:1px solid #eee;
+      border-radius:12px;
+      background:#fff;
+      display:block;
+    }
+
+    .hint-box{
+      margin-top:10px;
+      padding:10px 12px;
+      background:#f7f7ff;
+      border:1px solid #e6e6ff;
+      border-radius:10px;
+      font-size:0.92em;
+      color:#444;
+      line-height:1.45;
+    }
+    .hint-box b{ color:#111; }
+
+    .check-feedback{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid #e0e0e0;
+      background:#fafafa;
+      font-size:0.95em;
+      display:none;
+      white-space:pre-wrap;
+    }
+    .check-feedback.neutral{ display:block; background:#f6f7fb; border-color:#e2e6ff; }
+    .check-feedback.correct{ display:block; background:#d4edda; border-color:#28a745; }
+    .check-feedback.incorrect{ display:block; background:#f8d7da; border-color:#f44336; }
+
+    .question-buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+      align-items:center;
+    }
+    .question-buttons button{
+      padding:10px 18px;
+      border:none;
+      color:#fff;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:1em;
+      font-weight:800;
+    }
+    #nextButton{ background:#4caf50; }
+    #backButton{ background:#039be5; }
+    #submitButton{ background:#9c27b0; }
+    #saveButton{ background:#607d8b; }
+    #checkButton{ background:#00897b; }
+
+    table.review-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:20px;
+    }
+    .review-table th, .review-table td{
+      border:1px solid #ccc;
+      padding:6px;
+      font-size:0.85em;
+      text-align:center;
+      vertical-align:top;
+    }
+    .review-table th{ background:#f2f2f2; }
+    .correct-answer{ background:#d4edda; }
+    .incorrect-answer{ background:#f8d7da; }
+
+    @media (max-width:760px){
+      .quiz-main{ flex-direction:column; }
+      .sidebar{
+        width:100%;
+        border-right:none;
+        border-bottom:1px solid #ddd;
+        margin-bottom:10px;
+        padding-bottom:10px;
+      }
+      .answer-box{ width:240px; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text"><span class="edu">DYAA EDUCATION</span></div>
+  </div>
+
+  <div class="top-bar">
+    <div class="top-left">
+      <div id="timeLine">Time: 00:00</div>
+      <div id="studentLine">Student: Student</div>
+      <div id="setLine">Set: 1</div>
+    </div>
+
+    <div class="top-right">
+      <button id="pauseResumeButton">Pause</button>
+      <button id="generateButton">Generate New Set</button>
+      <button id="exportPdfButton">Export Questions PDF</button>
+    </div>
+  </div>
+
+  <h2>Angles — Straight Line / At a Point / Vertically Opposite</h2>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ==========================================================
+   ✅ Single mode only (no extension mode)
+   ✅ More diagram questions + realistic angles
+   ✅ Angle values are placed INSIDE the angle sector
+   ✅ Direct-download PDF (Option A: text only, no images)
+   ✅ PDF: multiple questions per page, blank line between
+========================================================== */
+
+/* ---------------- Student name from URL (?name=Tiger) ---------------- */
+function getStudentNameFromURL(){
+  try{
+    const params = new URLSearchParams(window.location.search || "");
+    const raw = params.get("name");
+    if (!raw) return "";
+    return decodeURIComponent(raw.replace(/\+/g, "%20")).trim();
+  }catch(e){
+    return "";
+  }
+}
+const URL_STUDENT_NAME = getStudentNameFromURL();
+
+/* ---------------- Utilities ---------------- */
+function randInt(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+function choice(arr){ return arr[randInt(0, arr.length - 1)]; }
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i=a.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function stripHTML(html){
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return (tmp.textContent || tmp.innerText || "").trim();
+}
+
+/* ---------------- Answer parsing + compare ---------------- */
+function parseNumber(str){
+  let s = (str || "").trim();
+  if (!s) return NaN;
+  s = s.replace(/−/g,"-").replace(/,/g,"");
+  s = s.replace(/°/g,"").replace(/\bdeg\b/gi,"").trim();
+  const v = Number(s);
+  return Number.isFinite(v) ? v : NaN;
+}
+function normalizeWord(s){
+  return (s||"")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g," ")
+    .replace(/[^a-z0-9\s\-]/g,"");
+}
+function compareByType(userStr, correct){
+  const eps = 1e-6;
+  const ansRaw = (userStr || "").trim();
+  if (ansRaw === "") return { ok:false, empty:true };
+
+  if (correct.type === "integer"){
+    const u = parseNumber(ansRaw);
+    if (!Number.isFinite(u) || Math.abs(u - Math.round(u)) > eps) return { ok:false, empty:false };
+    return { ok: Math.abs(u - correct.value) < eps, empty:false };
+  }
+  if (correct.type === "mc"){
+    const u = ansRaw.toUpperCase();
+    const c = String(correct.value || "").toUpperCase();
+    return { ok: u === c, empty:false };
+  }
+  if (correct.type === "word"){
+    const u = normalizeWord(ansRaw);
+    const list = (correct.accept || []).map(normalizeWord);
+    return { ok: list.includes(u), empty:false };
+  }
+  return { ok:false, empty:false };
+}
+
+/* ---------------- Question model ---------------- */
+function makeQ(partIndex, indexInPart, html, correct, displayCorrect, answerHint, diagramAlt){
+  return {
+    partIndex, indexInPart,
+    html,
+    plain: stripHTML(html),
+    correct,
+    displayCorrect,
+    answerHint,
+    diagramAlt: diagramAlt || "",
+    userValue:"",
+    isCorrect:false,
+    checked:false
+  };
+}
+
+/* ==========================================================
+   SVG Geometry helpers
+   Angle system: degrees increase CLOCKWISE on screen:
+   0° = right, 90° = down, 180° = left, 270° = up.
+========================================================== */
+function degNorm(d){
+  let a = d % 360;
+  if (a < 0) a += 360;
+  return a;
+}
+function cwDiff(fromDeg, toDeg){
+  return degNorm(toDeg - fromDeg);
+}
+function polar(cx, cy, r, deg){
+  const rad = (deg * Math.PI) / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+function arcPath(cx, cy, r, startDeg, endDeg){
+  const s = polar(cx, cy, r, startDeg);
+  const e = polar(cx, cy, r, endDeg);
+  const d = cwDiff(startDeg, endDeg);
+  const large = d > 180 ? 1 : 0;
+  const sweep = 1; // clockwise
+  return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${r} ${r} 0 ${large} ${sweep} ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
+}
+function angleLabelPos(cx, cy, r, startDeg, endDeg){
+  const d = cwDiff(startDeg, endDeg);
+  const mid = degNorm(startDeg + d/2);
+  return polar(cx, cy, r, mid);
+}
+function svgText(x, y, text, color){
+  return `<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" fill="${color}" font-size="16" font-weight="800"
+    text-anchor="middle" dominant-baseline="middle">${text}</text>`;
+}
+function svgAngleMark(cx, cy, startDeg, endDeg, label, color){
+  const arcR = 40;
+  const textR = 62;
+  const p = angleLabelPos(cx, cy, textR, startDeg, endDeg);
+  return `
+    <path d="${arcPath(cx, cy, arcR, startDeg, endDeg)}" fill="none" stroke="${color}" stroke-width="3"/>
+    ${svgText(p.x, p.y, label, color)}
+  `;
+}
+
+/* ==========================================================
+   Diagram generators
+========================================================== */
+function svgIntersectingLines(cfg){
+  const cx = 200, cy = 120;
+  const L = 240;
+  const d1 = cfg.d1;
+  const d2 = cfg.d2;
+
+  function linePoints(dir){
+    const a = polar(cx, cy, L, dir);
+    const b = polar(cx, cy, L, degNorm(dir+180));
+    return { a, b };
+  }
+
+  const l1 = linePoints(d1);
+  const l2 = linePoints(d2);
+
+  const sectors = (cfg.sectors || []).map(s => svgAngleMark(cx, cy, s.startDeg, s.endDeg, s.label, s.color)).join("\n");
+
+  return `
+  <svg viewBox="0 0 420 250" xmlns="http://www.w3.org/2000/svg" aria-label="Intersecting lines diagram">
+    <line x1="${l1.a.x}" y1="${l1.a.y}" x2="${l1.b.x}" y2="${l1.b.y}" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+    <line x1="${l2.a.x}" y1="${l2.a.y}" x2="${l2.b.x}" y2="${l2.b.y}" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="${cx}" cy="${cy}" r="6.5" fill="#111"/>
+    <text x="${cx+16}" y="${cy+22}" font-size="16" font-weight="900">O</text>
+    ${sectors}
+  </svg>`;
+}
+
+function svgStraightLine(cfg){
+  const cx = 210, cy = 160;
+  const L = 240;
+  const rayLen = 120;
+
+  const left = {x: cx - L, y: cy};
+  const right = {x: cx + L, y: cy};
+
+  const rayDeg = cfg.rayDeg;
+  const rayEnd = polar(cx, cy, rayLen, rayDeg);
+
+  const sectors = (cfg.sectors || []).map(s => svgAngleMark(cx, cy, s.startDeg, s.endDeg, s.label, s.color)).join("\n");
+
+  return `
+  <svg viewBox="0 0 520 280" xmlns="http://www.w3.org/2000/svg" aria-label="Straight line diagram">
+    <line x1="${left.x}" y1="${left.y}" x2="${right.x}" y2="${right.y}" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+    <line x1="${cx}" y1="${cy}" x2="${rayEnd.x}" y2="${rayEnd.y}" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="${cx}" cy="${cy}" r="6.5" fill="#111"/>
+    <text x="${cx-170}" y="${cy+25}" font-size="18" font-weight="900">A</text>
+    <text x="${cx+170}" y="${cy+25}" font-size="18" font-weight="900">B</text>
+    <text x="${cx+16}" y="${cy+26}" font-size="16" font-weight="900">O</text>
+    ${sectors}
+  </svg>`;
+}
+
+function svgAnglesAtPoint(cfg){
+  const cx = 230, cy = 150;
+  const rayLen = 140;
+  const rays = cfg.rays.map(degNorm).sort((a,b)=>a-b);
+
+  const lines = rays.map(d => {
+    const end = polar(cx, cy, rayLen, d);
+    return `<line x1="${cx}" y1="${cy}" x2="${end.x}" y2="${end.y}" stroke="#111" stroke-width="6" stroke-linecap="round"/>`;
+  }).join("\n");
+
+  const sectors = (cfg.sectors || []).map(s => svgAngleMark(cx, cy, s.startDeg, s.endDeg, s.label, s.color)).join("\n");
+
+  return `
+  <svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" aria-label="Angles at a point diagram">
+    ${lines}
+    <circle cx="${cx}" cy="${cy}" r="6.5" fill="#111"/>
+    <text x="${cx+16}" y="${cy+26}" font-size="16" font-weight="900">O</text>
+    ${sectors}
+  </svg>`;
+}
+
+/* ==========================================================
+   Build Questions
+========================================================== */
+const PART_TITLES = [
+  "Part A: Basic Concepts (No diagrams)",
+  "Part B: Diagram Questions (Simple)",
+  "Part C: Challenge Diagrams (Harder)"
+];
+
+function buildBasicConcepts(partIndex){
+  const out = [];
+
+  out.push(makeQ(partIndex, out.length,
+    `Which statement is correct?<br>
+     <b>A.</b> Acute angle: more than 90° but less than 180°<br>
+     <b>B.</b> Obtuse angle: between 0° and 90°<br>
+     <b>C.</b> Reflex angle: more than 180° but less than 360°<br>
+     <b>D.</b> Right angle: more than 180°`,
+    {type:"mc", value:"C"},
+    "C",
+    "Answer with a single letter: A, B, C or D."
+  ));
+
+  out.push(makeQ(partIndex, out.length,
+    `Angles on a straight line add up to <b>__°</b>.`,
+    {type:"integer", value:180},
+    "180°",
+    "Enter an integer."
+  ));
+
+  out.push(makeQ(partIndex, out.length,
+    `Angles at a point add up to <b>__°</b>.`,
+    {type:"integer", value:360},
+    "360°",
+    "Enter an integer."
+  ));
+
+  out.push(makeQ(partIndex, out.length,
+    `If two lines intersect, the <b>vertically opposite</b> angles are:<br>
+     <b>A.</b> equal<br>
+     <b>B.</b> supplementary (sum 180°)<br>
+     <b>C.</b> always acute<br>
+     <b>D.</b> always obtuse`,
+    {type:"mc", value:"A"},
+    "A",
+    "Answer with a single letter."
+  ));
+
+  const x = randInt(25,155);
+  out.push(makeQ(partIndex, out.length,
+    `If one angle on a straight line is <b>${x}°</b>, find the adjacent angle.`,
+    {type:"integer", value:180-x},
+    `${180-x}°`,
+    "Use: straight line sum = 180°. Enter an integer."
+  ));
+
+  const a = randInt(40,120), b = randInt(40,120), c = randInt(40,120);
+  const d = 360 - (a+b+c);
+  out.push(makeQ(partIndex, out.length,
+    `Angles at a point: if three angles are <b>${a}°</b>, <b>${b}°</b>, <b>${c}°</b>, find the fourth angle.`,
+    {type:"integer", value:d},
+    `${d}°`,
+    "Use: angles at a point sum to 360°. Enter an integer."
+  ));
+
+  return out;
+}
+
+function buildDiagramSimple(partIndex){
+  const out = [];
+
+  // 1) Straight line: numeric + unknown
+  {
+    const rayDeg = randInt(235, 315);
+    const rightAngle = randInt(35, 145);
+    const leftAngle = 180 - rightAngle;
+
+    const sectors = [
+      { startDeg: 180, endDeg: rayDeg, label: `${leftAngle}°`, color:"#d32f2f" },
+      { startDeg: rayDeg, endDeg: 0, label: `x°`, color:"#2e7d32" }
+    ];
+    const svg = svgStraightLine({ rayDeg, sectors });
+
+    out.push(makeQ(
+      partIndex, out.length,
+      `<div class="diagram">${svg}</div>
+       <b>Given AOB is a straight line.</b> Find <b>x</b>.`,
+      {type:"integer", value:rightAngle},
+      `${rightAngle}°`,
+      "Use: straight line sum = 180°. Enter an integer.",
+      "Straight line with a ray; one adjacent angle is given, find x."
+    ));
+  }
+
+  // 2) Straight line: given on right, find left
+  {
+    const rayDeg = randInt(235, 315);
+    const rightAngle = randInt(25, 155);
+    const leftAngle = 180 - rightAngle;
+
+    const sectors = [
+      { startDeg: 180, endDeg: rayDeg, label: `x°`, color:"#7b1fa2" },
+      { startDeg: rayDeg, endDeg: 0, label: `${rightAngle}°`, color:"#1565c0" }
+    ];
+    const svg = svgStraightLine({ rayDeg, sectors });
+
+    out.push(makeQ(
+      partIndex, out.length,
+      `<div class="diagram">${svg}</div>
+       <b>Given AOB is a straight line.</b> Find <b>x</b>.`,
+      {type:"integer", value:leftAngle},
+      `${leftAngle}°`,
+      "Use: straight line sum = 180°. Enter an integer.",
+      "Straight line with a ray; one adjacent angle is given, find x."
+    ));
+  }
+
+  // 3) Vertically opposite (numbers)
+  {
+    const acute = randInt(30, 80);
+    const d1 = randInt(300, 340);
+    const d2 = degNorm(d1 + acute);
+
+    const sectors = [
+      { startDeg: d1, endDeg: d2, label: `${acute}°`, color:"#d32f2f" },
+      { startDeg: degNorm(d1+180), endDeg: degNorm(d2+180), label: `x°`, color:"#2e7d32" }
+    ];
+    const svg = svgIntersectingLines({ d1, d2, sectors });
+
+    out.push(makeQ(
+      partIndex, out.length,
+      `<div class="diagram">${svg}</div>
+       Find <b>x</b>.`,
+      {type:"integer", value:acute},
+      `${acute}°`,
+      "Use: vertically opposite angles are equal. Enter an integer.",
+      "Two lines intersect; a given angle and its vertically opposite angle x."
+    ));
+  }
+
+  // 4) Vertically opposite (find obtuse from acute)
+  {
+    const acute = randInt(25, 75);
+    const obtuse = 180 - acute;
+    const d1 = randInt(120, 160);
+    const d2 = degNorm(d1 + acute);
+
+    const sectors = [
+      { startDeg: d2, endDeg: degNorm(d1+180), label: `${obtuse}°`, color:"#1565c0" },
+      { startDeg: degNorm(d2+180), endDeg: d1, label: `x°`, color:"#7b1fa2" }
+    ];
+    const svg = svgIntersectingLines({ d1, d2, sectors });
+
+    out.push(makeQ(
+      partIndex, out.length,
+      `<div class="diagram">${svg}</div>
+       Find <b>x</b>.`,
+      {type:"integer", value:obtuse},
+      `${obtuse}°`,
+      "Use: vertically opposite angles are equal. Enter an integer.",
+      "Two lines intersect; an obtuse angle is given; x is its vertically opposite angle."
+    ));
+  }
+
+  // 5) Angles at a point: 4 angles numeric
+  {
+    const angles = shuffle([randInt(40,110), randInt(40,110), randInt(40,110)]);
+    const knownSum = angles[0]+angles[1]+angles[2];
+    const x = 360 - knownSum;
+
+    const rays = [300, 20, 120, 210];
+    const sorted = rays.map(degNorm).sort((a,b)=>a-b);
+    const sec = [
+      { startDeg: sorted[0], endDeg: sorted[1], label: `${angles[0]}°`, color:"#d32f2f" },
+      { startDeg: sorted[1], endDeg: sorted[2], label: `${angles[1]}°`, color:"#1565c0" },
+      { startDeg: sorted[2], endDeg: sorted[3], label: `${angles[2]}°`, color:"#2e7d32" },
+      { startDeg: sorted[3], endDeg: sorted[0], label: `x°`, color:"#7b1fa2" }
+    ];
+    const svg = svgAnglesAtPoint({ rays, sectors: sec });
+
+    out.push(makeQ(
+      partIndex, out.length,
+      `<div class="diagram">${svg}</div>
+       Angles at a point add up to 360°. Find <b>x</b>.`,
+      {type:"integer", value:x},
+      `${x}°`,
+      "Use: angles at a point sum to 360°. Enter an integer.",
+      "Several rays around point O; three angles given; find x."
+    ));
+  }
+
+  // 6) Angles at a point: 5 angles numeric, find x
+  {
+    const a = randInt(40, 95);
+    const b = randInt(40, 95);
+    const c = randInt(40, 95);
+    const d = randInt(40, 95);
+    let x = 360 - (a+b+c+d);
+
+    if (x < 20){ x += 30; }
+    const over = (a+b+c+d+x) - 360;
+    const d2 = d - over;
+    x = 360 - (a+b+c+d2);
+
+    const rays = [285, 10, 75, 150, 225];
+    const sorted = rays.map(degNorm).sort((m,n)=>m-n);
+    const colors = ["#d32f2f","#1565c0","#2e7d32","#7b1fa2","#f57c00"];
+    const labels = [`${a}°`,`${b}°`,`${c}°`,`${d2}°`,`x°`];
+
+    const sectors = [];
+    for (let i=0; i<sorted.length; i++){
+      const s = sorted[i];
+      const e = (i===sorted.length-1) ? sorted[0] : sorted[i+1];
+      sectors.push({ startDeg:s, endDeg:e, label: labels[i], color: colors[i] });
+    }
+    const svg = svgAnglesAtPoint({ rays, sectors });
+
+    out.push(makeQ(
+      partIndex, out.length,
+      `<div class="diagram">${svg}</div>
+       Angles at a point add up to 360°. Find <b>x</b>.`,
+      {type:"integer", value:x},
+      `${x}°`,
+      "Use: angles at a point sum to 360°. Enter an integer.",
+      "Five rays around point O; four angles given; find x."
+    ));
+  }
+
+  return out;
+}
+
+function buildChallenge(partIndex){
+  const out = [];
+
+  // 1) Vertical opposite with algebra: 3x+15 = -x + (4x+15)
+  {
+    const x = randInt(18, 45);
+    const expr1 = `3x + 15°`;
+    const expr2 = `-x + ${4*x+15}°`;
+    const d1 = randInt(310, 340);
+    const acute = randInt(35, 70);
+    const d2 = degNorm(d1 + acute);
+
+    const sectors = [
+      { startDeg: d1, endDeg: d2, label: expr1, color:"#d32f2f" },
+      { startDeg: degNorm(d1+180), endDeg: degNorm(d2+180), label: expr2, color:"#1565c0" }
+    ];
+    const svg = svgIntersectingLines({ d1, d2, sectors });
+
+    out.push(makeQ(
+      partIndex, out.length,
+      `<div class="diagram">${svg}</div>
+       The labelled angles are vertically opposite. Find <b>x</b>.`,
+      {type:"integer", value:x},
+      `${x}`,
+      "Set the two expressions equal. Enter an integer.",
+      "Intersecting lines; opposite angles labelled with algebraic expressions."
+    ));
+  }
+
+  // 2) Straight line with algebra: (2x+4) + right = 180
+  {
+    const x = randInt(10, 40);
+    const left = `2x + 4°`;
+    const rightVal = 180 - (2*x+4);
+    const right = `${rightVal}°`;
+
+    const rayDeg = randInt(240, 310);
+    const sectors = [
+      { startDeg: 180, endDeg: rayDeg, label: left, color:"#d32f2f" },
+      { startDeg: rayDeg, endDeg: 0, label: right, color:"#1565c0" }
+    ];
+    const svg = svgStraightLine({ rayDeg, sectors });
+
+    out.push(makeQ(
+      partIndex, out.length,
+      `<div class="diagram">${svg}</div>
+       <b>Given AOB is a straight line.</b> Find <b>x</b>.`,
+      {type:"integer", value:x},
+      `${x}`,
+      "Use: (2x+4) + right angle = 180. Enter an integer.",
+      "Straight line with a ray; one angle is an expression."
+    ));
+  }
+
+  // 3) Angles at a point with algebra: x, x+16, 2x-28, number
+  {
+    const x = choice([48, 52, 56, 60, 64, 68, 72]);
+    const a = x;
+    const b = x + 16;
+    const c = 2*x - 28;
+    const d = 360 - (a+b+c);
+
+    const rays = [300, 20, 130, 210];
+    const sorted = rays.map(degNorm).sort((m,n)=>m-n);
+
+    const sectors = [
+      { startDeg: sorted[0], endDeg: sorted[1], label: `x°`, color:"#7b1fa2" },
+      { startDeg: sorted[1], endDeg: sorted[2], label: `x + 16°`, color:"#d32f2f" },
+      { startDeg: sorted[2], endDeg: sorted[3], label: `2x - 28°`, color:"#1565c0" },
+      { startDeg: sorted[3], endDeg: sorted[0], label: `${d}°`, color:"#2e7d32" }
+    ];
+    const svg = svgAnglesAtPoint({ rays, sectors });
+
+    out.push(makeQ(
+      partIndex, out.length,
+      `<div class="diagram">${svg}</div>
+       Angles at a point add up to 360°. Find <b>x</b>.`,
+      {type:"integer", value:x},
+      `${x}`,
+      "Add the expressions and set the total to 360. Enter an integer.",
+      "Angles around point O; three expressions and one number."
+    ));
+  }
+
+  // 4) Straight line with two expressions: (3x-17) + (x+45) = 180
+  {
+    const x = randInt(15, 45);
+    const left = `3x - 17°`;
+    const right = `x + 45°`;
+
+    const rayDeg = randInt(240, 310);
+    const sectors = [
+      { startDeg: 180, endDeg: rayDeg, label: left, color:"#d32f2f" },
+      { startDeg: rayDeg, endDeg: 0, label: right, color:"#1565c0" }
+    ];
+    const svg = svgStraightLine({ rayDeg, sectors });
+
+    out.push(makeQ(
+      partIndex, out.length,
+      `<div class="diagram">${svg}</div>
+       <b>Given AOB is a straight line.</b> Find <b>x</b>.`,
+      {type:"integer", value:x},
+      `${x}`,
+      "Use: (3x-17) + (x+45) = 180. Enter an integer.",
+      "Straight line; both angles are algebraic."
+    ));
+  }
+
+  // 5) Adjacent angles on a straight line (intersecting): 5x+10 + adjacent = 180
+  {
+    const x = randInt(10, 30);
+    const expr = `5x + 10°`;
+    const adjacent = 180 - (5*x+10);
+    const d1 = randInt(290, 330);
+    const acute = randInt(35, 70);
+    const d2 = degNorm(d1 + acute);
+
+    const sectors = [
+      { startDeg: d1, endDeg: d2, label: expr, color:"#d32f2f" },
+      { startDeg: d2, endDeg: degNorm(d1+180), label: `${adjacent}°`, color:"#1565c0" }
+    ];
+    const svg = svgIntersectingLines({ d1, d2, sectors });
+
+    out.push(makeQ(
+      partIndex, out.length,
+      `<div class="diagram">${svg}</div>
+       The two labelled angles form a straight line. Find <b>x</b>.`,
+      {type:"integer", value:x},
+      `${x}`,
+      "Use: adjacent angles on a straight line sum to 180. Enter an integer.",
+      "Intersecting lines; adjacent angles labelled with expression and number."
+    ));
+  }
+
+  // 6) Angles at a point: 121, 102, 101, x
+  {
+    const a = 121, b = 102, c = 101;
+    const x = 360 - (a+b+c);
+
+    const rays = [300, 30, 120, 210];
+    const sorted = rays.map(degNorm).sort((m,n)=>m-n);
+
+    const sectors = [
+      { startDeg: sorted[0], endDeg: sorted[1], label: `${a}°`, color:"#d32f2f" },
+      { startDeg: sorted[1], endDeg: sorted[2], label: `${b}°`, color:"#1565c0" },
+      { startDeg: sorted[2], endDeg: sorted[3], label: `${c}°`, color:"#2e7d32" },
+      { startDeg: sorted[3], endDeg: sorted[0], label: `x°`, color:"#7b1fa2" }
+    ];
+    const svg = svgAnglesAtPoint({ rays, sectors });
+
+    out.push(makeQ(
+      partIndex, out.length,
+      `<div class="diagram">${svg}</div>
+       Angles at a point add up to 360°. Find <b>x</b>.`,
+      {type:"integer", value:x},
+      `${x}°`,
+      "Use: 121 + 102 + 101 + x = 360. Enter an integer.",
+      "Angles around point O; three numbers and x."
+    ));
+  }
+
+  return out;
+}
+
+/* ==========================================================
+   State
+========================================================== */
+let questions = [];
+let currentQuestionIndex = 0;
+let studentName = "Student";
+let quizSubmitted = false;
+
+let setNumber = 1;
+
+const quizContent = document.getElementById("quizContent");
+const sidebarEl   = document.getElementById("sidebar");
+
+const pauseResumeBtn = document.getElementById("pauseResumeButton");
+const generateBtn = document.getElementById("generateButton");
+const exportBtn = document.getElementById("exportPdfButton");
+
+const timeLine = document.getElementById("timeLine");
+const studentLine = document.getElementById("studentLine");
+const setLine = document.getElementById("setLine");
+
+/* ==========================================================
+   Timer (Pause/Resume without popup)
+========================================================== */
+let timerInterval = null;
+let elapsedMs = 0;
+let lastTickMs = 0;
+let timerPaused = false;
+let timerRunning = false;
+
+function pad2(n){ return String(n).padStart(2,"0"); }
+function formatElapsed(ms){
+  const totalSec = Math.floor(ms / 1000);
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${pad2(m)}:${pad2(s)}`;
+}
+function updateTimerUI(){
+  timeLine.textContent = `Time: ${formatElapsed(elapsedMs)}`;
+}
+function startTimer(){
+  stopTimer();
+  elapsedMs = 0;
+  timerPaused = false;
+  timerRunning = true;
+  lastTickMs = Date.now();
+  updateTimerUI();
+  timerInterval = setInterval(() => {
+    if (!timerRunning || timerPaused) return;
+    const now = Date.now();
+    elapsedMs += (now - lastTickMs);
+    lastTickMs = now;
+    updateTimerUI();
+  }, 250);
+  pauseResumeBtn.textContent = "Pause";
+}
+function stopTimer(){
+  timerRunning = false;
+  timerPaused = false;
+  if (timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+}
+function pauseTimer(){
+  if (!timerRunning) return;
+  timerPaused = true;
+  lastTickMs = Date.now();
+  pauseResumeBtn.textContent = "Resume";
+  setControlsLocked(true);
+}
+function resumeTimer(){
+  if (!timerRunning) return;
+  timerPaused = false;
+  lastTickMs = Date.now();
+  pauseResumeBtn.textContent = "Pause";
+  setControlsLocked(false);
+}
+function setControlsLocked(lock){
+  const input = document.getElementById("answerInput");
+  if (input) input.disabled = !!lock;
+
+  const btnIds = ["nextButton","backButton","submitButton","checkButton","saveButton","exportInlineButton"];
+  btnIds.forEach(id => {
+    const b = document.getElementById(id);
+    if (b) b.disabled = !!lock;
+  });
+
+  if (sidebarEl){
+    sidebarEl.style.pointerEvents = lock ? "none" : "auto";
+    sidebarEl.style.opacity = lock ? "0.6" : "1";
+  }
+}
+
+/* ==========================================================
+   Generate Quiz
+========================================================== */
+function generateQuiz(){
+  questions = [];
+  quizSubmitted = false;
+
+  buildBasicConcepts(0).forEach(q => questions.push(q));
+  buildDiagramSimple(1).forEach(q => questions.push(q));
+  buildChallenge(2).forEach(q => questions.push(q));
+}
+
+/* ==========================================================
+   Save input / grade
+========================================================== */
+function saveCurrentInput(){
+  const input = document.getElementById("answerInput");
+  if (input) questions[currentQuestionIndex].userValue = input.value.trim();
+}
+function gradeAll(){
+  let correctCount = 0;
+  questions.forEach(q => {
+    const res = compareByType(q.userValue || "", q.correct);
+    q.isCorrect = (!!res.ok);
+    if (q.isCorrect) correctCount++;
+  });
+  return correctCount;
+}
+
+/* ==========================================================
+   Sidebar
+========================================================== */
+function renderSidebar(){
+  sidebarEl.style.display = "block";
+  sidebarEl.innerHTML = `<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul = document.getElementById("qList");
+
+  for (let i = 0; i < questions.length; i++){
+    const q = questions[i];
+    const li = document.createElement("li");
+    li.textContent = `Q${i + 1} (P${q.partIndex+1}-${q.indexInPart + 1})`;
+    li.dataset.index = String(i);
+    li.addEventListener("click", () => {
+      if (timerPaused) return;
+      saveCurrentInput();
+      currentQuestionIndex = i;
+      renderQuestion();
+    });
+    ul.appendChild(li);
+  }
+  updateSidebarStatus();
+}
+function updateSidebarStatus(){
+  const items = document.querySelectorAll("#qList li");
+  items.forEach(li => {
+    li.classList.remove("active","answered","correct","incorrect");
+
+    const idx = Number(li.dataset.index);
+    const q = questions[idx];
+
+    li.classList.toggle("active", idx === currentQuestionIndex);
+
+    const ans = (q.userValue || "").trim();
+    if (ans !== ""){
+      if (!quizSubmitted){
+        if (q.checked){
+          li.classList.add(q.isCorrect ? "correct" : "incorrect");
+        } else {
+          li.classList.add("answered");
+        }
+      } else {
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ==========================================================
+   Check Answer
+========================================================== */
+function checkCurrentAnswer(){
+  if (timerPaused) return;
+
+  saveCurrentInput();
+  const q = questions[currentQuestionIndex];
+  const fb = document.getElementById("checkFeedback");
+  if (!fb) return;
+
+  const ans = (q.userValue || "").trim();
+  if (ans === ""){
+    fb.textContent = "Please enter an answer first.";
+    fb.className = "check-feedback neutral";
+    return;
+  }
+
+  const res = compareByType(ans, q.correct);
+  q.isCorrect = !!res.ok;
+  q.checked = true;
+
+  if (!q.isCorrect){
+    fb.textContent = "❌ Incorrect. Try again.";
+    fb.className = "check-feedback incorrect";
+    updateSidebarStatus();
+    return;
+  }
+
+  fb.textContent = "✅ Correct!";
+  fb.className = "check-feedback correct";
+  updateSidebarStatus();
+}
+
+/* ==========================================================
+   Render Question
+========================================================== */
+function hintForPart(partIndex){
+  const t = PART_TITLES[partIndex] || "";
+  if (t.includes("Basic")){
+    return `
+      <div class="hint-box">
+        <b>Key facts:</b><br>
+        • Straight line: 180°<br>
+        • At a point: 360°<br>
+        • Vertically opposite angles are equal
+      </div>`;
+  }
+  if (t.includes("Diagram Questions")){
+    return `
+      <div class="hint-box">
+        <b>Tips:</b><br>
+        • For a straight line, add to 180°.<br>
+        • For angles at a point, add to 360°.<br>
+        • For vertical opposite angles, they are equal.
+      </div>`;
+  }
+  return `
+    <div class="hint-box">
+      <b>Challenge:</b><br>
+      Turn the diagram into an equation, then solve for <b>x</b>.
+    </div>`;
+}
+
+function renderQuestion(){
+  const q = questions[currentQuestionIndex];
+  const fullLabel = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+  const total = questions.length;
+
+  const showPrev = currentQuestionIndex > 0;
+  const showNext = currentQuestionIndex < total - 1;
+
+  const isLastQuestion = (currentQuestionIndex === total - 1);
+  const showSubmit = (!quizSubmitted && isLastQuestion);
+
+  const answerHelp = q.answerHint || "Enter your answer.";
+
+  quizContent.innerHTML = `
+    <p class="question-text">Question ${currentQuestionIndex + 1} of ${total}</p>
+    <p class="instructions">${answerHelp}</p>
+
+    <div class="part-title">${PART_TITLES[q.partIndex] || ("Part " + (q.partIndex+1))}</div>
+
+    <div class="single-question">
+      <span><b>${fullLabel}.</b></span>
+      <span style="margin-left:6px;">${q.html}</span>
+      <input id="answerInput" class="answer-box" type="text" value="${(q.userValue || "").replace(/"/g,'&quot;')}">
+    </div>
+
+    ${hintForPart(q.partIndex)}
+
+    <div id="checkFeedback" class="check-feedback"></div>
+
+    <div class="question-buttons">
+      <button id="backButton" style="${showPrev ? "" : "display:none;"}">Previous</button>
+      <button id="checkButton">Check Answer</button>
+      <button id="submitButton" style="${showSubmit ? "" : "display:none;"}">Submit &amp; View Results</button>
+      <button id="nextButton" style="${showNext ? "" : "display:none;"}">Next</button>
+    </div>
+  `;
+
+  const nextBtn = document.getElementById("nextButton");
+  const backBtn = document.getElementById("backButton");
+  const submitBtn = document.getElementById("submitButton");
+  const checkBtn = document.getElementById("checkButton");
+
+  if (nextBtn) nextBtn.addEventListener("click", onNext);
+  if (backBtn) backBtn.addEventListener("click", onPrev);
+  if (submitBtn) submitBtn.addEventListener("click", onSubmit);
+  if (checkBtn) checkBtn.addEventListener("click", checkCurrentAnswer);
+
+  updateSidebarStatus();
+  setControlsLocked(timerPaused);
+}
+
+/* ==========================================================
+   Results + Save TXT
+========================================================== */
+function formatDateForFilename(date){
+  const pad = n => String(n).padStart(2,"0");
+  return (
+    date.getFullYear() +
+    pad(date.getMonth() + 1) +
+    pad(date.getDate()) + "_" +
+    pad(date.getHours()) +
+    pad(date.getMinutes()) +
+    pad(date.getSeconds())
+  );
+}
+function downloadBlob(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function saveResultAsTxt(){
+  saveCurrentInput();
+  const correctCount = gradeAll();
+  const lines = [];
+  lines.push("DYAA Education — Angles Quiz — Result");
+  lines.push("Student: " + studentName);
+  lines.push("Set: " + setNumber);
+  lines.push("Time taken: " + formatElapsed(elapsedMs));
+  lines.push("Score: " + correctCount + " / " + questions.length);
+  lines.push("");
+  lines.push("Details:");
+  lines.push("----------");
+
+  questions.forEach((q, i) => {
+    const partLbl = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+    const userAns = (q.userValue || "").trim() === "" ? "Not answered" : q.userValue;
+    const resultText = (q.userValue || "").trim() === ""
+      ? "Not answered"
+      : (q.isCorrect ? "Correct" : "Incorrect");
+
+    lines.push(
+      `Q${i + 1} (${partLbl})` +
+      "\nQuestion: " + q.plain +
+      (q.diagramAlt ? ("\nDiagram: " + q.diagramAlt) : "") +
+      "\nYour answer: " + userAns +
+      "\nCorrect answer: " + stripHTML(q.displayCorrect) +
+      "\nResult: " + resultText
+    );
+    lines.push("");
+  });
+
+  const content = lines.join("\n");
+  const blob = new Blob([content], { type:"text/plain;charset=utf-8" });
+  const safeName = studentName.replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  downloadBlob(blob, `Angles_Quiz_${safeName}_Set${setNumber}_${ts}.txt`);
+}
+
+function onSubmit(){
+  if (timerPaused) return;
+
+  saveCurrentInput();
+  stopTimer();
+  quizSubmitted = true;
+  gradeAll();
+
+  const correctCount = questions.filter(q => q.isCorrect).length;
+  const diffSec = Math.floor(elapsedMs / 1000);
+  const min = Math.floor(diffSec / 60);
+  const sec = diffSec % 60;
+
+  let html = `
+    <h3>Results for ${studentName}</h3>
+    <p>Set: <strong>${setNumber}</strong></p>
+    <p>Time taken: <strong>${min}m ${sec}s</strong></p>
+    <p>Score: <strong>${correctCount} / ${questions.length}</strong></p>
+
+    <div class="question-buttons">
+      <button id="saveButton">Save Current Result</button>
+      <button id="exportInlineButton" style="background:#6a1b9a;">Export Questions PDF</button>
+    </div>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th>
+        <th>Part</th>
+        <th>Question</th>
+        <th>Your Answer</th>
+        <th>Correct</th>
+        <th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q, i) => {
+    const partLbl = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+    const yourAns = (q.userValue || "").trim() === "" ? "—" : q.userValue;
+    html += `
+      <tr class="${q.isCorrect ? "correct-answer" : "incorrect-answer"}">
+        <td>${i + 1}</td>
+        <td>${partLbl}</td>
+        <td style="text-align:left;">${q.html}</td>
+        <td>${yourAns}</td>
+        <td>${q.displayCorrect}</td>
+        <td>${q.isCorrect ? "Correct" : "Incorrect"}</td>
+      </tr>
+    `;
+  });
+  html += `</table>`;
+
+  quizContent.innerHTML = html;
+
+  const saveBtn = document.getElementById("saveButton");
+  const exportInline = document.getElementById("exportInlineButton");
+  if (saveBtn) saveBtn.addEventListener("click", saveResultAsTxt);
+  if (exportInline) exportInline.addEventListener("click", exportQuestionsToPDF);
+
+  pauseResumeBtn.style.display = "none";
+  generateBtn.style.display = "inline-block";
+  exportBtn.style.display = "inline-block";
+  updateSidebarStatus();
+}
+
+/* ==========================================================
+   Navigation
+========================================================== */
+function onNext(){
+  if (timerPaused) return;
+  saveCurrentInput();
+  if (currentQuestionIndex < questions.length - 1){
+    currentQuestionIndex++;
+    renderQuestion();
+  }
+}
+function onPrev(){
+  if (timerPaused) return;
+  saveCurrentInput();
+  if (currentQuestionIndex > 0){
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+}
+
+/* ==========================================================
+   PDF Export (Option A: text-only)
+========================================================== */
+function sanitizePdfText(s){
+  if (!s) return "";
+  return String(s)
+    .replace(/×/g, "x")
+    .replace(/[–—]/g, "-")
+    .replace(/[“”]/g, '"')
+    .replace(/[‘’]/g, "'")
+    .replace(/≤/g, "<=")
+    .replace(/≥/g, ">=")
+    .replace(/≠/g, "!=")
+    .replace(/→/g, "->")
+    .replace(/°/g, " deg ")
+    .replace(/²/g, "^2")
+    .replace(/³/g, "^3")
+    .replace(/√/g, "sqrt")
+    .replace(/π/g, "pi")
+    .replace(/−/g, "-")
+    .replace(/\s+/g, " ")
+    .replace(/[^\x00-\x7F]/g, "?")
+    .trim();
+}
+function escapePdfString(s){
+  return s.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+}
+function wrapTextToLines(text, maxChars){
+  const t = sanitizePdfText(text);
+  if (!t) return [""];
+  const words = t.split(" ");
+  const lines = [];
+  let line = "";
+  for (const w of words){
+    if (!line){ line = w; continue; }
+    if ((line.length + 1 + w.length) <= maxChars){
+      line += " " + w;
+    } else {
+      lines.push(line);
+      if (w.length > maxChars){
+        let start = 0;
+        while (start < w.length){
+          lines.push(w.slice(start, start + maxChars));
+          start += maxChars;
+        }
+        line = "";
+      } else {
+        line = w;
+      }
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+function buildSimplePdf(pages, opts){
+  const W = 595.28, H = 841.89;
+  const marginL = (opts && opts.marginL) || 48;
+  const startY  = (opts && opts.startY)  || 800;
+  const fontSize = (opts && opts.fontSize) || 11;
+  const lineGap  = (opts && opts.lineGap)  || 14;
+
+  const objects = new Map();
+  const fontId = 3;
+
+  const pageObjIds = [];
+  const contentObjIds = [];
+  let nextId = 4;
+  for (let i=0; i<pages.length; i++){
+    pageObjIds.push(nextId++);
+    contentObjIds.push(nextId++);
+  }
+
+  for (let i=0; i<pages.length; i++){
+    const lines = pages[i] || [];
+    let stream = "";
+    stream += "BT\n";
+    stream += `/F1 ${fontSize} Tf\n`;
+    stream += `${lineGap} TL\n`;
+    stream += `${marginL} ${startY} Td\n`;
+    for (let li=0; li<lines.length; li++){
+      const line = escapePdfString(sanitizePdfText(lines[li] || ""));
+      stream += `(${line}) Tj\n`;
+      if (li !== lines.length - 1) stream += "T*\n";
+    }
+    stream += "ET\n";
+
+    objects.set(contentObjIds[i],
+      `${contentObjIds[i]} 0 obj\n` +
+      `<< /Length ${stream.length} >>\n` +
+      `stream\n${stream}endstream\n` +
+      `endobj\n`
+    );
+  }
+
+  for (let i=0; i<pages.length; i++){
+    objects.set(pageObjIds[i],
+      `${pageObjIds[i]} 0 obj\n` +
+      `<< /Type /Page\n` +
+      `/Parent 2 0 R\n` +
+      `/MediaBox [0 0 ${W} ${H}]\n` +
+      `/Resources << /Font << /F1 ${fontId} 0 R >> >>\n` +
+      `/Contents ${contentObjIds[i]} 0 R\n` +
+      `>>\nendobj\n`
+    );
+  }
+
+  objects.set(fontId,
+    `${fontId} 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n`
+  );
+
+  const kids = pageObjIds.map(id => `${id} 0 R`).join(" ");
+  objects.set(2,
+    `2 0 obj\n<< /Type /Pages /Kids [ ${kids} ] /Count ${pages.length} >>\nendobj\n`
+  );
+
+  objects.set(1,
+    `1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n`
+  );
+
+  const maxObjId = Math.max(...Array.from(objects.keys()));
+  let pdf = "%PDF-1.4\n%DYAA\n";
+
+  const xref = [];
+  xref[0] = { off: 0, gen: 65535, type: "f" };
+
+  for (let id=1; id<=maxObjId; id++){
+    const obj = objects.get(id);
+    if (!obj) continue;
+    const off = pdf.length;
+    xref[id] = { off, gen: 0, type: "n" };
+    pdf += obj;
+  }
+
+  const xrefOffset = pdf.length;
+  const size = maxObjId + 1;
+
+  function pad10(n){ return String(n).padStart(10, "0"); }
+  function pad5(n){ return String(n).padStart(5, "0"); }
+
+  pdf += "xref\n";
+  pdf += `0 ${size}\n`;
+  for (let i=0; i<size; i++){
+    const e = xref[i] || { off:0, gen:0, type:"f" };
+    pdf += `${pad10(e.off)} ${pad5(e.gen)} ${e.type} \n`;
+  }
+
+  pdf += "trailer\n";
+  pdf += `<< /Size ${size} /Root 1 0 R >>\n`;
+  pdf += "startxref\n";
+  pdf += `${xrefOffset}\n`;
+  pdf += "%%EOF\n";
+  return pdf;
+}
+
+function buildPagedQuestionLines(questionBlocks){
+  const now = new Date();
+  const title1 = `DYAA Education — Angles Quiz — Questions (Text Only)`;
+  const title2 = `Student: ${studentName}   Set: ${setNumber}   Generated: ${now.toLocaleString()}`;
+
+  const headerLines = [sanitizePdfText(title1), sanitizePdfText(title2), ""];
+  const maxCharsPerLine = 95;
+  const maxLinesPerPage = 56;
+  const freshCap = maxLinesPerPage - headerLines.length;
+
+  const pages = [];
+  let page = headerLines.slice();
+
+  function pushPage(){
+    pages.push(page);
+    page = headerLines.slice();
+  }
+  function remainingLines(){
+    return maxLinesPerPage - page.length;
+  }
+
+  for (const blockText of questionBlocks){
+    const wrapped = wrapTextToLines(blockText, maxCharsPerLine);
+    const blockNeed = wrapped.length + 1;
+
+    if (blockNeed <= freshCap && blockNeed > remainingLines()){
+      pushPage();
+    }
+    for (const line of wrapped){
+      if (page.length >= maxLinesPerPage) pushPage();
+      page.push(line);
+    }
+    if (page.length >= maxLinesPerPage) pushPage();
+    page.push("");
+  }
+
+  if (page.length > 0) pages.push(page);
+  return { pages, now };
+}
+
+function exportQuestionsToPDF(){
+  if (!questions || questions.length === 0){
+    alert("No questions to export yet.");
+    return;
+  }
+
+  const blocks = questions.map((q, i) => {
+    const label = `Q${i+1} (P${q.partIndex+1}-${q.indexInPart+1})`;
+    const text = stripHTML(q.html);
+    const diagram = q.diagramAlt ? ` Diagram: ${q.diagramAlt}` : "";
+    return `${label}. ${text}${diagram}`;
+  });
+
+  const built = buildPagedQuestionLines(blocks);
+  const pdfStr = buildSimplePdf(built.pages, { marginL:48, startY:800, fontSize:11, lineGap:14 });
+
+  const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_");
+  const now = built.now;
+  const ts = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,"0")}${String(now.getDate()).padStart(2,"0")}_${String(now.getHours()).padStart(2,"0")}${String(now.getMinutes()).padStart(2,"0")}`;
+  const filename = `Angles_Questions_TextOnly_${safeName}_Set${setNumber}_${ts}.pdf`;
+
+  const blob = new Blob([pdfStr], {type:"application/pdf"});
+  downloadBlob(blob, filename);
+}
+
+/* ==========================================================
+   Start Screen
+========================================================== */
+function showStartScreen(){
+  sidebarEl.style.display = "none";
+  generateBtn.style.display = "none";
+  exportBtn.style.display = "none";
+  pauseResumeBtn.style.display = "none";
+
+  timeLine.textContent = "Time: 00:00";
+  studentLine.textContent = "Student: Student";
+  setLine.textContent = "Set: 1";
+
+  quizContent.innerHTML = `
+    <p>This quiz covers:</p>
+    <ul>
+      <li>Types of angles (acute / obtuse / reflex)</li>
+      <li>Angles on a straight line (sum 180°)</li>
+      <li>Angles at a point (sum 360°)</li>
+      <li>Vertically opposite angles (equal)</li>
+    </ul>
+
+    <p><b>Step 1:</b> Enter your name</p>
+    <input id="nameInput" type="text"
+      style="padding:10px; width:280px; font-size:1.05em; border-radius:10px; border:1px solid #ddd;"
+      placeholder="Your name">
+
+    <div class="question-buttons" style="margin-top:18px;">
+      <button id="startButton" style="background:#4caf50;">Start Quiz</button>
+    </div>
+  `;
+
+  const nameInput = document.getElementById("nameInput");
+  if (nameInput && URL_STUDENT_NAME){
+    nameInput.value = URL_STUDENT_NAME;
+  }
+
+  document.getElementById("startButton").addEventListener("click", startQuiz);
+}
+
+function startQuiz(){
+  const nameInput = document.getElementById("nameInput");
+  studentName = (nameInput.value || "Student").trim();
+
+  generateQuiz();
+  currentQuestionIndex = 0;
+
+  setNumber = 1;
+  setLine.textContent = `Set: ${setNumber}`;
+  studentLine.textContent = `Student: ${studentName}`;
+
+  startTimer();
+
+  sidebarEl.style.display = "block";
+  generateBtn.style.display = "inline-block";
+  exportBtn.style.display = "inline-block";
+  pauseResumeBtn.style.display = "inline-block";
+
+  generateBtn.onclick = () => {
+    if (timerPaused) return;
+
+    if (!confirm("Generate a new random set? All answers will be lost.")) return;
+
+    setNumber++;
+    setLine.textContent = `Set: ${setNumber}`;
+
+    generateQuiz();
+    currentQuestionIndex = 0;
+    quizSubmitted = false;
+
+    startTimer();
+    pauseResumeBtn.style.display = "inline-block";
+
+    renderSidebar();
+    renderQuestion();
+  };
+
+  exportBtn.onclick = exportQuestionsToPDF;
+
+  renderSidebar();
+  renderQuestion();
+}
+
+/* ==========================================================
+   Pause button
+========================================================== */
+pauseResumeBtn.addEventListener("click", () => {
+  if (!timerRunning) return;
+  if (timerPaused) resumeTimer();
+  else pauseTimer();
+});
+
+/* Init */
+showStartScreen();
+</script>
+</body>
+</html>

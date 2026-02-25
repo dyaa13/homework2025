@@ -1,0 +1,1881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Key Concepts & Formulae (Geometry) — Quiz</title>
+
+  <style>
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:#f4f4f9;
+      margin:0; padding:20px;
+      color:#333;
+    }
+    .quiz-container{
+      max-width:980px;
+      margin:40px auto;
+      background:#fff;
+      padding:30px;
+      border-radius:12px;
+      box-shadow:0 6px 15px rgba(0,0,0,0.1);
+      position:relative;
+    }
+    #headerLogo{
+      display:flex; align-items:center;
+      margin-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+      padding-bottom:10px;
+      gap:12px;
+    }
+    .logo-icon{
+      width:40px; height:40px;
+      background:#0d47a1; border-radius:6px;
+      position:relative;
+    }
+    .logo-icon:before{
+      content:"";
+      position:absolute;
+      width:20px;height:9px;
+      background:#ff9800;
+      top:-6px; left:22px;
+      border-radius:3px;
+    }
+    .logo-text span.edu{
+      font-size:0.95em;
+      color:#ff9800;
+      font-weight:900;
+      letter-spacing:0.8px;
+    }
+
+    .top-bar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin:10px 0 10px;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .top-left{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      font-weight:800;
+      color:#333;
+    }
+    .top-right{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .top-right button{
+      padding:10px 18px;
+      border:none;
+      color:#fff;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:1em;
+      font-weight:800;
+    }
+    #pauseResumeButton{ background:#ff9800; display:none; }
+    #generateButton{ background:#ff9800; display:none; }
+    #exportPdfButton{ background:#6a1b9a; display:none; }
+
+    .quiz-main{ display:flex; gap:20px; }
+    .sidebar{
+      width:260px;
+      border-right:1px solid #ddd;
+      padding-right:10px;
+      display:none;
+    }
+    .sidebar h4{
+      margin:0 0 8px;
+      font-size:0.95em;
+      border-bottom:1px solid #eee;
+      padding-bottom:4px;
+    }
+    .sidebar ul{ list-style:none; padding:0; margin:0; }
+    .sidebar li{
+      padding:6px;
+      cursor:pointer;
+      border-radius:4px;
+      font-size:0.9em;
+      user-select:none;
+      margin-bottom:4px;
+    }
+    .sidebar li.active{ outline:2px solid #1976d2; font-weight:800; }
+    .sidebar li.correct{ background:#d4edda; border-left:4px solid #28a745; }
+    .sidebar li.incorrect{ background:#f8d7da; border-left:4px solid #f44336; }
+    .sidebar li.answered{ border-left:4px solid #4caf50; }
+
+    #quizContent{ flex:1; }
+
+    .question-text{ font-size:1.1em; margin-bottom:6px; }
+    .instructions{ font-size:0.92em; color:#555; margin-bottom:10px; line-height:1.4; }
+    .part-title{ font-weight:900; margin:10px 0 8px; }
+    .single-question{
+      margin-top:6px; margin-bottom:6px;
+      line-height:1.55;
+    }
+    .answer-box{
+      width:320px;
+      padding:7px 9px;
+      font-size:1em;
+      margin-left:8px;
+    }
+
+    .diagram{
+      margin:10px 0 8px;
+    }
+    .diagram svg{
+      width:100%;
+      max-width:560px;
+      height:auto;
+      border:1px solid #eee;
+      border-radius:12px;
+      background:#fff;
+      display:block;
+    }
+
+    .hint-box{
+      margin-top:10px;
+      padding:10px 12px;
+      background:#f7f7ff;
+      border:1px solid #e6e6ff;
+      border-radius:10px;
+      font-size:0.92em;
+      color:#444;
+      line-height:1.45;
+    }
+    .hint-box b{ color:#111; }
+
+    .check-feedback{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid #e0e0e0;
+      background:#fafafa;
+      font-size:0.95em;
+      display:none;
+      white-space:pre-wrap;
+    }
+    .check-feedback.neutral{ display:block; background:#f6f7fb; border-color:#e2e6ff; }
+    .check-feedback.correct{ display:block; background:#d4edda; border-color:#28a745; }
+    .check-feedback.incorrect{ display:block; background:#f8d7da; border-color:#f44336; }
+
+    .question-buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+      align-items:center;
+    }
+    .question-buttons button{
+      padding:10px 18px;
+      border:none;
+      color:#fff;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:1em;
+      font-weight:800;
+    }
+    #nextButton{ background:#4caf50; }
+    #backButton{ background:#039be5; }
+    #submitButton{ background:#9c27b0; }
+    #saveButton{ background:#607d8b; }
+    #checkButton{ background:#00897b; }
+    #backToPracticeButton{ background:#455a64; }
+
+    table.review-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:20px;
+    }
+    .review-table th, .review-table td{
+      border:1px solid #ccc;
+      padding:6px;
+      font-size:0.85em;
+      text-align:center;
+      vertical-align:top;
+    }
+    .review-table th{ background:#f2f2f2; }
+    .correct-answer{ background:#d4edda; }
+    .incorrect-answer{ background:#f8d7da; }
+
+    @media (max-width:760px){
+      .quiz-main{ flex-direction:column; }
+      .sidebar{
+        width:100%;
+        border-right:none;
+        border-bottom:1px solid #ddd;
+        margin-bottom:10px;
+        padding-bottom:10px;
+      }
+      .answer-box{ width:240px; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text"><span class="edu">DYAA EDUCATION</span></div>
+  </div>
+
+  <div class="top-bar">
+    <div class="top-left">
+      <div id="timeLine">Time: 00:00</div>
+      <div id="studentLine">Student: Student</div>
+      <div id="setLine">Set: 1</div>
+    </div>
+
+    <div class="top-right">
+      <button id="pauseResumeButton">Pause</button>
+      <button id="generateButton">Generate New Set</button>
+      <button id="exportPdfButton">Export Questions PDF</button>
+    </div>
+  </div>
+
+  <h2>Key Concepts &amp; Formulae (Geometry)</h2>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+</div>
+
+<script>
+/* ==========================================================
+   ✅ Standard-only (Extension mode removed)
+   ✅ Image-heavy parallel lines section
+   ✅ Direct-download PDF (NOT print dialog)
+========================================================== */
+
+/* ---------------- Student name from URL (?name=Tiger) ---------------- */
+function getStudentNameFromURL(){
+  try{
+    const params = new URLSearchParams(window.location.search || "");
+    const raw = params.get("name");
+    if (!raw) return "";
+    return decodeURIComponent(raw.replace(/\+/g, "%20")).trim();
+  }catch(e){
+    return "";
+  }
+}
+const URL_STUDENT_NAME = getStudentNameFromURL();
+
+/* ---------------- Utilities ---------------- */
+function randInt(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+function choice(arr){ return arr[randInt(0, arr.length - 1)]; }
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i=a.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function stripHTML(html){
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return (tmp.textContent || tmp.innerText || "").trim();
+}
+
+/* ---------------- Answer parsing + compare ---------------- */
+function parseNumber(str){
+  let s = (str || "").trim();
+  if (!s) return NaN;
+  s = s.replace(/−/g,"-").replace(/,/g,"");
+  s = s.replace(/°/g,"").replace(/\bdeg\b/gi,"").trim();
+  const v = Number(s);
+  return Number.isFinite(v) ? v : NaN;
+}
+function normalizeWord(s){
+  return (s||"")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g," ")
+    .replace(/[^a-z0-9\s\-]/g,"");
+}
+function compareByType(userStr, correct){
+  const eps = 1e-6;
+  const ansRaw = (userStr || "").trim();
+  if (ansRaw === "") return { ok:false, empty:true };
+
+  if (correct.type === "integer"){
+    const u = parseNumber(ansRaw);
+    if (!Number.isFinite(u) || Math.abs(u - Math.round(u)) > eps) return { ok:false, empty:false };
+    return { ok: Math.abs(u - correct.value) < eps, empty:false };
+  }
+  if (correct.type === "mc"){
+    const u = ansRaw.toUpperCase();
+    const c = String(correct.value || "").toUpperCase();
+    return { ok: u === c, empty:false };
+  }
+  if (correct.type === "word"){
+    const u = normalizeWord(ansRaw);
+    const list = (correct.accept || []).map(normalizeWord);
+    return { ok: list.includes(u), empty:false };
+  }
+  if (correct.type === "textContains"){
+    const u = normalizeWord(ansRaw);
+    const must = (correct.must || []).map(normalizeWord);
+    return { ok: must.every(m => u.includes(m)), empty:false };
+  }
+  return { ok:false, empty:false };
+}
+
+/* ---------------- Question model ---------------- */
+function makeQ(partIndex, indexInPart, html, correct, displayCorrect, answerHint, diagramAlt){
+  return {
+    partIndex, indexInPart,
+    html,
+    plain: stripHTML(html),
+    correct,
+    displayCorrect,
+    answerHint,
+    diagramAlt: diagramAlt || "",
+    userValue:"",
+    isCorrect:false,
+    checked:false
+  };
+}
+
+/* ==========================================================
+   SVG Diagrams (Inline, works in local HTML)
+========================================================== */
+
+/* --- Parallel lines with transversal, angles numbered 1..8
+   Top intersection: 1 (UL), 2 (UR), 3 (LR), 4 (LL)
+   Bottom:           5 (UL), 6 (UR), 7 (LR), 8 (LL)
+*/
+function svgParallelLines({variant, givenAngle, givenValue, askAngle}){
+  const flip = (variant === "B");
+  const topX = flip ? 230 : 130;
+  const botX = flip ? 130 : 230;
+
+  function markText(angleNum, x, y){
+    const isGiven = (angleNum === givenAngle);
+    const isAsk = (angleNum === askAngle);
+    const label = isGiven ? `${angleNum} = ${givenValue}°` : String(angleNum);
+    const weight = (isGiven || isAsk) ? 900 : 700;
+    return `<text x="${x}" y="${y}" font-size="16" font-weight="${weight}" text-anchor="middle">${label}</text>`;
+  }
+
+  return `
+  <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg" aria-label="Parallel lines diagram">
+    <line x1="40" y1="60" x2="320" y2="60" stroke="#111" stroke-width="3"/>
+    <line x1="40" y1="160" x2="320" y2="160" stroke="#111" stroke-width="3"/>
+
+    <line x1="85" y1="54" x2="95" y2="66" stroke="#111" stroke-width="3"/>
+    <line x1="100" y1="54" x2="110" y2="66" stroke="#111" stroke-width="3"/>
+
+    <line x1="250" y1="154" x2="260" y2="166" stroke="#111" stroke-width="3"/>
+    <line x1="265" y1="154" x2="275" y2="166" stroke="#111" stroke-width="3"/>
+
+    <line x1="${flip ? 270 : 90}" y1="20" x2="${flip ? 90 : 270}" y2="200" stroke="#111" stroke-width="3"/>
+
+    <circle cx="${topX}" cy="60" r="4.2" fill="#111"/>
+    <circle cx="${botX}" cy="160" r="4.2" fill="#111"/>
+
+    ${markText(1, topX - 28, 46)}
+    ${markText(2, topX + 28, 46)}
+    ${markText(3, topX + 28, 92)}
+    ${markText(4, topX - 28, 92)}
+
+    ${markText(5, botX - 28, 146)}
+    ${markText(6, botX + 28, 146)}
+    ${markText(7, botX + 28, 192)}
+    ${markText(8, botX - 28, 192)}
+  </svg>`;
+}
+
+/* Triangle diagram with two angles shown */
+function svgTriangleAngles(a, b){
+  return `<svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg" aria-label="Triangle diagram">
+    <polygon points="70,180 290,180 190,40" fill="none" stroke="#111" stroke-width="3"/>
+    <circle cx="70" cy="180" r="4" fill="#111"/><circle cx="290" cy="180" r="4" fill="#111"/><circle cx="190" cy="40" r="4" fill="#111"/>
+    <text x="55" y="205" font-size="14" font-weight="700">A</text>
+    <text x="295" y="205" font-size="14" font-weight="700">B</text>
+    <text x="195" y="30" font-size="14" font-weight="700">C</text>
+    <text x="95" y="165" font-size="16" font-weight="900">a = ${a}°</text>
+    <text x="235" y="165" font-size="16" font-weight="900">b = ${b}°</text>
+    <text x="182" y="115" font-size="14" font-weight="700">(find c)</text>
+  </svg>`;
+}
+
+/* Quadrilateral diagram with 3 angles shown */
+function svgQuadrilateralAngles(a, b, c){
+  return `<svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg" aria-label="Quadrilateral diagram">
+    <polygon points="70,190 300,190 260,70 110,50" fill="none" stroke="#111" stroke-width="3"/>
+    <circle cx="70" cy="190" r="4" fill="#111"/><circle cx="300" cy="190" r="4" fill="#111"/>
+    <circle cx="260" cy="70" r="4" fill="#111"/><circle cx="110" cy="50" r="4" fill="#111"/>
+    <text x="50" y="215" font-size="16" font-weight="900">${a}°</text>
+    <text x="305" y="215" font-size="16" font-weight="900">${b}°</text>
+    <text x="270" y="60" font-size="16" font-weight="900">${c}°</text>
+    <text x="95" y="45" font-size="14" font-weight="700">(find x)</text>
+  </svg>`;
+}
+
+/* ==========================================================
+   Question Banks (Standard Only)
+========================================================== */
+
+function buildCollinearPart(partIndex){
+  const out = [];
+  out.push(makeQ(
+    partIndex, out.length,
+    `Three points <b>A</b>, <b>B</b> and <b>C</b> are <b>collinear</b> if and only if:<br>
+     <b>A.</b> They lie on the same straight line.<br>
+     <b>B.</b> They form a right angle.<br>
+     <b>C.</b> They form an equilateral triangle.<br>
+     <b>D.</b> They have equal distances to the origin.`,
+    {type:"mc", value:"A"},
+    `A`,
+    `Answer with a single letter: A, B, C or D.`
+  ));
+
+  out.push(makeQ(
+    partIndex, out.length,
+    `If points <b>A</b>, <b>B</b>, <b>C</b> are collinear, which statement is true?<br>
+     <b>A.</b> Gradients of AB, AC and BC are equal.<br>
+     <b>B.</b> AB = AC = BC.<br>
+     <b>C.</b> All angles are 60°.<br>
+     <b>D.</b> The points form a rectangle.`,
+    {type:"mc", value:"A"},
+    `A`,
+    `Answer with a single letter.`
+  ));
+
+  out.push(makeQ(
+    partIndex, out.length,
+    `If the gradient (slope) of <b>AB</b> equals the gradient of <b>AC</b>, what can you conclude?<br>
+     <b>A.</b> A, B, C are collinear.<br>
+     <b>B.</b> Triangle ABC is isosceles.<br>
+     <b>C.</b> ∠ABC = 90°.<br>
+     <b>D.</b> AB is parallel to AC.`,
+    {type:"mc", value:"A"},
+    `A`,
+    `Answer with a single letter.`
+  ));
+  return out;
+}
+
+function buildTriangleTypesPart(partIndex){
+  const out = [];
+  const templates = shuffle([
+    {desc:"Two sides are perpendicular.", ans:["right triangle","right"]},
+    {desc:"Two sides are equal, and the base angles are equal.", ans:["isosceles triangle","isosceles"]},
+    {desc:"All three sides are equal.", ans:["equilateral triangle","equilateral"]},
+    {desc:"All three sides are unequal.", ans:["scalene triangle","scalene"]},
+  ]);
+  templates.forEach(t => {
+    out.push(makeQ(
+      partIndex, out.length,
+      `A triangle has this property: <b>${t.desc}</b> What type of triangle is it?`,
+      {type:"word", accept:t.ans},
+      `${t.ans[0]}`,
+      `Type the triangle name (e.g., "isosceles", "equilateral", "scalene", "right").`
+    ));
+  });
+  return out.slice(0,4);
+}
+
+function buildAngleTypesPart(partIndex){
+  const out = [];
+  const angle1 = randInt(10, 89);
+  const angle2 = randInt(91, 179);
+  const angle3 = randInt(181, 359);
+
+  out.push(makeQ(partIndex, out.length,
+    `An angle measures <b>${angle1}°</b>. What type of angle is it?`,
+    {type:"word", accept:["acute angle","acute"]},
+    `acute`,
+    `Answer: acute / obtuse / reflex`
+  ));
+  out.push(makeQ(partIndex, out.length,
+    `An angle measures <b>${angle2}°</b>. What type of angle is it?`,
+    {type:"word", accept:["obtuse angle","obtuse"]},
+    `obtuse`,
+    `Answer: acute / obtuse / reflex`
+  ));
+  out.push(makeQ(partIndex, out.length,
+    `An angle measures <b>${angle3}°</b>. What type of angle is it?`,
+    {type:"word", accept:["reflex angle","reflex"]},
+    `reflex`,
+    `Answer: acute / obtuse / reflex`
+  ));
+  out.push(makeQ(partIndex, out.length,
+    `Which statement is correct?<br>
+     <b>A.</b> An obtuse angle is between 0° and 90°.<br>
+     <b>B.</b> A reflex angle is more than 180° but less than 360°.<br>
+     <b>C.</b> An acute angle is more than 90° but less than 180°.<br>
+     <b>D.</b> A right angle is more than 180°.`,
+    {type:"mc", value:"B"},
+    `B`,
+    `Answer with a single letter: A, B, C or D.`
+  ));
+  return out;
+}
+
+function buildAngleFactsPart(partIndex){
+  const out = [];
+
+  {
+    const a = randInt(25, 155);
+    const b = 180 - a;
+    out.push(makeQ(partIndex, out.length,
+      `Angles on a straight line add to <b>180°</b>.<br>
+       If <b>a = ${a}°</b>, find <b>b</b>.`,
+      {type:"integer", value:b},
+      `${b}°`,
+      `Enter an integer (degrees). You may type “${b}” or “${b}°”.`
+    ));
+  }
+
+  {
+    const b = randInt(30, 160);
+    const a = 180 - b;
+    out.push(makeQ(partIndex, out.length,
+      `Angles on a straight line add to <b>180°</b>.<br>
+       If <b>b = ${b}°</b>, find <b>a</b>.`,
+      {type:"integer", value:a},
+      `${a}°`,
+      `Enter an integer (degrees).`
+    ));
+  }
+
+  {
+    const a = randInt(40, 120);
+    const b = randInt(40, 120);
+    const c = randInt(40, 120);
+    const d = 360 - (a+b+c);
+    if (d > 0){
+      out.push(makeQ(partIndex, out.length,
+        `Angles at a point add to <b>360°</b>.<br>
+         If <b>a = ${a}°</b>, <b>b = ${b}°</b>, <b>c = ${c}°</b>, find <b>d</b>.`,
+        {type:"integer", value:d},
+        `${d}°`,
+        `Enter an integer (degrees).`
+      ));
+    } else {
+      out.push(makeQ(partIndex, out.length,
+        `Angles at a point add to <b>360°</b>.<br>
+         If three angles are <b>110°</b>, <b>95°</b>, and <b>80°</b>, find the fourth angle.`,
+        {type:"integer", value:75},
+        `75°`,
+        `Enter an integer (degrees).`
+      ));
+    }
+  }
+
+  {
+    const x = randInt(25, 155);
+    out.push(makeQ(partIndex, out.length,
+      `Vertically opposite angles are equal.<br>
+       If one angle is <b>${x}°</b>, what is the vertically opposite angle?`,
+      {type:"integer", value:x},
+      `${x}°`,
+      `Enter an integer (degrees).`
+    ));
+  }
+
+  return out.slice(0,4);
+}
+
+/* ---- Part 5: Parallel lines (IMAGE HEAVY) ---- */
+function buildParallelLinesPart(partIndex){
+  const out = [];
+  const variant = choice(["A","B"]);
+
+  function addCalcQuestion({givenAngle, askAngle, computeFn, prompt, diagramNote}){
+    const givenValue = randInt(25, 155);
+    const ans = computeFn(givenValue);
+    const svg = svgParallelLines({variant, givenAngle, givenValue, askAngle});
+    const html = `
+      <div class="diagram">${svg}</div>
+      ${prompt}
+    `.trim();
+
+    out.push(makeQ(
+      partIndex, out.length,
+      html,
+      {type:"integer", value:ans},
+      `${ans}°`,
+      `Use parallel line angle rules. Enter an integer.`,
+      diagramNote
+    ));
+  }
+
+  function addWordQuestion({givenAngle, askAngle, givenValue, prompt, accept, diagramNote}){
+    const svg = svgParallelLines({variant, givenAngle, givenValue, askAngle});
+    const html = `
+      <div class="diagram">${svg}</div>
+      ${prompt}
+    `.trim();
+
+    out.push(makeQ(
+      partIndex, out.length,
+      html,
+      {type:"word", accept:accept},
+      `${accept[0]}`,
+      `Type the relationship name (e.g., corresponding, alternate interior, co-interior).`,
+      diagramNote
+    ));
+  }
+
+  function addMCQuestion({givenAngle, givenValue, prompt, correctLetter, diagramNote, optionsHtml}){
+    const svg = svgParallelLines({variant, givenAngle, givenValue, askAngle:0});
+    const html = `
+      <div class="diagram">${svg}</div>
+      ${prompt}<br>
+      ${optionsHtml}
+    `.trim();
+
+    out.push(makeQ(
+      partIndex, out.length,
+      html,
+      {type:"mc", value:correctLetter},
+      `${correctLetter}`,
+      `Answer with a single letter: A, B, C or D.`,
+      diagramNote
+    ));
+  }
+
+  // 1) corresponding: 2 -> 6
+  addCalcQuestion({
+    givenAngle:2, askAngle:6,
+    computeFn:(x)=>x,
+    prompt:`If angle <b>2</b> is <b>given</b>, find angle <b>6</b>.`,
+    diagramNote:"Parallel lines with transversal; angles numbered 1-8. Find angle 6 given angle 2."
+  });
+
+  // 2) alternate interior: 3 -> 5
+  addCalcQuestion({
+    givenAngle:3, askAngle:5,
+    computeFn:(x)=>x,
+    prompt:`If angle <b>3</b> is <b>given</b>, find angle <b>5</b>.`,
+    diagramNote:"Parallel lines with transversal; angles numbered 1-8. Find angle 5 given angle 3."
+  });
+
+  // 3) alternate interior: 4 -> 6
+  addCalcQuestion({
+    givenAngle:4, askAngle:6,
+    computeFn:(x)=>x,
+    prompt:`If angle <b>4</b> is <b>given</b>, find angle <b>6</b>.`,
+    diagramNote:"Parallel lines with transversal; angles numbered 1-8. Find angle 6 given angle 4."
+  });
+
+  // 4) vertically opposite: 1 -> 3
+  addCalcQuestion({
+    givenAngle:1, askAngle:3,
+    computeFn:(x)=>x,
+    prompt:`If angle <b>1</b> is <b>given</b>, find angle <b>3</b>.`,
+    diagramNote:"Parallel lines with transversal; angles numbered 1-8. Find angle 3 given angle 1."
+  });
+
+  // 5) linear pair: 2 -> 1 (sum 180)
+  addCalcQuestion({
+    givenAngle:2, askAngle:1,
+    computeFn:(x)=>180-x,
+    prompt:`If angle <b>2</b> is <b>given</b>, find angle <b>1</b>.`,
+    diagramNote:"Parallel lines with transversal; angles numbered 1-8. Find angle 1 given angle 2."
+  });
+
+  // 6) co-interior: 3 + 6 = 180, given 6 find 3
+  addCalcQuestion({
+    givenAngle:6, askAngle:3,
+    computeFn:(x)=>180-x,
+    prompt:`If angle <b>6</b> is <b>given</b>, find angle <b>3</b>.`,
+    diagramNote:"Parallel lines with transversal; angles numbered 1-8. Find angle 3 given angle 6."
+  });
+
+  // 7) co-interior: 4 + 5 = 180, given 5 find 4
+  addCalcQuestion({
+    givenAngle:5, askAngle:4,
+    computeFn:(x)=>180-x,
+    prompt:`If angle <b>5</b> is <b>given</b>, find angle <b>4</b>.`,
+    diagramNote:"Parallel lines with transversal; angles numbered 1-8. Find angle 4 given angle 5."
+  });
+
+  // 8) same-side exterior: given 2 find 7 (2 + 7 = 180)
+  addCalcQuestion({
+    givenAngle:2, askAngle:7,
+    computeFn:(x)=>180-x,
+    prompt:`If angle <b>2</b> is <b>given</b>, find angle <b>7</b>.`,
+    diagramNote:"Parallel lines with transversal; angles numbered 1-8. Find angle 7 given angle 2."
+  });
+
+  // 9) relationship word: 3 and 5
+  addWordQuestion({
+    givenAngle:3, askAngle:5,
+    givenValue: randInt(25, 155),
+    prompt:`Angles <b>3</b> and <b>5</b> are __________ angles.`,
+    accept:["alternate interior","alternate","alternate interior angles"],
+    diagramNote:"Parallel lines with transversal; angles numbered 1-8. Identify relationship between angles 3 and 5."
+  });
+
+  // 10) relationship word: 2 and 6
+  addWordQuestion({
+    givenAngle:2, askAngle:6,
+    givenValue: randInt(25, 155),
+    prompt:`Angles <b>2</b> and <b>6</b> are __________ angles.`,
+    accept:["corresponding","corresponding angles"],
+    diagramNote:"Parallel lines with transversal; angles numbered 1-8. Identify relationship between angles 2 and 6."
+  });
+
+  // 11) MC: corresponding pair
+  {
+    const gv = randInt(25, 155);
+    const opts = shuffle([
+      {k:"A", txt:"(2, 6)"},
+      {k:"B", txt:"(3, 6)"},
+      {k:"C", txt:"(4, 5)"},
+      {k:"D", txt:"(1, 8)"}
+    ]);
+    const correct = opts.find(o => o.txt === "(2, 6)").k;
+
+    addMCQuestion({
+      givenAngle:2, givenValue: gv,
+      prompt:`Which pair are <b>corresponding angles</b> in the diagram?`,
+      correctLetter: correct,
+      diagramNote:"Parallel lines with transversal; angles numbered 1-8. Choose the corresponding pair.",
+      optionsHtml: opts.map(o => `<b>${o.k}.</b> ${o.txt}`).join("<br>")
+    });
+  }
+
+  // 12) MC: co-interior pair
+  {
+    const gv = randInt(25, 155);
+    const opts = shuffle([
+      {k:"A", txt:"(3, 5)"},
+      {k:"B", txt:"(3, 6)"},
+      {k:"C", txt:"(2, 8)"},
+      {k:"D", txt:"(1, 5)"}
+    ]);
+    const correct = opts.find(o => o.txt === "(3, 6)").k;
+
+    addMCQuestion({
+      givenAngle:6, givenValue: gv,
+      prompt:`Which pair are <b>co-interior angles</b> (same-side interior) in the diagram?`,
+      correctLetter: correct,
+      diagramNote:"Parallel lines with transversal; angles numbered 1-8. Choose the co-interior pair.",
+      optionsHtml: opts.map(o => `<b>${o.k}.</b> ${o.txt}`).join("<br>")
+    });
+  }
+
+  return out;
+}
+
+/* ---- Part 6: Polygons (some with diagrams) ---- */
+function buildPolygonsPart(partIndex){
+  const out = [];
+
+  // Triangle sum with diagram
+  {
+    const a = randInt(30, 80);
+    const b = randInt(30, 80);
+    const c = 180 - (a + b);
+    const svg = svgTriangleAngles(a, b);
+
+    out.push(makeQ(
+      partIndex, out.length,
+      `<div class="diagram">${svg}</div>
+       In triangle ABC (see diagram), <b>a = ${a}°</b> and <b>b = ${b}°</b>. Find <b>c</b>.`,
+      {type:"integer", value:c},
+      `${c}°`,
+      `Triangle angles sum to 180°. Enter an integer.`,
+      `Triangle ABC with angles a=${a}°, b=${b}°. Find c.`
+    ));
+  }
+
+  // Exterior angle
+  {
+    const a = randInt(25, 75);
+    const b = randInt(25, 75);
+    const ext = a + b;
+    out.push(makeQ(
+      partIndex, out.length,
+      `The <b>exterior angle</b> of a triangle equals the sum of the two remote interior angles.<br>
+       If the two remote interior angles are <b>${a}°</b> and <b>${b}°</b>, find the exterior angle.`,
+      {type:"integer", value:ext},
+      `${ext}°`,
+      `Exterior angle = a + b. Enter an integer.`
+    ));
+  }
+
+  // Quadrilateral sum with diagram
+  {
+    const a = randInt(70, 140);
+    const b = randInt(60, 130);
+    const c = randInt(50, 120);
+    const x = 360 - (a + b + c);
+    const svg = svgQuadrilateralAngles(a,b,c);
+
+    out.push(makeQ(
+      partIndex, out.length,
+      `<div class="diagram">${svg}</div>
+       In the quadrilateral (see diagram), three angles are <b>${a}°</b>, <b>${b}°</b>, and <b>${c}°</b>. Find <b>x</b>.`,
+      {type:"integer", value:x},
+      `${x}°`,
+      `Quadrilateral angles sum to 360°. Enter an integer.`,
+      `Quadrilateral with three angles ${a}°, ${b}°, ${c}°. Find x.`
+    ));
+  }
+
+  // Diagonals 90
+  out.push(makeQ(
+    partIndex, out.length,
+    `The diagonals of a <b>rhombus</b>, a <b>square</b>, and a <b>kite</b> intersect at <b>__°</b>.`,
+    {type:"integer", value:90},
+    `90°`,
+    `Enter an integer (degrees).`
+  ));
+
+  return out;
+}
+
+/* ==========================================================
+   Blueprint (Standard only)
+========================================================== */
+const PART_TITLES = [
+  "Part 1: Collinear Points (3)",
+  "Part 2: Types of Triangles (4)",
+  "Part 3: Types of Angles (4)",
+  "Part 4: Angle Facts — Straight Line / Point / Vertical (4)",
+  "Part 5: Parallel Lines — Image Questions (12)",
+  "Part 6: Triangles / Quadrilaterals / Diagonals (4)"
+];
+
+/* ==========================================================
+   State
+========================================================== */
+let questions = [];
+let currentQuestionIndex = 0;
+
+let studentName = "Student";
+let quizSubmitted = false;
+
+let practiceActive = false;
+let practiceIndices = [];
+let practicePos = 0;
+
+let TOTAL_QUESTIONS = 0;
+let setNumber = 1;
+
+const quizContent = document.getElementById("quizContent");
+const sidebarEl   = document.getElementById("sidebar");
+
+const pauseResumeBtn = document.getElementById("pauseResumeButton");
+const generateBtn = document.getElementById("generateButton");
+const exportBtn = document.getElementById("exportPdfButton");
+
+const timeLine = document.getElementById("timeLine");
+const studentLine = document.getElementById("studentLine");
+const setLine = document.getElementById("setLine");
+
+/* ==========================================================
+   Timer (Pause/Resume without popup)
+========================================================== */
+let timerInterval = null;
+let elapsedMs = 0;
+let lastTickMs = 0;
+let timerPaused = false;
+let timerRunning = false;
+
+function pad2(n){ return String(n).padStart(2,"0"); }
+function formatElapsed(ms){
+  const totalSec = Math.floor(ms / 1000);
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${pad2(m)}:${pad2(s)}`;
+}
+function updateTimerUI(){
+  timeLine.textContent = `Time: ${formatElapsed(elapsedMs)}`;
+}
+function startTimer(){
+  stopTimer();
+  elapsedMs = 0;
+  timerPaused = false;
+  timerRunning = true;
+  lastTickMs = Date.now();
+  updateTimerUI();
+  timerInterval = setInterval(() => {
+    if (!timerRunning || timerPaused) return;
+    const now = Date.now();
+    elapsedMs += (now - lastTickMs);
+    lastTickMs = now;
+    updateTimerUI();
+  }, 250);
+  pauseResumeBtn.textContent = "Pause";
+}
+function stopTimer(){
+  timerRunning = false;
+  timerPaused = false;
+  if (timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+}
+function pauseTimer(){
+  if (!timerRunning) return;
+  timerPaused = true;
+  lastTickMs = Date.now();
+  pauseResumeBtn.textContent = "Resume";
+  setControlsLocked(true);
+}
+function resumeTimer(){
+  if (!timerRunning) return;
+  timerPaused = false;
+  lastTickMs = Date.now();
+  pauseResumeBtn.textContent = "Pause";
+  setControlsLocked(false);
+}
+function setControlsLocked(lock){
+  const input = document.getElementById("answerInput");
+  if (input) input.disabled = !!lock;
+
+  const btnIds = ["nextButton","backButton","submitButton","checkButton","saveButton","backToPracticeButton","exportInlineButton"];
+  btnIds.forEach(id => {
+    const b = document.getElementById(id);
+    if (b) b.disabled = !!lock;
+  });
+
+  if (sidebarEl){
+    sidebarEl.style.pointerEvents = lock ? "none" : "auto";
+    sidebarEl.style.opacity = lock ? "0.6" : "1";
+  }
+}
+
+/* ==========================================================
+   Generate Quiz (Standard only)
+========================================================== */
+function generateQuiz(){
+  questions = [];
+  quizSubmitted = false;
+  practiceActive = false;
+  practiceIndices = [];
+  practicePos = 0;
+
+  buildCollinearPart(0).forEach(q => questions.push(q));
+  buildTriangleTypesPart(1).forEach(q => questions.push(q));
+  buildAngleTypesPart(2).forEach(q => questions.push(q));
+  buildAngleFactsPart(3).forEach(q => questions.push(q));
+  buildParallelLinesPart(4).forEach(q => questions.push(q));
+  buildPolygonsPart(5).forEach(q => questions.push(q));
+
+  TOTAL_QUESTIONS = questions.length;
+}
+
+/* ==========================================================
+   Save input / grade / practice list
+========================================================== */
+function saveCurrentInput(){
+  const input = document.getElementById("answerInput");
+  if (input) questions[currentQuestionIndex].userValue = input.value.trim();
+}
+function gradeAll(){
+  let correctCount = 0;
+  questions.forEach(q => {
+    const res = compareByType(q.userValue || "", q.correct);
+    q.isCorrect = (!!res.ok);
+    if (q.isCorrect) correctCount++;
+  });
+  return correctCount;
+}
+function buildPracticeList(){
+  gradeAll();
+  practiceIndices = questions
+    .map((q, i) => ({q,i}))
+    .filter(o => ((o.q.userValue || "").trim() === "") || !o.q.isCorrect)
+    .map(o => o.i);
+  practicePos = 0;
+}
+
+/* ==========================================================
+   Sidebar
+========================================================== */
+function renderSidebar(){
+  sidebarEl.style.display = "block";
+
+  const showingPractice = (quizSubmitted && practiceActive);
+  const listTitle = showingPractice
+    ? `Practice (Remaining: ${practiceIndices.length})`
+    : "Questions";
+
+  sidebarEl.innerHTML = `<h4>${listTitle}</h4><ul id="qList"></ul>`;
+  const ul = document.getElementById("qList");
+
+  if (showingPractice){
+    practiceIndices.forEach((realIdx, k) => {
+      const q = questions[realIdx];
+      const li = document.createElement("li");
+      const partShort = `P${q.partIndex+1}`;
+      li.textContent = `Q${realIdx + 1} (${partShort}-${q.indexInPart + 1})`;
+      li.dataset.real = String(realIdx);
+      li.dataset.k = String(k);
+      li.addEventListener("click", () => {
+        if (timerPaused) return;
+        saveCurrentInput();
+        practicePos = k;
+        currentQuestionIndex = practiceIndices[practicePos];
+        renderQuestion();
+      });
+      ul.appendChild(li);
+    });
+  } else {
+    for (let i = 0; i < TOTAL_QUESTIONS; i++){
+      const q = questions[i];
+      const li = document.createElement("li");
+      const partShort = `P${q.partIndex+1}`;
+      li.textContent = `Q${i + 1} (${partShort}-${q.indexInPart + 1})`;
+      li.dataset.index = String(i);
+      li.addEventListener("click", () => {
+        if (timerPaused) return;
+        saveCurrentInput();
+        currentQuestionIndex = i;
+        renderQuestion();
+      });
+      ul.appendChild(li);
+    }
+  }
+
+  updateSidebarStatus();
+}
+
+function updateSidebarStatus(){
+  const showingPractice = (quizSubmitted && practiceActive);
+  const items = document.querySelectorAll("#qList li");
+
+  items.forEach(li => {
+    li.classList.remove("active","answered","correct","incorrect");
+
+    if (showingPractice){
+      const k = Number(li.dataset.k);
+      const realIdx = Number(li.dataset.real);
+      const q = questions[realIdx];
+
+      li.classList.toggle("active", k === practicePos);
+
+      const ans = (q.userValue || "").trim();
+      if (ans !== ""){
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+      return;
+    }
+
+    const idx = Number(li.dataset.index);
+    const q = questions[idx];
+
+    li.classList.toggle("active", idx === currentQuestionIndex);
+
+    const ans = (q.userValue || "").trim();
+    if (ans !== ""){
+      if (!quizSubmitted){
+        if (q.checked){
+          li.classList.add(q.isCorrect ? "correct" : "incorrect");
+        } else {
+          li.classList.add("answered");
+        }
+      } else {
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ==========================================================
+   Check Answer + practice auto-next after 2 sec
+========================================================== */
+let autoNextTimer = null;
+
+function checkCurrentAnswer(){
+  if (timerPaused) return;
+
+  saveCurrentInput();
+  const q = questions[currentQuestionIndex];
+  const fb = document.getElementById("checkFeedback");
+  if (!fb) return;
+
+  if (autoNextTimer){
+    clearTimeout(autoNextTimer);
+    autoNextTimer = null;
+  }
+
+  const ans = (q.userValue || "").trim();
+  if (ans === ""){
+    fb.textContent = "Please enter an answer first.";
+    fb.className = "check-feedback neutral";
+    return;
+  }
+
+  const res = compareByType(ans, q.correct);
+  q.isCorrect = !!res.ok;
+  q.checked = true;
+
+  if (!q.isCorrect){
+    fb.textContent = "❌ Incorrect. Try again.";
+    fb.className = "check-feedback incorrect";
+    updateSidebarStatus();
+    return;
+  }
+
+  fb.textContent = (quizSubmitted && practiceActive)
+    ? "✅ Correct! Moving to the next remaining question in 2 seconds..."
+    : "✅ Correct!";
+  fb.className = "check-feedback correct";
+  updateSidebarStatus();
+
+  if (quizSubmitted && practiceActive){
+    const expectedRealIdx = currentQuestionIndex;
+    const expectedPracticePos = practicePos;
+
+    const btn = document.getElementById("checkButton");
+    if (btn) btn.disabled = true;
+
+    autoNextTimer = setTimeout(() => {
+      autoNextTimer = null;
+
+      if (!(quizSubmitted && practiceActive)) return;
+      if (currentQuestionIndex !== expectedRealIdx || practicePos !== expectedPracticePos) return;
+
+      const currentReal = practiceIndices[practicePos];
+      if (currentReal === expectedRealIdx){
+        practiceIndices.splice(practicePos, 1);
+      } else {
+        const idx = practiceIndices.indexOf(expectedRealIdx);
+        if (idx >= 0) practiceIndices.splice(idx, 1);
+        if (practicePos >= practiceIndices.length) practicePos = Math.max(0, practiceIndices.length - 1);
+      }
+
+      if (practiceIndices.length === 0){
+        practiceActive = false;
+        renderSidebar();
+        renderResults(true);
+        return;
+      }
+
+      if (practicePos >= practiceIndices.length) practicePos = practiceIndices.length - 1;
+      currentQuestionIndex = practiceIndices[practicePos];
+
+      renderSidebar();
+      renderQuestion();
+    }, 2000);
+  }
+}
+
+/* ==========================================================
+   Hints
+========================================================== */
+function hintForPart(partIndex){
+  const t = PART_TITLES[partIndex] || "";
+
+  if (t.includes("Collinear")){
+    return `
+      <div class="hint-box">
+        <b>Collinear:</b><br>
+        • Collinear points lie on the same straight line.<br>
+        • Their line segments have the same gradient (slope).
+      </div>
+    `;
+  }
+  if (t.includes("Types of Triangles")){
+    return `
+      <div class="hint-box">
+        <b>Triangles:</b><br>
+        • Right: two sides perpendicular.<br>
+        • Isosceles: two equal sides, base angles equal.<br>
+        • Equilateral: three equal sides, all angles 60°.<br>
+        • Scalene: all sides different.
+      </div>
+    `;
+  }
+  if (t.includes("Types of Angles")){
+    return `
+      <div class="hint-box">
+        <b>Angles:</b><br>
+        • Acute: 0° to 90° (not including 90°).<br>
+        • Obtuse: 90° to 180° (not including 180°).<br>
+        • Reflex: 180° to 360°.
+      </div>
+    `;
+  }
+  if (t.includes("Angle Facts")){
+    return `
+      <div class="hint-box">
+        <b>Angle facts:</b><br>
+        • Straight line: sum = 180°.<br>
+        • At a point: sum = 360°.<br>
+        • Vertically opposite angles are equal.
+      </div>
+    `;
+  }
+  if (t.includes("Parallel Lines")){
+    return `
+      <div class="hint-box">
+        <b>Parallel lines (numbered diagram):</b><br>
+        • Corresponding: (1,5), (2,6), (3,7), (4,8) → equal<br>
+        • Alternate interior: (3,5), (4,6) → equal<br>
+        • Co-interior (same-side interior): (3,6), (4,5) → sum to 180°<br>
+        • Vertically opposite: (1,3), (2,4), (5,7), (6,8) → equal<br>
+        • Linear pair at one intersection: adjacent angles → sum to 180°
+      </div>
+    `;
+  }
+  if (t.includes("Triangles / Quadrilaterals")){
+    return `
+      <div class="hint-box">
+        <b>Polygons:</b><br>
+        • Triangle angles sum to 180°.<br>
+        • Exterior angle of a triangle = sum of two remote interior angles.<br>
+        • Quadrilateral angles sum to 360°.<br>
+        • Diagonals of a rhombus/square/kite intersect at 90°.
+      </div>
+    `;
+  }
+
+  return `<div class="hint-box"><b>Tip:</b> Work step-by-step and keep degrees.</div>`;
+}
+
+/* ==========================================================
+   Render Question
+========================================================== */
+function renderQuestion(){
+  const q = questions[currentQuestionIndex];
+  const fullLabel = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+
+  const showingPractice = (quizSubmitted && practiceActive);
+
+  const topLine = showingPractice
+    ? `Practice: ${practiceIndices.length} remaining`
+    : `Question ${currentQuestionIndex + 1} of ${TOTAL_QUESTIONS}`;
+
+  const showPrev = showingPractice ? (practicePos > 0) : (currentQuestionIndex > 0);
+  const showNext = showingPractice ? (practicePos < practiceIndices.length - 1) : (currentQuestionIndex < TOTAL_QUESTIONS - 1);
+
+  const answerHelp = q.answerHint || "Enter your answer.";
+
+  const isLastQuestion = (!showingPractice && currentQuestionIndex === TOTAL_QUESTIONS - 1);
+  const showSubmit = (!quizSubmitted && isLastQuestion);
+
+  quizContent.innerHTML = `
+    <p class="question-text">${topLine}</p>
+    <p class="instructions">${answerHelp}</p>
+
+    <div class="part-title">${PART_TITLES[q.partIndex] || ("Part " + (q.partIndex+1))}</div>
+
+    <div class="single-question">
+      <span><b>${fullLabel}.</b></span>
+      <span style="margin-left:6px;">${q.html}</span>
+      <input id="answerInput" class="answer-box" type="text" value="${(q.userValue || "").replace(/"/g,'&quot;')}">
+    </div>
+
+    ${hintForPart(q.partIndex)}
+
+    <div id="checkFeedback" class="check-feedback"></div>
+
+    <div class="question-buttons">
+      <button id="backButton" style="${showPrev ? "" : "display:none;"}">Previous</button>
+      <button id="checkButton">Check Answer</button>
+      <button id="submitButton" style="${showSubmit ? "" : "display:none;"}">Submit &amp; View Results</button>
+      <button id="nextButton" style="${showNext ? "" : "display:none;"}">Next</button>
+      ${quizSubmitted ? `<button id="saveButton">Save Current Result</button>` : ``}
+    </div>
+  `;
+
+  document.getElementById("nextButton")?.addEventListener("click", onNext);
+  document.getElementById("backButton")?.addEventListener("click", onPrev);
+  document.getElementById("submitButton")?.addEventListener("click", onSubmit);
+  document.getElementById("saveButton")?.addEventListener("click", saveCurrentResultAsTxt);
+  document.getElementById("checkButton")?.addEventListener("click", checkCurrentAnswer);
+
+  updateSidebarStatus();
+  setControlsLocked(timerPaused);
+}
+
+/* ==========================================================
+   Results
+========================================================== */
+function renderResults(allCorrectBanner = false){
+  const correctCount = gradeAll();
+
+  const diffSec = Math.floor(elapsedMs / 1000);
+  const min = Math.floor(diffSec / 60);
+  const sec = diffSec % 60;
+
+  buildPracticeList();
+  const remaining = practiceIndices.length;
+
+  let banner = "";
+  if (allCorrectBanner){
+    banner = `<div class="hint-box" style="background:#e8fff0;border-color:#b7f0c8;">
+      <b>✅ Practice complete!</b> All questions are correct.
+    </div>`;
+  } else {
+    banner = `<div class="hint-box">
+      <b>Next step:</b> Practise only the questions you got wrong or did not answer.<br>
+      Remaining to practise: <b>${remaining}</b>
+    </div>`;
+  }
+
+  let html = `
+    <h3>Results for ${studentName}</h3>
+    <p>Set: <strong>${setNumber}</strong></p>
+    <p>Time taken: <strong>${min}m ${sec}s</strong></p>
+    <p>Score: <strong>${correctCount} / ${TOTAL_QUESTIONS}</strong></p>
+    ${banner}
+
+    <div class="question-buttons">
+      ${remaining > 0 ? `<button id="backToPracticeButton">Practice Remaining (${remaining})</button>` : ``}
+      <button id="saveButton">Save Current Result</button>
+      <button id="exportInlineButton" style="background:#6a1b9a;">Export Questions PDF</button>
+    </div>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th>
+        <th>Part</th>
+        <th>Question</th>
+        <th>Your Answer</th>
+        <th>Correct</th>
+        <th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q, i) => {
+    const partLbl = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+    const yourAns = (q.userValue || "").trim() === "" ? "—" : q.userValue;
+    html += `
+      <tr class="${q.isCorrect ? "correct-answer" : "incorrect-answer"}">
+        <td>${i + 1}</td>
+        <td>${partLbl}</td>
+        <td style="text-align:left;">${q.html}</td>
+        <td>${yourAns}</td>
+        <td>${q.displayCorrect}</td>
+        <td>${q.isCorrect ? "Correct" : "Incorrect"}</td>
+      </tr>
+    `;
+  });
+  html += `</table>`;
+
+  quizContent.innerHTML = html;
+
+  document.getElementById("backToPracticeButton")?.addEventListener("click", startPractice);
+  document.getElementById("saveButton")?.addEventListener("click", saveCurrentResultAsTxt);
+  document.getElementById("exportInlineButton")?.addEventListener("click", exportQuestionsToPDF);
+
+  updateSidebarStatus();
+}
+
+/* ==========================================================
+   Submit
+========================================================== */
+function onSubmit(){
+  if (timerPaused) return;
+
+  saveCurrentInput();
+  if (!quizSubmitted){
+    stopTimer();
+    pauseResumeBtn.style.display = "none";
+
+    quizSubmitted = true;
+    practiceActive = false;
+    buildPracticeList();
+
+    renderSidebar();
+    renderResults(false);
+
+    generateBtn.style.display = "inline-block";
+    exportBtn.style.display = "inline-block";
+  }
+}
+
+/* ==========================================================
+   Practice Remaining (not timed)
+========================================================== */
+function startPractice(){
+  buildPracticeList();
+
+  if (practiceIndices.length === 0){
+    practiceActive = false;
+    renderSidebar();
+    renderResults(true);
+    return;
+  }
+
+  practiceActive = true;
+  practicePos = 0;
+  currentQuestionIndex = practiceIndices[practicePos];
+
+  renderSidebar();
+  renderQuestion();
+}
+
+/* ==========================================================
+   Navigation
+========================================================== */
+function onNext(){
+  if (timerPaused) return;
+  saveCurrentInput();
+
+  const showingPractice = (quizSubmitted && practiceActive);
+
+  if (showingPractice){
+    if (practicePos < practiceIndices.length - 1){
+      practicePos++;
+      currentQuestionIndex = practiceIndices[practicePos];
+      renderQuestion();
+    }
+    return;
+  }
+
+  if (currentQuestionIndex < TOTAL_QUESTIONS - 1){
+    currentQuestionIndex++;
+    renderQuestion();
+  }
+}
+
+function onPrev(){
+  if (timerPaused) return;
+  saveCurrentInput();
+
+  const showingPractice = (quizSubmitted && practiceActive);
+
+  if (showingPractice){
+    if (practicePos > 0){
+      practicePos--;
+      currentQuestionIndex = practiceIndices[practicePos];
+      renderQuestion();
+    }
+    return;
+  }
+
+  if (currentQuestionIndex > 0){
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+}
+
+/* ==========================================================
+   Save TXT
+========================================================== */
+function formatDateForFilename(date){
+  if (!date) return "no_time";
+  const pad = n => String(n).padStart(2,"0");
+  return (
+    date.getFullYear() +
+    pad(date.getMonth() + 1) +
+    pad(date.getDate()) + "_" +
+    pad(date.getHours()) +
+    pad(date.getMinutes()) +
+    pad(date.getSeconds())
+  );
+}
+function saveCurrentResultAsTxt(){
+  saveCurrentInput();
+  gradeAll();
+
+  let correctCount = 0;
+  questions.forEach(q => { if (q.isCorrect) correctCount++; });
+
+  const lines = [];
+  lines.push("DYAA Education — Key Concepts & Formulae (Geometry) — Current Result");
+  lines.push("Student: " + studentName);
+  lines.push("Set: " + setNumber);
+  lines.push("Time taken: " + formatElapsed(elapsedMs));
+  lines.push("Score: " + correctCount + " / " + TOTAL_QUESTIONS);
+  lines.push("");
+  lines.push("Details:");
+  lines.push("----------");
+
+  questions.forEach((q, i) => {
+    const partLbl = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+    const userAns = (q.userValue || "").trim() === "" ? "Not answered" : q.userValue;
+    const resultText = (q.userValue || "").trim() === ""
+      ? "Not answered"
+      : (q.isCorrect ? "Correct" : "Incorrect");
+
+    lines.push(
+      `Q${i + 1} (${partLbl})` +
+      "\nQuestion: " + q.plain +
+      (q.diagramAlt ? ("\nDiagram: " + q.diagramAlt) : "") +
+      "\nYour answer: " + userAns +
+      "\nCorrect answer: " + stripHTML(q.displayCorrect) +
+      "\nResult: " + resultText
+    );
+    lines.push("");
+  });
+
+  const content = lines.join("\n");
+  const blob = new Blob([content], { type:"text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const safeName = studentName.replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  a.href = url;
+  a.download = `Geometry_KeyConcepts_${safeName}_Set${setNumber}_${ts}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ==========================================================
+   PDF Export (Direct Download) — Text-only PDF
+   NOTE: SVG diagrams won't be in PDF; we add "Diagram:" text.
+========================================================== */
+function sanitizePdfText(s){
+  if (!s) return "";
+  return String(s)
+    .replace(/×/g, "x")
+    .replace(/[–—]/g, "-")
+    .replace(/[“”]/g, '"')
+    .replace(/[‘’]/g, "'")
+    .replace(/≤/g, "<=")
+    .replace(/≥/g, ">=")
+    .replace(/≠/g, "!=")
+    .replace(/→/g, "->")
+    .replace(/°/g, " deg ")
+    .replace(/²/g, "^2")
+    .replace(/³/g, "^3")
+    .replace(/√/g, "sqrt")
+    .replace(/π/g, "pi")
+    .replace(/−/g, "-")
+    .replace(/\s+/g, " ")
+    .replace(/[^\x00-\x7F]/g, "?")
+    .trim();
+}
+function escapePdfString(s){
+  return s.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+}
+function wrapTextToLines(text, maxChars){
+  const t = sanitizePdfText(text);
+  if (!t) return [""];
+  const words = t.split(" ");
+  const lines = [];
+  let line = "";
+  for (const w of words){
+    if (!line){ line = w; continue; }
+    if ((line.length + 1 + w.length) <= maxChars){
+      line += " " + w;
+    } else {
+      lines.push(line);
+      if (w.length > maxChars){
+        let start = 0;
+        while (start < w.length){
+          lines.push(w.slice(start, start + maxChars));
+          start += maxChars;
+        }
+        line = "";
+      } else {
+        line = w;
+      }
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+function downloadBlob(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function buildSimplePdf(pages, opts){
+  const W = 595.28, H = 841.89; // A4 points
+  const marginL = (opts && opts.marginL) || 48;
+  const startY  = (opts && opts.startY)  || 800;
+  const fontSize = (opts && opts.fontSize) || 11;
+  const lineGap  = (opts && opts.lineGap)  || 14;
+
+  const byId = new Map();
+  const fontId = 3;
+
+  const pageObjIds = [];
+  const contentObjIds = [];
+  let nextId = 4;
+  for (let i=0; i<pages.length; i++){
+    pageObjIds.push(nextId++);
+    contentObjIds.push(nextId++);
+  }
+
+  for (let i=0; i<pages.length; i++){
+    const lines = pages[i] || [];
+    let stream = "";
+    stream += "BT\n";
+    stream += `/F1 ${fontSize} Tf\n`;
+    stream += `${lineGap} TL\n`;
+    stream += `${marginL} ${startY} Td\n`;
+    for (let li=0; li<lines.length; li++){
+      const line = escapePdfString(sanitizePdfText(lines[li] || ""));
+      stream += `(${line}) Tj\n`;
+      if (li !== lines.length - 1) stream += "T*\n";
+    }
+    stream += "ET\n";
+    const len = stream.length;
+
+    const obj =
+      `${contentObjIds[i]} 0 obj\n` +
+      `<< /Length ${len} >>\n` +
+      `stream\n` + stream + `endstream\n` +
+      `endobj\n`;
+    byId.set(contentObjIds[i], obj);
+  }
+
+  for (let i=0; i<pages.length; i++){
+    const obj =
+      `${pageObjIds[i]} 0 obj\n` +
+      `<< /Type /Page\n` +
+      `/Parent 2 0 R\n` +
+      `/MediaBox [0 0 ${W} ${H}]\n` +
+      `/Resources << /Font << /F1 ${fontId} 0 R >> >>\n` +
+      `/Contents ${contentObjIds[i]} 0 R\n` +
+      `>>\n` +
+      `endobj\n`;
+    byId.set(pageObjIds[i], obj);
+  }
+
+  byId.set(fontId,
+    `${fontId} 0 obj\n` +
+    `<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\n` +
+    `endobj\n`
+  );
+
+  const kids = pageObjIds.map(id => `${id} 0 R`).join(" ");
+  byId.set(2,
+    `2 0 obj\n` +
+    `<< /Type /Pages /Kids [ ${kids} ] /Count ${pages.length} >>\n` +
+    `endobj\n`
+  );
+
+  byId.set(1,
+    `1 0 obj\n` +
+    `<< /Type /Catalog /Pages 2 0 R >>\n` +
+    `endobj\n`
+  );
+
+  const maxObjId = Math.max(...Array.from(byId.keys()));
+  let pdf = "%PDF-1.4\n%DYAA\n";
+
+  const xref = [];
+  xref[0] = { off: 0, gen: 65535, type: "f" };
+
+  for (let id=1; id<=maxObjId; id++){
+    const obj = byId.get(id);
+    if (!obj) continue;
+    const off = pdf.length;
+    xref[id] = { off, gen: 0, type: "n" };
+    pdf += obj;
+  }
+
+  const xrefOffset = pdf.length;
+  const size = maxObjId + 1;
+
+  function pad10(n){ return String(n).padStart(10, "0"); }
+  function pad5(n){ return String(n).padStart(5, "0"); }
+
+  pdf += "xref\n";
+  pdf += `0 ${size}\n`;
+
+  for (let i=0; i<size; i++){
+    const e = xref[i] || { off:0, gen:0, type:"f" };
+    pdf += `${pad10(e.off)} ${pad5(e.gen)} ${e.type} \n`;
+  }
+
+  pdf += "trailer\n";
+  pdf += `<< /Size ${size} /Root 1 0 R >>\n`;
+  pdf += "startxref\n";
+  pdf += `${xrefOffset}\n`;
+  pdf += "%%EOF\n";
+
+  return pdf;
+}
+
+function buildPagedQuestionLines({
+  titleLine1,
+  titleLine2,
+  questionBlocks,
+  maxCharsPerLine,
+  maxLinesPerPage
+}){
+  const headerLines = [
+    sanitizePdfText(titleLine1),
+    sanitizePdfText(titleLine2),
+    ""
+  ];
+
+  const pages = [];
+  let page = headerLines.slice();
+
+  function pushPage(){
+    pages.push(page);
+    page = headerLines.slice();
+  }
+  function remainingLines(){
+    return maxLinesPerPage - page.length;
+  }
+  const freshCap = maxLinesPerPage - headerLines.length;
+
+  for (const blockText of questionBlocks){
+    const wrapped = wrapTextToLines(blockText, maxCharsPerLine);
+    const blockNeed = wrapped.length + 1;
+
+    if (blockNeed <= freshCap && blockNeed > remainingLines()){
+      pushPage();
+    }
+    for (const line of wrapped){
+      if (page.length >= maxLinesPerPage) pushPage();
+      page.push(line);
+    }
+    if (page.length >= maxLinesPerPage) pushPage();
+    page.push("");
+  }
+
+  if (page.length > 0) pages.push(page);
+  return pages;
+}
+
+function exportQuestionsToPDF(){
+  if (!questions || questions.length === 0){
+    alert("No questions to export yet.");
+    return;
+  }
+
+  const blocks = questions.map((q, i) => {
+    const label = `Q${i+1} (P${q.partIndex+1}-${q.indexInPart+1})`;
+    const text = stripHTML(q.html);
+    const diagram = q.diagramAlt ? ` Diagram: ${q.diagramAlt}` : "";
+    return `${label}. ${text}${diagram}`;
+  });
+
+  const now = new Date();
+  const title1 = `DYAA Education — Key Concepts & Formulae (Geometry) — Questions`;
+  const title2 = `Student: ${studentName}   Set: ${setNumber}   Generated: ${now.toLocaleString()}`;
+
+  const pages = buildPagedQuestionLines({
+    titleLine1: title1,
+    titleLine2: title2,
+    questionBlocks: blocks,
+    maxCharsPerLine: 95,
+    maxLinesPerPage: 56
+  });
+
+  const pdfStr = buildSimplePdf(pages, {
+    marginL: 48,
+    startY: 800,
+    fontSize: 11,
+    lineGap: 14
+  });
+
+  const safeName = (studentName || "Student").replace(/[^a-z0-9_\-]/gi, "_");
+  const ts = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,"0")}${String(now.getDate()).padStart(2,"0")}_${String(now.getHours()).padStart(2,"0")}${String(now.getMinutes()).padStart(2,"0")}`;
+  const filename = `Geometry_KeyConcepts_Questions_${safeName}_Set${setNumber}_${ts}.pdf`;
+
+  const blob = new Blob([pdfStr], {type:"application/pdf"});
+  downloadBlob(blob, filename);
+}
+
+/* ==========================================================
+   Start Screen
+========================================================== */
+function showStartScreen(){
+  sidebarEl.style.display = "none";
+  generateBtn.style.display = "none";
+  exportBtn.style.display = "none";
+  pauseResumeBtn.style.display = "none";
+
+  timeLine.textContent = "Time: 00:00";
+  studentLine.textContent = "Student: Student";
+  setLine.textContent = "Set: 1";
+
+  quizContent.innerHTML = `
+    <p>This quiz matches the <b>Key Concepts & Formulae</b> page (collinear, triangles, angles, parallel lines, polygons).</p>
+
+    <p><b>Step 1:</b> Enter your name</p>
+    <input id="nameInput" type="text"
+      style="padding:10px; width:280px; font-size:1.05em; border-radius:10px; border:1px solid #ddd;"
+      placeholder="Your name">
+
+    <div class="question-buttons" style="margin-top:18px;">
+      <button id="startButton" style="background:#4caf50;">Start Quiz</button>
+    </div>
+  `;
+
+  const nameInput = document.getElementById("nameInput");
+  if (nameInput && URL_STUDENT_NAME){
+    nameInput.value = URL_STUDENT_NAME;
+  }
+
+  document.getElementById("startButton").addEventListener("click", startQuiz);
+}
+
+function startQuiz(){
+  const nameInput = document.getElementById("nameInput");
+  studentName = (nameInput.value || "Student").trim();
+
+  generateQuiz();
+  currentQuestionIndex = 0;
+
+  setNumber = 1;
+  setLine.textContent = `Set: ${setNumber}`;
+  studentLine.textContent = `Student: ${studentName}`;
+
+  startTimer();
+
+  sidebarEl.style.display = "block";
+  generateBtn.style.display = "inline-block";
+  exportBtn.style.display = "inline-block";
+  pauseResumeBtn.style.display = "inline-block";
+
+  generateBtn.onclick = () => {
+    if (timerPaused) return;
+
+    const warn = quizSubmitted
+      ? "Generate a new random set? (This will reset your results.)"
+      : "Generate a new random set? All answers will be lost.";
+    if (!confirm(warn)) return;
+
+    setNumber++;
+    setLine.textContent = `Set: ${setNumber}`;
+
+    generateQuiz();
+    currentQuestionIndex = 0;
+    quizSubmitted = false;
+    practiceActive = false;
+    practiceIndices = [];
+    practicePos = 0;
+
+    startTimer();
+    pauseResumeBtn.style.display = "inline-block";
+
+    renderSidebar();
+    renderQuestion();
+  };
+
+  exportBtn.onclick = exportQuestionsToPDF;
+
+  renderSidebar();
+  renderQuestion();
+}
+
+/* ==========================================================
+   Pause button
+========================================================== */
+pauseResumeBtn.addEventListener("click", () => {
+  if (!timerRunning) return;
+  if (timerPaused) resumeTimer();
+  else pauseTimer();
+});
+
+/* Init */
+showStartScreen();
+</script>
+</body>
+</html>

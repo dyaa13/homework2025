@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Angles — Straight Line / At a Point / Vertically Opposite (Quiz)</title>
+
+  <style>
+    body{font-family:'Segoe UI', Tahoma, sans-serif;background:#f4f4f9;margin:0; padding:20px;color:#333;}
+    .quiz-container{max-width:980px;margin:40px auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 6px 15px rgba(0,0,0,0.1);position:relative;}
+    #headerLogo{display:flex;align-items:center;margin-bottom:10px;border-bottom:2px solid #e0e0e0;padding-bottom:10px;gap:12px;}
+    .logo-icon{width:40px;height:40px;background:#0d47a1;border-radius:6px;position:relative;flex:0 0 auto;}
+    .logo-icon:before{content:"";position:absolute;width:20px;height:9px;background:#ff9800;top:-6px;left:22px;border-radius:3px;}
+    .logo-text span.edu{font-size:0.95em;color:#ff9800;font-weight:900;letter-spacing:0.8px;}
+
+    .top-bar{display:flex;justify-content:space-between;align-items:center;margin:10px 0 10px;gap:14px;flex-wrap:wrap;}
+    .top-left{display:flex;flex-direction:column;gap:2px;font-weight:800;color:#333;}
+    .top-right{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end;}
+    .top-right button{padding:10px 18px;border:none;color:#fff;border-radius:10px;cursor:pointer;font-size:1em;font-weight:800;}
+    #pauseResumeButton{background:#ff9800;display:none;}
+    #generateButton{background:#ff9800;display:none;}
+
+    .quiz-main{display:flex;gap:20px;}
+    .sidebar{width:260px;border-right:1px solid #ddd;padding-right:10px;display:none;}
+    .sidebar h4{margin:0 0 8px;font-size:0.95em;border-bottom:1px solid #eee;padding-bottom:4px;}
+    .sidebar ul{list-style:none;padding:0;margin:0;}
+    .sidebar li{padding:6px;cursor:pointer;border-radius:4px;font-size:0.9em;user-select:none;margin-bottom:4px;}
+    .sidebar li.active{outline:2px solid #1976d2;font-weight:800;}
+    .sidebar li.correct{background:#d4edda;border-left:4px solid #28a745;}
+    .sidebar li.incorrect{background:#f8d7da;border-left:4px solid #f44336;}
+    .sidebar li.answered{border-left:4px solid #4caf50;}
+
+    #quizContent{flex:1;}
+    .question-text{font-size:1.1em;margin-bottom:6px;}
+    .instructions{font-size:0.92em;color:#555;margin-bottom:10px;line-height:1.4;}
+    .part-title{font-weight:900;margin:10px 0 8px;}
+    .single-question{margin-top:6px;margin-bottom:6px;line-height:1.55;}
+    .answer-box{width:320px;padding:7px 9px;font-size:1em;margin-left:8px;}
+
+    .diagram{margin:10px 0 8px;}
+    .diagram svg{width:100%;max-width:620px;height:auto;border:1px solid #eee;border-radius:12px;background:#fff;display:block;}
+
+    .hint-box{margin-top:10px;padding:10px 12px;background:#f7f7ff;border:1px solid #e6e6ff;border-radius:10px;font-size:0.92em;color:#444;line-height:1.45;}
+    .hint-box b{color:#111;}
+
+    .check-feedback{margin-top:12px;padding:10px 12px;border-radius:10px;border:1px solid #e0e0e0;background:#fafafa;font-size:0.95em;display:none;white-space:pre-wrap;}
+    .check-feedback.neutral{display:block;background:#f6f7fb;border-color:#e2e6ff;}
+    .check-feedback.correct{display:block;background:#d4edda;border-color:#28a745;}
+    .check-feedback.incorrect{display:block;background:#f8d7da;border-color:#f44336;}
+
+    .question-buttons{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px;align-items:center;}
+    .question-buttons button{padding:10px 18px;border:none;color:#fff;border-radius:10px;cursor:pointer;font-size:1em;font-weight:800;}
+    #nextButton{background:#4caf50;}
+    #backButton{background:#039be5;}
+    #submitButton{background:#9c27b0;}
+    #saveButton{background:#607d8b;}
+    #checkButton{background:#00897b;}
+
+    table.review-table{width:100%;border-collapse:collapse;margin-top:20px;}
+    .review-table th, .review-table td{border:1px solid #ccc;padding:6px;font-size:0.85em;text-align:center;vertical-align:top;}
+    .review-table th{background:#f2f2f2;}
+    .correct-answer{background:#d4edda;}
+    .incorrect-answer{background:#f8d7da;}
+
+    @media (max-width:760px){
+      .quiz-main{flex-direction:column;}
+      .sidebar{width:100%;border-right:none;border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
+      .answer-box{width:240px;}
+    }
+  </style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <div id="headerLogo">
+    <div class="logo-icon"></div>
+    <div class="logo-text"><span class="edu">DYAA EDUCATION</span></div>
+  </div>
+
+  <div class="top-bar">
+    <div class="top-left">
+      <div id="timeLine">Time: 00:00</div>
+      <div id="studentLine">Student: Student</div>
+      <div id="setLine">Set: 1</div>
+    </div>
+
+    <div class="top-right">
+      <button id="pauseResumeButton">Pause</button>
+      <button id="generateButton">Generate New Set</button>
+    </div>
+  </div>
+
+  <h2>Angles — Straight Line / At a Point / Vertically Opposite</h2>
+
+  <div class="quiz-main">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="quizContent"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ==========================================================
+   ✅ Keep original UI look & layout (minimal UI changes)
+   ✅ Part A = 2 questions
+   ✅ Part B = 4 questions
+   ✅ Part C = 4 questions
+   ✅ Generate New Set: Part A/B/C template selection will NOT repeat
+      until their pools are exhausted (then resets)
+   ✅ Diagram angles are true-to-label (acute/obtuse look correct)
+   ✅ Each question includes a detailed text description (can answer without diagram)
+   ✅ NO Export to PDF feature
+========================================================== */
+
+/* ---------------- Student name from URL (?name=Tiger) ---------------- */
+function getStudentNameFromURL(){
+  try{
+    const params = new URLSearchParams(window.location.search || "");
+    const raw = params.get("name");
+    if (!raw) return "";
+    return decodeURIComponent(raw.replace(/\+/g, "%20")).trim();
+  }catch(e){
+    return "";
+  }
+}
+const URL_STUDENT_NAME = getStudentNameFromURL();
+
+/* ---------------- Utilities ---------------- */
+function randInt(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+function choice(arr){ return arr[randInt(0, arr.length - 1)]; }
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i=a.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function stripHTML(html){
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return (tmp.textContent || tmp.innerText || "").trim();
+}
+
+/* ---------------- Answer parsing + compare ---------------- */
+function parseNumber(str){
+  let s = (str || "").trim();
+  if (!s) return NaN;
+  s = s.replace(/−/g,"-").replace(/,/g,"");
+  s = s.replace(/°/g,"").replace(/\bdeg\b/gi,"").trim();
+  const v = Number(s);
+  return Number.isFinite(v) ? v : NaN;
+}
+function normalizeWord(s){
+  return (s||"")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g," ")
+    .replace(/[^a-z0-9\s\-]/g,"");
+}
+function compareByType(userStr, correct){
+  const eps = 1e-6;
+  const ansRaw = (userStr || "").trim();
+  if (ansRaw === "") return { ok:false, empty:true };
+
+  if (correct.type === "integer"){
+    const u = parseNumber(ansRaw);
+    if (!Number.isFinite(u) || Math.abs(u - Math.round(u)) > eps) return { ok:false, empty:false };
+    return { ok: Math.abs(u - correct.value) < eps, empty:false };
+  }
+  if (correct.type === "mc"){
+    const u = ansRaw.toUpperCase();
+    const c = String(correct.value || "").toUpperCase();
+    return { ok: u === c, empty:false };
+  }
+  if (correct.type === "word"){
+    const u = normalizeWord(ansRaw);
+    const list = (correct.accept || []).map(normalizeWord);
+    return { ok: list.includes(u), empty:false };
+  }
+  return { ok:false, empty:false };
+}
+
+/* ---------------- Question model ---------------- */
+function makeQ(partIndex, indexInPart, html, correct, displayCorrect, answerHint){
+  return {
+    partIndex, indexInPart,
+    html,
+    plain: stripHTML(html),
+    correct,
+    displayCorrect,
+    answerHint,
+    userValue:"",
+    isCorrect:false,
+    checked:false
+  };
+}
+
+/* ==========================================================
+   SVG Geometry helpers
+   Angle system: degrees increase CLOCKWISE on screen:
+   0° = right, 90° = down, 180° = left, 270° = up.
+========================================================== */
+function degNorm(d){
+  let a = d % 360;
+  if (a < 0) a += 360;
+  return a;
+}
+function cwDiff(fromDeg, toDeg){
+  return degNorm(toDeg - fromDeg);
+}
+function polar(cx, cy, r, deg){
+  const rad = (deg * Math.PI) / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+function arcPath(cx, cy, r, startDeg, endDeg){
+  const s = polar(cx, cy, r, startDeg);
+  const e = polar(cx, cy, r, endDeg);
+  const d = cwDiff(startDeg, endDeg);
+  const large = d > 180 ? 1 : 0;
+  const sweep = 1; // clockwise
+  return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${r} ${r} 0 ${large} ${sweep} ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
+}
+function angleLabelPos(cx, cy, r, startDeg, endDeg){
+  const d = cwDiff(startDeg, endDeg);
+  const mid = degNorm(startDeg + d/2);
+  return polar(cx, cy, r, mid);
+}
+function svgText(x, y, text, color){
+  const t = String(text);
+  const len = t.length;
+  const size = (len >= 10) ? 11 : (len >= 8 ? 12 : 13);
+  return `<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" fill="${color}" font-size="${size}" font-weight="900"
+    text-anchor="middle" dominant-baseline="middle" stroke="#ffffff" stroke-width="4" paint-order="stroke">${t}</text>`;
+}
+function svgAngleMark(cx, cy, startDeg, endDeg, label, color){
+  const arcR = 36;
+  const textR = 56;
+  const p = angleLabelPos(cx, cy, textR, startDeg, endDeg);
+  return `
+    <path d="${arcPath(cx, cy, arcR, startDeg, endDeg)}" fill="none" stroke="${color}" stroke-width="3"/>
+    ${svgText(p.x, p.y, label, color)}
+  `;
+}
+function raysFromSectorMeasures(startDeg, measures){
+  const rays = [degNorm(startDeg)];
+  let cur = degNorm(startDeg);
+  for (let i=0; i<measures.length-1; i++){
+    cur = degNorm(cur + measures[i]);
+    rays.push(cur);
+  }
+  return rays;
+}
+
+/* ==========================================================
+   Diagram generators (labels match geometry)
+========================================================== */
+function svgIntersectingLines(cfg){
+  const cx = 210, cy = 135;
+  const L = 240;
+  const d1 = degNorm(cfg.d1);
+  const d2 = degNorm(cfg.d2);
+
+  function linePoints(dir){
+    const a = polar(cx, cy, L, dir);
+    const b = polar(cx, cy, L, degNorm(dir+180));
+    return { a, b };
+  }
+  const l1 = linePoints(d1);
+  const l2 = linePoints(d2);
+
+  const sectors = (cfg.sectors || []).map(s => svgAngleMark(cx, cy, s.startDeg, s.endDeg, s.label, s.color)).join("\n");
+
+  function labelAt(p, txt){
+    const off = 14;
+    return `<text x="${(p.x + off).toFixed(2)}" y="${(p.y - off).toFixed(2)}" font-size="16" font-weight="900">${txt}</text>`;
+  }
+  const A = l1.a, B = l1.b, C = l2.a, D = l2.b;
+
+  return `
+  <svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" aria-label="Intersecting lines diagram">
+    <line x1="${l1.a.x}" y1="${l1.a.y}" x2="${l1.b.x}" y2="${l1.b.y}" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+    <line x1="${l2.a.x}" y1="${l2.a.y}" x2="${l2.b.x}" y2="${l2.b.y}" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="${cx}" cy="${cy}" r="6.5" fill="#111"/>
+    <text x="${cx+16}" y="${cy+26}" font-size="16" font-weight="900">O</text>
+    ${labelAt(A,"A")}${labelAt(B,"B")}${labelAt(C,"C")}${labelAt(D,"D")}
+    ${sectors}
+  </svg>`;
+}
+
+function svgStraightLine(cfg){
+  const cx = 260, cy = 170;
+  const L = 250;
+  const rayLen = 150;
+
+  const left = {x: cx - L, y: cy};
+  const right = {x: cx + L, y: cy};
+
+  const rayDeg = degNorm(cfg.rayDeg);
+  const rayEnd = polar(cx, cy, rayLen, rayDeg);
+
+  const sectors = (cfg.sectors || []).map(s => svgAngleMark(cx, cy, s.startDeg, s.endDeg, s.label, s.color)).join("\n");
+
+  function label(txt, x, y){
+    return `<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" font-size="18" font-weight="900">${txt}</text>`;
+  }
+
+  return `
+  <svg viewBox="0 0 620 320" xmlns="http://www.w3.org/2000/svg" aria-label="Straight line diagram">
+    <line x1="${left.x}" y1="${left.y}" x2="${right.x}" y2="${right.y}" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+    <line x1="${cx}" y1="${cy}" x2="${rayEnd.x}" y2="${rayEnd.y}" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="${cx}" cy="${cy}" r="6.5" fill="#111"/>
+    <text x="${cx+16}" y="${cy+26}" font-size="16" font-weight="900">O</text>
+    ${label("A", left.x-12, left.y+28)}
+    ${label("B", right.x-12, right.y+28)}
+    ${label("C", rayEnd.x+10, rayEnd.y-10)}
+    ${sectors}
+  </svg>`;
+}
+
+function svgAnglesAtPoint(cfg){
+  const cx = 260, cy = 160;
+  const rayLen = 155;
+
+  const rays = (cfg.rays || []).map(degNorm);
+  const rayLabels = cfg.rayLabels || [];
+
+  const lines = rays.map((d, i) => {
+    const end = polar(cx, cy, rayLen, d);
+    const lbl = rayLabels[i] ?
+      `<text x="${(end.x+10).toFixed(2)}" y="${(end.y-10).toFixed(2)}" font-size="16" font-weight="900">${rayLabels[i]}</text>`
+      : "";
+    return `<g>
+      <line x1="${cx}" y1="${cy}" x2="${end.x}" y2="${end.y}" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+      ${lbl}
+    </g>`;
+  }).join("\n");
+
+  const sectors = (cfg.sectors || []).map(s => svgAngleMark(cx, cy, s.startDeg, s.endDeg, s.label, s.color)).join("\n");
+
+  return `
+  <svg viewBox="0 0 620 320" xmlns="http://www.w3.org/2000/svg" aria-label="Angles at a point diagram">
+    ${lines}
+    <circle cx="${cx}" cy="${cy}" r="6.5" fill="#111"/>
+    <text x="${cx+16}" y="${cy+26}" font-size="16" font-weight="900">O</text>
+    ${sectors}
+  </svg>`;
+}
+
+/* ==========================================================
+   Question pools + non-repeating selection across sets
+========================================================== */
+const PART_TITLES = [
+  "Part A: Core Facts (Text only)",
+  "Part B: Straight Line / Intersecting Lines / At a Point",
+  "Part C: Mixed Reasoning (Harder)"
+];
+
+const NAMES = ["Ava","Ethan","Mia","Noah","Sofia","Lucas","Chloe","Leo","Grace","Liam","Olivia","Kai","Zoe","Aria","Ella","Mason"];
+function randPerson(){ return choice(NAMES); }
+
+function nonRepeatPick(poolKey, poolArr, k){
+  if (!nonRepeatPick.state) nonRepeatPick.state = {};
+  const st = nonRepeatPick.state;
+  if (!st[poolKey] || st[poolKey].length < k){
+    st[poolKey] = shuffle(poolArr.map((_, i)=>i));
+  }
+  const picked = st[poolKey].splice(0, k);
+  return picked.map(i => poolArr[i]);
+}
+
+/* ---------------- Part A templates (pick 2) ---------------- */
+const POOL_A = [
+  function(partIndex, idx){
+    const correct = "C";
+    return makeQ(partIndex, idx,
+      `Choose the correct statement (write <b>A</b>, <b>B</b>, <b>C</b>, or <b>D</b>):<br>
+       <b>A.</b> An obtuse angle is less than 90°.<br>
+       <b>B.</b> A straight angle is 90°.<br>
+       <b>C.</b> A reflex angle is greater than 180° but less than 360°.<br>
+       <b>D.</b> Vertically opposite angles always add up to 180°.`,
+      {type:"mc", value:correct},
+      correct,
+      "Answer with a single letter: A, B, C or D."
+    );
+  },
+  function(partIndex, idx){
+    return makeQ(partIndex, idx,
+      `Angles on a straight line form a <b>straight angle</b>.<br>
+       The total is always <b>__°</b>.`,
+      {type:"integer", value:180},
+      "180°",
+      "Enter an integer."
+    );
+  },
+  function(partIndex, idx){
+    return makeQ(partIndex, idx,
+      `All angles around a point make a full turn.<br>
+       The total is always <b>__°</b>.`,
+      {type:"integer", value:360},
+      "360°",
+      "Enter an integer."
+    );
+  },
+  function(partIndex, idx){
+    const correct = "A";
+    return makeQ(partIndex, idx,
+      `When two straight lines intersect, the <b>vertically opposite</b> angles are:<br>
+       <b>A.</b> equal<br>
+       <b>B.</b> supplementary (sum to 180°)<br>
+       <b>C.</b> complementary (sum to 90°)<br>
+       <b>D.</b> always acute`,
+      {type:"mc", value:correct},
+      correct,
+      "Answer with a single letter."
+    );
+  },
+  function(partIndex, idx){
+    const a = randInt(25, 155);
+    const b = 180 - a;
+    return makeQ(partIndex, idx,
+      `${randPerson()} measures two adjacent angles on a straight line.<br>
+       One angle is <b>${a}°</b>. What is the other angle?`,
+      {type:"integer", value:b},
+      `${b}°`,
+      "Use: adjacent angles on a straight line add to 180°. Enter an integer."
+    );
+  },
+  function(partIndex, idx){
+    const a = randInt(40, 140);
+    const b = 360 - a;
+    return makeQ(partIndex, idx,
+      `Around point O, one angle is <b>${a}°</b> and the rest of the angles make the remaining turn.<br>
+       Find the remaining angle size.`,
+      {type:"integer", value:b},
+      `${b}°`,
+      "Use: angles at a point add to 360°. Enter an integer."
+    );
+  }
+];
+
+/* ---------------- Part B templates (pick 4) ---------------- */
+function q_straightLine_findX_givenRight(partIndex, idx){
+  const givenRight = randInt(35, 145);          // ∠BOC
+  const rayDeg = degNorm(360 - givenRight);     // geometry matches givenRight
+  const x = 180 - givenRight;                   // ∠AOC
+
+  const sectors = [
+    { startDeg: 180, endDeg: rayDeg, label: `x°`, color:"#7b1fa2" },
+    { startDeg: rayDeg, endDeg: 0,   label: `${givenRight}°`, color:"#1565c0" }
+  ];
+  const svg = svgStraightLine({ rayDeg, sectors });
+
+  return makeQ(partIndex, idx,
+    `<b>Text description:</b> Points <b>A</b>, <b>O</b>, <b>B</b> lie on one straight line (A–O–B). A ray <b>OC</b> is drawn above the line.
+     The angle between <b>OB</b> and <b>OC</b> is <b>${givenRight}°</b>. Find the angle between <b>OA</b> and <b>OC</b> (labelled <b>x</b>).<br>
+     <div class="diagram">${svg}</div>`,
+    {type:"integer", value:x},
+    `${x}°`,
+    "Use: angles on a straight line add to 180°. Enter an integer."
+  );
+}
+
+function q_straightLine_findX_givenLeft(partIndex, idx){
+  const givenLeft = randInt(35, 145);           // ∠AOC
+  const givenRight = 180 - givenLeft;           // ∠BOC
+  const rayDeg = degNorm(360 - givenRight);
+
+  const sectors = [
+    { startDeg: 180, endDeg: rayDeg, label: `${givenLeft}°`, color:"#d32f2f" },
+    { startDeg: rayDeg, endDeg: 0,   label: `x°`, color:"#2e7d32" }
+  ];
+  const svg = svgStraightLine({ rayDeg, sectors });
+
+  return makeQ(partIndex, idx,
+    `<b>Text description:</b> Points <b>A</b>, <b>O</b>, <b>B</b> are collinear. Ray <b>OC</b> goes above the straight line.
+     The angle <b>AOC</b> is <b>${givenLeft}°</b>. Find the adjacent angle <b>BOC</b> (labelled <b>x</b>).<br>
+     <div class="diagram">${svg}</div>`,
+    {type:"integer", value:givenRight},
+    `${givenRight}°`,
+    "Use: adjacent angles on a straight line add to 180°. Enter an integer."
+  );
+}
+
+function q_verticalOpp_findX_simple(partIndex, idx){
+  const acute = randInt(25, 75);
+  const d1 = randInt(300, 340);
+  const d2 = degNorm(d1 + acute);
+
+  const sectors = [
+    { startDeg: d1, endDeg: d2, label: `${acute}°`, color:"#d32f2f" },
+    { startDeg: degNorm(d1+180), endDeg: degNorm(d2+180), label: `x°`, color:"#2e7d32" }
+  ];
+  const svg = svgIntersectingLines({ d1, d2, sectors });
+
+  return makeQ(partIndex, idx,
+    `<b>Text description:</b> Two straight lines <b>AC</b> and <b>BD</b> intersect at point <b>O</b>.
+     The angle <b>AOD</b> is <b>${acute}°</b>. Find the vertically opposite angle <b>BOC</b> (labelled <b>x</b>).<br>
+     <div class="diagram">${svg}</div>`,
+    {type:"integer", value:acute},
+    `${acute}°`,
+    "Use: vertically opposite angles are equal. Enter an integer."
+  );
+}
+
+function q_verticalOpp_findObtuse(partIndex, idx){
+  const acute = randInt(25, 75);
+  const obtuse = 180 - acute;
+  const d1 = randInt(120, 160);
+  const d2 = degNorm(d1 + acute);
+
+  const sectors = [
+    { startDeg: d2, endDeg: degNorm(d1+180), label: `${obtuse}°`, color:"#1565c0" },
+    { startDeg: degNorm(d2+180), endDeg: d1, label: `x°`, color:"#7b1fa2" }
+  ];
+  const svg = svgIntersectingLines({ d1, d2, sectors });
+
+  return makeQ(partIndex, idx,
+    `<b>Text description:</b> Lines <b>AC</b> and <b>BD</b> cross at <b>O</b>. One obtuse angle formed is <b>${obtuse}°</b>.
+     Find its vertically opposite angle (labelled <b>x</b>).<br>
+     <div class="diagram">${svg}</div>`,
+    {type:"integer", value:obtuse},
+    `${obtuse}°`,
+    "Use: vertically opposite angles are equal. Enter an integer."
+  );
+}
+
+function q_point_findX_fourAngles(partIndex, idx){
+  const a = randInt(55, 125);
+  const b = randInt(40, 110);
+  const c = randInt(40, 110);
+  let x = 360 - (a+b+c);
+  // ensure x is sensible
+  while (x < 25 || x > 155){
+    const a2 = randInt(55, 125);
+    const b2 = randInt(40, 110);
+    const c2 = randInt(40, 110);
+    const x2 = 360 - (a2+b2+c2);
+    if (x2 >= 25 && x2 <= 155){
+      return q_point_fromMeasures(partIndex, idx, [a2,b2,c2,x2], "x°");
+    }
+    x = x2;
+  }
+  return q_point_fromMeasures(partIndex, idx, [a,b,c,x], "x°");
+}
+
+function q_point_findX_fiveAngles(partIndex, idx){
+  const a = randInt(40, 90);
+  const b = randInt(40, 90);
+  const c = randInt(40, 90);
+  const d = randInt(40, 90);
+  const x = 360 - (a+b+c+d);
+  if (x < 25 || x > 140){
+    // retry once with different numbers
+    const a2 = randInt(35, 85), b2 = randInt(35, 85), c2 = randInt(35, 85), d2 = randInt(35, 85);
+    const x2 = 360 - (a2+b2+c2+d2);
+    return q_point_fromMeasures(partIndex, idx, [a2,b2,c2,d2,x2], "x°");
+  }
+  return q_point_fromMeasures(partIndex, idx, [a,b,c,d,x], "x°");
+}
+
+function q_point_fromMeasures(partIndex, idx, measures, lastLabel){
+  const start = randInt(240, 330);
+  const rays = raysFromSectorMeasures(start, measures);
+  const colors = ["#d32f2f","#1565c0","#2e7d32","#7b1fa2","#f57c00"];
+  const labels = measures.map((m,i)=> i===measures.length-1 ? (lastLabel || "x°") : `${m}°`);
+  const sectors = [];
+  for (let i=0; i<rays.length; i++){
+    const s = rays[i];
+    const e = (i===rays.length-1) ? rays[0] : rays[i+1];
+    sectors.push({ startDeg:s, endDeg:e, label: labels[i], color: colors[i % colors.length] });
+  }
+  const knownSum = measures.slice(0, measures.length-1).reduce((p,c)=>p+c,0);
+  const x = 360 - knownSum;
+  const rayLabels = ["A","B","C","D","E","F"].slice(0, rays.length);
+  const svg = svgAnglesAtPoint({ rays, rayLabels, sectors });
+
+  const knownTxt = measures.slice(0, measures.length-1).map(v=>`<b>${v}°</b>`).join(", ");
+  return makeQ(partIndex, idx,
+    `<b>Text description:</b> Around point <b>O</b>, the angles between consecutive rays are ${knownTxt}, and the remaining angle is labelled <b>x</b>.
+     Find <b>x</b>.<br>
+     <div class="diagram">${svg}</div>`,
+    {type:"integer", value:x},
+    `${x}°`,
+    "Use: angles at a point add to 360°. Enter an integer."
+  );
+}
+
+const POOL_B = [
+  q_straightLine_findX_givenRight,
+  q_straightLine_findX_givenLeft,
+  q_verticalOpp_findX_simple,
+  q_verticalOpp_findObtuse,
+  q_point_findX_fourAngles,
+  q_point_findX_fiveAngles
+];
+
+/* ---------------- Part C templates (pick 4) ---------------- */
+function qC_straightLine_oneExpr(partIndex, idx){
+  // (2x + k) + angle = 180
+  const x = randInt(10, 35);
+  const k = randInt(5, 25);
+  const exprVal = 2*x + k;
+  const other = 180 - exprVal;
+  // keep other in sensible range
+  if (other < 25 || other > 155) return qC_straightLine_oneExpr(partIndex, idx);
+
+  const rayDeg = degNorm(360 - other); // so right angle is 'other'
+  const sectors = [
+    { startDeg: 180, endDeg: rayDeg, label: `2x + ${k}°`, color:"#d32f2f" },
+    { startDeg: rayDeg, endDeg: 0,   label: `${other}°`, color:"#1565c0" }
+  ];
+  const svg = svgStraightLine({ rayDeg, sectors });
+
+  return makeQ(partIndex, idx,
+    `<b>Text description:</b> A–O–B is a straight line. Ray OC is above the line.
+     The angle <b>AOC</b> is <b>(2x + ${k})°</b> and the adjacent angle <b>COB</b> is <b>${other}°</b>.
+     Find <b>x</b>.<br>
+     <div class="diagram">${svg}</div>`,
+    {type:"integer", value:x},
+    `${x}`,
+    "Use: (2x + k) + other = 180. Enter an integer."
+  );
+}
+
+function qC_straightLine_twoExpr(partIndex, idx){
+  // (3x - a) + (x + b) = 180  => 4x + (b-a) = 180
+  const x = randInt(20, 38);
+  const a = randInt(6, 22);
+  const b = 180 - 4*x + a;
+  if (b < 8 || b > 120) return qC_straightLine_twoExpr(partIndex, idx);
+
+  const leftVal = 3*x - a;
+  const rightVal = x + b;
+  if (leftVal < 25 || leftVal > 155 || rightVal < 25 || rightVal > 155) return qC_straightLine_twoExpr(partIndex, idx);
+
+  const rayDeg = degNorm(360 - rightVal);
+  const sectors = [
+    { startDeg: 180, endDeg: rayDeg, label: `3x - ${a}°`, color:"#7b1fa2" },
+    { startDeg: rayDeg, endDeg: 0,   label: `x + ${b}°`, color:"#2e7d32" }
+  ];
+  const svg = svgStraightLine({ rayDeg, sectors });
+
+  return makeQ(partIndex, idx,
+    `<b>Text description:</b> A–O–B is a straight line and ray OC is above it.
+     The adjacent angles are <b>(3x − ${a})°</b> and <b>(x + ${b})°</b>. Find <b>x</b>.<br>
+     <div class="diagram">${svg}</div>`,
+    {type:"integer", value:x},
+    `${x}`,
+    "Use: (3x - a) + (x + b) = 180. Enter an integer."
+  );
+}
+
+function qC_verticalOpp_twoExpr(partIndex, idx){
+  // vertically opposite: (3x - a) = (x + b) => 2x = a + b
+  const x = randInt(12, 40);
+  const a = randInt(5, 25);
+  const b = 2*x - a;
+  if (b < 5 || b > 120) return qC_verticalOpp_twoExpr(partIndex, idx);
+
+  const angleVal = 3*x - a;
+  if (angleVal < 25 || angleVal > 155) return qC_verticalOpp_twoExpr(partIndex, idx);
+
+  const d1 = randInt(300, 340);
+  const d2 = degNorm(d1 + Math.min(75, Math.max(25, angleVal))); // keep acute-ish
+  // But geometry should match the value: use angleVal directly (must be <= 90 to look acute)
+  // If angleVal too big, show it as obtuse sector instead by using 180-angleVal as acute base and label obtuse sector.
+  if (angleVal <= 90){
+    const sectors = [
+      { startDeg: d1, endDeg: degNorm(d1 + angleVal), label: `3x - ${a}°`, color:"#d32f2f" },
+      { startDeg: degNorm(d1+180), endDeg: degNorm(d1+180+angleVal), label: `x + ${b}°`, color:"#1565c0" }
+    ];
+    const svg = svgIntersectingLines({ d1, d2: degNorm(d1 + angleVal), sectors });
+    return makeQ(partIndex, idx,
+      `<b>Text description:</b> Two lines intersect at O. The two labelled angles are vertically opposite:
+       one is <b>(3x − ${a})°</b>, the other is <b>(x + ${b})°</b>. Find <b>x</b>.<br>
+       <div class="diagram">${svg}</div>`,
+      {type:"integer", value:x},
+      `${x}`,
+      "Use: vertically opposite angles are equal. Set the expressions equal and solve."
+    );
+  } else {
+    // Use obtuse sector measure = angleVal, but draw using acute = 180-angleVal and label the obtuse sector
+    const acute = 180 - angleVal; // < 90
+    const d2b = degNorm(d1 + acute);
+    const sectors = [
+      { startDeg: d2b, endDeg: degNorm(d1+180), label: `3x - ${a}°`, color:"#d32f2f" }, // obtuse sector
+      { startDeg: degNorm(d2b+180), endDeg: d1, label: `x + ${b}°`, color:"#1565c0" }  // opposite obtuse
+    ];
+    const svg = svgIntersectingLines({ d1, d2: d2b, sectors });
+    return makeQ(partIndex, idx,
+      `<b>Text description:</b> Two lines intersect at O. The labelled angles are vertically opposite and both are obtuse.
+       One is <b>(3x − ${a})°</b> and the other is <b>(x + ${b})°</b>. Find <b>x</b>.<br>
+       <div class="diagram">${svg}</div>`,
+      {type:"integer", value:x},
+      `${x}`,
+      "Set the expressions equal (vertically opposite angles are equal) and solve."
+    );
+  }
+}
+
+function qC_point_withExpr(partIndex, idx){
+  // angles around point: x, (x+16), (2x-28), and a number (d)
+  const x = choice([48, 52, 56, 60, 64, 68, 72]);
+  const a = x;
+  const b = x + 16;
+  const c = 2*x - 28;
+  const d = 360 - (a+b+c);
+  if (d < 25 || d > 170) return qC_point_withExpr(partIndex, idx);
+
+  const measures = [a,b,c,d];
+  const start = randInt(250, 330);
+  const rays = raysFromSectorMeasures(start, measures);
+  const sectors = [];
+  const colors = ["#7b1fa2","#d32f2f","#1565c0","#2e7d32"];
+  const labels = [`x°`, `x + 16°`, `2x - 28°`, `${d}°`];
+
+  for (let i=0; i<rays.length; i++){
+    const s = rays[i];
+    const e = (i===rays.length-1) ? rays[0] : rays[i+1];
+    sectors.push({ startDeg:s, endDeg:e, label: labels[i], color: colors[i] });
+  }
+  const svg = svgAnglesAtPoint({ rays, rayLabels:["A","B","C","D"], sectors });
+
+  return makeQ(partIndex, idx,
+    `<b>Text description:</b> Around point O, the four angles are <b>x°</b>, <b>(x + 16)°</b>, <b>(2x − 28)°</b>, and <b>${d}°</b>.
+     Find <b>x</b>.<br>
+     <div class="diagram">${svg}</div>`,
+    {type:"integer", value:x},
+    `${x}`,
+    "Add the four angles and set the total to 360. Enter an integer."
+  );
+}
+
+function qC_mix_vertical_and_straight(partIndex, idx){
+  // use intersecting lines: adjacent (straight line) with one expression
+  const x = randInt(10, 30);
+  const k = randInt(6, 24);
+  const exprVal = 5*x + k;           // adjacent to a number on straight line (sum 180)
+  if (exprVal < 35 || exprVal > 155) return qC_mix_vertical_and_straight(partIndex, idx);
+  const adj = 180 - exprVal;
+
+  const d1 = randInt(290, 330);
+  const d2 = degNorm(d1 + Math.min(80, Math.max(25, exprVal <= 90 ? exprVal : 180-exprVal)));
+
+  // draw the two adjacent angles on a straight line at intersection
+  let sectors;
+  if (exprVal <= 90){
+    sectors = [
+      { startDeg: d1, endDeg: degNorm(d1 + exprVal), label: `5x + ${k}°`, color:"#d32f2f" },
+      { startDeg: degNorm(d1 + exprVal), endDeg: degNorm(d1 + 180), label: `${adj}°`, color:"#1565c0" }
+    ];
+    const svg = svgIntersectingLines({ d1, d2: degNorm(d1 + exprVal), sectors });
+    return makeQ(partIndex, idx,
+      `<b>Text description:</b> Two lines intersect at O. Two adjacent angles on a straight line are labelled <b>(5x + ${k})°</b> and <b>${adj}°</b>.
+       Find <b>x</b>.<br>
+       <div class="diagram">${svg}</div>`,
+      {type:"integer", value:x},
+      `${x}`,
+      "Use: adjacent angles on a straight line add to 180. Solve for x."
+    );
+  } else {
+    // expression is obtuse; draw obtuse sector using acute = 180-exprVal
+    const acute = 180 - exprVal;
+    const d2b = degNorm(d1 + acute);
+    sectors = [
+      { startDeg: d2b, endDeg: degNorm(d1 + 180), label: `5x + ${k}°`, color:"#d32f2f" }, // obtuse
+      { startDeg: d1, endDeg: d2b, label: `${adj}°`, color:"#1565c0" } // acute
+    ];
+    const svg = svgIntersectingLines({ d1, d2: d2b, sectors });
+    return makeQ(partIndex, idx,
+      `<b>Text description:</b> Two lines intersect at O. Two adjacent angles on a straight line are labelled <b>(5x + ${k})°</b> and <b>${adj}°</b>.
+       Find <b>x</b>.<br>
+       <div class="diagram">${svg}</div>`,
+      {type:"integer", value:x},
+      `${x}`,
+      "Use: adjacent angles on a straight line add to 180. Solve for x."
+    );
+  }
+}
+
+const POOL_C = [
+  qC_straightLine_oneExpr,
+  qC_straightLine_twoExpr,
+  qC_verticalOpp_twoExpr,
+  qC_point_withExpr,
+  qC_mix_vertical_and_straight
+];
+
+/* ==========================================================
+   State
+========================================================== */
+let questions = [];
+let currentQuestionIndex = 0;
+let studentName = "Student";
+let quizSubmitted = false;
+let setNumber = 1;
+
+const quizContent = document.getElementById("quizContent");
+const sidebarEl   = document.getElementById("sidebar");
+
+const pauseResumeBtn = document.getElementById("pauseResumeButton");
+const generateBtn = document.getElementById("generateButton");
+
+const timeLine = document.getElementById("timeLine");
+const studentLine = document.getElementById("studentLine");
+const setLine = document.getElementById("setLine");
+
+/* ==========================================================
+   Timer (Pause/Resume without popup)
+========================================================== */
+let timerInterval = null;
+let elapsedMs = 0;
+let lastTickMs = 0;
+let timerPaused = false;
+let timerRunning = false;
+
+function pad2(n){ return String(n).padStart(2,"0"); }
+function formatElapsed(ms){
+  const totalSec = Math.floor(ms / 1000);
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${pad2(m)}:${pad2(s)}`;
+}
+function updateTimerUI(){ timeLine.textContent = `Time: ${formatElapsed(elapsedMs)}`; }
+
+function startTimer(){
+  stopTimer();
+  elapsedMs = 0;
+  timerPaused = false;
+  timerRunning = true;
+  lastTickMs = Date.now();
+  updateTimerUI();
+  timerInterval = setInterval(() => {
+    if (!timerRunning || timerPaused) return;
+    const now = Date.now();
+    elapsedMs += (now - lastTickMs);
+    lastTickMs = now;
+    updateTimerUI();
+  }, 250);
+  pauseResumeBtn.textContent = "Pause";
+}
+function stopTimer(){
+  timerRunning = false;
+  timerPaused = false;
+  if (timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+}
+function pauseTimer(){
+  if (!timerRunning) return;
+  timerPaused = true;
+  lastTickMs = Date.now();
+  pauseResumeBtn.textContent = "Resume";
+  setControlsLocked(true);
+}
+function resumeTimer(){
+  if (!timerRunning) return;
+  timerPaused = false;
+  lastTickMs = Date.now();
+  pauseResumeBtn.textContent = "Pause";
+  setControlsLocked(false);
+}
+function setControlsLocked(lock){
+  const input = document.getElementById("answerInput");
+  if (input) input.disabled = !!lock;
+
+  const btnIds = ["nextButton","backButton","submitButton","checkButton","saveButton"];
+  btnIds.forEach(id => {
+    const b = document.getElementById(id);
+    if (b) b.disabled = !!lock;
+  });
+
+  if (sidebarEl){
+    sidebarEl.style.pointerEvents = lock ? "none" : "auto";
+    sidebarEl.style.opacity = lock ? "0.6" : "1";
+  }
+}
+
+/* ==========================================================
+   Generate Quiz (Part A=2, Part B=4, Part C=4)
+   Non-repeat per part across sets until pool exhausts.
+========================================================== */
+function generateQuiz(){
+  questions = [];
+  quizSubmitted = false;
+
+  const pickedA = nonRepeatPick("A", POOL_A, 2);
+  const pickedB = nonRepeatPick("B", POOL_B, 4);
+  const pickedC = nonRepeatPick("C", POOL_C, 4);
+
+  pickedA.forEach((fn, i) => questions.push(fn(0, i)));
+  pickedB.forEach((fn, i) => questions.push(fn(1, i)));
+  pickedC.forEach((fn, i) => questions.push(fn(2, i)));
+}
+
+/* ==========================================================
+   Save input / grade
+========================================================== */
+function saveCurrentInput(){
+  const input = document.getElementById("answerInput");
+  if (input) questions[currentQuestionIndex].userValue = input.value.trim();
+}
+function gradeAll(){
+  let correctCount = 0;
+  questions.forEach(q => {
+    const res = compareByType(q.userValue || "", q.correct);
+    q.isCorrect = (!!res.ok);
+    if (q.isCorrect) correctCount++;
+  });
+  return correctCount;
+}
+
+/* ==========================================================
+   Extra templates to reduce repetition across sets
+========================================================== */
+
+// --- Part B: Intersecting lines, adjacent (straight line) angles ---
+function qB_intersect_adjacent_findX(partIndex, idx){
+  const acute = randInt(25, 80);
+  const adj = 180 - acute;
+
+  const d1 = randInt(300, 340);
+  const d2 = degNorm(d1 + acute);
+
+  const sectors = [
+    { startDeg: d1, endDeg: d2, label: `${acute}°`, color:"#1565c0" },
+    { startDeg: d2, endDeg: degNorm(d1+180), label: `x°`, color:"#d32f2f" }
+  ];
+  const svg = svgIntersectingLines({ d1, d2, sectors });
+
+  return makeQ(partIndex, idx,
+    `<b>Text description:</b> Lines <b>AC</b> and <b>BD</b> intersect at <b>O</b>.
+     Angle <b>AOD</b> is <b>${acute}°</b>. Angle <b>DOC</b> is adjacent to it on a straight line and is labelled <b>x</b>.
+     Find <b>x</b>.<br>
+     <div class="diagram">${svg}</div>`,
+    {type:"integer", value:adj},
+    `${adj}°`,
+    "Use: adjacent angles on a straight line add to 180°. Enter an integer."
+  );
+}
+
+// --- Part B: Angles at a point, x is NOT the last sector ---
+function qB_point_x_not_last(partIndex, idx){
+  const a = randInt(50, 120);
+  const b = randInt(40, 110);
+  const c = randInt(40, 110);
+  const x = 360 - (a+b+c);
+  if (x < 25 || x > 155) return qB_point_x_not_last(partIndex, idx);
+
+  const measures = [a, x, b, c];
+  const start = randInt(240, 330);
+  const rays = raysFromSectorMeasures(start, measures);
+
+  const colors = ["#d32f2f","#7b1fa2","#1565c0","#2e7d32"];
+  const labels = [`${a}°`, `x°`, `${b}°`, `${c}°`];
+  const sectors = [];
+  for (let i=0; i<rays.length; i++){
+    const s = rays[i];
+    const e = (i===rays.length-1) ? rays[0] : rays[i+1];
+    sectors.push({ startDeg:s, endDeg:e, label: labels[i], color: colors[i] });
+  }
+  const svg = svgAnglesAtPoint({ rays, rayLabels:["A","B","C","D"], sectors });
+
+  return makeQ(partIndex, idx,
+    `<b>Text description:</b> At point O, the four angles are <b>${a}°</b>, <b>x°</b>, <b>${b}°</b>, and <b>${c}°</b>.
+     Find <b>x</b>.<br>
+     <div class="diagram">${svg}</div>`,
+    {type:"integer", value:x},
+    `${x}°`,
+    "Use: angles at a point add to 360°. Enter an integer."
+  );
+}
+
+POOL_B.push(qB_intersect_adjacent_findX, qB_point_x_not_last);
+
+// --- Part C: Another vertical-opposite expression style ---
+function qC_verticalOpp_alt(partIndex, idx){
+  // (4x + a) = (3x + b) => x = b - a
+  const x = randInt(12, 40);
+  const a = randInt(5, 25);
+  const b = x + a;
+  const angleVal = 4*x + a;
+  if (angleVal < 25 || angleVal > 155) return qC_verticalOpp_alt(partIndex, idx);
+
+  const d1 = randInt(300, 340);
+  const drawVal = (angleVal <= 90) ? angleVal : (180 - angleVal);
+  const d2 = degNorm(d1 + drawVal);
+
+  let sectors;
+  if (angleVal <= 90){
+    sectors = [
+      { startDeg: d1, endDeg: degNorm(d1 + angleVal), label: `4x + ${a}°`, color:"#7b1fa2" },
+      { startDeg: degNorm(d1+180), endDeg: degNorm(d1+180+angleVal), label: `3x + ${b}°`, color:"#1565c0" }
+    ];
+  } else {
+    sectors = [
+      { startDeg: d2, endDeg: degNorm(d1+180), label: `4x + ${a}°`, color:"#7b1fa2" }, // obtuse
+      { startDeg: degNorm(d2+180), endDeg: d1, label: `3x + ${b}°`, color:"#1565c0" }
+    ];
+  }
+  const svg = svgIntersectingLines({ d1, d2, sectors });
+
+  return makeQ(partIndex, idx,
+    `<b>Text description:</b> Two lines intersect at O. The two labelled angles are vertically opposite:
+     one is <b>(4x + ${a})°</b> and the other is <b>(3x + ${b})°</b>. Find <b>x</b>.<br>
+     <div class="diagram">${svg}</div>`,
+    {type:"integer", value:x},
+    `${x}`,
+    "Set the expressions equal (vertically opposite angles are equal) and solve."
+  );
+}
+
+// --- Part C: Angles at a point with a different expression pattern ---
+function qC_point_altExpr(partIndex, idx){
+  // (x+20) + (x+40) + (3x-10) + d = 360
+  const x = randInt(30, 55);
+  const a = x + 20;
+  const b = x + 40;
+  const c = 3*x - 10;
+  const d = 360 - (a+b+c);
+  if (d < 25 || d > 170) return qC_point_altExpr(partIndex, idx);
+
+  const measures = [a,b,c,d];
+  const start = randInt(250, 330);
+  const rays = raysFromSectorMeasures(start, measures);
+  const colors = ["#d32f2f","#1565c0","#7b1fa2","#2e7d32"];
+  const labels = [`x + 20°`, `x + 40°`, `3x - 10°`, `${d}°`];
+
+  const sectors = [];
+  for (let i=0; i<rays.length; i++){
+    const s = rays[i];
+    const e = (i===rays.length-1) ? rays[0] : rays[i+1];
+    sectors.push({ startDeg:s, endDeg:e, label: labels[i], color: colors[i] });
+  }
+  const svg = svgAnglesAtPoint({ rays, rayLabels:["A","B","C","D"], sectors });
+
+  return makeQ(partIndex, idx,
+    `<b>Text description:</b> Around point O, the angles are <b>(x + 20)°</b>, <b>(x + 40)°</b>, <b>(3x − 10)°</b>, and <b>${d}°</b>.
+     Find <b>x</b>.<br>
+     <div class="diagram">${svg}</div>`,
+    {type:"integer", value:x},
+    `${x}`,
+    "Add the angles and set the total to 360. Enter an integer."
+  );
+}
+
+// --- Part C: Straight line with different coefficients ---
+function qC_straightLine_altExpr(partIndex, idx){
+  // (x + a) + (4x - b) = 180
+  const x = randInt(15, 35);
+  const a = randInt(10, 40);
+  const b = 5*x + a - 180; // from x+a + 4x - b = 180 => 5x + a - b = 180 => b = 5x + a - 180
+  if (b < 5 || b > 120) return qC_straightLine_altExpr(partIndex, idx);
+
+  const leftVal = x + a;
+  const rightVal = 4*x - b;
+  if (leftVal < 25 || leftVal > 155 || rightVal < 25 || rightVal > 155) return qC_straightLine_altExpr(partIndex, idx);
+
+  const rayDeg = degNorm(360 - rightVal);
+  const sectors = [
+    { startDeg: 180, endDeg: rayDeg, label: `x + ${a}°`, color:"#d32f2f" },
+    { startDeg: rayDeg, endDeg: 0,   label: `4x - ${b}°`, color:"#1565c0" }
+  ];
+  const svg = svgStraightLine({ rayDeg, sectors });
+
+  return makeQ(partIndex, idx,
+    `<b>Text description:</b> A–O–B is a straight line. The two adjacent angles are <b>(x + ${a})°</b> and <b>(4x − ${b})°</b>.
+     Find <b>x</b>.<br>
+     <div class="diagram">${svg}</div>`,
+    {type:"integer", value:x},
+    `${x}`,
+    "Use: (x + a) + (4x - b) = 180. Enter an integer."
+  );
+}
+
+POOL_C.push(qC_verticalOpp_alt, qC_point_altExpr, qC_straightLine_altExpr);
+
+/* ==========================================================
+   Sidebar
+========================================================== */
+function renderSidebar(){
+  sidebarEl.style.display = "block";
+  sidebarEl.innerHTML = `<h4>Questions</h4><ul id="qList"></ul>`;
+  const ul = document.getElementById("qList");
+
+  for (let i = 0; i < questions.length; i++){
+    const q = questions[i];
+    const li = document.createElement("li");
+    li.textContent = `Q${i + 1} (P${q.partIndex+1}-${q.indexInPart + 1})`;
+    li.dataset.index = String(i);
+    li.addEventListener("click", () => {
+      if (timerPaused) return;
+      saveCurrentInput();
+      currentQuestionIndex = i;
+      renderQuestion();
+    });
+    ul.appendChild(li);
+  }
+  updateSidebarStatus();
+}
+function updateSidebarStatus(){
+  const items = document.querySelectorAll("#qList li");
+  items.forEach(li => {
+    li.classList.remove("active","answered","correct","incorrect");
+
+    const idx = Number(li.dataset.index);
+    const q = questions[idx];
+
+    li.classList.toggle("active", idx === currentQuestionIndex);
+
+    const ans = (q.userValue || "").trim();
+    if (ans !== ""){
+      if (!quizSubmitted){
+        if (q.checked){
+          li.classList.add(q.isCorrect ? "correct" : "incorrect");
+        } else {
+          li.classList.add("answered");
+        }
+      } else {
+        li.classList.add(q.isCorrect ? "correct" : "incorrect");
+      }
+    }
+  });
+}
+
+/* ==========================================================
+   Check Answer
+========================================================== */
+function checkCurrentAnswer(){
+  if (timerPaused) return;
+
+  saveCurrentInput();
+  const q = questions[currentQuestionIndex];
+  const fb = document.getElementById("checkFeedback");
+  if (!fb) return;
+
+  const ans = (q.userValue || "").trim();
+  if (ans === ""){
+    fb.textContent = "Please enter an answer first.";
+    fb.className = "check-feedback neutral";
+    return;
+  }
+
+  const res = compareByType(ans, q.correct);
+  q.isCorrect = !!res.ok;
+  q.checked = true;
+
+  if (!q.isCorrect){
+    fb.textContent = "❌ Incorrect. Try again.";
+    fb.className = "check-feedback incorrect";
+    updateSidebarStatus();
+    return;
+  }
+
+  fb.textContent = "✅ Correct!";
+  fb.className = "check-feedback correct";
+  updateSidebarStatus();
+}
+
+/* ==========================================================
+   Render Question
+========================================================== */
+function hintForPart(partIndex){
+  if (partIndex === 0){
+    return `
+      <div class="hint-box">
+        <b>Key facts:</b><br>
+        • Straight line: 180°<br>
+        • At a point: 360°<br>
+        • Vertically opposite angles are equal
+      </div>`;
+  }
+  if (partIndex === 1){
+    return `
+      <div class="hint-box">
+        <b>Tips:</b><br>
+        • Use the text description first (the diagram just confirms it).<br>
+        • Straight line → add to 180°.<br>
+        • At a point → add to 360°.<br>
+        • Vertically opposite → equal.
+      </div>`;
+  }
+  return `
+    <div class="hint-box">
+      <b>Challenge:</b><br>
+      Turn the words/diagram into an equation, then solve for <b>x</b>.
+    </div>`;
+}
+
+function renderQuestion(){
+  const q = questions[currentQuestionIndex];
+  const fullLabel = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+  const total = questions.length;
+
+  const showPrev = currentQuestionIndex > 0;
+  const showNext = currentQuestionIndex < total - 1;
+
+  const isLastQuestion = (currentQuestionIndex === total - 1);
+  const showSubmit = (!quizSubmitted && isLastQuestion);
+
+  const answerHelp = q.answerHint || "Enter your answer.";
+
+  quizContent.innerHTML = `
+    <p class="question-text">Question ${currentQuestionIndex + 1} of ${total}</p>
+    <p class="instructions">${answerHelp}</p>
+
+    <div class="part-title">${PART_TITLES[q.partIndex] || ("Part " + (q.partIndex+1))}</div>
+
+    <div class="single-question">
+      <span><b>${fullLabel}.</b></span>
+      <span style="margin-left:6px;">${q.html}</span>
+      <input id="answerInput" class="answer-box" type="text" value="${(q.userValue || "").replace(/"/g,'&quot;')}">
+    </div>
+
+    ${hintForPart(q.partIndex)}
+
+    <div id="checkFeedback" class="check-feedback"></div>
+
+    <div class="question-buttons">
+      <button id="backButton" style="${showPrev ? "" : "display:none;"}">Previous</button>
+      <button id="checkButton">Check Answer</button>
+      <button id="submitButton" style="${showSubmit ? "" : "display:none;"}">Submit &amp; View Results</button>
+      <button id="nextButton" style="${showNext ? "" : "display:none;"}">Next</button>
+    </div>
+  `;
+
+  const nextBtn = document.getElementById("nextButton");
+  const backBtn = document.getElementById("backButton");
+  const submitBtn = document.getElementById("submitButton");
+  const checkBtn = document.getElementById("checkButton");
+
+  if (nextBtn) nextBtn.addEventListener("click", onNext);
+  if (backBtn) backBtn.addEventListener("click", onPrev);
+  if (submitBtn) submitBtn.addEventListener("click", onSubmit);
+  if (checkBtn) checkBtn.addEventListener("click", checkCurrentAnswer);
+
+  updateSidebarStatus();
+  setControlsLocked(timerPaused);
+}
+
+/* ==========================================================
+   Results + Save TXT
+========================================================== */
+function formatDateForFilename(date){
+  const pad = n => String(n).padStart(2,"0");
+  return (
+    date.getFullYear() +
+    pad(date.getMonth() + 1) +
+    pad(date.getDate()) + "_" +
+    pad(date.getHours()) +
+    pad(date.getMinutes()) +
+    pad(date.getSeconds())
+  );
+}
+function downloadBlob(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function saveResultAsTxt(){
+  saveCurrentInput();
+  const correctCount = gradeAll();
+  const lines = [];
+  lines.push("DYAA Education — Angles Quiz — Result");
+  lines.push("Student: " + studentName);
+  lines.push("Set: " + setNumber);
+  lines.push("Time taken: " + formatElapsed(elapsedMs));
+  lines.push("Score: " + correctCount + " / " + questions.length);
+  lines.push("");
+  lines.push("Details:");
+  lines.push("----------");
+
+  questions.forEach((q, i) => {
+    const partLbl = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+    const userAns = (q.userValue || "").trim() === "" ? "Not answered" : q.userValue;
+    const resultText = (q.userValue || "").trim() === ""
+      ? "Not answered"
+      : (q.isCorrect ? "Correct" : "Incorrect");
+
+    lines.push(
+      `Q${i + 1} (${partLbl})` +
+      "\nQuestion: " + q.plain +
+      (q.diagramAlt ? ("\nDiagram: " + q.diagramAlt) : "") +
+      "\nYour answer: " + userAns +
+      "\nCorrect answer: " + stripHTML(q.displayCorrect) +
+      "\nResult: " + resultText
+    );
+    lines.push("");
+  });
+
+  const content = lines.join("\n");
+  const blob = new Blob([content], { type:"text/plain;charset=utf-8" });
+  const safeName = studentName.replace(/[^a-z0-9_\-]/gi,"_") || "Student";
+  const ts = formatDateForFilename(new Date());
+  downloadBlob(blob, `Angles_Quiz_${safeName}_Set${setNumber}_${ts}.txt`);
+}
+
+function onSubmit(){
+  if (timerPaused) return;
+
+  saveCurrentInput();
+  stopTimer();
+  quizSubmitted = true;
+  gradeAll();
+
+  const correctCount = questions.filter(q => q.isCorrect).length;
+  const diffSec = Math.floor(elapsedMs / 1000);
+  const min = Math.floor(diffSec / 60);
+  const sec = diffSec % 60;
+
+  let html = `
+    <h3>Results for ${studentName}</h3>
+    <p>Set: <strong>${setNumber}</strong></p>
+    <p>Time taken: <strong>${min}m ${sec}s</strong></p>
+    <p>Score: <strong>${correctCount} / ${questions.length}</strong></p>
+
+    <div class="question-buttons">
+      <button id="saveButton">Save Current Result</button>
+    </div>
+
+    <table class="review-table">
+      <tr>
+        <th>#</th>
+        <th>Part</th>
+        <th>Question</th>
+        <th>Your Answer</th>
+        <th>Correct</th>
+        <th>Result</th>
+      </tr>
+  `;
+
+  questions.forEach((q, i) => {
+    const partLbl = `P${q.partIndex+1}-${q.indexInPart + 1}`;
+    const yourAns = (q.userValue || "").trim() === "" ? "—" : q.userValue;
+    html += `
+      <tr class="${q.isCorrect ? "correct-answer" : "incorrect-answer"}">
+        <td>${i + 1}</td>
+        <td>${partLbl}</td>
+        <td style="text-align:left;">${q.html}</td>
+        <td>${yourAns}</td>
+        <td>${q.displayCorrect}</td>
+        <td>${q.isCorrect ? "Correct" : "Incorrect"}</td>
+      </tr>
+    `;
+  });
+  html += `</table>`;
+
+  quizContent.innerHTML = html;
+
+  const saveBtn = document.getElementById("saveButton");
+  if (saveBtn) saveBtn.addEventListener("click", saveResultAsTxt);
+
+  pauseResumeBtn.style.display = "none";
+  generateBtn.style.display = "inline-block";
+  updateSidebarStatus();
+}
+
+/* ==========================================================
+   Navigation
+========================================================== */
+function onNext(){
+  if (timerPaused) return;
+  saveCurrentInput();
+  if (currentQuestionIndex < questions.length - 1){
+    currentQuestionIndex++;
+    renderQuestion();
+  }
+}
+function onPrev(){
+  if (timerPaused) return;
+  saveCurrentInput();
+  if (currentQuestionIndex > 0){
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+}
+
+/* ==========================================================
+   Start Screen
+========================================================== */
+function showStartScreen(){
+  sidebarEl.style.display = "none";
+  generateBtn.style.display = "none";
+  pauseResumeBtn.style.display = "none";
+
+  timeLine.textContent = "Time: 00:00";
+  studentLine.textContent = "Student: Student";
+  setLine.textContent = "Set: 1";
+
+  quizContent.innerHTML = `
+    <p>This quiz covers:</p>
+    <ul>
+      <li>Angles on a straight line (sum 180°)</li>
+      <li>Angles at a point (sum 360°)</li>
+      <li>Vertically opposite angles (equal)</li>
+      <li>Simple algebra with angle facts</li>
+    </ul>
+
+    <p><b>Step 1:</b> Enter your name</p>
+    <input id="nameInput" type="text"
+      style="padding:10px; width:280px; font-size:1.05em; border-radius:10px; border:1px solid #ddd;"
+      placeholder="Your name">
+
+    <div class="question-buttons" style="margin-top:18px;">
+      <button id="startButton" style="background:#4caf50;">Start Quiz</button>
+    </div>
+  `;
+
+  const nameInput = document.getElementById("nameInput");
+  if (nameInput && URL_STUDENT_NAME){
+    nameInput.value = URL_STUDENT_NAME;
+  }
+
+  document.getElementById("startButton").addEventListener("click", startQuiz);
+}
+
+function startQuiz(){
+  const nameInput = document.getElementById("nameInput");
+  studentName = (nameInput.value || "Student").trim() || "Student";
+
+  generateQuiz();
+  currentQuestionIndex = 0;
+
+  setNumber = 1;
+  setLine.textContent = `Set: ${setNumber}`;
+  studentLine.textContent = `Student: ${studentName}`;
+
+  startTimer();
+
+  sidebarEl.style.display = "block";
+  generateBtn.style.display = "inline-block";
+  pauseResumeBtn.style.display = "inline-block";
+
+  generateBtn.onclick = () => {
+    if (timerPaused) return;
+    if (!confirm("Generate a new random set? All answers will be lost.")) return;
+
+    setNumber++;
+    setLine.textContent = `Set: ${setNumber}`;
+
+    generateQuiz();
+    currentQuestionIndex = 0;
+    quizSubmitted = false;
+
+    startTimer();
+    pauseResumeBtn.style.display = "inline-block";
+
+    renderSidebar();
+    renderQuestion();
+  };
+
+  renderSidebar();
+  renderQuestion();
+}
+
+/* ==========================================================
+   Pause button
+========================================================== */
+pauseResumeBtn.addEventListener("click", () => {
+  if (!timerRunning) return;
+  if (timerPaused) resumeTimer();
+  else pauseTimer();
+});
+
+/* Init */
+showStartScreen();
+
+</script>
+</body>
+</html>

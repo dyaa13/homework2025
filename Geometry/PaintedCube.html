@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model 22 — Painted Cube Model (Counting Painted Faces) — DYAA</title>
+
+  <style>
+    :root{
+      --blue:#0d47a1;
+      --orange:#ff9800;
+      --bg:#f4f4f9;
+      --ink:#222;
+      --muted:#666;
+      --card:#fff;
+      --line:#e6e6ef;
+      --ok:#1b5e20;
+      --bad:#b71c1c;
+      --shadow:0 6px 15px rgba(0,0,0,0.10);
+      --radius:14px;
+
+      --stroke:#1f2a44;
+
+      /* 3D face fills */
+      --top:#fff4f4;
+      --front:#ffe3e3;
+      --right:#ffd6d6;
+
+      --wire:rgba(31,42,68,0.90);
+      --grid:rgba(31,42,68,0.22);
+      --label:rgba(31,42,68,0.95);
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Tahoma, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--ink);
+    }
+
+    /* subtle DYAA watermark */
+    body:before{
+      content:"DYAA";
+      position:fixed;
+      inset:auto auto 8% -10%;
+      font-size:180px;
+      font-weight:900;
+      letter-spacing:8px;
+      color:rgba(13,71,161,0.05);
+      transform:rotate(-10deg);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .quiz-container{
+      max-width:980px;
+      margin:24px auto;
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+
+    #headerLogo{
+      display:flex;align-items:center;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;
+      border-bottom:2px solid var(--line);
+    }
+    .logo-icon{
+      width:44px;height:44px;background:var(--blue);
+      border-radius:10px;position:relative;flex:0 0 auto;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .logo-icon:before{
+      content:"";position:absolute;width:22px;height:10px;background:var(--orange);
+      top:-6px;left:11px;border-radius:3px;
+      box-shadow:0 4px 10px rgba(255,152,0,0.22);
+    }
+    .logo-icon:after{
+      content:"";position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,0.75);
+      left:13px;top:13px;border-radius:5px;
+    }
+
+    .header-text h1{
+      margin:0;
+      font-size:22px;
+      color:var(--blue);
+      line-height:1.15;
+    }
+    .header-text .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin:10px 0 6px 0;
+    }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      background:#fafbff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--ink);
+      font-size:13px;
+      flex-wrap:wrap;
+    }
+    .pill b{color:var(--blue);}
+    .pill small{color:var(--muted);}
+
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:12px;padding:10px 12px;
+      font-weight:700;font-size:13px;
+      background:var(--blue);color:#fff;
+      box-shadow:0 6px 14px rgba(13,71,161,0.18);
+    }
+    .btn:hover{filter:brightness(1.03);}
+    .btn.secondary{
+      background:#fff;color:var(--blue);
+      border:1px solid rgba(13,71,161,0.22);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--ink);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:700;
+    }
+    .btn.danger{
+      background:#fff;color:var(--bad);
+      border:1px solid rgba(183,28,28,0.25);
+      box-shadow:none;
+    }
+
+    .tabs{
+      display:flex;gap:10px;margin-top:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:none;cursor:pointer;
+      background:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:800;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      color:var(--blue);
+      border-color:rgba(13,71,161,0.25);
+      background:#f5f8ff;
+    }
+
+    .panel{display:none;margin-top:14px;}
+    .panel.active{display:block;}
+
+    .learn-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fbfcff;
+    }
+    .learn-card h2{
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:var(--blue);
+    }
+    .learn-card p{
+      margin:8px 0;
+      color:#2a2a2a;
+      line-height:1.55;
+    }
+    .learn-grid{
+      display:grid;
+      grid-template-columns:1.25fr 0.75fr;
+      gap:14px;
+      margin-top:12px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .learn-grid{grid-template-columns:1fr;}
+    }
+
+    .note{
+      border-left:4px solid var(--orange);
+      padding:10px 12px;
+      background:#fff7ea;
+      border-radius:12px;
+      color:#4a3b22;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .mini-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .mini-table th, .mini-table td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+    }
+    .mini-table th{
+      background:#f5f8ff;
+      color:var(--blue);
+      font-weight:900;
+    }
+    .mini-table tr:last-child td{border-bottom:none;}
+
+    .q-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .q-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+    .q-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .q-title{
+      margin:0;
+      font-size:15px;
+      color:var(--ink);
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:900;
+      background:#fafbff;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.easy{color:#1b5e20;border-color:rgba(27,94,32,0.18);background:#f2fff4;}
+    .badge.medium{color:#0d47a1;border-color:rgba(13,71,161,0.18);background:#f3f6ff;}
+    .badge.hard{color:#b71c1c;border-color:rgba(183,28,28,0.18);background:#fff3f3;}
+
+    .q-body{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:12px;
+      margin-top:10px;
+      align-items:start;
+    }
+    @media (max-width:860px){
+      .q-body{grid-template-columns:1fr;}
+    }
+
+    .svg-wrap{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fcfdff;
+      padding:8px;
+      overflow:hidden;
+    }
+    .svg-wrap svg{display:block;width:100%;height:auto;}
+
+    .answer-area{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+
+    .fields{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(180px, 1fr));
+      gap:10px;
+      align-items:start;
+    }
+    @media (max-width:520px){
+      .fields{grid-template-columns:1fr;}
+    }
+
+    .field{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px;
+      background:#fbfcff;
+    }
+    .field label{
+      display:block;
+      font-size:12px;
+      font-weight:900;
+      color:var(--blue);
+      margin-bottom:6px;
+    }
+    .field .hint{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:6px;
+      line-height:1.35;
+    }
+
+    input[type="text"], input[type="number"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:14px;
+      width:100%;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus, input[type="number"]:focus{
+      border-color:rgba(13,71,161,0.35);
+      box-shadow:0 0 0 4px rgba(13,71,161,0.10);
+    }
+
+    .input-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .feedback{
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+    .feedback.ok{color:var(--ok);font-weight:900;}
+    .feedback.bad{color:var(--bad);font-weight:900;}
+
+    .footer-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin-top:14px;
+      padding-top:12px;
+      border-top:1px solid var(--line);
+    }
+
+    .result-box{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fbfcff;
+      display:none;
+    }
+    .result-box h3{
+      margin:0 0 8px 0;
+      color:var(--blue);
+      font-size:16px;
+    }
+
+    .muted{color:var(--muted);}
+
+    /* Confirm overlay */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .overlay .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.25);
+      padding:16px;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .modal h3{margin:0;color:var(--blue);}
+    .modal p{margin:8px 0 12px 0;color:var(--ink);line-height:1.5;}
+    .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+    /* Print support */
+    @media print{
+      body{background:#fff;padding:0;}
+      body:before{display:none;}
+      .quiz-container{box-shadow:none;border:none;margin:0;border-radius:0;}
+      .tabs,.row,.footer-actions,.btn,.overlay{display:none !important;}
+      .panel{display:block !important;}
+      .q-card{break-inside:avoid; page-break-inside:avoid;}
+      .svg-wrap{border:1px solid #ccc;}
+      /* hide inputs when printing questions */
+      .answer-area .fields, .answer-area .input-row, .answer-area .feedback{display:none !important;}
+      #resultsBox{display:none !important;}
+      /* show results when printing results */
+      body.print-results .answer-area .feedback{display:block !important;}
+      body.print-results #resultsBox{display:block !important;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <div id="headerLogo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <div class="header-text">
+        <h1>Model 22 — Painted Cube Model (Counting Painted Faces)</h1>
+        <div class="sub">Same DYAA structure • crisp 3D diagrams (SVG) • 2 Easy + 2 Medium + 2 Hard • Generate New Set</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="pill" id="studentPill">
+        <b id="studentNameLabel">Student:</b>
+        <span id="studentNameValue" class="muted">Not set</span>
+        <span class="muted">•</span>
+        <small>URL format: <span class="muted">.../model22_painted_cube.html?name=Tiger</span></small>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn secondary" id="printQuestionsBtn" type="button">Print / Save PDF (Questions)</button>
+        <button class="btn secondary" id="printResultsBtn" type="button">Print / Save PDF (Results)</button>
+        <button class="btn" id="newSetBtn" type="button">Generate New Set</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </div>
+
+    <!-- LEARN -->
+    <div class="panel active" id="panel-learn">
+      <div class="learn-card">
+        <h2>How Many Small Cubes Have 0 / 1 / 2 / 3 Painted Faces?</h2>
+        <p>
+          Paint the entire surface of a rectangular prism, then cut it into
+          <b>n × m × k</b> small cubes (unit cubes or larger equal cubes). The number of painted faces on a small cube
+          depends on whether it is at a <b>corner</b>, on an <b>edge</b>, on a <b>face</b>, or inside the solid.
+        </p>
+
+        <table class="mini-table" aria-label="Counting formulas">
+          <thead>
+            <tr>
+              <th>Painted faces</th>
+              <th>Where the small cube sits</th>
+              <th>Count (for n,m,k ≥ 2)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>3 faces</b></td>
+              <td>Corner cubes</td>
+              <td><b>8</b></td>
+            </tr>
+            <tr>
+              <td><b>2 faces</b></td>
+              <td>Edge cubes (excluding corners)</td>
+              <td><b>4[(n−2)+(m−2)+(k−2)]</b></td>
+            </tr>
+            <tr>
+              <td><b>1 face</b></td>
+              <td>Face-interior cubes (excluding edges)</td>
+              <td><b>2[(n−2)(m−2)+(n−2)(k−2)+(m−2)(k−2)]</b></td>
+            </tr>
+            <tr>
+              <td><b>0 faces</b></td>
+              <td>Inside cubes</td>
+              <td><b>(n−2)(m−2)(k−2)</b></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="learn-grid">
+          <div>
+            <div class="note">
+              <b>Tip:</b> If the big solid is <b>L × W × H</b> cm and each small cube is <b>s</b> cm on an edge,
+              then the number of small cubes along each direction is:
+              <b>n = L/s</b>, <b>m = W/s</b>, <b>k = H/s</b> (so L, W, H must be multiples of s).
+            </div>
+
+            <p style="margin-top:10px;">
+              In the diagrams, the <b>painted outer faces</b> are shaded red, and the grid shows how it is split into
+              smaller equal cubes.
+            </p>
+          </div>
+
+          <div class="svg-wrap" id="learnSvgWrap" aria-label="Learn diagram"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="panel" id="panel-practice">
+      <div class="row" style="margin-top:6px;">
+        <div class="pill">
+          <b>Instructions:</b>
+          <span class="muted">All answers are</span> <b>counts</b> (integers).
+          <span class="muted">Type numbers only.</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ghost" id="submitBtn" type="button">Submit & View Results</button>
+          <button class="btn ghost" id="saveBtn" type="button">Save Current Result</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset Answers</button>
+        </div>
+      </div>
+
+      <div class="q-list" id="questionList"></div>
+
+      <div class="result-box" id="resultsBox">
+        <h3>Results</h3>
+        <div id="resultsSummary" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3 id="overlayTitle">Confirm</h3>
+      <p id="overlayMsg"></p>
+      <div class="actions">
+        <button class="btn ghost" id="overlayCancel" type="button">Cancel</button>
+        <button class="btn" id="overlayOk" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /********************
+     * Helpers
+     ********************/
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+    function getParam(name){
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    function safeName(s){
+      if(!s) return "";
+      return String(s).replace(/[<>]/g,"").trim().slice(0,40);
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+
+    function parseIntStrict(v){
+      const s = String(v ?? "").trim();
+      if(!s) return NaN;
+      if(!/^-?\d+$/.test(s)) return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+
+    /********************
+     * Confirm overlay
+     ********************/
+    const overlay = $("#overlay");
+    const overlayMsg = $("#overlayMsg");
+    const overlayOk = $("#overlayOk");
+    const overlayCancel = $("#overlayCancel");
+    let overlayOnOk = null;
+
+    function confirmDialog(message, onOk){
+      overlayMsg.textContent = message;
+      overlay.style.display = "flex";
+      overlayOnOk = onOk;
+    }
+    overlayCancel.addEventListener("click", () => {
+      overlay.style.display = "none";
+      overlayOnOk = null;
+    });
+    overlayOk.addEventListener("click", () => {
+      overlay.style.display = "none";
+      const fn = overlayOnOk;
+      overlayOnOk = null;
+      if(typeof fn === "function") fn();
+    });
+
+    /********************
+     * Isometric SVG for painted cuboid
+     * Dimensions are in number of small cubes: n × m × k
+     ********************/
+    function isoFactory(n,m,k, targetW=340, targetH=230, pad=16){
+      const project = (x,y,z,scale) => {
+        const X = (x + y) * scale;
+        const Y = (x - y) * scale * 0.5 - z * scale;
+        return {x:X, y:Y};
+      };
+
+      const pts = [
+        [0,0,0],[n,0,0],[n,m,0],[0,m,0],
+        [0,0,k],[n,0,k],[n,m,k],[0,m,k]
+      ];
+
+      // bbox at scale=1
+      let minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity;
+      for(const [x,y,z] of pts){
+        const p = project(x,y,z,1);
+        minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x);
+        minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y);
+      }
+      const bw = (maxX-minX) || 1;
+      const bh = (maxY-minY) || 1;
+      const scale = Math.min((targetW-pad*2)/bw, (targetH-pad*2)/bh);
+
+      // bbox at real scale
+      minX=Infinity; maxX=-Infinity; minY=Infinity; maxY=-Infinity;
+      for(const [x,y,z] of pts){
+        const p = project(x,y,z,scale);
+        minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x);
+        minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y);
+      }
+      const tx = pad - minX;
+      const ty = pad - minY;
+
+      const P = (x,y,z) => {
+        const p = project(x,y,z,scale);
+        return {x:p.x+tx, y:p.y+ty};
+      };
+
+      return {P, w:targetW, h:targetH};
+    }
+
+    function poly(points){
+      return points.map(p => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(" ");
+    }
+
+    function paintedCuboidSvg(n,m,k, opts={}){
+      const {P,w,h} = isoFactory(n,m,k, 340, 230, 16);
+
+      const top = [P(0,0,k), P(n,0,k), P(n,m,k), P(0,m,k)];
+      const front = [P(0,0,0), P(n,0,0), P(n,0,k), P(0,0,k)];
+      const right = [P(n,0,0), P(n,m,0), P(n,m,k), P(n,0,k)];
+
+      // outline edges
+      const edges = [
+        [[0,0,0],[n,0,0]], [[n,0,0],[n,m,0]], [[n,m,0],[0,m,0]], [[0,m,0],[0,0,0]],
+        [[0,0,k],[n,0,k]], [[n,0,k],[n,m,k]], [[n,m,k],[0,m,k]], [[0,m,k],[0,0,k]],
+        [[0,0,0],[0,0,k]], [[n,0,0],[n,0,k]], [[n,m,0],[n,m,k]], [[0,m,0],[0,m,k]],
+      ];
+
+      // grid lines (only on visible faces)
+      const gridParts = [];
+
+      // top grid: x-subdivisions and y-subdivisions
+      for(let i=1;i<n;i++){
+        const a=P(i,0,k), b=P(i,m,k);
+        gridParts.push(`<path d="M ${a.x.toFixed(2)} ${a.y.toFixed(2)} L ${b.x.toFixed(2)} ${b.y.toFixed(2)}" class="grid"/>`);
+      }
+      for(let j=1;j<m;j++){
+        const a=P(0,j,k), b=P(n,j,k);
+        gridParts.push(`<path d="M ${a.x.toFixed(2)} ${a.y.toFixed(2)} L ${b.x.toFixed(2)} ${b.y.toFixed(2)}" class="grid"/>`);
+      }
+
+      // front grid: x and z
+      for(let i=1;i<n;i++){
+        const a=P(i,0,0), b=P(i,0,k);
+        gridParts.push(`<path d="M ${a.x.toFixed(2)} ${a.y.toFixed(2)} L ${b.x.toFixed(2)} ${b.y.toFixed(2)}" class="grid"/>`);
+      }
+      for(let z=1;z<k;z++){
+        const a=P(0,0,z), b=P(n,0,z);
+        gridParts.push(`<path d="M ${a.x.toFixed(2)} ${a.y.toFixed(2)} L ${b.x.toFixed(2)} ${b.y.toFixed(2)}" class="grid"/>`);
+      }
+
+      // right grid: y and z
+      for(let j=1;j<m;j++){
+        const a=P(n,j,0), b=P(n,j,k);
+        gridParts.push(`<path d="M ${a.x.toFixed(2)} ${a.y.toFixed(2)} L ${b.x.toFixed(2)} ${b.y.toFixed(2)}" class="grid"/>`);
+      }
+      for(let z=1;z<k;z++){
+        const a=P(n,0,z), b=P(n,m,z);
+        gridParts.push(`<path d="M ${a.x.toFixed(2)} ${a.y.toFixed(2)} L ${b.x.toFixed(2)} ${b.y.toFixed(2)}" class="grid"/>`);
+      }
+
+      // labels for n,m,k (optional)
+      const labelParts = [];
+      if(opts.labels){
+        const pN1=P(0,0,k), pN2=P(n,0,k);
+        const pM1=P(n,0,k), pM2=P(n,m,k);
+        const pK1=P(n,0,0), pK2=P(n,0,k);
+
+        labelParts.push(svgTextMid(pN1,pN2, `n=${n}`, -6));
+        labelParts.push(svgTextMid(pM1,pM2, `m=${m}`, -6));
+        labelParts.push(svgTextMid(pK1,pK2, `k=${k}`, 0));
+      }
+
+      const note = `<text x="10" y="${(h-10)}" class="note">Not to scale</text>`;
+
+      return `
+<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Painted cuboid (outer faces shaded)">
+  <defs>
+    <style>
+      .top{fill:var(--top);stroke:var(--wire);stroke-width:1.2;}
+      .front{fill:var(--front);stroke:var(--wire);stroke-width:1.2;}
+      .right{fill:var(--right);stroke:var(--wire);stroke-width:1.2;}
+      .edge{stroke:var(--wire);stroke-width:1.2;fill:none;}
+      .grid{stroke:var(--grid);stroke-width:1.0;fill:none;}
+      .label{font-size:12px;fill:var(--label);font-weight:900;}
+      .note{font-size:11px;fill:rgba(31,42,68,0.65);font-weight:700;}
+    </style>
+  </defs>
+
+  <!-- visible painted faces -->
+  <polygon class="front" points="${poly(front)}"></polygon>
+  <polygon class="right" points="${poly(right)}"></polygon>
+  <polygon class="top" points="${poly(top)}"></polygon>
+
+  <!-- grid lines -->
+  ${gridParts.join("\n")}
+
+  <!-- outline edges -->
+  ${edges.map(e=>{
+    const a=P(...e[0]), b=P(...e[1]);
+    return `<path class="edge" d="M ${a.x.toFixed(2)} ${a.y.toFixed(2)} L ${b.x.toFixed(2)} ${b.y.toFixed(2)}"></path>`;
+  }).join("\n")}
+
+  ${labelParts.join("\n")}
+  ${note}
+</svg>`.trim();
+    }
+
+    function svgTextMid(p1,p2,text,dy=0){
+      const mx=(p1.x+p2.x)/2, my=(p1.y+p2.y)/2 + dy;
+      return `<text class="label" x="${mx.toFixed(2)}" y="${my.toFixed(2)}" text-anchor="middle">${escapeHtml(text)}</text>`;
+    }
+
+    /********************
+     * Counting formulas (n,m,k are counts of small cubes along each direction)
+     * Only used with n,m,k >= 2 in this page.
+     ********************/
+    function counts(n,m,k){
+      const a = n-2, b = m-2, c = k-2;
+      const three = 8;
+      const two = 4*((n-2)+(m-2)+(k-2));
+      const one = 2*(a*b + a*c + b*c);
+      const zero = a*b*c;
+      return {zero, one, two, three};
+    }
+
+    /********************
+     * Question generator (2 Easy + 2 Medium + 2 Hard)
+     ********************/
+    function makeQuestions(){
+      const qs = [];
+
+      // EASY 1: cube 2..4, unit cubes (classic “paint then cut into 1 cm cubes”)
+      (function(){
+        const n = choice([2,3,4]);
+        const c = counts(n,n,n);
+        const svg = paintedCuboidSvg(n,n,n,{labels:true});
+        qs.push({
+          difficulty:"easy",
+          svg,
+          prompt:`A cube has side length ${n} cm. All its outer surfaces are painted red. It is then cut into ${n*n*n} unit cubes (1 cm cubes).`,
+          required:[
+            {key:"zero", label:"0 faces painted (no paint)"},
+            {key:"one",  label:"1 face painted"},
+            {key:"two",  label:"2 faces painted"},
+            {key:"three",label:"3 faces painted"}
+          ],
+          answer:c
+        });
+      })();
+
+      // EASY 2: cube 5..7, unit cubes (ask in a slightly different order)
+      (function(){
+        const n = choice([5,6,7]);
+        const c = counts(n,n,n);
+        const svg = paintedCuboidSvg(n,n,n,{labels:true});
+        qs.push({
+          difficulty:"easy",
+          svg,
+          prompt:`A cube has side length ${n} cm. After painting all the outer faces, it is cut into 1 cm cubes.`,
+          required:[
+            {key:"three",label:"3 faces painted"},
+            {key:"two",  label:"2 faces painted"},
+            {key:"one",  label:"1 face painted"},
+            {key:"zero", label:"0 faces painted (no paint)"}
+          ],
+          answer:c
+        });
+      })();
+
+      // MEDIUM 1: cuboid L×W×H, unit cubes, ask 2/1/0
+      (function(){
+        const n = randInt(4,8);
+        const m = randInt(3,7);
+        const k = randInt(2,6);
+        // ensure >=2
+        const c = counts(n,m,k);
+        const svg = paintedCuboidSvg(n,m,k,{labels:true});
+        qs.push({
+          difficulty:"medium",
+          svg,
+          prompt:`A rectangular prism is ${n} cm × ${m} cm × ${k} cm. All outer surfaces are painted, then it is cut into 1 cm cubes.`,
+          required:[
+            {key:"two",  label:"2 faces painted"},
+            {key:"one",  label:"1 face painted"},
+            {key:"zero", label:"0 faces painted (no paint)"}
+          ],
+          answer:c
+        });
+      })();
+
+      // MEDIUM 2: cuboid 7..12 × 5..10 × 3..8, unit cubes, ask all
+      (function(){
+        const n = randInt(7,12);
+        const m = randInt(5,10);
+        const k = randInt(3,8);
+        const c = counts(n,m,k);
+        const svg = paintedCuboidSvg(n,m,k,{labels:true});
+        qs.push({
+          difficulty:"medium",
+          svg,
+          prompt:`A rectangular prism is ${n} cm × ${m} cm × ${k} cm. Its entire surface is painted red, then it is cut into 1 cm cubes.`,
+          required:[
+            {key:"three",label:"3 faces painted"},
+            {key:"two",  label:"2 faces painted"},
+            {key:"one",  label:"1 face painted"},
+            {key:"zero", label:"0 faces painted (no paint)"}
+          ],
+          answer:c
+        });
+      })();
+
+      // HARD 1: cuboid large, unit cubes, ask only 2 & 3 (like “activity” style)
+      (function(){
+        const n = randInt(9,14);
+        const m = randInt(4,8);
+        const k = randInt(3,7);
+        const c = counts(n,m,k);
+        const svg = paintedCuboidSvg(n,m,k,{labels:true});
+        qs.push({
+          difficulty:"hard",
+          svg,
+          prompt:`A rectangular prism is ${n} cm × ${m} cm × ${k} cm. After painting the whole surface, it is cut into 1 cm cubes.`,
+          required:[
+            {key:"two",  label:"2 faces painted"},
+            {key:"three",label:"3 faces painted"}
+          ],
+          answer:c
+        });
+      })();
+
+      // HARD 2: cut into s cm cubes (s=2 or 3), ask 2 faces painted
+      (function(){
+        const s = choice([2,3]);
+        const n = choice([6,7,8,9]) * s;   // make multiples of s
+        const m = choice([4,5,6,7]) * s;
+        const k = choice([3,4,5,6]) * s;
+
+        const nn = n / s, mm = m / s, kk = k / s; // counts of small cubes along each direction
+        const c = counts(nn,mm,kk);
+
+        const svg = paintedCuboidSvg(nn,mm,kk,{labels:true});
+        qs.push({
+          difficulty:"hard",
+          svg,
+          prompt:`A rectangular prism is ${n} cm × ${m} cm × ${k} cm. Its surface is painted, then it is cut into cubes of side length ${s} cm.`,
+          required:[
+            {key:"two",  label:`2 faces painted (among the ${s} cm cubes)`}
+          ],
+          answer:c
+        });
+      })();
+
+      return qs;
+    }
+
+    /********************
+     * UI State
+     ********************/
+    let QUESTIONS = [];
+    let STATE = {
+      inputs: [],     // per question: {zero:"", one:"", two:"", three:""}
+      checked: [],    // per question: boolean
+      correct: [],    // per question: boolean
+      submitted: false
+    };
+
+    function badgeClass(d){
+      if(d==="easy") return "badge easy";
+      if(d==="medium") return "badge medium";
+      return "badge hard";
+    }
+    function niceDiff(d){
+      if(d==="easy") return "Easy";
+      if(d==="medium") return "Medium";
+      return "Hard";
+    }
+
+    function ensureInputs(){
+      STATE.inputs = QUESTIONS.map((q,i)=>{
+        return STATE.inputs[i] || {zero:"", one:"", two:"", three:""};
+      });
+      STATE.checked = QUESTIONS.map((q,i)=> !!STATE.checked[i]);
+      STATE.correct = QUESTIONS.map((q,i)=> !!STATE.correct[i]);
+    }
+
+    function renderQuestions(){
+      ensureInputs();
+      const list = $("#questionList");
+      list.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        const checked = STATE.checked[idx];
+        const isCorrect = STATE.correct[idx];
+
+        const fieldsHtml = q.required.map(req=>{
+          const val = STATE.inputs[idx][req.key] ?? "";
+          return `
+            <div class="field">
+              <label>${escapeHtml(req.label)}</label>
+              <input type="text" inputmode="numeric" autocomplete="off"
+                     id="q${idx}-${req.key}" placeholder="Enter a whole number"
+                     value="${escapeHtml(val)}" />
+              <div class="hint">Count of small cubes</div>
+            </div>
+          `;
+        }).join("");
+
+        card.innerHTML = `
+          <div class="q-top">
+            <h3 class="q-title">Q${idx+1}. ${escapeHtml(q.prompt)}</h3>
+            <span class="${badgeClass(q.difficulty)}">${niceDiff(q.difficulty)}</span>
+          </div>
+
+          <div class="q-body">
+            <div class="svg-wrap">${q.svg}</div>
+
+            <div class="answer-area">
+              <div class="fields">${fieldsHtml}</div>
+
+              <div class="input-row">
+                <button class="btn ghost" type="button" id="check-${idx}">Check</button>
+              </div>
+
+              <div class="feedback ${checked ? (isCorrect ? "ok" : "bad") : ""}" id="fb-${idx}">
+                ${
+                  checked
+                    ? (isCorrect
+                        ? "Correct ✅"
+                        : "Not correct ❌  (See the correct answers after you submit.)")
+                    : "Tip: Use corner / edge / face / inside counting formulas."
+                }
+              </div>
+
+              <div class="muted" style="font-size:12px;">
+                <b>Note:</b> Diagram is <b>not to scale</b>.
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+
+        // bind inputs
+        q.required.forEach(req=>{
+          const inp = $(`#q${idx}-${req.key}`, card);
+          inp.addEventListener("input", ()=>{
+            STATE.inputs[idx][req.key] = inp.value;
+            STATE.checked[idx] = false;
+            STATE.correct[idx] = false;
+            STATE.submitted = false;
+            $("#resultsBox").style.display = "none";
+            const fb = $(`#fb-${idx}`);
+            fb.className = "feedback";
+            fb.textContent = "Tip: Use corner / edge / face / inside counting formulas.";
+          });
+        });
+
+        $(`#check-${idx}`, card).addEventListener("click", ()=>checkOne(idx));
+      });
+
+      $("#resultsBox").style.display = "none";
+      document.body.classList.remove("print-results");
+    }
+
+    function checkOne(idx){
+      const q = QUESTIONS[idx];
+      const ans = q.answer;
+      let okAll = true;
+
+      for(const req of q.required){
+        const user = parseIntStrict(STATE.inputs[idx][req.key]);
+        if(!Number.isFinite(user) || user !== ans[req.key]){
+          okAll = false;
+        }
+      }
+
+      STATE.checked[idx] = true;
+      STATE.correct[idx] = okAll;
+      renderQuestions();
+
+      // If invalid input exists, show a nicer hint
+      let anyInvalid = false;
+      for(const req of q.required){
+        const user = parseIntStrict(STATE.inputs[idx][req.key]);
+        if(!Number.isFinite(user)) anyInvalid = true;
+      }
+      if(anyInvalid){
+        const fb = $(`#fb-${idx}`);
+        fb.className = "feedback bad";
+        fb.textContent = "Please enter whole numbers in all required boxes.";
+      }
+    }
+
+    function submitAll(){
+      let correctCount = 0;
+
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        let okAll = true;
+
+        for(const req of q.required){
+          const user = parseIntStrict(STATE.inputs[i][req.key]);
+          if(!Number.isFinite(user) || user !== q.answer[req.key]){
+            okAll = false;
+          }
+        }
+        STATE.checked[i] = true;
+        STATE.correct[i] = okAll;
+        if(okAll) correctCount++;
+      }
+
+      STATE.submitted = true;
+      renderQuestions();
+
+      // build a compact correct-answer list
+      const lines = QUESTIONS.map((q, i) => {
+        const parts = q.required.map(req => `${req.label}: <b>${q.answer[req.key]}</b>`).join(" • ");
+        return `<div style="margin:6px 0;"><b>Q${i+1}:</b> ${parts}</div>`;
+      }).join("");
+
+      const total = QUESTIONS.length;
+      const pct = Math.round((correctCount/total)*100);
+
+      $("#resultsSummary").innerHTML = `
+        <div><b>Score:</b> ${correctCount} / ${total} (${pct}%)</div>
+        <div class="muted" style="margin-top:8px;"><b>Correct Answers:</b></div>
+        <div style="margin-top:6px;">${lines}</div>
+      `;
+      $("#resultsBox").style.display = "block";
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+
+    function resetAnswers(){
+      STATE.inputs = QUESTIONS.map(()=>({zero:"", one:"", two:"", three:""}));
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    function saveResult(){
+      const name = safeName($("#studentNameValue").textContent) || "Student";
+      const data = {
+        title: "Model 22 — Painted Cube Model (Counting Painted Faces)",
+        student: name,
+        timestamp: new Date().toISOString(),
+        questions: QUESTIONS.map((q,i)=>({
+          index: i+1,
+          difficulty: q.difficulty,
+          prompt: q.prompt,
+          required: q.required,
+          correctAnswer: q.answer,
+          yourAnswer: q.required.reduce((acc,req)=>{
+            acc[req.key] = parseIntStrict(STATE.inputs[i][req.key]);
+            return acc;
+          },{}),
+          isCorrect: !!STATE.correct[i]
+        }))
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `DYAA_Model22_${name.replace(/\s+/g,"_")}_result.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    /********************
+     * Tabs + Student name
+     ********************/
+    $$(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        $$(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.getAttribute("data-tab");
+        $$(".panel").forEach(p=>p.classList.remove("active"));
+        $(`#panel-${tab}`).classList.add("active");
+      });
+    });
+
+    function ensureStudentName(){
+      const fromUrl = safeName(getParam("name"));
+      if(fromUrl){
+        $("#studentNameValue").textContent = fromUrl;
+        return;
+      }
+      const name = safeName(prompt("Enter student name (or open URL with ?name=YourName):", ""));
+      $("#studentNameValue").textContent = name ? name : "Anonymous";
+    }
+
+    /********************
+     * Print
+     ********************/
+    $("#printQuestionsBtn").addEventListener("click", () => {
+      document.body.classList.remove("print-results");
+      window.print();
+    });
+    $("#printResultsBtn").addEventListener("click", () => {
+      if(!STATE.submitted) submitAll();
+      document.body.classList.add("print-results");
+      window.print();
+      document.body.classList.remove("print-results");
+    });
+
+    /********************
+     * Generate New Set
+     ********************/
+    function generateNewSet(){
+      QUESTIONS = makeQuestions();
+      STATE.inputs = QUESTIONS.map(()=>({zero:"", one:"", two:"", three:""}));
+      STATE.checked = Array(QUESTIONS.length).fill(false);
+      STATE.correct = Array(QUESTIONS.length).fill(false);
+      STATE.submitted = false;
+      renderQuestions();
+    }
+
+    $("#newSetBtn").addEventListener("click", ()=>{
+      confirmDialog("Generate a new set? This will clear your current answers.", () => {
+        generateNewSet();
+        // go to practice automatically
+        $$('.tab').forEach(b=>b.classList.remove('active'));
+        $('.tab[data-tab="practice"]').classList.add('active');
+        $$('.panel').forEach(p=>p.classList.remove('active'));
+        $('#panel-practice').classList.add('active');
+      });
+    });
+
+    $("#submitBtn").addEventListener("click", submitAll);
+    $("#resetBtn").addEventListener("click", ()=>{
+      confirmDialog("Reset all answers for the current set?", resetAnswers);
+    });
+    $("#saveBtn").addEventListener("click", saveResult);
+
+    /********************
+     * Learn diagram
+     ********************/
+    function renderLearnDiagram(){
+      // A clear example: 5×4×2 unit cubes (matches the style of the worksheet)
+      const n=5, m=4, k=2;
+      $("#learnSvgWrap").innerHTML = paintedCuboidSvg(n,m,k,{labels:true});
+    }
+
+    /********************
+     * Init
+     ********************/
+    ensureStudentName();
+    renderLearnDiagram();
+    generateNewSet();
+  </script>
+</body>
+</html>
