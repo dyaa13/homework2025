@@ -777,10 +777,11 @@ const answers = [
       const now = new Date();
       const timestampForFile = now.toISOString().replace(/[:.]/g, '-');
       const safeName = studentName.replace(/\s+/g, '_') || 'Student';
-      const filename = `ICAS_Y7_2019_Result_${safeName}_${timestampForFile}.txt`;
+    const pageTitle = document.title.replace(/\s+/g, '_');
+    const filename = `${pageTitle}_Result_${safeName}_${timestampForFile}.txt`;
 
       let content = '';
-      content += 'ICAS Year 7 – 2019 Result\n';
+      content += 'ICAS Year 6 – 2016 Result\n';
       content += '--------------------------------------\n\n';
       content += `Student: ${studentName}\n`;
       content += `Date: ${now.toLocaleString()}\n`;
@@ -830,7 +831,7 @@ const answers = [
       quizContent.innerHTML = `
           <div id="startScreen" class="question-card" style="text-align:center;">
               <p class="question-text">
-                  Welcome to the ICAS Year 7 – 2019 practice! This test has ${questions.length} questions.
+                  Welcome to the ICAS practice! This test has ${questions.length} questions.
                   Please enter your name to begin.
               </p>
               <label for="nameInput"><strong>Name:</strong></label>
