@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICAS Grade 6 – 2016</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .quiz-container {
+            max-width: 1180px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .timer-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .timer-box {
+            background: #f8fafc;
+            border: 1px solid #dbe3ea;
+            border-radius: 12px;
+            padding: 10px 14px;
+            min-width: 120px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.05em;
+        }
+        .timer-box.warning {
+            color: #d32f2f;
+        }
+        .mini-btn {
+            background: #eef5ff;
+            color: #0d47a1;
+            border: 1px solid #bfd5f2;
+            padding: 9px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.95em;
+        }
+        .mini-btn:hover {
+            background: #dfefff;
+        }
+        .status-text {
+            font-size: 0.96em;
+            color: #555;
+            font-weight: 600;
+        }
+        .question-nav {
+            margin: 14px 0 22px;
+        }
+        .question-nav table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 6px;
+        }
+        .question-nav td {
+            border: 1px solid #d6dde6;
+            padding: 8px 6px;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+            border-radius: 10px;
+            font-size: 0.9em;
+            min-width: 38px;
+            background: #fafcff;
+            transition: 0.2s;
+        }
+        .question-nav td:hover {
+            background-color: #e8f3ff;
+            border-color: #90caf9;
+        }
+        .question-nav td.current-question {
+            background-color: #1976d2;
+            color: white;
+            font-weight: bold;
+            border-color: #1976d2;
+        }
+        .question-nav td.answered-question {
+            background-color: #dff3e4;
+            border-color: #8fd19e;
+            color: #1b5e20;
+            font-weight: 700;
+        }
+        .question-nav td.unanswered-question {
+            background-color: #fafcff;
+        }
+        #quizTitle {
+            margin: 0 0 10px;
+            font-size: 1.55em;
+        }
+        .question-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
+            background: #fff;
+        }
+        .question-text {
+            font-size: 1.12em;
+            margin-bottom: 22px;
+            line-height: 1.6;
+            text-align: center;
+        }
+        .question-text img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 10px auto 0;
+        }
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .options-list li {
+            border: 1px solid #d9e1ea;
+            padding: 14px 10px;
+            border-radius: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            background: #fff;
+        }
+        .options-list li:hover {
+            background-color: #eef7ff;
+            border-color: #64b5f6;
+        }
+        .options-list li.selected {
+            background-color: #dbeeff;
+            border-color: #1e88e5;
+            color: #0d47a1;
+            font-weight: bold;
+        }
+
+        .answer-input-wrap {
+            text-align: center;
+            margin-top: 18px;
+        }
+        .answer-input {
+            width: min(260px, 80%);
+            padding: 12px 14px;
+            font-size: 1.05em;
+            text-align: center;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            outline: none;
+        }
+        .answer-input:focus {
+            border-color: #1e88e5;
+            box-shadow: 0 0 0 3px rgba(30,136,229,0.12);
+        }
+        .input-help {
+            margin-top: 10px;
+            color: #666;
+            font-size: 0.92em;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+            gap: 12px;
+        }
+        #nextButton, #backButton, #startButton, #saveResultsButton {
+            color: white;
+            padding: 11px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        #nextButton, #startButton {
+            background-color: #43a047;
+        }
+        #backButton {
+            background-color: #1e88e5;
+        }
+        #saveResultsButton {
+            margin-top: 20px;
+            background-color: #fb8c00;
+        }
+        #nextButton:hover, #startButton:hover { background-color: #2e7d32; }
+        #backButton:hover { background-color: #1565c0; }
+        #saveResultsButton:hover { background-color: #ef6c00; }
+
+        .review-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            text-align: left;
+            font-size: 0.92em;
+        }
+        .review-table th, .review-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            vertical-align: top;
+        }
+        .review-table th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+        .correct-answer {
+            background-color: #d4edda;
+            color: #155724;
+            font-weight: bold;
+        }
+        .incorrect-answer {
+            background-color: #f8d7da;
+            color: #721c24;
+            font-weight: bold;
+        }
+        .time-green {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        .time-orange {
+            color: #f57c00;
+            font-weight: bold;
+        }
+        .time-red {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 12px;
+            margin: 18px 0;
+        }
+        .summary-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 14px;
+            background: #fafafa;
+        }
+        .summary-card .label {
+            font-size: 0.88em;
+            color: #666;
+            margin-bottom: 6px;
+        }
+        .summary-card .value {
+            font-size: 1.2em;
+            font-weight: 700;
+        }
+        #startScreen input {
+            padding: 10px;
+            width: min(400px, 90%);
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        #studentInfo {
+            font-size: 1.05em;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 10px;
+        }
+        @media (max-width: 900px) {
+            .options-list {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        @media (max-width: 560px) {
+            .options-list {
+                grid-template-columns: 1fr;
+            }
+            .question-nav td {
+                font-size: 0.8em;
+                padding: 6px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div class="top-bar">
+        <div>
+            <h2 id="quizTitle">ICAS G6 – 2016</h2>
+            <div class="status-text" id="progressText">Progress: 0 / 40 answered</div>
+        </div>
+        <div class="timer-wrap">
+            <button class="mini-btn" id="modeButton" type="button">Mode: Count Up</button>
+            <button class="mini-btn" id="pauseButton" type="button">Pause</button>
+            <div class="timer-box" id="timer">Time: 00:00</div>
+        </div>
+    </div>
+
+    <div id="questionNav" class="question-nav"></div>
+
+    <div id="quizContent"></div>
+
+    <div class="button-container">
+        <button id="backButton" style="display:none;">Previous</button>
+        <button id="nextButton" style="display:none;">Next Question</button>
+    </div>
+</div>
+
+<script>
+  function getStudentNameFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return (params.get("name") || "").trim();
+  }
+  const urlStudentName = getStudentNameFromURL();
+
+  const TOTAL_TIME = 60 * 60;
+  const IMG_FOLDER = "";
+  const questions = [
+      { text: `Q1.<img src="${IMG_FOLDER}q1.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q2.<img src="${IMG_FOLDER}q2.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q3.<img src="${IMG_FOLDER}q3.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q4.<img src="${IMG_FOLDER}q4.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q5.<img src="${IMG_FOLDER}q5.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q6.<img src="${IMG_FOLDER}q6.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q7.<img src="${IMG_FOLDER}q7.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q8.<img src="${IMG_FOLDER}q8.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q9.<img src="${IMG_FOLDER}q9.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q10.<img src="${IMG_FOLDER}q10.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q11.<img src="${IMG_FOLDER}q11.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q12.<img src="${IMG_FOLDER}q12.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q13.<img src="${IMG_FOLDER}q13.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q14.<img src="${IMG_FOLDER}q14.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q15.<img src="${IMG_FOLDER}q15.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q16.<img src="${IMG_FOLDER}q16.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q17.<img src="${IMG_FOLDER}q17.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q18.<img src="${IMG_FOLDER}q18.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q19.<img src="${IMG_FOLDER}q19.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q20.<img src="${IMG_FOLDER}q20.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q21.<img src="${IMG_FOLDER}q21.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q22.<img src="${IMG_FOLDER}q22.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q23.<img src="${IMG_FOLDER}q23.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q24.<img src="${IMG_FOLDER}q24.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q25.<img src="${IMG_FOLDER}q25.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q26.<img src="${IMG_FOLDER}q26.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q27.<img src="${IMG_FOLDER}q27.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q28.<img src="${IMG_FOLDER}q28.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q29.<img src="${IMG_FOLDER}q29.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q30.<img src="${IMG_FOLDER}q30.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q31.<img src="${IMG_FOLDER}q31.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q32.<img src="${IMG_FOLDER}q32.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q33.<img src="${IMG_FOLDER}q33.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q34.<img src="${IMG_FOLDER}q34.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q35.<img src="${IMG_FOLDER}q35.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"", B:"", C:"", D:"" } },
+      { text: `Q36.<img src="${IMG_FOLDER}q36.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"26", B:"30", C:"35", D:"40" }, type: "input" },
+      { text: `Q37.<img src="${IMG_FOLDER}q37.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"121", B:"124", C:"127", D:"112" }, type: "input" },
+      { text: `Q38.<img src="${IMG_FOLDER}q38.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"70", B:"62", C:"59", D:"48" }, type: "input" },
+      { text: `Q39.<img src="${IMG_FOLDER}q39.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"30", B:"40", C:"50", D:"60" }, type: "input" },
+      { text: `Q40.<img src="${IMG_FOLDER}q40.png" alt="" style="max-width:100%; margin-top:8px;">`, options: { A:"90", B:"110", C:"130", D:"148" }, type: "input" },
+  ];
+const answers = [
+    "B","A","D","C","A","B","D","C","B","D",
+    "B","C","A","B","A","A","D","D","C","A",
+    "A","C","D","C","D","B","A","B","D","C",
+    "B","C","A","C","B",
+    "58","126","65","98","300"
+];
+  let currentQuestionIndex = 0;
+  let score = 0;
+  let selectedAnswer = null;
+  let userAnswers = Array(questions.length).fill(null);
+  let studentName = "Anonymous Student";
+
+  let elapsedSeconds = 0;
+  let remainingSeconds = TOTAL_TIME;
+  let isCountDown = false;
+  let timerPaused = false;
+  let timerFinished = false;
+
+  let questionStartTime = null;
+  let timeSpent = Array(questions.length).fill(0);
+
+  const quizContent = document.getElementById('quizContent');
+  const nextButton = document.getElementById('nextButton');
+  const backButton = document.getElementById('backButton');
+  const questionNav = document.getElementById('questionNav');
+  const timerEl = document.getElementById('timer');
+  const progressText = document.getElementById('progressText');
+  const modeButton = document.getElementById('modeButton');
+  const pauseButton = document.getElementById('pauseButton');
+
+  function formatClock(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  }
+
+  function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${m}m ${s}s`;
+  }
+
+  function cleanTextAnswer(value) {
+      return String(value ?? '')
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, '')
+          .replace(/,/g, '');
+  }
+
+  function parseFractionLike(value) {
+      const s = cleanTextAnswer(value);
+      if (!s) return null;
+
+      if (/^[+-]?\d+\/[+-]?\d+$/.test(s)) {
+          const parts = s.split('/');
+          const num = Number(parts[0]);
+          const den = Number(parts[1]);
+          if (den === 0) return null;
+          return num / den;
+      }
+
+      if (/^[+-]?\d+(\.\d+)?$/.test(s)) {
+          return Number(s);
+      }
+
+      if (/^[+-]?\.\d+$/.test(s)) {
+          return Number(s);
+      }
+
+      return null;
+  }
+
+  function equivalentNumericAnswer(userValue, correctValue) {
+      const u = parseFractionLike(userValue);
+      const c = parseFractionLike(correctValue);
+      if (u === null || c === null) return false;
+      return Math.abs(u - c) < 1e-9;
+  }
+
+  function smartInputCorrect(userValue, correctValue) {
+      const userClean = cleanTextAnswer(userValue);
+      const correctOptions = String(correctValue ?? '').split('|').map(v => v.trim()).filter(Boolean);
+
+      if (!userClean) return false;
+
+      for (const opt of correctOptions) {
+          const correctClean = cleanTextAnswer(opt);
+
+          if (userClean === correctClean) return true;
+          if (equivalentNumericAnswer(userClean, correctClean)) return true;
+
+          // simple symbolic tolerance: compare after removing outer brackets and multiplication marks
+          const userSymbolic = userClean.replace(/[()*]/g, '');
+          const correctSymbolic = correctClean.replace(/[()*]/g, '');
+          if (userSymbolic === correctSymbolic) return true;
+      }
+      return false;
+  }
+
+
+  function getTimeColorClass(sec) {
+      if (sec < 60) return "time-green";
+      if (sec <= 120) return "time-orange";
+      return "time-red";
+  }
+
+  function updateTimerDisplay() {
+      const t = isCountDown ? remainingSeconds : elapsedSeconds;
+      timerEl.textContent = "Time: " + formatClock(t);
+      if (isCountDown && remainingSeconds <= 300) timerEl.classList.add("warning");
+      else timerEl.classList.remove("warning");
+      modeButton.textContent = "Mode: " + (isCountDown ? "Count Down" : "Count Up");
+      pauseButton.textContent = timerPaused ? "Resume" : "Pause";
+  }
+
+  function accumulateCurrentQuestionTime() {
+      if (questionStartTime === null) return;
+      const now = Date.now();
+      const delta = Math.max(0, Math.floor((now - questionStartTime) / 1000));
+      timeSpent[currentQuestionIndex] += delta;
+      questionStartTime = now;
+  }
+
+  function updateProgressText() {
+      const answered = userAnswers.filter(a => a && a.userChoice !== null).length;
+      progressText.textContent = `Progress: ${answered} / ${questions.length} answered`;
+  }
+
+  function renderQuestionNav() {
+      let html = '<table><tbody>';
+      for (let r = 0; r < 2; r++) {
+          html += '<tr>';
+          for (let c = 0; c < 20; c++) {
+              const index = r * 20 + c;
+              const ua = userAnswers[index];
+              const answered = ua && ua.userChoice !== null;
+              let cls = index === currentQuestionIndex ? 'current-question' : (answered ? 'answered-question' : 'unanswered-question');
+              html += `<td data-qindex="${index}" class="${cls}">Q${index + 1}</td>`;
+          }
+          html += '</tr>';
+      }
+      html += '</tbody></table>';
+      questionNav.innerHTML = html;
+  }
+
+  function goToQuestion(index) {
+      if (index < 0 || index >= questions.length) return;
+      accumulateCurrentQuestionTime();
+      currentQuestionIndex = index;
+      renderQuestion();
+  }
+
+  questionNav.addEventListener('click', function (event) {
+      const cell = event.target.closest('td[data-qindex]');
+      if (!cell) return;
+      const idx = parseInt(cell.getAttribute('data-qindex'), 10);
+      if (!Number.isNaN(idx)) goToQuestion(idx);
+  });
+
+  quizContent.addEventListener('click', function(event) {
+      let clickedElement = event.target;
+      while (clickedElement && clickedElement.tagName !== 'LI') {
+          if (clickedElement === quizContent) return;
+          clickedElement = clickedElement.parentElement;
+      }
+      if (clickedElement && clickedElement.hasAttribute('data-answer')) {
+          const key = clickedElement.getAttribute('data-answer');
+          handleAnswerSelect(clickedElement, key);
+      }
+  });
+
+  function renderQuestion() {
+      if (currentQuestionIndex >= questions.length) {
+          calculateFinalScore();
+          showFinalResult();
+          return;
+      }
+
+      const q = questions[currentQuestionIndex];
+      quizContent.innerHTML = '';
+      renderQuestionNav();
+      updateProgressText();
+
+      selectedAnswer = userAnswers[currentQuestionIndex] ? userAnswers[currentQuestionIndex].userChoice : null;
+
+      nextButton.textContent = (currentQuestionIndex === questions.length - 1) ? 'View Results' : 'Next Question';
+      nextButton.style.display = 'inline-block';
+      backButton.style.display = 'inline-block';
+      backButton.style.visibility = (currentQuestionIndex > 0) ? 'visible' : 'hidden';
+
+      const card = document.createElement('div');
+      card.className = 'question-card';
+
+      const qText = document.createElement('div');
+      qText.className = 'question-text';
+      qText.innerHTML = `(Question ${currentQuestionIndex + 1} of ${questions.length}) ` + q.text;
+      card.appendChild(qText);
+
+      if (q.type === 'input') {
+          const inputWrap = document.createElement('div');
+          inputWrap.className = 'answer-input-wrap';
+
+          const inputBox = document.createElement('input');
+          inputBox.type = 'text';
+          inputBox.className = 'answer-input';
+          inputBox.placeholder = 'Enter your answer';
+          inputBox.value = selectedAnswer || '';
+          inputBox.addEventListener('input', function() {
+              selectedAnswer = this.value.trim();
+          });
+
+          const help = document.createElement('div');
+          help.className = 'input-help';
+          help.textContent = '';
+
+          inputWrap.appendChild(inputBox);
+          inputWrap.appendChild(help);
+          card.appendChild(inputWrap);
+      } else {
+          const optionsList = document.createElement('ul');
+          optionsList.className = 'options-list';
+
+          for (const key in q.options) {
+              const listItem = document.createElement('li');
+              listItem.innerHTML = `<strong>${key}</strong>${q.options[key] ? '. ' + q.options[key] : ''}`;
+              listItem.setAttribute('data-answer', key);
+              if (key === selectedAnswer) listItem.classList.add('selected');
+              optionsList.appendChild(listItem);
+          }
+
+          card.appendChild(optionsList);
+      }
+
+      quizContent.appendChild(card);
+
+      questionStartTime = Date.now();
+  }
+
+  function handleAnswerSelect(selectedElement, key) {
+      selectedAnswer = key;
+      const options = selectedElement.parentElement.querySelectorAll('li');
+      options.forEach(option => option.classList.remove('selected'));
+      selectedElement.classList.add('selected');
+  }
+
+  function saveAnswerAndMove(direction) {
+      accumulateCurrentQuestionTime();
+
+      const q = questions[currentQuestionIndex];
+      let isCorrect = false;
+      if (q.type === 'input') {
+          isCorrect = smartInputCorrect(selectedAnswer, answers[currentQuestionIndex]);
+      } else {
+          isCorrect = (selectedAnswer !== null) && (selectedAnswer === answers[currentQuestionIndex]);
+      }
+
+      userAnswers[currentQuestionIndex] = {
+          questionIndex: currentQuestionIndex,
+          userChoice: selectedAnswer,
+          correctAnswer: answers[currentQuestionIndex],
+          isCorrect: isCorrect
+      };
+
+      if (direction === 'next') currentQuestionIndex++;
+      else if (direction === 'back' && currentQuestionIndex > 0) currentQuestionIndex--;
+
+      renderQuestion();
+  }
+
+  nextButton.addEventListener('click', function() { saveAnswerAndMove('next'); });
+  backButton.addEventListener('click', function() { saveAnswerAndMove('back'); });
+
+  modeButton.addEventListener('click', function() {
+      isCountDown = !isCountDown;
+      if (isCountDown) {
+          remainingSeconds = TOTAL_TIME;
+      } else {
+          elapsedSeconds = 0;
+      }
+      updateTimerDisplay();
+  });
+
+  pauseButton.addEventListener('click', function() {
+      timerPaused = !timerPaused;
+      updateTimerDisplay();
+  });
+
+  function calculateFinalScore() {
+      score = 0;
+      userAnswers.forEach(answer => { if (answer && answer.isCorrect) score++; });
+  }
+
+  function getTotalUsedTime() {
+      return isCountDown ? (TOTAL_TIME - remainingSeconds) : elapsedSeconds;
+  }
+
+  function showFinalResult() {
+      timerPaused = true;
+      updateTimerDisplay();
+      renderQuestionNav();
+      updateProgressText();
+
+      const answeredCount = userAnswers.filter(a => a && a.userChoice !== null).length;
+      const overallAccuracy = ((score / questions.length) * 100).toFixed(1);
+      const answeredAccuracy = answeredCount ? ((score / answeredCount) * 100).toFixed(1) : '0.0';
+      const completionRate = ((answeredCount / questions.length) * 100).toFixed(1);
+      const totalTimeUsed = getTotalUsedTime();
+      const avgAnswered = answeredCount ? Math.round(timeSpent.reduce((a, b) => a + b, 0) / answeredCount) : 0;
+      const avgPace = Math.round(totalTimeUsed / questions.length);
+      const fastCount = timeSpent.filter(t => t < 60).length;
+      const mediumCount = timeSpent.filter(t => t >= 60 && t <= 120).length;
+      const slowCount = timeSpent.filter(t => t > 120).length;
+
+      let analysis = '';
+      if (parseFloat(answeredAccuracy) >= 80 && avgAnswered <= 60) {
+          analysis = 'Strong accuracy and fast response pace.';
+      } else if (parseFloat(answeredAccuracy) >= 70) {
+          analysis = 'Good accuracy. A few questions took longer and may need review.';
+      } else {
+          analysis = 'Accuracy can improve. Review slower and incorrect questions first.';
+      }
+
+      let reviewHTML = `
+          <div id="studentInfo">
+              <strong>Student Name:</strong> ${studentName}
+          </div>
+          <div id="finalResult">
+              <p>You have finished all ${questions.length} questions.</p>
+              <p>Your final score is: <strong>${score} / ${questions.length}</strong></p>
+          </div>
+
+          <div class="summary-grid">
+              <div class="summary-card"><div class="label">Overall Accuracy</div><div class="value">${overallAccuracy}%</div></div>
+              <div class="summary-card"><div class="label">Answered Accuracy</div><div class="value">${answeredAccuracy}%</div></div>
+              <div class="summary-card"><div class="label">Completion Rate</div><div class="value">${completionRate}%</div></div>
+              <div class="summary-card"><div class="label">Total Time Used</div><div class="value">${formatTime(totalTimeUsed)}</div></div>
+              <div class="summary-card"><div class="label">Average Time / Answered Q</div><div class="value">${formatTime(avgAnswered)}</div></div>
+              <div class="summary-card"><div class="label">Average Pace / Q</div><div class="value">${formatTime(avgPace)}</div></div>
+              <div class="summary-card"><div class="label">Fast Questions (&lt;1 min)</div><div class="value">${fastCount}</div></div>
+              <div class="summary-card"><div class="label">Medium Questions (1–2 min)</div><div class="value">${mediumCount}</div></div>
+              <div class="summary-card"><div class="label">Slow Questions (&gt;2 min)</div><div class="value">${slowCount}</div></div>
+          </div>
+
+          <p><strong>Pace / Accuracy Analysis:</strong> ${analysis}</p>
+
+          <h3>Detailed Review</h3>
+          <table class="review-table">
+              <thead>
+                  <tr>
+                      <th>#</th>
+                      <th>Your Answer</th>
+                      <th>Correct Answer</th>
+                      <th>Time</th>
+                      <th>Result</th>
+                  </tr>
+              </thead>
+              <tbody>
+      `;
+
+      questions.forEach((q, index) => {
+          const result = userAnswers[index] || {
+              userChoice: null,
+              correctAnswer: answers[currentQuestionIndex],
+              isCorrect: false
+          };
+          const userChoiceText = result.userChoice ? `${result.userChoice}${q.options[result.userChoice] ? '. ' + q.options[result.userChoice] : ''}` : '— Skipped —';
+          const resultClass = result.isCorrect ? 'correct-answer' : 'incorrect-answer';
+          const resultText = result.isCorrect ? 'Correct' : 'Incorrect';
+          const correctAnswerText = q.type === 'input' ? answers[index] : `${answers[index]}${q.options[answers[index]] ? '. ' + q.options[answers[index]] : ''}`;
+
+          reviewHTML += `
+              <tr>
+                  <td>Q${index + 1}</td>
+                  <td>${userChoiceText}</td>
+                  <td class="${result.isCorrect ? '' : 'correct-answer'}">${correctAnswerText}</td>
+                  <td class="${getTimeColorClass(timeSpent[index])}">${formatTime(timeSpent[index])}</td>
+                  <td class="${resultClass}">${resultText}</td>
+              </tr>
+          `;
+      });
+
+      reviewHTML += `
+              </tbody>
+          </table>
+          <button id="saveResultsButton">Save Results</button>
+      `;
+
+      quizContent.innerHTML = reviewHTML;
+      nextButton.style.display = 'none';
+      backButton.style.display = 'none';
+
+      const saveBtn = document.getElementById('saveResultsButton');
+      if (saveBtn) saveBtn.addEventListener('click', saveResultsToFile);
+  }
+
+  function stripHTML(text) {
+      const tmp = document.createElement('div');
+      tmp.innerHTML = text;
+      return tmp.textContent || tmp.innerText || '';
+  }
+
+  function saveResultsToFile() {
+      const now = new Date();
+      const timestampForFile = now.toISOString().replace(/[:.]/g, '-');
+      const safeName = studentName.replace(/\s+/g, '_') || 'Student';
+      const filename = `ICAS_Y7_2019_Result_${safeName}_${timestampForFile}.txt`;
+
+      let content = '';
+      content += 'ICAS Year 7 – 2019 Result\n';
+      content += '--------------------------------------\n\n';
+      content += `Student: ${studentName}\n`;
+      content += `Date: ${now.toLocaleString()}\n`;
+      content += `Score: ${score} / ${questions.length}\n`;
+      content += `Total Time Used: ${formatTime(getTotalUsedTime())}\n\n`;
+      content += 'Detailed Breakdown:\n\n';
+
+      questions.forEach((q, index) => {
+          const result = userAnswers[index] || {
+              userChoice: null,
+              correctAnswer: answers[currentQuestionIndex],
+              isCorrect: false
+          };
+          const userChoiceText = result.userChoice ? result.userChoice : 'Skipped';
+          const correctAnswerText = answers[index];
+          const resultText = result.isCorrect ? 'Correct' : 'Incorrect';
+
+          content += `Q${index + 1}: ${stripHTML(q.text)}\n`;
+          content += `Your answer: ${userChoiceText}\n`;
+          content += `Correct answer: ${correctAnswerText}\n`;
+          content += `Time spent: ${formatTime(timeSpent[index])}\n`;
+          content += `Result: ${resultText}\n\n`;
+      });
+
+      const blob = new Blob([content], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+  }
+
+  function showStartScreen() {
+      nextButton.style.display = 'none';
+      backButton.style.display = 'none';
+      if (questionNav) questionNav.innerHTML = '';
+      updateTimerDisplay();
+
+      if (urlStudentName) {
+          studentName = urlStudentName;
+          startQuizAuto();
+          return;
+      }
+
+      quizContent.innerHTML = `
+          <div id="startScreen" class="question-card" style="text-align:center;">
+              <p class="question-text">
+                  Welcome to the ICAS Year 7 – 2019 practice! This test has ${questions.length} questions.
+                  Please enter your name to begin.
+              </p>
+              <label for="nameInput"><strong>Name:</strong></label>
+              <input type="text" id="nameInput" placeholder="Enter your name here" required>
+              <button id="startButton">Start Quiz</button>
+          </div>
+      `;
+
+      document.getElementById('startButton').addEventListener('click', startQuizManual);
+  }
+
+  function initAnswersArray() {
+      userAnswers = Array(questions.length).fill(null).map((_, index) => ({
+          questionIndex: index,
+          userChoice: null,
+          correctAnswer: answers[index],
+          isCorrect: false
+      }));
+      timeSpent = Array(questions.length).fill(0);
+  }
+
+  function startQuizAuto() {
+      initAnswersArray();
+      currentQuestionIndex = 0;
+      elapsedSeconds = 0;
+      remainingSeconds = TOTAL_TIME;
+      timerPaused = false;
+      timerFinished = false;
+      updateTimerDisplay();
+      renderQuestion();
+  }
+
+  function startQuizManual() {
+      const nameInput = document.getElementById('nameInput').value.trim();
+      studentName = nameInput ? nameInput : "Anonymous Student";
+      startQuizAuto();
+  }
+
+  setInterval(() => {
+      if (timerPaused || timerFinished) return;
+
+      if (isCountDown) {
+          if (remainingSeconds > 0) {
+              remainingSeconds--;
+          } else {
+              timerFinished = true;
+              accumulateCurrentQuestionTime();
+              calculateFinalScore();
+              showFinalResult();
+              alert("Time is up!");
+              return;
+          }
+      } else {
+          elapsedSeconds++;
+      }
+
+      updateTimerDisplay();
+  }, 1000);
+
+  showStartScreen();
+</script>
+
+</body>
+</html>
