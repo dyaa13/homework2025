@@ -840,7 +840,8 @@ const answers = [
       const now = new Date();
       const timestampForFile = now.toISOString().replace(/[:.]/g, '-');
       const safeName = studentName.replace(/\s+/g, '_') || 'Student';
-      const filename = `ICAS_Y7_2019_Result_${safeName}_${timestampForFile}.txt`;
+    const pageTitle = document.title.replace(/\s+/g, '_');
+    const filename = `${pageTitle}_Result_${safeName}_${timestampForFile}.txt`;
 
       let content = '';
       content += 'ICAS G6 – 2021 Result\n';
